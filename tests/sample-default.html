@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+	<title>Dynatree 2.0 - Example</title>
+
+	<script src="../jquery/jquery.js" type="text/javascript"></script>
+	<script src="../jquery/jquery-ui.custom.js" type="text/javascript"></script>
+	<script src="../jquery/jquery.cookie.js" type="text/javascript"></script>
+
+	<link href="../src/skin/ui.dynatree.css" rel="stylesheet" type="text/css" id="skinSheet">
+	<link href="../src/skin/jquery-ui-1.8.18.custom.css" rel="stylesheet" type="text/css">
+
+	<script src="../src/jquery.dynatree.js" type="text/javascript"></script>
+
+	<script type="text/javascript">
+		$(function(){
+			$.ui.dynatree.debug("Using dynatree " + $.ui.dynatree.version);
+			// attach to all instances
+			$("#tree, #tree3").dynatree({
+				// using default options
+				activate: function(e, data){
+					$.ui.dynatree.debug("activate: e=", e, ", data=", data);
+//					data.tree.debug("activate");
+				}
+			}).bind("dynatreeaclick", function(e, data){
+				$.ui.dynatree.debug("dynatreeactivate: e=", e, ", data=", data);
+				return false;
+//				$(this).dynatree("debug", "dynatreeactivate");
+			});
+			var DT = $.ui.dynatree,
+				tree = $("div:ui-dynatree").data("dynatree");
+			DT.debug("Test ':ui-dynatree' expression " + $("div:ui-dynatree").length);
+			tree.foo("hurz1");
+			// override with extensions
+			tree.addExtension({
+				foo: function(msg){
+			        Array.prototype.unshift.call(arguments, "ext.foo");
+					this._super.apply(this, arguments);
+				}
+			});
+			// call methods on multiple instances
+			$("div:ui-dynatree").dynatree("foo", "after init");
+			//
+			$("button").button();
+			$("button#destroy").click(function(e){
+				$(":ui-dynatree").dynatree("destroy");
+			});
+			$("button#init").click(function(e){
+				$(".sampletree").dynatree();
+			});
+		});
+	</script>
+</head>
+
+<body class="example">
+	<h1>Example: Initializazion methods</h1>
+	<p class="description">
+		This tree uses default options.<br>
+		It is initalized from a hidden &lt;ul> element on this page.
+	</p>
+	<p><button id="destroy">Destroy</button> <button id="init">Init</button></p>
+	<p>Tree with UL markup</p>
+	<div id="tree" class="sampletree">
+		<ul id="treeData" styleXXX="display: none;">
+			<li>simple node (no explicit id, so a default key is generated)
+			<li id="id1" title="Look, a tool tip!">item1 with key and tooltip
+			<li id="id2"><span>item2 with <b>html</b> inside a span tag</span>
+			<li class="nolink">this nodes uses 'nolink', so no &lt;a> tag is generated
+			<li><a href="http:/wwwwendt.de/">using single a-tag to pass href</a>
+			<li class="my-extra-class">node with some extra classes (will be added to the generated markup)
+			<li id="id3" class="folder">Folder with some children
+				<ul>
+					<li id="id3.1">Sub-item 3.1
+						<ul>
+							<li id="id3.1.1">Sub-item 3.1.1
+							<li id="id3.1.2">Sub-item 3.1.2
+						</ul>
+					<li id="id3.2">Sub-item 3.2
+						<ul>
+							<li id="id3.2.1">Sub-item 3.2.1
+							<li id="id3.2.2">Sub-item 3.2.2
+						</ul>
+				</ul>
+			<li id="id4" class="expanded">Document with some children (expanded on init)
+				<ul>
+					<li id="id4.1"  class="active focus">Sub-item 4.1 (active and focus on init)
+						<ul>
+							<li id="id4.1.1">Sub-item 4.1.1
+							<li id="id4.1.2">Sub-item 4.1.2
+						</ul>
+					<li id="id4.2">Sub-item 4.2
+						<ul>
+							<li id="id4.2.1">Sub-item 4.2.1
+							<li id="id4.2.2">Sub-item 4.2.2
+						</ul>
+				</ul>
+			<li class="lazy folder" data-source="foo">Lazy loading folder
+			<li id="id6" class="lazy folder expanded">Lazy loading folder (expand on init)
+		</ul>
+	</div>
+
+
+	<p>Tree with Ajax data</p>
+
+	<div id="tree2" class="sampletree">
+	</div>
+
+
+	<p>Tree with embedded JSON data</p>
+	<div id="tree3" class="sampletree" data-type="json">
+	{"title": "test", "folder": true,
+	 "children": [
+	 	{"title": "cäsar€"},
+	 	{"title": "a<a href='#'>b</a>c"}
+	 	]
+	}
+	</div>
+
+
+	<p>Tree with programmatic dataAjax data</p>
+
+	<div id="tree4" class="sampletree">
+	</div>
+</body>
+</html>
