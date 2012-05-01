@@ -15,10 +15,14 @@
 
 	<script type="text/javascript">
 		$(function(){
+			var DT = $.ui.dynatree;
 			$.ui.dynatree.debug("Using dynatree " + $.ui.dynatree.version);
 			// attach to all instances
 			$("#tree, #tree3").dynatree({
-				extensions: ["profiler"],
+				extensions: ["profiler", "aria"],
+				profiler: {
+					prefix: "HURZ "
+				},
 				// using default options
 				activate: function(e, data){
 					$.ui.dynatree.debug("activate: e=", e, ", data=", data);
@@ -34,8 +38,7 @@
 				return false;
 //				$(this).dynatree("debug", "dynatreeactivate");
 			});
-			var DT = $.ui.dynatree,
-				tree = $("div:ui-dynatree").data("dynatree").getTree();
+			var tree = $("div:ui-dynatree").data("dynatree").getTree();
 			DT.debug("Test ':ui-dynatree' expression " + $("div:ui-dynatree").length);
 			// tree.tree.foo("hurz1");
 			// // override with extensions
