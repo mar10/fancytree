@@ -35,7 +35,7 @@
 //				$(this).dynatree("debug", "dynatreeactivate");
 			});
 			var DT = $.ui.dynatree,
-				tree = $("div:ui-dynatree").data("dynatree");
+				tree = $("div:ui-dynatree").data("dynatree").getTree();
 			DT.debug("Test ':ui-dynatree' expression " + $("div:ui-dynatree").length);
 			// tree.tree.foo("hurz1");
 			// // override with extensions
@@ -55,6 +55,11 @@
 			$("button#init").click(function(e){
 				$(".sampletree").dynatree();
 			});
+			$("button#expand").click(function(e){
+				tree.getNodeByKey("id3").expand().always(function(dfd){
+					alert("expanded " + dfd.state());
+				});
+			});
 		});
 	</script>
 </head>
@@ -65,7 +70,10 @@
 		This tree uses default options.<br>
 		It is initalized from a hidden &lt;ul> element on this page.
 	</p>
-	<p><button id="destroy">Destroy</button> <button id="init">Init</button></p>
+	<p>
+		<button id="destroy">Destroy</button> <button id="init">Init</button>
+		<button id="expand">Expand</button>
+	</p>
 	<p>Tree with UL markup</p>
 	<div id="tree" class="sampletree">
 		<ul id="treeData" styleXXX="display: none;">

@@ -62,49 +62,41 @@ if ( $.ui.dynatree && $.ui.dynatree.version ) {
 /*******************************************************************************
  * Private functions and variables
  */
-//var fnTestSuper = /xyz/.test(function(){xyz;}) ? /\b_super\b/ : /.*/;
+// RegExp that tests a function body for usage of '_super'
+var dummyFunc = function(){ var xyz; },
+    rexTestSuper = /xyz/.test(dummyFunc) ? /\b_super\b/ : null;
 
-/** Return a wrapper function that exposes a this._super().*/
-
-function _makeProxy(fn, that, _super){
+/** Return a wrapper that calls sub.fn() and exposes base.fn() as _super(). */
+var _makeVirtualFunction = function(fn, base, sub){
+    var _super = base[fn],
+        func = sub[fn];
+    if(rexTestSuper && !rexTestSuper.test(func)){
+        // sub.fn() doesn't call _super(), so no wrapper required
+        return func;  
+    }
     return function(){
-        var tmp = _super/*, that = this*/, res;
         try{
-            that._super = _super;
-            that._me = that;
-            res = fn.apply(this, arguments);
+            sub._super = function(){ 
+                return _super.apply(base, arguments);
+            };
+            return  func.apply(sub, arguments);
         }finally{
-            that._super = tmp;
-        }
-        return res;
+            sub._super = null;        
+        }        
     };
-}
+};
 
 /**
  * 
  */
 function _subclassObject(base, sub){
-    // var _makeHandler = function(fn){
-    //     sub._super = function(){ 
-    //         return _super.apply(base, arguments);
-    //     };
-    //     var res = func.apply(that, arguments);
-    //     return res;
-    // }
     for(var fn in sub){
         if(typeof sub[fn] === "function"){
             if(typeof base[fn] === "function"){
                 // override existing method
-                var _super = base[fn],
-                    func = sub[fn];
-//                base[fn] = _makeHandler(fn, , sub);
-                base[fn] = function(){
-                    sub._super = function(){ 
-                        return _super.apply(base, arguments);
-                    };
-                    var res = func.apply(sub, arguments);
-                    return res;
-                };
+                base[fn] = _makeVirtualFunction(fn, base, sub);
+            }else{
+                base[fn] = sub[fn];
             }
         }
     }
@@ -249,6 +241,9 @@ $.extend(DynatreeNode.prototype, {
         DT.debug.apply(this, arguments);
     },
 
+    expand: function(flag){
+        return this.tree._callHook("nodeExpand", this, flag);
+    },
     /** Return node depth. 0: System root node, 1: visible top-level node.
      */
     getLevel: function() {
@@ -291,6 +286,41 @@ $.extend(DynatreeNode.prototype, {
 
     toString: function() {
         return "DynatreeNode<" + this.title + ">";
+    },
+    visit: function(fn, includeSelf) {
+        // Call fn(node) for all child nodes. Stop iteration, if fn() returns false.
+        var res = true,
+            children = this.children;
+        if( includeSelf === true ) {
+            res = fn(this);
+            if( res === false || res === "skip" ){
+                return res;
+            }
+        }
+        if(children){
+            for(var i=0, l=children.length; i<l; i++){
+                res = children[i].visit(fn, true);
+                if( res === false ){
+                    break;
+                }
+            }
+        }
+        return res;
+    },
+
+    visitParents: function(fn, includeSelf) {
+        // Visit parent nodes (bottom up)
+        if(includeSelf && fn(this) === false){
+            return false;
+        }
+        var p = this.parent;
+        while( p ) {
+            if(fn(p) === false){
+                return false;
+            }
+            p = p.parent;
+        }
+        return true;
     }
 });
 
@@ -302,6 +332,7 @@ $.extend(DynatreeNode.prototype, {
 var Dynatree = function($widget){
     this.$widget = $widget;
     this.$div = $widget.element;
+    this.options = $widget.options;
     this.$root = null;  // outer <ul class='dynatree-container'>
     this._id = $.ui.dynatree._nextId++;
 
@@ -317,28 +348,28 @@ $.extend(Dynatree.prototype, {
     /**
      * Override dynatree methods and properties
      */
-    addExtension: function(name, options, global){
-        // global === true will add proxies to all instances; false will hook current instance only
-        var proto = !!global ? $.ui.dynatree.prototype : this,
-            extension = $.ui.dynatree._extensions[name],
-            hooks = extension.hooks;
-        if(!extension){
-            $.error("Extension not defined: " + name);
-        }
-        // Add extension options as tree.options.NAME
-        proto.$widget.options[name] = $.extend({}, extension.options, options);
-        DT.debug("Extension options", name, proto.$widget.options);
-        // Proxy all hooks that the extension defines
-        for(var hook in hooks){
-            if($.isFunction(hooks[hook]) && proto[hook]){
-                // overriding base method: create a proxy that supports `this._super()`
-                proto[hook] = _makeProxy(hooks[hook], extension, proto[hook]);
-            }else{
-                $.error("Extension is not a function: " + hook);
-                // proto[hook] = ext[hook];
-            }
-        }
-    },
+    // addExtension: function(name, options, global){
+    //     // global === true will add proxies to all instances; false will hook current instance only
+    //     var proto = !!global ? $.ui.dynatree.prototype : this,
+    //         extension = $.ui.dynatree._extensions[name],
+    //         hooks = extension.hooks;
+    //     if(!extension){
+    //         $.error("Extension not defined: " + name);
+    //     }
+    //     // Add extension options as tree.options.NAME
+    //     proto.$widget.options[name] = $.extend({}, extension.options, options);
+    //     DT.debug("Extension options", name, proto.$widget.options);
+    //     // Proxy all hooks that the extension defines
+    //     for(var hook in hooks){
+    //         if($.isFunction(hooks[hook]) && proto[hook]){
+    //             // overriding base method: create a proxy that supports `this._super()`
+    //             proto[hook] = _makeProxy(hooks[hook], extension, proto[hook]);
+    //         }else{
+    //             $.error("Extension is not a function: " + hook);
+    //             // proto[hook] = ext[hook];
+    //         }
+    //     }
+    // },
     /** _trigger a hook function: funcName(node, ctx, [...]). 
      * with ctx = {
      *     node: ...
@@ -377,6 +408,9 @@ $.extend(Dynatree.prototype, {
         }
         $.error("invalid args");
     },
+    count: function() {
+        return this.root.countChildren();
+    },
     debug: function(msg){
         Array.prototype.unshift.call(arguments, this.toString());
         DT.debug.apply(this, arguments);
@@ -406,6 +440,28 @@ $.extend(Dynatree.prototype, {
         // Set tree title from node data
         this.title = data.title;
     },
+    getNodeByKey: function(key, searchRoot) {
+        // Search the DOM by element ID (assuming this is faster than traversing all nodes).
+        // $("#...") has problems, if the key contains '.', so we use getElementById()
+        if(!searchRoot){
+            var el = document.getElementById(this.options.idPrefix + key);
+            if( el ){
+                return el.dtnode ? el.dtnode : null;
+            }
+        }
+        // Not found in the DOM, but still may be in an unrendered part of tree
+        var match = null;
+        searchRoot = searchRoot || this.root;
+        searchRoot.visit(function(node){
+//          window.console.log("%s", node);
+            if(node.key === key) {
+                match = node;
+                return false;
+            }
+        }, true);
+        return match;
+    },
+
     info: function(msg){
         Array.prototype.unshift.call(arguments, this.toString());
         DT.info.apply(this, arguments);
@@ -428,22 +484,29 @@ $.extend(Dynatree.prototype, {
         var node = ctx.node,
             opts = ctx.widget.options;
         flag = (flag !== false);
+
+// TODO: dfd.progress verwenden: ('rendered', 'done')
+
         node.debug("nodeExpand(" + flag + ")");
-        // TODO: !!nodeexpanded is nicer, but doens't pass jshint
+        // TODO: !!node.expanded is nicer, but doens't pass jshint
         // https://github.com/jshint/jshint/issues/455
 //        if( !!node.expanded === !!flag){  
         if((node.expanded && flag) || (!node.expanded && !flag)){ 
+            // Nothing to do
             node.debug("nodeExpand(" + flag + "): nothing to do");
-            return; // nothing to do
+            return $.Deferred(function(){this.resolve();}); 
         }
         if(flag && !node.lazy && !node.hasChildren() ){
-            return; // Prevent expanding of empty nodes
+            // Prevent expanding of empty nodes
+            return $.Deferred(function(){this.reject();});
         }
         if( !flag && node.getLevel() < opts.minExpandLevel ) {
-            return; // Prevent collapsing locked levels
+            // Prevent collapsing locked levels
+            return $.Deferred(function(){this.reject();});
         }
         if ( this._triggerNodeEvent("onQueryExpand", node, ctx.orgEvent) === false ){
-            return; // Callback returned false
+            // Callback returned false
+            return $.Deferred(function(){this.reject();});
         }
 
         node.expanded = flag;
@@ -462,7 +525,7 @@ $.extend(Dynatree.prototype, {
         //     && !this._isLoading
         //     && !forceSync;
         // this.render(allowEffects);
-        this._callHook("nodeRender", ctx);
+        var dfd = this._callHook("nodeRender", ctx);
 
         // Auto-collapse mode: collapse all siblings
         // if( this.bExpanded && this.parent && opts.autoCollapse ) {
@@ -486,6 +549,7 @@ $.extend(Dynatree.prototype, {
         // if ( opts.onExpand ){
         //     opts.onExpand.call(this.tree, bExpand, this);
         // }
+        return dfd;
     },
     nodeFocus: function(ctx) {
         // TODO: check, if we already have focus
@@ -548,7 +612,7 @@ $.extend(Dynatree.prototype, {
     /** Helper for default renderer. */
     _fixOrder: function(node) {
         /**
-         * Make sure, that <li> order matches childList order.
+         * Make sure, that <li> order matches node.children order.
          */
         var cl = node.children;
         if( !cl || !node.ul ){
@@ -579,7 +643,7 @@ $.extend(Dynatree.prototype, {
      *   </ul>
      * </li>
      */
-    _nodeRender: function(node, useEffects, includeInvisible) {
+    _nodeRender: function(node, useEffects, includeInvisible, recursive) {
         DT.debug("_nodeRender", node.toString());
         var parent = node.parent,
             $parentUL, $li, i, l, text;
@@ -591,22 +655,6 @@ $.extend(Dynatree.prototype, {
             // $parentUL = $("<ul>").appendTo(parent.element);
             // parent.ul = $parentUL[0];
         }
-//        $parentUL = $(parent.ul);
-        // If this
-        // text = this.title;
-        // $li = $("<li>", {
-        //     //
-        // }).text(text).appendTo(parent.ul);
-        // this.element = $li[0];
-
-        // // Recurse into children
-        // if(this.children){
-        //     for(i=0; i<this.children.length; i++){
-        //         this.children[i].render(true);
-        //     }
-        // }
-
-        //********
 
         var tree = node.tree,
             opts = tree.$widget.options,
@@ -614,108 +662,100 @@ $.extend(Dynatree.prototype, {
             isLastSib = node.isLastSibling(),
             firstTime = false;
 
-       if( !parent && !node.ul ) {
-            alert("nono");
-            // // Root node has only a <ul>
-            // this.li = this.span = null;
-            // this.ul = document.createElement("ul");
-            // if( opts.minExpandLevel > 1 ){
-            //     this.ul.className = cn.container + " " + cn.noConnector;
-            // }else{
-            //     this.ul.className = cn.container;
-            // }
-        } else if( parent ) {
-            // Create <li><span /> </li>
-            if( ! node.li ) {
-                firstTime = true;
-                node.li = document.createElement("li");
-                node.li.dtnode = node;
-                if( node.key && opts.generateIds ){
-                    node.li.id = opts.idPrefix + node.key;
-                }
-                node.span = document.createElement("span");
-                node.span.className = "dynatree-title";
-                node.li.appendChild(node.span);
+       if( !parent ) {
+            $.error("root not allowed");
+        } 
 
-                if( !parent.ul ) {
-                    // This is the parent's first child: create UL tag
-                    // (Hidden, because it will be
-                    parent.ul = document.createElement("ul");
-                    parent.ul.style.display = "none";
-                    parent.li.appendChild(parent.ul);
+        // Create <li><span /> </li>
+        if( ! node.li ) {
+            firstTime = true;
+            node.li = document.createElement("li");
+            node.li.dtnode = node;
+            if( node.key && opts.generateIds ){
+                node.li.id = opts.idPrefix + node.key;
+            }
+            node.span = document.createElement("span");
+            node.span.className = "dynatree-title";
+            node.li.appendChild(node.span);
+
+            if( !parent.ul ) {
+                // This is the parent's first child: create UL tag
+                // (Hidden, because it will be
+                parent.ul = document.createElement("ul");
+                parent.ul.style.display = "none";
+                parent.li.appendChild(parent.ul);
 //                  if( opts.minExpandLevel > this.getLevel() ){
 //                      parent.ul.className = cn.noConnector;
 //                  }
-                }
-                // set node connector images, links and text
-//              this.span.innerHTML = this._getInnerHtml();
-
-                parent.ul.appendChild(node.li);
             }
             // set node connector images, links and text
-            node.span.innerHTML = this._getInnerHtml(node);
-            // Set classes for current status
-            var cnList = [];
-            cnList.push("dynatree-node");
-            if( tree.activeNode === node ){
-                cnList.push("dynatree-active");
-            }
-            if( node.expanded ){
-                cnList.push("dynatree-expanded");
-            }
-            if( node.folder ){
-                cnList.push("dynatree-folder");
-            }
-            if( node.hasChildren() !== false ){
-                cnList.push("dynatree-has-children");
-            }
-            if( isLastSib ){
-                cnList.push("dynatree-lastsib");
-            }
-            if( node.lazy && node.children === null ){
-                cnList.push("dynatree-lazy");
-            }
-            if( node.hasSubSel ){
-                cnList.push("dynatree-partsel");
-            }
-            if( node.selected ){
-                cnList.push("dynatree-selected");
-            }
-            if( node.extraClasses ){
-                cnList.push(node.extraClasses);
-            }
-            // IE6 doesn't correctly evaluate multiple class names,
-            // so we create combined class names that can be used in the CSS
-            cnList.push("dynatree-exp-" +
-                    (node.expanded ? "e" : "c") +
-                    (node.lazy && node.children === null ? "d" : "") +
-                    (isLastSib ? "l" : "")
-                    );
-            cnList.push("dynatree-ico-" +
-                    (node.expanded ? "e" : "c") +
-                    (node.folder ? "f" : "")
-                    );
-            node.span.className = cnList.join(" ");
+//              this.span.innerHTML = this._getInnerHtml();
 
-            // TODO: we should not set this in the <span> tag also, if we set it here:
-            node.li.className = isLastSib ? "dynatree-lastsib" : "";
+            parent.ul.appendChild(node.li);
+        }
+        // set node connector images, links and text
+        node.span.innerHTML = this._getInnerHtml(node);
+        // Set classes for current status
+        var cnList = [];
+        cnList.push("dynatree-node");
+        if( tree.activeNode === node ){
+            cnList.push("dynatree-active");
+        }
+        if( node.expanded ){
+            cnList.push("dynatree-expanded");
+        }
+        if( node.folder ){
+            cnList.push("dynatree-folder");
+        }
+        if( node.hasChildren() !== false ){
+            cnList.push("dynatree-has-children");
+        }
+        if( isLastSib ){
+            cnList.push("dynatree-lastsib");
+        }
+        if( node.lazy && node.children === null ){
+            cnList.push("dynatree-lazy");
+        }
+        if( node.hasSubSel ){
+            cnList.push("dynatree-partsel");
+        }
+        if( node.selected ){
+            cnList.push("dynatree-selected");
+        }
+        if( node.extraClasses ){
+            cnList.push(node.extraClasses);
+        }
+        // IE6 doesn't correctly evaluate multiple class names,
+        // so we create combined class names that can be used in the CSS
+        cnList.push("dynatree-exp-" +
+                (node.expanded ? "e" : "c") +
+                (node.lazy && node.children === null ? "d" : "") +
+                (isLastSib ? "l" : "")
+                );
+        cnList.push("dynatree-ico-" +
+                (node.expanded ? "e" : "c") +
+                (node.folder ? "f" : "")
+                );
+        node.span.className = cnList.join(" ");
 
-            // Allow tweaking, binding, after node was created for the first time
-            if(firstTime && opts.onCreate){
-                opts.onCreate.call(tree, this, this.span);
-            }
-            // Hide children, if node is collapsed
+        // TODO: we should not set this in the <span> tag also, if we set it here:
+        node.li.className = isLastSib ? "dynatree-lastsib" : "";
+
+        // Allow tweaking, binding, after node was created for the first time
+        if(firstTime && opts.onCreate){
+            opts.onCreate.call(tree, this, this.span);
+        }
+        // Hide children, if node is collapsed
 //          this.ul.style.display = ( this.bExpanded || !parent ) ? "" : "none";
-            // Allow tweaking after node state was rendered
-            if(opts.onRender){
-                opts.onRender.call(tree, this, this.span);
-            }
+        // Allow tweaking after node state was rendered
+        if(opts.onRender){
+            opts.onRender.call(tree, this, this.span);
         }
         // Visit child nodes
         if( (node.expanded || includeInvisible === true) && node.children ) {
             for(i=0, l=node.children.length; i<l; i++) {
 //                node.children[i].render(false, includeInvisible);
-                this._nodeRender(node.children[i], false, true);
+                this._nodeRender(node.children[i], false, true, true);
             }
             // Make sure the tag order matches the child array
             this._fixOrder(node);
@@ -735,7 +775,7 @@ $.extend(Dynatree.prototype, {
     },
     /** Create HTML markup for this node */
     nodeRender: function(ctx, deep) {
-        if(this.parent === null){
+        if(!ctx.node.parent){
             $.error("cannot call root.render()");
         }
         this._nodeRender(ctx.node, true, true);
@@ -812,6 +852,10 @@ $.extend(Dynatree.prototype, {
         this.debug("_trigger", type, ctx);
         return this.$widget._trigger(type, orgEvent, ctx);
     },
+    visit: function(fn) {
+        return this.root.visit(fn, false);
+    },
+
     warn: function(msg){
         Array.prototype.unshift.call(arguments, this.toString());
         DT.warn.apply(this, arguments);
