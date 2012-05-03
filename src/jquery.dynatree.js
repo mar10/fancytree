@@ -63,15 +63,17 @@ var dummyFunc = function(){ var xyz; },
 var _makeVirtualFunction = function(fn, base, sub){
     var _super = base[fn],
         func = sub[fn];
-    if(rexTestSuper && !rexTestSuper.test(func)){
-        // sub.fn() doesn't call _super(), so no wrapper required
-        return func;  
-    }
+    // if(rexTestSuper && !rexTestSuper.test(func)){
+    //     // sub.fn() doesn't call _super(), so no wrapper required
+    //     return func;  
+    // }
     return function(){
         try{
             sub._super = function(){ 
                 return _super.apply(base, arguments);
             };
+            sub._base = base;
+            // return  func.apply(sub, arguments);
             return  func.apply(sub, arguments);
         }finally{
             sub._super = null;        
@@ -334,37 +336,6 @@ var Dynatree = function($widget){
 };
 
 $.extend(Dynatree.prototype, {
-//    $widget: null,
-//    $div: null,
-//    $root: null,
-//    $ul: null,
-//    _id: null,
-//    tree: null,
-    /**
-     * Override dynatree methods and properties
-     */
-    // addExtension: function(name, options, global){
-    //     // global === true will add proxies to all instances; false will hook current instance only
-    //     var proto = !!global ? $.ui.dynatree.prototype : this,
-    //         extension = $.ui.dynatree._extensions[name],
-    //         hooks = extension.hooks;
-    //     if(!extension){
-    //         $.error("Extension not defined: " + name);
-    //     }
-    //     // Add extension options as tree.options.NAME
-    //     proto.$widget.options[name] = $.extend({}, extension.options, options);
-    //     DT.debug("Extension options", name, proto.$widget.options);
-    //     // Proxy all hooks that the extension defines
-    //     for(var hook in hooks){
-    //         if($.isFunction(hooks[hook]) && proto[hook]){
-    //             // overriding base method: create a proxy that supports `this._super()`
-    //             proto[hook] = _makeProxy(hooks[hook], extension, proto[hook]);
-    //         }else{
-    //             $.error("Extension is not a function: " + hook);
-    //             // proto[hook] = ext[hook];
-    //         }
-    //     }
-    // },
     /** Return a context object that can be re-used for _callHook(). */
     _makeHookContext: function(obj, orgEvent) {
         if(obj.node !== undefined){
@@ -928,8 +899,9 @@ $.widget("ui.dynatree", {
             var extName = extensions[i],
                 extension = $.ui.dynatree._extensions[extName];
 //            extension = $.extend({}, extension);
-            this.tree.debug("subclass", base, extension);
-            _subclassObject(base, extension);
+            // this.tree.debug("subclass", base, extension);
+            // _subclassObject(base, extension);
+            _subclassObject(this.tree, extension);
             this.tree.options[extName] = $.extend({}, extension.options, this.tree.options[extName]);
             base = extension;
         }
@@ -1122,7 +1094,7 @@ $.extend($.ui.dynatree, {
         },
         // Overide virtual methods for this extension
         nodeRender: function(ctx){
-            ctx.tree.debug("**** PROFILER nodeRender");
+            // ctx.tree.debug("**** PROFILER nodeRender");
             var s = this.options.prefix + "render '" + ctx.node + "'";
             window.console.time(s);
             this._super(ctx);
@@ -1137,21 +1109,22 @@ $.extend($.ui.dynatree, {
  */
 (function($) {
     $.ui.dynatree.registerExtension("aria", {
-        // Default options for this extension
+        // Default options for this extension.
         options: {
         },
-        // Overide virtual methods for this extension
+        // Overide virtual methods for this extension.
+        // `this`       : is this extension object
+        // `this._base` : the Dynatree instance
+        // `this._super`: the virtual function that was overriden
         treeInit: function(ctx){
             // TODO: bind to option change to set aria-disabled
             // ctx.widget$( "#something" ).multi( "option", "disabled", function(event){ 
             //     alert( "I cleared the multiselect!" ); 
             // });
-            ctx.tree.debug("**** ARIA treeInit");
             this._super(ctx);
             $(ctx.tree.root.ul).addClass("role-tree");
         },
         nodeUpdate: function(ctx){
-            ctx.tree.debug("**** ARIA nodeUpdate");
             this._super(ctx);
             $(ctx.node.li).addClass("role-treeitem");
         }
