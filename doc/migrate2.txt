@@ -1,0 +1,35 @@
+Dynatree 2 Migration
+====================
+
+node.data removed:
+  Dynatree 1:
+    node.bExpanded = true  // current status
+    node.bSelected = true 
+    node.data.expand = false  // status read from initialization source
+  Dynatree 2:
+    node.expanded = true  // current status
+
+
+Class names for initialization are now unified with node property names:
+  Dynatree 1:
+    <li class='expond'>
+  Dynatree 2:
+    <li class='expanded'>
+
+
+Option cickFolderMode was removed:
+  Dynatree 1:
+    
+  Dynatree 2: override nodeActivate instead
+    
+
+
+New features
+============
+- Plugins
+- Deferreds
+
+
+Removed features
+============
+- clickFolderMode was
