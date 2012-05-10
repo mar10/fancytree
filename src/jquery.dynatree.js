@@ -392,19 +392,16 @@ $.extend(Dynatree.prototype, {
         Array.prototype.unshift.call(arguments, this.toString());
         DT.debug.apply(this, arguments);
     },
-    // foo: function(msg){
-    //     Array.prototype.unshift.call(arguments, "base.foo");
-    //     this.debug.apply(this, arguments);
-    // },
     /** Initiallize the tree */
     fromDict: function(data) {
         // Create a node without parent.
         var fakeParent = { tree: this },
-            $ul;
+            $ul,
+            children = $.isArray(data) ? data : data.children;
         this.root = new DynatreeNode(fakeParent, {
             title: "root",
             key: "root_" + this.$widget._id,
-            children: data.children
+            children: children
         });
         this.root.parent = null;
         // Remove previous markup if any
@@ -854,25 +851,25 @@ $.extend(Dynatree.prototype, {
             type = $container.data("type") || "html",
             $ul;
 
-        // TODO: support json
-
-        switch(type){
-        case "html":
-            $ul = $container.find(">ul:first");
-            $ul.addClass("ui-dynatree-source ui-helper-hidden");
-            _loadFromHtml.call(this, $ul, data.children);
-            break;
-        case "json":
-//            $().addClass("ui-helper-hidden");
-            data = $.parseJSON($container.text());
-            break;
-        default:
-            $.error("Invalid data-type: " + type);
+        if(this.options.children){
+            data.children = this.options.children;
+        }else{
+            switch(type){
+            case "html":
+                $ul = $container.find(">ul:first");
+                $ul.addClass("ui-dynatree-source ui-helper-hidden");
+                _loadFromHtml.call(this, $ul, data.children);
+                break;
+            case "json":
+    //            $().addClass("ui-helper-hidden");
+                data = $.parseJSON($container.text());
+                break;
+            default:
+                $.error("Invalid data-type: " + type);
+            }
         }
-        $container.addClass("ui-widget ui-widget-content ui-corner-all");
-//        this.debug(data);
         this.fromDict(data);
-//        this.debug("tree", this.tree);
+        $container.addClass("ui-widget ui-widget-content ui-corner-all");
         this.render();
         // TODO: return Deferred
         return this._triggerTreeEvent("load");
