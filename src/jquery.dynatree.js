@@ -207,7 +207,7 @@ function _loadFromHtml($ul, children) {
  */
 
 // Top-level Dynatree node attributes, that can be set by dict
-var NODE_ATTRS = ["active", "extraClasses", "expanded", "focus", "folder", "key", "lazy", "nolink", "selected", "title"];
+var NODE_ATTRS = ["active", "extraClasses", "expanded", "focus", "folder", "href", "key", "lazy", "nolink", "selected", "title", "tooltip"];
 
 var DynatreeNode = function(parent, data){
     var i, l, name, cl;
@@ -222,9 +222,14 @@ var DynatreeNode = function(parent, data){
         name = NODE_ATTRS[i];
         this[name] = data[name];
     }
-    // fix missing key
+    // Fix missing key
     if(!this.key){
-        this.key = "id_" + DT._nextNodeKey++;
+        this.key ="_" + DT._nextNodeKey++;
+    }
+    // Fix tree.activeNode
+    if(this.active){
+        _assert(this.tree.activeNode === null, "only one active node allowed");
+        this.tree.activeNode = this;
     }
     // Create child nodes
     cl = data.children && data.children.length;
@@ -341,6 +346,8 @@ var Dynatree = function($widget){
     this.root = null;
 //    this.$root = null;  // outer <ul class='dynatree-container'>
     this._id = $.ui.dynatree._nextId++;
+    this.activeNode = null;
+    this.focusNode = null;
 
     this.fromDict({children: null});
 };
@@ -440,14 +447,45 @@ $.extend(Dynatree.prototype, {
         Array.prototype.unshift.call(arguments, this.toString());
         DT.info.apply(this, arguments);
     },
-    /** Activate node. */
+    /** Activate node. 
+     * flag deafaults to true.
+     * If flag is false, the node is deactivaed (must be synchrone)
+     */
     nodeActivate: function(ctx, flag) {
         // Handle user click / [space] / [enter], according to clickFolderMode.
         var node = ctx.node,
+            tree = ctx.tree,
             opts = ctx.tree.options,
             userEvent = !!ctx.orgEvent;
-        // Honor `clikcFolderMode` for
+        // flag defaults to true
+        flag = (flag !== false);
         this.debug("nodeActivate", !!flag);
+//        _assert(tree.activeNode === (node.active ? node : null), "node.active matches tree.activeNode");
+        if((node.active && flag) || (!node.active && !flag)){ 
+            // Nothing to do
+            return $.Deferred(function(){this.resolveWith(node);}).promise(); 
+        }else if(flag && this._triggerNodeEvent("queryactivate", node, ctx.orgEvent) === false ){
+            // Callback returned false
+            return $.Deferred(function(){this.rejectWith(node, "rejected");}).promise();
+        }
+        if(flag){
+            if(tree.activeNode){
+                _assert(tree.activeNode !== node, "node was active (inconsistency)");
+                var subCtx = $.extend({}, ctx, {node: tree.activeNode});
+                tree.nodeActivate(subCtx, false);
+                _assert(tree.activeNode === null, "deactivate was async?");
+            }
+            tree.activeNode = node;
+            node.active = true;
+            $(node.span).addClass("dynatree-active");
+            ctx.tree._triggerNodeEvent("activate", node);
+        }else{
+            _assert(tree.activeNode === node, "node was not active (inconsistency)");
+            tree.activeNode = null;
+            node.active = false;
+            $(node.span).removeClass("dynatree-active");
+            ctx.tree._triggerNodeEvent("deactivate", node);
+        }
     },
     /** _Default handling for mouse click events. */
     nodeClick: function(ctx) {
@@ -466,21 +504,28 @@ $.extend(Dynatree.prototype, {
             this._callHook("nodeToggleSelect", ctx);
             this._callHook("nodeFocus", ctx, true); // issue 95
         } else {
-            this._callHook("nodeActivate", ctx, true);
-//            node._userActivate();
-            var aTag = node.span.getElementsByTagName("a");
-            if(aTag[0]){
-                // issue 154
-                // TODO: check if still required on IE 9:
-                // Chrome and Safari don't focus the a-tag on click,
-                // but calling focus() seem to have problems on IE:
-                // http://code.google.com/p/dynatree/issues/detail?id=154
-                if(!$.browser.msie){
-                    aTag[0].focus();
+            // Honor `clikcFolderMode` for
+            var expand = false, 
+                activate = true;
+            if ( node.folder ) {
+                switch( ctx.options.clickFolderMode ) {
+                case 2: // expand only
+                    expand = true;
+                    activate = false;
+                    break;
+                case 3: // expand and activate
+                    activate = expand = true;
+                    break;
                 }
-            }else{
-                // 'noLink' option was set
-                return true;
+            }
+            if( expand ) {
+                if(!activate){
+                    this._callHook("nodeFocus", ctx);
+                }
+                this._callHook("nodeExpand", ctx, true);
+            }
+            if( activate ) {
+                this._callHook("nodeActivate", ctx, true);
             }
         }
         // Make sure that clicks stop, otherwise <a href='#'> jumps to the top
@@ -510,11 +555,11 @@ $.extend(Dynatree.prototype, {
             return $.Deferred(function(){this.resolveWith(node);}).promise(); 
         }else if(flag && !node.lazy && !node.hasChildren() ){
             // Prevent expanding of empty nodes
-            return $.Deferred(function(){this.rejectWith(node, "empty");}).promise();
+            return $.Deferred(function(){this.rejectWith(node, ["empty"]);}).promise();
         }else if( !flag && node.getLevel() < opts.minExpandLevel ) {
             // Prevent collapsing locked levels
             return $.Deferred(function(){this.rejectWith(node, "locked");}).promise();
-        }else if ( this._triggerNodeEvent("onQueryExpand", node, ctx.orgEvent) === false ){
+        }else if ( this._triggerNodeEvent("queryexpand", node, ctx.orgEvent) === false ){
             // Callback returned false
             return $.Deferred(function(){this.rejectWith(node, "rejected");}).promise();
         }
@@ -522,7 +567,7 @@ $.extend(Dynatree.prototype, {
         var dfd = new $.Deferred();
         // Trigger onExpand after expanding
         dfd.done(function(){
-            ctx.tree._triggerNodeEvent("onExpand", ctx);
+            ctx.tree._triggerNodeEvent("expand", ctx);
         });
 
         // vvv Code below is executed after loading finshed:
@@ -603,6 +648,20 @@ $.extend(Dynatree.prototype, {
         try {
             $(ctx.node.span).find(">a").focus();
         } catch(e) { }
+        // var aTag = node.span.getElementsByTagName("a");
+        // if(aTag[0]){
+        //     // issue 154
+        //     // TODO: check if still required on IE 9:
+        //     // Chrome and Safari don't focus the a-tag on click,
+        //     // but calling focus() seem to have problems on IE:
+        //     // http://code.google.com/p/dynatree/issues/detail?id=154
+        //     if(!$.browser.msie){
+        //         aTag[0].focus();
+        //     }
+        // }else{
+        //     // 'noLink' option was set
+        //     return true;
+        // }
     },
     /** Default handling for mouse keydown events. */
     nodeKeydown: function(ctx) {
@@ -727,7 +786,7 @@ $.extend(Dynatree.prototype, {
         if(firstTime){
             parent.ul.appendChild(node.li);
         }
-        return dfd.promise();
+        return dfd ? dfd.promise() : null;
     },
     /** Set title. */
     nodeRenderTitle: function(ctx, title) {
@@ -770,9 +829,9 @@ $.extend(Dynatree.prototype, {
         if(!nodeTitle){
             var tooltip = node.tooltip ? ' title="' + node.tooltip.replace(/\"/g, '&quot;') + '"' : '',
                 href = node.href || "#";
-            if( opts.noLink || this.nolink ) {
+            if( opts.nolink || node.nolink ) {
                 // TODO: move style='' to CSS
-                nodeTitle = '<span style="display:inline-block;" class="dynatree-title"' + tooltip + '>' + node.title + '</span>';
+                nodeTitle = '<span class="dynatree-title"' + tooltip + '>' + node.title + '</span>';
             } else {
                 nodeTitle = '<a href="' + href + '" class="dynatree-title"' + tooltip + '>' + node.title + '</a>';
             }
@@ -920,6 +979,7 @@ $.widget("ui.dynatree", {
         extensions: [],
         fx: { height: "toggle", duration: 200 },
         hooks: {},
+        idPrefix: "dt_",
         // events
         lazyload: null
     },
@@ -945,7 +1005,8 @@ $.widget("ui.dynatree", {
         }
         //
         this.tree._callHook("treeCreate", this.tree);
-        this.tree._triggerTreeEvent("create");
+        // Note: 'dynatreecreate' event is fired by widget base class
+//        this.tree._triggerTreeEvent("create");
     },
 
     // Called on every $().dynatree()
@@ -990,7 +1051,7 @@ $.widget("ui.dynatree", {
     _bind: function() {
         var that = this,
             eventNames = $.map(["click", "dblclick", "keypress", "keydown",
-                "focusin", "focusout", "focus", "blur", "mousein", "mouseout"],
+                "focusin", "focusout", "focus", "blur" /*, "mousein", "mouseout" */],
                 function(name){
                     return name + "." + that.widgetName + "-" + that._id;
             }).join(" ");
@@ -1030,6 +1091,10 @@ $.widget("ui.dynatree", {
                 tree.phase = prevPhase;
             }
         });
+    },
+    /** Return Dynatree instance. */
+    getActiveNode: function() {
+        return this.tree.activeNode;
     },
     /** Return Dynatree instance. */
     getTree: function() {

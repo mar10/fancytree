@@ -30,7 +30,7 @@ module.exports = function(grunt) {
         },
         lint: {
 //            beforeconcat: ['grunt.js', 'src/**/*.js', 'tests/**/*.js'],
-            beforeconcat: ['src/jquery.dynatree.js'],
+            beforeconcat: ['src/jquery.dynatree.js', 'test/unit/test-dynatree.js'],
 //            beforeconcat: ['grunt.js'],
 //            beforeconcat: ['grunt.js', 'src/jquery.dynatree.js', 'tests/**/*.js'],
             afterconcat: ['<config:concat.dist.dest>']
