@@ -39,7 +39,7 @@ var testData = [
     {key: "2", title: "item1 with key and tooltip", tooltip: "Look, a tool tip!" },
     {key: "3", title: "<span>item2 with <b>html</b> inside a span tag</span>" },
     {key: "4", title: "this nodes uses 'nolink', so no &lt;a> tag is generated", nolink: true},
-    {key: "5", title: "using href", href: "http:/wwwwendt.de/" },
+    {key: "5", title: "using href", href: "http://www.wwWendt.de/" },
     {key: "6", title: "node with some extra classes (will be added to the generated markup)", extraClasses: "my-extra-class" },
     {key: "10", title: "Folder 1", folder: true, children: [
         {key: "10_1", title: "Sub-item 1.1", children: [
@@ -79,9 +79,11 @@ test("Static members", function() {
 //    _setupAsync();
     QUnit.reset();
     $("#tree").dynatree("destroy");
-    expect(2);
+    expect(4);
 
     ok(true, "Dynatree v" + $.ui.dynatree.version);
+    ok(true, "jQuery UI" + jQuery.ui.version);
+    ok(true, "jQuery" + jQuery.fn.jquery);
     ok($.isFunction($.ui.dynatree.debug), "ui.dynatree.debug function is defined");
     // equal($(":ui-dynatree").length, 0, "no tree instance exists");
     // equal($.ui.dynatree._nextId, 1, "next tree instance counter is 1");
@@ -90,7 +92,7 @@ test("Static members", function() {
 
 test("Create dynatree", function() {
     _setupAsync();
-    expect(26);
+    expect(28);
 
     var insideContructor = true;
 
@@ -123,7 +125,7 @@ test("Create dynatree", function() {
             equal($("li#dt_3 a.dynatree-title").html(), "<span>item2 with <b>html</b> inside a span tag</span>", "raw html allowed");
             equal($("li#dt_4 a.dynatree-title").html(), null, "`nolink` suppresses <a> tag");
             equal($("li#dt_4 span.dynatree-title").length, 1, "`nolink` uses <span> tag");
-            equal($("li#dt_5 a.dynatree-title").attr("href"), "http:/wwwwendt.de/", "href set");
+            equal($("li#dt_5 a.dynatree-title").attr("href"), "http://www.wwWendt.de/", "href set");
             ok($("li#dt_6 span.dynatree-node").hasClass("my-extra-class"), "custom class added");
 
             start();
@@ -144,6 +146,9 @@ test("Create dynatree", function() {
     ok(!!widget.tree, "widget.tree is defined");
 //    equal(widget.tree._id, 1, "tree id is 1");
 
+    ok($("#tree").dynatree("getTree") === widget.tree, "$().dynatree('getTree')");
+    ok($("#tree").dynatree("getActiveNode") === null, "$().dynatree('getActiveNode')");
+
     equal($("div#tree ul").length, 2, "collapsed choldren are NOT rendered");
     equal($("div#tree li").length, TESTDATA_VISIBLENODES, "collapsed nodes are NOT rendered");
 });
@@ -151,7 +156,7 @@ test("Create dynatree", function() {
 
 test("Init node status from source", function() {
     _setupAsync();
-    expect(2);
+    expect(3);
     // Add some status info to testData (make a deep copy first!)
     var children = $.extend(true, [], testData);
     // activate node #10_1_2
@@ -163,7 +168,8 @@ test("Init node status from source", function() {
         init: function(e, data){
             var tree = data.tree,
                 node = tree.getNodeByKey("10_1_2");
-            equal(tree.activeNode, node, "node was activated");
+            ok(tree.activeNode === node, "node was activated");
+            ok($("#tree").dynatree("getActiveNode") === node, "$().dynatree('getActiveNode')");
             node = tree.getNodeByKey("10_1_1");
             equal(node.selected, true, "node was selected");
             start();
@@ -193,7 +199,7 @@ test("trigger async expand", function() {
         equal(this.expanded, true, "node was  expanded");
         ok($(this.span).hasClass("dynatree-expanded"), "node was rendered as expanded");
         start();
-        });
+    });
 });
 
 /*******************************************************************************
@@ -248,6 +254,58 @@ test(".click() to activate a node", function() {
         }
     });
     $("#tree #dt_2").click();
+});
+
+
+test(".click() to activate a folder (clickFolderMode triggers expand)", function() {
+    _setupAsync();
+    expect(4);
+    var sequence = 1;
+    $("#tree").dynatree({
+        children: testData,
+        clickFolderMode: 3,
+        generateIds: true, // for testing
+        queryexpand: function(e, data){
+            equal(sequence++, 1, "receive `queryexpand` callback");
+        },
+        expand: function(e, data){
+            equal(sequence++, 2, "receive `expand` callback");
+            start();
+        },
+        queryactivate: function(e, data){
+            equal(sequence++, 3, "receive `queryactivate` callback");
+        },
+        activate: function(e, data){
+            equal(sequence++, 4, "receive `activate` callback");
+        }
+    });
+    $("#tree #dt_10").click();
+});
+
+
+test(".click() to select a node", function() {
+    _setupAsync();
+    expect(8);
+
+    $("#tree").dynatree({
+        children: testData,
+        checkbox: true,
+        generateIds: true, // for testing
+        queryselect: function(e, data){
+            equal(e.type, "dynatreequeryselect", "receive `queryselect` callback");
+            ok($(data.node.span).hasClass("dynatree-node"), "data.node.span has class dynatree-node");
+            ok(!$(data.node.span).hasClass("dynatree-selected"), "data.node.span has NOT class dynatree-selected");
+        },
+        select: function(e, data){
+            equal(e.type, "dynatreeselect", "receive `select` callback");
+            ok(!!data.tree.rootNode, "`data.tree` is the tree object");
+            ok($(this).hasClass("ui-widget"), "`this` is div#tree");
+            ok($(data.node.span).hasClass("dynatree-node"), "data.node.span has class dynatree-node");
+            ok($(data.node.span).hasClass("dynatree-selected"), "data.node.span has class dynatree-selected");
+            start();
+        }
+    });
+    $("#tree #dt_2 span.dynatree-checkbox").click();
 });
 
 // --- 

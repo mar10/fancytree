@@ -32,8 +32,7 @@ level.
   node.data.isLazy            node.lazy
   node.data.addClass          node.extraClasses
   node.data.unselectable      ?
-  node.data.activate          - (was used to init tree.activeNode)
-  -                           node.active (only tree.activeNode was used)
+  node.data.activate          (initDict.active is used to set tree.activeNode)
   node.data.focus             -
   node.data.expand            -
   node.data.select            -
@@ -48,7 +47,7 @@ level.
   tree.activeNode              tree.activeNode
   tree.tnRoot                  tree.root
 
-  
+
 Events
 ------
 Alle events have been renamed according to common jQuery widget style.
@@ -79,6 +78,7 @@ onDeactivate was removed (use activate and check ctx.node.active instead).
 Misc.
 -----
 - DynaTree was renamed to Dynatree (also DynaTreeNode was renamed to DynatreeNode).
+- node.icon is no longer supported
 
 
 New features

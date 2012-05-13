@@ -207,7 +207,8 @@ function _loadFromHtml($ul, children) {
  */
 
 // Top-level Dynatree node attributes, that can be set by dict
-var NODE_ATTRS = ["active", "extraClasses", "expanded", "focus", "folder", "href", "key", "lazy", "nolink", "selected", "title", "tooltip"];
+var NODE_ATTRS = ["expanded", "extraClasses", "focus", "folder", "href", "key", 
+                  "lazy", "nolink", "selected", "title", "tooltip"];
 
 var DynatreeNode = function(parent, data){
     var i, l, name, cl;
@@ -224,10 +225,12 @@ var DynatreeNode = function(parent, data){
     }
     // Fix missing key
     if(!this.key){
-        this.key ="_" + DT._nextNodeKey++;
+        this.key = "_" + DT._nextNodeKey++;
     }
     // Fix tree.activeNode
-    if(this.active){
+    // TODO: not elegant: we use data.active as marker to set tree.activeNode
+    // when loading from a dictionary.
+    if(data.active){
         _assert(this.tree.activeNode === null, "only one active node allowed");
         this.tree.activeNode = this;
     }
@@ -459,17 +462,18 @@ $.extend(Dynatree.prototype, {
         var node = ctx.node,
             tree = ctx.tree,
             opts = ctx.tree.options,
-            userEvent = !!ctx.orgEvent;
+            userEvent = !!ctx.orgEvent,
+            isActive = (node === tree.activeNode);
         // flag defaults to true
         flag = (flag !== false);
         this.debug("nodeActivate", !!flag);
-//        _assert(tree.activeNode === (node.active ? node : null), "node.active matches tree.activeNode");
-        if((node.active && flag) || (!node.active && !flag)){ 
+
+        if(isActive === flag){ 
             // Nothing to do
             return $.Deferred(function(){this.resolveWith(node);}).promise(); 
         }else if(flag && this._triggerNodeEvent("queryactivate", node, ctx.orgEvent) === false ){
             // Callback returned false
-            return $.Deferred(function(){this.rejectWith(node, "rejected");}).promise();
+            return $.Deferred(function(){this.rejectWith(node, ["rejected"]);}).promise();
         }
         if(flag){
             if(tree.activeNode){
@@ -479,13 +483,11 @@ $.extend(Dynatree.prototype, {
                 _assert(tree.activeNode === null, "deactivate was async?");
             }
             tree.activeNode = node;
-            node.active = true;
             $(node.span).addClass("dynatree-active");
             ctx.tree._triggerNodeEvent("activate", node);
         }else{
             _assert(tree.activeNode === node, "node was not active (inconsistency)");
             tree.activeNode = null;
-            node.active = false;
             $(node.span).removeClass("dynatree-active");
             ctx.tree._triggerNodeEvent("deactivate", node);
         }
@@ -561,10 +563,10 @@ $.extend(Dynatree.prototype, {
             return $.Deferred(function(){this.rejectWith(node, ["empty"]);}).promise();
         }else if( !flag && node.getLevel() < opts.minExpandLevel ) {
             // Prevent collapsing locked levels
-            return $.Deferred(function(){this.rejectWith(node, "locked");}).promise();
+            return $.Deferred(function(){this.rejectWith(node, ["locked"]);}).promise();
         }else if ( this._triggerNodeEvent("queryexpand", node, ctx.orgEvent) === false ){
             // Callback returned false
-            return $.Deferred(function(){this.rejectWith(node, "rejected");}).promise();
+            return $.Deferred(function(){this.rejectWith(node, ["rejected"]);}).promise();
         }
         // 
         var dfd = new $.Deferred();
@@ -634,10 +636,10 @@ $.extend(Dynatree.prototype, {
         // Load lazy nodes, if any. Then continue with _afterLoad()
         if(flag && node.lazy && node.hasChildren() === undefined){
             this._callHook("nodeLoad", ctx).done(function(){
-                dfd.notifyWith(node, "loaded");
+                dfd.notifyWith(node, ["loaded"]);
                 _afterLoad.call(tree);
             }).fail(function(errMsg){
-                dfd.rejectWith(node, "load failed (" + errMsg + ")");
+                dfd.rejectWith(node, ["load failed (" + errMsg + ")"]);
             });
         }else{
             _afterLoad();
@@ -1131,7 +1133,7 @@ $.widget("ui.dynatree", {
             }
         });
     },
-    /** Return Dynatree instance. */
+    /** Return active node or null. */
     getActiveNode: function() {
         return this.tree.activeNode;
     },
