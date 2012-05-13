@@ -17,16 +17,71 @@ Class names for initialization are now unified with node property names:
     <li class='expanded'>
 
 
-Option cickFolderMode was removed:
+Node data
+---------
+Most properties of DynatreeNode are renamed moved from the data object to top
+level. 
+  Dynatree 1:                 Dynatree 2:
+
+  node.childList              node.children
+  node.hasSubSel              node.partsel
+  node.bExpanded              node.expanded
+  node.bSelected              node.selected
+  node.data.key               node.key
+  node.data.isFolder          node.folder
+  node.data.isLazy            node.lazy
+  node.data.addClass          node.extraClasses
+  node.data.unselectable      ?
+  node.data.activate          - (was used to init tree.activeNode)
+  -                           node.active (only tree.activeNode was used)
+  node.data.focus             -
+  node.data.expand            -
+  node.data.select            -
+  node.data.href              node.href
+  node.data.target            ?
+  node.data.tooltip           node.tooltip
+  node.data.hideCheckbox      ?
+  node.data.isStatusNode      ?
+  node.data.icon              ?
+
+  tree.tnFocus                 ? (focus is dirctly set via events)
+  tree.activeNode              tree.activeNode
+  tree.tnRoot                  tree.root
+Events
+------
+Alle events have been renamed according to common jQuery widget style.
+Events with flags have changed. Applies to (onSelect, onQuerySelect, ...)
   Dynatree 1:
+      onQueryExpand: function(flag, node){
+        if(flag === true && node.data.isFolder) 
+          return false;
+      },
+      onSelect: function(flag, node){
+        if(flag){
+          node.activate();
+        }
+      }
+  Dynatree 2: use data.node
+      queryexpand: function(data){
+        if(data.node.expanded === false && data.node.folder) 
+          return false;
+      },
+      select: function(ctx){
+        if(ctx.node.selected){
+          ctx.node.activate();
+        }
+      }
+onDeactivate was removed (use activate and check ctx.node.active instead).
     
-  Dynatree 2: override nodeActivate instead
-    
+
+Misc.
+-----
+- DynaTree was renamed to Dynatree (also DynaTreeNode was renamed to DynatreeNode).
 
 
 New features
 ============
-- Plugins
+- Extensions
 - Deferreds
 
 

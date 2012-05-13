@@ -23,6 +23,12 @@ function simulateClick(selector) {
     });
 }
 
+/** Helper to reset environment for asynchronous Dynatree tests. */
+function _setupAsync(){
+    QUnit.reset();
+    $("#tree").dynatree("destroy");
+    stop();
+}
 
 
 /*******************************************************************************
@@ -70,8 +76,11 @@ module("Initialization");
 
 test("Static members", function() {
     // non-async test tht runs before any Dynatrees are created
-    expect(2);
+//    _setupAsync();
     QUnit.reset();
+    $("#tree").dynatree("destroy");
+    expect(2);
+
     ok(true, "Dynatree v" + $.ui.dynatree.version);
     ok($.isFunction($.ui.dynatree.debug), "ui.dynatree.debug function is defined");
     // equal($(":ui-dynatree").length, 0, "no tree instance exists");
@@ -80,11 +89,8 @@ test("Static members", function() {
 
 
 test("Create dynatree", function() {
-    expect(27);
-    QUnit.reset();
-    $("#tree").dynatree("destroy");
-    stop();
-    ok($.isFunction($.ui.dynatree.debug), "ui.dynatree.debug function is defined");
+    _setupAsync();
+    expect(26);
 
     var insideContructor = true;
 
@@ -149,10 +155,8 @@ test("Create dynatree", function() {
 module("async");
 
 test("trigger async expand", function() {
+    _setupAsync();
     expect(4);
-    QUnit.reset();
-    stop();
-    $("#tree").dynatree("destroy");
 
     $("#tree").dynatree({
         children: testData
@@ -175,10 +179,8 @@ test("trigger async expand", function() {
 module("events");
 
 test(".click() to expand a folder", function() {
+    _setupAsync();
     expect(8);
-    QUnit.reset();
-    stop();
-    $("#tree").dynatree("destroy");
 
     $("#tree").dynatree({
         children: testData,
@@ -202,10 +204,8 @@ test(".click() to expand a folder", function() {
 
 
 test(".click() to activate a node", function() {
+    _setupAsync();
     expect(8);
-    QUnit.reset();
-    stop();
-    $("#tree").dynatree("destroy");
 
     $("#tree").dynatree({
         children: testData,

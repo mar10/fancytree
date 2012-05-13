@@ -866,7 +866,7 @@ $.extend(Dynatree.prototype, {
         if( node.lazy && node.children === null ){
             cnList.push("dynatree-lazy");
         }
-        if( node.hasSubSel ){
+        if( node.partsel ){
             cnList.push("dynatree-partsel");
         }
         if( node.selected ){
@@ -892,9 +892,44 @@ $.extend(Dynatree.prototype, {
         // Maybe most (all) of the classes should be set in LI instead of SPAN?
         node.li.className = isLastSib ? "dynatree-lastsib" : "";
     },    
+    /** (De)Select node, return new status. */
+    nodeSelect: function(ctx, flag) {
+        var node = ctx.node,
+            tree = ctx.tree,
+            opts = ctx.widget.options;
+        // flag defaults to true
+        flag = (flag !== false);
+
+        node.debug("nodeSelect(" + flag + ")");
+        // TODO: !!node.expanded is nicer, but doens't pass jshint
+        // https://github.com/jshint/jshint/issues/455
+//        if( !!node.expanded === !!flag){  
+        if((node.selected && flag) || (!node.selected && !flag)){ 
+            return !!node.selected; 
+        }else if ( this._triggerNodeEvent("queryselect", node, ctx.orgEvent) === false ){
+            return !!node.selected; 
+        }
+        // 
+        node.selected = flag;
+        this.nodeRenderStatus(ctx);
+        ctx.tree._triggerNodeEvent("select", ctx);
+
+        // Persist expand state
+        // if( opts.persist ) {
+        //     if( bExpand ){
+        //         this.tree.persistence.addExpand(this.data.key);
+        //     }else{
+        //         this.tree.persistence.clearExpand(this.data.key);
+        //     }
+        // }
+
+    },
     /**  */
     nodeToggleExpand: function(ctx) {
         return this.nodeExpand(ctx, !ctx.node.expanded);
+    },
+    nodeToggleSelect: function(ctx) {
+        return this.nodeSelect(ctx, !ctx.node.selected);
     },
     /** Widget was created. */
     treeCreate: function(ctx) {
@@ -975,7 +1010,7 @@ $.widget("ui.dynatree", {
     // These options will be used as defaults
     options: {
         disabled: false,
-        source: null,
+        source: null,  // 
         extensions: [],
         fx: { height: "toggle", duration: 200 },
         hooks: {},
@@ -1042,6 +1077,7 @@ $.widget("ui.dynatree", {
         var _ = this.$source && this.$source.removeClass("ui-helper-hidden");
         // In jQuery UI 1.8, you must invoke the destroy method from the base widget
         $.Widget.prototype.destroy.call( this );
+        // TODO: delete tree and nodes to make garbage collect easier?
         // TODO: In jQuery UI 1.9 and above, you would define _destroy instead of destroy and not call the base method
     },
 
