@@ -47,6 +47,8 @@ level.
   tree.tnFocus                 ? (focus is dirctly set via events)
   tree.activeNode              tree.activeNode
   tree.tnRoot                  tree.root
+
+  
 Events
 ------
 Alle events have been renamed according to common jQuery widget style.

@@ -266,6 +266,12 @@ span.dynatree-node
 }
 
 
+span.dynatree-title
+{
+	display: inline-block;
+}
+
+
 /* Remove blue color and underline from title links */
 ul.dynatree-container a
 /*, ul.dynatree-container a:visited*/

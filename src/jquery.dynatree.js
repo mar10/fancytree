@@ -343,7 +343,7 @@ var Dynatree = function($widget){
     this.$widget = $widget;
     this.$div = $widget.element;
     this.options = $widget.options;
-    this.root = null;
+    this.rootNode = null;
 //    this.$root = null;  // outer <ul class='dynatree-container'>
     this._id = $.ui.dynatree._nextId++;
     this.activeNode = null;
@@ -393,7 +393,7 @@ $.extend(Dynatree.prototype, {
         return fn.apply(this, args);
     },
     count: function() {
-        return this.root.countChildren();
+        return this.rootNode.countChildren();
     },
     debug: function(msg){
         Array.prototype.unshift.call(arguments, this.toString());
@@ -403,21 +403,24 @@ $.extend(Dynatree.prototype, {
     fromDict: function(data) {
         // Create a node without parent.
         var fakeParent = { tree: this },
-            $ul,
+            $ul, 
             children = $.isArray(data) ? data : data.children;
-        this.root = new DynatreeNode(fakeParent, {
+        if(children !== null && !$.isArray(children)){
+            $.error("fromDict data must be null, an array, or have a .children property");
+        }
+        this.rootNode = new DynatreeNode(fakeParent, {
             title: "root",
             key: "root_" + this.$widget._id,
             children: children
         });
-        this.root.parent = null;
+        this.rootNode.parent = null;
         // Remove previous markup if any
         this.$div.find(">ul.dynatree-container").remove();
         // Create root markup
         $ul = $("<ul>", {
             "class": "dynatree-container"
         }).appendTo(this.$div);
-        this.root.ul = $ul[0];
+        this.rootNode.ul = $ul[0];
         // Set tree title from node data
         this.title = data.title;
     },
@@ -432,7 +435,7 @@ $.extend(Dynatree.prototype, {
         }
         // Not found in the DOM, but still may be in an unrendered part of tree
         var match = null;
-        searchRoot = searchRoot || this.root;
+        searchRoot = searchRoot || this.rootNode;
         searchRoot.visit(function(node){
 //          window.console.log("%s", node);
             if(node.key === key) {
@@ -969,7 +972,7 @@ $.extend(Dynatree.prototype, {
         return this._triggerTreeEvent("load");
     },
     render: function(force, deep) {
-        var children = this.root.children,
+        var children = this.rootNode.children,
             i;
         for(i=0; i<children.length; i++){
             // children[i].render(true);
@@ -992,7 +995,7 @@ $.extend(Dynatree.prototype, {
         return this.$widget._trigger(type, orgEvent, ctx);
     },
     visit: function(fn) {
-        return this.root.visit(fn, false);
+        return this.rootNode.visit(fn, false);
     },
 
     warn: function(msg){
@@ -1261,7 +1264,7 @@ $.extend($.ui.dynatree, {
             //     alert( "I cleared the multiselect!" ); 
             // });
             this._super(ctx);
-            $(ctx.tree.root.ul).addClass("role-tree");
+            $(ctx.tree.rootNode.ul).addClass("role-tree");
         },
         nodeUpdateStatus: function(ctx){
             this._super(ctx);
