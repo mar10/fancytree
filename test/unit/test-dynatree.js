@@ -74,16 +74,29 @@ var TESTDATA_TOPNODES = 11,
  */
 module("Initialization");
 
-test("Static members", function() {
-    // non-async test tht runs before any Dynatrees are created
-//    _setupAsync();
+test("Version info", function() {
     QUnit.reset();
     $("#tree").dynatree("destroy");
     expect(4);
 
     ok(true, "Dynatree v" + $.ui.dynatree.version);
-    ok(true, "jQuery UI" + jQuery.ui.version);
-    ok(true, "jQuery" + jQuery.fn.jquery);
+    ok(true, "jQuery UI " + jQuery.ui.version);
+    ok(true, "jQuery " + jQuery.fn.jquery);
+    var doctype = document.documentElement.previousSibling,
+        doctypeSid = doctype.systemId,
+        doctypePid = doctype.publicId;
+    ok(true, "DOCTYPE " + doctypePid + " " + doctypeSid);
+//    ok(true, "DOCTYPE 2 " + window.document.doctype);
+});
+
+
+test("Static members", function() {
+    // non-async test tht runs before any Dynatrees are created
+//    _setupAsync();
+    QUnit.reset();
+    $("#tree").dynatree("destroy");
+    expect(1);
+
     ok($.isFunction($.ui.dynatree.debug), "ui.dynatree.debug function is defined");
     // equal($(":ui-dynatree").length, 0, "no tree instance exists");
     // equal($.ui.dynatree._nextId, 1, "next tree instance counter is 1");
@@ -181,7 +194,7 @@ test("Init node status from source", function() {
 /*******************************************************************************
  * 
  */
-module("async");
+module("async API");
 
 test("trigger async expand", function() {
     _setupAsync();
@@ -257,7 +270,7 @@ test(".click() to activate a node", function() {
 });
 
 
-test(".click() to activate a folder (clickFolderMode triggers expand)", function() {
+test(".click() to activate a folder (clickFolderMode 3 triggers expand)", function() {
     _setupAsync();
     expect(4);
     var sequence = 1;
@@ -265,18 +278,18 @@ test(".click() to activate a folder (clickFolderMode triggers expand)", function
         children: testData,
         clickFolderMode: 3,
         generateIds: true, // for testing
-        queryexpand: function(e, data){
-            equal(sequence++, 1, "receive `queryexpand` callback");
-        },
-        expand: function(e, data){
-            equal(sequence++, 2, "receive `expand` callback");
-            start();
-        },
         queryactivate: function(e, data){
-            equal(sequence++, 3, "receive `queryactivate` callback");
+            equal(sequence++, 1, "receive `queryactivate` callback");
         },
         activate: function(e, data){
-            equal(sequence++, 4, "receive `activate` callback");
+            equal(sequence++, 2, "receive `activate` callback");
+        },
+        queryexpand: function(e, data){
+            equal(sequence++, 3, "receive `queryexpand` callback");
+        },
+        expand: function(e, data){
+            equal(sequence++, 4, "receive `expand` callback");
+            start();
         }
     });
     $("#tree #dt_10").click();
@@ -309,4 +322,11 @@ test(".click() to select a node", function() {
 });
 
 // --- 
+// expand first info section
+// setTimeout(function(){
+//     alert($("li#qunit-test-output0").length);
+// QUnit.triggerEvent($("li#qunit-test-output0")[0], "click");
+//     $("li#qunit-test-output0").click();
+// }, 1000)
+
 });

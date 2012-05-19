@@ -217,6 +217,7 @@ var DynatreeNode = function(parent, data){
     this.tree = parent.tree;
     this.ul = null;
     this.li = null;  // <li id='key' dtnode=this> tag
+    this.isStatusNode = false;
 
     // copy attributes from data object
     for(i=0, l=NODE_ATTRS.length; i<l; i++){
@@ -235,26 +236,34 @@ var DynatreeNode = function(parent, data){
         this.tree.activeNode = this;
     }
     // Create child nodes
-    cl = data.children && data.children.length;
-    if(cl){
-        this.children = [];
-        for(i=0; i<cl; i++){
-            this.children.push(new DynatreeNode(this, data.children[i]));
-        }
-    }else{
-        this.children = null;
+    this.children = null;
+    cl = data.children;
+    if(cl && cl.length){
+        this.addChildren(cl);
     }
 };
 
 $.extend(DynatreeNode.prototype, {
-    // fromDict: function(data) {
-    // },
+    addChildren: function(children){
+        _assert(!!children && (!this.children || this.children.length === 0), "only init supported");
+        this.children = [];
+        for(var i=0, l=children.length; i<l; i++){
+            this.children.push(new DynatreeNode(this, children[i]));
+        }
+    },
     debug: function(msg){
         Array.prototype.unshift.call(arguments, this.toString());
         DT.debug.apply(this, arguments);
     },
     expand: function(flag){
         return this.tree._callHook("nodeExpand", this, flag);
+    },
+    getFirstChild: function() {
+        return this.children && this.children.length ? this.children[0] : null;
+    },
+    getParent: function() {
+        // var p = this.parent;
+        return this.parent;
     },
     /** Return node depth. 0: System root node, 1: visible top-level node.
      */
@@ -346,13 +355,29 @@ var Dynatree = function($widget){
     this.$widget = $widget;
     this.$div = $widget.element;
     this.options = $widget.options;
-    this.rootNode = null;
+//    this.rootNode = null;
 //    this.$root = null;  // outer <ul class='dynatree-container'>
     this._id = $.ui.dynatree._nextId++;
     this.activeNode = null;
     this.focusNode = null;
 
-    this.fromDict({children: null});
+//    this.fromDict({children: null});
+    // Create a node without parent.
+    var fakeParent = { tree: this },
+        $ul;
+    this.rootNode = new DynatreeNode(fakeParent, {
+        title: "root",
+        key: "root_" + this.$widget._id,
+        children: null
+    });
+    this.rootNode.parent = null;
+    // Remove previous markup if any
+    this.$div.find(">ul.dynatree-container").remove();
+    // Create root markup
+    $ul = $("<ul>", {
+        "class": "dynatree-container"
+    }).appendTo(this.$div);
+    this.rootNode.ul = $ul[0];
 };
 
 $.extend(Dynatree.prototype, {
@@ -402,31 +427,31 @@ $.extend(Dynatree.prototype, {
         Array.prototype.unshift.call(arguments, this.toString());
         DT.debug.apply(this, arguments);
     },
-    /** Initiallize the tree */
-    fromDict: function(data) {
-        // Create a node without parent.
-        var fakeParent = { tree: this },
-            $ul, 
-            children = $.isArray(data) ? data : data.children;
-        if(children !== null && !$.isArray(children)){
-            $.error("fromDict data must be null, an array, or have a .children property");
-        }
-        this.rootNode = new DynatreeNode(fakeParent, {
-            title: "root",
-            key: "root_" + this.$widget._id,
-            children: children
-        });
-        this.rootNode.parent = null;
-        // Remove previous markup if any
-        this.$div.find(">ul.dynatree-container").remove();
-        // Create root markup
-        $ul = $("<ul>", {
-            "class": "dynatree-container"
-        }).appendTo(this.$div);
-        this.rootNode.ul = $ul[0];
-        // Set tree title from node data
-        this.title = data.title;
-    },
+    ///** Initiallize the tree */
+    // fromDict: function(data) {
+    //     // Create a node without parent.
+    //     var fakeParent = { tree: this },
+    //         $ul, 
+    //         children = $.isArray(data) ? data : data.children;
+    //     if(children !== null && !$.isArray(children)){
+    //         $.error("fromDict data must be null, an array, or have a .children property");
+    //     }
+    //     this.rootNode = new DynatreeNode(fakeParent, {
+    //         title: "root",
+    //         key: "root_" + this.$widget._id,
+    //         children: children
+    //     });
+    //     this.rootNode.parent = null;
+    //     // Remove previous markup if any
+    //     this.$div.find(">ul.dynatree-container").remove();
+    //     // Create root markup
+    //     $ul = $("<ul>", {
+    //         "class": "dynatree-container"
+    //     }).appendTo(this.$div);
+    //     this.rootNode.ul = $ul[0];
+    //     // Set tree title from node data
+    //     this.title = data.title;
+    // },
     getNodeByKey: function(key, searchRoot) {
         // Search the DOM by element ID (assuming this is faster than traversing all nodes).
         // $("#...") has problems, if the key contains '.', so we use getElementById()
@@ -509,7 +534,7 @@ $.extend(Dynatree.prototype, {
             this._callHook("nodeToggleSelect", ctx);
             this._callHook("nodeFocus", ctx, true); // issue 95
         } else {
-            // Honor `clikcFolderMode` for
+            // Honor `clickFolderMode` for
             var expand = false, 
                 activate = true;
             if ( node.folder ) {
@@ -523,14 +548,14 @@ $.extend(Dynatree.prototype, {
                     break;
                 }
             }
+            if( activate ) {
+                this._callHook("nodeActivate", ctx, true);
+            }
             if( expand ) {
                 if(!activate){
                     this._callHook("nodeFocus", ctx);
                 }
                 this._callHook("nodeExpand", ctx, true);
-            }
-            if( activate ) {
-                this._callHook("nodeActivate", ctx, true);
             }
         }
         // Make sure that clicks stop, otherwise <a href='#'> jumps to the top
@@ -676,7 +701,50 @@ $.extend(Dynatree.prototype, {
     nodeKeypress: function(ctx) {
         var event = ctx.orgEvent;
     },
+    /** Load children (async). 
+     *  source may be an array of children, a node object or an Ajax options object
+     */
+    nodeLoadChildren: function(ctx, source) {
+        var children,
+            tree = ctx.tree,
+            node = ctx.node,
+            dfd = $.Deferred();
+
+        if(source.url){
+            // `source` is an Ajax options object
+            tree.nodeSetStatus(ctx, "loading");
+            $.ajax(source).done(function(data, textStatus, jqXHR){
+                tree.nodeSetStatus(ctx, "ok");
+                children = data;
+                dfd.resolve();
+            }).fail(function(jqXHR, textStatus, errorThrown){
+                tree.nodeSetStatus(ctx, "error");
+                alert("error: " + textStatus + " (" + jqXHR.status + ": " + (errorThrown.message || errorThrown) + ")");
+                dfd.reject();
+            });
+        }else{
+            // `source` is an array of child objects
+            children = source;
+            dfd.resolve();
+        }
+        dfd.done(function(){
+            _assert($.isArray(children), "expected array of children");
+            node.addChildren(children);
+            if(!!node.parent){
+                // if nodeLoadChildren was called for rootNode, the caller must
+                // use tree.render() instead
+                tree.nodeRender(ctx);
+            }
+            tree._triggerNodeEvent("load", node);
+        }).fail(function(){
+            tree.nodeRender(ctx);
+        });
+        return dfd;
+    },
+    /** Expand all parents and scroll into visible area as neccessary (async). */
     nodeMakeVisible: function(ctx) {
+        // TODO: expand all parents
+        // TODO: scroll as neccessary: http://stackoverflow.com/questions/8938352/dynatree-how-to-scroll-to-active-node
     },
     /**
      * Create <li><span>..</span> .. </li> tags for this node.
@@ -897,7 +965,7 @@ $.extend(Dynatree.prototype, {
         // Maybe most (all) of the classes should be set in LI instead of SPAN?
         node.li.className = isLastSib ? "dynatree-lastsib" : "";
     },    
-    /** (De)Select node, return new status. */
+    /** (De)Select node, return new status (sync). */
     nodeSelect: function(ctx, flag) {
         var node = ctx.node,
             tree = ctx.tree,
@@ -929,6 +997,69 @@ $.extend(Dynatree.prototype, {
         // }
 
     },
+    /** Show node status (ok, loading, error) using styles and a dummy child node. */
+    nodeSetStatus: function(ctx, status, message, details) {
+        var node = ctx.node,
+            tree = ctx.tree;
+        var _clearStatusNode = function() {
+            var firstChild = ( node.children ? node.children[0] : null );
+            if ( firstChild && firstChild.isStatusNode ) {
+                try{
+                    // I've seen exceptions here with loadKeyPath...
+                    if(node.ul){
+                        node.ul.removeChild(firstChild.li);
+                        firstChild.li = null; // avoid leaks (issue 215)
+                    }
+                }catch(e){}
+                if( this.childList.length === 1 ){
+                    this.childList = [];
+                }else{
+                    this.childList.shift();
+                }
+            }
+            return;
+        };
+        var _setStatusNode = function(data) {
+            var firstChild = ( node.children ? node.children[0] : null );
+            if ( firstChild ) {
+                node.isStatusNode = true;
+                node.key = "_statusNode";
+                firstChild.data = data;
+                firstChild.render();
+            } else {
+                node.isStatusNode = true;
+                node.key = "_statusNode";
+                firstChild = node.addChildren(data);
+            }
+            return firstChild;
+        };
+        switch(status){
+        case "ok":
+          _clearStatusNode();
+          $(node.span).removeClass("dynatree-loading");
+          break;
+        case "loading":
+            $(node.span).addClass("dynatree-loading");
+            if(!node.parent){
+                _setStatusNode({
+                    title: tree.options.strings.loading + message,
+                    tooltip: details,
+                    extraClasses: "dynatree-statusnode-wait"
+                });
+            }
+            break;
+        case "error":
+            $(node.span).addClass("dynatree-error");
+            _setStatusNode({
+                title: tree.options.strings.loadError + message,
+                tooltip: details,
+                extraClasses: "dynatree-statusnode-error"
+            });
+            break;
+        default:
+            $.error("invalid status " + status);
+        }
+    },
     /**  */
     nodeToggleExpand: function(ctx) {
         return this.nodeExpand(ctx, !ctx.node.expanded);
@@ -943,42 +1074,65 @@ $.extend(Dynatree.prototype, {
     treeInit: function(ctx) {
         this.treeLoad(ctx);
     },
-    /** Parse Dynatree from HTML <ul> markup */
+    /** Parse Dynatree from source, as configured in the options.*/
     treeLoad: function(ctx) {
-        var data = { children: [] },
+        var children = [],
+            tree = ctx.tree,
             $container = ctx.widget.element,
             type = $container.data("type") || "html",
-            $ul;
+            $ul,
+            dfd = $.Deferred(),
+            // calling context for root node
+            subCtx = $.extend({}, ctx, {node: this.rootNode});
 
-        if(this.options.children){
-            data.children = this.options.children;
+        if(this.options.ajax.url){
+            dfd = this.nodeLoadChildren(subCtx, this.options.ajax).done(function(){
+                tree.render();
+                tree._triggerTreeEvent("load");
+                dfd.resolve();
+            }).fail(function(){
+                dfd.reject();
+            });
+            return dfd;
         }else{
-            switch(type){
-            case "html":
-                $ul = $container.find(">ul:first");
-                $ul.addClass("ui-dynatree-source ui-helper-hidden");
-                _loadFromHtml.call(this, $ul, data.children);
-                break;
-            case "json":
-    //            $().addClass("ui-helper-hidden");
-                data = $.parseJSON($container.text());
-                break;
-            default:
-                $.error("Invalid data-type: " + type);
+            if(this.options.children){
+                children = this.options.children;
+            }else{
+                switch(type){
+                case "html":
+                    $ul = $container.find(">ul:first");
+                    $ul.addClass("ui-dynatree-source ui-helper-hidden");
+                    _loadFromHtml.call(this, $ul, children);
+                    break;
+                case "json":
+        //            $().addClass("ui-helper-hidden");
+                    children = $.parseJSON($container.text());
+                    break;
+                default:
+                    $.error("Invalid data-type: " + type);
+                }
             }
+            dfd.resolve();
         }
-        this.fromDict(data);
         $container.addClass("ui-widget ui-widget-content ui-corner-all");
-        this.render();
-        // TODO: return Deferred
-        return this._triggerTreeEvent("load");
+        dfd.done(function(){
+//            tree.fromDict(data);
+            tree.nodeLoadChildren(subCtx, children);
+            tree.render();
+            tree._triggerTreeEvent("load");
+        }).fail(function(){
+            tree.render();
+        });
+        return dfd;
     },
     render: function(force, deep) {
         var children = this.rootNode.children,
             i;
-        for(i=0; i<children.length; i++){
-            // children[i].render(true);
-            this._callHook("nodeRender", children[i], force, deep);
+        if(children){
+            for(i=0; i<children.length; i++){
+                // children[i].render(true);
+                this._callHook("nodeRender", children[i], force, deep);
+            }
         }
     },
     toString: function(){
@@ -1015,11 +1169,20 @@ $.widget("ui.dynatree", {
     // These options will be used as defaults
     options: {
         disabled: false,
-        source: null,  // 
+        ajax: {
+            type: "GET",
+            cache: false, // false: Append random '_' argument to the request url to prevent caching.
+//          timeout: 0, // >0: Make sure we get an ajax error if error is unreachable
+            dataType: "json" // Expect json format and pass json object to callbacks.
+        },  // 
         extensions: [],
         fx: { height: "toggle", duration: 200 },
         hooks: {},
         idPrefix: "dt_",
+        strings: {
+            loading: "Loading&#8230;",
+            loadError: "Load error!"
+        },
         // events
         lazyload: null
     },
