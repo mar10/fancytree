@@ -251,6 +251,17 @@ $.extend(DynatreeNode.prototype, {
             this.children.push(new DynatreeNode(this, children[i]));
         }
     },
+    countChildren: function() {
+        var cl = this.children, i, l, n;
+        if( !cl ){
+            return 0;
+        }
+        n = cl.length;
+        for(i=0, l=n; i<l; i++){
+            n += cl[i].countChildren();
+        }
+        return n;
+    },
     debug: function(msg){
         Array.prototype.unshift.call(arguments, this.toString());
         DT.debug.apply(this, arguments);
@@ -660,7 +671,9 @@ $.extend(Dynatree.prototype, {
 
         // Load lazy nodes, if any. Then continue with _afterLoad()
         if(flag && node.lazy && node.hasChildren() === undefined){
-            this._callHook("nodeLoad", ctx).done(function(){
+            var source = tree._triggerNodeEvent("lazyload", node, ctx.orgEvent);
+
+            this._callHook("nodeLoadChildren", ctx, source).done(function(){
                 dfd.notifyWith(node, ["loaded"]);
                 _afterLoad.call(tree);
             }).fail(function(errMsg){
@@ -701,29 +714,45 @@ $.extend(Dynatree.prototype, {
     nodeKeypress: function(ctx) {
         var event = ctx.orgEvent;
     },
+    // /** Trigger lazyload event (async). */
+    // nodeLazyLoad: function(ctx) {
+    //     var node = ctx.node;
+    //     if(this._triggerNodeEvent())
+    // },
     /** Load children (async). 
-     *  source may be an array of children, a node object or an Ajax options object
+     *  source may be 
+     *    - an array of children
+     *    - a node object
+     *    - an Ajax options object
+     *    - an Ajax.promise
      */
     nodeLoadChildren: function(ctx, source) {
         var children,
             tree = ctx.tree,
             node = ctx.node,
-            dfd = $.Deferred();
+            dfd;
 
-        if(source.url){
-            // `source` is an Ajax options object
+        if(source.url || $.isFunction(source.done)){
             tree.nodeSetStatus(ctx, "loading");
-            $.ajax(source).done(function(data, textStatus, jqXHR){
+            if(source.url){
+                // `source` is an Ajax options object
+                var ajax = $.extend({}, ctx.options.ajax, source);
+                dfd = $.ajax(ajax);
+            }else{
+                // `source` is a promise, as returned by a $.ajax call
+                dfd = source;
+            }
+            dfd.done(function(data, textStatus, jqXHR){
                 tree.nodeSetStatus(ctx, "ok");
                 children = data;
-                dfd.resolve();
+                if(typeof children === "string"){ $.error("Ajax request returned a string (did you get the JSON dataType wrong?)."); }
             }).fail(function(jqXHR, textStatus, errorThrown){
                 tree.nodeSetStatus(ctx, "error");
                 alert("error: " + textStatus + " (" + jqXHR.status + ": " + (errorThrown.message || errorThrown) + ")");
-                dfd.reject();
             });
         }else{
             // `source` is an array of child objects
+            dfd = $.Deferred();
             children = source;
             dfd.resolve();
         }
@@ -734,8 +763,8 @@ $.extend(Dynatree.prototype, {
                 // if nodeLoadChildren was called for rootNode, the caller must
                 // use tree.render() instead
                 tree.nodeRender(ctx);
+                tree._triggerNodeEvent("load", node);
             }
-            tree._triggerNodeEvent("load", node);
         }).fail(function(){
             tree.nodeRender(ctx);
         });
@@ -1011,27 +1040,26 @@ $.extend(Dynatree.prototype, {
                         firstChild.li = null; // avoid leaks (issue 215)
                     }
                 }catch(e){}
-                if( this.childList.length === 1 ){
-                    this.childList = [];
+                if( node.children.length === 1 ){
+                    node.children = [];
                 }else{
-                    this.childList.shift();
+                    node.children.shift();
                 }
             }
             return;
         };
         var _setStatusNode = function(data) {
             var firstChild = ( node.children ? node.children[0] : null );
-            if ( firstChild ) {
-                node.isStatusNode = true;
-                node.key = "_statusNode";
-                firstChild.data = data;
+            if ( firstChild && firstChild.isStatusNode ) {
+                $.extend(firstChild, data);
                 firstChild.render();
             } else {
-                node.isStatusNode = true;
-                node.key = "_statusNode";
-                firstChild = node.addChildren(data);
+                data.key = "_statusNode";
+                node.addChildren([data]);
+                node.children[0].isStatusNode = true;
+                tree.render();
             }
-            return firstChild;
+            return node.children[0];
         };
         switch(status){
         case "ok":
@@ -1083,43 +1111,42 @@ $.extend(Dynatree.prototype, {
             $ul,
             dfd = $.Deferred(),
             // calling context for root node
-            subCtx = $.extend({}, ctx, {node: this.rootNode});
+            rootCtx = $.extend({}, ctx, {node: this.rootNode});
 
+        // TODO: unify Ajax and non-ajax handling:
         if(this.options.ajax.url){
-            dfd = this.nodeLoadChildren(subCtx, this.options.ajax).done(function(){
+            dfd = this.nodeLoadChildren(rootCtx, this.options.ajax).done(function(){
                 tree.render();
-                tree._triggerTreeEvent("load");
-                dfd.resolve();
+                tree._triggerTreeEvent("postinit", true);
             }).fail(function(){
-                dfd.reject();
+                tree._triggerTreeEvent("postinit", false);
             });
             return dfd;
-        }else{
-            if(this.options.children){
-                children = this.options.children;
-            }else{
-                switch(type){
-                case "html":
-                    $ul = $container.find(">ul:first");
-                    $ul.addClass("ui-dynatree-source ui-helper-hidden");
-                    _loadFromHtml.call(this, $ul, children);
-                    break;
-                case "json":
-        //            $().addClass("ui-helper-hidden");
-                    children = $.parseJSON($container.text());
-                    break;
-                default:
-                    $.error("Invalid data-type: " + type);
-                }
-            }
-            dfd.resolve();
         }
+
+        if(this.options.children){
+            children = this.options.children;
+        }else{
+            switch(type){
+            case "html":
+                $ul = $container.find(">ul:first");
+                $ul.addClass("ui-dynatree-source ui-helper-hidden");
+                _loadFromHtml.call(this, $ul, children);
+                break;
+            case "json":
+    //            $().addClass("ui-helper-hidden");
+                children = $.parseJSON($container.text());
+                break;
+            default:
+                $.error("Invalid data-type: " + type);
+            }
+        }
+        dfd.resolve();
         $container.addClass("ui-widget ui-widget-content ui-corner-all");
         dfd.done(function(){
-//            tree.fromDict(data);
-            tree.nodeLoadChildren(subCtx, children);
+            tree.nodeLoadChildren(rootCtx, children);
             tree.render();
-            tree._triggerTreeEvent("load");
+            tree._triggerTreeEvent("postinit");
         }).fail(function(){
             tree.render();
         });
@@ -1142,13 +1169,21 @@ $.extend(Dynatree.prototype, {
     _triggerNodeEvent: function(type, node, orgEvent) {
         var ctx = this._makeHookContext(node, orgEvent);
         this.debug("_trigger(" + type + "): '" + ctx.node.title + "'", ctx);
-        return this.$widget._trigger(type, orgEvent, ctx);
+        var res = this.$widget._trigger(type, orgEvent, ctx);
+        if(res !== false && ctx.result !== undefined){
+            return ctx.result;
+        }
+        return res;
     },
     /** _trigger a widget event with additional tree data. */
     _triggerTreeEvent: function(type, orgEvent) {
         var ctx = this._makeHookContext(this, orgEvent);
         this.debug("_trigger(" + type + ")", ctx);
-        return this.$widget._trigger(type, orgEvent, ctx);
+        var res = this.$widget._trigger(type, orgEvent, ctx);
+        if(res !== false && ctx.result !== undefined){
+            return ctx.result;
+        }
+        return res;
     },
     visit: function(fn) {
         return this.rootNode.visit(fn, false);

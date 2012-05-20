@@ -61,7 +61,13 @@
 					url: "unit/ajax-tree.json"
 				},
 				lazyload: function(e, data){
-					alert("lazyload" + data.node);
+					// we can't return values from an event handler, so we
+					// pass the result as `data`attribute.
+//					data.result = {url: "unit/ajax-sub2.json"};
+					data.result = $.ajax({
+						url: "unit/ajax-sub2.json",
+						dataType: "json"
+					});
 				}
 			});
 			// call methods on multiple instances

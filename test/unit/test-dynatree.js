@@ -65,7 +65,8 @@ var testData = [
     {key: "31", title: "Lazy folder (preload)", folder: true, lazy: true, preload: true },
     {key: "32", title: "Lazy folder (expand on load)", folder: true, lazy: true, expanded: true }
 ];
-var TESTDATA_TOPNODES = 11,
+var TESTDATA_NODES = 23,
+    TESTDATA_TOPNODES = 11,
     TESTDATA_VISIBLENODES = 13;
 
 
@@ -320,6 +321,48 @@ test(".click() to select a node", function() {
     });
     $("#tree #dt_2 span.dynatree-checkbox").click();
 });
+
+/*******************************************************************************
+ * Lazy loading
+ */
+module("lazy loading");
+
+test(".click() to expand a lazy folder (lazyload returns ajax options)", function() {
+    _setupAsync();
+    expect(11);
+    var sequence = 1;
+
+    $("#tree").dynatree({
+        ajax: {url: "ajax-tree.json"},
+        generateIds: true,
+        postinit: function(e, data){
+            equal(sequence++, 1, "receive `postinit` callback");
+            equal(data.tree.count(), TESTDATA_NODES, "lazy tree has 23 nodes");
+            equal($("#tree li").length, TESTDATA_VISIBLENODES, "lazy tree has rendered 13 node elements");
+            // now expand a lazy folder
+            $("#tree #dt_30 span.dynatree-expander").click();
+        },
+        queryexpand: function(e, data){
+            equal(sequence++, 2, "receive `queryexpand` callback");
+        },
+        lazyload: function(e, data){
+            equal(sequence++, 3, "receive `lazyload` callback");
+            data.result = {url: "ajax-sub2.json"};
+        },
+        load: function(e, data){
+            equal(sequence++, 4, "receive `load` callback");
+            equal(data.tree.count(), TESTDATA_NODES + 2, "lazy tree has 25 nodes");
+            equal($("#tree li").length, TESTDATA_VISIBLENODES, "lazy tree has not yet rendered new node elements");
+        },
+        expand: function(e, data){
+            equal(sequence++, 5, "receive `expand` callback");
+            equal(data.tree.count(), TESTDATA_NODES + 2, "lazy tree has 25 nodes");
+            equal($("#tree li").length, TESTDATA_VISIBLENODES + 2, "lazy tree has rendered 15 node elements");
+            start();
+        }
+    });
+});
+
 
 // --- 
 // expand first info section
