@@ -111,7 +111,7 @@ test("Create dynatree", function() {
     var insideContructor = true;
 
     $("#tree").dynatree({
-        children: testData,
+        source: testData,
         generateIds: true, // for testing
         create: function(e, data){
             equal(e.type, "dynatreecreate", "receive `create` callback");
@@ -129,7 +129,7 @@ test("Create dynatree", function() {
             equal(e.type, "dynatreeinit", "receive `init` callback");
             ok(insideContructor, "running synchronously");
             ok(!!data.tree.rootNode, "`data.tree` is the tree object");
-            equal(data.options.children.length, TESTDATA_TOPNODES, "data.options.contains widget options");
+            equal(data.options.source.length, TESTDATA_TOPNODES, "data.options.contains widget options");
             equal($("div#tree").hasClass("ui-widget"), true, "div#tree has ui-widget class");
             equal($(this).hasClass("ui-widget"), true, "`this` is div#tree");
             equal(data.tree.rootNode.children.length, TESTDATA_TOPNODES, "tree.rootNode has all child nodes");
@@ -178,7 +178,7 @@ test("Init node status from source", function() {
     // select node #10_1_1
     children[6].children[0].children[0].selected = true;
     $("#tree").dynatree({
-        children: children,
+        source: children,
         init: function(e, data){
             var tree = data.tree,
                 node = tree.getNodeByKey("10_1_2");
@@ -202,11 +202,12 @@ test("trigger async expand", function() {
     expect(4);
 
     $("#tree").dynatree({
-        children: testData
+        source: testData
     });
 //    var node = $("#tree").dynatree("getActiveNode");
     var tree = $("#tree").dynatree("getTree"),
         node = tree.getNodeByKey("10");
+
     node.expand().done(function(){
         ok(true, "called done()");
         equal(this.key, "10", "`this` is a DynatreeNode");
@@ -226,7 +227,7 @@ test(".click() to expand a folder", function() {
     expect(8);
 
     $("#tree").dynatree({
-        children: testData,
+        source: testData,
         generateIds: true,
         queryexpand: function(e, data){
             equal(e.type, "dynatreequeryexpand", "receive `queryexpand` callback");
@@ -251,7 +252,7 @@ test(".click() to activate a node", function() {
     expect(8);
 
     $("#tree").dynatree({
-        children: testData,
+        source: testData,
         generateIds: true, // for testing
         queryactivate: function(e, data){
             equal(e.type, "dynatreequeryactivate", "receive `queryactivate` callback");
@@ -276,7 +277,7 @@ test(".click() to activate a folder (clickFolderMode 3 triggers expand)", functi
     expect(4);
     var sequence = 1;
     $("#tree").dynatree({
-        children: testData,
+        source: testData,
         clickFolderMode: 3,
         generateIds: true, // for testing
         queryactivate: function(e, data){
@@ -302,7 +303,7 @@ test(".click() to select a node", function() {
     expect(8);
 
     $("#tree").dynatree({
-        children: testData,
+        source: testData,
         checkbox: true,
         generateIds: true, // for testing
         queryselect: function(e, data){
@@ -333,7 +334,7 @@ test(".click() to expand a lazy folder (lazyload returns ajax options)", functio
     var sequence = 1;
 
     $("#tree").dynatree({
-        ajax: {url: "ajax-tree.json"},
+        source: {url: "ajax-tree.json"},
         generateIds: true,
         postinit: function(e, data){
             equal(sequence++, 1, "receive `postinit` callback");

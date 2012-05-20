@@ -94,14 +94,28 @@ test("issue310: Loading animation never ends using lazy read on empty folder", f
     expect(1);
 
     $("#tree").dynatree({
-        children: testData,
-        generateIds: true, // for testing
-        load: function(e, data){
-            ok(false, "todo");
+        source: [{title: "lazy folder", key: "1", folder: true, lazy: true}],
+        lazyload: function(e, data){
+            ok(true, "got `lazyload` event");
             start();
         }
     });
-    var node = $("#tree").dynatree("getTree").getNodeByKey("32");
+    var node = $("#tree").dynatree("getTree").getNodeByKey("1");
+     $("span.dynatree-expander", node).click();
+});
+
+test("Issue 309: appendAjax race condition", function() {
+    _setupAsync();
+    expect(1);
+
+    $("#tree").dynatree({
+        source: [{title: "lazy folder", key: "1", folder: true, lazy: true}],
+        lazyload: function(e, data){
+            ok(true, "got `lazyload` event");
+            start();
+        }
+    });
+    var node = $("#tree").dynatree("getTree").getNodeByKey("1");
      $("span.dynatree-expander", node).click();
 });
 

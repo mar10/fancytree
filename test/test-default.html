@@ -57,7 +57,7 @@
 			/* Load tree from Ajax JSON
 			 */
 			$("#tree2").dynatree({
-				ajax: {
+				source: {
 					url: "unit/ajax-tree.json"
 				},
 				lazyload: function(e, data){
@@ -79,6 +79,14 @@
 			});
 			$("button#init").click(function(e){
 				$(".sampletree").dynatree();
+			});
+			$("button#reload").click(function(e){
+				tree.reload([
+					{title: "node1"},
+					{title: "node2"}
+					]).done(function(){
+						alert("reloaded");
+					});
 			});
 			$("button#expand").click(function(e){
 				tree.getNodeByKey("id3").toggleExpand().done(function(){
@@ -103,6 +111,7 @@
 	<p>
 		<button id="destroy">Destroy</button> <button id="init">Init</button>
 		<button id="expand">Expand</button>
+		<button id="reload">Reload</button>
 	</p>
 	<p>Tree with UL markup</p>
 	<div id="tree" class="sampletree">

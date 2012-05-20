@@ -12,7 +12,7 @@ node.data removed:
 
 Class names for initialization are now unified with node property names:
   Dynatree 1:
-    <li class='expond'>
+    <li class='expand'>
   Dynatree 2:
     <li class='expanded'>
 
@@ -51,8 +51,15 @@ level.
 Events
 ------
 Alle events have been renamed according to common jQuery widget style.
-Events with flags have changed. Applies to (onSelect, onQuerySelect, ...)
+Event arguments have been unified to `data`.
+
+Events cannot return values (except for `false` to prevent default handling).
+The return value must be assigned to `data.result` instead.
+
+Events with flags have changed (applies to (onSelect, onQuerySelect, ...)
+
   Dynatree 1:
+
       onQueryExpand: function(flag, node){
         if(flag === true && node.data.isFolder) 
           return false;
@@ -62,7 +69,9 @@ Events with flags have changed. Applies to (onSelect, onQuerySelect, ...)
           node.activate();
         }
       }
-  Dynatree 2: use data.node
+
+  Dynatree 2:
+
       queryexpand: function(data){
         if(data.node.expanded === false && data.node.folder) 
           return false;
@@ -72,13 +81,42 @@ Events with flags have changed. Applies to (onSelect, onQuerySelect, ...)
           ctx.node.activate();
         }
       }
-onDeactivate was removed (use activate and check ctx.node.active instead).
-    
+
+
+Lazy loading handling has changed:
+
+  Dynatree 1:
+
+    $("#tree").dynatree({
+      initAjax: {
+        url: "/getTopLevelNodesAsJson"
+      },
+      onLazyRead: function(node){
+        node.appendAjax({
+          url: "/getChildrenAsJson",
+          data: {key: node.data.key}
+        });
+      },
+
+  Dynatree 2:
+
+    $("#tree").dynatree({
+      source: {
+        url: "/getTopLevelNodesAsJson"
+      },
+      lazyload: function(e, data){
+        data.result = {
+          url: "/getChildrenAsJson",
+          data: {key: data.node.key}
+        };
+      },
+
 
 Misc.
 -----
 - DynaTree was renamed to Dynatree (also DynaTreeNode was renamed to DynatreeNode).
 - node.icon is no longer supported
+- onDeactivate was removed (use activate and check ctx.node.active instead).
 
 
 New features

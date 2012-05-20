@@ -1095,6 +1095,15 @@ $.extend(Dynatree.prototype, {
     nodeToggleSelect: function(ctx) {
         return this.nodeSelect(ctx, !ctx.node.selected);
     },
+    /** Remove all nodes. */
+    treeClear: function(ctx) {
+        var tree = ctx.tree;
+        tree.activeNode = null;
+        tree.focusNode = null;
+        tree.$div.find(">ul.dynatree-container").empty();
+        // TODO: call destructors and remove reference loops
+        tree.rootNode.children = null;
+    },
     /** Widget was created. */
     treeCreate: function(ctx) {
     },
@@ -1103,54 +1112,52 @@ $.extend(Dynatree.prototype, {
         this.treeLoad(ctx);
     },
     /** Parse Dynatree from source, as configured in the options.*/
-    treeLoad: function(ctx) {
-        var children = [],
-            tree = ctx.tree,
+    treeLoad: function(ctx, source) {
+        var tree = ctx.tree,
             $container = ctx.widget.element,
-            type = $container.data("type") || "html",
-            $ul,
-            dfd = $.Deferred(),
+            dfd,
             // calling context for root node
             rootCtx = $.extend({}, ctx, {node: this.rootNode});
 
-        // TODO: unify Ajax and non-ajax handling:
-        if(this.options.ajax.url){
-            dfd = this.nodeLoadChildren(rootCtx, this.options.ajax).done(function(){
-                tree.render();
-                tree._triggerTreeEvent("postinit", true);
-            }).fail(function(){
-                tree._triggerTreeEvent("postinit", false);
-            });
-            return dfd;
-        }
+        source = source || this.options.source;
 
-        if(this.options.children){
-            children = this.options.children;
-        }else{
+        if(!source){
+            var type = $container.data("type") || "html",
+                $ul;
             switch(type){
             case "html":
                 $ul = $container.find(">ul:first");
                 $ul.addClass("ui-dynatree-source ui-helper-hidden");
-                _loadFromHtml.call(this, $ul, children);
+                source = [];
+                _loadFromHtml.call(this, $ul, source);
                 break;
             case "json":
     //            $().addClass("ui-helper-hidden");
-                children = $.parseJSON($container.text());
+                source = $.parseJSON($container.text());
                 break;
             default:
                 $.error("Invalid data-type: " + type);
             }
+        }else if(typeof source === "string"){
+            // TODO: source is an element ID
+            _raiseNotImplemented();
         }
-        dfd.resolve();
+
         $container.addClass("ui-widget ui-widget-content ui-corner-all");
-        dfd.done(function(){
-            tree.nodeLoadChildren(rootCtx, children);
+
+        dfd = this.nodeLoadChildren(rootCtx, source).done(function(){
             tree.render();
-            tree._triggerTreeEvent("postinit");
+            tree._triggerTreeEvent("postinit", true);
         }).fail(function(){
             tree.render();
+            tree._triggerTreeEvent("postinit", false);
         });
         return dfd;
+    },
+    /** Reload tree from source and return a promise. */
+    reload: function(source) {
+        this._callHook("treeClear", this);
+        return this._callHook("treeLoad", this, source);
     },
     render: function(force, deep) {
         var children = this.rootNode.children,
