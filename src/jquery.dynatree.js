@@ -270,24 +270,47 @@ $.extend(DynatreeNode.prototype, {
         return this.tree._callHook("nodeExpand", this, flag);
     },
     getFirstChild: function() {
-        return this.children && this.children.length ? this.children[0] : null;
+        return this.children ? this.children[0] : null;
     },
-    getParent: function() {
-        // var p = this.parent;
-        return this.parent;
+    getLastChild: function() {
+        return this.children ? this.children[this.children.length - 1] : null;
     },
-    /** Return node depth. 0: System root node, 1: visible top-level node.
-     */
+    /** Return node depth. 0: System root node, 1: visible top-level node. */
     getLevel: function() {
-        var level = 0;
-        var dtn = this.parent;
+        var level = 0,
+            dtn = this.parent;
         while( dtn ) {
             level++;
             dtn = dtn.parent;
         }
         return level;
     },
-
+    getNextSibling: function() {
+        if( this.parent ){
+            var ac = this.parent.children;
+            for(var i=0, l=ac.length-1; i<l; i++){ // up to length-2, so next(last) = null
+                if( ac[i] === this ){
+                    return ac[i+1];
+                }
+            }
+        }
+        return null;
+    },
+    getParent: function() {
+        // TODO: return null for top-level nodes?
+        return this.parent;
+    },
+    getPrevSibling: function() {
+        if( this.parent ){
+            var ac = this.parent.children;
+            for(var i=1, l=ac.length; i<l; i++){ // start with 1, so prev(first) = null
+                if( ac[i] === this ){
+                    return ac[i-1];
+                }
+            }
+        }
+        return null;
+    },
     /** Check if node has children (returns undefined, if not sure). */
     hasChildren: function() {
         if(this.lazy){
@@ -305,12 +328,10 @@ $.extend(DynatreeNode.prototype, {
         }
         return !!this.children;
     },
-
     isFirstSibling: function() {
         var p = this.parent;
         return !p || p.children[0] === this;
     },
-
     isLastSibling: function() {
         var p = this.parent;
         return !p || p.children[p.children.length-1] === this;

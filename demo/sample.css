@@ -1,0 +1,63 @@
+body.example
+{
+	margin: 15px;
+	font-family: sans-serif;
+}
+
+body.example h1
+{
+	font-size: 1.2em;
+}
+body.example h2
+{
+	font-size: 1em;
+}
+
+a,
+a:visited
+{
+	color: navy;
+	text-decoration: none;
+	font-size: small;
+}
+a:hover
+{
+	text-decoration: underline;
+}
+
+body.example p.description,
+body.example p.sample-links
+{
+/*	border: thin solid gray; */
+	background-color: #d0d0f0;
+	padding: 5px;
+	font-size: small;
+}
+
+p.version-info
+{
+	color: gray;
+	font-size: 0.6em;
+}
+p.sample-links a,
+p.sample-links a:visited
+{
+	color: navy;
+	text-decoration: none;
+	margin-left: 15px;
+	padding: 1px 3px;
+/*	border: 1pt solid white;*/
+}
+
+p.sample-links a:hover
+{
+	text-decoration: underline;
+}
+
+pre{
+  background:#eee;
+  border:1px solid #999;
+  padding:.5em;
+  margin:.5em;
+  font-size:.9em;
+}
