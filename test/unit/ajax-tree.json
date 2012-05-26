@@ -20,7 +20,7 @@
             {"key": "20_1_1", "title": "Sub-item 2.1.1"},
             {"key": "20_1_2", "title": "Sub-item 2.1.2"}
         ]},
-        {"key": "10_2", "title": "Sub-item 1.2", "children": [
+        {"key": "20_2", "title": "Sub-item 2.2", "children": [
             {"key": "20_2_1", "title": "Sub-item 2.2.1"},
             {"key": "20_2_2", "title": "Sub-item 2.2.2"}
         ]}

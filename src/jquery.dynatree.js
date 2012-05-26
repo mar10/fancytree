@@ -286,6 +286,7 @@ $.extend(DynatreeNode.prototype, {
         return level;
     },
     getNextSibling: function() {
+        // TODO: use indexOf, if available: (not in IE6)
         if( this.parent ){
             var ac = this.parent.children;
             for(var i=0, l=ac.length-1; i<l; i++){ // up to length-2, so next(last) = null
@@ -340,7 +341,7 @@ $.extend(DynatreeNode.prototype, {
         return this.tree._callHook("nodeToggleExpand", this);
     },
     toString: function() {
-        return "DynatreeNode<" + this.title + ">";
+        return "DynatreeNode<" + this.key + ", '" + this.title + "' >";
     },
     visit: function(fn, includeSelf) {
         // Call fn(node) for all child nodes. Stop iteration, if fn() returns false.
@@ -603,12 +604,12 @@ $.extend(Dynatree.prototype, {
     nodeExpand: function(ctx, flag) {
         var node = ctx.node,
             tree = ctx.tree,
-            opts = ctx.widget.options;
+            opts = ctx.options;
         // flag defaults to true
         flag = (flag !== false);
 
         node.debug("nodeExpand(" + flag + ")");
-        // TODO: !!node.expanded is nicer, but doens't pass jshint
+        // TODO: !!node.expanded is nicer, but doesn't pass jshint
         // https://github.com/jshint/jshint/issues/455
 //        if( !!node.expanded === !!flag){  
         if((node.expanded && flag) || (!node.expanded && !flag)){ 
@@ -826,8 +827,8 @@ $.extend(Dynatree.prototype, {
             opts = ctx.options,
             firstTime = false,
             parent = node.parent,
-            $parentUL, $li, i, l, text,
-            dfd = !!_recursive ? null : new $.Deferred();
+            $parentUL, $li, i, l, text;
+//            dfd = !!_recursive ? null : new $.Deferred();
 //        DT.debug("nodeRender", node.toString());
         _assert(parent, "Cannot call nodeRender(root)");
         _assert(parent.ul, "parent UL must exist");
@@ -873,7 +874,8 @@ $.extend(Dynatree.prototype, {
             opts.onRender.call(tree, this, this.span);
         }
         // Visit child nodes
-        if( (node.expanded || deep === true) && node.children ) {
+        var cl = node.children;
+        if( (node.expanded || deep === true) && cl ) {
             // Create a UL to hold the children
             if( !node.ul ){
                 node.ul = document.createElement("ul");
@@ -884,9 +886,8 @@ $.extend(Dynatree.prototype, {
                 node.li.appendChild(node.ul);
             }
             // Add child markup
-            var cl = node.children;
             for(i=0, l=cl.length; i<l; i++) {
-                var subCtx = $.extend({}, ctx, {node: node.children[i]}); 
+                var subCtx = $.extend({}, ctx, {node: cl[i]}); 
                 this.nodeRender(subCtx, force, deep, false, true);
             }
             // Make sure, that <li> order matches node.children order.
@@ -909,7 +910,7 @@ $.extend(Dynatree.prototype, {
         if(firstTime){
             parent.ul.appendChild(node.li);
         }
-        return dfd ? dfd.promise() : null;
+//        return dfd ? dfd.promise() : null;
     },
     /** Set title. */
     nodeRenderTitle: function(ctx, title) {
@@ -983,9 +984,9 @@ $.extend(Dynatree.prototype, {
         if( node.hasChildren() !== false ){
             cnList.push("dynatree-has-children");
         }
-        if( isLastSib ){
-            cnList.push("dynatree-lastsib");
-        }
+        // if( isLastSib ){
+        //     cnList.push("dynatree-lastsib");
+        // }
         if( node.lazy && node.children === null ){
             cnList.push("dynatree-lazy");
         }
@@ -1024,7 +1025,7 @@ $.extend(Dynatree.prototype, {
         flag = (flag !== false);
 
         node.debug("nodeSelect(" + flag + ")");
-        // TODO: !!node.expanded is nicer, but doens't pass jshint
+        // TODO: !!node.expanded is nicer, but doesn't pass jshint
         // https://github.com/jshint/jshint/issues/455
 //        if( !!node.expanded === !!flag){  
         if((node.selected && flag) || (!node.selected && !flag)){ 

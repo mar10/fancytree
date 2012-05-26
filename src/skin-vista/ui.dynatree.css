@@ -96,24 +96,11 @@ ul.dynatree-container img
 /*******************************************************************************
  * Lines and connectors
  */
-
-/*
-span.dynatree-empty
-{
-}
-span.dynatree-vline
-{
-}
-*/
 span.dynatree-connector
 {
 	background-image: none;
 }
-/*
-.dynatree-lastsib span.dynatree-connector
-{
-}
-*/
+
 /*******************************************************************************
  * Expander icon
  * Note: IE6 doesn't correctly evaluate multiples class names,
