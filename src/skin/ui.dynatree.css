@@ -1,6 +1,10 @@
 /*******************************************************************************
  * Tree container
  */
+.ui-helper-hidden {
+	display: none;
+}
+
 ul.dynatree-container
 {
 	font-family: tahoma, arial, helvetica;

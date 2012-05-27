@@ -208,7 +208,7 @@ function _loadFromHtml($ul, children) {
 
 // Top-level Dynatree node attributes, that can be set by dict
 var NODE_ATTRS = ["expanded", "extraClasses", "focus", "folder", "href", "key", 
-                  "lazy", "nolink", "selected", "title", "tooltip"];
+                  "lazy", "nolink", "selected", "target", "title", "tooltip"];
 
 var DynatreeNode = function(parent, data){
     var i, l, name, cl;

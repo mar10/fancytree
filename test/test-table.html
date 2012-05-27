@@ -4,7 +4,7 @@
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 	<title>Dynatree - Example: Table</title>
 	<!-- http://www.biggle.de/blog/google-api-jquery-ui-1-7-2-theme-bersicht-razor-layout -->
-	<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/base/jquery-ui.css" 
+	<link hrefXXX="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/base/jquery-ui.css" 
 		rel="stylesheet" type="text/css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js" type="text/javascript"></script>
@@ -28,6 +28,7 @@
 		// and pass the tree options as an argument to the dynatree() function:
 		$("#treetable").dynatree({
 			extensions: ["table"],
+			checkbox: true,
 			source: {
 				url: "unit/ajax-tree.json"
 			},
@@ -44,12 +45,12 @@
 	</script>
 </head>
 <body class="example">
-	<h1>Example: column simulation</h1>
+	<h1>Example: 'table' extension</h1>
 	<p class="description">
 		This sample shows, how titles could displayed as aligned columns.
 	</p>
 
-	<!-- Add a <div> element where the tree should appear: -->
+	<!-- Add a <table> element where the tree should appear: -->
 	<table id="treetable">
 		<colgroup>
 		<col width="*"></col>
@@ -57,12 +58,13 @@
 		<col width="100px"></col>
 		</colgroup>
 		<thead>
-			<tr> <td>a</td> <td>b</td> <td>c</td> </tr>
+			<tr> <td></td> <td>Key</td> <td>Folder</td> </tr>
 		</thead>
 		<tbody>
 			<tr> <td></td> <td></td> <td></td> </tr>
 		</tbody>
 	</table>
+
 	<!-- Start_Exclude: This block is not part of the sample code -->
 	<hr>
 	<p class="sample-links  no_code">
