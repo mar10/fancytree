@@ -1,0 +1,138 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+	<meta name="robots" content="noindex,follow">
+	<script src="../lib/jquery.js" type="text/javascript"></script>
+	<script src="../lib/jquery-ui.custom.js" type="text/javascript"></script>
+
+	<link href="../src/skin-vista/ui.dynatree.css" rel="stylesheet" type="text/css">
+	<script src="../src/jquery.dynatree.js" type="text/javascript"></script>
+	<script src="sample.js" type="text/javascript"></script>
+	<title>Dynatree - Example Browser</title>
+
+<style type="text/css">
+body {
+	background-color: #39414A;
+	color: white;
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: smaller;
+	background-image: url("nav_bg.png");
+	background-repeat: repeat-x;
+}
+a {
+	color: white;
+	text-decoration: none;
+}
+a:hover {
+	text-decoration: underline;
+}
+div#tree {
+	position: absolute;
+	height: 95%;
+	width: 95%;
+	padding: 5px;
+	margin-right: 16px;
+}
+ul.dynatree-container {
+	height: 100%;
+	width: 100%;
+	background-color: transparent;
+}
+ul.dynatree-container a {
+	color: white;
+	border: 1px solid transparent;
+	background-color: transparent;
+}
+ul.dynatree-container a:hover {
+	background-color: transparent;
+}
+ul.dynatree-container a:focus, span.dynatree-focused a:link {
+	background-color: gray;
+}
+</style>
+
+<script type="text/javascript">
+	$(function(){
+		// --- Initialize sample trees
+		$("#tree").dynatree({
+			autoFocus: true,
+//			persist: true,
+			minExpandLevel: 2,
+			focus: function(e, data) {
+				// Auto-activate focused node after 1 second
+				if(data.node.href){
+					data.node.scheduleAction("activate", 1000);
+				}
+			},
+			blur: function(e, data) {
+				data.node.scheduleAction("cancel");
+			},
+			activate: function(e, data){
+				if(data.node.href){
+					window.open(data.node.href, data.node.target);
+				}
+			}
+		});
+	});
+</script>
+
+</head>
+
+<body>
+	<div id="tree">
+	<ul>
+	<li><a target="_blank" href="dynatree-doc.html">Documentation</a>
+	<li><a target="_blank" href="http://dynatree.googlecode.com">jquery.dynatree.js</a>
+	<li class="folder expanded"> Examples
+		<ul>
+			<li><a target="content" href="sample-default.html">Default options</a>
+			<li><a target="content" href="sample-quick.html">Init from JS object</a>
+			<li><a target="content" href="sample-init-lazy.html">Init from external data</a>
+			<li><a target="content" href="sample-iframe.html">URL navigation and &lt;iframe></a>
+			<li><a target="content" href="sample-api.html">Programming API</a>
+			<li><a target="content" href="sample-select.html">Checkbox &amp; select</a>
+			<li><a target="content" href="sample-theming.html">Theming</a>
+			<li><a target="content" href="sample-persist.html">Persistence</a>
+			<li><a target="content" href="sample-events.html">Event handling</a>
+			<li><a target="content" href="sample-effects.html">Effects</a>
+			<li class="folder">Drag'n'drop
+				<ul>
+				<li><a target="content" href="sample-dnd.html">Drag'n'drop</a>
+				<li><a target="content" href="sample-dnd2.html">Drag'n'drop 2</a>
+				<li><a target="content" href="sample-dnd3.html">Drag'n'drop 3</a>
+				</ul>
+			<li><a target="content" href="sample-contextmenu.html">Context menu, Copy/paste</a>
+			<li><a target="content" href="sample-minexpand.html">Fixed expand level</a>
+			<li><a target="content" href="sample-lazy.html">Lazy loading</a>
+			<li><a target="content" href="sample-form.html">Embed in forms</a>
+			<li><a target="content" href="sample-multiline.html">Large nodes</a>
+			<li class="folder">Extensions
+				<ul>
+				<li><a target="content" href="sample-table.html">Table</a>
+				</ul>
+			<li class="folder">Tweaks
+				<ul>
+				<li><a target="content" href="test-table.html">Column layout</a>
+				<li><a target="content" href="sample-inline-edit.html">Edit nodes</a>
+				</ul>
+			<li class="folder">Test
+				<ul>
+				<li><a target="content" href="../test/unit/test.html">Core unit tests</a>
+				<li><a target="content" href="test-bench.html">Benchmark large trees</a>
+				<li><a target="content" href="sample-pyserver.html">Local server</a>
+				<li class="folder">DTD
+					<ul>
+					<li><a target="content" href="test-dtd-none.html">No DTD</a>
+					<li><a target="content" href="test-dtd-html4-transitional.html">HTML4 transitional</a>
+					<li><a target="content" href="test-dtd-html4-strict.html">HTML4 strict</a>
+					<li><a target="content" href="test-dtd-html5.html">HTML5</a>
+					<li><a target="content" href="test-dtd-xml-transitional.html">XHTML transitional</a>
+					<li><a target="content" href="test-dtd-xml-strict.html">XHTML strict</a>
+					</ul>
+				</ul>
+		</ul>
+	</ul>
+	</div>
+</body>
+</html><html><body></body></html>

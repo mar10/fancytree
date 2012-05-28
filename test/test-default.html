@@ -39,7 +39,9 @@
 				// using default options
 				activate: function(e, data){
 					$.ui.dynatree.debug("activate: e=", e, ", data=", data);
-//					data.tree.debug("activate");
+				},
+				lazyload: function(e, data){
+					data.result = {url: "unit/ajax-sub2.json"};
 				}
 				// hooks: {
 				// 	nodeRender: function(ctx){
