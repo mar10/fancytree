@@ -208,7 +208,7 @@ test("trigger async expand", function() {
     var tree = $("#tree").dynatree("getTree"),
         node = tree.getNodeByKey("10");
 
-    node.expand().done(function(){
+    node.setExpanded().done(function(){
         ok(true, "called done()");
         equal(this.key, "10", "`this` is a DynatreeNode");
         equal(this.expanded, true, "node was  expanded");

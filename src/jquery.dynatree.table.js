@@ -57,11 +57,6 @@ function setChildRowVisibility(node, flag) {
     tr = tr.nextSibling;
     while(tr && tr.dtnode !== lastNode){
         tr.style.display = flag ? "" : "none";
-        // if(flag){
-        //     $(tr).show("slow");
-        // }else{
-        //     $(tr).hide("slow");
-        // }
         tr = tr.nextSibling;
     } 
 }
@@ -123,16 +118,6 @@ $.ui.dynatree.registerExtension("table", {
         // standard Dynatree created a root UL
         $(tree.rootNode.ul).remove();
         tree.rootNode.ul = null;
-    },
-    /** Expand node, return Deferred.promise. */
-    nodeExpand: function(ctx, flag) {
-        var node = ctx.node,
-            dfd = new $.Deferred();
-        this._super(ctx, flag).done(function(){
-            setChildRowVisibility(ctx.node, flag);
-            dfd.resolveWith(node);
-        });
-        return dfd;
     },
     nodeRender: function(ctx, force, deep, collapsed, _recursive) {
         var tree = ctx.tree,
@@ -220,10 +205,40 @@ $.ui.dynatree.registerExtension("table", {
     },
     nodeRenderStatus: function(ctx) {
         var node = ctx.node,
+            tree = ctx.tree,
+            $tr = $(node.tr),
+            $tds = $(">td", node.tr),
             orgLI = node.li;
         node.li = node.tr;
         this._super(ctx);
         node.li = orgLI;
+        $tds.toggleClass("ui-state-highlight", node === tree.activeNode);
+        $tds.toggleClass("ui-state-default", node === tree.focusNode);
+    },
+    nodeSetActive: function(ctx, flag) {
+        this._super(ctx, flag);
+        flag = flag === undefined ? true : !!flag;
+        $(ctx.node.tr).toggleClass("", flag);
+    },
+    /** Expand node, return Deferred.promise. */
+    nodeSetExpanded: function(ctx, flag) {
+        var node = ctx.node,
+            dfd = new $.Deferred();
+        this._super(ctx, flag).done(function(){
+            setChildRowVisibility(ctx.node, flag);
+            dfd.resolveWith(node);
+        });
+        return dfd;
+    },
+    nodeSetStatus: function(ctx, status, message, details) {
+        if(status === "ok"){
+            var node = ctx.node,
+                firstChild = ( node.children ? node.children[0] : null );
+            if ( firstChild && firstChild.isStatusNode ) {
+                $(firstChild.tr).remove();
+            }
+        }
+        this._super(ctx, status, message, details);
     }
 });
 }(jQuery));
