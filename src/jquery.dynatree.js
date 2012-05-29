@@ -1496,6 +1496,14 @@ var DT = $.ui.dynatree;
  * Static members in the jQuery.ui.dynatree namespace
  */
 
+function consoleApply(method, args){
+	var fn = window.console ? window.console[method] : null;
+	if(fn && fn.apply){
+	    fn.apply(window.console, args);
+	}
+}
+
+
 $.extend($.ui.dynatree, {
     version: "2.0.0pre",
     debugLevel: 2,
@@ -1506,7 +1514,8 @@ $.extend($.ui.dynatree, {
 
     debug: function(msg){
         /*jshint expr:true */
-        ($.ui.dynatree.debugLevel >= 2) && window.console && window.console.log && window.console.log.apply(window.console, arguments);
+        ($.ui.dynatree.debugLevel >= 2) && consoleApply("log", arguments);
+//        ($.ui.dynatree.debugLevel >= 2) && window.console && window.console.log && window.console.log.apply(window.console, arguments);
     },
     error: function(msg){
         /*jshint expr:true */
