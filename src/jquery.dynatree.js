@@ -539,7 +539,7 @@ $.extend(Dynatree.prototype, {
         if( targetType === "expander" ) {
             // Clicking the expander icon always expands/collapses
             this._callHook("nodeToggleExpand", ctx);
-            this._callHook("nodeSetFocus", ctx, true); // issue 95
+//            this._callHook("nodeSetFocus", ctx, true); // issue 95
         } else if( targetType === "checkbox" ) {
             // Clicking the checkbox always (de)selects
             this._callHook("nodeToggleSelect", ctx);
@@ -560,11 +560,12 @@ $.extend(Dynatree.prototype, {
                 }
             }
             if( activate ) {
+                this.nodeSetFocus(ctx);
                 this._callHook("nodeSetActive", ctx, true);
             }
             if( expand ) {
                 if(!activate){
-                    this._callHook("nodeSetFocus", ctx);
+//                    this._callHook("nodeSetFocus", ctx);
                 }
                 this._callHook("nodeSetExpanded", ctx, true);
             }
@@ -656,10 +657,12 @@ $.extend(Dynatree.prototype, {
             event.preventDefault();
         }
     },
-    /** Default handling for mouse keypress events. */
-    nodeKeypress: function(ctx) {
-        var event = ctx.orgEvent;
-    },
+
+    // /** Default handling for mouse keypress events. */
+    // nodeKeypress: function(ctx) {
+    //     var event = ctx.orgEvent;
+    // },
+
     // /** Trigger lazyload event (async). */
     // nodeLazyLoad: function(ctx) {
     //     var node = ctx.node;
@@ -723,7 +726,7 @@ $.extend(Dynatree.prototype, {
     },
     /** Handle focusin/focusout events.*/
     nodeOnFocusInOut: function(ctx) {
-        $(ctx.node.li).toggleClass("ui-state-focus", ctx.orgEvent.type === "focusin");
+        $(ctx.node.li).toggleClass("ui-state-focus", ctx.orgEvent.type === "focus");
     },
     /**
      * Create <li><span>..</span> .. </li> tags for this node.
@@ -1429,24 +1432,27 @@ $.widget("ui.dynatree", {
     /** Add mouse and kyboard handlers to the container */
     _bind: function() {
         var that = this,
-            eventNames = $.map(["click", "dblclick", "keypress", "keydown",
+            eventNames = $.map(["click", "dblclick", /*"keypress", "keydown",*/
                 "focusin", "focusout"/*, "focus", "blur", "mousein", "mouseout" */],
                 function(name){
                     return name + "." + that.widgetName + "-" + that.tree._id;
-            }).join(" ");
+                }).join(" ");
 
         this._unbind();
-        // $(this.element).bind("keydown.dynatree-1", function(event){
-        //     that.tree.debug("event(" + event.type + "): node: ");
-        // });
+        $(document).bind("keydown.dynatree-" + this.tree._id, function(event){
+            var node = DT.getNode(event.target);
+            if( node && node.tree === that.tree ){
+                var ctx = that.tree._makeHookContext(node, event);
+                return ( that.tree._triggerNodeEvent("keydown", node, event) === false ) ? false : that.tree._callHook("nodeKeydown", ctx);
+            }
+        });
         this.element.bind(eventNames, function(event){
             var node = DT.getNode(event.target);
             if( !node ){
                 return true;  // Allow bubbling of other events
             }
-            var //data = that.tree,
-                tree = that.tree,
-                o = that.options,
+            var tree = that.tree,
+//                o = that.options,
                 ctx = tree._makeHookContext(node, event),
                 prevPhase = tree.phase;
             that.tree.debug("event(" + event.type + "): node: ", node);
