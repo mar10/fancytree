@@ -2,40 +2,50 @@
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
-	<title>Dynatree - Example: column view</title>
-	<!-- http://www.biggle.de/blog/google-api-jquery-ui-1-7-2-theme-bersicht-razor-layout -->
-	<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/base/jquery-ui.css" 
-		rel="stylesheet" type="text/css">
+	<title>Dynatree - Example: Themeroller</title>
+
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js" type="text/javascript"></script>
 
 	<link href="../src/skin-vista/ui.dynatree.css" rel="stylesheet" type="text/css">
     <script src="../src/jquery.dynatree.js" type="text/javascript"></script>
     <script src="../src/jquery.dynatree.columnview.js" type="text/javascript"></script>
+    <script src="../src/jquery.dynatree.table.js" type="text/javascript"></script>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
 	<link href="../lib/prettify.css" rel="stylesheet">
 	<script src="../lib/prettify.js" type="text/javascript"></script>
 	<link href="sample.css" rel="stylesheet" type="text/css">
 	<script src="sample.js" type="text/javascript"></script>
+
+	<!-- Themeroller switcher -->
+	<link type="text/css" rel="stylesheet" href="http://jqueryui.com/themes/base/jquery.ui.all.css" />
+	<script type="text/javascript" src="http://jqueryui.com/themeroller/themeswitchertool/"></script>
+
 	<!-- End_Exclude -->
 <style type="text/css">
-	table.dynatree-container {
+	/* Dynatree extension 'table' */
+	table.dynatree-ext-table {
 		border-collapse: collapse;
+		width: 100%;
 	}
-	table.dynatree-container tbody tr[0] {
-		height: 200px;
+/*	table.dynatree-ext-table tbody tr:nth-child(even){
+		background-color: #f4f4f8;
 	}
-	table.dynatree-container tbody tr[1] td {
-		border: 1px solid gray;
-		vertical-align: top;
-		/*overflow: auto;*/
+	table.dynatree-ext-table tbody tr td {
+		border: 1px solid lightgray;
 	}
-	.dynatree-container td >ul
+*/
+	/* Dynatree extension 'columnview' */
+	table.dynatree-ext-columnview {
+		border-collapse: collapse;
+		width: 100%;
+	}
+	table.dynatree-ext-columnview td >ul
 	{
 		padding: 0;
 	}
-	.dynatree-container td >ul li
+	table.dynatree-ext-columnview td >ul li
 	{
 		list-style-image: none;
 		list-style-position: outside;
@@ -52,80 +62,102 @@
 		margin:0;
 		padding:1px 0 0 0;
 	}
-	span.tag{
-		border: 1px solid gray;
-		display: inline-block;
-		padding: 0 5px;
-		margin: 1px 5px;
-		background-color: #dec;
-		border-radius: 5px;
+	table.dynatree-ext-columnview tbody tr[0] {
+		height: 200px;
 	}
-	span.tag button.close{
-		border: 1px solid transparent;
-		border-radius: 4px;
-		padding: 0px 1px 2px 1px;
-		margin-left: 8px;
-		background-color: transparent;
-	}
-	span.tag button.close:hover{
-		border-color: gray;
-		background-color: #f99;
+	table.dynatree-ext-columnview tbody tr td {
+		/*border: 1px solid gray;*/
+		vertical-align: top;
+		overflow: auto;
 	}
 </style>
 	<!-- Add code to initialize the tree when the document is loaded: -->
 <script type="text/javascript">
 	$(function(){
+	    $('#switcher').themeswitcher();
 		// Attach the dynatree widget to an existing <div id="tree"> element
 		// and pass the tree options as an argument to the dynatree() function:
-		$("#columnview").dynatree({
-			extensions: ["columnview"],
+		$("#tree").dynatree({
+			extensions: ["themeroller"],
 			checkbox: true,
 			source: {
 				url: "../test/unit/ajax-tree.json"
 			},
 			activate: function(e, data) {
-				$("td#preview").text("activate " + data.node);
-			},
-			select: function(e, data) {
-				// create a tag, when node is selected
-				var node = data.node;
-				$("span#tag-" + node.key).remove();
-				if(node.selected){
-					$("<span>", {
-						id: "tag-" + node.key,
-						text: node.title,
-						"class": "tag"
-					})
-					.append("<button class='close'>x</button>")
-					.appendTo($("td#tags"));
-				}
 			},
 			lazyload: function(e, data) {
 				data.result = {url: "../test/unit/ajax-sub2.json"}
 			}
 		});
-		$("td#tags").on("click", "button.close", function(e){
-			// Bind live handler that deselcts node when user clicks 'x' of a tag
-			var key = $(e.target).parent().attr("id").substring(4),
-				node = $(":ui-dynatree").dynatree("getNodeByKey", key);
-			node.setSelected(false);
-			return false; // do not bubble and trigger span click
-		}).on("click", "span.tag", function(e){
-			// Bind live handler activates node, when tag is clicked
-			var key = $(e.target).attr("id").substring(4),
-				node = $(":ui-dynatree").dynatree("getNodeByKey", key);
-			node.setActive();
+		$("#treetable").dynatree({
+			extensions: ["table", "themeroller"],
+			checkbox: true,
+			source: {
+				url: "../test/unit/ajax-tree.json"
+			},
+			activate: function(e, data) {
+			},
+			lazyload: function(e, data) {
+				data.result = {url: "../test/unit/ajax-sub2.json"}
+			},
+			rendercolumns: function(e, data) {
+				var node = data.node,
+					$tdList = $(node.tr).find(">td");
+				$tdList.eq(1).text(node.key);
+				$tdList.eq(2).text(!!node.folder);
+			}
+		});
+		$("#columnview").dynatree({
+			extensions: ["columnview", "themeroller"],
+			checkbox: true,
+			source: {
+				url: "../test/unit/ajax-tree.json"
+			},
+			activate: function(e, data) {
+			},
+			lazyload: function(e, data) {
+				data.result = {url: "../test/unit/ajax-sub2.json"}
+			}
 		});
 	});
 		</script>
 </head>
 <body class="example">
-	<h1>Example: 'columnview' extension</h1>
+	<h1>Example: 'themeroller' extension</h1>
 	<p class="description">
-		This sample shows, how titles could displayed as aligned columns.
+		This sample shows, how jQuery Themreoller styles can be applied by
+		adding the 'themroller' extension.
 	</p>
+	<div id="switcher"></div>
 
 	<!-- Add a <table> element where the tree should appear: -->
+	<p class="description">
+		Standard tree:
+	</p>
+	<div id="tree"></div>
+
+	<!-- Add a <table> element where the tree should appear: -->
+	<p class="description">
+		Table tree:
+	</p>
+	<table id="treetable">
+		<colgroup>
+		<col width="*"></col>
+		<col width="200px"></col>
+		<col width="100px"></col>
+		</colgroup>
+		<thead>
+			<tr> <th></th> <th>Key</th> <th>Folder</th> </tr>
+		</thead>
+		<tbody>
+			<tr> <td></td> <td></td> <td></td> </tr>
+		</tbody>
+	</table>
+
+	<!-- Add a <table> element where the tree should appear: -->
+	<p class="description">
+		Columnview tree:
+	</p>
 	<table id="columnview">
 		<colgroup>
 		<col width="300px"></col>
@@ -137,8 +169,6 @@
 		</thead>
 		<tbody>
 			<tr> <td>?</td> <td>?</td> <td>?</td> </tr>
-			<tr> <td id="tags" colspan="3">Selected nodes: </td> </tr>
-			<tr> <td id="preview" colspan="3">preview</td> </tr>
 		</tbody>
 	</table>
 

@@ -1669,7 +1669,16 @@ $.extend($.ui.dynatree, {
         // `this._super`: the virtual function that was overriden (member of prev. extension or Dynatree)
         treeInit: function(ctx){
             this._super(ctx);
-            ctx.widget.element.addClass("ui-widget ui-widget-content ui-corner-all");
+            var $el = ctx.widget.element;
+
+            $el.addClass("ui-widget ui-widget-content ui-corner-all");
+            if($el[0].nodeName === "TABLE"){
+                $el.addClass("ui-widget ui-corner-all");
+                $el.find(">thead tr").addClass("ui-widget-header");
+                $el.find(">tbody").addClass("ui-widget-conent");
+            }else{
+                $el.addClass("ui-widget ui-widget-content ui-corner-all");
+            }
         },
         treeDestroy: function(ctx){
             this._super(ctx);
@@ -1697,9 +1706,14 @@ $.extend($.ui.dynatree, {
             .ui-state-active: Class to be applied on mousedown to clickable button-like elements. Applies "clickable active" container styles to an element and its child text, links, and icons.
             */
             // cnList.push("dynatree-node");
-            if( tree.activeNode === node ){
+            if(node === tree.activeNode){
                 cnList.push("ui-state-default");
             }
+            if(node === tree.focusNode){
+                cnList.push("ui-state-highlight");
+            }
+        // $tds.toggleClass("ui-state-highlight", node === tree.activeNode);
+        // $tds.toggleClass("ui-state-default", node === tree.focusNode);
             // if( node.expanded ){
             //     cnList.push("dynatree-expanded");
             // }
@@ -1712,8 +1726,13 @@ $.extend($.ui.dynatree, {
             // if( node.selected ){
             //     cnList.push("dynatree-selected");
             // }
-            $(node.span).addClass(cnList.join(" "));
-
+            var $el = ctx.widget.element;
+            if($el[0].nodeName === "TABLE"){
+                $(node.tr).addClass(cnList.join(" "));
+            }else{
+                $(node.span).addClass(cnList.join(" "));
+            }
+    
             // TODO: support table extension
             // $tds.toggleClass("ui-state-highlight", node === tree.activeNode);
             // $tds.toggleClass("ui-state-default", node === tree.focusNode);

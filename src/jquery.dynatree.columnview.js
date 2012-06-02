@@ -67,7 +67,7 @@ $.ui.dynatree.registerExtension("columnview", {
             tdList = $(">td", tree.tr).get(),
             $tdFirst = $(">td", tree.tr).eq(0);
         $ul.removeClass("dynatree-container");
-        $table.addClass("dynatree-container");
+        $table.addClass("dynatree-container dynatree-ext-columnview");
         $tdFirst.empty();
         $ul.detach().appendTo($tdFirst);
         

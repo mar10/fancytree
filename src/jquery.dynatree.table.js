@@ -54,6 +54,7 @@ function insertSiblingAfter(referenceNode, newNode) {
 function setChildRowVisibility(node, flag) {
     var tr = node.tr,
         lastNode = node.getNextSibling();
+    // TODO: FIXME: if lastNode is null, check for parent.nextsibling !!
     tr = tr.nextSibling;
     while(tr && tr.dtnode !== lastNode){
         tr.style.display = flag ? "" : "none";
@@ -101,11 +102,12 @@ $.ui.dynatree.registerExtension("table", {
     // `this._super`: the virtual function that was overriden (member of prev. extension or Dynatree)
     treeInit: function(ctx){
         var tree = ctx.tree,
-            table = tree.$widget.element,
+            $table = tree.$widget.element,
             tr;
+        $table.addClass("dynatree-container dynatree-ext-table");
         tree.tbody = $("table#treetable tbody")[0];
 //        table.addClass("dynatree-container");
-        tree.columnCount = $("thead >tr >th", table).length;
+        tree.columnCount = $("thead >tr >th", $table).length;
         $(tree.tbody).empty();
 
         tree.rowFragment = document.createDocumentFragment();
@@ -201,9 +203,8 @@ $.ui.dynatree.registerExtension("table", {
     nodeRenderTitle: function(ctx, title) {
         var node = ctx.node;
         this._super(ctx);
+        // let user code write column content
         ctx.tree._triggerNodeEvent("rendercolumns", node);
-        // $("td:nth(1)", node.tr).text(node.key);
-        // $("td:nth(2)", node.tr).text(!!node.folder);
     },
     nodeRenderStatus: function(ctx) {
         var node = ctx.node,
@@ -215,8 +216,12 @@ $.ui.dynatree.registerExtension("table", {
         node.li = node.tr;
         this._super(ctx);
         node.li = orgLI;
-        // $tds.toggleClass("ui-state-highlight", node === tree.activeNode);
-        // $tds.toggleClass("ui-state-default", node === tree.focusNode);
+        if(node === tree.activeNode){
+            $tr.addClass("dynatree-active");
+        }
+        // if(node === tree.focusNode){
+        //     $tr.addClass("dynatree-active");
+        // }
     },
     // nodeSetActive: function(ctx, flag) {
     //     this._super(ctx, flag);
