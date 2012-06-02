@@ -354,6 +354,9 @@ $.extend(DynatreeNode.prototype, {
     setFocus: function(){
         return this.tree._callHook("nodeSetFocus", this);
     },
+    setSelected: function(flag){
+        return this.tree._callHook("nodeSetSelected", this, flag);
+    },
     toggleExpand: function(){
         return this.tree._callHook("nodeToggleExpand", this);
     },
@@ -573,6 +576,17 @@ $.extend(Dynatree.prototype, {
         // Make sure that clicks stop, otherwise <a href='#'> jumps to the top
         event.preventDefault();
     },
+    nodeCollapseSiblings: function(ctx) {
+        var node = ctx.node;
+        if( node.parent ){
+            var ac = node.parent.children;
+            for (var i=0, l=ac.length; i<l; i++) {
+                if ( ac[i] !== node && ac[i].expanded ){
+                    this._callHook("nodeSetExpanded", ac[i], false);
+                }
+            }
+        }
+    },
     // /** Collapse node, if expanded (shortcut to nodeSetExpanded(ctx, false)). */
     // nodeCollapse: function(ctx) {
     //     return this.nodeSetExpanded(ctx, false);
@@ -726,7 +740,6 @@ $.extend(Dynatree.prototype, {
     },
     /** Handle focusin/focusout events.*/
     nodeOnFocusInOut: function(ctx) {
-        $(ctx.node.li).toggleClass("ui-state-focus", ctx.orgEvent.type === "focus");
     },
     /**
      * Create <li><span>..</span> .. </li> tags for this node.
@@ -902,20 +915,9 @@ $.extend(Dynatree.prototype, {
             tree = ctx.tree,
             isLastSib = node.isLastSibling(),
             cnList = [];
-        /*
-        TODO:
-        .ui-state-highlight: Class to be applied to highlighted or selected elements. Applies "highlight" container styles to an element and its child text, links, and icons.
-        .ui-state-error: Class to be applied to error messaging container elements. Applies "error" container styles to an element and its child text, links, and icons.
-        .ui-state-error-text: An additional class that applies just the error text color without background. Can be used on form labels for instance. Also applies error icon color to child icons.
-
-        .ui-state-default: Class to be applied to clickable button-like elements. Applies "clickable default" container styles to an element and its child text, links, and icons.
-        .ui-state-hover: Class to be applied on mouseover to clickable button-like elements. Applies "clickable hover" container styles to an element and its child text, links, and icons.
-        .ui-state-focus: Class to be applied on keyboard focus to clickable button-like elements. Applies "clickable hover" container styles to an element and its child text, links, and icons.
-        .ui-state-active: Class to be applied on mousedown to clickable button-like elements. Applies "clickable active" container styles to an element and its child text, links, and icons.
-        */
         cnList.push("dynatree-node");
         if( tree.activeNode === node ){
-            cnList.push("dynatree-active ui-state-default");
+            cnList.push("dynatree-active");
         }
         if( node.expanded ){
             cnList.push("dynatree-expanded");
@@ -1029,9 +1031,19 @@ $.extend(Dynatree.prototype, {
         }
         // 
         var dfd = new $.Deferred();
+
+        // Auto-collapse mode: collapse all siblings
+        if( flag && !node.expanded && opts.autoCollapse ) {
+            opts.autoCollapse = false;
+            var parents = node.getParentList(false, true);
+            for(var i=0, l=parents.length; i<l; i++){
+                this._callHook("nodeCollapseSiblings", parents[i]);
+            }
+            opts.autoCollapse = true;
+        }
         // Trigger onExpand after expanding
         dfd.done(function(){
-            ctx.tree._triggerNodeEvent("expand", ctx);
+            ctx.tree._triggerNodeEvent(flag ? "expand" : "collapse", ctx);
         });
 
         // vvv Code below is executed after loading finshed:
@@ -1050,13 +1062,6 @@ $.extend(Dynatree.prototype, {
             // can animate later
             tree._callHook("nodeRender", ctx, false, false, true);
 
-            // Auto-collapse mode: collapse all siblings
-            // if( this.bExpanded && this.parent && opts.autoCollapse ) {
-            //     var parents = this._parentList(false, true);
-            //     for(var i=0, l=parents.length; i<l; i++){
-            //         parents[i].collapseSiblings();
-            //     }
-            // }
 
             // If the currently active node is now hidden, deactivate it
             // if( opts.activeVisible && this.tree.activeNode && ! this.tree.activeNode.isVisible() ) {
@@ -1240,8 +1245,11 @@ $.extend(Dynatree.prototype, {
         // TODO: call destructors and remove reference loops
         tree.rootNode.children = null;
     },
-    /** Widget was created. */
+    /** Widget was created (called only once, even it re-initialized). */
     treeCreate: function(ctx) {
+    },
+    /** Widget was destroyed. */
+    treeDestroy: function(ctx) {
     },
     /** Widget was (re-)initialized. */
     treeInit: function(ctx) {
@@ -1279,7 +1287,7 @@ $.extend(Dynatree.prototype, {
             _raiseNotImplemented();
         }
 
-        $container.addClass("ui-widget ui-widget-content ui-corner-all");
+        // $container.addClass("ui-widget ui-widget-content ui-corner-all");
 
         dfd = this.nodeLoadChildren(rootCtx, source).done(function(){
             tree.render();
@@ -1353,6 +1361,7 @@ $.widget("ui.dynatree", {
 //          timeout: 0, // >0: Make sure we get an ajax error if error is unreachable
             dataType: "json" // Expect json format and pass json object to callbacks.
         },  // 
+        autoCollapse: false,
         clickFolderMode: 3,
         extensions: [],
         fx: { height: "toggle", duration: 200 },
@@ -1419,7 +1428,8 @@ $.widget("ui.dynatree", {
     // Use the destroy method to clean up any modifications your widget has made to the DOM
     destroy: function() {
         this._unbind();
-        this.element.removeClass("ui-widget ui-widget-content ui-corner-all");
+        this.tree._callHook("treeDestroy", this.tree);
+        // this.element.removeClass("ui-widget ui-widget-content ui-corner-all");
         this.tree.$div.find(">ul.dynatree-container").remove();
         var _ = this.$source && this.$source.removeClass("ui-helper-hidden");
         // In jQuery UI 1.8, you must invoke the destroy method from the base widget
@@ -1484,6 +1494,10 @@ $.widget("ui.dynatree", {
     /** Return active node or null. */
     getActiveNode: function() {
         return this.tree.activeNode;
+    },
+    /** Return matching node or null. */
+    getNodeByKey: function(key) {
+        return this.tree.getNodeByKey(key);
     },
     /** Return Dynatree instance. */
     getTree: function() {
@@ -1581,6 +1595,13 @@ $.extend($.ui.dynatree, {
     }
 });
 
+/*******************************************************************************
+ * Register AMD
+ */
+// if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
+//     define( "jquery", [], function () { return jQuery; } );
+// }
+
 
 }(jQuery));  // 
 
@@ -1626,10 +1647,76 @@ $.extend($.ui.dynatree, {
             this._super(ctx);
             $(ctx.tree.rootNode.ul).addClass("role-tree");
         },
-        nodeUpdateStatus: function(ctx){
+        nodeRenderStatus: function(ctx){
             this._super(ctx);
             $(ctx.node.li).addClass("role-treeitem");
             // TODO: aria-expanded: "true", aria-selected: "true"
+        }
+     });
+}(jQuery));
+
+/*******************************************************************************
+ * Dynatree extension: themeroller
+ */
+(function($) {
+    $.ui.dynatree.registerExtension("themeroller", {
+        // Default options for this extension.
+        options: {
+        },
+        // Overide virtual methods for this extension.
+        // `this`       : is this extension object
+        // `this._base` : the Dynatree instance
+        // `this._super`: the virtual function that was overriden (member of prev. extension or Dynatree)
+        treeInit: function(ctx){
+            this._super(ctx);
+            ctx.widget.element.addClass("ui-widget ui-widget-content ui-corner-all");
+        },
+        treeDestroy: function(ctx){
+            this._super(ctx);
+            ctx.widget.element.removeClass("ui-widget ui-widget-content ui-corner-all");
+        },
+        nodeOnFocusInOut: function(ctx) {
+            $(ctx.node.li).toggleClass("ui-state-focus", ctx.orgEvent.type === "focus");
+        },
+        nodeRenderStatus: function(ctx){
+            var tree = ctx.tree,
+                node = ctx.node,
+                cnList = [];
+
+            this._super(ctx);
+
+            /*
+            TODO:
+            .ui-state-highlight: Class to be applied to highlighted or selected elements. Applies "highlight" container styles to an element and its child text, links, and icons.
+            .ui-state-error: Class to be applied to error messaging container elements. Applies "error" container styles to an element and its child text, links, and icons.
+            .ui-state-error-text: An additional class that applies just the error text color without background. Can be used on form labels for instance. Also applies error icon color to child icons.
+
+            .ui-state-default: Class to be applied to clickable button-like elements. Applies "clickable default" container styles to an element and its child text, links, and icons.
+            .ui-state-hover: Class to be applied on mouseover to clickable button-like elements. Applies "clickable hover" container styles to an element and its child text, links, and icons.
+            .ui-state-focus: Class to be applied on keyboard focus to clickable button-like elements. Applies "clickable hover" container styles to an element and its child text, links, and icons.
+            .ui-state-active: Class to be applied on mousedown to clickable button-like elements. Applies "clickable active" container styles to an element and its child text, links, and icons.
+            */
+            // cnList.push("dynatree-node");
+            if( tree.activeNode === node ){
+                cnList.push("ui-state-default");
+            }
+            // if( node.expanded ){
+            //     cnList.push("dynatree-expanded");
+            // }
+            // if( node.folder ){
+            //     cnList.push("dynatree-folder");
+            // }
+            // if( node.hasChildren() !== false ){
+            //     cnList.push("dynatree-has-children");
+            // }
+            // if( node.selected ){
+            //     cnList.push("dynatree-selected");
+            // }
+            $(node.span).addClass(cnList.join(" "));
+
+            // TODO: support table extension
+            // $tds.toggleClass("ui-state-highlight", node === tree.activeNode);
+            // $tds.toggleClass("ui-state-default", node === tree.focusNode);
         }
      });
 }(jQuery));

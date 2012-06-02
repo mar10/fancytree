@@ -106,7 +106,7 @@ test("Static members", function() {
 
 test("Create dynatree", function() {
     _setupAsync();
-    expect(28);
+    expect(27);
 
     var insideContructor = true;
 
@@ -123,15 +123,15 @@ test("Create dynatree", function() {
             ok(!!widget, "widget is attached to div#tree");
             var tree = widget.tree;
             equal(tree.rootNode.children, null, "`tree.rootNode` is empty");
-            ok( ! $("div#tree").hasClass("ui-widget"), "div#tree has no widget style yet");
+            equal($("div#tree").hasClass("ui-widget"), false, "div#tree has no widget style yet");
         },
         init: function(e, data){
             equal(e.type, "dynatreeinit", "receive `init` callback");
             ok(insideContructor, "running synchronously");
             ok(!!data.tree.rootNode, "`data.tree` is the tree object");
             equal(data.options.source.length, TESTDATA_TOPNODES, "data.options.contains widget options");
-            equal($("div#tree").hasClass("ui-widget"), true, "div#tree has ui-widget class");
-            equal($(this).hasClass("ui-widget"), true, "`this` is div#tree");
+//            equal($("div#tree").hasClass("ui-widget"), true, "div#tree has ui-widget class");
+            equal($(this).attr("id"), "tree", "`this` is div#tree");
             equal(data.tree.rootNode.children.length, TESTDATA_TOPNODES, "tree.rootNode has all child nodes");
 
             var tree = data.tree;
@@ -236,7 +236,7 @@ test(".click() to expand a folder", function() {
         },
         expand: function(e, data){
             equal(e.type, "dynatreeexpand", "receive `expand` callback");
-            ok($(this).hasClass("ui-widget"), "`this` is div#tree");
+            equal($(this).attr("id"), "tree", "`this` is div#tree");
             ok(!!data.tree.rootNode, "`data.tree` is the tree object");
             ok($(data.node.span).hasClass("dynatree-node"), "data.node.span has class dynatree-node");
             ok($(data.node.span).hasClass("dynatree-expanded"), "data.node.span has class dynatree-expanded");
@@ -262,7 +262,7 @@ test(".click() to activate a node", function() {
         activate: function(e, data){
             equal(e.type, "dynatreeactivate", "receive `activate` callback");
             ok(!!data.tree.rootNode, "`data.tree` is the tree object");
-            ok($(this).hasClass("ui-widget"), "`this` is div#tree");
+            equal($(this).attr("id"), "tree", "`this` is div#tree");
             ok($(data.node.span).hasClass("dynatree-node"), "data.node.span has class dynatree-node");
             ok($(data.node.span).hasClass("dynatree-active"), "data.node.span has class dynatree-active");
             start();
@@ -314,7 +314,7 @@ test(".click() to select a node", function() {
         select: function(e, data){
             equal(e.type, "dynatreeselect", "receive `select` callback");
             ok(!!data.tree.rootNode, "`data.tree` is the tree object");
-            ok($(this).hasClass("ui-widget"), "`this` is div#tree");
+            equal($(this).attr("id"), "tree", "`this` is div#tree");
             ok($(data.node.span).hasClass("dynatree-node"), "data.node.span has class dynatree-node");
             ok($(data.node.span).hasClass("dynatree-selected"), "data.node.span has class dynatree-selected");
             start();

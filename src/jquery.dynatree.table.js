@@ -101,10 +101,11 @@ $.ui.dynatree.registerExtension("table", {
     // `this._super`: the virtual function that was overriden (member of prev. extension or Dynatree)
     treeInit: function(ctx){
         var tree = ctx.tree,
+            table = tree.$widget.element,
             tr;
         tree.tbody = $("table#treetable tbody")[0];
-//        $("table#treetable").addClass("dynatree-container");
-        tree.columnCount = 3; //$(">tr", tree
+//        table.addClass("dynatree-container");
+        tree.columnCount = $("thead >tr >th", table).length;
         $(tree.tbody).empty();
 
         tree.rowFragment = document.createDocumentFragment();
@@ -200,8 +201,9 @@ $.ui.dynatree.registerExtension("table", {
     nodeRenderTitle: function(ctx, title) {
         var node = ctx.node;
         this._super(ctx);
-        $("td:nth(1)", node.tr).text(node.key);
-        $("td:nth(2)", node.tr).text(!!node.folder);
+        ctx.tree._triggerNodeEvent("rendercolumns", node);
+        // $("td:nth(1)", node.tr).text(node.key);
+        // $("td:nth(2)", node.tr).text(!!node.folder);
     },
     nodeRenderStatus: function(ctx) {
         var node = ctx.node,
@@ -209,17 +211,18 @@ $.ui.dynatree.registerExtension("table", {
             $tr = $(node.tr),
             $tds = $(">td", node.tr),
             orgLI = node.li;
+        // Let base class do it's thing, but apply classes to <tr> instead of <li>
         node.li = node.tr;
         this._super(ctx);
         node.li = orgLI;
-        $tds.toggleClass("ui-state-highlight", node === tree.activeNode);
-        $tds.toggleClass("ui-state-default", node === tree.focusNode);
+        // $tds.toggleClass("ui-state-highlight", node === tree.activeNode);
+        // $tds.toggleClass("ui-state-default", node === tree.focusNode);
     },
-    nodeSetActive: function(ctx, flag) {
-        this._super(ctx, flag);
-        flag = flag === undefined ? true : !!flag;
-        $(ctx.node.tr).toggleClass("", flag);
-    },
+    // nodeSetActive: function(ctx, flag) {
+    //     this._super(ctx, flag);
+    //     flag = flag === undefined ? true : !!flag;
+    //     $(ctx.node.tr).toggleClass("", flag);
+    // },
     /** Expand node, return Deferred.promise. */
     nodeSetExpanded: function(ctx, flag) {
         var node = ctx.node,

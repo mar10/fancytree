@@ -39,6 +39,12 @@
 			},
 			lazyload: function(e, data) {
 				data.result = {url: "../test/unit/ajax-sub2.json"}
+			},
+			rendercolumns: function(e, data) {
+				var node = data.node,
+					$tdList = $(node.tr).find(">td");
+				$tdList.eq(1).text(node.key);
+				$tdList.eq(2).text(!!node.folder);
 			}
 		});
 	});
@@ -58,7 +64,7 @@
 		<col width="100px"></col>
 		</colgroup>
 		<thead>
-			<tr> <td></td> <td>Key</td> <td>Folder</td> </tr>
+			<tr> <th></th> <th>Key</th> <th>Folder</th> </tr>
 		</thead>
 		<tbody>
 			<tr> <td></td> <td></td> <td></td> </tr>
