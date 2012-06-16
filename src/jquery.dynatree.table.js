@@ -125,6 +125,8 @@ $.ui.dynatree.registerExtension("table", {
         // standard Dynatree created a root UL
         $(tree.rootNode.ul).remove();
         tree.rootNode.ul = null;
+        // Make sure that status classes are set on the node's <tr> elements
+        tree.statusClassPropName = "tr";
     },
     nodeRender: function(ctx, force, deep, collapsed, _recursive) {
         var tree = ctx.tree,
@@ -210,23 +212,23 @@ $.ui.dynatree.registerExtension("table", {
         // let user code write column content
         ctx.tree._triggerNodeEvent("rendercolumns", node);
     },
-    nodeRenderStatus: function(ctx) {
-        var node = ctx.node,
-            tree = ctx.tree,
-            $tr = $(node.tr),
-            $tds = $(">td", node.tr),
-            orgLI = node.li;
-        // Let base class do it's thing, but apply classes to <tr> instead of <li>
-        node.li = node.tr;
-        this._super(ctx);
-        node.li = orgLI;
-        if(node === tree.activeNode){
-            $tr.addClass("dynatree-active");
-        }
-        // if(node === tree.focusNode){
-        //     $tr.addClass("dynatree-active");
-        // }
-    },
+    // nodeRenderStatus: function(ctx) {
+    //     var node = ctx.node,
+    //         tree = ctx.tree,
+    //         $tr = $(node.tr),
+    //         $tds = $(">td", node.tr),
+    //         orgLI = node.li;
+    //     // Let base class do it's thing, but apply classes to <tr> instead of <li>
+    //     node.li = node.tr;
+    //     this._super(ctx);
+    //     node.li = orgLI;
+    //     if(node === tree.activeNode){
+    //         $tr.addClass("dynatree-active");
+    //     }
+    //     // if(node === tree.focusNode){
+    //     //     $tr.addClass("dynatree-active");
+    //     // }
+    // },
     // nodeSetActive: function(ctx, flag) {
     //     this._super(ctx, flag);
     //     flag = flag === undefined ? true : !!flag;

@@ -61,8 +61,7 @@ $.ui.dynatree.registerExtension("columnview", {
         tree.tr = $("tbody tr", $table)[0];
         tree.columnCount = $(">td", tree.tr).length;
         this._super(ctx);
-        // standard Dynatree created a root UL.
-        // Move this into first table cell
+        // Standard Dynatree created a root <ul>. Now move this into first table cell
         var $ul = $(tree.rootNode.ul),
             tdList = $(">td", tree.tr).get(),
             $tdFirst = $(">td", tree.tr).eq(0);
@@ -85,15 +84,21 @@ $.ui.dynatree.registerExtension("columnview", {
             // if(node.expanded) {
             //     node.setExpanded(false);
             // }
-        // Collapse all children on deactivate, so right neighbor cells are clreared
         }).bind("dynatreedeactivate", function(e, data){
-            var node = data.node,
-                level = node.getLevel();
-
-            // alert("deactivate");
-        // Expand nodes on activate, so we populate the right neighbor cell
+            // data.node.setExpanded(false);
         }).bind("dynatreeactivate", function(e, data){
-            var node = data.node;
+            var node = data.node,
+                tree = data.tree,
+                level = node.getLevel(),
+                i;
+            // Clear right neighbours
+            if(level <= tree.columnCount){
+                var tdList = $(">td", tree.tr);
+                for(i=level; i<tree.columnCount; i++){
+                    tdList.eq(i).empty();
+                }
+            }
+            // Expand nodes on activate, so we populate the right neighbor cell
             if(!node.expanded && (node.children || node.lazy)) {
                 node.setExpanded();
             }
