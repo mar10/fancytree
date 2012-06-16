@@ -54,7 +54,11 @@ function insertSiblingAfter(referenceNode, newNode) {
 function setChildRowVisibility(node, flag) {
     var tr = node.tr,
         lastNode = node.getNextSibling();
-    // TODO: FIXME: if lastNode is null, check for parent.nextsibling !!
+    // If lastNode is null, check for parent.nextsibling !!
+    while(!lastNode && node.parent.parent){
+        node = node.parent;
+        lastNode = node.getNextSibling();
+    }
     tr = tr.nextSibling;
     while(tr && tr.dtnode !== lastNode){
         tr.style.display = flag ? "" : "none";
@@ -76,7 +80,7 @@ function findPrevRowNode(node){
         _assert(prev.tr);
         // descend to lowest child (with a <tr> tag)
         while(prev.children){
-            var last = prev.children[prev.children.length-1];
+            var last = prev.children[prev.children.length - 1];
             if(!last.tr){
                 break;
             }

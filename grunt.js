@@ -26,11 +26,11 @@ module.exports = function(grunt) {
             }
         },
         qunit: {
-            files: ["tests/unit/**/*.html"]
+            files: ["test/unit/**/*.html"]
         },
         lint: {
 //            beforeconcat: ["grunt.js", "src/**/*.js", "tests/**/*.js"],
-            beforeconcat: ["src/jquery.dynatree.js", "src/jquery.dynatree.table.js", "src/jquery.dynatree.columnview.js", "test/unit/test-dynatree.js"],
+            beforeconcat: ["src/*.js", "test/unit/test-dynatree.js"],
 //            beforeconcat: ["grunt.js"],
 //            beforeconcat: ["grunt.js", "src/jquery.dynatree.js", "tests/**/*.js"],
             afterconcat: ["<config:concat.dist.dest>"]
@@ -76,5 +76,5 @@ module.exports = function(grunt) {
         }
     });
     // Default task.
-    grunt.registerTask("default", "lint:beforeconcat qunit concat lint:afterconcat min");
+    grunt.registerTask("default", "lint:beforeconcat concat lint:afterconcat min");
 };

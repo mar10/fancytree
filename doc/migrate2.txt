@@ -1,6 +1,14 @@
 Dynatree 2 Migration
 ====================
 
+Requires
+  Dynatree 1:
+    jQuery 1.4+
+    jQuery UI 1.7+ (?)
+  Dynatree 2:
+    jQuery 1.5+ (1.6+ recommended)
+    jQuery UI 1.8.6+
+
 node.data removed:
   Dynatree 1:
     node.bExpanded = true  // current status

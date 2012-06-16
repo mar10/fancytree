@@ -53,7 +53,7 @@
 		overflow: auto;
 	}
 
-	span.tag{
+	.dynatree-ext-columnview span.tag{
 		border: 1px outset #dec;
 		display: inline-block;
 		padding: 0 5px;
@@ -82,7 +82,6 @@
 		// and pass the tree options as an argument to the dynatree() function:
 		$("#columnview").dynatree({
 			extensions: ["columnview"],
-//			extensions: ["columnview", "themeroller"],
 			checkbox: true,
 			source: {
 				url: "../test/unit/ajax-tree.json"
