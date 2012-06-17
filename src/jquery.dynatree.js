@@ -724,6 +724,10 @@ $.extend(Dynatree.prototype, {
             node = ctx.node,
             dfd;
 
+        if($.isFunction(source)){
+            source = source();
+//            alert("source() = " + source);
+        }
         if(source.url || $.isFunction(source.done)){
             tree.nodeSetStatus(ctx, "loading");
             if(source.url){
@@ -1338,6 +1342,10 @@ $.extend(Dynatree.prototype, {
             case "json":
     //            $().addClass("ui-helper-hidden");
                 source = $.parseJSON($container.text());
+                if(source.children){
+                    if(source.title){tree.title = source.title;}
+                    source = source.children;
+                }
                 break;
             default:
                 $.error("Invalid data-type: " + type);
