@@ -30,7 +30,7 @@
 	}
 	table.dynatree-ext-table tbody tr.dynatree-active {
 /*	    border: 1px solid #99DEFD; */
-    	background-color: #D8F0FA;
+    	background-color: royalblue;
 }
 </style>
 	<!-- Add code to initialize the tree when the document is loaded: -->
@@ -40,15 +40,19 @@
 		// and pass the tree options as an argument to the dynatree() function:
 		$("#treetable").dynatree({
 			extensions: ["table"],
-//			extensions: ["table", "themeroller"],
 			checkbox: true,
 			source: {
-				url: "../test/unit/ajax-tree.json"
+				url: "../test/unit/ajax-tree-plain.json"
 			},
 			activate: function(e, data) {
 //				alert("activate " + data.node);
 			},
-			expand: function(e, data) {
+			keydown: function(e, data) {
+				switch(e.which){
+				case $.ui.keyCode.SPACE:
+					data.node.toggleSelected();
+					return false;
+				}
 			},
 			lazyload: function(e, data) {
 				data.result = {url: "../test/unit/ajax-sub2.json"}

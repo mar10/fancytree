@@ -161,10 +161,10 @@ $.ui.dynatree.registerExtension("table", {
             if(indent){
                 $(node.span).css({marginLeft: indent + "px"});
             }
-        }
 
-        // Set icon, link, and title
-        this._base.nodeRenderTitle(ctx);
+            // Set icon, link, and title (normally this is only required on initial render)
+            this._base.nodeRenderTitle(ctx);
+        }
 
         // // Allow tweaking, binding, after node was created for the first time
         // if(firstTime && opts.onCreate){

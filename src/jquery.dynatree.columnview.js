@@ -1,4 +1,3 @@
-
 /*************************************************************************
     jquery.dynatree.columnview.js
     Table extension for jquery.dynatree.js.
@@ -21,8 +20,6 @@
 
 // Start of local namespace
 (function($) {
-// relax some jslint checks:
-/*globals alert */
 
 "use strict";
 
@@ -74,23 +71,13 @@ $.ui.dynatree.registerExtension("columnview", {
         tree.$widget.options.autoCollapse = true;
         tree.$widget.options.clickFolderMode = 1;
 
-        // Clear right neighbor cells whe parent is collapsed
-        $table.bind("dynatreecollapse", function(e, data){
-            var node = data.node,
-                level = node.getLevel();
-
-            //alert("collapse");
-            // var node = data.node;
-            // if(node.expanded) {
-            //     node.setExpanded(false);
-            // }
-        }).bind("dynatreedeactivate", function(e, data){
-            // data.node.setExpanded(false);
-        }).bind("dynatreeactivate", function(e, data){
+        // Make sure that only active path is expanden when a node is activated:
+        $table.bind("dynatreeactivate", function(e, data){
             var node = data.node,
                 tree = data.tree,
                 level = node.getLevel(),
                 i;
+            tree._callHook("nodeCollapseSiblings", node);
             // Clear right neighbours
             if(level <= tree.columnCount){
                 var tdList = $(">td", tree.tr);
@@ -101,6 +88,29 @@ $.ui.dynatree.registerExtension("columnview", {
             // Expand nodes on activate, so we populate the right neighbor cell
             if(!node.expanded && (node.children || node.lazy)) {
                 node.setExpanded();
+            }
+        // Adjust keyboard behaviour:
+        }).bind("dynatreekeydown", function(e, data){
+            var next = null;
+            switch(e.which){
+            case $.ui.keyCode.DOWN:
+                next = data.node.getNextSibling();
+                if( next ){
+                    next.setFocus();
+                }
+                return false;
+            case $.ui.keyCode.LEFT:
+                next = data.node.getParent();
+                if( next ){
+                    next.setFocus();
+                }
+                return false;
+            case $.ui.keyCode.UP:
+                next = data.node.getPrevSibling();
+                if( next ){
+                    next.setFocus();
+                }
+                return false;
             }
         });
     },
@@ -119,46 +129,5 @@ $.ui.dynatree.registerExtension("columnview", {
             }
         }
     }
-    // nodeRenderTitle: function(ctx, title) {
-    //     var node = ctx.node;
-    //     this._super(ctx);
-    //     $("td:nth(1)", node.tr).text(node.key);
-    //     $("td:nth(2)", node.tr).text(!!node.folder);
-    // },
-    // nodeRenderStatus: function(ctx) {
-    //     var node = ctx.node,
-    //         tree = ctx.tree,
-    //         $tr = $(node.tr),
-    //         $tds = $(">td", node.tr),
-    //         orgLI = node.li;
-    //     this._super(ctx);
-    //     $tds.toggleClass("ui-state-highlight", node === tree.activeNode);
-    //     $tds.toggleClass("ui-state-default", node === tree.focusNode);
-    // },
-    // nodeSetActive: function(ctx, flag) {
-    //     this._super(ctx, flag);
-    //     flag = flag === undefined ? true : !!flag;
-    //     $(ctx.node.tr).toggleClass("", flag);
-    // },
-    /** Expand node, return Deferred.promise. */
-    // nodeSetExpanded: function(ctx, flag) {
-    //     var node = ctx.node,
-    //         dfd = new $.Deferred();
-    //     this._super(ctx, flag).done(function(){
-    //         setChildRowVisibility(ctx.node, flag);
-    //         dfd.resolveWith(node);
-    //     });
-    //     return dfd;
-    // },
-    // nodeSetStatus: function(ctx, status, message, details) {
-    //     if(status === "ok"){
-    //         var node = ctx.node,
-    //             firstChild = ( node.children ? node.children[0] : null );
-    //         if ( firstChild && firstChild.isStatusNode ) {
-    //             $(firstChild.tr).remove();
-    //         }
-    //     }
-    //     this._super(ctx, status, message, details);
-    // }
 });
 }(jQuery));
