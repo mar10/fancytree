@@ -632,6 +632,7 @@ $.extend(Dynatree.prototype, {
         var event = ctx.orgEvent,
             node = ctx.node,
             tree = ctx.tree,
+            opts = ctx.options,
             handled = true,
             KC = $.ui.keyCode,
             sib;
@@ -649,6 +650,13 @@ $.extend(Dynatree.prototype, {
                 tree.nodeSetExpanded(ctx, false);
                 break;
             case KC.SPACE:
+                if(opts.checkbox){
+                    tree.nodeToggleSelected(ctx);
+                }else{
+                    tree.nodeSetActive(ctx, true);
+                }
+                break;
+            case KC.ENTER:
                 tree.nodeSetActive(ctx, true);
                 break;
             case KC.BACKSPACE:
@@ -772,9 +780,20 @@ $.extend(Dynatree.prototype, {
         return dfd;
     },
     /** Expand all parents and scroll into visible area as neccessary (async). */
+    // isVisible: function() {
+    //     // Return true, if all parents are expanded.
+    //     var parents = ctx.node.getParentList(false, false);
+    //     for(var i=0, l=parents.length; i<l; i++){
+    //         if( ! parents[i].expanded ){ return false; }
+    //     }
+    //     return true;
+    // },
     nodeMakeVisible: function(ctx) {
-        // TODO: expand all parents
         // TODO: scroll as neccessary: http://stackoverflow.com/questions/8938352/dynatree-how-to-scroll-to-active-node
+        var parents = ctx.node.getParentList(false, false);
+        for(var i=0, l=parents.length; i<l; i++){
+            parents[i].setExpanded(true);
+        }
     },
     /** Handle focusin/focusout events.*/
     nodeOnFocusInOut: function(ctx) {
@@ -827,13 +846,12 @@ $.extend(Dynatree.prototype, {
 //        DT.debug("nodeRender", node.toString());
         _assert(parent, "Cannot call nodeRender(root)");
         _assert(parent.ul, "parent UL must exist");
-        if(force){_raiseNotImplemented("force");}
 
-
-        // if(node.li && force){
-        //     $(node.li).remove();
-        //     node.li = null;
-        // }
+//        if(force){_raiseNotImplemented("force");}
+        if(node.li && force){
+            $(node.li).remove();
+            node.li = null;
+        }
 
         // Create <li><span /> </li>
         if( ! node.li ) {
@@ -1034,7 +1052,7 @@ $.extend(Dynatree.prototype, {
         // Handle user click / [space] / [enter], according to clickFolderMode.
         var node = ctx.node,
             tree = ctx.tree,
-            opts = ctx.tree.options,
+            opts = ctx.options,
             userEvent = !!ctx.orgEvent,
             isActive = (node === tree.activeNode);
         // flag defaults to true
@@ -1055,16 +1073,16 @@ $.extend(Dynatree.prototype, {
                 tree.nodeSetActive(subCtx, false);
                 _assert(tree.activeNode === null, "deactivate was out of sync?");
             }
+            if(opts.activeVisible){
+                tree.nodeMakeVisible(ctx);
+            }
             tree.activeNode = node;
-//            $(node.span).addClass("dynatree-active");
             tree.nodeRenderStatus(ctx);
-            // TODO: does this render again?
             tree.nodeSetFocus(ctx);
             tree._triggerNodeEvent("activate", node);
         }else{
             _assert(tree.activeNode === node, "node was not active (inconsistency)");
             tree.activeNode = null;
-//            $(node.span).removeClass("dynatree-active");
             this.nodeRenderStatus(ctx);
             ctx.tree._triggerNodeEvent("deactivate", node);
         }
@@ -1438,7 +1456,9 @@ $.widget("ui.dynatree", {
 //          timeout: 0, // >0: Make sure we get an ajax error if error is unreachable
             dataType: "json" // Expect json format and pass json object to callbacks.
         },  // 
+        activeVisible: true, // Make sure, active nodes are visible (expanded).
         autoCollapse: false,
+        checkbox: false,
         clickFolderMode: 3,
         extensions: [],
         fx: { height: "toggle", duration: 200 },
@@ -1512,20 +1532,27 @@ $.widget("ui.dynatree", {
 
     // Use the _setOption method to respond to changes to options
     _setOption: function(key, value) {
-        var callDefault = true;
+        var callDefault = true,
+            rerender = false;
         switch( key ) {
-            case "disabled":
+        case "checkbox":
+            rerender = true;
+            break;
+        case "disabled":
             // handle enable/disable
             break;
-            case "keyboard":
-            //
+        case "keyboard":
             break;
         }
+        this.tree.debug("set option " + key + "=" + value + " <" + typeof(value) + ">");
         if(callDefault){
             // In jQuery UI 1.8, you have to manually invoke the _setOption method from the base widget
             $.Widget.prototype._setOption.apply(this, arguments);
             // TODO: In jQuery UI 1.9 and above, you use the _super method instead
 //          this._super( "_setOption", key, value );
+        }
+        if(rerender){
+            this.tree.render(true, true);
         }
     },
 

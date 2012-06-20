@@ -18,20 +18,9 @@
 	<script src="sample.js" type="text/javascript"></script>
 	<!-- End_Exclude -->
 <style type="text/css">
-	table.dynatree-ext-table {
-		border-collapse: collapse;
-		width: 100%;
-	}
 	table.dynatree-ext-table tbody tr:nth-child(even){
 		background-color: #f4f4f8;
 	}
-	table.dynatree-ext-table tbody tr td {
-		border: 1px solid lightgray;
-	}
-	table.dynatree-ext-table tbody tr.dynatree-active {
-/*	    border: 1px solid #99DEFD; */
-    	background-color: royalblue;
-}
 </style>
 	<!-- Add code to initialize the tree when the document is loaded: -->
 <script type="text/javascript">
@@ -46,13 +35,6 @@
 			},
 			activate: function(e, data) {
 //				alert("activate " + data.node);
-			},
-			keydown: function(e, data) {
-				switch(e.which){
-				case $.ui.keyCode.SPACE:
-					data.node.toggleSelected();
-					return false;
-				}
 			},
 			lazyload: function(e, data) {
 				data.result = {url: "../test/unit/ajax-sub2.json"}

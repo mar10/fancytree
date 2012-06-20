@@ -1,4 +1,4 @@
-/*************************************************************************
+/*******************************************************************************
     jquery.dynatree.columnview.js
     Table extension for jquery.dynatree.js.
 
@@ -9,14 +9,7 @@
     A current version and some documentation is available at
         http://dynatree.googlecode.com/
 
-    $Version:$
-    $Revision:$
-
-    @depends: jquery.js
-    @depends: jquery.ui.widget.js
-    @depends: jquery.ui.core.js
-    @depends: jquery.dynatree.js
-*************************************************************************/
+*******************************************************************************/
 
 // Start of local namespace
 (function($) {

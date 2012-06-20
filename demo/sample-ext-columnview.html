@@ -18,56 +18,7 @@
 	<script src="sample.js" type="text/javascript"></script>
 	<!-- End_Exclude -->
 <style type="text/css">
-	table.dynatree-ext-columnview {
-		border-collapse: collapse;
-		width: 100%;
-	}
-	table.dynatree-ext-columnview td >ul
-	{
-		padding: 0;
-	}
-	table.dynatree-ext-columnview td >ul li
-	{
-		list-style-image: none;
-		list-style-position: outside;
-		list-style-type: none;
-		-moz-background-clip:border;
-		-moz-background-inline-policy: continuous;
-		-moz-background-origin: padding;
-		background-attachment: scroll;
-		background-color: transparent;
-		background-position: 0 0;
-		background-repeat: repeat-y;
-		background-image: none;  /* no v-lines */
-
-		margin:0;
-		padding:1px 0 0 0;
-	}
-
-	table.dynatree-ext-columnview tbody tr[0] {
-		height: 200px;
-	}
-	table.dynatree-ext-columnview tbody tr td {
-		border: 1px solid gray;
-		vertical-align: top;
-		overflow: auto;
-	}
-	table.dynatree-ext-columnview span.dynatree-node {
-		display: inline-block;
-		width: 100%;
-	}
-	table.dynatree-ext-columnview span.dynatree-node a{
-		border: 1px solid transparent;
-		background-color: transparent;
-	}
-	table.dynatree-ext-columnview span.dynatree-node.dynatree-expanded {
-		background-color: #ccc;
-	}
-	table.dynatree-ext-columnview span.dynatree-node.dynatree-active {
-		background-color: royalblue;
-	}
-
-	.dynatree-ext-columnview span.tag{
+	span.tag{
 		border: 1px outset #dec;
 		display: inline-block;
 		padding: 0 5px;
@@ -122,13 +73,13 @@
 			}
 		});
 		$("td#tags").on("click", "button.close", function(e){
-			// Bind live handler that deselcts node when user clicks 'x' of a tag
+			// Bind live handler that deselects the node when user clicks 'x' of a tag
 			var key = $(e.target).parent().attr("id").substring(4),
 				node = $(":ui-dynatree").dynatree("getNodeByKey", key);
 			node.setSelected(false);
 			return false; // do not bubble and trigger span click
 		}).on("click", "span.tag", function(e){
-			// Bind live handler activates node, when tag is clicked
+			// Bind live handler that activates the node, when tag is clicked
 			var key = $(e.target).attr("id").substring(4),
 				node = $(":ui-dynatree").dynatree("getNodeByKey", key);
 			node.setActive();

@@ -9,10 +9,13 @@
 <!--
 	<link href="../src/skin-vista/ui.dynatree.css" rel="stylesheet" type="text/css">
 -->
-	<link href="../src/skin/ui.dynatree.css" rel="stylesheet" type="text/css">
+	<link href="../src/skin-vista/ui.dynatree.css" rel="stylesheet" type="text/css">
+<!--
     <script src="../src/jquery.dynatree.js" type="text/javascript"></script>
     <script src="../src/jquery.dynatree.columnview.js" type="text/javascript"></script>
     <script src="../src/jquery.dynatree.table.js" type="text/javascript"></script>
+-->
+    <script src="../dist/jquery.dynatree-all.min.js" type="text/javascript"></script>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
 	<link href="../lib/prettify.css" rel="stylesheet">
@@ -43,34 +46,18 @@
 		border-collapse: collapse;
 		width: 100%;
 	}
-	table.dynatree-ext-columnview td >ul
-	{
-		padding: 0;
-	}
-	table.dynatree-ext-columnview td >ul li
-	{
-		list-style-image: none;
-		list-style-position: outside;
-		list-style-type: none;
-		-moz-background-clip:border;
-		-moz-background-inline-policy: continuous;
-		-moz-background-origin: padding;
-		background-attachment: scroll;
-		background-color: transparent;
-		background-position: 0 0;
-		background-repeat: repeat-y;
-		background-image: none;  /* no v-lines */
-
-		margin:0;
-		padding:1px 0 0 0;
-	}
 	table.dynatree-ext-columnview tbody tr[0] {
 		height: 200px;
 	}
-	table.dynatree-ext-columnview tbody tr td {
+	table.dynatree-ext-columnview tbody tr[0] td {
 		/*border: 1px solid gray;*/
 		vertical-align: top;
 		overflow: auto;
+	}
+	table.dynatree-ext-columnview span.dynatree-node {
+		display: inline-block;
+		overflow: hidden;
+		width: 100%;
 	}
 </style>
 	<!-- Add code to initialize the tree when the document is loaded: -->
@@ -83,7 +70,7 @@
 			extensions: ["themeroller"],
 			checkbox: true,
 			source: {
-				url: "../test/unit/ajax-tree.json"
+				url: "../test/unit/ajax-tree-plain.json"
 			},
 			activate: function(e, data) {
 			},
@@ -95,7 +82,7 @@
 			extensions: ["table", "themeroller"],
 			checkbox: true,
 			source: {
-				url: "../test/unit/ajax-tree.json"
+				url: "../test/unit/ajax-tree-plain.json"
 			},
 			activate: function(e, data) {
 			},
@@ -113,7 +100,7 @@
 			extensions: ["columnview", "themeroller"],
 			checkbox: true,
 			source: {
-				url: "../test/unit/ajax-tree.json"
+				url: "../test/unit/ajax-tree-plain.json"
 			},
 			activate: function(e, data) {
 			},

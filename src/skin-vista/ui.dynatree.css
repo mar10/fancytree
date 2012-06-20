@@ -348,6 +348,84 @@ span.dynatree-active a
 }
 
 /*******************************************************************************
+ * 'table' extension
+ */
+table.dynatree-ext-table {
+	border-collapse: collapse;
+	width: 100%;
+
+/*
+table.dynatree-ext-table tbody tr:nth-child(even){
+	background-color: #f4f4f8;
+}
+*/
+table.dynatree-ext-table tbody tr td {
+	border: 1px solid lightgray;
+}
+table.dynatree-ext-table tbody tr.dynatree-focused {
+    background-color: #99DEFD;
+}
+table.dynatree-ext-table tbody tr.dynatree-active {
+	background-color: royalblue;
+}
+table.dynatree-ext-table tbody tr.dynatree-selected {
+	background-color: #99FDDE;
+}
+
+/*******************************************************************************
+ * 'columnview' extension
+ */
+table.dynatree-ext-columnview {
+	border-collapse: collapse;
+	width: 100%;
+}
+table.dynatree-ext-columnview td >ul
+{
+	padding: 0;
+}
+table.dynatree-ext-columnview td >ul li
+{
+	list-style-image: none;
+	list-style-position: outside;
+	list-style-type: none;
+	-moz-background-clip:border;
+	-moz-background-inline-policy: continuous;
+	-moz-background-origin: padding;
+	background-attachment: scroll;
+	background-color: transparent;
+	background-position: 0 0;
+	background-repeat: repeat-y;
+	background-image: none;  /* no v-lines */
+
+	margin:0;
+	padding:1px 0 0 0;
+}
+
+table.dynatree-ext-columnview tbody tr[0] {
+	height: 200px;
+}
+table.dynatree-ext-columnview tbody tr td {
+	border: 1px solid gray;
+	vertical-align: top;
+	overflow: auto;
+}
+table.dynatree-ext-columnview span.dynatree-node {
+	display: inline-block;
+	width: 100%;
+}
+table.dynatree-ext-columnview span.dynatree-node a{
+	border: 1px solid transparent;
+	background-color: transparent;
+}
+table.dynatree-ext-columnview span.dynatree-node.dynatree-expanded {
+	background-color: #ccc;
+}
+table.dynatree-ext-columnview span.dynatree-node.dynatree-active {
+	background-color: royalblue;
+}
+
+
+/*******************************************************************************
  * Drag'n'drop support
  */
 

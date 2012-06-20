@@ -13,16 +13,31 @@ module.exports = function(grunt) {
                     " Licensed <%= _.pluck(pkg.licenses, 'type').join(', ') %> */"
         },
         concat: {
-            dist: {
-                src: ["<banner:meta.banner>", "<file_strip_banner:src/<%= pkg.name %>.js>"],
-//                src: ["src/jquery.dynatree.js"],
+            core: {
+                src: ["<banner:meta.banner>", 
+                      "<file_strip_banner:src/<%= pkg.name %>.js>",
+                      ],
                 dest: "dist/<%= pkg.name %>-<%= pkg.version %>.js"
+            },
+            all: {
+                src: ["<banner:meta.banner>", 
+                      "<file_strip_banner:src/<%= pkg.name %>.js>",
+                      "src/jquery.dynatree.columnview.js",
+                      "src/jquery.dynatree.table.js",
+                      "src/jquery.dynatree.themeroller.js",
+                      "src/jquery.dynatree.tracecalls.js"
+                      ],
+                dest: "dist/<%= pkg.name %>-<%= pkg.version %>-all.js"
             }
         },
         min: {
-            dist: {
-                src: ["<banner:meta.banner>", "<config:concat.dist.dest>"],
+            core: {
+                src: ["<banner:meta.banner>", "<config:concat.core.dest>"],
                 dest: "dist/<%= pkg.name %>.min.js"
+            },
+            all: {
+                src: ["<banner:meta.banner>", "<config:concat.all.dest>"],
+                dest: "dist/<%= pkg.name %>-all.min.js"
             }
         },
         qunit: {
@@ -33,7 +48,9 @@ module.exports = function(grunt) {
             beforeconcat: ["src/*.js", "test/unit/test-dynatree.js"],
 //            beforeconcat: ["grunt.js"],
 //            beforeconcat: ["grunt.js", "src/jquery.dynatree.js", "tests/**/*.js"],
-            afterconcat: ["<config:concat.dist.dest>"]
+            afterconcat: ["<config:concat.core.dest>",
+                          "<config:concat.all.dest>"
+                          ]
         },
         // watch: {
         //   files: "<config:lint.files>",
