@@ -1574,6 +1574,7 @@ $.widget("ui.dynatree", {
     /** Add mouse and kyboard handlers to the container */
     _bind: function() {
         var that = this,
+            opts = this.options,
             eventNames = $.map(["click", "dblclick", /*"keypress", "keydown",*/
                 "focusin", "focusout"/*, "focus", "blur", "mousein", "mouseout" */],
                 function(name){
@@ -1582,6 +1583,9 @@ $.widget("ui.dynatree", {
 
         this._unbind();
         $(document).bind("keydown.dynatree-" + this.tree._id, function(event){
+            if(opts.disabled || opts.keyboard === false){
+                return false;                
+            }
             var node = DT.getNode(event.target);
             if( node && node.tree === that.tree ){
                 var ctx = that.tree._makeHookContext(node, event);
