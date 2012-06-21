@@ -843,7 +843,7 @@ $.extend(Dynatree.prototype, {
             parent = node.parent,
             $parentUL, $li, i, l, text;
 //            dfd = !!_recursive ? null : new $.Deferred();
-//        DT.debug("nodeRender", node.toString());
+       DT.debug("nodeRender(" + !!force + ", " + !!deep + ")", node.toString());
         _assert(parent, "Cannot call nodeRender(root)");
         _assert(parent.ul, "parent UL must exist");
 
@@ -851,6 +851,7 @@ $.extend(Dynatree.prototype, {
         if(node.li && force){
             $(node.li).remove();
             node.li = null;
+            node.ul = null;
         }
 
         // Create <li><span /> </li>
@@ -1536,12 +1537,9 @@ $.widget("ui.dynatree", {
             rerender = false;
         switch( key ) {
         case "checkbox":
+        case "minExpandLevel":
+        case "nolink":
             rerender = true;
-            break;
-        case "disabled":
-            // handle enable/disable
-            break;
-        case "keyboard":
             break;
         }
         this.tree.debug("set option " + key + "=" + value + " <" + typeof(value) + ">");
@@ -1552,7 +1550,7 @@ $.widget("ui.dynatree", {
 //          this._super( "_setOption", key, value );
         }
         if(rerender){
-            this.tree.render(true, true);
+            this.tree.render(true, false);  // force, not-deep
         }
     },
 
@@ -1584,7 +1582,7 @@ $.widget("ui.dynatree", {
         this._unbind();
         $(document).bind("keydown.dynatree-" + this.tree._id, function(event){
             if(opts.disabled || opts.keyboard === false){
-                return false;                
+                return true;                
             }
             var node = DT.getNode(event.target);
             if( node && node.tree === that.tree ){
@@ -1593,6 +1591,9 @@ $.widget("ui.dynatree", {
             }
         });
         this.element.bind(eventNames, function(event){
+            if(opts.disabled){
+                return true;                
+            }
             var node = DT.getNode(event.target);
             if( !node ){
                 return true;  // Allow bubbling of other events
