@@ -41,27 +41,19 @@
 			});
 			var tree = $("div:ui-dynatree").data("dynatree").getTree();
 			DT.debug("Test ':ui-dynatree' expression " + $("div:ui-dynatree").length);
-			// tree.tree.foo("hurz1");
-			// // override with extensions
-			// tree.tree.addExtension({
-			// 	foo: function(msg){
-			//         Array.prototype.unshift.call(arguments, "custom foo");
-			// 		this._super.apply(this, arguments);
-			// 	}
-			// });
 
 			/* Load tree from Ajax JSON
 			 */
 			$("#tree2").dynatree({
 				source: {
-					url: "unit/ajax-tree.json"
+					url: "ajax-tree-plain.json"
 				},
 				lazyload: function(e, data){
 					// we can't return values from an event handler, so we
 					// pass the result as `data`attribute.
 //					data.result = {url: "unit/ajax-sub2.json"};
 					data.result = $.ajax({
-						url: "unit/ajax-sub2.json",
+						url: "ajax-sub2.json",
 						dataType: "json"
 					});
 				}

@@ -89,16 +89,22 @@ var _makeVirtualFunction = function(fn, base, sub){
 };
 
 /**
- * 
+ * Subclass `base` by creating proxy function
  */
-function _subclassObject(base, sub){
-    for(var fn in sub){
-        if(typeof sub[fn] === "function"){
+function _subclassObject(base, extension, extName){
+    for(var fn in extension){
+        if(typeof extension[fn] === "function"){
             if(typeof base[fn] === "function"){
                 // override existing method
-                base[fn] = _makeVirtualFunction(fn, base, sub);
+                base[fn] = _makeVirtualFunction(fn, base, extension);
+            }else if(fn[0] === "_"){
+                // Create private methods in tree.EXTENSION namespace
+                if(!base[extName]){
+                    base[extName] = {};
+                }
+                base[extName][fn] = $.proxy(extension[fn], extension);
             }else{
-                //base[fn] = sub[fn];
+                $.error("Could not override tree." + fn + ". Use prefix '_' to create tree." + extName + "._" + fn);
             }
         }
     }
@@ -438,6 +444,7 @@ $.extend(DynatreeNode.prototype, {
  */
 
 var Dynatree = function($widget){
+    // TODO: rename $widget to widget (it's not a jQuery object)
     this.$widget = $widget;
     this.$div = $widget.element;
     this.options = $widget.options;
@@ -1512,11 +1519,11 @@ $.widget("ui.dynatree", {
         for(var i=0; i<extensions.length; i++){
             var extName = extensions[i],
                 extension = $.ui.dynatree._extensions[extName];
-//            extension = $.extend({}, extension);
-            // this.tree.debug("subclass", base, extension);
-            // _subclassObject(base, extension);
-            _subclassObject(this.tree, extension);
+            // Add extension options as tree.options.EXTENSION
             this.tree.options[extName] = $.extend({}, extension.options, this.tree.options[extName]);
+            // Subclass Dynatree methods using proxies.
+            _subclassObject(this.tree, extension, extName);
+            // current extension becomes base for the next extension
             base = extension;
         }
         //

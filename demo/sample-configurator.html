@@ -7,8 +7,6 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js" type="text/javascript"></script>
 
-    <script src="../lib/jquery.tmpl.min.js" type="text/javascript"></script>
-
 	<link href="../src/skin/ui.dynatree.css" rel="stylesheet" type="text/css" id="skinSheet">
     <script src="../src/jquery.dynatree.js" type="text/javascript"></script>
 
@@ -31,36 +29,58 @@
 
 <!-- Add code to initialize the tree when the document is loaded: -->
 <script type="text/javascript">
-// render template.
-// Note: jquery.tmpl removes `\n`, so we use '$n' and replace later
-var optionsTemplate = $.template("optionsTemplate", 
-    '$("#tree").dynatree({$n'
-    + "    checkbox: ${checkbox},$n"
-    + "{{if minExpandLevel}}    minExpandLevel: ${minExpandLevel}$n{{/if}}"
-    + "});");
 
-// var cardTemplate = $.template("issueTemplate", 
-//     "<span class='card'>"
-//     + "<div class='header'>"
-//     + "{{if portrait}} <img class='portait' src='${portrait}' height='32px' width='32px' title='${owner}'/> {{/if}}"
-//     + "#${sortIdx} "
-//     + "[<a href='${issueUrl}'>${code}</a>] "
-//     + "{{if activityStatus == 'claimed' }} <img class='active' src='active.gif' title='In Arbeit'/> {{/if}}"
-//     + "<br>"
-//     + "${estimatedEffort} Tage (${implementor})"
-//     + "</div>"
-//     + "<strong>${title}</strong> <br>"
-//     + "${activity}: ${owner}"
-//     + "</span>");
+var OPT_LIST = [
+	["activeVisible", true, "Make sure, active nodes are visible (expanded)."],
+	["autoCollapse", false, "Automatically collapse all siblings, when a node is expanded."],
+	["autoFocus", true, "Set focus to first child, when expanding or lazy-loading."],
+	["clickFolderMode", 3, "1:activate, 2:expand, 3:activate and expand"],
+	["checkbox", false, "Show checkboxes."],
+	["debugLevel", 2, "0:quiet, 1:normal, 2:debug"],
+	["fx", null, 'Animations, e.g. null or { height: "toggle", duration: 200 }'],
+	["generateIds", false, "Generate id attributes like <span id='dynatree-id-KEY'>"],
+	["idPrefix", "dynatree-id-", 'Used to generate node id´s like <span id="dynatree-id-<key>">.'],
+	["keyboard", true, "Support keyboard navigation."],
+	["keyPathSeparator", "/", "Used by node.getKeyPath() and tree.loadKeyPath()."],
+	["minExpandLevel", 1, "1: root node is not collapsible"],
+	["nolink", false, "Use <span> instead of <a> tags for all nodes"],
+	["persist", false, "Persist expand-status to a cookie"],
+	["selectMode", 2, "1:single, 2:multi, 3:multi-hier"]
+	];
 
 	$(function(){
 		function renderCode(){
 			var tree = $("#tree").dynatree("getTree"),
-				htmlCode = $.tmpl(optionsTemplate, tree.options),
-				// jquery.tmpl removes '\n', so we replaced them with '$n': 
-				// now undo this:
-				t = htmlCode.text().replace(/\$n/g, "\n");
-			$("#sourceCode").text(t);
+				hideDefaults = true,
+				opts = tree.options,
+				optList = OPT_LIST,
+				tmplEntries = [],
+				i;
+
+			if(hideDefaults){
+				optList = [];
+				for(i=0; i<OPT_LIST.length; i++){
+					var o = OPT_LIST[i],
+					    n = o[0];
+					if( opts[n] !== o[1] && opts[n] !== undefined){
+						optList.push(o);
+					}
+				}
+			}
+			tmplEntries.push('$("#tree").dynatree({');
+			for(i=0; i<optList.length; i++){
+				var o = optList[i],
+				    n = o[0],
+				    v = opts[n],
+				    comma = (i === (optList.length - 1)) ? "" : ",";
+				if(typeof v === "string"){
+					tmplEntries.push("    " + n + ': "' + v + '"' + comma + " // " + o[2]);
+				}else{
+					tmplEntries.push("    " + n + ": " + v + comma + " // " + o[2]);
+				}
+			}
+			tmplEntries.push("});");
+			$("#sourceCode").text(tmplEntries.join("\n"));
 		}
 		$("#skinCombo")
 			.val(0) // set state to prevent caching
@@ -112,21 +132,6 @@ var optionsTemplate = $.template("optionsTemplate",
 	<p>
 		<div id="tree"> </div>
 <!--
-	minExpandLevel: 1, // 1: root node is not collapsible
-	autoFocus: true, // Set focus to first child, when expanding or lazy-loading.
-	keyboard: true, // Support keyboard navigation.
-	persist: false, // Persist expand-status to a cookie
-	autoCollapse: false, // Automatically collapse all siblings, when a node is expanded.
-	clickFolderMode: 3, // 1:activate, 2:expand, 3:activate and expand
-	activeVisible: true, // Make sure, active nodes are visible (expanded).
-	checkbox: false, // Show checkboxes.
-	selectMode: 2, // 1:single, 2:multi, 3:multi-hier
-	fx: null, // Animations, e.g. null or { height: "toggle", duration: 200 }
-	noLink: false, // Use <span> instead of <a> tags for all nodes
-	generateIds: false, // Generate id attributes like <span id='dynatree-id-KEY'>
-	idPrefix: "dynatree-id-", // Used to generate node id's like <span id="dynatree-id-<key>">.
-	keyPathSeparator: "/", // Used by node.getKeyPath() and tree.loadKeyPath().
-	debugLevel: 2, // 0:quiet, 1:normal, 2:debug $REPLACE:	debugLevel: 1,
 -->		
 		<fieldset>
 			<legend>Dynatree options</legend>
