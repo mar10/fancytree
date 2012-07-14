@@ -334,7 +334,7 @@ $.extend(DynatreeNode.prototype, {
             }else if(this.children.length === 0){
                 // Loaded, but response was empty
                 return false;
-            }else if(this.children.length === 1 && this.children[0].isStatusNode()){
+            }else if(this.children.length === 1 && this.children[0].isStatusNode ){
                 // Currently loading or load error
                 return undefined;
             }

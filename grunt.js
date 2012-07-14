@@ -23,6 +23,7 @@ module.exports = function(grunt) {
                 src: ["<banner:meta.banner>", 
                       "<file_strip_banner:src/<%= pkg.name %>.js>",
                       "src/jquery.dynatree.columnview.js",
+                      "src/jquery.dynatree.dnd.js",
                       "src/jquery.dynatree.table.js",
                       "src/jquery.dynatree.themeroller.js",
                       "src/jquery.dynatree.tracecalls.js"
