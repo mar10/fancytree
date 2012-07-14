@@ -350,18 +350,19 @@ span.dynatree-active a
 /*******************************************************************************
  * 'table' extension
  */
+
+/*
 table.dynatree-ext-table {
 	border-collapse: collapse;
 	width: 100%;
-
-/*
+}
 table.dynatree-ext-table tbody tr:nth-child(even){
 	background-color: #f4f4f8;
 }
-*/
 table.dynatree-ext-table tbody tr td {
 	border: 1px solid lightgray;
 }
+*/
 table.dynatree-ext-table tbody tr.dynatree-focused {
     background-color: #99DEFD;
 }
@@ -375,10 +376,13 @@ table.dynatree-ext-table tbody tr.dynatree-selected {
 /*******************************************************************************
  * 'columnview' extension
  */
+ 
+/*
 table.dynatree-ext-columnview {
 	border-collapse: collapse;
 	width: 100%;
 }
+*/
 table.dynatree-ext-columnview td >ul
 {
 	padding: 0;
@@ -397,13 +401,14 @@ table.dynatree-ext-columnview td >ul li
 	background-repeat: repeat-y;
 	background-image: none;  /* no v-lines */
 
-	margin:0;
-	padding:1px 0 0 0;
+	margin: 0;
+	padding: 1px 0 0 0;
 }
-
+/*
 table.dynatree-ext-columnview tbody tr[0] {
 	height: 200px;
 }
+*/
 table.dynatree-ext-columnview tbody tr td {
 	border: 1px solid gray;
 	vertical-align: top;
