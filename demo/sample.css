@@ -13,8 +13,8 @@ body.example h2
 	font-size: 1em;
 }
 
-a,
-a:visited
+p.sample-links a,
+p.sample-links a:visited
 {
 	color: navy;
 	text-decoration: none;

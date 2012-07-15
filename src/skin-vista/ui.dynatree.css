@@ -66,7 +66,7 @@ ul.dynatree-no-connector > li
  */
 span.dynatree-empty,
 span.dynatree-vline,
-span.dynatree-connector,
+/*span.dynatree-connector,*/
 span.dynatree-expander,
 span.dynatree-icon,
 span.dynatree-checkbox,
@@ -100,18 +100,18 @@ span.dynatree-drag-helper-img,
 /*******************************************************************************
  * Lines and connectors
  */
-span.dynatree-connector
+/* span.dynatree-connector
 {
 	background-image: none;
 }
-
+ */
 /*******************************************************************************
  * Expander icon
  * Note: IE6 doesn't correctly evaluate multiples class names,
  *		 so we create combined class names that can be used in the CSS.
  *
  * Prefix: dynatree-exp-
- * 1st character: 'e': expanded, 'c': collapsed
+ * 1st character: 'e': expanded, 'c': collapsed, 'n': no children
  * 2nd character (optional): 'd': lazy (Delayed)
  * 3rd character (optional): 'l': Last sibling
  */
@@ -119,11 +119,15 @@ span.dynatree-connector
 span.dynatree-expander
 {
 	background-position: 0px -80px;
-	cursor: pointer;
+    cursor: pointer;
 }
 span.dynatree-expander:hover
 {
 	background-position: -16px -80px;
+}
+.dynatree-exp-n span.dynatree-expander:hover /* Collapsed, not delayed, not last sibling */
+{
+    background-position: -16px -80px;
 }
 .dynatree-exp-cl span.dynatree-expander /* Collapsed, not delayed, last sibling */
 {
@@ -152,6 +156,13 @@ span.dynatree-expander:hover
 {
 	background-position: 0 0;
 	background-image: url("loading.gif");
+}
+
+.dynatree-exp-n span.dynatree-expander, /* Connector instead of expander, if node has no children */
+.dynatree-exp-nl span.dynatree-expander
+{
+    background-image: none;
+    cursor: default;
 }
 
 
@@ -285,19 +296,7 @@ span.dynatree-title
 
 /* Remove blue color and underline from title links */
 .dynatree-container a
-/*, ul.dynatree-container a:visited*/
 {
-	color: black; /* inherit doesn't work on IE */
-	text-decoration: none;
-	vertical-align: top;
-	margin: 0px;
-	margin-left: 3px;
-/*	outline: 0; /* @ Firefox, prevent dotted border after click */
-	/* Set transparent border to prevent jumping when active node gets a border
-	   (we can do this, because this theme doesn't use vertical lines)
-	   */
-	border: 1px solid white; /* Note: 'transparent' would not work in IE6 */
-
 }
 
 .dynatree-container a:hover
@@ -314,6 +313,17 @@ span.dynatree-node a
 	padding-left: 3px;
 	padding-right: 3px; /* Otherwise italic font will be outside bounds */
 	/*	line-height: 16px; /* should be the same as img height, in case 16 px */
+    color: black; /* inherit doesn't work on IE */
+    text-decoration: none;
+    vertical-align: top;
+    margin: 0px;
+    margin-left: 3px;
+/*  outline: 0; /* @ Firefox, prevent dotted border after click */
+    /* Set transparent border to prevent jumping when active node gets a border
+       (we can do this, because this theme doesn't use vertical lines)
+       */
+    border: 1px solid white; /* Note: 'transparent' would not work in IE6 */
+
 }
 span.dynatree-folder a
 {

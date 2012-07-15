@@ -134,6 +134,12 @@ New features
 - preload
 
 
+
+CSS
+===
+- dynatree-connector has been removed
+
+
 Removed features
 ============
 - clickFolderMode was

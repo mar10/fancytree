@@ -15,7 +15,7 @@
 
 "use strict";
 
-/*******************************************************************************
+/* *****************************************************************************
  * Private functions and variables
  */
 function _assert(cond, msg){
@@ -27,7 +27,7 @@ function _assert(cond, msg){
 var logMsg = $.ui.dynatree.debug;
 
 
-/*******************************************************************************
+/* *****************************************************************************
  * Drag and drop support
  */
 function _initDragAndDrop(tree) {
@@ -54,7 +54,7 @@ function _initDragAndDrop(tree) {
             helper: function(event) {
                 var sourceNode = $.ui.dynatree.getNode(event.target);
                 if(!sourceNode){ // issue 211
-                    return "<div></div>";
+                    return "<div>ERROR?: helper requested but sourceNode not found</div>";
                 }
                 return sourceNode.tree.dnd._onDragEvent("helper", sourceNode, null, event, null, null);
             },
@@ -93,11 +93,11 @@ var _registerDnd = function() {
         start: function(event, ui) {
             var draggable = $(this).data("draggable"),
                 sourceNode = ui.helper.data("dtSourceNode") || null;
-//          logMsg("draggable-connectToDynatree.start, %s", sourceNode);
-//          logMsg("    this: %o", this);
-//          logMsg("    event: %o", event);
-//          logMsg("    draggable: %o", draggable);
-//          logMsg("    ui: %o", ui);
+          logMsg("draggable-connectToDynatree.start, %s", sourceNode);
+          logMsg("    this: %o", this);
+          logMsg("    event: %o", event);
+          logMsg("    draggable: %o", draggable);
+          logMsg("    ui: %o", ui);
 
             if(sourceNode) {
                 // Adjust helper offset, so cursor is slightly outside top/left corner
@@ -105,8 +105,8 @@ var _registerDnd = function() {
 //              draggable.offset.click.left -= event.target.offsetLeft;
                 draggable.offset.click.top = -2;
                 draggable.offset.click.left = + 16;
-//              logMsg("    draggable2: %o", draggable);
-//              logMsg("    draggable.offset.click FIXED: %s/%s", draggable.offset.click.left, draggable.offset.click.top);
+              logMsg("    draggable2: %o", draggable);
+              logMsg("    draggable.offset.click FIXED: %s/%s", draggable.offset.click.left, draggable.offset.click.top);
                 // Trigger onDragStart event
                 // TODO: when called as connectTo..., the return value is ignored(?)
                 return sourceNode.tree.dnd._onDragEvent("start", sourceNode, null, event, ui, draggable);
@@ -117,8 +117,8 @@ var _registerDnd = function() {
                 sourceNode = ui.helper.data("dtSourceNode") || null,
                 prevTargetNode = ui.helper.data("dtTargetNode") || null,
                 targetNode = $.ui.dynatree.getNode(event.target);
-//          logMsg("$.ui.dynatree.getNode(%o): %s", event.target, targetNode);
-//          logMsg("connectToDynatree.drag: helper: %o", ui.helper[0]);
+            logMsg("$.ui.dynatree.getNode(%o): %s", event.target, targetNode);
+            logMsg("connectToDynatree.drag: helper: %o", ui.helper[0]);
             if(event.target && !targetNode){
                 // We got a drag event, but the targetNode could not be found
                 // at the event location. This may happen,
@@ -127,11 +127,11 @@ var _registerDnd = function() {
                 // We ignore it:
                 var isHelper = $(event.target).closest("div.dynatree-drag-helper,#dynatree-drop-marker").length > 0;
                 if(isHelper){
-//                  logMsg("Drag event over helper: ignored.");
+                    logMsg("Drag event over helper: ignored.");
                     return;
                 }
             }
-//          logMsg("draggable-connectToDynatree.drag: targetNode(from event): %s, dtTargetNode: %s", targetNode, ui.helper.data("dtTargetNode"));
+            logMsg("draggable-connectToDynatree.drag: targetNode(from event): %s, dtTargetNode: %s", targetNode, ui.helper.data("dtTargetNode"));
             ui.helper.data("dtTargetNode", targetNode);
             // Leaving a tree node
             if(prevTargetNode && prevTargetNode !== targetNode ) {
@@ -158,10 +158,10 @@ var _registerDnd = function() {
                 mouseDownEvent = draggable._mouseDownEvent,
                 eventType = event.type,
                 dropped = (eventType === "mouseup" && event.which === 1);
-//          logMsg("draggable-connectToDynatree.stop: targetNode(from event): %s, dtTargetNode: %s", targetNode, ui.helper.data("dtTargetNode"));
-//          logMsg("draggable-connectToDynatree.stop, %s", sourceNode);
-//          logMsg("    type: %o, downEvent: %o, upEvent: %o", eventType, mouseDownEvent, event);
-//          logMsg("    targetNode: %o", targetNode);
+            logMsg("draggable-connectToDynatree.stop: targetNode(from event): %s, dtTargetNode: %s", targetNode, ui.helper.data("dtTargetNode"));
+            logMsg("draggable-connectToDynatree.stop, %s", sourceNode);
+            logMsg("    type: %o, downEvent: %o, upEvent: %o", eventType, mouseDownEvent, event);
+            logMsg("    targetNode: %o", targetNode);
             if(!dropped){
                 logMsg("Drag was cancelled");
             }
@@ -197,7 +197,7 @@ $.ui.dynatree.registerExtension("dnd", {
         onDrop: null, // Callback(targetNode, sourceNode, hitMode)
         onDragLeave: null // Callback(targetNode, sourceNode)
     },
-    // Overide virtual methods for this extension.
+    // Override virtual methods for this extension.
     // `this`       : is this extension object
     // `this._base` : the Dynatree instance
     // `this._super`: the virtual function that was overriden (member of prev. extension or Dynatree)
@@ -206,17 +206,29 @@ $.ui.dynatree.registerExtension("dnd", {
         this._super(ctx);
         _initDragAndDrop(tree);
     },
+    /** Override key handler in order to cancel dnd on escape.*/
+    nodeKeydown: function(ctx) {
+        var event = ctx.orgEvent,
+            KC = $.ui.keyCode;
+        switch( event.which ) {
+            case KC.ESCAPE:
+            	this._cancelDrag();
+                break;
+        }
+        this._super(ctx);
+    },
+    /** Display drop marker according to hitMode */
     _setDndStatus: function(sourceNode, targetNode, helper, hitMode, accept) {
         // hitMode: 'after', 'before', 'over', 'out', 'start', 'stop'
         var $source = sourceNode ? $(sourceNode.span) : null,
             $target = $(targetNode.span);
 //        alert("_setDndStatus, this:" + this);
-        if( !this.$dndMarker ) {
-            this.$dndMarker = $("<div id='dynatree-drop-marker'></div>")
+        if( !this.$dropMarker ) {
+            this.$dropMarker = $("<div id='dynatree-drop-marker'></div>")
                 .hide()
-                .prependTo($(this.divTree).parent());
-//              .prependTo("body");
-//          logMsg("Creating marker: %o", this.$dndMarker);
+//                .prependTo($(this.divTree).parent());
+                .prependTo("body");
+//          logMsg("Creating marker: %o", this.$dropMarker);
         }
 /*
         if(hitMode === "start"){
@@ -225,7 +237,7 @@ $.ui.dynatree.registerExtension("dnd", {
 //          sourceNode.removeClass("dynatree-drop-target");
         }
 */
-//      this.$dndMarker.attr("class", hitMode);
+//      this.$dropMarker.attr("class", hitMode);
         if(hitMode === "after" || hitMode === "before" || hitMode === "over"){
 //          $source && $source.addClass("dynatree-drag-source");
             var pos = $target.offset();
@@ -234,33 +246,33 @@ $.ui.dynatree.registerExtension("dnd", {
 
             switch(hitMode){
             case "before":
-                this.$dndMarker.removeClass("dynatree-drop-after dynatree-drop-over");
-                this.$dndMarker.addClass("dynatree-drop-before");
+                this.$dropMarker.removeClass("dynatree-drop-after dynatree-drop-over");
+                this.$dropMarker.addClass("dynatree-drop-before");
                 pos.top -= 8;
                 break;
             case "after":
-                this.$dndMarker.removeClass("dynatree-drop-before dynatree-drop-over");
-                this.$dndMarker.addClass("dynatree-drop-after");
+                this.$dropMarker.removeClass("dynatree-drop-before dynatree-drop-over");
+                this.$dropMarker.addClass("dynatree-drop-after");
                 pos.top += 8;
                 break;
             default:
-                this.$dndMarker.removeClass("dynatree-drop-after dynatree-drop-before");
-                this.$dndMarker.addClass("dynatree-drop-over");
+                this.$dropMarker.removeClass("dynatree-drop-after dynatree-drop-before");
+                this.$dropMarker.addClass("dynatree-drop-over");
                 $target.addClass("dynatree-drop-target");
                 pos.left += 8;
             }
-//          logMsg("Creating marker: %o", this.$dndMarker);
-//          logMsg("    $target.offset=%o", $target);
-//          logMsg("    pos/$target.offset=%o", pos);
-//          logMsg("    $target.position=%o", $target.position());
-//          logMsg("    $target.offsetParent=%o, ot:%o", $target.offsetParent(), $target.offsetParent().offset());
-//          logMsg("    $(this.divTree).offset=%o", $(this.divTree).offset());
-//          logMsg("    $(this.divTree).parent=%o", $(this.divTree).parent());
+            logMsg("Creating marker: %o", this.$dropMarker);
+            logMsg("    $target.offset=%o", $target);
+            logMsg("    pos/$target.offset=%o", pos);
+            logMsg("    $target.position=%o", $target.position());
+            logMsg("    $target.offsetParent=%o, ot:%o", $target.offsetParent(), $target.offsetParent().offset());
+            logMsg("    $(this.divTree).offset=%o", $(this.divTree).offset());
+            logMsg("    $(this.divTree).parent=%o", $(this.divTree).parent());
 //          var pos = $target.offset();
 //          var parentPos = $target.offsetParent().offset();
 //          var bodyPos = $target.offsetParent().offset();
 
-            this.$dndMarker //.offset({left: pos.left, top: pos.top})
+            this.$dropMarker //.offset({left: pos.left, top: pos.top})
                 .css({
                     "left": pos.left,
                     "top": pos.top,
@@ -271,7 +283,7 @@ $.ui.dynatree.registerExtension("dnd", {
         } else {
 //          $source && $source.removeClass("dynatree-drag-source");
             $target.removeClass("dynatree-drop-target");
-            this.$dndMarker.hide();
+            this.$dropMarker.hide();
 //          helper.removeClass("dynatree-drop-hover");
         }
         if(hitMode === "after"){
@@ -312,28 +324,28 @@ $.ui.dynatree.registerExtension("dnd", {
         }
     },
 
+    /**
+     * Handles drag'n'drop functionality.
+     *
+     * A standard jQuery drag-and-drop process may generate these calls:
+     *
+     * draggable helper():
+     *     _onDragEvent("helper", sourceNode, null, event, null, null);
+     * start:
+     *     _onDragEvent("start", sourceNode, null, event, ui, draggable);
+     * drag:
+     *     _onDragEvent("leave", prevTargetNode, sourceNode, event, ui, draggable);
+     *     _onDragEvent("over", targetNode, sourceNode, event, ui, draggable);
+     *     _onDragEvent("enter", targetNode, sourceNode, event, ui, draggable);
+     * stop:
+     *     _onDragEvent("drop", targetNode, sourceNode, event, ui, draggable);
+     *     _onDragEvent("leave", targetNode, sourceNode, event, ui, draggable);
+     *     _onDragEvent("stop", sourceNode, null, event, ui, draggable);
+     */
     _onDragEvent: function(eventName, node, otherNode, event, ui, draggable) {
-        /**
-         * Handles drag'n'drop functionality.
-         *
-         * A standard jQuery drag-and-drop process may generate these calls:
-         *
-         * draggable helper():
-         *     _onDragEvent("helper", sourceNode, null, event, null, null);
-         * start:
-         *     _onDragEvent("start", sourceNode, null, event, ui, draggable);
-         * drag:
-         *     _onDragEvent("leave", prevTargetNode, sourceNode, event, ui, draggable);
-         *     _onDragEvent("over", targetNode, sourceNode, event, ui, draggable);
-         *     _onDragEvent("enter", targetNode, sourceNode, event, ui, draggable);
-         * stop:
-         *     _onDragEvent("drop", targetNode, sourceNode, event, ui, draggable);
-         *     _onDragEvent("leave", targetNode, sourceNode, event, ui, draggable);
-         *     _onDragEvent("stop", sourceNode, null, event, ui, draggable);
-         */
-//      if(eventName !== "over"){
-//          this.logDebug("tree.dnd._onDragEvent(%s, %o, %o) - %o", eventName, node, otherNode, this);
-//      }
+        if(eventName !== "over"){
+            logMsg("tree.dnd._onDragEvent(%s, %o, %o) - %o", eventName, node, otherNode, this);
+        }
         var opts = this._base.options,
             dnd = opts.dnd,
             res = null,
@@ -350,8 +362,8 @@ $.ui.dynatree.registerExtension("dnd", {
 //          $(node.tree.divTree).append($helper);
             // Attach node reference to helper object
             $helper.data("dtSourceNode", node);
-//          this.logDebug("helper=%o", $helper);
-//          this.logDebug("helper.sourceNode=%o", $helper.data("dtSourceNode"));
+            logMsg("helper=%o", $helper);
+            logMsg("helper.sourceNode=%o", $helper.data("dtSourceNode"));
             res = $helper;
             break;
         case "start":
@@ -364,6 +376,7 @@ $.ui.dynatree.registerExtension("dnd", {
                 this.debug("tree.onDragStart() cancelled");
                 //draggable._clear();
                 // NOTE: the return value seems to be ignored (drag is not canceled, when false is returned)
+                // TODO: call this._cancelDrag()?
                 ui.helper.trigger("mouseup");
                 ui.helper.hide();
             } else {
@@ -372,13 +385,14 @@ $.ui.dynatree.registerExtension("dnd", {
             break;
         case "enter":
             res = dnd.onDragEnter ? dnd.onDragEnter(node, otherNode) : null;
+            // TODO: according to the dnd comments in onDragEnter, res === undefined should be handled as true
             res = {
                 over: (res !== false) && ((res === true) || (res === "over") || $.inArray("over", res) >= 0),
                 before: (res !== false) && ((res === true) || (res === "before") || $.inArray("before", res) >= 0),
                 after: (res !== false) && ((res === true) || (res === "after") || $.inArray("after", res) >= 0)
             };
             ui.helper.data("enterResponse", res);
-//          this.logDebug("helper.enterResponse: %o", res);
+            logMsg("helper.enterResponse: %o", res);
             break;
         case "over":
             var enterResponse = ui.helper.data("enterResponse");
@@ -400,12 +414,12 @@ $.ui.dynatree.registerExtension("dnd", {
                                y: event.pageY - nodeOfs.top };
                 var relPos2 = { x: relPos.x / nodeTag.width(),
                                 y: relPos.y / nodeTag.height() };
-//              this.logDebug("event.page: %s/%s", event.pageX, event.pageY);
-//              this.logDebug("event.client: %s/%s", event.clientX, event.clientY);
-//              this.logDebug("nodeOfs: %s/%s", nodeOfs.left, nodeOfs.top);
-////                this.logDebug("parent: %s/%s", this.parentLeft, this.parentTop);
-//              this.logDebug("relPos: %s/%s", relPos.x, relPos.y);
-//              this.logDebug("relPos2: %s/%s", relPos2.x, relPos2.y);
+//              logMsg("event.page: %s/%s", event.pageX, event.pageY);
+//              logMsg("event.client: %s/%s", event.clientX, event.clientY);
+//              logMsg("nodeOfs: %s/%s", nodeOfs.left, nodeOfs.top);
+////                logMsg("parent: %s/%s", this.parentLeft, this.parentTop);
+//              logMsg("relPos: %s/%s", relPos.x, relPos.y);
+//              logMsg("relPos2: %s/%s", relPos2.x, relPos2.y);
                 if( enterResponse.after && relPos2.y > 0.75 ){
                     hitMode = "after";
                 } else if(!enterResponse.over && enterResponse.after && relPos2.y > 0.5 ){
@@ -421,28 +435,28 @@ $.ui.dynatree.registerExtension("dnd", {
                 // TODO: these are no-ops when moving nodes, but not in copy mode
                 if( dnd.preventVoidMoves ){
                     if(node === otherNode){
-//                      this.logDebug("    drop over source node prevented");
+                        logMsg("    drop over source node prevented");
                         hitMode = null;
                     }else if(hitMode === "before" && otherNode && node === otherNode.getNextSibling()){
-//                      this.logDebug("    drop after source node prevented");
+                        logMsg("    drop after source node prevented");
                         hitMode = null;
                     }else if(hitMode === "after" && otherNode && node === otherNode.getPrevSibling()){
-//                      this.logDebug("    drop before source node prevented");
+                        logMsg("    drop before source node prevented");
                         hitMode = null;
                     }else if(hitMode === "over" && otherNode
                             && otherNode.parent === node && otherNode.isLastSibling() ){
-//                      this.logDebug("    drop last child over own parent prevented");
+                        logMsg("    drop last child over own parent prevented");
                         hitMode = null;
                     }
                 }
-//              this.logDebug("hitMode: %s - %s - %s", hitMode, (node.parent === otherNode), node.isLastSibling());
+                logMsg("hitMode: %s - %s - %s", hitMode, (node.parent === otherNode), node.isLastSibling());
                 ui.helper.data("hitMode", hitMode);
             }
             // Auto-expand node (only when 'over' the node, not 'before', or 'after')
             if(hitMode === "over"
-                && dnd.autoExpandMS && node.hasChildren() !== false && !node.bExpanded) {
+                && dnd.autoExpandMS && node.hasChildren() !== false && !node.expanded) {
                 node.scheduleAction("expand", dnd.autoExpandMS);
-            }
+            } 
             if(hitMode && dnd.onDragOver){
                 res = dnd.onDragOver(node, otherNode, hitMode);
             }

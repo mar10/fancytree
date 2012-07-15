@@ -80,7 +80,7 @@ module.exports = function(grunt) {
                 eqnull: false,
                 laxbreak: true,
 //                laxcomma: true,
-                smarttabs: false,
+                smarttabs: true,
 //                globalstrict: true,
                 // Environments:
 //              node: true,  // TODO: only for grunt.js and dynatree-server.json

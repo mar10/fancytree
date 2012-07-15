@@ -53,7 +53,7 @@ $.ui.dynatree.registerExtension("columnview", {
         this._super(ctx);
         // Standard Dynatree created a root <ul>. Now move this into first table cell
         var $ul = $(tree.rootNode.ul),
-            tdList = $(">td", tree.tr).get(),
+//            tdList = $(">td", tree.tr).get(),
             $tdFirst = $(">td", tree.tr).eq(0);
         $ul.removeClass("dynatree-container");
         $table.addClass("dynatree-container dynatree-ext-columnview");

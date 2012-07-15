@@ -71,7 +71,6 @@ $.ui.dynatree.registerExtension("themeroller", {
             // empty: "dynatree-empty",
             // vline: "dynatree-vline",
             // expander: "dynatree-expander",
-            // connector: "dynatree-connector",
             // checkbox: "dynatree-checkbox",
             // icon: "dynatree-icon",
             title: "dynatree-title",

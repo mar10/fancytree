@@ -68,7 +68,7 @@ ul.dynatree-no-connector > li
  */
 span.dynatree-empty,
 span.dynatree-vline,
-span.dynatree-connector,
+/*span.dynatree-connector,*/
 span.dynatree-expander,
 span.dynatree-icon,
 span.dynatree-checkbox,
@@ -102,11 +102,13 @@ ul.dynatree-container img
 /*******************************************************************************
  * Lines and connectors
  */
+ 
+/* 
 span.dynatree-connector
 {
 	background-position: -16px -64px;
 }
-
+ */
 
 /*******************************************************************************
  * Expander icon
@@ -114,7 +116,7 @@ span.dynatree-connector
  *		 so we create combined class names that can be used in the CSS.
  *
  * Prefix: dynatree-exp-
- * 1st character: 'e': expanded, 'c': collapsed
+ * 1st character: 'e': expanded, 'c': collapsed, 'n': no children
  * 2nd character (optional): 'd': lazy (Delayed)
  * 3rd character (optional): 'l': Last sibling
  */
@@ -150,6 +152,13 @@ span.dynatree-expander
 {
 	background-position: 0 0;
 	background-image: url("loading.gif");
+}
+
+.dynatree-exp-n span.dynatree-expander, /* Connector instead of expander, if node has no children */
+.dynatree-exp-nl span.dynatree-expander
+{
+    background-position: -16px -64px;
+    cursor: default;
 }
 
 
@@ -277,8 +286,7 @@ span.dynatree-title
 
 
 /* Remove blue color and underline from title links */
-ul.dynatree-container a
-/*, ul.dynatree-container a:visited*/
+.dynatree-container a
 {
 	color: black; /* inherit doesn't work on IE */
 	text-decoration: none;
@@ -288,7 +296,7 @@ ul.dynatree-container a
 /*	outline: 0; /* @ Firefox, prevent dotted border after click */
 }
 
-ul.dynatree-container a:hover
+.dynatree-container a:hover
 {
 /*	text-decoration: underline; */
 	background-color: #F2F7FD; /* light blue */
