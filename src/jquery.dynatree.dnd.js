@@ -208,12 +208,9 @@ $.ui.dynatree.registerExtension("dnd", {
     },
     /** Override key handler in order to cancel dnd on escape.*/
     nodeKeydown: function(ctx) {
-        var event = ctx.orgEvent,
-            KC = $.ui.keyCode;
-        switch( event.which ) {
-            case KC.ESCAPE:
-            	this._cancelDrag();
-                break;
+        var event = ctx.orgEvent;
+        if( event.which === $.ui.keyCode.ESCAPE) {
+            this._cancelDrag();
         }
         this._super(ctx);
     },

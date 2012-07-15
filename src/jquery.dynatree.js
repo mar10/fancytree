@@ -1652,7 +1652,7 @@ $.extend(Dynatree.prototype,
             // TODO: duplicate code -> refactor to _fixOrder()
             // Make sure, that <li> order matches node.children order.
             var node = this.rootNode,
-            	childLI = node.ul.firstChild;
+                childLI = node.ul.firstChild;
             for(i=0, l=children.length-1; i<l; i++) {
                 var childNode1 = children[i],
                     childNode2 = childLI.dtnode;
@@ -1943,7 +1943,7 @@ $.extend($.ui.dynatree, {
             res.type = "title";
         }else if( tcn === "dynatree-expander" ){
 //            res.type = "expander";
-            res.type = res.node.hasChildren() == false ? "prefix" : "expander";
+            res.type = res.node.hasChildren() === false ? "prefix" : "expander";
         }else if( tcn === "dynatree-checkbox" ){
             res.type = "checkbox";
         }else if( tcn === "dynatree-icon" ){
@@ -2013,9 +2013,9 @@ $.extend($.ui.dynatree, {
         nodeRender: function(ctx, force, deep, collapsed){
             // ctx.tree.debug("**** PROFILER nodeRender");
             var s = this.options.prefix + "render '" + ctx.node + "'";
-            window.console.time(s);
+            window.console && window.console.time && window.console.time(s);
             this._super(ctx, force, deep, collapsed);
-            window.console.timeEnd(s);
+            window.console && window.console.timeEnd && window.console.timeEnd(s);
         }
      });
 }(jQuery));
