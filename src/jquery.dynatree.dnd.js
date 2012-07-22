@@ -33,7 +33,7 @@ var logMsg = $.ui.dynatree.debug;
 function _initDragAndDrop(tree) {
     var dnd = tree.options.dnd || null;
     // Register 'connectToDynatree' option with ui.draggable
-    if(dnd && (dnd.onDragStart || dnd.onDrop)) {
+    if(dnd /*&& (dnd.onDragStart || dnd.onDrop)*/) {
         _registerDnd();
     }
     // Attach ui.draggable to this Dynatree instance
@@ -381,13 +381,23 @@ $.ui.dynatree.registerExtension("dnd", {
             }
             break;
         case "enter":
-            res = dnd.onDragEnter ? dnd.onDragEnter(node, otherNode) : null;
-            // TODO: according to the dnd comments in onDragEnter, res === undefined should be handled as true
-            res = {
-                over: (res !== false) && ((res === true) || (res === "over") || $.inArray("over", res) >= 0),
-                before: (res !== false) && ((res === true) || (res === "before") || $.inArray("before", res) >= 0),
-                after: (res !== false) && ((res === true) || (res === "after") || $.inArray("after", res) >= 0)
-            };
+//            res = dnd.onDragEnter ? dnd.onDragEnter(node, otherNode) : true;
+//            res = {
+//                over: (res !== false) && ((res === true) || (res === "over") || $.inArray("over", res) >= 0),
+//                before: (res !== false) && ((res === true) || (res === "before") || $.inArray("before", res) >= 0),
+//                after: (res !== false) && ((res === true) || (res === "after") || $.inArray("after", res) >= 0)
+//            };
+			res = dnd.onDragEnter ? dnd.onDragEnter(node, otherNode) : null;
+			if(!res){
+				// convert null, undefined, false to false
+				res = false;
+			}else{
+				res = {
+					over: ((res === true) || (res === "over") || $.inArray("over", res) >= 0),
+					before: ((res === true) || (res === "before") || $.inArray("before", res) >= 0),
+					after: ((res === true) || (res === "after") || $.inArray("after", res) >= 0)
+				};
+			}
             ui.helper.data("enterResponse", res);
             logMsg("helper.enterResponse: %o", res);
             break;
@@ -396,7 +406,7 @@ $.ui.dynatree.registerExtension("dnd", {
             hitMode = null;
             if(enterResponse === false){
                 // Don't call onDragOver if onEnter returned false.
-                break;
+//                break;
             } else if(typeof enterResponse === "string") {
                 // Use hitMode from onEnter if provided.
                 hitMode = enterResponse;
@@ -457,7 +467,9 @@ $.ui.dynatree.registerExtension("dnd", {
             if(hitMode && dnd.onDragOver){
                 res = dnd.onDragOver(node, otherNode, hitMode);
             }
-            this._setDndStatus(otherNode, node, ui.helper, hitMode, res!==false);
+			// issue 332
+//			this._setDndStatus(otherNode, node, ui.helper, hitMode, res!==false);
+			this._setDndStatus(otherNode, node, ui.helper, hitMode, res!==false && hitMode !== null);
             break;
         case "drop":
             hitMode = ui.helper.data("hitMode");

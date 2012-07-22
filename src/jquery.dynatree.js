@@ -1768,6 +1768,9 @@ $.widget("ui.dynatree", {
         for(var i=0; i<extensions.length; i++){
             var extName = extensions[i],
                 extension = $.ui.dynatree._extensions[extName];
+            if(!extension){
+                $.error("Could not apply extension '" + extName + "' (did you forget to include it?)");
+            }
             // Add extension options as tree.options.EXTENSION
             this.tree.options[extName] = $.extend({}, extension.options, this.tree.options[extName]);
             // Subclass Dynatree methods using proxies.

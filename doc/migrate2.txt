@@ -125,7 +125,7 @@ Misc.
 - DynaTree was renamed to Dynatree (also DynaTreeNode was renamed to DynatreeNode).
 - node.icon is no longer supported
 - onDeactivate was removed (use activate and check ctx.node.active instead).
-
+- DND no longer requires to implement onDragStart / onDrop (dnd is enabled if the extension is used)
 
 New features
 ============
