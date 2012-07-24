@@ -217,7 +217,7 @@ var NODE_ATTRS = ["expanded", "extraClasses", /*"focus", */ "folder", "href", "k
  * @class
  * @name DynatreeNode
  */
-var DynatreeNode = function(parent, data){
+function DynatreeNode(parent, data){
     var i, l, name, cl;
 
     this.parent = parent;
@@ -251,11 +251,14 @@ var DynatreeNode = function(parent, data){
     if(cl && cl.length){
         this.addChildren(cl);
     }
-};
+}
 
 $.extend(DynatreeNode.prototype, 
 	/** @lends DynatreeNode.prototype */
 	{
+	/**hurz.
+     * @memberOf DynatreeNode_
+	 */
     addChildren: function(children){
         _assert(!!children && (!this.children || this.children.length === 0), "only init supported");
         this.children = [];
@@ -289,6 +292,19 @@ $.extend(DynatreeNode.prototype,
     },
     getFirstChild: function() {
         return this.children ? this.children[0] : null;
+    },
+    /**Return 0-based child index.*/
+    getIndex: function(hierarchical) {
+		return this.parent.children.indexOf(this);
+    },
+    /**Return hierarchical child index (1-based: '3.2.4').*/
+    getIndexHier: function(separator) {
+        separator = separator || ".";
+		var res = [];
+		$.each(this.getParentList(false, true), function(i, o){
+			res.push(o.getIndex() + 1);
+		});
+		return res.join(separator);
     },
 	getKeyPath: function(excludeSelf) {
 		_raiseNotImplemented(); // TODO: implement
@@ -430,18 +446,19 @@ $.extend(DynatreeNode.prototype,
 	 *  mode 'after': add this node as sibling after targetNode.
 	 */
 	move: function(targetNode, mode) {
-		var pos;
+		if(mode === undefined || mode === "over"){
+			mode = "child";
+		}
 		if(this === targetNode){
 			return;
 		}
 		if( !this.parent  ){
 			throw "Cannot move system root";
 		}
-		if(mode === undefined || mode === "over"){
-			mode = "child";
-		}
-		var prevParent = this.parent;
-		var targetParent = (mode === "child") ? targetNode : targetNode.parent;
+		var pos,
+			prevParent = this.parent,
+			targetParent = (mode === "child") ? targetNode : targetNode.parent;
+
 		if( targetParent.isDescendantOf(this) ){
 			throw "Cannot move a node to it's own descendant";
 		}
@@ -519,6 +536,7 @@ $.extend(DynatreeNode.prototype,
 		if( !targetParent.isDescendantOf(prevParent) && targetParent !== prevParent) {
 			targetParent.render();
 		}
+
 /*
 		var tree = this.tree;
 		var opts = tree.options;
@@ -557,11 +575,8 @@ $.extend(DynatreeNode.prototype,
 	reloadChildren: function(callback) {
 		_raiseNotImplemented(); // TODO: implement
 	},
-	render: function() {
-		if(!this.parent){
-			return this.tree.render(); //(force, deep)
-		}
-        return this.tree._callHook("nodeRender", this);
+	render: function(force, deep) {
+        return this.tree._callHook("nodeRender", this, force, deep);
 	},
 	remove: function() {
 		_raiseNotImplemented(); // TODO: implement
@@ -671,7 +686,7 @@ $.extend(DynatreeNode.prototype,
  * @class 
  * @name Dynatree
  */
-var Dynatree = function($widget){
+function Dynatree($widget){
     // TODO: rename $widget to widget (it's not a jQuery object)
     this.$widget = $widget;
     this.$div = $widget.element;
@@ -700,12 +715,14 @@ var Dynatree = function($widget){
     }).appendTo(this.$div);
     this.rootNode.ul = $ul[0];
     this.nodeContainerAttrName = "li";
-};
+}
 
 $.extend(Dynatree.prototype, 
 	/** @lends Dynatree.prototype */ 
 	{
-    /** Return a context object that can be re-used for _callHook(). */
+    /** Return a context object that can be re-used for _callHook(). 
+     * @memberOf Dynatree_ // NOTE: this line tricks Eclipse42 to show members in Outline
+     */
     _makeHookContext: function(obj, orgEvent) {
         if(obj.node !== undefined){
             // obj is already a context object
@@ -863,6 +880,24 @@ $.extend(Dynatree.prototype,
     //     return this.nodeSetExpanded(ctx, false);
     // },
     nodeDblclick: function(ctx) {
+    },
+    /**Called by nodeRender to sync node order with tag order.*/
+    nodeFixOrder: function(ctx) {
+        // Make sure, that <li> order matches node.children order.
+        var node = ctx.node,
+            children = node.children,
+            childLI = node.ul.firstChild,
+            i, l;
+        for(i=0, l=children.length-1; i<l; i++) {
+            var childNode1 = children[i],
+                childNode2 = childLI.dtnode;
+            if( childNode1 !== childNode2 ) {
+                node.debug("_fixOrder: mismatch at index " + i + ": " + childNode1 + " != " + childNode2);
+                node.ul.insertBefore(childNode1.li, childNode2.li);
+            } else {
+                childLI = childLI.nextSibling;
+            }
+        }
     },
     /** Default handling for mouse keydown events. */
     nodeKeydown: function(ctx) {
@@ -1055,22 +1090,27 @@ $.extend(Dynatree.prototype,
      * to display this node in it's current state.
      * 
      * Call this method to create new nodes, or after the strucuture
-     * was changed (e.g. after moving this node or adding removing children)
+     * was changed (e.g. after moving this node or adding/removing children)
      * nodeRenderTitle() and nodeRenderStatus() are implied.
      *
-     * <li id='KEY' dtnode=NODE> // This div contains the node's span and list of child div's.
-     *   <span class='dynatree-node'>S S S A</span> // Span contains graphic spans and title <a> tag
-     *   <ul> // only present, when node has children
-     *       <li id='KEY' dtnode=NODE>child1</li>
-     *       <li id='KEY' dtnode=NODE>child2</li>
-     *   </ul>
+     * <li id='KEY' dtnode=NODE>
+     *     <span class='dynatree-node dynatree-expanded dynatree-has-children dynatree-lastsib dynatree-exp-el dynatree-ico-e'>
+     *         <span class="dynatree-expander"></span>
+     *         <span class="dynatree-checkbox"></span> // only present in checkbox mode
+     *         <span class="dynatree-icon"></span>
+     *         <a href="#" class="dynatree-title"> Node 1 </a>
+     *     </span>
+     *     <ul> // only present if node has children
+     *         <li id='KEY' dtnode=NODE> child1 ... </li>
+     *         <li id='KEY' dtnode=NODE> child2 ... </li>
+     *     </ul>
      * </li>
      *
      * @param: ctx
      * @param: force re-render, even if html markup was already created
      * @param: deep also render all descendants, even if parent is collapsed
      * @param: collapsed force root node to be collapsed, so we can apply animated expand later
-     * @param: _recursive internal use, must be false
+     * @param: _recursive internal use only (don't pass it)
      */
     nodeRender: function(ctx, force, deep, collapsed, _recursive) {
         var node = ctx.node,
@@ -1079,56 +1119,54 @@ $.extend(Dynatree.prototype,
             firstTime = false,
             parent = node.parent,
             i, l;
-//            dfd = !!_recursive ? null : new $.Deferred();
         DT.debug("nodeRender(" + !!force + ", " + !!deep + ")", node.toString());
-        _assert(parent, "Cannot call nodeRender(root)");
-        _assert(parent.ul, "parent UL must exist");
+//        _assert(parent, "Cannot call nodeRender(root)");
+//        _assert(parent.ul, "parent UL must exist");
+        _assert(!parent || parent.ul, "parent UL must exist");
 
         if(node.li && force){
             $(node.li).remove();
             node.li = null;
-            node.ul = null;
+            node.ul = null; // TODO: must we remove tag references on all children too?
         }
 
-        // Create <li><span /> </li>
-        if( ! node.li ) {
-            firstTime = true;
-            node.li = document.createElement("li");
-            node.li.dtnode = node;
-            if( node.key && opts.generateIds ){
-                node.li.id = opts.idPrefix + node.key;
+        if( parent ){
+            // Create <li><span /> </li>
+            if( !node.li ) {
+                firstTime = true;
+                node.li = document.createElement("li");
+                node.li.dtnode = node;
+                if( node.key && opts.generateIds ){
+                    node.li.id = opts.idPrefix + node.key;
+                }
+                node.span = document.createElement("span");
+                node.span.className = "dynatree-title";
+                node.li.appendChild(node.span);
+                // Note: we don't add the LI to the DOM know, but only after we 
+                // added all sub elements (hoping that this performs better since
+                // the browser only have to render once)
+                // TODO: benchmarks to prove this
+//                parent.ul.appendChild(node.li);
+
+                // Set icon, link, and title
+                this.nodeRenderTitle(ctx);
             }
-            node.span = document.createElement("span");
-            node.span.className = "dynatree-title";
-            node.li.appendChild(node.span);
-            // Note: we don't add the LI to the DOM know, but only after we 
-            // added all sub elements (hoping that this performs better since
-            // the browser only have to render once)
-            // TODO: benchmarks to prove this
-//            parent.ul.appendChild(node.li);
 
-            // Set icon, link, and title
-            this.nodeRenderTitle(ctx);
+            // Allow tweaking, binding, after node was created for the first time
+            if(firstTime && opts.onCreate){
+                // TODO: _trigger
+                opts.onCreate.call(tree, this, this.span);
+            }
+            // Allow tweaking after node state was rendered
+            if(opts.onRender){
+                // TODO: _trigger
+                opts.onRender.call(tree, this, this.span);
+            }
         }
 
-        // // Set icon, link, and title
-        // this.nodeRenderTitle(ctx);
-
-        // Allow tweaking, binding, after node was created for the first time
-        if(firstTime && opts.onCreate){
-            // TODO: _trigger
-            opts.onCreate.call(tree, this, this.span);
-        }
-        // Hide children, if node is collapsed
-//        this.ul.style.display = ( this.bExpanded || !parent ) ? "" : "none";
-        // Allow tweaking after node state was rendered
-        if(opts.onRender){
-            // TODO: _trigger
-            opts.onRender.call(tree, this, this.span);
-        }
         // Visit child nodes
         var cl = node.children;
-        if( (node.expanded || deep === true) && cl ) {
+        if( (!parent || node.expanded || deep === true) && cl ) {
             // Create a UL to hold the children
             if( !node.ul ){
                 node.ul = document.createElement("ul");
@@ -1144,26 +1182,29 @@ $.extend(Dynatree.prototype,
                 this.nodeRender(subCtx, force, deep, false, true);
             }
             // Make sure, that <li> order matches node.children order.
-            var childLI = node.ul.firstChild;
-            for(i=0, l=cl.length-1; i<l; i++) {
-                var childNode1 = cl[i],
-                    childNode2 = childLI.dtnode;
-                if( childNode1 !== childNode2 ) {
-                    node.debug("_fixOrder: mismatch at index " + i + ": " + childNode1 + " != " + childNode2);
-                    node.ul.insertBefore(childNode1.li, childNode2.li);
-                } else {
-                    childLI = childLI.nextSibling;
-                }
+            this.nodeFixOrder(ctx);
+//            var childLI = node.ul.firstChild;
+//            for(i=0, l=cl.length-1; i<l; i++) {
+//                var childNode1 = cl[i],
+//                    childNode2 = childLI.dtnode;
+//                if( childNode1 !== childNode2 ) {
+//                    node.debug("_fixOrder: mismatch at index " + i + ": " + childNode1 + " != " + childNode2);
+//                    node.ul.insertBefore(childNode1.li, childNode2.li);
+//                } else {
+//                    childLI = childLI.nextSibling;
+//                }
+//            }
+        }
+        
+        if( parent){
+            // Update element classes according to node state
+            this.nodeRenderStatus(ctx);
+            // Finally add the whole structure to the DOM, so the browser can render
+            if(firstTime){
+                parent.ul.appendChild(node.li);
             }
         }
-        // Update element classes according to node state
-        this.nodeRenderStatus(ctx);
-
-        // Finally add the whole structure to the DOM, so the browser can render
-        if(firstTime){
-            parent.ul.appendChild(node.li);
-        }
-//        return dfd ? dfd.promise() : null;
+        return;
     },
     /** Create HTML for the node's <span> (expander, connector, checkbox, and title). */
     nodeRenderTitle: function(ctx, title) {
@@ -1641,30 +1682,11 @@ $.extend(Dynatree.prototype,
         this._callHook("treeClear", this);
         return this._callHook("treeLoad", this, source);
     },
+    /** Render tree (i.e. all top-level nodes). */
     render: function(force, deep) {
-        var children = this.rootNode.children,
-            i, l;
-        if(children){
-            for(i=0; i<children.length; i++){
-                // children[i].render(true);
-                this._callHook("nodeRender", children[i], force, deep);
-            }
-            // TODO: duplicate code -> refactor to _fixOrder()
-            // Make sure, that <li> order matches node.children order.
-            var node = this.rootNode,
-                childLI = node.ul.firstChild;
-            for(i=0, l=children.length-1; i<l; i++) {
-                var childNode1 = children[i],
-                    childNode2 = childLI.dtnode;
-                if( childNode1 !== childNode2 ) {
-                    node.debug("_fixOrder: mismatch at index " + i + ": " + childNode1 + " != " + childNode2);
-                    node.ul.insertBefore(childNode1.li, childNode2.li);
-                } else {
-                    childLI = childLI.nextSibling;
-                }
-            }
-        }
+        return this.rootNode.render(force, deep);
     },
+    /** Implicitly called for string conversions. */
     toString: function(){
         return "Dynatree<" + this._id + ">";
     },
@@ -2016,6 +2038,7 @@ $.extend($.ui.dynatree, {
         nodeRender: function(ctx, force, deep, collapsed){
             // ctx.tree.debug("**** PROFILER nodeRender");
             var s = this.options.prefix + "render '" + ctx.node + "'";
+            /*jshint expr:true */
             window.console && window.console.time && window.console.time(s);
             this._super(ctx, force, deep, collapsed);
             window.console && window.console.timeEnd && window.console.timeEnd(s);

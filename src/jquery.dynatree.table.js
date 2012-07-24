@@ -98,7 +98,8 @@ function findPrevRowNode(node){
 $.ui.dynatree.registerExtension("table", {
     // Default options for this extension.
     options: {
-        indentation: 16
+        indentation: 16,  // indent every node level by 16px 
+        nodeColumnIdx: 0  // render node expander, icon, and title to column #0
     },
     // Overide virtual methods for this extension.
     // `this`       : is this extension object
@@ -115,6 +116,7 @@ $.ui.dynatree.registerExtension("table", {
         $(tree.tbody).empty();
 
         tree.rowFragment = document.createDocumentFragment();
+        // TODO: handle opts.table.nodeColumnIdx
         var $row = $("<tr><td><span class='dynatree-title'></span></td></tr>");
         for(var i=0; i<tree.columnCount - 1; i++) {
             $row.append("<td>");
@@ -128,15 +130,35 @@ $.ui.dynatree.registerExtension("table", {
         // Make sure that status classes are set on the node's <tr> elements
         tree.statusClassPropName = "tr";
     },
+    /**Called by nodeRender to sync node order with tag order.*/
+    nodeFixOrder: function(ctx) {
+        // TODO: implement re-sort
+//        // Make sure, that <li> order matches node.children order.
+//        var node = ctx.node,
+//            children = node.children,
+//            childLI = node.ul.firstChild,
+//            i, l;
+//        for(i=0, l=children.length-1; i<l; i++) {
+//            var childNode1 = children[i],
+//                childNode2 = childLI.dtnode;
+//            if( childNode1 !== childNode2 ) {
+//                node.debug("_fixOrder: mismatch at index " + i + ": " + childNode1 + " != " + childNode2);
+//                node.ul.insertBefore(childNode1.li, childNode2.li);
+//            } else {
+//                childLI = childLI.nextSibling;
+//            }
+//        }
+    },
     nodeRender: function(ctx, force, deep, collapsed, _recursive) {
         var tree = ctx.tree,
             node = ctx.node,
             opts = ctx.options,
+            isRoot = !node.parent,
             firstTime = false;
-        if(!node.tr){
+        
+        if(!isRoot && !node.tr){
             // Create new <tr> after previous row
-            var parentNode = node.parent,
-                newRow = tree.rowFragment.firstChild.cloneNode(true),
+            var newRow = tree.rowFragment.firstChild.cloneNode(true),
                 prevNode = findPrevRowNode(node);
             firstTime = true;
             $.ui.dynatree.debug("*** nodeRender " + node + ": prev: " + prevNode.key);
@@ -178,7 +200,7 @@ $.ui.dynatree.registerExtension("table", {
         // Visit child nodes
         // Add child markup
         var cl = node.children, i, l;
-        if(cl && (deep || node.expanded)){
+        if(cl && (isRoot || deep || node.expanded)){
             for(i=0, l=cl.length; i<l; i++) {
                 var subCtx = $.extend({}, ctx, {node: cl[i]}); 
                 this.nodeRender(subCtx, force, deep, collapsed, true);
@@ -197,7 +219,9 @@ $.ui.dynatree.registerExtension("table", {
         //     }
         // }
     // Update element classes according to node state
-        this._base.nodeRenderStatus(ctx);
+        if(!isRoot){
+            this._base.nodeRenderStatus(ctx);
+        }
 
         // Finally add the whole structure to the DOM, so the browser can render
         // if(firstTime){

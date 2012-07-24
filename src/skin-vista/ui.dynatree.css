@@ -278,35 +278,17 @@ span.dynatree-icon /* Default icon */
  * Node titles
  */
 
-/* @Chrome: otherwise hit area of node titles is broken (issue 133)
-   Removed again for issue 165; (133 couldn't be reproduced) */
-span.dynatree-node
-{
-/*	display: -moz-inline-box; /* issue 133, 165, 172, 192. removed for issue 221 */
-/*	-moz-box-align: start; /* issue 221 */
-/*  display: inline-block; /* Required to make a span sizeable */
-}
-
-
 span.dynatree-title
 {
 	display: inline-block;
 }
-
-
 /* Remove blue color and underline from title links */
-.dynatree-container a
+a.dynatree-title
 {
+    text-decoration: none;
 }
 
-.dynatree-container a:hover
-{
-/*	text-decoration: underline; */
-	background: #F2F7FD; /* light blue */
-	border-color: #B8D6FB; /* darker light blue */
-}
-
-span.dynatree-node a
+.dynatree-title
 {
 	display: inline-block; /* Better alignment, when title contains <br> */
 /*	vertical-align: top;*/
@@ -314,7 +296,6 @@ span.dynatree-node a
 	padding-right: 3px; /* Otherwise italic font will be outside bounds */
 	/*	line-height: 16px; /* should be the same as img height, in case 16 px */
     color: black; /* inherit doesn't work on IE */
-    text-decoration: none;
     vertical-align: top;
     margin: 0px;
     margin-left: 3px;
@@ -325,12 +306,20 @@ span.dynatree-node a
     border: 1px solid white; /* Note: 'transparent' would not work in IE6 */
 
 }
-span.dynatree-folder a
+
+.dynatree-title:hover
+{
+/*	text-decoration: underline; */
+	background: #F2F7FD; /* light blue */
+	border-color: #B8D6FB; /* darker light blue */
+}
+
+.dynatree-folder .dynatree-title
 {
 /*	font-weight: bold; */ /* custom */
 }
 
-.dynatree-container a:focus,
+a.dynatree-title:focus,
 span.dynatree-focused a:link  /* @IE */
 {
 	background-color: #EFEBDE; /* gray */

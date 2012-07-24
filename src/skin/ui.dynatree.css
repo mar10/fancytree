@@ -269,58 +269,45 @@ span.dynatree-icon /* Default icon */
  * Node titles
  */
 
-/* @Chrome: otherwise hit area of node titles is broken (issue 133)
-   Removed again for issue 165; (133 couldn't be reproduced) */
-span.dynatree-node
+/* Remove blue color and underline from title links */
+a.dynatree-title
 {
-/*	display: -moz-inline-box; /* issue 133, 165, 172, 192. removed for issue 221*/
-/*	-moz-box-align: start; /* issue 221 */
-/*  display: inline-block; /* Required to make a span sizeable */
+	text-decoration: none;
 }
-
-
 span.dynatree-title
 {
 	display: inline-block;
 }
-
-
-/* Remove blue color and underline from title links */
-.dynatree-container a
-{
-	color: black; /* inherit doesn't work on IE */
-	text-decoration: none;
-	vertical-align: top;
-	margin: 0px;
-	margin-left: 3px;
-/*	outline: 0; /* @ Firefox, prevent dotted border after click */
-}
-
-.dynatree-container a:hover
-{
-/*	text-decoration: underline; */
-	background-color: #F2F7FD; /* light blue */
-	border-color: #B8D6FB; /* darker light blue */
-}
-
-span.dynatree-node a
+.dynatree-title
 {
 	font-size: 10pt; /* required for IE, quirks mode */
 	display: inline-block; /* Better alignment, when title contains <br> */
 /*	vertical-align: top;*/
 	padding-left: 3px;
 	padding-right: 3px; /* Otherwise italic font will be outside bounds */
-	/*	line-height: 16px; /* should be the same as img height, in case 16 px */
+	/*	line-height: 16px; */ 
+	/* should be the same as img height, in case 16 px */
+	color: black; /* inherit doesn't work on IE */
+	vertical-align: top;
+	margin: 0px;
+	margin-left: 3px;
 }
-span.dynatree-folder a
+.dynatree-title:hover
 {
-	font-weight: bold;
+/*	text-decoration: underline; */
+	background-color: #F2F7FD; /* light blue */
+	border-color: #B8D6FB; /* darker light blue */
 }
 
-ul.dynatree-container a:focus,
-span.dynatree-focused a:link  /* @IE */
+a.dynatree-title:focus,
+span.dynatree-focused .dynatree-title a:link  /* @IE */
 {
 	background-color: #EFEBDE; /* gray */
+}
+
+span.dynatree-folder .dynatree-title
+{
+	font-weight: bold;
 }
 
 span.dynatree-has-children a
