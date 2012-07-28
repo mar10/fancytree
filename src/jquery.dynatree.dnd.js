@@ -54,6 +54,7 @@ function _initDragAndDrop(tree) {
             helper: function(event) {
                 var sourceNode = $.ui.dynatree.getNode(event.target);
                 if(!sourceNode){ // issue 211
+                    // TODO: remove this hint, when we understand when it happens
                     return "<div>ERROR?: helper requested but sourceNode not found</div>";
                 }
                 return sourceNode.tree.dnd._onDragEvent("helper", sourceNode, null, event, null, null);
@@ -79,9 +80,7 @@ function _initDragAndDrop(tree) {
 //--- Extend ui.draggable event handling --------------------------------------
 var didRegisterDnd = false;
 
-// TODO: why not a simple function?
-
-var _registerDnd = function() {
+function _registerDnd() {
     if(didRegisterDnd){
         return;
     }
@@ -93,20 +92,18 @@ var _registerDnd = function() {
         start: function(event, ui) {
             var draggable = $(this).data("draggable"),
                 sourceNode = ui.helper.data("dtSourceNode") || null;
-          logMsg("draggable-connectToDynatree.start, %s", sourceNode);
-          logMsg("    this: %o", this);
-          logMsg("    event: %o", event);
-          logMsg("    draggable: %o", draggable);
-          logMsg("    ui: %o", ui);
+//          logMsg("draggable-connectToDynatree.start, %s", sourceNode);
+//          logMsg("    this: %o", this);
+//          logMsg("    event: %o", event);
+//          logMsg("    draggable: %o", draggable);
+//          logMsg("    ui: %o", ui);
 
             if(sourceNode) {
                 // Adjust helper offset, so cursor is slightly outside top/left corner
-//              draggable.offset.click.top -= event.target.offsetTop;
-//              draggable.offset.click.left -= event.target.offsetLeft;
                 draggable.offset.click.top = -2;
                 draggable.offset.click.left = + 16;
-              logMsg("    draggable2: %o", draggable);
-              logMsg("    draggable.offset.click FIXED: %s/%s", draggable.offset.click.left, draggable.offset.click.top);
+//              logMsg("    draggable2: %o", draggable);
+//              logMsg("    draggable.offset.click FIXED: %s/%s", draggable.offset.click.left, draggable.offset.click.top);
                 // Trigger onDragStart event
                 // TODO: when called as connectTo..., the return value is ignored(?)
                 return sourceNode.tree.dnd._onDragEvent("start", sourceNode, null, event, ui, draggable);
@@ -117,13 +114,13 @@ var _registerDnd = function() {
                 sourceNode = ui.helper.data("dtSourceNode") || null,
                 prevTargetNode = ui.helper.data("dtTargetNode") || null,
                 targetNode = $.ui.dynatree.getNode(event.target);
-            logMsg("$.ui.dynatree.getNode(%o): %s", event.target, targetNode);
-            logMsg("connectToDynatree.drag: helper: %o", ui.helper[0]);
+//            logMsg("$.ui.dynatree.getNode(%o): %s", event.target, targetNode);
+//            logMsg("connectToDynatree.drag: helper: %o", ui.helper[0]);
             if(event.target && !targetNode){
                 // We got a drag event, but the targetNode could not be found
                 // at the event location. This may happen,
                 // 1. if the mouse jumped over the drag helper,
-                // 2. or if non-dynatree element is dragged
+                // 2. or if a non-dynatree element is dragged
                 // We ignore it:
                 var isHelper = $(event.target).closest("div.dynatree-drag-helper,#dynatree-drop-marker").length > 0;
                 if(isHelper){
@@ -131,7 +128,7 @@ var _registerDnd = function() {
                     return;
                 }
             }
-            logMsg("draggable-connectToDynatree.drag: targetNode(from event): %s, dtTargetNode: %s", targetNode, ui.helper.data("dtTargetNode"));
+//            logMsg("draggable-connectToDynatree.drag: targetNode(from event): %s, dtTargetNode: %s", targetNode, ui.helper.data("dtTargetNode"));
             ui.helper.data("dtTargetNode", targetNode);
             // Leaving a tree node
             if(prevTargetNode && prevTargetNode !== targetNode ) {
@@ -140,7 +137,6 @@ var _registerDnd = function() {
             if(targetNode){
                 if(!targetNode.tree.options.dnd.onDrop) {
                     // not enabled as drop target
-//                    noop(); // Keep JSLint happy
                 } else if(targetNode === prevTargetNode) {
                     // Moving over same node
                     targetNode.tree.dnd._onDragEvent("over", targetNode, sourceNode, event, ui, draggable);
@@ -158,10 +154,10 @@ var _registerDnd = function() {
                 mouseDownEvent = draggable._mouseDownEvent,
                 eventType = event.type,
                 dropped = (eventType === "mouseup" && event.which === 1);
-            logMsg("draggable-connectToDynatree.stop: targetNode(from event): %s, dtTargetNode: %s", targetNode, ui.helper.data("dtTargetNode"));
-            logMsg("draggable-connectToDynatree.stop, %s", sourceNode);
-            logMsg("    type: %o, downEvent: %o, upEvent: %o", eventType, mouseDownEvent, event);
-            logMsg("    targetNode: %o", targetNode);
+//            logMsg("draggable-connectToDynatree.stop: targetNode(from event): %s, dtTargetNode: %s", targetNode, ui.helper.data("dtTargetNode"));
+//            logMsg("draggable-connectToDynatree.stop, %s", sourceNode);
+//            logMsg("    type: %o, downEvent: %o, upEvent: %o", eventType, mouseDownEvent, event);
+//            logMsg("    targetNode: %o", targetNode);
             if(!dropped){
                 logMsg("Drag was cancelled");
             }
@@ -177,7 +173,7 @@ var _registerDnd = function() {
         }
     });
     didRegisterDnd = true;
-};
+}
 
 /*******************************************************************************
  * 
@@ -214,17 +210,16 @@ $.ui.dynatree.registerExtension("dnd", {
         }
         this._super(ctx);
     },
-    /** Display drop marker according to hitMode */
+    /** Display drop marker according to hitMode ('after', 'before', 'over', 'out', 'start', 'stop'). */
     _setDndStatus: function(sourceNode, targetNode, helper, hitMode, accept) {
-        // hitMode: 'after', 'before', 'over', 'out', 'start', 'stop'
         var $source = sourceNode ? $(sourceNode.span) : null,
             $target = $(targetNode.span);
-//        alert("_setDndStatus, this:" + this);
         if( !this.$dropMarker ) {
-            this.$dropMarker = $("<div id='dynatree-drop-marker'></div>")
-                .hide()
-//                .prependTo($(this.divTree).parent());
-                .prependTo("body");
+			this.$dropMarker = $("<div id='dynatree-drop-marker'></div>")
+				.hide()
+				.css({"z-index": 1000})
+				.prependTo($(this._base.$div).parent());
+//                .prependTo("body");
 //          logMsg("Creating marker: %o", this.$dropMarker);
         }
 /*
@@ -237,7 +232,7 @@ $.ui.dynatree.registerExtension("dnd", {
 //      this.$dropMarker.attr("class", hitMode);
         if(hitMode === "after" || hitMode === "before" || hitMode === "over"){
 //          $source && $source.addClass("dynatree-drag-source");
-            var pos = $target.offset();
+			var markerOffset = "0 0";
 
 //          $target.addClass("dynatree-drop-target");
 
@@ -245,37 +240,35 @@ $.ui.dynatree.registerExtension("dnd", {
             case "before":
                 this.$dropMarker.removeClass("dynatree-drop-after dynatree-drop-over");
                 this.$dropMarker.addClass("dynatree-drop-before");
-                pos.top -= 8;
+				markerOffset = "0 -8";
                 break;
             case "after":
                 this.$dropMarker.removeClass("dynatree-drop-before dynatree-drop-over");
                 this.$dropMarker.addClass("dynatree-drop-after");
-                pos.top += 8;
+				markerOffset = "0 8";
                 break;
             default:
                 this.$dropMarker.removeClass("dynatree-drop-after dynatree-drop-before");
                 this.$dropMarker.addClass("dynatree-drop-over");
                 $target.addClass("dynatree-drop-target");
-                pos.left += 8;
+				markerOffset = "8 0";
             }
-            logMsg("Creating marker: %o", this.$dropMarker);
-            logMsg("    $target.offset=%o", $target);
-            logMsg("    pos/$target.offset=%o", pos);
-            logMsg("    $target.position=%o", $target.position());
-            logMsg("    $target.offsetParent=%o, ot:%o", $target.offsetParent(), $target.offsetParent().offset());
-            logMsg("    $(this.divTree).offset=%o", $(this.divTree).offset());
-            logMsg("    $(this.divTree).parent=%o", $(this.divTree).parent());
-//          var pos = $target.offset();
-//          var parentPos = $target.offsetParent().offset();
-//          var bodyPos = $target.offsetParent().offset();
+//            logMsg("Creating marker: %o", this.$dropMarker);
+//            logMsg("    $target.offset=%o", $target);
+//            logMsg("    pos/$target.offset=%o", pos);
+//            logMsg("    $target.position=%o", $target.position());
+//            logMsg("    $target.offsetParent=%o, ot:%o", $target.offsetParent(), $target.offsetParent().offset());
+//            logMsg("    $(this.divTree).offset=%o", $(this.divTree).offset());
+//            logMsg("    $(this.divTree).parent=%o", $(this.divTree).parent());
 
-            this.$dropMarker //.offset({left: pos.left, top: pos.top})
-                .css({
-                    "left": pos.left,
-                    "top": pos.top,
-                    "z-index": 1000
-                })
-                .show();
+            this.$dropMarker
+				.show()
+				.position({
+					my: "left top",
+					at: "left top",
+					of: $target,
+					offset: markerOffset
+				});
 //          helper.addClass("dynatree-drop-hover");
         } else {
 //          $source && $source.removeClass("dynatree-drag-source");
