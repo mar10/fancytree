@@ -1604,7 +1604,6 @@ $.extend(Dynatree.prototype,
             $.error("invalid status " + status);
         }
     },
-    /**  */
     nodeToggleExpanded: function(ctx) {
         return this.nodeSetExpanded(ctx, !ctx.node.expanded);
     },
@@ -2004,7 +2003,7 @@ $.extend($.ui.dynatree, {
         /*jshint expr:true */
         (DT.debugLevel >= 1) && window.console && window.console.info && window.console.info.apply(window.console, arguments);
     },
-    /** */
+    /** Add Dynatree extension definition to the list of available extensions. */
     registerExtension: function(name, definition){
         $.ui.dynatree._extensions[name] = definition;
     },
@@ -2017,11 +2016,20 @@ $.extend($.ui.dynatree, {
 /*******************************************************************************
  * Register AMD
  */
+// http://stackoverflow.com/questions/10918063/how-to-make-a-jquery-plugin-loadable-with-requirejs
+
 // if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
 //     define( "jquery", [], function () { return jQuery; } );
 // }
 
-
+// TODO: maybe like so:?
+/*
+if( typeof define === "function" && define.amd ) {
+	define( ["jquery"], function () { 
+		return jQuery.ui.dynatree; 
+	});
+}
+*/
 }(jQuery));  // 
 
 
