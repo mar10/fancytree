@@ -438,7 +438,7 @@ $.extend(DynatreeNode.prototype,
 		return true;
 	},
 	/** Move this node to targetNode.
-	 *  @param mode {String}
+	 *  @param {String} mode
 	 *      'child': append this node as last child of targetNode.
 	 *                This is the default. To be compatble with the D'n'd
 	 *                hitMode, we also accept 'over'.
@@ -449,17 +449,15 @@ $.extend(DynatreeNode.prototype,
 		if(mode === undefined || mode === "over"){
 			mode = "child";
 		}
-		if(this === targetNode){
-			return;
-		}
-		if( !this.parent  ){
-			throw "Cannot move system root";
-		}
 		var pos,
 			prevParent = this.parent,
 			targetParent = (mode === "child") ? targetNode : targetNode.parent;
 
-		if( targetParent.isDescendantOf(this) ){
+		if(this === targetNode){
+			return;
+		}else if( !this.parent  ){
+			throw "Cannot move system root";
+		}else if( targetParent.isDescendantOf(this) ){
 			throw "Cannot move a node to it's own descendant";
 		}
 		// Unlink this node from current parent
@@ -474,9 +472,9 @@ $.extend(DynatreeNode.prototype,
 			this.parent.children.splice(pos, 1);
 		}
 		// Remove from source DOM parent
-		if(this.parent.ul){
-			this.parent.ul.removeChild(this.li);
-		}
+//		if(this.parent.ul){
+//			this.parent.ul.removeChild(this.li);
+//		}
 
 		// Insert this node to target parent's child list
 		this.parent = targetParent;
@@ -509,33 +507,34 @@ $.extend(DynatreeNode.prototype,
 			targetParent.children = [ this ];
 		}
 		// Parent has no <ul> tag yet:
-		if( !targetParent.ul ) {
-			// This is the parent's first child: create UL tag
-			// (Hidden, because it will be
-			targetParent.ul = document.createElement("ul");
-			targetParent.ul.style.display = "none";
-			targetParent.li.appendChild(targetParent.ul);
-		}
-		// Issue 319: Add to target DOM parent (only if node was already rendered(expanded))
-		if(this.li){
-			targetParent.ul.appendChild(this.li);
-		}
-
+//		if( !targetParent.ul ) {
+//			// This is the parent's first child: create UL tag
+//			// (Hidden, because it will be
+//			targetParent.ul = document.createElement("ul");
+//			targetParent.ul.style.display = "none";
+//			targetParent.li.appendChild(targetParent.ul);
+//		}
+//		// Issue 319: Add to target DOM parent (only if node was already rendered(expanded))
+//		if(this.li){
+//			targetParent.ul.appendChild(this.li);
+//		}
+		// Handle cross-tree moves
 		if( this.tree !== targetNode.tree ) {
 			// Fix node.tree for all source nodes
-			this.visit(function(node){
-				node.tree = targetNode.tree;
-			}, null, true);
-			throw "Not yet implemented.";
+			throw "Cross-tree move is not yet implemented.";
+//			this.visit(function(n){
+//				n.tree = targetNode.tree;
+//			}, null, true);
 		}
-		// TODO: fix selection state
-		// TODO: fix active state
+		// Update HTML markup
 		if( !prevParent.isDescendantOf(targetParent)) {
 			prevParent.render();
 		}
 		if( !targetParent.isDescendantOf(prevParent) && targetParent !== prevParent) {
 			targetParent.render();
 		}
+		// TODO: fix selection state
+		// TODO: fix active state
 
 /*
 		var tree = this.tree;
@@ -593,7 +592,7 @@ $.extend(DynatreeNode.prototype,
     scheduleAction: function(mode, ms) {
         if( this.tree.timer ) {
             clearTimeout(this.tree.timer);
-            this.tree.debug("clearTimeout(%o)", this.tree.timer);
+//            this.tree.debug("clearTimeout(%o)", this.tree.timer);
         }
         this.tree.timer = null;
         var self = this; // required for closures
@@ -616,7 +615,7 @@ $.extend(DynatreeNode.prototype,
         default:
             throw "Invalid mode " + mode;
         }
-        this.tree.debug("setTimeout(%s, %s): %s", mode, ms, this.tree.timer);
+//        this.tree.debug("setTimeout(%s, %s): %s", mode, ms, this.tree.timer);
     },
     setActive: function(flag){
         return this.tree._callHook("nodeSetActive", this, flag);
@@ -642,8 +641,12 @@ $.extend(DynatreeNode.prototype,
     toString: function() {
         return "DynatreeNode<" + this.key + ", '" + this.title + "'>";
     },
+    /** Call fn(node) for all child nodes. Stop iteration, if fn() returns false.
+     * @param {function} fn the callback function.
+     *     Return false to stop iteration, return "skip" to skip this node and children only.
+     * @param {Boolean} includeSelf default: false
+     */
     visit: function(fn, includeSelf) {
-        // Call fn(node) for all child nodes. Stop iteration, if fn() returns false.
         var res = true,
             children = this.children;
         if( includeSelf === true ) {
@@ -882,23 +885,23 @@ $.extend(Dynatree.prototype,
     nodeDblclick: function(ctx) {
     },
     /**Called by nodeRender to sync node order with tag order.*/
-    nodeFixOrder: function(ctx) {
-        // Make sure, that <li> order matches node.children order.
-        var node = ctx.node,
-            children = node.children,
-            childLI = node.ul.firstChild,
-            i, l;
-        for(i=0, l=children.length-1; i<l; i++) {
-            var childNode1 = children[i],
-                childNode2 = childLI.dtnode;
-            if( childNode1 !== childNode2 ) {
-                node.debug("_fixOrder: mismatch at index " + i + ": " + childNode1 + " != " + childNode2);
-                node.ul.insertBefore(childNode1.li, childNode2.li);
-            } else {
-                childLI = childLI.nextSibling;
-            }
-        }
-    },
+//    nodeFixOrder: function(ctx) {
+//        // Make sure, that <li> order matches node.children order.
+//        var node = ctx.node,
+//            children = node.children,
+//            childLI = node.ul.firstChild,
+//            i, l;
+//        for(i=0, l=children.length-1; i<l; i++) {
+//            var childNode1 = children[i],
+//                childNode2 = childLI.dtnode;
+//            if( childNode1 !== childNode2 ) {
+//                node.debug("_fixOrder: mismatch at index " + i + ": " + childNode1 + " != " + childNode2);
+//                node.ul.insertBefore(childNode1.li, childNode2.li);
+//            } else {
+//                childLI = childLI.nextSibling;
+//            }
+//        }
+//    },
     /** Default handling for mouse keydown events. */
     nodeKeydown: function(ctx) {
         var event = ctx.orgEvent,
@@ -1083,8 +1086,28 @@ $.extend(Dynatree.prototype,
         }
         // $(ctx.node.li).toggleClass("dynatree-focused", ctx.orgEvent.type === "focus");
     },
+    nodeRemoveChildMarkup: function(ctx) {
+        var node = ctx.node;
+	    DT.debug("nodeRemoveChildMarkup()", node.toString());
+	    if(node.ul){
+	        $(node.ul).remove();
+	        node.visit(function(n){
+	        	n.li = n.ul = null;
+	        });
+	        node.ul = null;
+	    }
+    },
+    nodeRemoveMarkup: function(ctx) {
+        var node = ctx.node;
+	    DT.debug("nodeRemoveMarkup()", node.toString());
+	    if(node.li){
+	        $(node.li).remove();
+	        node.li = null;
+	    }
+        this.nodeRemoveChildMarkup(ctx);
+    },
     /**
-     * Create <li><span>..</span> .. </li> tags for this node.
+     * Create `<li><span>..</span> .. </li>` tags for this node.
      *
      * This method takes care that all HTML markup is created that is required
      * to display this node in it's current state.
@@ -1092,7 +1115,10 @@ $.extend(Dynatree.prototype,
      * Call this method to create new nodes, or after the strucuture
      * was changed (e.g. after moving this node or adding/removing children)
      * nodeRenderTitle() and nodeRenderStatus() are implied.
-     *
+     * 
+     * Note: if a node was created/removed, nodeRender() must be called for the 
+     *       parent!
+     * <code>
      * <li id='KEY' dtnode=NODE>
      *     <span class='dynatree-node dynatree-expanded dynatree-has-children dynatree-lastsib dynatree-exp-el dynatree-ico-e'>
      *         <span class="dynatree-expander"></span>
@@ -1105,7 +1131,8 @@ $.extend(Dynatree.prototype,
      *         <li id='KEY' dtnode=NODE> child2 ... </li>
      *     </ul>
      * </li>
-     *
+     * </code>
+     * 
      * @param: ctx
      * @param: force re-render, even if html markup was already created
      * @param: deep also render all descendants, even if parent is collapsed
@@ -1113,24 +1140,39 @@ $.extend(Dynatree.prototype,
      * @param: _recursive internal use only (don't pass it)
      */
     nodeRender: function(ctx, force, deep, collapsed, _recursive) {
+    	/* This method must take care of all cases where the current data mode
+    	 * (i.e. node hierarchy) does not match the current markup.
+    	 * 
+    	 * - node was not yet rendered:
+    	 *   create markup
+    	 * - node was rendered
+    	 *   exit fast
+    	 * - children have been added
+    	 * - childern have been removed
+    	 * 
+    	 * 
+    	 */
         var node = ctx.node,
             tree = ctx.tree,
             opts = ctx.options,
             firstTime = false,
             parent = node.parent,
+            isRootNode = !parent,
+            children = node.children,
             i, l;
         DT.debug("nodeRender(" + !!force + ", " + !!deep + ")", node.toString());
-//        _assert(parent, "Cannot call nodeRender(root)");
-//        _assert(parent.ul, "parent UL must exist");
-        _assert(!parent || parent.ul, "parent UL must exist");
-
-        if(node.li && force){
-            $(node.li).remove();
-            node.li = null;
-            node.ul = null; // TODO: must we remove tag references on all children too?
-        }
-
-        if( parent ){
+        
+        _assert(isRootNode || parent.ul, "parent UL must exist");
+        
+        // Render the node
+        if( !isRootNode ){
+            // Discard markup on force-mode, or if if it is not linked to parent <ul>
+            if(node.li && (force || (node.li.parentNode !== node.parent.ul) ) ){
+            	if(node.li.parentNode !== node.parent.ul){
+            		alert("unlink " + node + " (must be child of " + node.parent + ")");
+            	}
+            	this.nodeRemoveMarkup(ctx);
+            }
             // Create <li><span /> </li>
             if( !node.li ) {
                 firstTime = true;
@@ -1148,14 +1190,14 @@ $.extend(Dynatree.prototype,
                 // TODO: benchmarks to prove this
 //                parent.ul.appendChild(node.li);
 
-                // Set icon, link, and title
+                // Create inner HTML for the <span> (expander, checkbox, icon, and title)
                 this.nodeRenderTitle(ctx);
-            }
-
-            // Allow tweaking, binding, after node was created for the first time
-            if(firstTime && opts.onCreate){
-                // TODO: _trigger
-                opts.onCreate.call(tree, this, this.span);
+                
+                // Allow tweaking and binding, after node was created for the first time
+                if(opts.onCreate){
+                    // TODO: _trigger
+                    opts.onCreate.call(tree, this, this.span);
+                }
             }
             // Allow tweaking after node state was rendered
             if(opts.onRender){
@@ -1165,38 +1207,46 @@ $.extend(Dynatree.prototype,
         }
 
         // Visit child nodes
-        var cl = node.children;
-        if( (!parent || node.expanded || deep === true) && cl ) {
-            // Create a UL to hold the children
-            if( !node.ul ){
-                node.ul = document.createElement("ul");
-                if(collapsed === true && !_recursive){
-                    // hide top UL, so we can use an animation to show it later
-                    node.ul.style.display = "none";
+        if( children ){
+            if( isRootNode || node.expanded || deep === true ) {
+                // Create a UL to hold the children
+                if( !node.ul ){
+                    node.ul = document.createElement("ul");
+                    if(collapsed === true && !_recursive){
+                        // hide top UL, so we can use an animation to show it later
+                        node.ul.style.display = "none";
+                    }
+                    node.li.appendChild(node.ul);
                 }
-                node.li.appendChild(node.ul);
+                // Add child markup
+                for(i=0, l=children.length; i<l; i++) {
+                    var subCtx = $.extend({}, ctx, {node: children[i]}); 
+                    this.nodeRender(subCtx, force, deep, false, true);
+                }
+                // Make sure, that <li> order matches node.children order.
+//                this.nodeFixOrder(ctx);
+                var childLI = node.ul.firstChild;
+                for(i=0, l=children.length-1; i<l; i++) {
+                    var childNode1 = children[i],
+                        childNode2 = childLI.dtnode;
+                    if( childNode1 !== childNode2 ) {
+                        node.debug("_fixOrder: mismatch at index " + i + ": " + childNode1 + " != " + childNode2);
+                        node.ul.insertBefore(childNode1.li, childNode2.li);
+                    } else {
+                        childLI = childLI.nextSibling;
+                    }
+                }
+                // TODO: need to check, if node.ul has <li>s, that are not in node.children[] ?
             }
-            // Add child markup
-            for(i=0, l=cl.length; i<l; i++) {
-                var subCtx = $.extend({}, ctx, {node: cl[i]}); 
-                this.nodeRender(subCtx, force, deep, false, true);
-            }
-            // Make sure, that <li> order matches node.children order.
-            this.nodeFixOrder(ctx);
-//            var childLI = node.ul.firstChild;
-//            for(i=0, l=cl.length-1; i<l; i++) {
-//                var childNode1 = cl[i],
-//                    childNode2 = childLI.dtnode;
-//                if( childNode1 !== childNode2 ) {
-//                    node.debug("_fixOrder: mismatch at index " + i + ": " + childNode1 + " != " + childNode2);
-//                    node.ul.insertBefore(childNode1.li, childNode2.li);
-//                } else {
-//                    childLI = childLI.nextSibling;
-//                }
-//            }
+        }else{
+        	// No children: remove markup if any
+        	if( node.ul ){
+        		alert("remove child markup for " + node);
+                this.nodeRemoveChildMarkup(ctx);
+        	}
         }
         
-        if( parent){
+        if( !isRootNode ){
             // Update element classes according to node state
             this.nodeRenderStatus(ctx);
             // Finally add the whole structure to the DOM, so the browser can render
@@ -1206,7 +1256,7 @@ $.extend(Dynatree.prototype,
         }
         return;
     },
-    /** Create HTML for the node's <span> (expander, connector, checkbox, and title). */
+    /** Create HTML for the node's outer <span> (expander, checkbox, icon, and title). */
     nodeRenderTitle: function(ctx, title) {
         // set node connector images, links and text
         var node = ctx.node,

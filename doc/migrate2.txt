@@ -1,3 +1,29 @@
+Motivation and main features
+============================
+
+Status
+------
+*Note:* should be relatively stable, but the API may be subject to change, 
+    depending on your feedback!
+ 
+
+Main features
+-------------
+  - smaller?
+  - faster?
+  - use strict, no eval()
+  - More robust on (parallel) asynchronous operations
+    (using deferreds/promises)
+  - Support for table-trees and Mac-style column views.
+  - More flexible initialization (`source` option)
+  - Better maintainability using an extension-module pattern 
+  - Better test coverage (jQunit)
+  - More consistent API, using naming conventions and practice from jQuery UI
+    widgets.
+  - Using a DVCS
+  - Better development tool chain (mercurial, grunt, jsdoc3, jshint, jQunit) 
+
+
 Dynatree 2 Migration
 ====================
 

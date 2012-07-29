@@ -130,96 +130,106 @@ $.ui.dynatree.registerExtension("table", {
         // Make sure that status classes are set on the node's <tr> elements
         tree.statusClassPropName = "tr";
     },
-    /**Called by nodeRender to sync node order with tag order.*/
-    nodeFixOrder: function(ctx) {
-        // TODO: implement re-sort
-//        // Make sure, that <li> order matches node.children order.
-//        var node = ctx.node,
-//            children = node.children,
-//            childLI = node.ul.firstChild,
-//            i, l;
-//        for(i=0, l=children.length-1; i<l; i++) {
-//            var childNode1 = children[i],
-//                childNode2 = childLI.dtnode;
-//            if( childNode1 !== childNode2 ) {
-//                node.debug("_fixOrder: mismatch at index " + i + ": " + childNode1 + " != " + childNode2);
-//                node.ul.insertBefore(childNode1.li, childNode2.li);
-//            } else {
-//                childLI = childLI.nextSibling;
-//            }
-//        }
+    /* Called by nodeRender to sync node order with tag order.*/
+//    nodeFixOrder: function(ctx) {
+//    },
+    nodeRemoveChildMarkup: function(ctx) {
+        var node = ctx.node;
+	    DT.debug("nodeRemoveChildMarkup()", node.toString());
+        node.visit(function(n){
+        	if(n.tr){
+                $(n.tr).remove();
+                n.tr = null;
+        	}
+        });
     },
+    nodeRemoveMarkup: function(ctx) {
+        var node = ctx.node;
+	    DT.debug("nodeRemoveMarkup()", node.toString());
+	    if(node.tr){
+	        $(node.tr).remove();
+	        node.tr = null;
+	    }
+        this.nodeRemoveChildMarkup(ctx);
+    },
+    /** Override standard render. */
     nodeRender: function(ctx, force, deep, collapsed, _recursive) {
         var tree = ctx.tree,
             node = ctx.node,
             opts = ctx.options,
-            isRoot = !node.parent,
+            isRootNode = !node.parent,
             firstTime = false;
         
-        if(!isRoot && !node.tr){
-            // Create new <tr> after previous row
-            var newRow = tree.rowFragment.firstChild.cloneNode(true),
-                prevNode = findPrevRowNode(node);
-            firstTime = true;
-            $.ui.dynatree.debug("*** nodeRender " + node + ": prev: " + prevNode.key);
-            _assert(prevNode);
-            if(collapsed === true && _recursive){
-                // hide all child rows, so we can use an animation to show it later
-                newRow.style.display = "none";
-            }
-            if(!prevNode.tr){
-                _assert(!prevNode.parent, "prev. row must have a tr, or is system root");
-                tree.tbody.appendChild(newRow);
-            }else{
-                insertSiblingAfter(prevNode.tr, newRow);
-            }
-            node.tr = newRow;
-            if( node.key && opts.generateIds ){
-                node.tr.id = opts.idPrefix + node.key;
-            }
-            node.tr.dtnode = node;
-            node.span = $("span.dynatree-title", node.tr).get(0);
-            var indent = (node.getLevel() - 1) * opts.table.indentation;
-            if(indent){
-                $(node.span).css({marginLeft: indent + "px"});
-            }
+        if( !isRootNode ){
+            if(!node.tr){
+                // Create new <tr> after previous row
+                var newRow = tree.rowFragment.firstChild.cloneNode(true),
+                    prevNode = findPrevRowNode(node);
+                firstTime = true;
+                $.ui.dynatree.debug("*** nodeRender " + node + ": prev: " + prevNode.key);
+                _assert(prevNode);
+                if(collapsed === true && _recursive){
+                    // hide all child rows, so we can use an animation to show it later
+                    newRow.style.display = "none";
+                }
+                if(!prevNode.tr){
+                    _assert(!prevNode.parent, "prev. row must have a tr, or is system root");
+                    tree.tbody.appendChild(newRow);
+                }else{
+                    insertSiblingAfter(prevNode.tr, newRow);
+                }
+                node.tr = newRow;
+                if( node.key && opts.generateIds ){
+                    node.tr.id = opts.idPrefix + node.key;
+                }
+                node.tr.dtnode = node;
+                node.span = $("span.dynatree-title", node.tr).get(0);
+//                var indent = (node.getLevel() - 1) * opts.table.indentation;
+//                if(indent){
+//                    $(node.span).css({marginLeft: indent + "px"});
+//                }
 
-            // Set icon, link, and title (normally this is only required on initial render)
-            this._base.nodeRenderTitle(ctx);
+                // Set icon, link, and title (normally this is only required on initial render)
+                this._base.nodeRenderTitle(ctx);
+                // Allow tweaking, binding, after node was created for the first time
+                if(opts.onCreate){
+                    // TODO: _trigger
+                    opts.onCreate.call(tree, this, this.span);
+                }
+            }
         }
-
-        // // Allow tweaking, binding, after node was created for the first time
-        // if(firstTime && opts.onCreate){
-        //     opts.onCreate.call(tree, this, this.span);
-        // }
-        // // Allow tweaking after node state was rendered
-        // if(opts.onRender){
-        //     // TODO: _trigger
-        //     opts.onRender.call(tree, this, this.span);
-        // }
+         // Allow tweaking after node state was rendered
+         if(opts.onRender){
+             // TODO: _trigger
+             opts.onRender.call(tree, this, this.span);
+         }
         // Visit child nodes
         // Add child markup
-        var cl = node.children, i, l;
-        if(cl && (isRoot || deep || node.expanded)){
-            for(i=0, l=cl.length; i<l; i++) {
-                var subCtx = $.extend({}, ctx, {node: cl[i]}); 
+        var children = node.children, i, l;
+        if(children && (isRootNode || deep || node.expanded)){
+            for(i=0, l=children.length; i<l; i++) {
+                var subCtx = $.extend({}, ctx, {node: children[i]}); 
                 this.nodeRender(subCtx, force, deep, collapsed, true);
             }
         }
-        // Make sure, that <li> order matches node.children order.
-        // var childLI = node.ul.firstChild;
-        // for(i=0, l=cl.length-1; i<l; i++) {
-        //     var childNode1 = cl[i],
-        //         childNode2 = childLI.dtnode;
-        //     if( childNode1 !== childNode2 ) {
-        //         node.debug("_fixOrder: mismatch at index " + i + ": " + childNode1 + " != " + childNode2);
-        //         node.ul.insertBefore(childNode1.li, childNode2.li);
-        //     } else {
-        //         childLI = childLI.nextSibling;
-        //     }
-        // }
-    // Update element classes according to node state
-        if(!isRoot){
+        // Make sure, that <tr> order matches node.children order.
+        if(children && !_recursive){ // we only have to do it once, for the root branch 
+            var prevTr = node.tr || null,
+            	firstTr = tree.tbody.firstChild;
+            // Iterate over all descendants
+            node.visit(function(n){
+            	if(n.tr){
+	            	if(n.tr.previousSibling !== prevTr){
+	                    node.debug("_fixOrder: mismatch at node: " + n);
+	                    var nextTr = prevTr ? prevTr.nextSibling : firstTr;
+	                    tree.tbody.insertBefore(n.tr, nextTr);
+	            	}
+	            	prevTr = n.tr;
+            	}
+            });
+        }
+        // Update element classes according to node state
+        if(!isRootNode){
             this._base.nodeRenderStatus(ctx);
         }
 
@@ -236,28 +246,16 @@ $.ui.dynatree.registerExtension("table", {
         // let user code write column content
         ctx.tree._triggerNodeEvent("rendercolumns", node);
     },
-    // nodeRenderStatus: function(ctx) {
-    //     var node = ctx.node,
-    //         tree = ctx.tree,
-    //         $tr = $(node.tr),
-    //         $tds = $(">td", node.tr),
-    //         orgLI = node.li;
-    //     // Let base class do it's thing, but apply classes to <tr> instead of <li>
-    //     node.li = node.tr;
-    //     this._super(ctx);
-    //     node.li = orgLI;
-    //     if(node === tree.activeNode){
-    //         $tr.addClass("dynatree-active");
-    //     }
-    //     // if(node === tree.focusNode){
-    //     //     $tr.addClass("dynatree-active");
-    //     // }
-    // },
-    // nodeSetActive: function(ctx, flag) {
-    //     this._super(ctx, flag);
-    //     flag = flag === undefined ? true : !!flag;
-    //     $(ctx.node.tr).toggleClass("", flag);
-    // },
+     nodeRenderStatus: function(ctx) {
+         var node = ctx.node,
+           	 opts = ctx.options;
+         this._super(ctx);
+         // indent
+         var indent = (node.getLevel() - 1) * opts.table.indentation;
+         if(indent){
+             $(node.span).css({marginLeft: indent + "px"});
+         }
+     },
     /** Expand node, return Deferred.promise. */
     nodeSetExpanded: function(ctx, flag) {
         var node = ctx.node,

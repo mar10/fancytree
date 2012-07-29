@@ -449,7 +449,7 @@ $.ui.dynatree.registerExtension("dnd", {
                         hitMode = null;
                     }
                 }
-                logMsg("hitMode: %s - %s - %s", hitMode, (node.parent === otherNode), node.isLastSibling());
+//                logMsg("hitMode: %s - %s - %s", hitMode, (node.parent === otherNode), node.isLastSibling());
                 ui.helper.data("hitMode", hitMode);
             }
             // Auto-expand node (only when 'over' the node, not 'before', or 'after')
