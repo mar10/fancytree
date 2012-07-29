@@ -135,7 +135,7 @@ $.ui.dynatree.registerExtension("table", {
 //    },
 	nodeRemoveChildMarkup: function(ctx) {
 		var node = ctx.node;
-		DT.debug("nodeRemoveChildMarkup()", node.toString());
+//		DT.debug("nodeRemoveChildMarkup()", node.toString());
 		node.visit(function(n){
 			if(n.tr){
 				$(n.tr).remove();
@@ -145,7 +145,7 @@ $.ui.dynatree.registerExtension("table", {
 	},
 	nodeRemoveMarkup: function(ctx) {
 		var node = ctx.node;
-		DT.debug("nodeRemoveMarkup()", node.toString());
+//		DT.debug("nodeRemoveMarkup()", node.toString());
 		if(node.tr){
 			$(node.tr).remove();
 			node.tr = null;

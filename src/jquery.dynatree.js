@@ -577,6 +577,12 @@ $.extend(DynatreeNode.prototype,
 	render: function(force, deep) {
 		return this.tree._callHook("nodeRender", this, force, deep);
 	},
+	renderTitle: function() {
+		return this.tree._callHook("nodeRenderTitle", this);
+	},
+	renderStatus: function() {
+		return this.tree._callHook("nodeRenderStatus", this);
+	},
 	remove: function() {
 		_raiseNotImplemented(); // TODO: implement
 	},
@@ -1182,7 +1188,7 @@ $.extend(Dynatree.prototype,
 					node.li.id = opts.idPrefix + node.key;
 				}
 				node.span = document.createElement("span");
-				node.span.className = "dynatree-title";
+				node.span.className = "dynatree-node";
 				node.li.appendChild(node.span);
 				// Note: we don't add the LI to the DOM know, but only after we
 				// added all sub elements (hoping that this performs better since
@@ -1997,6 +2003,9 @@ $.extend($.ui.dynatree, {
 	_nextId: 1,
 	_nextNodeKey: 1,
 	_extensions: {},
+	
+	_Dynatree: Dynatree, // make class object available for extensions
+	_DynatreeNode: DynatreeNode,
 
 	debug: function(msg){
 		/*jshint expr:true */

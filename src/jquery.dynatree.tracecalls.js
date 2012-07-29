@@ -58,6 +58,8 @@ $.ui.dynatree.registerExtension("tracecalls", {
 	},
 	nodeOnFocusInOut: function(ctx) {
 	},
+	nodeRemoveChildMarkup: function(ctx) {
+	},
 	nodeRemoveMarkup: function(ctx) {
 	},
 	nodeRender: function(ctx, force, deep, collapsed, _recursive) {

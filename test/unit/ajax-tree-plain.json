@@ -2,7 +2,7 @@
     {"title": "simple node (no explicit id, so a default key is generated)" },
     {"key": "2", "title": "item1 with key and tooltip", "tooltip": "Look, a tool tip!" },
     {"key": "3", "title": "<span>item2 with <b>html</b> inside a span tag</span>" },
-    {"key": "4", "title": "nodes 4" },
+    {"key": "4", "title": "node 4" },
     {"key": "5", "title": "using href", "href": "http://www.wwWendt.de/" },
     {"key": "6", "title": "node with some extra classes (will be added to the generated markup)", "extraClasses": "my-extra-class" },
     {"key": "10", "title": "Folder 1", "folder": true, "children": [
