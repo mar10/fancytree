@@ -42,7 +42,8 @@ function _assert(cond, msg){
 
 
 function _escapeRegex(str){
-    return (str + "").replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
+	/*jshint regexdash:true */
+    return (str + "").replace(/([.?*+\^\$\[\]\\(){}|-])/g, "\\$1");
 }
 
 
@@ -62,7 +63,7 @@ $.ui.dynatree._Dynatree.prototype.applyFilter = function(filter){
 	// Default to 'match title substring (not case sensitive)'
 	if(typeof filter === "string"){
 		var match = _escapeRegex(filter), // make sure a '.' is treated literally
-		    re = new RegExp(".*" + match + ".*", "i"),
+		    re = new RegExp(".*" + match + ".*", "i");
 		filter = function(node){
 			return !!re.exec(node.title);
 		};
