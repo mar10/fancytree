@@ -51,6 +51,7 @@
 			},
 			dnd: {
 				preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
+				preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
 				autoExpandMS: 400,
 				onDragStart: function(node) {
 					/** This function MUST be defined to enable dragging for the tree.

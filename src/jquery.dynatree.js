@@ -1773,7 +1773,6 @@ $.extend(Dynatree.prototype,
 	visit: function(fn) {
 		return this.rootNode.visit(fn, false);
 	},
-
 	warn: function(msg){
 		Array.prototype.unshift.call(arguments, this.toString());
 		DT.warn.apply(this, arguments);

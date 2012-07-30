@@ -188,6 +188,7 @@ $.ui.dynatree.registerExtension("dnd", {
 		// Make tree nodes accept draggables
 		autoExpandMS: 1000, // Expand nodes after n milliseconds of hovering.
 		preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
+		preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
 		onDragEnter: null, // Callback(targetNode, sourceNode)
 		onDragOver: null, // Callback(targetNode, sourceNode, hitMode)
 		onDrop: null, // Callback(targetNode, sourceNode, hitMode)
@@ -374,13 +375,11 @@ $.ui.dynatree.registerExtension("dnd", {
 			}
 			break;
 		case "enter":
-//            res = dnd.onDragEnter ? dnd.onDragEnter(node, otherNode) : true;
-//            res = {
-//                over: (res !== false) && ((res === true) || (res === "over") || $.inArray("over", res) >= 0),
-//                before: (res !== false) && ((res === true) || (res === "before") || $.inArray("before", res) >= 0),
-//                after: (res !== false) && ((res === true) || (res === "after") || $.inArray("after", res) >= 0)
-//            };
-			res = dnd.onDragEnter ? dnd.onDragEnter(node, otherNode) : null;
+			if(dnd.preventRecursiveMoves && node.isDescendantOf(otherNode)){
+				res = false;
+			}else{
+				res = dnd.onDragEnter ? dnd.onDragEnter(node, otherNode) : null;
+			}
 			if(!res){
 				// convert null, undefined, false to false
 				res = false;
