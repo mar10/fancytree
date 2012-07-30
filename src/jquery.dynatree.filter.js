@@ -49,8 +49,11 @@ function _escapeRegex(str){
 
 /**
  * Dimm or hide nodes.
- * @param {function | string | false} filter
+ * 
+ * @param {function | string} filter
  * @returns {integer} count
+ * @lends Dynatree.prototype
+ * @requires jquery.dynatree.filter.js
  */
 $.ui.dynatree._Dynatree.prototype.applyFilter = function(filter){
 	var count = 0;
@@ -70,7 +73,7 @@ $.ui.dynatree._Dynatree.prototype.applyFilter = function(filter){
 	}
 	
 	this.enableFilter = true;
-	this.$div.addClass("dynatree-filter");
+	this.$div.addClass("dynatree-ext-filter");
 	this.visit(function(node){
 		if(filter(node)){
 			count++;
@@ -85,7 +88,10 @@ $.ui.dynatree._Dynatree.prototype.applyFilter = function(filter){
 };
 
 /**
+ * Reset the filter.
  * 
+ * @lends Dynatree.prototype
+ * @requires jquery.dynatree.filter.js
  */
 $.ui.dynatree._Dynatree.prototype.clearFilter = function(){
 	this.visit(function(node){
@@ -96,7 +102,7 @@ $.ui.dynatree._Dynatree.prototype.clearFilter = function(){
 	
 	this.enableFilter = false;
 	this.render();
-	this.$div.removeClass("dynatree-filter");
+	this.$div.removeClass("dynatree-ext-filter");
 };
 
 
@@ -108,7 +114,7 @@ $.ui.dynatree.registerExtension("filter", {
 	options: {
 		mode: "dimm"
 	},
-	// Overide virtual methods for this extension.
+	// Override virtual methods for this extension.
 	// `this`       : is this extension object
 	// `this._base` : the Dynatree instance
 	// `this._super`: the virtual function that was overriden (member of prev. extension or Dynatree)

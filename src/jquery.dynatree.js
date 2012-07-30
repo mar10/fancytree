@@ -1685,7 +1685,9 @@ $.extend(Dynatree.prototype,
 	treeInit: function(ctx) {
 		this.treeLoad(ctx);
 	},
-	/** Parse Dynatree from source, as configured in the options.*/
+	/** Parse Dynatree from source, as configured in the options.
+	 * @param {object} [source] new source 
+	 */
 	treeLoad: function(ctx, source) {
 		var tree = ctx.tree,
 			$container = ctx.widget.element,
@@ -1693,6 +1695,9 @@ $.extend(Dynatree.prototype,
 			// calling context for root node
 			rootCtx = $.extend({}, ctx, {node: this.rootNode});
 
+		if(tree.rootNode.children){
+			this.treeClear(ctx);
+		}
 		source = source || this.options.source;
 
 		if(!source){
@@ -1875,7 +1880,12 @@ $.widget("ui.dynatree", {
 		case "checkbox":
 		case "minExpandLevel":
 		case "nolink":
+			this.tree._callHook("treeCreate", this.tree);
 			rerender = true;
+			break;
+		case "source":
+			callDefault = false;
+			this.tree._callHook("treeLoad", this.tree, value);
 			break;
 		}
 		this.tree.debug("set option " + key + "=" + value + " <" + typeof(value) + ">");

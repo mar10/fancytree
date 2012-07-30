@@ -430,6 +430,23 @@ table.dynatree-ext-columnview span.dynatree-node.dynatree-active {
 
 
 /*******************************************************************************
+ * 'filter' extension
+ */
+.dynatree-ext-filter span.dynatree-node .dynatree-title {
+	color: silver;
+	font-weight: lighter;
+}
+.dynatree-ext-filter span.dynatree-node.dynatree-submatch .dynatree-title {
+	color: black;
+	font-weight: normal;
+}
+.dynatree-ext-filter span.dynatree-node.dynatree-match .dynatree-title {
+	color: black;
+	font-weight: bold;
+}
+
+
+/*******************************************************************************
  * Drag'n'drop support
  */
 

@@ -83,6 +83,11 @@
 					alert("failed to expand " + this + ": " + errMsg);
 				});
 			});
+			$("button#setSource").click(function(e){
+				$(".sampletree").dynatree("option", "source", [
+				    {title: "node1"}
+				]);
+			});
 		});
 	</script>
 	<style type="text/css">
@@ -101,6 +106,7 @@
 		<button id="destroy">Destroy</button> <button id="init">Init</button>
 		<button id="expand">Expand</button>
 		<button id="reload">Reload</button>
+		<button id="setSource">Set source option</button>
 	</p>
 	<p>Tree with UL markup</p>
 	<div id="tree" class="sampletree">
