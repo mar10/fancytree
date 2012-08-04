@@ -1027,7 +1027,24 @@ $.extend(Dynatree.prototype,
 			if(source.url){
 				// `source` is an Ajax options object
 				var ajax = $.extend({}, ctx.options.ajax, source);
-				dfd = $.ajax(ajax);
+				if(ajax.debugLazyDelay){
+					// simulate a slow server
+					var delay = ajax.debugLazyDelay;
+					if($.isArray(delay)){ // random delay range [min..max]
+						delay = delay[0] + Math.random() * (delay[1] - delay[0]);
+					}
+					dfd = $.Deferred();
+					var self = this;
+					setTimeout(function(){
+						ajax.debugLazyDelay = false;
+						self.nodeLoadChildren(ctx, ajax).complete(function(){
+							dfd.resolve.apply(this, arguments);
+						});
+					}, delay);
+					return dfd;
+				}else{
+					dfd = $.ajax(ajax);
+				}
 			}else{
 				// `source` is a promise, as returned by a $.ajax call
 				dfd = source;
