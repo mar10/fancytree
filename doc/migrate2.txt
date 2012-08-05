@@ -27,7 +27,7 @@ Main features
 Dynatree 2 Migration
 ====================
 
-Requires
+Requirements
   Dynatree 1:
     jQuery 1.4+
     jQuery UI 1.7+ (?)
@@ -152,6 +152,13 @@ Misc.
 - node.icon is no longer supported
 - onDeactivate was removed (use activate and check ctx.node.active instead).
 - DND no longer requires to implement onDragStart / onDrop (dnd is enabled if the extension is used)
+- node.getEventTargetType(event)
+  -> $.ui.dynatree.getEventTargetType(event)
+- node.toggleSelect() --> node.toggleSelected()
+  node.select() --> node.setSelected()
+- class dynatree-radio must be set for the container (not node)
+- $("#tree2").dynatree("getRoot") --> $("#tree2").dynatree("getRoot")
+
 
 New features
 ============

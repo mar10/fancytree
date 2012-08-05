@@ -9,6 +9,19 @@
 	A current version and some documentation is available at
 		http://dynatree.googlecode.com/
 
+ * @summary     jQuery UI SuperWidget
+ * @description Create a super widget that does everything on the entire web!
+ * @file        jquery.dynatree.js
+ * @version     2.0
+ * @author      Martin Wendt
+ * @license     MIT or GPL v2
+ *
+ * @copyright Copyright 2012 Jannon Frank, all rights reserved.
+ *
+ * This source file is free software, under either the MIT license or GPL v3 license
+ * available at:
+ *   http://jannon.net/license_mit
+ *   http://jannon.net/license_gpl3
 TODO:
 - Call funcs:
   $("#tree").dynatree("getRootNode")
@@ -213,13 +226,32 @@ function _loadFromHtml($ul, children) {
 var NODE_ATTRS = ["expanded", "extraClasses", /*"focus", */ "folder", "href", "key",
 				  "lazy", "nolink", "selected", "target", "title", "tooltip"];
 /**
- * Tree node
- * @class
+ * Tree node.
+ * @class Represents a tree node.
  * @name DynatreeNode
+ * @param {DynatreeNode} parent
+ * @param {object} data 
+ * @constructor
+ *
+ * @property {Dynatree} tree oarent node
+ * @property {DynatreeNode} parent oarent node
+ * @property {string} key
+ * @property {string} title
+ * @property {object} data
+ * @property {[DynatreeNode] | null | undefined} children list of child nodes
+ * @property {boolean} isStatusNode
+ * @property {boolean} expanded
+ * @property {boolean} folder
+ * @property {boolean} href
+ * @property {string} extraClasses
+ * @property {boolean} lazy
+ * @property {boolean} nolink
+ * @property {boolean} selected
+ * @property {string} target
+ * @property {string} tooltip
  */
-function DynatreeNode(parent, data){
+var DynatreeNode = function(parent, data){
 	var i, l, name, cl;
-
 	this.parent = parent;
 	this.tree = parent.tree;
 	this.ul = null;
@@ -251,12 +283,12 @@ function DynatreeNode(parent, data){
 	if(cl && cl.length){
 		this.addChildren(cl);
 	}
-}
+};
 
 $.extend(DynatreeNode.prototype,
 	/** @lends DynatreeNode.prototype */
 	{
-	/**hurz.
+	/**
 	 * @memberOf DynatreeNode_
 	 */
 	addChildren: function(children){
@@ -284,6 +316,13 @@ $.extend(DynatreeNode.prototype,
 		Array.prototype.unshift.call(arguments, this.toString());
 		DT.debug.apply(this, arguments);
 	},
+	/** Remove all children of a lazy node and collapse.*/
+	discard: function(){
+		if(this.lazy && $.isArray(this.children)){
+			this.removeChildren();
+			this.setExpanded(false);
+		}
+	},
 	getChildren: function() {
 		if(this.hasChildren() === undefined){ // TODO; only required for lazy nodes?
 			return undefined; // Lazy node: unloaded, currently loading, or load error
@@ -293,11 +332,11 @@ $.extend(DynatreeNode.prototype,
 	getFirstChild: function() {
 		return this.children ? this.children[0] : null;
 	},
-	/**Return 0-based child index.*/
-	getIndex: function(hierarchical) {
+	/** @returns {int} 0-based child index.*/
+	getIndex: function() {
 		return this.parent.children.indexOf(this);
 	},
-	/**Return hierarchical child index (1-based: '3.2.4').*/
+	/**@returns {string} hierarchical child index (1-based: '3.2.4').*/
 	getIndexHier: function(separator) {
 		separator = separator || ".";
 		var res = [];
@@ -318,10 +357,11 @@ $.extend(DynatreeNode.prototype,
 		return "/" + path.join(this.tree.options.keyPathSeparator);
 		*/
 	},
+	/**@returns {DynatreeNode | null} last child of this node.*/
 	getLastChild: function() {
 		return this.children ? this.children[this.children.length - 1] : null;
 	},
-	/** Return node depth. 0: System root node, 1: visible top-level node. */
+	/** @returns {int} node depth. 0: System root node, 1: visible top-level node, 2: first sub-level, .... */
 	getLevel: function() {
 		var level = 0,
 			dtn = this.parent;
@@ -331,6 +371,7 @@ $.extend(DynatreeNode.prototype,
 		}
 		return level;
 	},
+	/** @returns {DynatreeNode | null} */
 	getNextSibling: function() {
 		// TODO: use indexOf, if available: (not in IE6)
 		if( this.parent ){
@@ -343,10 +384,16 @@ $.extend(DynatreeNode.prototype,
 		}
 		return null;
 	},
+	/** @returns {DynatreeNode | null} */
 	getParent: function() {
 		// TODO: return null for top-level nodes?
 		return this.parent;
 	},
+	/**
+	 * @param {bool} [includeRoot] default: false 
+	 * @param {bool} [includeSelf] default: false
+	 * @returns {[DynatreeNode]} 
+	 */
 	getParentList: function(includeRoot, includeSelf) {
 		var l = [],
 			dtn = includeSelf ? this : this.parent;
@@ -704,6 +751,7 @@ function Dynatree($widget){
 	this.activeNode = null;
 	this.focusNode = null;
 	this.statusClassPropName = "span";
+	this.lastSelectedNode = null;
 
 	// Remove previous markup if any
 	this.$div.find(">ul.dynatree-container").remove();
@@ -823,7 +871,24 @@ $.extend(Dynatree.prototype,
 		}, true);
 		return match;
 	},
-
+	/**
+	 * Return a list of selected nodes.
+	 * @param {boolean} [stopOnParents=false] only return the topmost selected 
+	 *     node (useful with selectMode 3)  
+	 * @returns {DynatreeNode[]}
+	 */
+	getSelectedNodes: function(stopOnParents) {
+		var nodeList = [];
+		this.rootNode.visit(function(node){
+			if( node.selected ) {
+				nodeList.push(node);
+				if( stopOnParents === true ){
+					return "skip"; // stop processing this branch
+				}
+			}
+		});
+		return nodeList;
+	},
 	info: function(msg){
 		Array.prototype.unshift.call(arguments, this.toString());
 		DT.info.apply(this, arguments);
@@ -832,7 +897,7 @@ $.extend(Dynatree.prototype,
 	nodeClick: function(ctx) {
 //      this.tree.logDebug("dtnode.onClick(" + event.type + "): dtnode:" + this + ", button:" + event.button + ", which: " + event.which);
 		var event = ctx.orgEvent,
-			target = DT.getEventTarget(event),
+			target = DT.getEventTargetType(event),
 			node = ctx.node, //target.node,
 			targetType = target.type;
 		// TODO: use switch
@@ -1335,12 +1400,16 @@ $.extend(Dynatree.prototype,
 		// Set classes for current status
 		var node = ctx.node,
 			tree = ctx.tree,
-			nodeContainer = node[tree.nodeContainerAttrName],
+//			nodeContainer = node[tree.nodeContainerAttrName],
 			hasChildren = node.hasChildren(),
 			isLastSib = node.isLastSibling(),
 			cn = ctx.options._classNames,
 			cnList = [];
 
+		if( !node[tree.statusClassPropName]){
+			// if this function is called for an unrendered node, ignore it (will be updated on nect render anyway)
+			return;
+		}
 		// Build a list of class names that we will add to the node <span>
 		cnList.push(cn.node);
 		if( tree.activeNode === node ){
@@ -1582,11 +1651,130 @@ $.extend(Dynatree.prototype,
 		this._triggerNodeEvent("focus", ctx);
 		this._callHook("nodeRenderStatus", ctx);
 	},
+	/*
+	_setSubSel: function(hasSubSel) {
+		if( hasSubSel ) {
+			this.hasSubSel = true;
+			$(this.span).addClass(this.tree.options.classNames.partsel);
+		} else {
+			this.hasSubSel = false;
+			$(this.span).removeClass(this.tree.options.classNames.partsel);
+		}
+	},
+	*/
+	/*
+	 * Fix selection and partsel status, of parent nodes, according to current status of
+	 * end nodes.
+	 */
+	/*
+	_updatePartSelectionState: function() {
+//		alert("_updatePartSelectionState " + this);
+//		this.tree.logDebug("_updatePartSelectionState() - %o", this);
+		var sel;
+		// Return `true` or `false` for end nodes and remove part-sel flag
+		if( ! this.hasChildren() ){
+			sel = (this.bSelected && !this.data.unselectable && !this.data.isStatusNode);
+			this._setSubSel(false);
+			return sel;
+		}
+		// Return `true`, `false`, or `undefined` for parent nodes
+		var i, l,
+			cl = this.childList,
+			allSelected = true,
+			allDeselected = true;
+		for(i=0, l=cl.length; i<l;  i++) {
+			var n = cl[i],
+				s = n._updatePartSelectionState();
+			if( s !== false){
+				allDeselected = false;
+			}
+			if( s !== true){
+				allSelected = false;
+			}
+		}
+		if( allSelected ){
+			sel = true;
+		} else if ( allDeselected ){
+			sel = false;
+		} else {
+			sel = undefined;
+		}
+		this._setSubSel(sel === undefined);
+		this.bSelected = (sel === true);
+		return sel;
+	},
+*/
+	/**
+	 * Fix selection status, after this node was (de)selected in multi-hier mode.
+	 * This includes (de)selecting all children.
+	 */
+	_fixSelectionState: function(node) {
+//		alert("_fixSelectionState " + this);
+//		this.tree.logDebug("_fixSelectionState(%s) - %o", this.bSelected, this);
+		function _setPartSel(node, flag) {
+			if( (flag && !node.partsel) || (!flag && node.partsel)) {
+				node.partsel = !!flag;
+				node.renderStatus();
+			}
+		}
+		var p, i, l;
+		if( node.selected ) {
+			// Select all children
+			node.visit(function(n){
+				_setPartSel(n.parent, true);
+				if(!n.unselectable && !n.selected){
+					n.selected = true;
+					n.renderStatus();
+				}
+			});
+			// Select parents, if all children are selected
+			p = node.parent;
+			while( p ) {
+				var allChildsSelected = true;
+				for(i=0, l=p.children.length; i<l;  i++) {
+					var n = p.children[i];
+					if( !n.selected && !n.isStatusNode && !n.unselectable) {
+						allChildsSelected = false;
+						break;
+					}
+				}
+				p.partsel = true;
+				p.selected = allChildsSelected;
+				p.renderStatus();
+				p = p.parent;
+			}
+		} else {
+			// Deselect all children
+			_setPartSel(node, false);
+			node.visit(function(n){
+				_setPartSel(n, false);
+				if(n.selected){
+					n.selected = false;
+					n.renderStatus();
+				}
+			});
+			// Deselect parents, and recalc hasSubSel
+			p = node.parent;
+			while( p ) {
+				var someChildsSelected = false;
+				for(i=0, l=p.children.length; i<l;  i++) {
+					if( p.children[i].selected || p.children[i].partsel ) {
+						someChildsSelected = true;
+						break;
+					}
+				}
+				p.selected = false;
+				p.partsel = someChildsSelected;
+				p.renderStatus();
+				p = p.parent;
+			}
+		}
+	},
 	/** (De)Select node, return new status (sync). */
 	nodeSetSelected: function(ctx, flag) {
 		var node = ctx.node,
 			tree = ctx.tree,
-			opts = ctx.widget.options;
+			opts = ctx.options;
 		// flag defaults to true
 		flag = (flag !== false);
 
@@ -1599,20 +1787,20 @@ $.extend(Dynatree.prototype,
 		}else if ( this._triggerNodeEvent("queryselect", node, ctx.orgEvent) === false ){
 			return !!node.selected;
 		}
-		//
+		if(flag && opts.selectMode === 1){
+			// single selection mode
+			if(tree.lastSelectedNode){
+				tree.lastSelectedNode.setSelected(false);
+			}
+		}else if(opts.selectMode === 3){
+			// multi.hier selection mode
+			node.selected = flag;
+			this._fixSelectionState(node);
+		}
 		node.selected = flag;
 		this.nodeRenderStatus(ctx);
+		tree.lastSelectedNode = flag ? node : null;
 		tree._triggerNodeEvent("select", ctx);
-
-		// Persist expand state
-		// if( opts.persist ) {
-		//     if( bExpand ){
-		//         this.tree.persistence.addExpand(this.data.key);
-		//     }else{
-		//         this.tree.persistence.clearExpand(this.data.key);
-		//     }
-		// }
-
 	},
 	/** Show node status (ok, loading, error) using styles and a dummy child node. */
 	nodeSetStatus: function(ctx, status, message, details) {
@@ -1799,11 +1987,22 @@ $.extend(Dynatree.prototype,
 
 /*******************************************************************************
  * jQuery UI widget boilerplate
+ * @name ui_dynatree  
+ * @class The jQuery.ui.dynatree widget
  */
 
-$.widget("ui.dynatree", {
+$.widget("ui.dynatree", 
+	/**
+	 * @lends ui_dynatree
+	 */ 
+	{
 	// These options will be used as defaults
-	options: {
+	/** @type {Object} default opotions */
+	options:
+	/** default opotions 
+	 * @lends ui_dynatree.options 
+	 */
+	{
 		disabled: false,
 		ajax: {
 			type: "GET",
@@ -1811,6 +2010,7 @@ $.widget("ui.dynatree", {
 //          timeout: 0, // >0: Make sure we get an ajax error if error is unreachable
 			dataType: "json" // Expect json format and pass json object to callbacks.
 		},  //
+		/** @type {boolean}  Make sure, active nodes are visible (expanded). */
 		activeVisible: true, // Make sure, active nodes are visible (expanded).
 		autoCollapse: false,
 		checkbox: false,
@@ -1853,7 +2053,8 @@ $.widget("ui.dynatree", {
 		// events
 		lazyload: null
 	},
-	// Set up the widget, Called on first $().dynatree()
+	/** Set up the widget, Called on first $().dynatree() 
+	 */
 	_create: function() {
 		this.tree = new Dynatree(this);
 		this._bind();
@@ -1989,15 +2190,22 @@ $.widget("ui.dynatree", {
 			}
 		});
 	},
-	/** Return active node or null. */
+	/** @returns {DynatreeNode} the active node or null */
 	getActiveNode: function() {
 		return this.tree.activeNode;
 	},
-	/** Return matching node or null. */
+	/**
+	 * @param {String} key 
+	 * @returns {DynatreeNode} the matching node or null 
+	 */
 	getNodeByKey: function(key) {
 		return this.tree.getNodeByKey(key);
 	},
-	/** Return Dynatree instance. */
+	/** @returns {DynatreeNode} the invisible system root node */
+	getRootNode: function() {
+		return this.tree.rootNode;
+	},
+	/** @returns {Dynatree} the current tree instance */
 	getTree: function() {
 		return this.tree;
 	},
@@ -2043,7 +2251,7 @@ $.extend($.ui.dynatree, {
 		window.console && window.console.error && window.console.error.apply(window.console, arguments);
 	},
 	/** Return a {node: DynatreeNode, type: TYPE} for a mouse event. */
-	getEventTarget: function(event){
+	getEventTargetType: function(event){
 		var tcn = event && event.target ? event.target.className : "",
 			res = {node: this.getNode(event.target), type: undefined};
 		// TODO: use map for fast lookup

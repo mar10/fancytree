@@ -198,6 +198,35 @@ span.dynatree-checkbox:hover
  * This is a customization, that may be activated by overriding the 'checkbox'
  * class name as 'dynatree-radio' in the tree options.
  */
+.dynatree-radio span.dynatree-checkbox
+{
+	margin-left: 3px;
+	background-position: 0px -48px;
+}
+.dynatree-radio span.dynatree-checkbox:hover
+{
+	background-position: -16px -48px;
+}
+
+.dynatree-radio .dynatree-partsel span.dynatree-checkbox
+{
+	background-position: -64px -48px;
+}
+.dynatree-radio .dynatree-partsel span.dynatree-checkbox:hover
+{
+	background-position: -80px -48px;
+}
+
+.dynatree-radio .dynatree-selected span.dynatree-checkbox
+{
+	background-position: -32px -48px;
+}
+.dynatree-radio .dynatree-selected span.dynatree-checkbox:hover
+{
+	background-position: -48px -48px;
+}
+ 
+/*
 span.dynatree-radio
 {
 	margin-left: 3px;
@@ -225,6 +254,8 @@ span.dynatree-radio:hover
 {
 	background-position: -48px -48px;
 }
+*/
+
 
 /*******************************************************************************
  * Node type icon
