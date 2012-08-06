@@ -75,7 +75,8 @@ function findPrevRowNode(node){
 	if(siblings && siblings.length > 1 && siblings[0] !== node){
 		// use the lowest descendant of the preceeding sibling
 		// TODO: doesn't work for IE 6
-		i = siblings.indexOf(node);
+//		i = siblings.indexOf(node);
+		i = $.inArray(node, siblings);
 		prev = siblings[i - 1];
 		_assert(prev.tr);
 		// descend to lowest child (with a <tr> tag)

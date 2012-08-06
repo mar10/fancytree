@@ -97,7 +97,7 @@ function _subclassObject(base, extension, extName){
 			if(typeof base[fn] === "function"){
 				// override existing method
 				base[fn] = _makeVirtualFunction(fn, base, extension);
-			}else if(fn[0] === "_"){
+			}else if(fn.charAt(0) === "_"){
 				// Create private methods in tree.EXTENSION namespace
 				if(!base[extName]){
 					base[extName] = {};
@@ -295,7 +295,8 @@ $.extend(DynatreeNode.prototype,
 	},
 	/**Return 0-based child index.*/
 	getIndex: function(hierarchical) {
-		return this.parent.children.indexOf(this);
+//		return this.parent.children.indexOf(this);
+		return $.inArray(this, this.parent.children); // indexOf doesn't work in IE7
 	},
 	/**Return hierarchical child index (1-based: '3.2.4').*/
 	getIndexHier: function(separator) {
