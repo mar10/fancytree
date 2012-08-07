@@ -227,14 +227,13 @@ var NODE_ATTRS = ["expanded", "extraClasses", /*"focus", */ "folder", "href", "k
 				  "lazy", "nolink", "selected", "target", "title", "tooltip"];
 /**
  * Tree node.
- * @class Represents a tree node.
  * @name DynatreeNode
+ * @class Represents a tree node.
  * @param {DynatreeNode} parent
  * @param {object} data 
- * @constructor
  *
- * @property {Dynatree} tree oarent node
- * @property {DynatreeNode} parent oarent node
+ * @property {Dynatree} tree
+ * @property {DynatreeNode} parent Parent node
  * @property {string} key
  * @property {string} title
  * @property {object} data
@@ -739,8 +738,21 @@ $.extend(DynatreeNode.prototype,
  * Dynatree
  */
 /**
- * @class
+ * Construct a new tree.
  * @name Dynatree
+ * @class The datamodel behind a dynatree
+ *
+ * @property {DynatreeNode} rootNode
+ * @property {object} options
+ * @property {DynatreeNode} activeNode
+ * @property {DynatreeNode} focusNode 
+ * @property {jQueryObject} $div
+ * @property {jQueryObject} $widget
+ * @property {object} options
+ * @property {string} _id
+ * @property {string} statusClassPropName
+ * @property {string} nodeContainerAttrName
+ * @property {DynatreeNode} lastSelectedNode
  */
 function Dynatree($widget){
 	// TODO: rename $widget to widget (it's not a jQuery object)
@@ -901,6 +913,7 @@ $.extend(Dynatree.prototype,
 			node = ctx.node, //target.node,
 			targetType = target.type;
 		// TODO: use switch
+		// TODO: make sure clicks on embedded <input> doesn't steal focus (see table sample)
 		if( targetType === "expander" ) {
 			// Clicking the expander icon always expands/collapses
 			this._callHook("nodeToggleExpanded", ctx);
@@ -1076,6 +1089,11 @@ $.extend(Dynatree.prototype,
 	 *    - a node object
 	 *    - an Ajax options object
 	 *    - an Ajax.promise
+	 *    
+	 * @param {object} ctx
+	 * @param {object[]|object|string|$.Promise|function} source
+	 * @returns {$.Promise} The deferred will be resolved as soon as the (ajax) 
+	 *     data was rendered.
 	 */
 	nodeLoadChildren: function(ctx, source) {
 		var children,
@@ -1098,6 +1116,7 @@ $.extend(Dynatree.prototype,
 					if($.isArray(delay)){ // random delay range [min..max]
 						delay = delay[0] + Math.random() * (delay[1] - delay[0]);
 					}
+					node.debug("nodeLoadChildren waiting debug delay " + Math.round(delay) + "ms");
 					dfd = $.Deferred();
 					var self = this;
 					setTimeout(function(){
@@ -1513,7 +1532,11 @@ $.extend(Dynatree.prototype,
 			ctx.tree._triggerNodeEvent("deactivate", node);
 		}
 	},
-	/** Expand or collapse node, return Deferred.promise. */
+	/** Expand or collapse node, return Deferred.promise.
+	 * 
+	 * @returns {$.Promise} The deferred will be resolved as soon as the (lazy) 
+	 *     data was retrieved, rendered, and the expand animation finshed.
+	 */
 	nodeSetExpanded: function(ctx, flag) {
 		var node = ctx.node,
 			tree = ctx.tree,

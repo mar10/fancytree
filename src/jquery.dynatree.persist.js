@@ -41,13 +41,24 @@ function _assert(cond, msg){
 	}
 }
 
+/**
+ * 
+ * 
+ * @lends Dynatree.prototype
+ * @requires jquery.dynatree.persist.js
+ */
+$.ui.dynatree._Dynatree.prototype.resetCookie = function(){
+
+};
+
+
 /*************************************************************************
  * class DynaTreeStatus
  * @class
  * @name DynaTreeStatus
  * @constructor
  */
-
+/*
  var DynaTreeStatus = function (cookieId, cookieOpts){
 //		this._log("DynaTreeStatus: initialize");
 	if( cookieId === undefined ){
@@ -62,7 +73,7 @@ function _assert(cond, msg){
 	this.focusedKey = null;
 	this.expandedKeyList = null;
 	this.selectedKeyList = null;
- }
+ };
 
 
 DynaTreeStatus._getTreePersistData = function(cookieId, cookieOpts) {
@@ -153,30 +164,97 @@ DynaTreeStatus.prototype = {
 		};
 	}
 };
-
+*/
 
 /*******************************************************************************
  * Extension code
  */
-$.ui.dynatree.registerExtension("persist", 
-	/** @extends Dynatree */
-	{
+$.ui.dynatree.registerExtension("persist", {
 	// Default options for this extension.
 	options: {
 //		cookieIdPrefix: 
+		cookie: {
+			
+		},
+		types: "focus active expanded selected",
 		overrideSource: false  // true: cookie takes precedence over `source` data attributes.
+	},
+	_setKey: function(type, key, flag){
+		var cookie = $.cookie(this.cookiePrefix + type),
+			v = cookie.split(this.delimiter);
+		$.cookie(this.cookiePrefix + typ, this.selectedKeyList.join(","), this.cookieOpts);
 	},
 	// Overide virtual methods for this extension.
 	// `this`       : is this extension object
 	// `this._base` : the Dynatree instance
 	// `this._super`: the virtual function that was overriden (member of prev. extension or Dynatree)
 	treeInit: function(ctx){
-		this._super(ctx);
-		_assert($.cookie, "Missing required plugin: jquery.cookie.js");
+		var tree = ctx.tree,
+			opts = ctx.options,
+			self = this;
+
+		_assert($.cookie, "Missing required plugin for 'persist' extension: jquery.cookie.js");
 		// TODO: use tree ID in cookie ID prefix by default
+		this.delimiter = ",";
+		this.cookiePrefix = "dynatree-" + tree._id + "-";
+		this.storeActive = opts.persist.types.indexOf("active") >= 0;
+		this.storeExpanded = opts.persist.types.indexOf("expanded") >= 0;
+		this.storeSelected = opts.persist.types.indexOf("selected") >= 0;
+		this.storeFocus = opts.persist.types.indexOf("focus") >= 0;
+		
+		// Bind postinit-handler to apply cookie state
+		tree.$div.bind("dynatreepostinit", function(e){
+			var cookie, node;
+			if(self.storeActive){
+				cookie = $.cookie(self.cookiePrefix + "active");
+				if(cookie && (opts.persist.overrideSource || !tree.activeNode)){
+					node = tree.getNodeByKey(cookie);
+					if(node){
+						node.setActive();
+					}
+				}
+			}
+			if(self.storeFocus){
+				cookie = $.cookie(self.cookiePrefix + "focus");
+				if(cookie && (opts.persist.overrideSource || !tree.focusNode)){
+					node = tree.getNodeByKey(cookie);
+					if(node){
+						node.setFocus();
+					}
+				}
+			}
+		});
+		// Init the tree
+		this._super(ctx);
 	},
 	treeDestroy: function(ctx){
 		this._super(ctx);
+	},
+	nodeSetActive: function(ctx, flag) {
+		this._super(ctx, flag);
+		if(this.storeActive){
+			$.cookie(this.cookiePrefix + "active", 
+					ctx.tree.activeNode ? ctx.tree.activeNode.key : null, 
+					this.cookieOpts);
+		}
+	},
+	nodeSetExpanded: function(ctx, flag) {
+		this._super(ctx, flag);
+		if(this.storeExpanded){
+		}
+	},
+	nodeSetFocus: function(ctx) {
+		this._super(ctx);
+		if(this.storeFocus){
+			$.cookie(this.cookiePrefix + "focus", 
+					ctx.tree.activeNode ? ctx.tree.focusNode.key : null, 
+					this.cookieOpts);
+		}
+	},
+	nodeSetSelected: function(ctx, flag) {
+		this._super(ctx, flag);
+		if(this.storeSelected){
+		}
 	}
 });
 }(jQuery));

@@ -48,7 +48,7 @@
 					$tdList = $(node.tr).find(">td");
 				$tdList.eq(1).text(node.getIndexHier());
 				$tdList.eq(2).text(node.key);
-				$tdList.eq(3).text(!!node.folder);
+				$tdList.eq(3).html("<input type='checkbox' name='like" + node.key + "'>");
 			}
 		});
 	});
@@ -66,10 +66,10 @@
 		<col width="20px"></col>
 		<col width="*"></col>
 		<col width="200px"></col>
-		<col width="100px"></col>
+		<col width="50px"></col>
 		</colgroup>
 		<thead>
-			<tr> <th>#</th> <th></th> <th>Key</th> <th>Folder</th> </tr>
+			<tr> <th>#</th> <th></th> <th>Key</th> <th>Like</th> </tr>
 		</thead>
 		<tbody>
 			<tr> <td></td> <td></td> <td></td> </tr>

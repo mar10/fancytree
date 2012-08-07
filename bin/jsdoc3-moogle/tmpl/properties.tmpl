@@ -41,11 +41,11 @@
 <table class="props">
     <thead>
 	<tr>
+		<th>Type</th>
+		
 		<?js if (props.hasName) {?>
 		<th>Name</th>
 		<?js } ?>
-		
-		<th>Type</th>
 		
 		<?js if (props.hasAttributes) {?>
 		<th>Argument</th>
@@ -67,10 +67,6 @@
 	?>
 	
         <tr>
-            <?js if (props.hasName) {?>
-                <td class="name"><code><?js= prop.name ?></code></td>
-            <?js } ?>
-            
             <td class="type">
             <?js
                 if (prop.type && prop.type.names) {
@@ -81,6 +77,10 @@
                 }
             ?>
             </td>
+            
+            <?js if (props.hasName) {?>
+                <td class="name"><code><?js= prop.name ?></code></td>
+            <?js } ?>
             
             <?js if (props.hasAttributes) {?>
                 <td class="attributes">

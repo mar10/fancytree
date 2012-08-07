@@ -50,6 +50,7 @@ $.ui.dynatree.registerExtension("columnview", {
 			$table = tree.$widget.element;
 		tree.tr = $("tbody tr", $table)[0];
 		tree.columnCount = $(">td", tree.tr).length;
+		// Perform default behavior
 		this._super(ctx);
 		// Standard Dynatree created a root <ul>. Now move this into first table cell
 		var $ul = $(tree.rootNode.ul),
@@ -64,7 +65,7 @@ $.ui.dynatree.registerExtension("columnview", {
 		tree.$widget.options.autoCollapse = true;
 		tree.$widget.options.clickFolderMode = 1;
 
-		// Make sure that only active path is expanden when a node is activated:
+		// Make sure that only active path is expanded when a node is activated:
 		$table.bind("dynatreeactivate", function(e, data){
 			var node = data.node,
 				tree = data.tree,
