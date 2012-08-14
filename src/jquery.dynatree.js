@@ -995,7 +995,7 @@ $.extend(Dynatree.prototype,
 			opts = ctx.options,
 			handled = true,
 			KC = $.ui.keyCode,
-			sib;
+			sib = null;
 //      this.tree.logDebug("dtnode.onKeydown(" + event.type + "): dtnode:" + this + ", charCode:" + event.charCode + ", keyCode: " + event.keyCode + ", which: " + event.which);
 //      alert("keyDown" + event.which);
 

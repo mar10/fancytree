@@ -47,8 +47,11 @@ function _assert(cond, msg){
  * @lends Dynatree.prototype
  * @requires jquery.dynatree.persist.js
  */
-$.ui.dynatree._Dynatree.prototype.resetCookie = function(){
-
+$.ui.dynatree._Dynatree.prototype.clearCookies = function(types){
+	types = types || "active expanded focus selected";
+	alert("clearCookies " + this.cookiePrefix);
+	$.cookie(this.cookiePrefix + "active", null);
+	//opts.persist.types.indexOf("active") >= 0
 };
 
 
@@ -172,17 +175,21 @@ DynaTreeStatus.prototype = {
 $.ui.dynatree.registerExtension("persist", {
 	// Default options for this extension.
 	options: {
-//		cookieIdPrefix: 
+		cookiePrefix: undefined, // use 'dynatree-<treeId>-' by default 
 		cookie: {
-			
+			raw: false,
+			expires: '',
+			path: '',
+			domain: '',
+			secure: false
 		},
-		types: "focus active expanded selected",
+		types: "active expanded focus selected",
 		overrideSource: false  // true: cookie takes precedence over `source` data attributes.
 	},
 	_setKey: function(type, key, flag){
 		var cookie = $.cookie(this.cookiePrefix + type),
 			v = cookie.split(this.delimiter);
-		$.cookie(this.cookiePrefix + typ, this.selectedKeyList.join(","), this.cookieOpts);
+		$.cookie(this.cookiePrefix + type, this.selectedKeyList.join(","), this.cookieOpts);
 	},
 	// Overide virtual methods for this extension.
 	// `this`       : is this extension object
@@ -196,7 +203,7 @@ $.ui.dynatree.registerExtension("persist", {
 		_assert($.cookie, "Missing required plugin for 'persist' extension: jquery.cookie.js");
 		// TODO: use tree ID in cookie ID prefix by default
 		this.delimiter = ",";
-		this.cookiePrefix = "dynatree-" + tree._id + "-";
+		this.cookiePrefix = opts.persist.cookiePrefix || "dynatree-" + tree._id + "-";
 		this.storeActive = opts.persist.types.indexOf("active") >= 0;
 		this.storeExpanded = opts.persist.types.indexOf("expanded") >= 0;
 		this.storeSelected = opts.persist.types.indexOf("selected") >= 0;
@@ -204,7 +211,10 @@ $.ui.dynatree.registerExtension("persist", {
 		
 		// Bind postinit-handler to apply cookie state
 		tree.$div.bind("dynatreepostinit", function(e){
-			var cookie, node;
+			var cookie,
+				prevFocus = $.cookie(self.cookiePrefix + "focus"), // record this before we activate
+				node;
+			tree.debug("COOKIE " + document.cookie);
 			if(self.storeActive){
 				cookie = $.cookie(self.cookiePrefix + "active");
 				if(cookie && (opts.persist.overrideSource || !tree.activeNode)){
@@ -214,13 +224,10 @@ $.ui.dynatree.registerExtension("persist", {
 					}
 				}
 			}
-			if(self.storeFocus){
-				cookie = $.cookie(self.cookiePrefix + "focus");
-				if(cookie && (opts.persist.overrideSource || !tree.focusNode)){
-					node = tree.getNodeByKey(cookie);
-					if(node){
-						node.setFocus();
-					}
+			if(self.storeFocus && prevFocus){
+				node = tree.getNodeByKey(prevFocus);
+				if(node){
+					node.setFocus();
 				}
 			}
 		});
@@ -241,6 +248,7 @@ $.ui.dynatree.registerExtension("persist", {
 	nodeSetExpanded: function(ctx, flag) {
 		this._super(ctx, flag);
 		if(this.storeExpanded){
+			this._setKey("expanded", ctx.node.key, flag)
 		}
 	},
 	nodeSetFocus: function(ctx) {
@@ -254,6 +262,7 @@ $.ui.dynatree.registerExtension("persist", {
 	nodeSetSelected: function(ctx, flag) {
 		this._super(ctx, flag);
 		if(this.storeSelected){
+			this._setKey("selected", ctx.node.key, flag)
 		}
 	}
 });

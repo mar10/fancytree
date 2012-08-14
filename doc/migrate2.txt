@@ -11,7 +11,7 @@ Main features
 -------------
   - smaller?
   - faster?
-  - use strict, no eval()
+  - "use strict", no eval()
   - More robust on (parallel) asynchronous operations
     (using deferreds/promises)
   - Support for table-trees and Mac-style column views.
@@ -165,7 +165,7 @@ New features
 - Extensions
 - Deferreds
 - preload
-
+- 
 
 
 CSS

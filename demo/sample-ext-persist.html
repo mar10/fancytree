@@ -29,6 +29,7 @@
 		// and pass the tree options as an argument to the dynatree() function:
 		$("#tree").dynatree({
 			extensions: ["persist"],
+			checkbox: true,
 			source: {
 				url: "ajax-tree-plain.json"
 			},
@@ -50,8 +51,8 @@
 		
 		
 		$("button#btnReset").click(function(e){
-			tree.clearFilter();
-		}).attr("disabled", true);
+			tree.clearCookies();
+		});
 		
 		$("input#hideMode").change(function(e){
 			tree.options.filter.mode = $(this).is(":checked") ? "hide" : "dimm"; 
@@ -73,6 +74,11 @@
 			<legend>Choose persistent data types</legend>
 			<label><input type="checkbox" name="active"> Active node</label>
 			<label><input type="checkbox" name="selected"> Selected nodes</label>
+		</fieldset>
+		<fieldset>
+			<legend>Choose persistent data types</legend>
+			<label><input type="radio" name="active"> Active node</label>
+			<label><input type="radio" name="selected"> Selected nodes</label>
 		</fieldset>
 		<button id="btnReset">Reset cookie</button>
 	</p>
