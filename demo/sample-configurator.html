@@ -106,10 +106,10 @@ var OPT_LIST = [
 		// and pass the tree options as an argument to the dynatree() function:
 		$("#tree").dynatree({
 			source: {
-				url: "../test/unit/ajax-tree-plain.json"
+				url: "ajax-tree-plain.json"
 			},
 			lazyload: function(e, data) {
-				data.result = {url: "../test/unit/ajax-sub2.json"}
+				data.result = {url: "ajax-sub2.json"}
 			}
 		});
 
@@ -126,7 +126,8 @@ var OPT_LIST = [
 		Skin:
 		<select id="skinCombo" size="1">
 			<option value="skin">Standard ('/skin/')</option>
-			<option value="skin-vista">Vista ('/skin-vista/')</option>
+            <option value="skin-vista">Vista ('/skin-vista/')</option>
+            <option value="skin-lion">Vista ('/skin-lion/')</option>
 		</select>
 	</p>
 	<p>
