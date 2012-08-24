@@ -104,12 +104,10 @@ $.ui.dynatree.registerExtension("table", {
 	},
 	// Overide virtual methods for this extension.
 	// `this`       : is this extension object
-	// `this._base` : the Dynatree instance
 	// `this._super`: the virtual function that was overriden (member of prev. extension or Dynatree)
 	treeInit: function(ctx){
 		var tree = ctx.tree,
-			$table = tree.$widget.element,
-			tr;
+			$table = tree.$widget.element;
 		$table.addClass("dynatree-container dynatree-ext-table");
 		tree.tbody = $("table#treetable tbody")[0];
 //        table.addClass("dynatree-container");
@@ -191,7 +189,7 @@ $.ui.dynatree.registerExtension("table", {
 //                }
 
 				// Set icon, link, and title (normally this is only required on initial render)
-				this._base.nodeRenderTitle(ctx);
+				this.nodeRenderTitle(ctx);
 				// Allow tweaking, binding, after node was created for the first time
 				if(opts.onCreate){
 					// TODO: _trigger
@@ -231,7 +229,7 @@ $.ui.dynatree.registerExtension("table", {
 		}
 		// Update element classes according to node state
 		if(!isRootNode){
-			this._base.nodeRenderStatus(ctx);
+			this.nodeRenderStatus(ctx);
 		}
 
 		// Finally add the whole structure to the DOM, so the browser can render

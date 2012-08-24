@@ -1,14 +1,14 @@
-/*************************************************************************
-	jquery.dynatree.js
-	Dynamic tree view control, with support for lazy loading of branches.
-
-	Copyright (c) 2008-2012, Martin Wendt (http://wwWendt.de)
-	Dual licensed under the MIT or GPL Version 2 licenses.
-	http://code.google.com/p/dynatree/wiki/LicenseInfo
-
-	A current version and some documentation is available at
-		http://dynatree.googlecode.com/
-
+/*!
+ * jquery.dynatree.js
+ * Dynamic tree view control, with support for lazy loading of branches.
+ *
+ * Copyright (c) 2008-2012, Martin Wendt (http://wwWendt.de)
+ * Dual licensed under the MIT or GPL Version 2 licenses.
+ * http://code.google.com/p/dynatree/wiki/LicenseInfo
+ *
+ * A current version and some documentation is available at
+ *    http://dynatree.googlecode.com/
+ *
  * @summary     jQuery UI SuperWidget
  * @description Create a super widget that does everything on the entire web!
  * @file        jquery.dynatree.js
@@ -75,50 +75,55 @@ function _assert(cond, msg){
 		$.error("Assertion failed " + msg);
 	}
 }
-// RegExp that tests a function body for usage of '_super'
+// RegExp that tests a function body for usage of '_super' (if browser supports that)
 var dummyFunc = function(){ var xyz; },
 	rexTestSuper = /xyz/.test(dummyFunc) ? /\b_super\b/ : null;
 
 /** Return a wrapper that calls sub.fn() and exposes base.fn() as _super(). */
-var _makeVirtualFunction = function(fn, base, sub){
-	var _super = base[fn],
-		func = sub[fn];
+function _makeVirtualFunction(methodName, base, sub){
+	var _super = base[methodName],
+		func = sub[methodName];
 	// if(rexTestSuper && !rexTestSuper.test(func)){
-	//     // sub.fn() doesn't call _super(), so no wrapper required
+	//     // sub.methodName() doesn't call _super(), so no wrapper required
 	//     return func;
 	// }
 	return function(){
 		try{
-			sub._super = function(){
+			base._super = function(){
 				return _super.apply(base, arguments);
 			};
-			sub._base = base;
-			// return  func.apply(sub, arguments);
-			return  func.apply(sub, arguments);
+//			sub._base = base;
+			return  func.apply(base, arguments);
 		}finally{
-			sub._super = null;
+			base._super = null;
 		}
 	};
-};
+}
 
 /**
- * Subclass `base` by creating proxy function
+ * Subclass `base` by creating proxy functions
  */
-function _subclassObject(base, extension, extName){
-	for(var fn in extension){
-		if(typeof extension[fn] === "function"){
-			if(typeof base[fn] === "function"){
+function _subclassObject(tree, base, extension, extName){
+	$.ui.dynatree.debug("_subclassObject", base, extension, extName);
+	for(var attrName in extension){
+		if(typeof extension[attrName] === "function"){
+			if(typeof tree[attrName] === "function"){
 				// override existing method
-				base[fn] = _makeVirtualFunction(fn, base, extension);
-			}else if(fn.charAt(0) === "_"){
+//				base[attrName] = _makeVirtualFunction(attrName, base, extension);
+				tree[attrName] = _makeVirtualFunction(attrName, tree, extension);
+			}else if(attrName.charAt(0) === "_"){
 				// Create private methods in tree.EXTENSION namespace
-				if(!base[extName]){
-					base[extName] = {};
-				}
-				base[extName][fn] = $.proxy(extension[fn], extension);
+//				if(!tree[extName]){
+//					tree[extName] = {};
+//				}
+//				tree[extName][attrName] = $.proxy(extension[attrName], extension);
+				tree[extName][attrName] = $.proxy(extension[attrName], tree);
 			}else{
-				$.error("Could not override tree." + fn + ". Use prefix '_' to create tree." + extName + "._" + fn);
+				$.error("Could not override tree." + attrName + ". Use prefix '_' to create tree." + extName + "._" + attrName);
 			}
+		}else{
+			// Create member variables in tree.EXTENSION namespace
+//			tree[extName][attrName] = base[attrName];
 		}
 	}
 }
@@ -969,24 +974,6 @@ $.extend(Dynatree.prototype,
 	// },
 	nodeDblclick: function(ctx) {
 	},
-	/**Called by nodeRender to sync node order with tag order.*/
-//    nodeFixOrder: function(ctx) {
-//        // Make sure, that <li> order matches node.children order.
-//        var node = ctx.node,
-//            children = node.children,
-//            childLI = node.ul.firstChild,
-//            i, l;
-//        for(i=0, l=children.length-1; i<l; i++) {
-//            var childNode1 = children[i],
-//                childNode2 = childLI.dtnode;
-//            if( childNode1 !== childNode2 ) {
-//                node.debug("_fixOrder: mismatch at index " + i + ": " + childNode1 + " != " + childNode2);
-//                node.ul.insertBefore(childNode1.li, childNode2.li);
-//            } else {
-//                childLI = childLI.nextSibling;
-//            }
-//        }
-//    },
 	/** Default handling for mouse keydown events. */
 	nodeKeydown: function(ctx) {
 		var event = ctx.orgEvent,
@@ -1171,6 +1158,11 @@ $.extend(Dynatree.prototype,
 	//     }
 	//     return true;
 	// },
+	/** Expand all keys that */
+	nodeLoadKeyPath: function(ctx, keyPathList) {
+		// TODO: implement and improve
+		// http://code.google.com/p/dynatree/issues/detail?id=222
+	},
 	nodeMakeVisible: function(ctx) {
 		// TODO: scroll as neccessary: http://stackoverflow.com/questions/8938352/dynatree-how-to-scroll-to-active-node
 		var parents = ctx.node.getParentList(false, false);
@@ -1584,19 +1576,9 @@ $.extend(Dynatree.prototype,
 		// vvv Code below is executed after loading finished:
 		var _afterLoad = function(){
 			node.expanded = flag;
-			// Persist expand state
-			// if( opts.persist ) {
-			//     if( bExpand ){
-			//         this.tree.persistence.addExpand(this.data.key);
-			//     }else{
-			//         this.tree.persistence.clearExpand(this.data.key);
-			//     }
-			// }
-
 			// Create required markup, but make sure the top UL is hidden, so we
 			// can animate later
 			tree._callHook("nodeRender", ctx, false, false, true);
-
 
 			// If the currently active node is now hidden, deactivate it
 			// if( opts.activeVisible && this.tree.activeNode && ! this.tree.activeNode.isVisible() ) {
@@ -2092,12 +2074,17 @@ $.widget("ui.dynatree",
 			var extName = extensions[i],
 				extension = $.ui.dynatree._extensions[extName];
 			if(!extension){
-				$.error("Could not apply extension '" + extName + "' (did you forget to include it?)");
+				$.error("Could not apply extension '" + extName + "' (it is not registered, did you forget to include it?)");
 			}
 			// Add extension options as tree.options.EXTENSION
-			this.tree.options[extName] = $.extend({}, extension.options, this.tree.options[extName]);
+//			_assert(!this.tree.options[extName], "Extension name must not exist as option name: " + extName);
+			this.tree.options[extName] = $.extend(true, {}, extension.options, this.tree.options[extName]);
+			// Add a namespace tree.EXTENSION, to hold instance data
+			_assert(!this.tree[extName], "Extension name must not exist as Dynatree attribute: " + extName);
+//			this.tree[extName] = extension;
+			this.tree[extName] = {};
 			// Subclass Dynatree methods using proxies.
-			_subclassObject(this.tree, extension, extName);
+			_subclassObject(this.tree, base, extension, extName);
 			// current extension becomes base for the next extension
 			base = extension;
 		}

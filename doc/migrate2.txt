@@ -9,6 +9,13 @@ Status
 
 Main features
 -------------
+  - Dynatree uses a hierarchic data structure as it's backbone. This
+    Unlike many other tree controls, we have a tree data structure as the 
+    backbone. The HTML markup is only rendered on demand.
+     
+    
+Main changes to 1.x
+-------------------
   - smaller?
   - faster?
   - "use strict", no eval()

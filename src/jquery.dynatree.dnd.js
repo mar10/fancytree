@@ -1,14 +1,14 @@
-/*************************************************************************
-	jquery.dynatree.dnd.js
-	Table extension for jquery.dynatree.js.
-
-	Copyright (c) 2012, Martin Wendt (http://wwWendt.de)
-	Dual licensed under the MIT or GPL Version 2 licenses.
-	http://code.google.com/p/dynatree/wiki/LicenseInfo
-
-	A current version and some documentation is available at
-		http://dynatree.googlecode.com/
-*************************************************************************/
+/*!
+ * jquery.dynatree.dnd.js
+ * Table extension for jquery.dynatree.js.
+ *
+ * Copyright (c) 2012, Martin Wendt (http://wwWendt.de)
+ * Dual licensed under the MIT or GPL Version 2 licenses.
+ * http://code.google.com/p/dynatree/wiki/LicenseInfo
+ *
+ * A current version and some documentation is available at
+ *	http://dynatree.googlecode.com/
+ */
 
 // Start of local namespace
 (function($) {
@@ -195,8 +195,7 @@ $.ui.dynatree.registerExtension("dnd", {
 		onDragLeave: null // Callback(targetNode, sourceNode)
 	},
 	// Override virtual methods for this extension.
-	// `this`       : is this extension object
-	// `this._base` : the Dynatree instance
+	// `this`       : Dynatree instance
 	// `this._super`: the virtual function that was overriden (member of prev. extension or Dynatree)
 	treeInit: function(ctx){
 		var tree = ctx.tree;
@@ -207,19 +206,21 @@ $.ui.dynatree.registerExtension("dnd", {
 	nodeKeydown: function(ctx) {
 		var event = ctx.orgEvent;
 		if( event.which === $.ui.keyCode.ESCAPE) {
-			this._cancelDrag();
+			this.dnd._cancelDrag();
 		}
 		this._super(ctx);
 	},
 	/** Display drop marker according to hitMode ('after', 'before', 'over', 'out', 'start', 'stop'). */
 	_setDndStatus: function(sourceNode, targetNode, helper, hitMode, accept) {
-		var $source = sourceNode ? $(sourceNode.span) : null,
+		var instData = this.dnd,
+			instOpts = this.options.dnd,
+			$source = sourceNode ? $(sourceNode.span) : null,
 			$target = $(targetNode.span);
-		if( !this.$dropMarker ) {
-			this.$dropMarker = $("<div id='dynatree-drop-marker'></div>")
+		if( !instData.$dropMarker ) {
+			instData.$dropMarker = $("<div id='dynatree-drop-marker'></div>")
 				.hide()
 				.css({"z-index": 1000})
-				.prependTo($(this._base.$div).parent());
+				.prependTo($(this.$div).parent());
 //                .prependTo("body");
 //          logMsg("Creating marker: %o", this.$dropMarker);
 		}
@@ -239,18 +240,18 @@ $.ui.dynatree.registerExtension("dnd", {
 
 			switch(hitMode){
 			case "before":
-				this.$dropMarker.removeClass("dynatree-drop-after dynatree-drop-over");
-				this.$dropMarker.addClass("dynatree-drop-before");
+				instData.$dropMarker.removeClass("dynatree-drop-after dynatree-drop-over");
+				instData.$dropMarker.addClass("dynatree-drop-before");
 				markerOffset = "0 -8";
 				break;
 			case "after":
-				this.$dropMarker.removeClass("dynatree-drop-before dynatree-drop-over");
-				this.$dropMarker.addClass("dynatree-drop-after");
+				instData.$dropMarker.removeClass("dynatree-drop-before dynatree-drop-over");
+				instData.$dropMarker.addClass("dynatree-drop-after");
 				markerOffset = "0 8";
 				break;
 			default:
-				this.$dropMarker.removeClass("dynatree-drop-after dynatree-drop-before");
-				this.$dropMarker.addClass("dynatree-drop-over");
+				instData.$dropMarker.removeClass("dynatree-drop-after dynatree-drop-before");
+				instData.$dropMarker.addClass("dynatree-drop-over");
 				$target.addClass("dynatree-drop-target");
 				markerOffset = "8 0";
 			}
@@ -262,7 +263,7 @@ $.ui.dynatree.registerExtension("dnd", {
 //            logMsg("    $(this.divTree).offset=%o", $(this.divTree).offset());
 //            logMsg("    $(this.divTree).parent=%o", $(this.divTree).parent());
 
-			this.$dropMarker
+			instData.$dropMarker
 				.show()
 				.position({
 					my: "left top",
@@ -274,7 +275,7 @@ $.ui.dynatree.registerExtension("dnd", {
 		} else {
 //          $source && $source.removeClass("dynatree-drag-source");
 			$target.removeClass("dynatree-drop-target");
-			this.$dropMarker.hide();
+			instData.$dropMarker.hide();
 //          helper.removeClass("dynatree-drop-hover");
 		}
 		if(hitMode === "after"){
@@ -337,7 +338,7 @@ $.ui.dynatree.registerExtension("dnd", {
 		if(eventName !== "over"){
 			logMsg("tree.dnd._onDragEvent(%s, %o, %o) - %o", eventName, node, otherNode, this);
 		}
-		var opts = this._base.options,
+		var opts = this.options,
 			dnd = opts.dnd,
 			res = null,
 			nodeTag = $(node.span),
@@ -461,7 +462,7 @@ $.ui.dynatree.registerExtension("dnd", {
 			}
 			// issue 332
 //			this._setDndStatus(otherNode, node, ui.helper, hitMode, res!==false);
-			this._setDndStatus(otherNode, node, ui.helper, hitMode, res!==false && hitMode !== null);
+			this.dnd._setDndStatus(otherNode, node, ui.helper, hitMode, res!==false && hitMode !== null);
 			break;
 		case "drop":
 			hitMode = ui.helper.data("hitMode");
@@ -474,7 +475,7 @@ $.ui.dynatree.registerExtension("dnd", {
 			node.scheduleAction("cancel");
 			ui.helper.data("enterResponse", null);
 			ui.helper.data("hitMode", null);
-			this._setDndStatus(otherNode, node, ui.helper, "out", undefined);
+			this.dnd._setDndStatus(otherNode, node, ui.helper, "out", undefined);
 			if(dnd.onDragLeave){
 				dnd.onDragLeave(node, otherNode);
 			}
