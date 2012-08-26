@@ -19,21 +19,41 @@
 // }
 
 /**
- * Sample function that extends the widget API. 
+ * Sample function that extends Dynatree class. 
  * 
  * Called like 
- *     $("#tree").dynatree("fooBar", "mymode");
+ *     tree.fooBar("mymode");
+ * for example
+ *     $("#tree").dynatree("getTree").fooBar("mymode");
  *     
  * @lends Dynatree.prototype
  * @requires jquery.dynatree.sampleextension.js
  */
-$.ui.dynatree._Dynatree.prototype.fooBar = function(mode){
+$.ui.dynatree._DynatreeClass.prototype.fooBar = function(mode){
 	var tree = this,
 	    treeOptions = tree.options,
 	    extOptions = tree.options.sampleextension,
 		color = extOptions.color;
 	//...
 };
+
+/**
+ * Sample function that extends the widget API. 
+ * 
+ * Called like 
+ *     $("#tree").dynatree("widgetMethod1", "abc");
+ *
+ * @requires jquery.dynatree.sampleextension.js
+ */
+$.ui.dynatree.prototype.widgetMethod1 = function(arg1){
+	var tree = this.tree,
+	    treeOptions = tree.options,
+	    extOptions = tree.options.sampleextension,
+		color = extOptions.color;
+//...
+	return arg1;
+};
+
 
 /**
  * Extension code

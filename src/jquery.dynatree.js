@@ -123,7 +123,9 @@ function _subclassObject(tree, base, extension, extName){
 			}
 		}else{
 			// Create member variables in tree.EXTENSION namespace
-//			tree[extName][attrName] = base[attrName];
+			if(attrName !== "options"){
+				tree[extName][attrName] = base[attrName];
+			}
 		}
 	}
 }
@@ -1142,7 +1144,8 @@ $.extend(Dynatree.prototype,
 				// if nodeLoadChildren was called for rootNode, the caller must
 				// use tree.render() instead
 				tree.nodeRender(ctx);
-				tree._triggerNodeEvent("load", node);
+				// trigger dynatreeloadchildren (except for tree-reload)
+				tree._triggerNodeEvent("loadchildren", node);
 			}
 		}).fail(function(){
 			tree.nodeRender(ctx);
@@ -1938,13 +1941,13 @@ $.extend(Dynatree.prototype,
 		}
 
 		// $container.addClass("ui-widget ui-widget-content ui-corner-all");
-
+		// Trigger dynatreeinit after nodes have been loaded
 		dfd = this.nodeLoadChildren(rootCtx, source).done(function(){
 			tree.render();
-			tree._triggerTreeEvent("postinit", true);
+			tree._triggerTreeEvent("init", true);
 		}).fail(function(){
 			tree.render();
-			tree._triggerTreeEvent("postinit", false);
+			tree._triggerTreeEvent("init", false);
 		});
 		return dfd;
 	},
@@ -2097,7 +2100,8 @@ $.widget("ui.dynatree",
 	// Called on every $().dynatree()
 	_init: function() {
 		this.tree._callHook("treeInit", this.tree);
-		this.tree._triggerTreeEvent("init");
+		// Note: 'dynatreeinit' event is fired by 
+//		this.tree._triggerTreeEvent("init");
 	},
 
 	// Use the _setOption method to respond to changes to options
@@ -2248,9 +2252,9 @@ $.extend($.ui.dynatree, {
 	_nextId: 1,
 	_nextNodeKey: 1,
 	_extensions: {},
-	
-	_Dynatree: Dynatree, // make class object available for extensions
-	_DynatreeNode: DynatreeNode,
+	/* Expose class objects as $.ui.dynatree._DynatreeClass / ._DynatreeNodeClass */
+	_DynatreeClass: Dynatree, 
+	_DynatreeNodeClass: DynatreeNode,
 
 	debug: function(msg){
 		/*jshint expr:true */

@@ -1,6 +1,6 @@
 /*!
  * jquery.dynatree.dnd.js
- * Table extension for jquery.dynatree.js.
+ * Drag'n'drop extension for jquery.dynatree.js.
  *
  * Copyright (c) 2012, Martin Wendt (http://wwWendt.de)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -10,7 +10,6 @@
  *	http://dynatree.googlecode.com/
  */
 
-// Start of local namespace
 (function($) {
 
 "use strict";

@@ -35,12 +35,12 @@ var ACTIVE = "active",
 /**
  * 
  * Called like 
- *     $("#tree").dynatree("clearCookies", "active expanded focus selected");
+ *     $("#tree").dynatree("getTree").clearCookies("active expanded focus selected");
  * 
  * @lends Dynatree.prototype
  * @requires jquery.dynatree.persist.js
  */
-$.ui.dynatree._Dynatree.prototype.clearCookies = function(types){
+$.ui.dynatree._DynatreeClass.prototype.clearCookies = function(types){
 	var cookiePrefix = this.persist.cookiePrefix;
 	types = types || "active expanded focus selected";
 	// TODO: optimize
@@ -122,8 +122,8 @@ $.ui.dynatree.registerExtension("persist", {
 		instData.storeSelected = instOpts.types.indexOf(SELECTED) >= 0;
 		instData.storeFocus = instOpts.types.indexOf(FOCUS) >= 0;
 		
-		// Bind postinit-handler to apply cookie state
-		tree.$div.bind("dynatreepostinit", function(e){
+		// Bind init-handler to apply cookie state
+		tree.$div.bind("dynatreeinit", function(e){
 			var cookie,
 				keyList,
 				i,

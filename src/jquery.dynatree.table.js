@@ -218,6 +218,11 @@ $.ui.dynatree.registerExtension("table", {
 			// Iterate over all descendants
 			node.visit(function(n){
 				if(n.tr){
+					if(!node.expanded && n.tr.style.display !== "none"){
+						// fix after a node was dropped over a sibling.
+						// In this case it must be hidden
+						n.tr.style.display = "none";
+					}
 					if(n.tr.previousSibling !== prevTr){
 						node.debug("_fixOrder: mismatch at node: " + n);
 						var nextTr = prevTr ? prevTr.nextSibling : firstTr;

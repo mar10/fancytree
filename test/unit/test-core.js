@@ -336,8 +336,8 @@ test(".click() to expand a lazy folder (lazyload returns ajax options)", functio
     $("#tree").dynatree({
         source: {url: "ajax-tree.json"},
         generateIds: true,
-        postinit: function(e, data){
-            equal(sequence++, 1, "receive `postinit` callback");
+        init: function(e, data){
+            equal(sequence++, 1, "receive `init` callback");
             equal(data.tree.count(), TESTDATA_NODES, "lazy tree has 23 nodes");
             equal($("#tree li").length, TESTDATA_VISIBLENODES, "lazy tree has rendered 13 node elements");
             // now expand a lazy folder
@@ -350,8 +350,8 @@ test(".click() to expand a lazy folder (lazyload returns ajax options)", functio
             equal(sequence++, 3, "receive `lazyload` callback");
             data.result = {url: "ajax-sub2.json"};
         },
-        load: function(e, data){
-            equal(sequence++, 4, "receive `load` callback");
+        loadchildren: function(e, data){
+            equal(sequence++, 4, "receive `loadchildren` callback");
             equal(data.tree.count(), TESTDATA_NODES + 2, "lazy tree has 25 nodes");
             equal($("#tree li").length, TESTDATA_VISIBLENODES, "lazy tree has not yet rendered new node elements");
         },
