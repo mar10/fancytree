@@ -23,13 +23,37 @@ function simulateClick(selector) {
     });
 }
 
+
+/** Helper to reset environment for asynchronous Dynatree tests. */
+
+var EVENT_SEQUENCE = [];
+
+function _appendEvent(res){
+    EVENT_SEQUENCE.push(res);
+}
+
+
 /** Helper to reset environment for asynchronous Dynatree tests. */
 function _setupAsync(){
     QUnit.reset();
     $("#tree").dynatree("destroy");
+    EVENT_SEQUENCE = [];
     stop();
 }
 
+
+/** Get DynatreeNode from current tree. */
+function _getNode(key){
+    var tree = $("#tree").dynatree("getTree"),
+        node = tree.getNodeByKey(key);
+    return node;
+}
+
+/** Get node title as rendered in the DOM. */
+function _getNodeTitle(key){
+    var node = _getNode(key);
+    return $(node.span).find(".dynatree-title").html();
+}
 
 /*******************************************************************************
  * test data
@@ -192,6 +216,26 @@ test("Init node status from source", function() {
 });
 
 
+test("Init node with custom data", function() {
+    _setupAsync();
+    expect(2);
+    // Add some status info to testData (make a deep copy first!)
+    var children = $.extend(true, [], testData);
+    // node #10_1_1
+    children[6].children[0].children[0].foo = "phew";
+    // node #10_1_2
+    children[6].children[0].children[1].bar = false;
+    $("#tree").dynatree({
+        source: children,
+        init: function(e, data){
+            equal(_getNode("10_1_1").data.foo, "phew", "add custom string data");
+            equal(_getNode("10_1_2").data.bar, false, "add custom bool data");
+            start();
+        }
+    });
+});
+
+
 /*******************************************************************************
  * 
  */
@@ -216,6 +260,7 @@ test("trigger async expand", function() {
         start();
     });
 });
+
 
 /*******************************************************************************
  * Simulated click events
@@ -364,6 +409,61 @@ test(".click() to expand a lazy folder (lazyload returns ajax options)", functio
     });
 });
 
+
+/*******************************************************************************
+ * 
+ */
+module("patches");
+
+test("apply patch", function() {
+    _setupAsync();
+    expect(13);
+
+    var patchList = [
+             ["2", {title: "node 2: new", tooltip: "new tip", foo: "works"}],
+             ["3", {selected: true}],
+             ["4", {extraClasses: "customClass"}],
+             ["10_1_1", {title: "Renamed 10_1_1 title"}],
+//             ["10_1_2", null ],
+             ["10", {expanded: true} ],
+             ["20", {expanded: false} ],
+             ["30", {expanded: true} ]
+        ];
+
+    $("#tree").dynatree({
+        source: testData,
+        lazyload: function(e, data){
+            data.result = {url: "ajax-sub2.json"};
+        },
+        init: function(e, data){
+            data.tree.applyPatch(patchList).done(function(){
+                _appendEvent("done");
+                ok(true, "called done()");
+                
+                var $span = $(_getNode("2").span); 
+                equal(_getNodeTitle("2"), "node 2: new", "rename nodes");
+                equal($span.find("a.dynatree-title").attr("title"), "new tip", "set tooltip");
+                equal(_getNode("2").data.foo, "works", "set custom data");
+
+                ok(_getNode("3").isSelected(), "select");
+                ok($(_getNode("3").span).hasClass("dynatree-selected"), "node was rendered as selected");
+
+                ok($(_getNode("4").span).hasClass("customClass"), "custm class");
+
+                equal(_getNode("10").expanded, true, "folder was expanded");
+                ok($(_getNode("10").span).hasClass("dynatree-expanded"), "folder was rendered as expanded");
+                
+                equal(_getNode("20").expanded, false, "folder was collapsed");
+                ok(!$(_getNode("20").span).hasClass("dynatree-expanded"), "folder was rendered as collapsed");
+                
+                equal(_getNode("30").expanded, true, "lazy node was expanded");
+                ok($(_getNode("30").span).hasClass("dynatree-expanded"), "node was rendered as expanded");
+//                deepEqual(EVENT_SEQUENCE, [], "event sequence");
+                start();
+            });
+        }
+    });
+});
 
 // --- 
 // expand first info section

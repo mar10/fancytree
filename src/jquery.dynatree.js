@@ -70,9 +70,9 @@ function _raiseNotImplemented(msg){
 	$.error("Not implemented: " + msg);
 }
 function _assert(cond, msg){
-	msg = msg || "";
+	msg = ": " + msg || "";
 	if(!cond){
-		$.error("Assertion failed " + msg);
+		$.error("Assertion failed" + msg);
 	}
 }
 // RegExp that tests a function body for usage of '_super' (if browser supports that)
@@ -131,10 +131,29 @@ function _subclassObject(tree, base, extension, extName){
 }
 
 
+function _getResolvedPromise(context, argArray){
+    if(context === undefined){
+        return $.Deferred(function(){this.resolve();}).promise();
+    }else{
+        return $.Deferred(function(){this.resolveWith(context, argArray);}).promise();
+    }
+}
+
+
+function _getRejectedPromise(context, argArray){
+    if(context === undefined){
+        return $.Deferred(function(){this.reject();}).promise();
+    }else{
+        return $.Deferred(function(){this.rejectWith(context, argArray);}).promise();
+    }
+}
+
+
 // Boolean attributes that can be set with equivalent class names in the LI tags
-var CLASS_ATTRS = ["active", "expanded", "focus", "folder", "lazy", "nolink", "selected"],
+var i,
+    CLASS_ATTRS = ["active", "expanded", "focus", "folder", "lazy", "nolink", "selected"],
 	CLASS_ATTR_MAP = {};
-for(var i=0; i<CLASS_ATTRS.length; i++){ CLASS_ATTR_MAP[CLASS_ATTRS[i]] = true; }
+for(i=0; i<CLASS_ATTRS.length; i++){ CLASS_ATTR_MAP[CLASS_ATTRS[i]] = true; }
 
 /** Parse tree data from HTML <ul> markup */
 function _loadFromHtml($ul, children) {
@@ -231,7 +250,10 @@ function _loadFromHtml($ul, children) {
 
 // Top-level Dynatree node attributes, that can be set by dict
 var NODE_ATTRS = ["expanded", "extraClasses", /*"focus", */ "folder", "href", "key",
-				  "lazy", "nolink", "selected", "target", "title", "tooltip"];
+				  "lazy", "nolink", "selected", "target", "title", "tooltip"],
+    NODE_ATTR_MAP = {};
+for(i=0; i<NODE_ATTRS.length; i++){ NODE_ATTR_MAP[NODE_ATTRS[i]] = true; }
+
 /**
  * Tree node.
  * @name DynatreeNode
@@ -263,13 +285,19 @@ var DynatreeNode = function(parent, data){
 	this.ul = null;
 	this.li = null;  // <li id='key' dtnode=this> tag
 	this.isStatusNode = false;
+	this.data = {};
 
 	// copy attributes from data object
 	for(i=0, l=NODE_ATTRS.length; i<l; i++){
 		name = NODE_ATTRS[i];
 		this[name] = data[name];
 	}
-	// TODO: copy all other attributes to this.data.xxx
+	// copy all other attributes to this.data.xxx
+    for(name in data){
+        if(!NODE_ATTR_MAP[name] && !$.isFunction(data[name])){
+            this.data[name] = data[name];
+        }
+    }
 
 	// Fix missing key
 	if(!this.key){
@@ -304,6 +332,52 @@ $.extend(DynatreeNode.prototype,
 			this.children.push(new DynatreeNode(this, children[i]));
 		}
 	},
+	/**
+	 * 
+	 * @param patch
+	 * @returns $.Deferred promise
+	 */
+	applyPatch: function(patch) {
+        // patch [key, null] means 'remove'
+	    if(patch === null){
+	        this.remove();
+	        return _getResolvedPromise(this);
+	    }
+	    // copy (most) attributes to node.ATTR or node.data.ATTR
+	    var name,
+	        IGNORE_MAP = { children: true, expanded: true };
+	    for(name in patch){
+	        var v = patch[name];
+	        if( !IGNORE_MAP[name] && !$.isFunction(v)){
+	            if(NODE_ATTR_MAP[name]){
+	                this[name] = v;
+	            }else{
+                    this.data[name] = v;
+	            }
+	        }
+	    }
+	    // Remove and/or create children
+        if(patch.hasOwnProperty("children")){
+            this.removeChildren();
+            if(patch.children){
+                this.addChildren(patch.children);
+            }
+            // TODO: handle delete/discard/replace
+            // TODO: how can we APPEND?
+        }
+        if(this.isVisible()){
+            this.renderTitle();
+            this.renderStatus();
+        }
+        // Expand collapse (final step, since this may be async)
+        var promise;
+        if(patch.hasOwnProperty("expanded")){
+            promise = this.setExpanded(patch.expanded);
+        }else{
+            promise = _getResolvedPromise(this);
+        }
+        return promise;
+    },
 	collapseSiblings: function() {
 		return this.tree._callHook("nodeCollapseSiblings", this);
 	},
@@ -483,9 +557,12 @@ $.extend(DynatreeNode.prototype,
 //	isStatusNode: function() {
 //		return (this.data.isStatusNode === true);
 //	},
+    isSelected: function() {
+        return !!this.selected;
+    },
 	/** Return true, if all parents are expanded. */
 	isVisible: function() {
-		var parents = this.getParentList(true, false);
+		var parents = this.getParentList(false, false);
 		for(var i=0, l=parents.length; i<l; i++){
 			if( ! parents[i].expanded ){ return false; }
 		}
@@ -689,8 +766,9 @@ $.extend(DynatreeNode.prototype,
 	setSelected: function(flag){
 		return this.tree._callHook("nodeSetSelected", this, flag);
 	},
-	setTitle: function(flag){
-		_raiseNotImplemented(); // TODO: implement
+	setTitle: function(title){
+		this.title = title;
+		this.renderTitle();
 	},
 	toggleExpanded: function(){
 		return this.tree._callHook("nodeToggleExpanded", this);
@@ -838,9 +916,43 @@ $.extend(Dynatree.prototype,
 		this.debug("_hook", funcName, ctx.node && ctx.node.toString() || ctx.tree.toString(), args);
 		return fn.apply(this, args);
 	},
-	count: function() {
-		return this.rootNode.countChildren();
-	},
+	/**
+	 * 
+	 * @param {Array} patchList
+	 * @returns $.Deferred promise
+	 */
+    applyPatch: function(patchList) {
+        var patchCount = patchList.length, 
+            p2, key, patch, node,
+            applyCount = 0,
+            dfd = new $.Deferred();
+        
+        function _resolveFunc(){
+            if(applyCount === patchCount){
+                dfd.resolveWith(node);
+//            }else if(dfd.notifyWith){ // requires jQuery 1.6+
+//                dfd.notifyWith(node, ["patch " + applyCount + "/" + patchCount]);
+            }
+        }
+        
+        for(var i=0; i<patchCount; i++){
+            p2 = patchList[i];
+            _assert(p2.length === 2, "patchList must be an array of length-2-arrays");
+            key = p2[0];
+            patch = p2[1];
+            node = this.getNodeByKey(key);
+            applyCount += 1;
+            if(node){
+                node.applyPatch(patch).always(_resolveFunc);
+            }else{
+                this.warn("could not find node with key '" + key + "'");
+            }
+        }
+        return dfd.promise();
+    },
+    count: function() {
+        return this.rootNode.countChildren();
+    },
 	debug: function(msg){
 		Array.prototype.unshift.call(arguments, this.toString());
 		DT.debug.apply(this, arguments);
@@ -1369,6 +1481,11 @@ $.extend(Dynatree.prototype,
 			ares = [];
 		if(title !== undefined){
 			node.title = title;
+		}
+		if(!node.span){
+		    // Silently bail out if node was not rendered yet, assuming 
+		    // node.render() will be called as the node becomes visible
+		    return;
 		}
 		// connector (expanded, expandable or simple)
 		// TODO: optiimize this if clause
