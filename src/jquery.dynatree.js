@@ -9,28 +9,15 @@
  * A current version and some documentation is available at
  *    http://dynatree.googlecode.com/
  *
- * @summary     jQuery UI SuperWidget
- * @description Create a super widget that does everything on the entire web!
+ * @summary     jQuery UI tree widget
+ * @description Dynamic tree view control, with support for lazy loading of branches.
  * @file        jquery.dynatree.js
  * @version     2.0
  * @author      Martin Wendt
  * @license     MIT or GPL v2
  *
- * @copyright Copyright 2012 Jannon Frank, all rights reserved.
- *
- * This source file is free software, under either the MIT license or GPL v3 license
- * available at:
- *   http://jannon.net/license_mit
- *   http://jannon.net/license_gpl3
 TODO:
-- Call funcs:
-  $("#tree").dynatree("getRootNode")
-  $("#tree").data("dynatree").getRootNode()
-
-- A mechanism for facilitating and responding to changes to plugin options after instantiation
-  $( "#something" ).multi( "option", "clear" , function ( event ) { alert( "I cleared the multiselect!" ); } );
-
-- source may be a function too
+- tree.dump()
 
 - this.options
   this.name, this.namespace
@@ -149,11 +136,25 @@ function _getRejectedPromise(context, argArray){
 }
 
 
+function _makeResolveFunc(deferred, context){
+    return function(){
+        deferred.resolveWith(context);
+    };
+}
+
+
 // Boolean attributes that can be set with equivalent class names in the LI tags
 var i,
     CLASS_ATTRS = ["active", "expanded", "focus", "folder", "lazy", "nolink", "selected"],
 	CLASS_ATTR_MAP = {};
 for(i=0; i<CLASS_ATTRS.length; i++){ CLASS_ATTR_MAP[CLASS_ATTRS[i]] = true; }
+
+//Top-level Dynatree node attributes, that can be set by dict
+var NODE_ATTRS = ["expanded", "extraClasses", /*"focus", */ "folder", "href", "key",
+                  "lazy", "nolink", "selected", "target", "title", "tooltip"],
+    NODE_ATTR_MAP = {};
+for(i=0; i<NODE_ATTRS.length; i++){ NODE_ATTR_MAP[NODE_ATTRS[i]] = true; }
+
 
 /** Parse tree data from HTML <ul> markup */
 function _loadFromHtml($ul, children) {
@@ -248,11 +249,6 @@ function _loadFromHtml($ul, children) {
  * DynatreeNode
  */
 
-// Top-level Dynatree node attributes, that can be set by dict
-var NODE_ATTRS = ["expanded", "extraClasses", /*"focus", */ "folder", "href", "key",
-				  "lazy", "nolink", "selected", "target", "title", "tooltip"],
-    NODE_ATTR_MAP = {};
-for(i=0; i<NODE_ATTRS.length; i++){ NODE_ATTR_MAP[NODE_ATTRS[i]] = true; }
 
 /**
  * Tree node.
@@ -334,8 +330,8 @@ $.extend(DynatreeNode.prototype,
 	},
 	/**
 	 * 
-	 * @param patch
-	 * @returns $.Deferred promise
+	 * @param {object} patch
+	 * @returns {$.Promise}
 	 */
 	applyPatch: function(patch) {
         // patch [key, null] means 'remove'
@@ -343,9 +339,10 @@ $.extend(DynatreeNode.prototype,
 	        this.remove();
 	        return _getResolvedPromise(this);
 	    }
+	    // TODO: make sure that root node is not collapsed or modified
 	    // copy (most) attributes to node.ATTR or node.data.ATTR
 	    var name,
-	        IGNORE_MAP = { children: true, expanded: true };
+	        IGNORE_MAP = { children: true, expanded: true, parent: true }; // TODO: should be global
 	    for(name in patch){
 	        var v = patch[name];
 	        if( !IGNORE_MAP[name] && !$.isFunction(v)){
@@ -362,8 +359,7 @@ $.extend(DynatreeNode.prototype,
             if(patch.children){
                 this.addChildren(patch.children);
             }
-            // TODO: handle delete/discard/replace
-            // TODO: how can we APPEND?
+            // TODO: how can we APPEND or INSERT child nodes?
         }
         if(this.isVisible()){
             this.renderTitle();
@@ -378,9 +374,13 @@ $.extend(DynatreeNode.prototype,
         }
         return promise;
     },
+    /**
+     * @returns $.Promise 
+     */
 	collapseSiblings: function() {
 		return this.tree._callHook("nodeCollapseSiblings", this);
 	},
+	/** @returns {int} number of child nodes*/
 	countChildren: function() {
 		var cl = this.children, i, l, n;
 		if( !cl ){
@@ -400,15 +400,18 @@ $.extend(DynatreeNode.prototype,
 	discard: function(){
 		if(this.lazy && $.isArray(this.children)){
 			this.removeChildren();
-			this.setExpanded(false);
+			return this.setExpanded(false);
 		}
+		// TODO: return promise
 	},
+	/** @returns {Array | undefined} list of child nodes (undefined for unexpanded lazy nodes).*/
 	getChildren: function() {
-		if(this.hasChildren() === undefined){ // TODO; only required for lazy nodes?
+		if(this.hasChildren() === undefined){ // TODO: only required for lazy nodes?
 			return undefined; // Lazy node: unloaded, currently loading, or load error
 		}
 		return this.children;
 	},
+    /** @returns {DynatreeNode | null}*/
 	getFirstChild: function() {
 		return this.children ? this.children[0] : null;
 	},
@@ -714,14 +717,17 @@ $.extend(DynatreeNode.prototype,
 	renderStatus: function() {
 		return this.tree._callHook("nodeRenderStatus", this);
 	},
+	/** Remove this node (not allowed for root).*/
 	remove: function() {
-		_raiseNotImplemented(); // TODO: implement
+        return this.parent.removeChild(this);
 	},
-	removeChild: function(tn) {
-		_raiseNotImplemented(); // TODO: implement
+	/**Remove childNode from list of direct children.*/
+	removeChild: function(childNode) {
+        return this.tree._callHook("nodeRemoveChild", this, childNode);
 	},
-	removeChildren: function(isRecursiveCall, retainPersistence) {
-		_raiseNotImplemented(); // TODO: implement
+    /**Remove all child nodes (and descendents).*/
+	removeChildren: function() {
+        return this.tree._callHook("nodeRemoveChildren", this);
 	},
 	/** Schedule activity for delayed execution (cancel any pending request).
 	 *  scheduleAction('cancel') will cancel the request.
@@ -918,37 +924,29 @@ $.extend(Dynatree.prototype,
 	},
 	/**
 	 * 
-	 * @param {Array} patchList
-	 * @returns $.Deferred promise
+	 * @param {Array} patchList array of [key, patch] arrays
+     * @returns {$.Promise} resolved, when all patches have been applied
 	 */
     applyPatch: function(patchList) {
         var patchCount = patchList.length, 
             p2, key, patch, node,
-            applyCount = 0,
-            dfd = new $.Deferred();
-        
-        function _resolveFunc(){
-            if(applyCount === patchCount){
-                dfd.resolveWith(node);
-//            }else if(dfd.notifyWith){ // requires jQuery 1.6+
-//                dfd.notifyWith(node, ["patch " + applyCount + "/" + patchCount]);
-            }
-        }
-        
+            deferredList = [];
         for(var i=0; i<patchCount; i++){
             p2 = patchList[i];
             _assert(p2.length === 2, "patchList must be an array of length-2-arrays");
             key = p2[0];
             patch = p2[1];
-            node = this.getNodeByKey(key);
-            applyCount += 1;
+            node = (key === null) ? this.rootNode : this.getNodeByKey(key);
             if(node){
-                node.applyPatch(patch).always(_resolveFunc);
+                var dfd = new $.Deferred();
+                deferredList.push(dfd);
+                node.applyPatch(patch).always(_makeResolveFunc(dfd, node));
             }else{
                 this.warn("could not find node with key '" + key + "'");
             }
         }
-        return dfd.promise();
+        // Return a promise that is resovled, when ALL patches were applied
+        return $.when.apply($, deferredList).promise();
     },
     count: function() {
         return this.rootNode.countChildren();
@@ -992,10 +990,12 @@ $.extend(Dynatree.prototype,
 			}
 		}
 		// Not found in the DOM, but still may be in an unrendered part of tree
+		// TODO: optimize with specialized loop
+		// TODO: consider keyMap?
 		var match = null;
 		searchRoot = searchRoot || this.rootNode;
 		searchRoot.visit(function(node){
-//          window.console.log("%s", node);
+//            window.console.log("getNodeByKey(" + key + "): ", node.key);
 			if(node.key === key) {
 				match = node;
 				return false;
@@ -1070,8 +1070,10 @@ $.extend(Dynatree.prototype,
 		}
 		// Make sure that clicks stop, otherwise <a href='#'> jumps to the top
 		event.preventDefault();
+		// TODO: return promise?
 	},
 	nodeCollapseSiblings: function(ctx) {
+        // TODO: return promise?
 		var node = ctx.node;
 		if( node.parent ){
 			var ac = node.parent.children;
@@ -1082,14 +1084,11 @@ $.extend(Dynatree.prototype,
 			}
 		}
 	},
-	// /** Collapse node, if expanded (shortcut to nodeSetExpanded(ctx, false)). */
-	// nodeCollapse: function(ctx) {
-	//     return this.nodeSetExpanded(ctx, false);
-	// },
 	nodeDblclick: function(ctx) {
 	},
 	/** Default handling for mouse keydown events. */
 	nodeKeydown: function(ctx) {
+        // TODO: return promise?
 		var event = ctx.orgEvent,
 			node = ctx.node,
 			tree = ctx.tree,
@@ -1301,20 +1300,83 @@ $.extend(Dynatree.prototype,
 		}
 		// $(ctx.node.li).toggleClass("dynatree-focused", ctx.orgEvent.type === "focus");
 	},
-	nodeRemoveChildMarkup: function(ctx) {
-		var node = ctx.node;
-		DT.debug("nodeRemoveChildMarkup()", node.toString());
-		if(node.ul){
-			$(node.ul).remove();
-			node.visit(function(n){
-				n.li = n.ul = null;
-			});
-			node.ul = null;
-		}
-	},
+	/**
+	 * Remove a single direct child of ctx.node.
+	 * @param ctx
+	 * @param {DynatreeNode} childNode dircect child of ctx.node
+	 */
+    nodeRemoveChild: function(ctx, childNode) {
+        var node = ctx.node,
+            children = node.children;
+        DT.debug("nodeRemoveChild()", node.toString(), childNode.toString());
+
+        if( children.length === 1 ) {
+            _assert(childNode === children[0]);
+            return this.nodeRemoveChildren(ctx);
+        }
+        if( this.activeNode && (childNode === this.activeNode || this.activeNode.isDescendentOf(childNode))){
+            this.activeNode.deactivate(); // TODO: don't fire events
+        }
+        if( this.focusNode && (childNode === this.focusNode || this.focusNode.isDescendentOf(childNode))){
+            this.focusNode = null;
+        }
+        // TODO: persist must take care to clear select and expand cookies
+        var subCtx = $.extend({}, ctx, {node: childNode});
+        this.nodeRemoveMarkup(subCtx);
+        this.nodeRemoveChildren(subCtx);
+        var idx = $.inArray(childNode, children);
+        _assert(idx >= 0);
+        // Unlink to support GC
+        childNode.visit(function(n){
+            n.parent = null;
+        }, true);
+        // remove from child list
+        children.splice(idx, 1);
+    },
+    /**Remove HTML markup for all descendents of ctx.node.*/
+    nodeRemoveChildMarkup: function(ctx) {
+        var node = ctx.node;
+        DT.debug("nodeRemoveChildMarkup()", node.toString());
+        // TODO: Unlink attr.dtnode to support GC
+        if(node.ul){
+            $(node.ul).remove();
+            node.visit(function(n){
+                n.li = n.ul = null;
+            });
+            node.ul = null;
+        }
+    },
+    /**Remove all descendants of ctx.node.*/
+    nodeRemoveChildren: function(ctx) {
+        var node = ctx.node,
+            children = node.children;
+        DT.debug("nodeRemoveChildren()", node.toString());
+        if(!children){
+            return;
+        }
+        if( this.activeNode && this.activeNode.isDescendentOf(node)){
+            this.activeNode.deactivate(); // TODO: don't fire events
+        }
+        if( this.focusNode && this.focusNode.isDescendentOf(node)){
+            this.focusNode = null;
+        }
+        // TODO: persist must take care to clear select and expand cookies
+        this.nodeRemoveChildMarkup(ctx);
+        // Unlink children to support GC
+        // TODO: also delete this.children (not possible using visit())
+        node.visit(function(n){
+            n.parent = null;
+        });
+        // Set to 'undefined' which is interpreted as 'not yet loaded' for lazy nodes
+        node.children = undefined;
+        // TODO: ? this._isLoading = false;
+        this.nodeRenderStatus(ctx);
+    },
+    /**Remove HTML markup for ctx.node and all its descendents.*/
 	nodeRemoveMarkup: function(ctx) {
 		var node = ctx.node;
 		DT.debug("nodeRemoveMarkup()", node.toString());
+        // TODO: Unlink attr.dtnode to support GC
 		if(node.li){
 			$(node.li).remove();
 			node.li = null;
@@ -1619,10 +1681,12 @@ $.extend(Dynatree.prototype,
 
 		if(isActive === flag){
 			// Nothing to do
-			return $.Deferred(function(){this.resolveWith(node);}).promise();
+//			return $.Deferred(function(){this.resolveWith(node);}).promise();
+            return _getResolvedPromise(node);
 		}else if(flag && this._triggerNodeEvent("queryactivate", node, ctx.orgEvent) === false ){
 			// Callback returned false
-			return $.Deferred(function(){this.rejectWith(node, ["rejected"]);}).promise();
+//			return $.Deferred(function(){this.rejectWith(node, ["rejected"]);}).promise();
+            return _getRejectedPromise(node, ["rejected"]);
 		}
 		if(flag){
 			if(tree.activeNode){
@@ -1664,31 +1728,35 @@ $.extend(Dynatree.prototype,
 		if((node.expanded && flag) || (!node.expanded && !flag)){
 			// Nothing to do
 			node.debug("nodeSetExpanded(" + flag + "): nothing to do");
-			return $.Deferred(function(){this.resolveWith(node);}).promise();
+            return _getResolvedPromise(node);
 		}else if(flag && !node.lazy && !node.hasChildren() ){
 			// Prevent expanding of empty nodes
-			return $.Deferred(function(){this.rejectWith(node, ["empty"]);}).promise();
+            return _getRejectedPromise(node, ["empty"]);
 		}else if( !flag && node.getLevel() < opts.minExpandLevel ) {
 			// Prevent collapsing locked levels
-			return $.Deferred(function(){this.rejectWith(node, ["locked"]);}).promise();
+            return _getRejectedPromise(node, ["locked"]);
 		}else if ( this._triggerNodeEvent("queryexpand", node, ctx.orgEvent) === false ){
 			// Callback returned false
-			return $.Deferred(function(){this.rejectWith(node, ["rejected"]);}).promise();
+            return _getRejectedPromise(node, ["rejected"]);
 		}
 		//
 		var dfd = new $.Deferred();
 
 		// Auto-collapse mode: collapse all siblings
 		if( flag && !node.expanded && opts.autoCollapse ) {
-			opts.autoCollapse = false;
-			var parents = node.getParentList(false, true);
-			for(var i=0, l=parents.length; i<l; i++){
-				this._callHook("nodeCollapseSiblings", parents[i]);
+			var parents = node.getParentList(false, true),
+			    prevAC = opts.autoCollapse;
+			try{
+	            opts.autoCollapse = false;
+	            for(var i=0, l=parents.length; i<l; i++){
+	                // TODO: should return promise?
+	                this._callHook("nodeCollapseSiblings", parents[i]);
+	            }
+			}finally{
+	            opts.autoCollapse = prevAC;
 			}
-			// TODO: use try/finally
-			opts.autoCollapse = true;
 		}
-		// Trigger onExpand after expanding
+		// Trigger expand/collapse after expanding
 		dfd.done(function(){
 			ctx.tree._triggerNodeEvent(flag ? "expand" : "collapse", ctx);
 		});
@@ -1701,8 +1769,8 @@ $.extend(Dynatree.prototype,
 			tree._callHook("nodeRender", ctx, false, false, true);
 
 			// If the currently active node is now hidden, deactivate it
-			// if( opts.activeVisible && this.tree.activeNode && ! this.tree.activeNode.isVisible() ) {
-			//     this.tree.activeNode.deactivate();
+			// if( opts.activeVisible && this.activeNode && ! this.activeNode.isVisible() ) {
+			//     this.activeNode.deactivate();
 			// }
 
 			// Expanding a lazy node: set 'loading...' and call callback
@@ -1716,12 +1784,14 @@ $.extend(Dynatree.prototype,
 					isExpanded = !!node.expanded;
 	//            _assert(isVisible !== isExpanded);
 				if( isVisible === isExpanded ) {
-					tree.warn("nodeSetExpanded: UL.style.display already set");
+					node.warn("nodeSetExpanded: UL.style.display already set");
 					dfd.resolveWith(node);
 				} else if( opts.fx ) {
 					var duration = opts.fx.duration || 200,
 						easing = opts.fx.easing;
+                    node.debug("nodeSetExpanded: animate start...");
 					$(node.ul).animate(opts.fx, duration, easing, function(){
+	                    node.debug("nodeSetExpanded: animate done");
 						dfd.resolveWith(node);
 					});
 				} else {
@@ -1738,7 +1808,9 @@ $.extend(Dynatree.prototype,
 		if(flag && node.lazy && node.hasChildren() === undefined){
 			var source = tree._triggerNodeEvent("lazyload", node, ctx.orgEvent);
 			_assert(typeof source !== "boolean", "lazyload event must return source in data.result");
+            node.debug("nodeSetExpanded: load start...");
 			this._callHook("nodeLoadChildren", ctx, source).done(function(){
+                node.debug("nodeSetExpanded: load done");
 				if(dfd.notifyWith){ // requires jQuery 1.6+
 					dfd.notifyWith(node, ["loaded"]);
 				}
@@ -1749,6 +1821,7 @@ $.extend(Dynatree.prototype,
 		}else{
 			_afterLoad();
 		}
+        node.debug("nodeSetExpanded: returns");
 		return dfd.promise();
 	},
 	nodeSetFocus: function(ctx) {

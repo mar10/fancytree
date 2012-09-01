@@ -15,7 +15,7 @@ module.exports = function(grunt) {
         concat: {
             core: {
                 src: ["<banner:meta.banner>", 
-                      "<file_strip_banner:src/<%= pkg.name %>.js>",
+                      "<file_strip_banner:src/<%= pkg.name %>.js>"
                       ],
                 dest: "dist/<%= pkg.name %>-<%= pkg.version %>.js"
             },
@@ -49,8 +49,10 @@ module.exports = function(grunt) {
         lint: {
 //            beforeconcat: ["grunt.js", "src/**/*.js", "tests/**/*.js"],
             beforeconcat: ["src/*.js", 
+//                           "demo/sample.js",
+                           "grunt.js",
                            "test/unit/test-core.js",
-                           "test/unit/test-extensions.js",
+                           "test/unit/test-core.js"
                            ],
 //            beforeconcat: ["grunt.js"],
 //            beforeconcat: ["grunt.js", "src/jquery.dynatree.js", "tests/**/*.js"],

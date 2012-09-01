@@ -52,6 +52,9 @@ function _getNode(key){
 /** Get node title as rendered in the DOM. */
 function _getNodeTitle(key){
     var node = _getNode(key);
+    if(!node){
+        return undefined;
+    }
     return $(node.span).find(".dynatree-title").html();
 }
 
@@ -417,17 +420,22 @@ module("patches");
 
 test("apply patch", function() {
     _setupAsync();
-    expect(13);
+    expect(19);
 
     var patchList = [
              ["2", {title: "node 2: new", tooltip: "new tip", foo: "works"}],
              ["3", {selected: true}],
              ["4", {extraClasses: "customClass"}],
-             ["10_1_1", {title: "Renamed 10_1_1 title"}],
-//             ["10_1_2", null ],
+             ["10_1_1", {title: "Renamed 10_1_1"}],
+             ["10_1_2", null ],
+             ["5", {children: [{key: "5_1", title: "new 5_1"}]}],
+             ["6", {children: [{key: "6_1", title: "new 6_1", expanded: true,
+                                children: [{key: "6_1_1", title: "new 6_1_1"}]
+                               }]}],
              ["10", {expanded: true} ],
              ["20", {expanded: false} ],
              ["30", {expanded: true} ]
+//             [null, {appendChildren: [{key: "40", title: "new top-level 40"}]}]
         ];
 
     $("#tree").dynatree({
@@ -448,7 +456,16 @@ test("apply patch", function() {
                 ok(_getNode("3").isSelected(), "select");
                 ok($(_getNode("3").span).hasClass("dynatree-selected"), "node was rendered as selected");
 
-                ok($(_getNode("4").span).hasClass("customClass"), "custm class");
+                ok($(_getNode("4").span).hasClass("customClass"), "set custom class");
+
+                equal(_getNode("10_1_1").title, "Renamed 10_1_1", "rename hidden");
+                equal(_getNodeTitle("10_1_1"), null, "rename hidden (not rendered)");
+                
+                equal(_getNode("10_1_2"), null, "remove nodes");
+                
+                equal(_getNode("5_1").title, "new 5_1", "add child nodes (created)");
+                equal(_getNodeTitle("5_1"), null, "add child nodes (NOT rendered)");
+                equal(_getNode("5_1").parent, _getNode("5"), "add child nodes (linked)");
 
                 equal(_getNode("10").expanded, true, "folder was expanded");
                 ok($(_getNode("10").span).hasClass("dynatree-expanded"), "folder was rendered as expanded");
@@ -459,6 +476,10 @@ test("apply patch", function() {
                 equal(_getNode("30").expanded, true, "lazy node was expanded");
                 ok($(_getNode("30").span).hasClass("dynatree-expanded"), "node was rendered as expanded");
 //                deepEqual(EVENT_SEQUENCE, [], "event sequence");
+
+                // TODO: patch.appendChildren, replaceChildren, insertChildren, ...
+//                ok(_getNode("40"), "add top-level nodes (created)");
+//                equal(_getNodeTitle("40"), "new top-level 40", "add top-level nodes (rendered)");
                 start();
             });
         }
