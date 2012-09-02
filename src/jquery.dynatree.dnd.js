@@ -175,9 +175,11 @@ function _registerDnd() {
 }
 
 /*******************************************************************************
- *
+ * 
  */
-$.ui.dynatree.registerExtension("dnd", {
+$.ui.dynatree.registerExtension("dnd",
+    /** @scope ui_dynatree */
+    {
 	// Default options for this extension.
 	options: {
 		// Make tree nodes draggable:

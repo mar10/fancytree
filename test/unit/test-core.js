@@ -24,10 +24,9 @@ function simulateClick(selector) {
 }
 
 
-/** Helper to reset environment for asynchronous Dynatree tests. */
-
 var EVENT_SEQUENCE = [];
 
+/** Helper to reset environment for asynchronous Dynatree tests. */
 function _appendEvent(res){
     EVENT_SEQUENCE.push(res);
 }
@@ -49,6 +48,11 @@ function _getNode(key){
     return node;
 }
 
+/** Get DynatreeNode from current tree. */
+function _getTree(key){
+    return $("#tree").dynatree("getTree");
+}
+
 /** Get node title as rendered in the DOM. */
 function _getNodeTitle(key){
     var node = _getNode(key);
@@ -56,6 +60,14 @@ function _getNodeTitle(key){
         return undefined;
     }
     return $(node.span).find(".dynatree-title").html();
+}
+
+/** Convert array of nodes to array to array of node keys. */
+function _getNodeKeyArray(nodeArray){
+    if(!$.isArray(nodeArray)){
+        return nodeArray;
+    }
+    return $.map(nodeArray, function(n){ return n.key; });
 }
 
 /*******************************************************************************
@@ -161,7 +173,7 @@ test("Create dynatree", function() {
             equal($(this).attr("id"), "tree", "`this` is div#tree");
             equal(data.tree.rootNode.children.length, TESTDATA_TOPNODES, "tree.rootNode has all child nodes");
 
-            var tree = data.tree;
+//            var tree = data.tree;
             equal($("li#dt_2 a.dynatree-title").attr("title"), "Look, a tool tip!", "tooltip set");
             equal($("li#dt_3 a.dynatree-title").html(), "<span>item2 with <b>html</b> inside a span tag</span>", "raw html allowed");
             equal($("li#dt_4 a.dynatree-title").html(), null, "`nolink` suppresses <a> tag");
@@ -242,7 +254,173 @@ test("Init node with custom data", function() {
 /*******************************************************************************
  * 
  */
-module("async API");
+module("API");
+
+test("DynatreeNode class", function() {
+//  _setupAsync();
+    QUnit.reset();
+    $("#tree").dynatree("destroy");
+    expect(10);
+
+    $("#tree").dynatree({
+        source: testData
+    });
+    var tree = $("#tree").dynatree("getTree"),
+        node = _getNode("10_1_2");
+    // Properties
+    equal(node.tree, tree, "node.tree");
+    equal(node.parent, _getNode("10_1"), "node.parent");
+    equal(node.key, "10_1_2", "node.key");
+    equal(node.children, null, "node.children");
+    equal(node.isStatusNode, false, "node.isStatusNode");
+//    this.ul = null;
+//    this.li = null;  // <li id='key' dtnode=this> tag
+//    this.data = {};
+
+    
+    // Methods
+//  addChildren: function(children){
+//  applyPatch: function(patch) {
+//  collapseSiblings: function() {
+//  countChildren: function() {
+//  debug: function(msg){
+//  discard: function(){
+//  getChildren: function() {
+//  getFirstChild: function() {
+    equal(node.getIndex(), 1, "getIndex()");
+    equal(node.getIndexHier(), "7.1.2", "getIndexHier()");
+    equal(node.getIndexHier("/"), "7/1/2", "getIndexHier('/')");
+    equal(node.getKeyPath(), "/10/10_1/10_1_2", "getKeyPath()");
+    equal(node.getKeyPath(true), "/10/10_1", "getKeyPath(true)");
+//  getLastChild: function() {
+//  getLevel: function() {
+//  getNextSibling: function() {
+//  getParent: function() {
+//  getParentList: function(includeRoot, includeSelf) {
+//  getPrevSibling: function() {
+//  hasChildren: function() {
+//  hasFocus: function() {
+//  isActive: function() {
+//  isChildOf: function(otherNode) {
+//  isDescendantOf: function(otherNode) {
+//  isExpanded: function() {
+//  isFirstSibling: function() {
+//  isLastSibling: function() {
+//  isLazy: function() {
+//  isLoading: function() {
+////isStatusNode: function() {
+//  isRoot: function() {
+//  isSelected: function() {
+//  isVisible: function() {
+//  move: function(targetNode, mode) {
+//  reloadChildren: function() {
+//  render: function(force, deep) {
+//  renderTitle: function() {
+//  renderStatus: function() {
+//  remove: function() {
+//  removeChild: function(childNode) {
+//  removeChildren: function() {
+//  scheduleAction: function(mode, ms) {
+//  setActive: function(flag){
+//  setExpanded: function(flag){
+//  setFocus: function(){
+//  setSelected: function(flag){
+//  setTitle: function(title){
+//  toggleExpanded: function(){
+//  toggleSelected: function(){
+//  toString: function() {
+//  visit: function(fn, includeSelf) {
+//  visitParents: function(fn, includeSelf) {
+});
+
+
+test("Dynatree class", function() {
+//  _setupAsync();
+    QUnit.reset();
+    $("#tree").dynatree("destroy");
+    expect(14);
+
+    $("#tree").dynatree({
+        source: testData
+    });
+    var tree = $("#tree").dynatree("getTree");
+  // Properties
+//    tree.$widget = $widget;
+//    tree.$div = $widget.element;
+//    tree.options = $widget.options;
+//    tree._id = $.ui.dynatree._nextId++;
+//    tree.activeNode = null;
+//    tree.focusNode = null;
+//    tree.statusClassPropName = "span";
+//    tree.lastSelectedNode = null;
+//    tree.rootNode = new DynatreeNode(fakeParent, {
+//        title: "root",
+//        key: "root_" + tree._id,
+//        children: null
+//    });
+//    tree.rootNode.parent = null;
+//
+//    // Create root markup
+//    $ul = $("<ul>", {
+//        "class": "dynatree-container"
+//    }).appendTo(this.$div);
+//    tree.rootNode.ul = $ul[0];
+//    tree.nodeContainerAttrName = "li";
+
+    // Methods
+    equal(tree.count(), TESTDATA_NODES, "count()");
+    equal(tree.getNodeByKey("10_2").key, "10_2", "getNodeByKey()");
+    equal(tree.getNodeByKey("foobar"), null, "getNodeByKey() not found");
+    var node = _getNode("10_2");
+    equal(tree.getNodeByKey("10_2_1", node).key, "10_2_1", "getNodeByKey(.., root)");
+    equal(tree.getNodeByKey("10_1_1", node), null, "getNodeByKey(.., root) not found");
+
+    deepEqual(_getNodeKeyArray(tree.getSelectedNodes()), [], "getSelectedNodes() - empty");
+    deepEqual(_getNodeKeyArray(tree.getSelectedNodes(true)), [], "getSelectedNodes(true) - empty");
+    _getNode("10_2").setSelected();
+    _getNode("10_2_1").setSelected();
+    _getNode("10_2_2").setSelected();
+    deepEqual(_getNodeKeyArray(tree.getSelectedNodes()), 
+            ["10_2", "10_2_1", "10_2_2"], "getSelectedNodes()");
+    deepEqual(_getNodeKeyArray(tree.getSelectedNodes(true)), 
+            ["10_2"], "getSelectedNodes(true)");
+
+//    reload: function(source) {
+//    render: function(force, deep) {
+
+    equal(tree.toString(), "Dynatree<" + tree._id + ">", "toString()");
+    equal("" + tree, tree.toString(), "toString() implicit");
+
+    var c = 0;
+    tree.visit(function(n){
+        c += 1;
+    });
+    equal(c, TESTDATA_NODES, "visit() - all");
+
+    c = 0;
+    tree.visit(function(n){
+      c += 1;
+      if(n.key === "10_1"){
+          return false;
+      }
+    });
+    equal(c, 8, "visit() - interrupt");
+  
+    c = 0;
+    tree.visit(function(n){
+      c += 1;
+    if(n.key === "10_1"){
+    return "skip";
+        }
+    });
+    equal(c, 21, "visit() - skip branch");  
+});
+
+
+/*******************************************************************************
+ * 
+ */
+module("Asyncronous API");
 
 test("trigger async expand", function() {
     _setupAsync();
@@ -483,6 +661,31 @@ test("apply patch", function() {
                 start();
             });
         }
+    });
+});
+
+/*******************************************************************************
+ * 
+ */
+module("keypath");
+
+test("loadKeyPath", function() {
+    _setupAsync();
+    expect(1);
+
+    $("#tree").dynatree({
+        source: testData,
+        lazyload: function(e, data){
+            data.result = {url: "ajax-sub2.json"};
+        }
+    });
+    var tree = _getTree();
+    tree.loadKeyPath("/10/10_1/10_1_2").progress(function(data){
+        _appendEvent("progress: " + data);
+    }).done(function(data){
+        _appendEvent("done: " + data);
+        deepEqual(EVENT_SEQUENCE, [], "event sequence");
+        start();
     });
 });
 
