@@ -218,7 +218,7 @@ $.ui.dynatree.registerExtension("table", {
 			// Iterate over all descendants
 			node.visit(function(n){
 				if(n.tr){
-					if(!node.expanded && n.tr.style.display !== "none"){
+					if(!node.expanded && !isRootNode && n.tr.style.display !== "none"){
 						// fix after a node was dropped over a sibling.
 						// In this case it must be hidden
 						n.tr.style.display = "none";
@@ -236,7 +236,6 @@ $.ui.dynatree.registerExtension("table", {
 		if(!isRootNode){
 			this.nodeRenderStatus(ctx);
 		}
-
 		// Finally add the whole structure to the DOM, so the browser can render
 		// if(firstTime){
 		//     parent.ul.appendChild(node.li);
