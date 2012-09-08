@@ -174,11 +174,14 @@ function _registerDnd() {
 	didRegisterDnd = true;
 }
 
-/*******************************************************************************
+/* *****************************************************************************
  * 
  */
+/** @namespace $.ui.dynatree.dnd */
 $.ui.dynatree.registerExtension("dnd",
-    /** @scope ui_dynatree */
+    /** @scope ui_dynatree 
+     * @lends $.ui.dynatree.dnd.prototype 
+     */
     {
 	// Default options for this extension.
 	options: {
@@ -211,7 +214,7 @@ $.ui.dynatree.registerExtension("dnd",
 		}
 		this._super(ctx);
 	},
-	/** Display drop marker according to hitMode ('after', 'before', 'over', 'out', 'start', 'stop'). */
+	/* Display drop marker according to hitMode ('after', 'before', 'over', 'out', 'start', 'stop'). */
 	_setDndStatus: function(sourceNode, targetNode, helper, hitMode, accept) {
 		var instData = this.dnd,
 			instOpts = this.options.dnd,
@@ -317,7 +320,7 @@ $.ui.dynatree.registerExtension("dnd",
 		}
 	},
 
-	/**
+	/*
 	 * Handles drag'n'drop functionality.
 	 *
 	 * A standard jQuery drag-and-drop process may generate these calls:

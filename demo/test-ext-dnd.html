@@ -6,7 +6,7 @@
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js" type="text/javascript"></script>
-	<link href="../src/skin-vista/ui.dynatree.css" rel="stylesheet" type="text/css" id="skinSheet">
+	<link href="../src/skin-vista/ui.dynatree.css" rel="stylesheet" type="text/css">
 <!--
     <script src="../dist/jquery.dynatree-all.min.js" type="text/javascript"></script>
     <script src="../dist/jquery.dynatree-2.0.0pre-all.js" type="text/javascript"></script>
@@ -171,13 +171,9 @@
 		This sample shows, how <a href="http://jqueryui.com/themeroller/" target="_blank">jQuery Themeroller</a> styles can be applied by
 		adding the 'themeroller' extension.
 	</p>
-	<div id="switcher"></div>
-    Skin:
-    <select id="skinCombo" size="1">
-        <option value="skin">Standard ('/skin/')</option>
-        <option value="skin-vista">Vista ('/skin-vista/')</option>
-    </select>
-
+    <div>
+        <label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
+    </div>
 	<!-- Add a <table> element where the tree should appear: -->
 	<p class="description">
 		Standard tree:

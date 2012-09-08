@@ -4,7 +4,7 @@ var assert = require('assert'),
 	http = require('http'),
 	url = require('url');
 
-/**
+/*
  * Helpers
  */
 var NODE_ATTRS = ["title", "key"];
@@ -17,7 +17,7 @@ function copyNode(node, deep){
 	}
 	return node2;
 }
-/**
+/*
  * Class TreeModel
  * Simple tree data structure
  */

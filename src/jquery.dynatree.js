@@ -26,7 +26,14 @@ TODO:
   this.widgetEventPrefix
 
 - use this.element.css({background: greenlevels[level]});
-
+- sortChildren
+- findFirst()
+- Die Hilfetexte aus der alten Doku verwenden!
+- documentation generator
+  https://groups.google.com/forum/?fromgroups=#!topic/jsdoc-users/85qIXAunrfU
+- Example code for JSDoc
+  @examples and @description
+  http://code.google.com/p/jsdoc-toolkit/wiki/TagExample
 
 	$Version:$
 	$Revision:$
@@ -262,14 +269,14 @@ function _loadFromHtml($ul, children) {
  * @property {String} title
  * @property {object} data
  * @property {DynatreeNode[] | null | undefined} children list of child nodes
- * @property {boolean} isStatusNode
- * @property {boolean} expanded
- * @property {boolean} folder
- * @property {boolean} href
+ * @property {Boolean} isStatusNode
+ * @property {Boolean} expanded
+ * @property {Boolean} folder
+ * @property {Boolean} href
  * @property {String} extraClasses
- * @property {boolean} lazy
- * @property {boolean} nolink
- * @property {boolean} selected
+ * @property {Boolean} lazy
+ * @property {Boolean} nolink
+ * @property {Boolean} selected
  * @property {String} target
  * @property {String} tooltip
  */
@@ -315,6 +322,8 @@ function DynatreeNode(parent, data){
 }
 
 DynatreeNode.prototype = /**@lends DynatreeNode*/{
+    // TODO: activate()
+    // TODO: activateSilently()
 	/**
 	 * Add children. 
 	 * NOTE: current children are replaced!
@@ -390,6 +399,7 @@ DynatreeNode.prototype = /**@lends DynatreeNode*/{
 		}
 		return n;
 	},
+	// TODO: deactivate()
 	debug: function(msg){
 		Array.prototype.unshift.call(arguments, this.toString());
 		DT.debug.apply(this, arguments);
@@ -402,6 +412,32 @@ DynatreeNode.prototype = /**@lends DynatreeNode*/{
 		}
 		// TODO: return promise
 	},
+	// TODO: expand(flag)
+    /**Find all nodes that contain `match` in the title.
+     * 
+     * @param {String | function(node)} match string to search for, of a function that 
+     * returns `true` if a node is matched.
+     * @returns {DynatreeNode[]} array of nodes (may be empty)
+     * @see DynatreeNode#findAll
+     */
+    findAll: function(match) {
+        // TODO: implement
+        _raiseNotImplemented();
+    },
+    /**Find first node that contains `match` in the title.
+     * 
+     * @param {String | function(node)} match string to search for, of a function that 
+     * returns `true` if a node is matched.
+     * @returns {DynatreeNode} matching node or null
+     * @example
+     * <b>fat</b> text
+     */
+    findFirst: function(match) {
+        // TODO: implement
+        _raiseNotImplemented();
+    },
+	// TODO: focus()
+	// TODO: fromDict()
 	/** @returns {DynatreeNode[] | undefined} list of child nodes (undefined for unexpanded lazy nodes).*/
 	getChildren: function() {
 		if(this.hasChildren() === undefined){ // TODO: only required for lazy nodes?
@@ -428,7 +464,7 @@ DynatreeNode.prototype = /**@lends DynatreeNode*/{
 		return res.join(separator);
 	},
 	/**
-	 * @param {boolean} [excludeSelf=false] 
+	 * @param {Boolean} [excludeSelf=false] 
 	 * @returns {String} parent keys separated by options.keyPathSeparator
 	 */
 	getKeyPath: function(excludeSelf) {
@@ -474,8 +510,8 @@ DynatreeNode.prototype = /**@lends DynatreeNode*/{
 		return this.parent;
 	},
 	/**
-	 * @param {boolean} [includeRoot=false] 
-	 * @param {boolean} [includeSelf=false]
+	 * @param {Boolean} [includeRoot=false] 
+	 * @param {Boolean} [includeSelf=false]
 	 * @returns {DynatreeNode[]} 
 	 */
 	getParentList: function(includeRoot, includeSelf) {
@@ -518,24 +554,24 @@ DynatreeNode.prototype = /**@lends DynatreeNode*/{
 		}
 		return !!this.children;
 	},
-    /**@returns {boolean} true, if node has keyboard focus*/
+    /**@returns {Boolean} true, if node has keyboard focus*/
     hasFocus: function() {
         return (this.tree.focusNode === this);
     },
-	/**@returns {boolean} true, if node is active*/
+	/**@returns {Boolean} true, if node is active*/
 	isActive: function() {
 		return (this.tree.activeNode === this);
 	},
     /**
      * @param {DynatreeNode} otherNode
-     * @returns {boolean} true, if node is a direct child of otherNode
+     * @returns {Boolean} true, if node is a direct child of otherNode
      */
 	isChildOf: function(otherNode) {
 		return (this.parent && this.parent === otherNode);
 	},
     /**
      * @param {DynatreeNode} otherNode
-     * @returns {boolean} true, if node is a sub node of otherNode
+     * @returns {Boolean} true, if node is a sub node of otherNode
      */
 	isDescendantOf: function(otherNode) {
 		if(!otherNode || otherNode.tree !== this.tree){
@@ -550,40 +586,40 @@ DynatreeNode.prototype = /**@lends DynatreeNode*/{
 		}
 		return false;
 	},
-    /** @returns {boolean} true, if node is expanded*/
+    /** @returns {Boolean} true, if node is expanded*/
 	isExpanded: function() {
 		return !!this.expanded;
 	},
-    /** @returns {boolean}*/
+    /** @returns {Boolean}*/
 	isFirstSibling: function() {
 		var p = this.parent;
 		return !p || p.children[0] === this;
 	},
-    /** @returns {boolean}*/
+    /** @returns {Boolean}*/
 	isLastSibling: function() {
 		var p = this.parent;
 		return !p || p.children[p.children.length-1] === this;
 	},
-    /** @returns {boolean} true, if node is lazy (even if data was already loaded)*/
+    /** @returns {Boolean} true, if node is lazy (even if data was already loaded)*/
 	isLazy: function() {
 		return !!this.lazy;
 	},
-    /** @returns {boolean} true, if children are currently beeing loaded*/
+    /** @returns {Boolean} true, if children are currently beeing loaded*/
 	isLoading: function() {
 		_raiseNotImplemented(); // TODO: implement
 	},
-	// TODO: use _isStatusNode as class attribute name
-//	isStatusNode: function() {
-//		return (this.data.isStatusNode === true);
-//	},
-    /**@returns {boolean} true, if node is the (invisible) system root node*/
+    /**@returns {Boolean} true, if node is the (invisible) system root node*/
     isRoot: function() {
         return (this.tree.rootNode === this);
     },
-    /** @returns {boolean} true, if node is selected (e.g. has a checkmark set)*/
+    /** @returns {Boolean} true, if node is selected (e.g. has a checkmark set)*/
     isSelected: function() {
         return !!this.selected;
     },
+    // TODO: use _isStatusNode as class attribute name
+//  isStatusNode: function() {
+//      return (this.data.isStatusNode === true);
+//  },
 	/** Return true, if all parents are expanded. */
 	isVisible: function() {
 		var parents = this.getParentList(false, false);
@@ -592,6 +628,7 @@ DynatreeNode.prototype = /**@lends DynatreeNode*/{
 		}
 		return true;
 	},
+	// TODO: makeVisible()
 	/** Move this node to targetNode.
 	 *  @param {String} mode
 	 *      'child': append this node as last child of targetNode.
@@ -726,6 +763,7 @@ DynatreeNode.prototype = /**@lends DynatreeNode*/{
 
 */
 	},
+	// TODO: reload(force)
 	/**
 	 * Discard and reload all children of a lazy node
 	 * @returns {$.Promise}
@@ -763,6 +801,7 @@ DynatreeNode.prototype = /**@lends DynatreeNode*/{
 	removeChildren: function() {
         return this.tree._callHook("nodeRemoveChildren", this);
 	},
+	// TODO: resetLazy()
 	/** Schedule activity for delayed execution (cancel any pending request).
 	 *  scheduleAction('cancel') will cancel the request.
 	 */
@@ -794,6 +833,7 @@ DynatreeNode.prototype = /**@lends DynatreeNode*/{
 		}
 //        this.tree.debug("setTimeout(%s, %s): %s", mode, ms, this.tree.timer);
 	},
+	// TODO: select(flag)
 	setActive: function(flag){
 		return this.tree._callHook("nodeSetActive", this, flag);
 	},
@@ -803,6 +843,7 @@ DynatreeNode.prototype = /**@lends DynatreeNode*/{
 	setFocus: function(){
 		return this.tree._callHook("nodeSetFocus", this);
 	},
+	// TODO: setLazyNodeStatus
 	setSelected: function(flag){
 		return this.tree._callHook("nodeSetSelected", this, flag);
 	},
@@ -810,6 +851,35 @@ DynatreeNode.prototype = /**@lends DynatreeNode*/{
 		this.title = title;
 		this.renderTitle();
 	},
+    /**Sort child list by title.
+     * @param {function} [cmd] custom compare function.
+     * @param {Boolean} [deep] pass true to sort all descendant nodes
+     */
+    sortChildren: function(cmp, deep) {
+        // TODO: not tested
+        _raiseNotImplemented();
+        var cl = this.children;
+        if( !cl ){
+            return;
+        }
+        cmp = cmp || function(a, b) {
+            var x = a.title.toLowerCase(),
+                y = b.title.toLowerCase();
+            return x === y ? 0 : x > y ? 1 : -1;
+            };
+        cl.sort(cmp);
+        if( deep ){
+            for(var i=0, l=cl.length; i<l; i++){
+                if( cl[i].children ){
+                    cl[i].sortChildren(cmp, "$norender$");
+                }
+            }
+        }
+        if( deep !== "$norender$" ){
+            this.render();
+        }
+    },
+    // TODO: toDict: function(recursive, callback)
 	toggleExpanded: function(){
 		return this.tree._callHook("nodeToggleExpanded", this);
 	},
@@ -820,10 +890,11 @@ DynatreeNode.prototype = /**@lends DynatreeNode*/{
 		return "DynatreeNode<" + this.key + ", '" + this.title + "'>";
 	},
 	/** Call fn(node) for all child nodes. Stop iteration, if fn() returns false.
+	 * Skip current branch, if fn() returns 'skip'.
 	 * @param {function} fn the callback function.
 	 *     Return false to stop iteration, return "skip" to skip this node and children only.
-	 * @param {boolean} [includeSelf=false]
-	 * @returns {boolean} false, if the iterator was stopped.
+	 * @param {Boolean} [includeSelf=false]
+	 * @returns {Boolean} false, if the iterator was stopped.
 	 */
 	visit: function(fn, includeSelf) {
 		var res = true,
@@ -844,6 +915,12 @@ DynatreeNode.prototype = /**@lends DynatreeNode*/{
 		}
 		return res;
 	},
+	/**
+	 * 
+	 * @param fn
+	 * @param includeSelf
+	 * @returns {Boolean}
+	 */
 	visitParents: function(fn, includeSelf) {
 		// Visit parent nodes (bottom up)
 		if(includeSelf && fn(this) === false){
@@ -956,6 +1033,21 @@ Dynatree.prototype = /**@lends Dynatree*/{
 		this.debug("_hook", funcName, ctx.node && ctx.node.toString() || ctx.tree.toString(), args);
 		return fn.apply(this, args);
 	},
+/* TODO: implement
+	activateKey: function(key) {
+        var dtnode = (key === null) ? null : this.getNodeByKey(key);
+        if( !dtnode ) {
+            if( this.activeNode ){
+                this.activeNode.deactivate();
+            }
+            this.activeNode = null;
+            return null;
+        }
+        dtnode.focus();
+        dtnode.activate();
+        return dtnode;
+    },
+    */
 	/**
 	 * 
 	 * @param {Array} patchList array of [key, patch] arrays
@@ -982,38 +1074,26 @@ Dynatree.prototype = /**@lends Dynatree*/{
         // Return a promise that is resovled, when ALL patches were applied
         return $.when.apply($, deferredList).promise();
     },
+    /* TODO: implement in dnd extension
+    cancelDrag: function() {
+        var dd = $.ui.ddmanager.current;
+        if(dd){
+            dd.cancel();
+        }
+    },
+   */
     count: function() {
         return this.rootNode.countChildren();
     },
+    // TODO: disable()
 	debug: function(msg){
 		Array.prototype.unshift.call(arguments, this.toString());
 		DT.debug.apply(this, arguments);
 	},
-	///** Initiallize the tree */
-	// fromDict: function(data) {
-	//     // Create a node without parent.
-	//     var fakeParent = { tree: this },
-	//         $ul,
-	//         children = $.isArray(data) ? data : data.children;
-	//     if(children !== null && !$.isArray(children)){
-	//         $.error("fromDict data must be null, an array, or have a .children property");
-	//     }
-	//     this.rootNode = new DynatreeNode(fakeParent, {
-	//         title: "root",
-	//         key: "root_" + this.$widget._id,
-	//         children: children
-	//     });
-	//     this.rootNode.parent = null;
-	//     // Remove previous markup if any
-	//     this.$div.find(">ul.dynatree-container").remove();
-	//     // Create root markup
-	//     $ul = $("<ul>", {
-	//         "class": "dynatree-container"
-	//     }).appendTo(this.$div);
-	//     this.rootNode.ul = $ul[0];
-	//     // Set tree title from node data
-	//     this.title = data.title;
-	// },
+    // TODO: enable()
+    // TODO: enableUpdate()
+	// TODO: fromDict
+	// TODO: getActiveNode()
 	getNodeByKey: function(key, searchRoot) {
 		// Search the DOM by element ID (assuming this is faster than traversing all nodes).
 		// $("#...") has problems, if the key contains '.', so we use getElementById()
@@ -1037,9 +1117,10 @@ Dynatree.prototype = /**@lends Dynatree*/{
 		}, true);
 		return match;
 	},
+	// TODO: getRoot()
 	/**
 	 * Return a list of selected nodes.
-	 * @param {boolean} [stopOnParents=false] only return the topmost selected 
+	 * @param {Boolean} [stopOnParents=false] only return the topmost selected 
 	 *     node (useful with selectMode 3)  
 	 * @returns {DynatreeNode[]}
 	 */
@@ -1059,6 +1140,17 @@ Dynatree.prototype = /**@lends Dynatree*/{
 		Array.prototype.unshift.call(arguments, this.toString());
 		DT.info.apply(this, arguments);
 	},
+/*	
+    TODO: isInitializing: function() {
+        return ( this.phase=="init" || this.phase=="postInit" );
+    },
+    TODO: isReloading: function() {
+        return ( this.phase=="init" || this.phase=="postInit" ) && this.options.persist && this.persistence.cookiesFound;
+    },
+    TODO: isUserEvent: function() {
+        return ( this.phase=="userEvent" );
+    },
+*/
 	/**
      * @param {String} keyPath
      * @param {function} keyPath
@@ -1580,13 +1672,13 @@ Dynatree.prototype = /**@lends Dynatree*/{
 				// Allow tweaking and binding, after node was created for the first time
 				if(opts.onCreate){
 					// TODO: _trigger
-					opts.onCreate.call(tree, this, this.span);
+					opts.onCreate.call(tree, node, node.span);
 				}
 			}
 			// Allow tweaking after node state was rendered
 			if(opts.onRender){
 				// TODO: _trigger
-				opts.onRender.call(tree, this, this.span);
+				opts.onRender.call(tree, node, node.span);
 			}
 		}
 
@@ -1629,7 +1721,6 @@ Dynatree.prototype = /**@lends Dynatree*/{
 				this.nodeRemoveChildMarkup(ctx);
 			}
 		}
-
 		if( !isRootNode ){
 			// Update element classes according to node state
 			this.nodeRenderStatus(ctx);
@@ -1675,7 +1766,7 @@ Dynatree.prototype = /**@lends Dynatree*/{
 		// folder or doctype icon
 		if ( node.icon ) {
 			ares.push("<img src='" + opts.imagePath + node.icon + "' alt='' />");
-		} else if ( this.icon !== false ) {
+		} else if ( node.icon !== false ) {
 			// icon == false means 'no icon', icon == null means 'default icon'
 			ares.push("<span class='dynatree-icon'></span>");
 		}
@@ -2283,6 +2374,8 @@ Dynatree.prototype = /**@lends Dynatree*/{
 		});
 		return dfd;
 	},
+    // TODO: reactivate()
+    // TODO: redraw()
 	/** Reload tree from source and return a promise.
 	 * @param source
 	 * @returns {$.Promise}
@@ -2292,18 +2385,21 @@ Dynatree.prototype = /**@lends Dynatree*/{
 		return this._callHook("treeLoad", this, source);
 	},
 	/**Render tree (i.e. all top-level nodes).
-     * @param {boolean} [force=false] 
-     * @param {boolean} [deep=false] 
+     * @param {Boolean} [force=false] 
+     * @param {Boolean} [deep=false] 
 	 */
 	render: function(force, deep) {
 		return this.rootNode.render(force, deep);
 	},
-	/**Implicitly called for string conversions.
-	 * @returns {String} 
-	 */
-	toString: function(){
-		return "Dynatree<" + this._id + ">";
-	},
+	// TODO: selectKey: function(key, select)
+	// TODO: serializeArray: function(stopOnParents)
+	// TODO: toDict()  with optional callback?
+    /**Implicitly called for string conversions.
+     * @returns {String} 
+     */
+    toString: function(){
+        return "Dynatree<" + this._id + ">";
+    },
 	/** _trigger a widget event with additional node ctx.
 	 * @see HookContext
 	 */
@@ -2340,50 +2436,31 @@ Dynatree.prototype = /**@lends Dynatree*/{
 };
 
 
-/** Dynatree options
- * @name DynatreeOptions
- */
-var DynatreeOptions = /** @scope DynatreeOptions */ {
-    /** @property {boolean} disabled flag */
-    disabled: false,
-    /** @property {object} $.Ajax options */
-    ajax: {
-        type: "GET",
-        cache: false, // false: Append random '_' argument to the request url to prevent caching.
-//          timeout: 0, // >0: Make sure we get an ajax error if error is unreachable
-        dataType: "json" // Expect json format and pass json object to callbacks.
-    },  //
-    /** @type {boolean}  Make sure, active nodes are visible (expanded). */
-    activeVisible: true,
-    /** collaps siblings */
-    autoCollapse: false
-};
-
 /* ******************************************************************************
  * jQuery UI widget boilerplate
  * @  name ui_dynatree  
  * @  class The jQuery.ui.dynatree widget
  */
-/** @namespace ui */
-/** @namespace ui.dynatree */
+/* * @namespace ui */
+/* * @namespace ui.dynatree */
+/** @namespace $.ui.dynatree */
 $.widget("ui.dynatree", 
-	/** @lends ui.dynatree.prototype */
+	/** @lends $.ui.dynatree.prototype */
 	{
 	/**These options will be used as defaults 
 	 * @type {DynatreeOptions} 
 	 */
-	options:
+	options: 
 	{
 	    // TODO: required anymore?
 		disabled: false,
-		/** $.Ajax options*/
 		ajax: {
 			type: "GET",
 			cache: false, // false: Append random '_' argument to the request url to prevent caching.
 //          timeout: 0, // >0: Make sure we get an ajax error if error is unreachable
 			dataType: "json" // Expect json format and pass json object to callbacks.
 		},  //
-		/** @type {boolean}  Make sure, active nodes are visible (expanded). */
+		/** @type {Boolean}  Make sure, active nodes are visible (expanded). */
 		activeVisible: true, // Make sure, active nodes are visible (expanded).
 		autoCollapse: false,
 		checkbox: false,
@@ -2659,18 +2736,15 @@ $.extend($.ui.dynatree,
 		if( tcn === "dynatree-title" ){
 			res.type = "title";
 		}else if( tcn === "dynatree-expander" ){
-//            res.type = "expander";
-			res.type = res.node.hasChildren() === false ? "prefix" : "expander";
+			res.type = (res.node.hasChildren() === false ? "prefix" : "expander");
 		}else if( tcn === "dynatree-checkbox" ){
 			res.type = "checkbox";
 		}else if( tcn === "dynatree-icon" ){
 			res.type = "icon";
-//        }else if( tcn === "dynatree-connector" ){
-//            res.type = "prefix";
 		}else if( tcn.indexOf("dynatree-node") >= 0 ){
-			// FIX issue #93
-			// TODO: implement
-			res.type = this._getTypeForOuterNodeEvent(event);
+			// TODO: issue #93 (http://code.google.com/p/dynatree/issues/detail?id=93)
+//			res.type = this._getTypeForOuterNodeEvent(event);
+            res.type = "title";
 		}
 		return res;
 	},
