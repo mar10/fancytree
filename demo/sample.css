@@ -13,18 +13,6 @@ body.example h2
 	font-size: 1em;
 }
 
-p.sample-links a,
-p.sample-links a:visited
-{
-	color: navy;
-	text-decoration: none;
-	font-size: small;
-}
-a:hover
-{
-	text-decoration: underline;
-}
-
 body.example p.description,
 body.example p.sample-links
 {
@@ -39,6 +27,7 @@ p.version-info
 	color: gray;
 	font-size: 0.6em;
 }
+
 p.sample-links a,
 p.sample-links a:visited
 {
@@ -46,9 +35,8 @@ p.sample-links a:visited
 	text-decoration: none;
 	margin-left: 15px;
 	padding: 1px 3px;
-/*	border: 1pt solid white;*/
+    font-size: small;
 }
-
 p.sample-links a:hover
 {
 	text-decoration: underline;

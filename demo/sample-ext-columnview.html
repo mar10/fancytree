@@ -17,12 +17,13 @@
 	<link href="sample.css" rel="stylesheet" type="text/css">
 	<script src="sample.js" type="text/javascript"></script>
 	<!-- End_Exclude -->
+	
 <style type="text/css">
     table.dynatree-ext-columnview {
         border-collapse: collapse;
         width: 100%;
     }
-	span.tag{
+	span.selTag{
 		border: 1px outset #dec;
 		display: inline-block;
 		padding: 0 5px;
@@ -30,7 +31,7 @@
 		background-color: #dec;
 		border-radius: 5px;
 	}
-	span.tag button.close{
+	span.selTag button.close{
 		border: 1px solid transparent;
 		border-radius: 4px;
 		padding: 0px 1px 2px 1px;
@@ -38,12 +39,13 @@
 		background-color: transparent;
 		visibility: hidden;
 	}
-	span.tag:hover button.close{
+	span.selTag:hover button.close{
 		border-color: gray;
 		background-color: #f99;
 		visibility: visible;
 	}
 </style>
+
 	<!-- Add code to initialize the tree when the document is loaded: -->
 <script type="text/javascript">
 	$(function(){
@@ -55,6 +57,9 @@
 			source: {
 				url: "ajax-tree-plain.json"
 			},
+            lazyload: function(e, data) {
+                data.result = {url: "ajax-sub2.json"};
+            },
 			activate: function(e, data) {
 				$("td#preview").text("activate " + data.node);
 			},
@@ -64,27 +69,26 @@
 				$("span#tag-" + node.key).remove();
 				if(node.selected){
 					$("<span>", {
-						id: "tag-" + node.key,
+                        id: "tag-" + node.key,
 						text: node.title,
-						"class": "tag"
+						"class": "selTag"
 					})
+					.data("key", node.key)
 					.append("<button class='close'>&times;</button>")
 					.appendTo($("td#tags"));
 				}
-			},
-			lazyload: function(e, data) {
-				data.result = {url: "ajax-sub2.json"}
 			}
 		});
+
 		$("td#tags").on("click", "button.close", function(e){
 			// Bind live handler that deselects the node when user clicks 'x' of a tag
-			var key = $(e.target).parent().attr("id").substring(4),
+			var key = $(e.target).parent().data("key"),
 				node = $(":ui-dynatree").dynatree("getNodeByKey", key);
 			node.setSelected(false);
 			return false; // do not bubble and trigger span click
-		}).on("click", "span.tag", function(e){
+		}).on("click", "span.selTag", function(e){
 			// Bind live handler that activates the node, when tag is clicked
-			var key = $(e.target).attr("id").substring(4),
+            var key = $(e.target).data("key"),
 				node = $(":ui-dynatree").dynatree("getNodeByKey", key);
 			node.setActive();
 		});

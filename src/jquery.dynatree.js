@@ -34,6 +34,9 @@ TODO:
 - Example code for JSDoc
   @examples and @description
   http://code.google.com/p/jsdoc-toolkit/wiki/TagExample
+- use @this to document th method contexts
+- document all events that can be triggered, and mention this = container <div>
+  (was Dynatree in relese 1.x)
 
 	$Version:$
 	$Revision:$

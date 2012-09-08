@@ -61,24 +61,24 @@
 			extensions: ["themeroller"],
 			checkbox: true,
 			source: {
-				url: "../test/unit/ajax-tree-plain.json"
+				url: "ajax-tree-plain.json"
 			},
 			activate: function(e, data) {
 			},
 			lazyload: function(e, data) {
-				data.result = {url: "../test/unit/ajax-sub2.json"}
+				data.result = {url: "ajax-sub2.json"}
 			}
 		});
 		$("#treetable").dynatree({
 			extensions: ["table", "themeroller"],
 			checkbox: true,
 			source: {
-				url: "../test/unit/ajax-tree-plain.json"
+				url: "ajax-tree-plain.json"
 			},
 			activate: function(e, data) {
 			},
 			lazyload: function(e, data) {
-				data.result = {url: "../test/unit/ajax-sub2.json"}
+				data.result = {url: "ajax-sub2.json"}
 			},
 			rendercolumns: function(e, data) {
 				var node = data.node,
@@ -91,12 +91,12 @@
 			extensions: ["columnview", "themeroller"],
 			checkbox: true,
 			source: {
-				url: "../test/unit/ajax-tree-plain.json"
+				url: "ajax-tree-plain.json"
 			},
 			activate: function(e, data) {
 			},
 			lazyload: function(e, data) {
-				data.result = {url: "../test/unit/ajax-sub2.json"}
+				data.result = {url: "ajax-sub2.json"}
 			}
 		});
 	});
