@@ -1,22 +1,6 @@
 /*
  * Dynatree Vista styles
-
- See also: http://www.colorzilla.com/gradient-editor/
- 
-both: 
-   unselected background: #FCFCFC 'nearly white'
-   hover bar (unselected, inactive): #F8FCFE..#EFF9FE (border: #D8F0FA) 'very light blue'
-   active node: #F6FBFD..#D5EFFC (border: #99DEFD)  'light blue'
-   active node with hover: #F2F9FD..#C4E8FA (border: #B6E6FB) 
- 
-Tree view:
-   active node, tree inactive: #FAFAFB..#E5E5E5 (border: #D9D9D9) 'light gray, selected, but tree not active'
-
-List view:
-   selected bar: --> active bar
-   focus  bar: active + border 1px dotted #090402 (inside the blue border)
-   
-   table left/right border: #EDEDED 'light gray'
+ * (See also vista_colors.txt)
  */
 .ui-helper-hidden {
 	display: none;
@@ -29,7 +13,7 @@ List view:
 	white-space: nowrap;
 	padding: 3px;
 	margin: 0; /* issue 201 */
-	background-color: white;
+	background-color: #FCFCFC;
 	border: 1px dotted gray;
 	overflow: auto;
 	height: 100%; /* issue 263 */
@@ -247,36 +231,6 @@ span.dynatree-checkbox:hover
 	background-position: -48px -48px;
 }
 
-/*
-span.dynatree-radio
-{
-	margin-left: 3px;
-	background-position: 0px -48px;
-}
-span.dynatree-radio:hover
-{
-	background-position: -16px -48px;
-}
-
-.dynatree-partsel span.dynatree-radio
-{
-	background-position: -64px -48px;
-}
-.dynatree-partsel span.dynatree-radio:hover
-{
-	background-position: -80px -48px;
-}
-
-.dynatree-selected span.dynatree-radio
-{
-	background-position: -32px -48px;
-}
-.dynatree-selected span.dynatree-radio:hover
-{
-	background-position: -48px -48px;
-}
-*/
-
 
 /*******************************************************************************
  * Node type icon
@@ -325,84 +279,116 @@ span.dynatree-icon /* Default icon */
 /*******************************************************************************
  * Node titles
  */
-
-span.dynatree-title
-{
-	display: inline-block;
-}
-/* Remove blue color and underline from title links */
-a.dynatree-title
-{
-    text-decoration: none;
-}
-
 .dynatree-title
 {
 	display: inline-block; /* Better alignment, when title contains <br> */
-/*	vertical-align: top;*/
 	padding-left: 3px;
 	padding-right: 3px; /* Otherwise italic font will be outside bounds */
-	/*	line-height: 16px; /* should be the same as img height, in case 16 px */
     color: black; /* inherit doesn't work on IE */
     vertical-align: top;
     margin: 0px;
     margin-left: 3px;
-/*  outline: 0; /* @ Firefox, prevent dotted border after click */
-    /* Set transparent border to prevent jumping when active node gets a border
-       (we can do this, because this theme doesn't use vertical lines)
-       */
-    border: 1px solid white; /* Note: 'transparent' would not work in IE6 */
-
+    border: 1px solid #FCFCFC; /* reserve some space for status borders (Note: 'transparent' would not work in IE6) */
+    border-radius: 3px;
+    text-decoration: none;
 }
 
 .dynatree-title:hover
 {
-/*	text-decoration: underline; */
-	background-color: #F2F7FD; /* light blue */
-	border-color: #B8D6FB; /* darker light blue */
+	border-color: #D8F0FA; /* darker light blue */
+    background: #f8fcfe; /* Old browsers */
+    background: -moz-linear-gradient(top, #f8fcfe 0%, #eff9fe 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f8fcfe), color-stop(100%,#eff9fe)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #f8fcfe 0%,#eff9fe 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #f8fcfe 0%,#eff9fe 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #f8fcfe 0%,#eff9fe 100%); /* IE10+ */
+    background: linear-gradient(to bottom, #f8fcfe 0%,#eff9fe 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f8fcfe', endColorstr='#eff9fe',GradientType=0 ); /* IE6-9 */   
 }
 
-.dynatree-folder .dynatree-title
+span.dynatree-folder .dynatree-title
 {
-/*	font-weight: bold; */ /* custom */
+/*	font-weight: bold; */
 }
 
 a.dynatree-title:focus,
 span.dynatree-focused a:link  /* @IE */
 {
-	background-color: #EFEBDE; /* gray */
+/*	background-color: #EFEBDE; /* gray */
+    border-radius: 0; 
+    border: 1px dotted #090402 !important;
 }
 
-span.dynatree-has-children a
+span.dynatree-active .dynatree-title,
+span.dynatree-selected .dynatree-title
 {
-/*	font-style: oblique; /* custom: */
+	border: 1px solid #99DEFD;
+    background: #f6fbfd; /* Old browsers */
+    background: -moz-linear-gradient(top, #f6fbfd 0%, #d5effc 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f6fbfd), color-stop(100%,#d5effc)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #f6fbfd 0%,#d5effc 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #f6fbfd 0%,#d5effc 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #f6fbfd 0%,#d5effc 100%); /* IE10+ */
+    background: linear-gradient(to bottom, #f6fbfd 0%,#d5effc 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f6fbfd', endColorstr='#d5effc',GradientType=0 ); /* IE6-9 */
 }
 
-span.dynatree-expanded a
+span.dynatree-active .dynatree-title:hover,
+span.dynatree-active.dynatree-focused .dynatree-title,
+span.dynatree-selected .dynatree-title:hover,
+span.dynatree-selected.dynatree-focused .dynatree-title
 {
+    border: 1px solid #B6E6FB;
+    background: #f2f9fd; /* Old browsers */
+    background: -moz-linear-gradient(top, #f2f9fd 0%, #c4e8fa 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f2f9fd), color-stop(100%,#c4e8fa)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #f2f9fd 0%,#c4e8fa 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #f2f9fd 0%,#c4e8fa 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #f2f9fd 0%,#c4e8fa 100%); /* IE10+ */
+    background: linear-gradient(to bottom, #f2f9fd 0%,#c4e8fa 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2f9fd', endColorstr='#c4e8fa',GradientType=0 ); /* IE6-9 */ 
 }
 
-span.dynatree-selected a
+/* File Explorer does not distinguish selected and active (if multiple nodes are selected,
+   ) */
+.NEVER span.dynatree-active .dynatree-title,
+.NEVER span.dynatree-active.dynatree-focused .dynatree-title
 {
-/*	color: green; */
+    border: 1px solid #3399FF;
+	background: #daedff; /* Old browsers */
+	background: -moz-linear-gradient(top, #daedff 0%, #b4d9ff 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#daedff), color-stop(100%,#b4d9ff)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #daedff 0%,#b4d9ff 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #daedff 0%,#b4d9ff 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #daedff 0%,#b4d9ff 100%); /* IE10+ */
+	background: linear-gradient(to bottom, #daedff 0%,#b4d9ff 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#daedff', endColorstr='#b4d9ff',GradientType=0 ); /* IE6-9 */    
+}
+
+span.dynatree-selected .dynatree-title
+{
 	font-style: italic;
 }
 
-span.dynatree-active a
+span.dynatree-has-children .dynatree-title
 {
-	border: 1px solid #99DEFD;
-	background-color: #D8F0FA;
 }
+
+span.dynatree-expanded .dynatree-title
+{
+}
+
 
 /*******************************************************************************
  * 'table' extension
  */
 
-/*
 table.dynatree-ext-table {
-	border-collapse: collapse;
-	width: 100%;
+    border-spacing: 0;
+/*	border-collapse: collapse;*/
+/*	width: 100%;*/
 }
+/*
 table.dynatree-ext-table tbody tr:nth-child(even){
 	background-color: #f4f4f8;
 }
@@ -410,15 +396,54 @@ table.dynatree-ext-table tbody tr td {
 	border: 1px solid lightgray;
 }
 */
-table.dynatree-ext-table tbody tr.dynatree-focused {
-    background-color: #99DEFD;
+table.dynatree-ext-table tbody tr td {
+    border: 1px solid #EDEDED;
 }
-table.dynatree-ext-table tbody tr.dynatree-active {
-	background-color: royalblue;
+table.dynatree-ext-table tbody tr:hover td {
+	border: 1px solid #D8F0FA;
+	background: #f8fcfe; /* Old browsers */
+	background: -moz-linear-gradient(top, #f8fcfe 0%, #eff9fe 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f8fcfe), color-stop(100%,#eff9fe)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #f8fcfe 0%,#eff9fe 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #f8fcfe 0%,#eff9fe 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #f8fcfe 0%,#eff9fe 100%); /* IE10+ */
+	background: linear-gradient(to bottom, #f8fcfe 0%,#eff9fe 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f8fcfe', endColorstr='#eff9fe',GradientType=0 ); /* IE6-9 */   
 }
+table.dynatree-ext-table tbody tr.dynatree-focused td {
+/*    background-color: #99DEFD;*/
+    border: 1px dotted #090402;
+}
+table.dynatree-ext-table tbody tr.dynatree-active,
+table.dynatree-ext-table tbody tr.dynatree-selected {
+/*	background-color: royalblue;*/
+	background: #f6fbfd; /* Old browsers */
+	background: -moz-linear-gradient(top, #f6fbfd 0%, #d5effc 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f6fbfd), color-stop(100%,#d5effc)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #f6fbfd 0%,#d5effc 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #f6fbfd 0%,#d5effc 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #f6fbfd 0%,#d5effc 100%); /* IE10+ */
+	background: linear-gradient(to bottom, #f6fbfd 0%,#d5effc 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f6fbfd', endColorstr='#d5effc',GradientType=0 ); /* IE6-9 */
+}
+table.dynatree-ext-table tbody tr.dynatree-active:hover,
+table.dynatree-ext-table tbody tr.dynatree-selected:hover {
+/*  background-color: royalblue;*/
+	background: #f2f9fd; /* Old browsers */
+	background: -moz-linear-gradient(top, #f2f9fd 0%, #c4e8fa 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f2f9fd), color-stop(100%,#c4e8fa)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #f2f9fd 0%,#c4e8fa 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #f2f9fd 0%,#c4e8fa 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #f2f9fd 0%,#c4e8fa 100%); /* IE10+ */
+	background: linear-gradient(to bottom, #f2f9fd 0%,#c4e8fa 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2f9fd', endColorstr='#c4e8fa',GradientType=0 ); /* IE6-9 */ 
+}
+/*
 table.dynatree-ext-table tbody tr.dynatree-selected {
 	background-color: #99FDDE;
 }
+*/
+
 
 /*******************************************************************************
  * 'columnview' extension
@@ -505,7 +530,7 @@ div.dynatree-drag-helper
 div.dynatree-drag-helper a
 {
 	border: 1px solid gray;
-	background-color: white;
+	background-color: transparent;
 	padding-left: 5px;
 	padding-right: 5px;
 	opacity: 0.8;
