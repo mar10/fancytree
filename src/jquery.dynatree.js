@@ -27,6 +27,9 @@ TODO:
 
 - use this.element.css({background: greenlevels[level]});
 
+- use @this to document th method contexts
+- document all events that can be triggered, and mention this = container <div>
+  (was Dynatree in relese 1.x)
 
 	$Version:$
 	$Revision:$
