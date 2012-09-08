@@ -55,7 +55,7 @@ function _escapeRegex(str){
  * @lends Dynatree.prototype
  * @requires jquery.dynatree.filter.js
  */
-$.ui.dynatree._Dynatree.prototype.applyFilter = function(filter){
+$.ui.dynatree._DynatreeClass.prototype.applyFilter = function(filter){
 	var count = 0;
 	// Reset current filter
 	this.visit(function(node){
@@ -93,7 +93,7 @@ $.ui.dynatree._Dynatree.prototype.applyFilter = function(filter){
  * @lends Dynatree.prototype
  * @requires jquery.dynatree.filter.js
  */
-$.ui.dynatree._Dynatree.prototype.clearFilter = function(){
+$.ui.dynatree._DynatreeClass.prototype.clearFilter = function(){
 	this.visit(function(node){
 		delete node.match;
 		delete node.subMatch;
