@@ -151,6 +151,15 @@ function _makeResolveFunc(deferred, context){
 }
 
 
+// TODO: use currying
+function _makeNodeTitleMatcher(s){
+    s = s.toLowerCase();
+    return function(node){
+        return node.title.toLowerCase().indexOf(s) >= 0;
+    };
+} 
+
+
 // Boolean attributes that can be set with equivalent class names in the LI tags
 var i,
     CLASS_ATTRS = ["active", "expanded", "focus", "folder", "lazy", "nolink", "selected"],
@@ -424,10 +433,16 @@ DynatreeNode.prototype = /**@lends DynatreeNode*/{
      * @see DynatreeNode#findAll
      */
     findAll: function(match) {
-        // TODO: implement
-        _raiseNotImplemented();
+        match = $.isFunction(match) ? match : _makeNodeTitleMatcher(match);
+        var res = [];
+        this.visit(function(n){
+            if(match(n)){
+                res.push(n);
+            }
+        });
+        return res;
     },
-    /**Find first node that contains `match` in the title.
+    /**Find first node that contains `match` in the title (not including self).
      * 
      * @param {String | function(node)} match string to search for, of a function that 
      * returns `true` if a node is matched.
@@ -436,8 +451,15 @@ DynatreeNode.prototype = /**@lends DynatreeNode*/{
      * <b>fat</b> text
      */
     findFirst: function(match) {
-        // TODO: implement
-        _raiseNotImplemented();
+        match = $.isFunction(match) ? match : _makeNodeTitleMatcher(match);
+        var res = null;
+        this.visit(function(n){
+            if(match(n)){
+                res = n;
+                return false;
+            }
+        });
+        return res;
     },
 	// TODO: focus()
 	// TODO: fromDict()
@@ -594,10 +616,14 @@ DynatreeNode.prototype = /**@lends DynatreeNode*/{
 		return !!this.expanded;
 	},
     /** @returns {Boolean}*/
-	isFirstSibling: function() {
-		var p = this.parent;
-		return !p || p.children[0] === this;
-	},
+    isFirstSibling: function() {
+        var p = this.parent;
+        return !p || p.children[0] === this;
+    },
+    /** @returns {Boolean}*/
+    isFolder: function() {
+        return !!this.folder;
+    },
     /** @returns {Boolean}*/
 	isLastSibling: function() {
 		var p = this.parent;

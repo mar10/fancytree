@@ -260,13 +260,15 @@ test("DynatreeNode class", function() {
 //  _setupAsync();
     QUnit.reset();
     $("#tree").dynatree("destroy");
-    expect(10);
+    expect(18);
 
     $("#tree").dynatree({
         source: testData
     });
     var tree = $("#tree").dynatree("getTree"),
-        node = _getNode("10_1_2");
+        root = tree.rootNode,
+        node = _getNode("10_1_2"),
+        res;
     // Properties
     equal(node.tree, tree, "node.tree");
     equal(node.parent, _getNode("10_1"), "node.parent");
@@ -285,7 +287,26 @@ test("DynatreeNode class", function() {
 //  countChildren: function() {
 //  debug: function(msg){
 //  discard: function(){
-//  getChildren: function() {
+    
+    // findAll()
+    deepEqual(root.findAll("nomatchexpected$$"), [], "findAll() - no match");
+    deepEqual(_getNodeKeyArray(root.findAll("with key")), ["2"], "findAll() - match title");
+    deepEqual(_getNodeKeyArray(root.findAll("with KEY")), ["2"], "findAll() - match title (ignore case)");
+    res = root.findAll(function(n){
+        return n.isFolder();
+    });
+    deepEqual(_getNodeKeyArray(res), ["10", "30", "31", "32"], "findAll() - custom match");
+    
+    // findFirst()
+    equal(root.findFirst("nomatchexpected$$"), null, "findFirst() - no match");
+    equal(root.findFirst("with key").key, "2", "findFirst() - match title");
+    equal(root.findFirst("with KEY").key, "2", "findFirst() - match title (ignore case)");
+    res = root.findFirst(function(n){
+        return n.isFolder();
+    });
+    equal(res.key, "10", "findFirst() - custom match");
+
+    //  getChildren: function() {
 //  getFirstChild: function() {
     equal(node.getIndex(), 1, "getIndex()");
     equal(node.getIndexHier(), "7.1.2", "getIndexHier()");
@@ -304,6 +325,7 @@ test("DynatreeNode class", function() {
 //  isChildOf: function(otherNode) {
 //  isDescendantOf: function(otherNode) {
 //  isExpanded: function() {
+//  isFolder: function() {
 //  isFirstSibling: function() {
 //  isLastSibling: function() {
 //  isLazy: function() {
@@ -326,6 +348,7 @@ test("DynatreeNode class", function() {
 //  setFocus: function(){
 //  setSelected: function(flag){
 //  setTitle: function(title){
+//  sortChildren: function(title){
 //  toggleExpanded: function(){
 //  toggleSelected: function(){
 //  toString: function() {
@@ -420,7 +443,7 @@ test("Dynatree class", function() {
 /*******************************************************************************
  * 
  */
-module("Asyncronous API");
+module("Asynchronous API");
 
 test("trigger async expand", function() {
     _setupAsync();
