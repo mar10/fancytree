@@ -313,11 +313,8 @@ span.dynatree-title
 {
 	font-size: 10pt; /* required for IE, quirks mode */
 	display: inline-block; /* Better alignment, when title contains <br> */
-/*	vertical-align: top;*/
 	padding-left: 3px;
 	padding-right: 3px; /* Otherwise italic font will be outside bounds */
-	/*	line-height: 16px; */ 
-	/* should be the same as img height, in case 16 px */
 	color: black; /* inherit doesn't work on IE */
 	vertical-align: top;
 	margin: 0px;

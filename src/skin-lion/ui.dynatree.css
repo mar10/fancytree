@@ -223,8 +223,9 @@ span.dynatree-icon /* Default icon */
     vertical-align: top;
     margin: 0px;
     margin-left: 3px;
-    border: 1px solid white; /* reserve some space for status borders (Note: 'transparent' would not work in IE6) */
-    border-radius: 0;
+/*    border: 1px solid white; /* reserve some space for status borders (Note: 'transparent' would not work in IE6) */
+    border: 1px solid transparent; /* reserve some space for status borders */
+border-radius: 0;
     text-decoration: none;
 }
 a.dynatree-title:focus,
