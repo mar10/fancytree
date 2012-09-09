@@ -328,9 +328,10 @@ span.dynatree-title
 }
 
 a.dynatree-title:focus,
-span.dynatree-focused .dynatree-title a:link  /* @IE */
+span.dynatree-focused a:link  /* @IE */
 {
-	background-color: #EFEBDE; /* gray */
+    outline: 1px dotted black;
+    background-color: #EFEBDE; /* gray */
 }
 
 span.dynatree-folder .dynatree-title

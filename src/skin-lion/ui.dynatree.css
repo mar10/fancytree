@@ -230,8 +230,8 @@ border-radius: 0;
 }
 a.dynatree-title:focus,
 span.dynatree-focused a:link { /* @IE */
-    color: whhite;
-/*	border-color: #3875D7; /*blue*/
+    outline: 1px dotted black;
+color: whhite;
 }
 span.dynatree-selected .dynatree-title {
     background-color: #D4D4D4; /*gray*/
