@@ -30,7 +30,7 @@ ul.dynatree-container li
 	list-style-image: none;
 	list-style-position: outside;
 	list-style-type: none;
-	-moz-background-clip:border;
+	-moz-background-clip: border;
 	-moz-background-inline-policy: continuous;
 	-moz-background-origin: padding;
 	background-attachment: scroll;
@@ -67,7 +67,6 @@ ul.dynatree-no-connector > li
  */
 span.dynatree-empty,
 span.dynatree-vline,
-/*span.dynatree-connector,*/
 span.dynatree-expander,
 span.dynatree-icon,
 span.dynatree-checkbox,
@@ -77,8 +76,6 @@ span.dynatree-drag-helper-img,
 {
 	width: 16px;
 	height: 16px;
-/*	display: -moz-inline-box; /* @ FF 1+2 removed for issue 221*/
-/*	-moz-box-align: start; /* issue 221 */
 	display: inline-block; /* Required to make a span sizeable */
 	vertical-align: top;
 	background-repeat: no-repeat;
@@ -170,67 +167,28 @@ span.dynatree-expander:hover
 /*******************************************************************************
  * Checkbox icon
  */
-span.dynatree-checkbox
-{
+span.dynatree-checkbox {
 	margin-left: 3px;
 	background-position: 0px -32px;
 }
-span.dynatree-checkbox:hover
-{
-	background-position: -16px -32px;
-}
-
-.dynatree-partsel span.dynatree-checkbox
-{
-	background-position: -64px -32px;
-}
-.dynatree-partsel span.dynatree-checkbox:hover
-{
-	background-position: -80px -32px;
-}
-
-.dynatree-selected span.dynatree-checkbox
-{
-	background-position: -32px -32px;
-}
-.dynatree-selected span.dynatree-checkbox:hover
-{
-	background-position: -48px -32px;
-}
+span.dynatree-checkbox:hover  background-position: -16px -32px; }
+.dynatree-partsel span.dynatree-checkbox { background-position: -64px -32px; }
+.dynatree-partsel span.dynatree-checkbox:hover { background-position: -80px -32px; }
+.dynatree-selected span.dynatree-checkbox {	background-position: -32px -32px; }
+.dynatree-selected span.dynatree-checkbox:hover { background-position: -48px -32px; }
 
 /*******************************************************************************
  * Radiobutton icon
- * This is a customization, that may be activated by overriding the 'checkbox'
- * class name as 'dynatree-radio' in the tree options.
  */
-.dynatree-radio span.dynatree-checkbox
-{
+.dynatree-radio span.dynatree-checkbox {
 	margin-left: 3px;
 	background-position: 0px -48px;
 }
-.dynatree-radio span.dynatree-checkbox:hover
-{
-	background-position: -16px -48px;
-}
-
-.dynatree-radio .dynatree-partsel span.dynatree-checkbox
-{
-	background-position: -64px -48px;
-}
-.dynatree-radio .dynatree-partsel span.dynatree-checkbox:hover
-{
-	background-position: -80px -48px;
-}
-
-.dynatree-radio .dynatree-selected span.dynatree-checkbox
-{
-	background-position: -32px -48px;
-}
-.dynatree-radio .dynatree-selected span.dynatree-checkbox:hover
-{
-	background-position: -48px -48px;
-}
-
+.dynatree-radio span.dynatree-checkbox:hover { background-position: -16px -48px; }
+.dynatree-radio .dynatree-partsel span.dynatree-checkbox { background-position: -64px -48px; }
+.dynatree-radio .dynatree-partsel span.dynatree-checkbox:hover { background-position: -80px -48px; }
+.dynatree-radio .dynatree-selected span.dynatree-checkbox { background-position: -32px -48px; }
+.dynatree-radio .dynatree-selected span.dynatree-checkbox:hover { background-position: -48px -48px; }
 
 /*******************************************************************************
  * Node type icon
@@ -241,40 +199,15 @@ span.dynatree-checkbox:hover
  * 1st character: 'e': expanded, 'c': collapsed
  * 2nd character (optional): 'f': folder
  */
-
 span.dynatree-icon /* Default icon */
 {
 	margin-left: 3px;
 	background-position: 0px 0px;
 }
-
-.dynatree-has-children span.dynatree-icon /* Default icon */
-{
-/*    background-position: 0px -16px; */
-}
-
-.dynatree-ico-cf span.dynatree-icon  /* Collapsed Folder */
-{
-	background-position: 0px -16px;
-}
-
-.dynatree-ico-ef span.dynatree-icon  /* Expanded Folder */
-{
-	background-position: -64px -16px;
-}
-
-/* Status node icons */
-
-.dynatree-statusnode-wait span.dynatree-icon
-{
-	background-image: url("loading.gif");
-}
-
-.dynatree-statusnode-error span.dynatree-icon
-{
-	background-position: 0px -112px;
-/*	background-image: url("ltError.gif");*/
-}
+.dynatree-ico-cf span.dynatree-icon { background-position: 0px -16px; } /* Collapsed Folder */
+.dynatree-ico-ef span.dynatree-icon { background-position: -64px -16px; } /* Expanded Folder */
+.dynatree-statusnode-wait span.dynatree-icon { background-image: url("loading.gif"); } /* Status node icons */
+.dynatree-statusnode-error span.dynatree-icon { background-position: 0px -112px; }
 
 /*******************************************************************************
  * Node titles

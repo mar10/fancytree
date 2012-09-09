@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+	<title>Dynatree FAQ</title>
+
+	<meta name="keywords" content="dynatree JavaScript JS dynamic html tree view treeview checkbox widget plugin for jQuery data structure library ajax open source free">
+	<meta name="description" content="dynatree is a JavaScript treeview plugin for jQuery with support for checkboxes and lazy loading of branches.">
+
+	<script src="http://www.google-analytics.com/ga.js" type="text/javascript"></script>
+
+	<script src="../lib/jquery.min.js" type="text/javascript"></script>
+
+	<!-- Convert tabs to spaces and doc CSS -->
+	<link rel="stylesheet" type="text/css" href="howto.css">
+	<script src="howto.js" type="text/javascript"></script>
+
+	<!-- Automatic TOC generator -->
+	<script src="../lib//jquery.planize.js" type="text/javascript"></script>
+
+	<!-- PrettyPrint (triggered in onload event) -->
+	<link href="../lib/prettify.css" rel="stylesheet">
+	<script src="../lib/prettify.js" type="text/javascript"></script>
+
+	<script type="text/javascript">
+	$(function(){
+		// Log to Google Analytics, when not running locally
+		if( document.URL.toLowerCase().indexOf('wwwendt.de/') >= 0 ) {
+			var pageTracker = _gat._getTracker("UA-316028-1");
+			pageTracker._trackPageview();
+		}
+		// Create TOC
+		$("html *").planize({
+			title: "Table of contents",
+			min_level: 2,
+			generate_toc: true,
+			toc_elem: $("#toc")
+		});
+		// Format code samples
+		prettyPrint();
+	});
+	</script>
+</head>
+
+<body>
+
+
+<h1>Dynatree FAQ (Frequently Asked Questions)</h1>
+
+<div class="hint">
+	This document describes dynatree version: <strong>$Version:$</strong>.<br>
+	Document revision: $Revision:$.<br>
+	A current version may be found at the project site
+	<a href="http://wwwendt.de/tech/dynatree/index.html">http://wwwendt.de/tech/dynatree/index.html</a>.
+</div>
+
+<!-- jquery.planize will generate a TOC here: -->
+<div id="toc">
+</div>
+
+
+<h2>Examples</h2>
+<p class="info">
+    See also <a href="howto.html">the HowTo</a>, <a href="index.html">the Tutorial</a>, and <a href="../demo/index.html">the Example Browser</a>.
+</p>
+
+<p>
+	This documentation contains script examples and links.<br>
+</p>
+
+<dl>
+
+<dt>Why was Dynatree 2.0 renamed to 'Fancytree'?</dt>
+<dd>
+    Fancytree is a complete rewrite that also led to some bigger (and some subtle) 
+    changes in the API.
+    I felt that this would lead to some confusion, when googling for solutions
+    or looking at code samples in Stackoverflow that refer to older versions
+    of Dynatree.
+</dd>
+</dl>
+
+</body>
+</html>

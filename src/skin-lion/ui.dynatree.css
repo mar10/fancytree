@@ -82,8 +82,6 @@ span.dynatree-drag-helper-img,
 {
 	width: 16px;
 	height: 16px;
-/*	display: -moz-inline-box; /* @ FF 1+2 removed for issue 221*/
-/*	-moz-box-align: start; /* issue 221 */
 	display: inline-block; /* Required to make a span sizeable */
 	vertical-align: top;
 	background-repeat: no-repeat;
@@ -127,10 +125,7 @@ span.dynatree-expander
 	background-position: 0px -80px;
     cursor: pointer;
 }
-span.dynatree-expander:hover
-{
-	background-position: -16px -80px;
-}
+span.dynatree-expander:hover { 	background-position: -16px -80px; }
 .dynatree-exp-n span.dynatree-expander:hover /* Collapsed, not delayed, not last sibling */
 {
     background-position: -16px -80px;
@@ -175,97 +170,28 @@ span.dynatree-expander:hover
 /*******************************************************************************
  * Checkbox icon
  */
-span.dynatree-checkbox
-{
-	margin-left: 3px;
-	background-position: 0px -32px;
+span.dynatree-checkbox {
+    margin-left: 3px;
+    background-position: 0px -32px;
 }
-span.dynatree-checkbox:hover
-{
-	background-position: -16px -32px;
-}
-
-.dynatree-partsel span.dynatree-checkbox
-{
-	background-position: -64px -32px;
-}
-.dynatree-partsel span.dynatree-checkbox:hover
-{
-	background-position: -80px -32px;
-}
-
-.dynatree-selected span.dynatree-checkbox
-{
-	background-position: -32px -32px;
-}
-.dynatree-selected span.dynatree-checkbox:hover
-{
-	background-position: -48px -32px;
-}
+span.dynatree-checkbox:hover { background-position: -16px -32px; }
+.dynatree-partsel span.dynatree-checkbox { background-position: -64px -32px; }
+.dynatree-partsel span.dynatree-checkbox:hover { background-position: -80px -32px; }
+.dynatree-selected span.dynatree-checkbox { background-position: -32px -32px; }
+.dynatree-selected span.dynatree-checkbox:hover { background-position: -48px -32px; }
 
 /*******************************************************************************
  * Radiobutton icon
- * This is a customization, that may be activated by overriding the 'checkbox'
- * class name as 'dynatree-radio' in the tree options.
  */
-.dynatree-radio span.dynatree-checkbox
-{
-	margin-left: 3px;
-	background-position: 0px -48px;
+.dynatree-radio span.dynatree-checkbox {
+    margin-left: 3px;
+    background-position: 0px -48px;
 }
-.dynatree-radio span.dynatree-checkbox:hover
-{
-	background-position: -16px -48px;
-}
-
-.dynatree-radio .dynatree-partsel span.dynatree-checkbox
-{
-	background-position: -64px -48px;
-}
-.dynatree-radio .dynatree-partsel span.dynatree-checkbox:hover
-{
-	background-position: -80px -48px;
-}
-
-.dynatree-radio .dynatree-selected span.dynatree-checkbox
-{
-	background-position: -32px -48px;
-}
-.dynatree-radio .dynatree-selected span.dynatree-checkbox:hover
-{
-	background-position: -48px -48px;
-}
-
-/*
-span.dynatree-radio
-{
-	margin-left: 3px;
-	background-position: 0px -48px;
-}
-span.dynatree-radio:hover
-{
-	background-position: -16px -48px;
-}
-
-.dynatree-partsel span.dynatree-radio
-{
-	background-position: -64px -48px;
-}
-.dynatree-partsel span.dynatree-radio:hover
-{
-	background-position: -80px -48px;
-}
-
-.dynatree-selected span.dynatree-radio
-{
-	background-position: -32px -48px;
-}
-.dynatree-selected span.dynatree-radio:hover
-{
-	background-position: -48px -48px;
-}
-*/
-
+.dynatree-radio span.dynatree-checkbox:hover { background-position: -16px -48px; }
+.dynatree-radio .dynatree-partsel span.dynatree-checkbox { background-position: -64px -48px; }
+.dynatree-radio .dynatree-partsel span.dynatree-checkbox:hover { background-position: -80px -48px; }
+.dynatree-radio .dynatree-selected span.dynatree-checkbox { background-position: -32px -48px; }
+.dynatree-radio .dynatree-selected span.dynatree-checkbox:hover { background-position: -48px -48px; }
 
 /*******************************************************************************
  * Node type icon
@@ -276,111 +202,43 @@ span.dynatree-radio:hover
  * 1st character: 'e': expanded, 'c': collapsed
  * 2nd character (optional): 'f': folder
  */
-
 span.dynatree-icon /* Default icon */
 {
-	margin-left: 3px;
-	background-position: 0px 0px;
+    margin-left: 3px;
+    background-position: 0px 0px;
 }
-
-.dynatree-has-children span.dynatree-icon /* Default icon */
-{
-/*    background-position: 0px -16px; */
-}
-
-.dynatree-ico-cf span.dynatree-icon  /* Collapsed Folder */
-{
-	background-position: 0px -16px;
-}
-
-.dynatree-ico-ef span.dynatree-icon  /* Expanded Folder */
-{
-	background-position: -64px -16px;
-}
-
-/* Status node icons */
-
-.dynatree-statusnode-wait span.dynatree-icon
-{
-	background-image: url("loading.gif");
-}
-
-.dynatree-statusnode-error span.dynatree-icon
-{
-	background-position: 0px -112px;
-/*	background-image: url("ltError.gif");*/
-}
+.dynatree-ico-cf span.dynatree-icon { background-position: 0px -16px; } /* Collapsed Folder */
+.dynatree-ico-ef span.dynatree-icon { background-position: -64px -16px; } /* Expanded Folder */
+.dynatree-statusnode-wait span.dynatree-icon { background-image: url("loading.gif"); } /* Status node icons */
+.dynatree-statusnode-error span.dynatree-icon { background-position: 0px -112px; }
 
 /*******************************************************************************
  * Node titles
  */
-
-span.dynatree-title
-{
-	display: inline-block;
-}
-/* Remove blue color and underline from title links */
-a.dynatree-title
-{
-    text-decoration: none;
-}
-
-.dynatree-title
-{
-	display: inline-block; /* Better alignment, when title contains <br> */
-/*	vertical-align: top;*/
-	padding-left: 3px;
-	padding-right: 3px; /* Otherwise italic font will be outside bounds */
-	/*	line-height: 16px; /* should be the same as img height, in case 16 px */
+.dynatree-title {
+    display: inline-block; /* Better alignment, when title contains <br> */
+    padding-left: 3px;
+    padding-right: 3px; /* Otherwise italic font will be outside bounds */
     color: black; /* inherit doesn't work on IE */
     vertical-align: top;
     margin: 0px;
     margin-left: 3px;
-/*  outline: 0; /* @ Firefox, prevent dotted border after click */
-    /* Set transparent border to prevent jumping when active node gets a border
-       (we can do this, because this theme doesn't use vertical lines)
-       */
-    border: 1px solid white; /* Note: 'transparent' would not work in IE6 */
-
+    border: 1px solid white; /* reserve some space for status borders (Note: 'transparent' would not work in IE6) */
+    border-radius: 0;
+    text-decoration: none;
 }
-
-.dynatree-title:hover
-{
-/*	text-decoration: underline; */
-	background: #F2F7FD; /* light blue */
-	border-color: #B8D6FB; /* darker light blue */
-}
-
-.dynatree-folder .dynatree-title
-{
-/*	font-weight: bold; */ /* custom */
-}
-
 a.dynatree-title:focus,
-span.dynatree-focused a:link  /* @IE */
-{
-	background-color: #EFEBDE; /* gray */
+span.dynatree-focused a:link { /* @IE */
+    color: whhite;
+/*	border-color: #3875D7; /*blue*/
 }
-
-span.dynatree-has-children a
-{
-/*	font-style: oblique; /* custom: */
-}
-
-span.dynatree-expanded a
-{
-}
-
-span.dynatree-selected a
-{
-/*	color: green; */
+span.dynatree-selected .dynatree-title {
+    background-color: #D4D4D4; /*gray*/
 	font-style: italic;
 }
-
-span.dynatree-active a
-{
-	border: 1px solid #99DEFD;
-	background-color: #D8F0FA;
+span.dynatree-active .dynatree-title {
+    color: white;
+    background-color: #3875D7; /*blue*/
 }
 
 /*******************************************************************************
