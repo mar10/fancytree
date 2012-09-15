@@ -21,6 +21,14 @@ var HookContext = {};
  */
 var NodeData = {};
 
+/**
+ * Data object passed to DynatreeNode#applyPatch.
+ * @name NodePatch
+ * 
+ * @property {String} title
+ */
+var NodePatch = {};
+
 /** Dynatree options
  * @name DynatreeOptions
  *
