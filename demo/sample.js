@@ -66,7 +66,7 @@
 			    	});
 			    	if(opts.init){
 			    		$combo.val(opts.init).change();
-			    	}else{
+			    	}else if (initialChoice){
 						// select combobox value to match current <link> tag 
 			    		$combo.val(initialChoice.value);
 			    	}
