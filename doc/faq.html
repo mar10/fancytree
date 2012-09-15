@@ -42,6 +42,16 @@
 	</script>
 </head>
 
+<style>
+dl.faq >dt {
+    width: 100%;
+    background-color: silver;
+    font-weight: bold;
+}
+dl.params dt {
+    font-family: monospace;
+}
+</style>
 <body>
 
 
@@ -68,7 +78,27 @@
 	This documentation contains script examples and links.<br>
 </p>
 
-<dl>
+<dl class="faq">
+
+<dt>What statuses can a node have?</dt>
+<dd>
+    A node have one, some, or any of these statuses:
+    <dl class="params">
+    <dt>active</dt>
+    <dd>...</dd>
+    <dt>selected</dt>
+    <dd>...</dd>
+    <dt>hovered</dt>
+    <dd>...</dd>
+    <dt>focused</dt>
+    <dd>...</dd>
+    </dl> 
+</dd>
+
+<dt>What's the difference between 'active' and 'selected'?</dt>
+<dd>
+    See 'What statuses can a node have?'
+</dd>
 
 <dt>Why was Dynatree 2.0 renamed to 'Fancytree'?</dt>
 <dd>

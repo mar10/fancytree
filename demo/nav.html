@@ -71,7 +71,8 @@ span.dynatree-active .dynatree-title {
 			blur: function(e, data) {
 				data.node.scheduleAction("cancel");
 			},
-			activate: function(e, data){
+//            activate: function(e, data){
+            click: function(e, data){ // handle click instead of activate, to allow re-loads
 				if(data.node.href){
 					window.open(data.node.href, data.node.target);
 				}
@@ -85,8 +86,14 @@ span.dynatree-active .dynatree-title {
 <body>
 	<div id="tree">
 	<ul>
-	<li><a target="_blank" href="../doc/index.html">Documentation</a>
-	<li><a target="_blank" href="http://fancytree.googlecode.com">jquery.dynatree.js</a>
+    <li class="folder expanded">Documentation
+        <ul>
+        <li><a target="_blank" href="../doc/tutorial.html">Tutorial&circ;</a>
+        <li><a target="content" href="../doc/faq.html">FAQ</a>
+        <li><a target="content" href="../doc/howto.html">Howtos</a>
+        <li><a target="_blank" href="../doc/jsdoc3/index.html">API reference&circ;</a>
+	    <li><a target="_blank" href="http://fancytree.googlecode.com">Project page&circ;</a>
+        </ul>
 	<li class="folder expanded"> Examples
 		<ul>
 			<li><a target="content" href="sample-default.html">Default options</a>
