@@ -349,7 +349,7 @@ DynatreeNode.prototype = /**@lends DynatreeNode*/{
 	},
 	/**
 	 * 
-	 * @param {object} patch
+	 * @param {NodePatch} patch
 	 * @returns {$.Promise}
 	 */
 	applyPatch: function(patch) {
@@ -1023,6 +1023,9 @@ function Dynatree($widget){
 
 Dynatree.prototype = /**@lends Dynatree*/{
 	/** Return a context object that can be re-used for _callHook().
+     * @param {Dynatree | DynatreeNode | HookContext} obj
+     * @param {Event} orgEvent
+     * @returns {HookContext} 
 	 */
 	_makeHookContext: function(obj, orgEvent) {
 		if(obj.node !== undefined){
@@ -1042,14 +1045,10 @@ Dynatree.prototype = /**@lends Dynatree*/{
 		$.error("invalid args");
 	},
 	/** Trigger a hook function: funcName(ctx, [...]).
-	 * with ctx = {
-	 *     node: ...
-	 *     tree: ...
-	 *     options: ...
-	 *     orgEvent: ...
-	 *     widget: ...
-	 * }
-	 *
+	 * 
+     * @param {HookContext} ctx 
+     * @param {any} [arguments] 
+	 * @returns TODO:
 	 */
 	_callHook: function(funcName, contextObject, _extraArgs) {
 		var ctx = this._makeHookContext(contextObject),
@@ -1079,8 +1078,9 @@ Dynatree.prototype = /**@lends Dynatree*/{
     */
 	/**
 	 * 
-	 * @param {Array} patchList array of [key, patch] arrays
+	 * @param {Array} patchList array of [key, NodePatch] arrays
      * @returns {$.Promise} resolved, when all patches have been applied
+     * @see NodePatch
 	 */
     applyPatch: function(patchList) {
         var patchCount = patchList.length, 
