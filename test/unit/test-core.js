@@ -26,31 +26,31 @@ function simulateClick(selector) {
 
 var EVENT_SEQUENCE = [];
 
-/** Helper to reset environment for asynchronous Dynatree tests. */
+/** Helper to reset environment for asynchronous Fancytree tests. */
 function _appendEvent(res){
     EVENT_SEQUENCE.push(res);
 }
 
 
-/** Helper to reset environment for asynchronous Dynatree tests. */
+/** Helper to reset environment for asynchronous Fancytree tests. */
 function _setupAsync(){
     QUnit.reset();
-    $("#tree").dynatree("destroy");
+    $("#tree").fancytree("destroy");
     EVENT_SEQUENCE = [];
     stop();
 }
 
 
-/** Get DynatreeNode from current tree. */
+/** Get FancytreeNode from current tree. */
 function _getNode(key){
-    var tree = $("#tree").dynatree("getTree"),
+    var tree = $("#tree").fancytree("getTree"),
         node = tree.getNodeByKey(key);
     return node;
 }
 
-/** Get DynatreeNode from current tree. */
+/** Get FancytreeNode from current tree. */
 function _getTree(key){
-    return $("#tree").dynatree("getTree");
+    return $("#tree").fancytree("getTree");
 }
 
 /** Get node title as rendered in the DOM. */
@@ -59,7 +59,7 @@ function _getNodeTitle(key){
     if(!node){
         return undefined;
     }
-    return $(node.span).find(".dynatree-title").html();
+    return $(node.span).find(".fancytree-title").html();
 }
 
 /** Convert array of nodes to array to array of node keys. */
@@ -116,10 +116,10 @@ module("Initialization");
 
 test("Version info", function() {
     QUnit.reset();
-    $("#tree").dynatree("destroy");
+    $("#tree").fancytree("destroy");
     expect(4);
 
-    ok(true, "Dynatree v" + $.ui.dynatree.version);
+    ok(true, "Fancytree v" + $.ui.fancytree.version);
     ok(true, "jQuery UI " + jQuery.ui.version);
     ok(true, "jQuery " + jQuery.fn.jquery);
     var doctype = document.documentElement.previousSibling,
@@ -131,41 +131,41 @@ test("Version info", function() {
 
 
 test("Static members", function() {
-    // non-async test tht runs before any Dynatrees are created
+    // non-async test tht runs before any Fancytrees are created
 //    _setupAsync();
     QUnit.reset();
-    $("#tree").dynatree("destroy");
+    $("#tree").fancytree("destroy");
     expect(1);
 
-    ok($.isFunction($.ui.dynatree.debug), "ui.dynatree.debug function is defined");
-    // equal($(":ui-dynatree").length, 0, "no tree instance exists");
-    // equal($.ui.dynatree._nextId, 1, "next tree instance counter is 1");
+    ok($.isFunction($.ui.fancytree.debug), "ui.fancytree.debug function is defined");
+    // equal($(":ui-fancytree").length, 0, "no tree instance exists");
+    // equal($.ui.fancytree._nextId, 1, "next tree instance counter is 1");
 });
 
 
-test("Create dynatree", function() {
+test("Create fancytree", function() {
     _setupAsync();
     expect(27);
 
     var insideContructor = true;
 
-    $("#tree").dynatree({
+    $("#tree").fancytree({
         source: testData,
         generateIds: true, // for testing
         create: function(e, data){
-            equal(e.type, "dynatreecreate", "receive `create` callback");
+            equal(e.type, "fancytreecreate", "receive `create` callback");
             ok(insideContructor, "running synchronously");
             ok(!!data, "event data is empty");
             equal(this.nodeName, "DIV", "`this` is div#tree");
-            ok($(">ul:first", this).hasClass("dynatree-container"), "div#tree contains ul.dynatree-container");
-            var widget = $(this).data("dynatree");
+            ok($(">ul:first", this).hasClass("fancytree-container"), "div#tree contains ul.fancytree-container");
+            var widget = $(this).data("fancytree");
             ok(!!widget, "widget is attached to div#tree");
             var tree = widget.tree;
             equal(tree.rootNode.children, null, "`tree.rootNode` is empty");
             equal($("div#tree").hasClass("ui-widget"), false, "div#tree has no widget style yet");
         },
         init: function(e, data){
-            equal(e.type, "dynatreeinit", "receive `init` callback");
+            equal(e.type, "fancytreeinit", "receive `init` callback");
             ok(insideContructor, "running synchronously");
             ok(!!data.tree.rootNode, "`data.tree` is the tree object");
             equal(data.options.source.length, TESTDATA_TOPNODES, "data.options.contains widget options");
@@ -174,33 +174,33 @@ test("Create dynatree", function() {
             equal(data.tree.rootNode.children.length, TESTDATA_TOPNODES, "tree.rootNode has all child nodes");
 
 //            var tree = data.tree;
-            equal($("li#dt_2 a.dynatree-title").attr("title"), "Look, a tool tip!", "tooltip set");
-            equal($("li#dt_3 a.dynatree-title").html(), "<span>item2 with <b>html</b> inside a span tag</span>", "raw html allowed");
-            equal($("li#dt_4 a.dynatree-title").html(), null, "`nolink` suppresses <a> tag");
-            equal($("li#dt_4 span.dynatree-title").length, 1, "`nolink` uses <span> tag");
-            equal($("li#dt_5 a.dynatree-title").attr("href"), "http://www.wwWendt.de/", "href set");
-            ok($("li#dt_6 span.dynatree-node").hasClass("my-extra-class"), "custom class added");
+            equal($("li#dt_2 a.fancytree-title").attr("title"), "Look, a tool tip!", "tooltip set");
+            equal($("li#dt_3 a.fancytree-title").html(), "<span>item2 with <b>html</b> inside a span tag</span>", "raw html allowed");
+            equal($("li#dt_4 a.fancytree-title").html(), null, "`nolink` suppresses <a> tag");
+            equal($("li#dt_4 span.fancytree-title").length, 1, "`nolink` uses <span> tag");
+            equal($("li#dt_5 a.fancytree-title").attr("href"), "http://www.wwWendt.de/", "href set");
+            ok($("li#dt_6 span.fancytree-node").hasClass("my-extra-class"), "custom class added");
 
             start();
         }
-    }).bind("dynatreecreate", function(e, ctx){
+    }).bind("fancytreecreate", function(e, ctx){
         // TODO: event is triggered, but only if we called start() before
         // but then, the equal() call is added to the following test
-//        equal(e.type, "dynatreecreate", "receive `dynatreecreate` bound event");
-    }).bind("dynatreeinit", function(e, ctx){
-//        equal(e.type, "dynatreeinit", "receive `init` bound event");
+//        equal(e.type, "fancytreecreate", "receive `dynatreecreate` bound event");
+    }).bind("fancytreeinit", function(e, ctx){
+//        equal(e.type, "fancytreeinit", "receive `init` bound event");
 //        start();
     });
     insideContructor = false;
     
-    equal($(":ui-dynatree").length, 1, ":ui-dynatree widget selector works");
-    var widget = $("div#tree").data("dynatree");
+    equal($(":ui-fancytree").length, 1, ":ui-fancytree widget selector works");
+    var widget = $("div#tree").data("fancytree");
     ok(!!widget, "widget is attached to div#tree");
     ok(!!widget.tree, "widget.tree is defined");
 //    equal(widget.tree._id, 1, "tree id is 1");
 
-    ok($("#tree").dynatree("getTree") === widget.tree, "$().dynatree('getTree')");
-    ok($("#tree").dynatree("getActiveNode") === null, "$().dynatree('getActiveNode')");
+    ok($("#tree").fancytree("getTree") === widget.tree, "$().fancytree('getTree')");
+    ok($("#tree").fancytree("getActiveNode") === null, "$().fancytree('getActiveNode')");
 
     equal($("div#tree ul").length, 2, "collapsed choldren are NOT rendered");
     equal($("div#tree li").length, TESTDATA_VISIBLENODES, "collapsed nodes are NOT rendered");
@@ -216,13 +216,13 @@ test("Init node status from source", function() {
     children[6].children[0].children[1].active = true;
     // select node #10_1_1
     children[6].children[0].children[0].selected = true;
-    $("#tree").dynatree({
+    $("#tree").fancytree({
         source: children,
         init: function(e, data){
             var tree = data.tree,
                 node = tree.getNodeByKey("10_1_2");
             ok(tree.activeNode === node, "node was activated");
-            ok($("#tree").dynatree("getActiveNode") === node, "$().dynatree('getActiveNode')");
+            ok($("#tree").fancytree("getActiveNode") === node, "$().fancytree('getActiveNode')");
             node = tree.getNodeByKey("10_1_1");
             equal(node.selected, true, "node was selected");
             start();
@@ -240,7 +240,7 @@ test("Init node with custom data", function() {
     children[6].children[0].children[0].foo = "phew";
     // node #10_1_2
     children[6].children[0].children[1].bar = false;
-    $("#tree").dynatree({
+    $("#tree").fancytree({
         source: children,
         init: function(e, data){
             equal(_getNode("10_1_1").data.foo, "phew", "add custom string data");
@@ -256,16 +256,16 @@ test("Init node with custom data", function() {
  */
 module("API");
 
-test("DynatreeNode class", function() {
+test("FancytreeNode class", function() {
 //  _setupAsync();
     QUnit.reset();
-    $("#tree").dynatree("destroy");
+    $("#tree").fancytree("destroy");
     expect(18);
 
-    $("#tree").dynatree({
+    $("#tree").fancytree({
         source: testData
     });
-    var tree = $("#tree").dynatree("getTree"),
+    var tree = $("#tree").fancytree("getTree"),
         root = tree.rootNode,
         node = _getNode("10_1_2"),
         res;
@@ -276,7 +276,7 @@ test("DynatreeNode class", function() {
     equal(node.children, null, "node.children");
     equal(node.isStatusNode, false, "node.isStatusNode");
 //    this.ul = null;
-//    this.li = null;  // <li id='key' dtnode=this> tag
+//    this.li = null;  // <li id='key' ftnode=this> tag
 //    this.data = {};
 
     
@@ -357,26 +357,26 @@ test("DynatreeNode class", function() {
 });
 
 
-test("Dynatree class", function() {
+test("Fancytree class", function() {
 //  _setupAsync();
     QUnit.reset();
-    $("#tree").dynatree("destroy");
+    $("#tree").fancytree("destroy");
     expect(14);
 
-    $("#tree").dynatree({
+    $("#tree").fancytree({
         source: testData
     });
-    var tree = $("#tree").dynatree("getTree");
+    var tree = $("#tree").fancytree("getTree");
   // Properties
 //    tree.$widget = $widget;
 //    tree.$div = $widget.element;
 //    tree.options = $widget.options;
-//    tree._id = $.ui.dynatree._nextId++;
+//    tree._id = $.ui.fancytree._nextId++;
 //    tree.activeNode = null;
 //    tree.focusNode = null;
 //    tree.statusClassPropName = "span";
 //    tree.lastSelectedNode = null;
-//    tree.rootNode = new DynatreeNode(fakeParent, {
+//    tree.rootNode = new FancytreeNode(fakeParent, {
 //        title: "root",
 //        key: "root_" + tree._id,
 //        children: null
@@ -385,7 +385,7 @@ test("Dynatree class", function() {
 //
 //    // Create root markup
 //    $ul = $("<ul>", {
-//        "class": "dynatree-container"
+//        "class": "fancytree-container"
 //    }).appendTo(this.$div);
 //    tree.rootNode.ul = $ul[0];
 //    tree.nodeContainerAttrName = "li";
@@ -411,7 +411,7 @@ test("Dynatree class", function() {
 //    reload: function(source) {
 //    render: function(force, deep) {
 
-    equal(tree.toString(), "Dynatree<" + tree._id + ">", "toString()");
+    equal(tree.toString(), "Fancytree<" + tree._id + ">", "toString()");
     equal("" + tree, tree.toString(), "toString() implicit");
 
     var c = 0;
@@ -449,18 +449,18 @@ test("trigger async expand", function() {
     _setupAsync();
     expect(4);
 
-    $("#tree").dynatree({
+    $("#tree").fancytree({
         source: testData
     });
-//    var node = $("#tree").dynatree("getActiveNode");
-    var tree = $("#tree").dynatree("getTree"),
+//    var node = $("#tree").fancytree("getActiveNode");
+    var tree = $("#tree").fancytree("getTree"),
         node = tree.getNodeByKey("10");
 
     node.setExpanded().done(function(){
         ok(true, "called done()");
-        equal(this.key, "10", "`this` is a DynatreeNode");
+        equal(this.key, "10", "`this` is a FancytreeNode");
         equal(this.expanded, true, "node was  expanded");
-        ok($(this.span).hasClass("dynatree-expanded"), "node was rendered as expanded");
+        ok($(this.span).hasClass("fancytree-expanded"), "node was rendered as expanded");
         start();
     });
 });
@@ -475,24 +475,24 @@ test(".click() to expand a folder", function() {
     _setupAsync();
     expect(8);
 
-    $("#tree").dynatree({
+    $("#tree").fancytree({
         source: testData,
         generateIds: true,
         queryexpand: function(e, data){
-            equal(e.type, "dynatreequeryexpand", "receive `queryexpand` callback");
-            ok($(data.node.span).hasClass("dynatree-node"), "data.node.span has class dynatree-node");
-            ok(!$(data.node.span).hasClass("dynatree-expanded"), "data.node.span has NOT class dynatree-expanded");
+            equal(e.type, "fancytreequeryexpand", "receive `queryexpand` callback");
+            ok($(data.node.span).hasClass("fancytree-node"), "data.node.span has class fancytree-node");
+            ok(!$(data.node.span).hasClass("fancytree-expanded"), "data.node.span has NOT class fancytree-expanded");
         },
         expand: function(e, data){
-            equal(e.type, "dynatreeexpand", "receive `expand` callback");
+            equal(e.type, "fancytreeexpand", "receive `expand` callback");
             equal($(this).attr("id"), "tree", "`this` is div#tree");
             ok(!!data.tree.rootNode, "`data.tree` is the tree object");
-            ok($(data.node.span).hasClass("dynatree-node"), "data.node.span has class dynatree-node");
-            ok($(data.node.span).hasClass("dynatree-expanded"), "data.node.span has class dynatree-expanded");
+            ok($(data.node.span).hasClass("fancytree-node"), "data.node.span has class fancytree-node");
+            ok($(data.node.span).hasClass("fancytree-expanded"), "data.node.span has class fancytree-expanded");
             start();
         }
     });
-    $("#tree #dt_10 span.dynatree-expander").click();
+    $("#tree #dt_10 span.fancytree-expander").click();
 });
 
 
@@ -500,20 +500,20 @@ test(".click() to activate a node", function() {
     _setupAsync();
     expect(8);
 
-    $("#tree").dynatree({
+    $("#tree").fancytree({
         source: testData,
         generateIds: true, // for testing
         queryactivate: function(e, data){
-            equal(e.type, "dynatreequeryactivate", "receive `queryactivate` callback");
-            ok($(data.node.span).hasClass("dynatree-node"), "data.node.span has class dynatree-node");
-            ok(!$(data.node.span).hasClass("dynatree-active"), "data.node.span has NOT class dynatree-active");
+            equal(e.type, "fancytreequeryactivate", "receive `queryactivate` callback");
+            ok($(data.node.span).hasClass("fancytree-node"), "data.node.span has class fancytree-node");
+            ok(!$(data.node.span).hasClass("fancytree-active"), "data.node.span has NOT class fancytree-active");
         },
         activate: function(e, data){
-            equal(e.type, "dynatreeactivate", "receive `activate` callback");
+            equal(e.type, "fancytreeactivate", "receive `activate` callback");
             ok(!!data.tree.rootNode, "`data.tree` is the tree object");
             equal($(this).attr("id"), "tree", "`this` is div#tree");
-            ok($(data.node.span).hasClass("dynatree-node"), "data.node.span has class dynatree-node");
-            ok($(data.node.span).hasClass("dynatree-active"), "data.node.span has class dynatree-active");
+            ok($(data.node.span).hasClass("fancytree-node"), "data.node.span has class fancytree-node");
+            ok($(data.node.span).hasClass("fancytree-active"), "data.node.span has class fancytree-active");
             start();
         }
     });
@@ -525,7 +525,7 @@ test(".click() to activate a folder (clickFolderMode 3 triggers expand)", functi
     _setupAsync();
     expect(4);
     var sequence = 1;
-    $("#tree").dynatree({
+    $("#tree").fancytree({
         source: testData,
         clickFolderMode: 3,
         generateIds: true, // for testing
@@ -551,25 +551,25 @@ test(".click() to select a node", function() {
     _setupAsync();
     expect(8);
 
-    $("#tree").dynatree({
+    $("#tree").fancytree({
         source: testData,
         checkbox: true,
         generateIds: true, // for testing
         queryselect: function(e, data){
-            equal(e.type, "dynatreequeryselect", "receive `queryselect` callback");
-            ok($(data.node.span).hasClass("dynatree-node"), "data.node.span has class dynatree-node");
-            ok(!$(data.node.span).hasClass("dynatree-selected"), "data.node.span has NOT class dynatree-selected");
+            equal(e.type, "fancytreequeryselect", "receive `queryselect` callback");
+            ok($(data.node.span).hasClass("fancytree-node"), "data.node.span has class fancytree-node");
+            ok(!$(data.node.span).hasClass("fancytree-selected"), "data.node.span has NOT class fancytree-selected");
         },
         select: function(e, data){
-            equal(e.type, "dynatreeselect", "receive `select` callback");
+            equal(e.type, "fancytreeselect", "receive `select` callback");
             ok(!!data.tree.rootNode, "`data.tree` is the tree object");
             equal($(this).attr("id"), "tree", "`this` is div#tree");
-            ok($(data.node.span).hasClass("dynatree-node"), "data.node.span has class dynatree-node");
-            ok($(data.node.span).hasClass("dynatree-selected"), "data.node.span has class dynatree-selected");
+            ok($(data.node.span).hasClass("fancytree-node"), "data.node.span has class fancytree-node");
+            ok($(data.node.span).hasClass("fancytree-selected"), "data.node.span has class fancytree-selected");
             start();
         }
     });
-    $("#tree #dt_2 span.dynatree-checkbox").click();
+    $("#tree #dt_2 span.fancytree-checkbox").click();
 });
 
 /*******************************************************************************
@@ -582,7 +582,7 @@ test(".click() to expand a lazy folder (lazyload returns ajax options)", functio
     expect(11);
     var sequence = 1;
 
-    $("#tree").dynatree({
+    $("#tree").fancytree({
         source: {url: "ajax-tree.json"},
         generateIds: true,
         init: function(e, data){
@@ -590,7 +590,7 @@ test(".click() to expand a lazy folder (lazyload returns ajax options)", functio
             equal(data.tree.count(), TESTDATA_NODES, "lazy tree has 23 nodes");
             equal($("#tree li").length, TESTDATA_VISIBLENODES, "lazy tree has rendered 13 node elements");
             // now expand a lazy folder
-            $("#tree #dt_30 span.dynatree-expander").click();
+            $("#tree #dt_30 span.fancytree-expander").click();
         },
         queryexpand: function(e, data){
             equal(sequence++, 2, "receive `queryexpand` callback");
@@ -639,7 +639,7 @@ test("apply patch", function() {
 //             [null, {appendChildren: [{key: "40", title: "new top-level 40"}]}]
         ];
 
-    $("#tree").dynatree({
+    $("#tree").fancytree({
         source: testData,
         lazyload: function(e, data){
             data.result = {url: "ajax-sub2.json"};
@@ -651,11 +651,11 @@ test("apply patch", function() {
                 
                 var $span = $(_getNode("2").span); 
                 equal(_getNodeTitle("2"), "node 2: new", "rename nodes");
-                equal($span.find("a.dynatree-title").attr("title"), "new tip", "set tooltip");
+                equal($span.find("a.fancytree-title").attr("title"), "new tip", "set tooltip");
                 equal(_getNode("2").data.foo, "works", "set custom data");
 
                 ok(_getNode("3").isSelected(), "select");
-                ok($(_getNode("3").span).hasClass("dynatree-selected"), "node was rendered as selected");
+                ok($(_getNode("3").span).hasClass("fancytree-selected"), "node was rendered as selected");
 
                 ok($(_getNode("4").span).hasClass("customClass"), "set custom class");
 
@@ -669,13 +669,13 @@ test("apply patch", function() {
                 equal(_getNode("5_1").parent, _getNode("5"), "add child nodes (linked)");
 
                 equal(_getNode("10").expanded, true, "folder was expanded");
-                ok($(_getNode("10").span).hasClass("dynatree-expanded"), "folder was rendered as expanded");
+                ok($(_getNode("10").span).hasClass("fancytree-expanded"), "folder was rendered as expanded");
                 
                 equal(_getNode("20").expanded, false, "folder was collapsed");
-                ok(!$(_getNode("20").span).hasClass("dynatree-expanded"), "folder was rendered as collapsed");
+                ok(!$(_getNode("20").span).hasClass("fancytree-expanded"), "folder was rendered as collapsed");
                 
                 equal(_getNode("30").expanded, true, "lazy node was expanded");
-                ok($(_getNode("30").span).hasClass("dynatree-expanded"), "node was rendered as expanded");
+                ok($(_getNode("30").span).hasClass("fancytree-expanded"), "node was rendered as expanded");
 //                deepEqual(EVENT_SEQUENCE, [], "event sequence");
 
                 // TODO: patch.appendChildren, replaceChildren, insertChildren, ...
@@ -696,7 +696,7 @@ test("loadKeyPath", function() {
     _setupAsync();
     expect(1);
 
-    $("#tree").dynatree({
+    $("#tree").fancytree({
         source: testData,
         lazyload: function(e, data){
             data.result = {url: "ajax-sub2.json"};

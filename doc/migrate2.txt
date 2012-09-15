@@ -9,7 +9,7 @@ Status
 
 Main features
 -------------
-  - Dynatree uses a hierarchic data structure as it's backbone. This
+  - Fancytree uses a hierarchic data structure as it's backbone. This
     Unlike many other tree controls, we have a tree data structure as the 
     backbone. The HTML markup is only rendered on demand.
      
@@ -31,38 +31,38 @@ Main changes to 1.x
   - Better development tool chain (mercurial, grunt, jsdoc3, jshint, jQunit) 
 
 
-Dynatree 2 Migration
+Fancytree 2 Migration
 ====================
 
 Requirements
-  Dynatree 1:
+  Fancytree 1:
     jQuery 1.4+
     jQuery UI 1.7+ (?)
-  Dynatree 2:
+  Fancytree 2:
     jQuery 1.5+ (1.6+ recommended)
     jQuery UI 1.8.6+
 
 node.data removed:
-  Dynatree 1:
+  Fancytree 1:
     node.bExpanded = true  // current status
     node.bSelected = true 
     node.data.expand = false  // status read from initialization source
-  Dynatree 2:
+  Fancytree 2:
     node.expanded = true  // current status
 
 
 Class names for initialization are now unified with node property names:
-  Dynatree 1:
+  Fancytree 1:
     <li class='expand'>
-  Dynatree 2:
+  Fancytree 2:
     <li class='expanded'>
 
 
 Node data
 ---------
-Most properties of DynatreeNode are renamed moved from the data object to top
+Most properties of FancytreeNode are renamed moved from the data object to top
 level. 
-  Dynatree 1:                 Dynatree 2:
+  Fancytree 1:                 Fancytree 2:
 
   node.childList              node.children
   node.hasSubSel              node.partsel
@@ -99,7 +99,7 @@ The return value must be assigned to `data.result` instead.
 
 Events with flags have changed (applies to (onSelect, onQuerySelect, ...)
 
-  Dynatree 1:
+  Fancytree 1:
 
       onQueryExpand: function(flag, node){
         if(flag === true && node.data.isFolder) 
@@ -111,7 +111,7 @@ Events with flags have changed (applies to (onSelect, onQuerySelect, ...)
         }
       }
 
-  Dynatree 2:
+  Fancytree 2:
 
       queryexpand: function(data){
         if(data.node.expanded === false && data.node.folder) 
@@ -126,9 +126,9 @@ Events with flags have changed (applies to (onSelect, onQuerySelect, ...)
 
 Lazy loading handling has changed:
 
-  Dynatree 1:
+  Fancytree 1:
 
-    $("#tree").dynatree({
+    $("#tree").fancytree({
       initAjax: {
         url: "/getTopLevelNodesAsJson"
       },
@@ -139,9 +139,9 @@ Lazy loading handling has changed:
         });
       },
 
-  Dynatree 2:
+  Fancytree 2:
 
-    $("#tree").dynatree({
+    $("#tree").fancytree({
       source: {
         url: "/getTopLevelNodesAsJson"
       },
@@ -155,16 +155,16 @@ Lazy loading handling has changed:
 
 Misc.
 -----
-- DynaTree was renamed to Dynatree (also DynaTreeNode was renamed to DynatreeNode).
+- DynaTree was renamed to Fancytree (also DynaTreeNode was renamed to FancytreeNode).
 - node.icon is no longer supported
 - onDeactivate was removed (use activate and check ctx.node.active instead).
 - DND no longer requires to implement onDragStart / onDrop (dnd is enabled if the extension is used)
 - node.getEventTargetType(event)
-  -> $.ui.dynatree.getEventTargetType(event)
+  -> $.ui.fancytree.getEventTargetType(event)
 - node.toggleSelect() --> node.toggleSelected()
   node.select() --> node.setSelected()
-- class dynatree-radio must be set for the container (not node)
-- $("#tree2").dynatree("getRoot") --> $("#tree2").dynatree("getRoot")
+- class fancytree-radio must be set for the container (not node)
+- $("#tree2").fancytree("getRoot") --> $("#tree2").fancytree("getRoot")
 
 
 New features
@@ -177,7 +177,7 @@ New features
 
 CSS
 ===
-- dynatree-connector has been removed
+- fancytree-connector has been removed
 
 
 Removed features

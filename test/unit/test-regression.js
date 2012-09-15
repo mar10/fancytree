@@ -16,10 +16,10 @@ QUnit.log = function(data) {
     }  
 };
 
-/** Helper to reset environment for asynchronous Dynatree tests. */
+/** Helper to reset environment for asynchronous Fancytree tests. */
 function _setupAsync(){
     QUnit.reset();
-    $("#tree").dynatree("destroy");
+    $("#tree").fancytree("destroy");
     stop();
 }
 
@@ -70,10 +70,10 @@ module("Initialization");
 
 test("Version info", function() {
     QUnit.reset();
-    $("#tree").dynatree("destroy");
+    $("#tree").fancytree("destroy");
     expect(4);
 
-    ok(true, "Dynatree v" + $.ui.dynatree.version);
+    ok(true, "Fancytree v" + $.ui.fancytree.version);
     ok(true, "jQuery UI " + jQuery.ui.version);
     ok(true, "jQuery " + jQuery.fn.jquery);
     var doctype = document.documentElement.previousSibling,
@@ -93,30 +93,30 @@ test("issue310: Loading animation never ends using lazy read on empty folder", f
     _setupAsync();
     expect(1);
 
-    $("#tree").dynatree({
+    $("#tree").fancytree({
         source: [{title: "lazy folder", key: "1", folder: true, lazy: true}],
         lazyload: function(e, data){
             ok(true, "got `lazyload` event");
             start();
         }
     });
-    var node = $("#tree").dynatree("getTree").getNodeByKey("1");
-     $("span.dynatree-expander", node).click();
+    var node = $("#tree").fancytree("getTree").getNodeByKey("1");
+     $("span.fancytree-expander", node).click();
 });
 
 test("Issue 309: appendAjax race condition", function() {
     _setupAsync();
     expect(1);
 
-    $("#tree").dynatree({
+    $("#tree").fancytree({
         source: [{title: "lazy folder", key: "1", folder: true, lazy: true}],
         lazyload: function(e, data){
             ok(true, "got `lazyload` event");
             start();
         }
     });
-    var node = $("#tree").dynatree("getTree").getNodeByKey("1");
-     $("span.dynatree-expander", node).click();
+    var node = $("#tree").fancytree("getTree").getNodeByKey("1");
+     $("span.fancytree-expander", node).click();
 });
 
 // --- 

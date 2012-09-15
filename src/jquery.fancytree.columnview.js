@@ -1,13 +1,13 @@
 /*******************************************************************************
-	jquery.dynatree.columnview.js
-	Table extension for jquery.dynatree.js.
+	jquery.fancytree.columnview.js
+	Table extension for jquery.fancytree.js.
 
 	Copyright (c) 2012, Martin Wendt (http://wwWendt.de)
 	Dual licensed under the MIT or GPL Version 2 licenses.
-	http://code.google.com/p/dynatree/wiki/LicenseInfo
+	http://code.google.com/p/fancytree/wiki/LicenseInfo
 
 	A current version and some documentation is available at
-		http://dynatree.googlecode.com/
+		http://fancytree.googlecode.com/
 
 *******************************************************************************/
 
@@ -17,8 +17,8 @@
 "use strict";
 
 // prevent duplicate loading
-// if ( $.ui.dynatree && $.ui.dynatree.version ) {
-//     $.ui.dynatree.warn("Dynatree: duplicate include");
+// if ( $.ui.fancytree && $.ui.fancytree.version ) {
+//     $.ui.fancytree.warn("Fancytree: duplicate include");
 //     return;
 // }
 
@@ -37,14 +37,14 @@ function _assert(cond, msg){
 /*******************************************************************************
  * Private functions and variables
  */
-$.ui.dynatree.registerExtension("columnview", {
+$.ui.fancytree.registerExtension("columnview", {
 	// Default options for this extension.
 	options: {
 	},
 	// Overide virtual methods for this extension.
 	// `this`       : is this extension object
-	// `this._base` : the Dynatree instance
-	// `this._super`: the virtual function that was overriden (member of prev. extension or Dynatree)
+	// `this._base` : the Fancytree instance
+	// `this._super`: the virtual function that was overriden (member of prev. extension or Fancytree)
 	treeInit: function(ctx){
 		var tree = ctx.tree,
 			$table = tree.$widget.element;
@@ -52,12 +52,12 @@ $.ui.dynatree.registerExtension("columnview", {
 		tree.columnCount = $(">td", tree.tr).length;
 		// Perform default behavior
 		this._super(ctx);
-		// Standard Dynatree created a root <ul>. Now move this into first table cell
+		// Standard Fancytree created a root <ul>. Now move this into first table cell
 		var $ul = $(tree.rootNode.ul),
 //            tdList = $(">td", tree.tr).get(),
 			$tdFirst = $(">td", tree.tr).eq(0);
-		$ul.removeClass("dynatree-container");
-		$table.addClass("dynatree-container dynatree-ext-columnview");
+		$ul.removeClass("fancytree-container");
+		$table.addClass("fancytree-container fancytree-ext-columnview");
 		$tdFirst.empty();
 		$ul.detach().appendTo($tdFirst);
 
@@ -66,7 +66,7 @@ $.ui.dynatree.registerExtension("columnview", {
 		tree.$widget.options.clickFolderMode = 1;
 
 		// Make sure that only active path is expanded when a node is activated:
-		$table.bind("dynatreeactivate", function(e, data){
+		$table.bind("fancytreeactivate", function(e, data){
 			var node = data.node,
 				tree = data.tree,
 				level = node.getLevel(),
@@ -84,7 +84,7 @@ $.ui.dynatree.registerExtension("columnview", {
 				node.setExpanded();
 			}
 		// Adjust keyboard behaviour:
-		}).bind("dynatreekeydown", function(e, data){
+		}).bind("fancytreekeydown", function(e, data){
 			var next = null;
 			switch(e.which){
 			case $.ui.keyCode.DOWN:

@@ -1,17 +1,17 @@
 /*!
- * jquery.dynatree.js
+ * jquery.fancytree.js
  * Dynamic tree view control, with support for lazy loading of branches.
  *
  * Copyright (c) 2008-2012, Martin Wendt (http://wwWendt.de)
  * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://code.google.com/p/dynatree/wiki/LicenseInfo
+ * http://code.google.com/p/fancytree/wiki/LicenseInfo
  *
  * A current version and some documentation is available at
- *    http://dynatree.googlecode.com/
+ *    http://fancytree.googlecode.com/
  *
  * @summary     jQuery UI tree widget
  * @description Dynamic tree view control, with support for lazy loading of branches.
- * @file        jquery.dynatree.js
+ * @file        jquery.fancytree.js
  * @version     2.0
  * @author      Martin Wendt
  * @license     MIT or GPL v2
@@ -36,7 +36,7 @@ TODO:
   http://code.google.com/p/jsdoc-toolkit/wiki/TagExample
 - use @this to document th method contexts
 - document all events that can be triggered, and mention this = container <div>
-  (was Dynatree in relese 1.x)
+  (was Fancytree in relese 1.x)
 
 	$Version:$
 	$Revision:$
@@ -55,8 +55,8 @@ TODO:
 "use strict";
 
 // prevent duplicate loading
-if ( $.ui.dynatree && $.ui.dynatree.version ) {
-	$.ui.dynatree.warn("Dynatree: duplicate include");
+if ( $.ui.fancytree && $.ui.fancytree.version ) {
+	$.ui.fancytree.warn("Fancytree: duplicate include");
 	return;
 }
 
@@ -104,7 +104,7 @@ function _makeVirtualFunction(methodName, base, sub){
  * Subclass `base` by creating proxy functions
  */
 function _subclassObject(tree, base, extension, extName){
-	$.ui.dynatree.debug("_subclassObject", base, extension, extName);
+	$.ui.fancytree.debug("_subclassObject", base, extension, extName);
 	for(var attrName in extension){
 		if(typeof extension[attrName] === "function"){
 			if(typeof tree[attrName] === "function"){
@@ -166,7 +166,7 @@ var i,
 	CLASS_ATTR_MAP = {};
 for(i=0; i<CLASS_ATTRS.length; i++){ CLASS_ATTR_MAP[CLASS_ATTRS[i]] = true; }
 
-// Top-level Dynatree node attributes, that can be set by dict
+// Top-level Fancytree node attributes, that can be set by dict
 var NODE_ATTRS = ["expanded", "extraClasses", /*"focus", */ "folder", "href", "key",
                   "lazy", "nolink", "selected", "target", "title", "tooltip"],
     NODE_ATTR_MAP = {};
@@ -263,24 +263,24 @@ function _loadFromHtml($ul, children) {
 }
 
 /* *****************************************************************************
- * DynatreeNode
+ * FancytreeNode
  */
 
 
 /**
  * Creates a new node
  * @class Represents the hierarchical data model and operations.
- * @name DynatreeNode
+ * @name FancytreeNode
  * @constructor 
- * @param {DynatreeNode} parent
+ * @param {FancytreeNode} parent
  * @param {NodeData} data 
  *
- * @property {Dynatree} tree
- * @property {DynatreeNode} parent Parent node
+ * @property {Fancytree} tree
+ * @property {FancytreeNode} parent Parent node
  * @property {String} key
  * @property {String} title
  * @property {object} data
- * @property {DynatreeNode[] | null | undefined} children list of child nodes
+ * @property {FancytreeNode[] | null | undefined} children list of child nodes
  * @property {Boolean} isStatusNode
  * @property {Boolean} expanded
  * @property {Boolean} folder
@@ -292,12 +292,12 @@ function _loadFromHtml($ul, children) {
  * @property {String} target
  * @property {String} tooltip
  */
-function DynatreeNode(parent, data){
+function FancytreeNode(parent, data){
 	var i, l, name, cl;
 	this.parent = parent;
 	this.tree = parent.tree;
 	this.ul = null;
-	this.li = null;  // <li id='key' dtnode=this> tag
+	this.li = null;  // <li id='key' ftnode=this> tag
 	this.isStatusNode = false;
 	this.data = {};
 
@@ -333,7 +333,7 @@ function DynatreeNode(parent, data){
 	}
 }
 
-DynatreeNode.prototype = /**@lends DynatreeNode*/{
+FancytreeNode.prototype = /**@lends FancytreeNode*/{
     // TODO: activate()
     // TODO: activateSilently()
 	/**
@@ -344,7 +344,7 @@ DynatreeNode.prototype = /**@lends DynatreeNode*/{
 		_assert(!!children && (!this.children || this.children.length === 0), "only init supported");
 		this.children = [];
 		for(var i=0, l=children.length; i<l; i++){
-			this.children.push(new DynatreeNode(this, children[i]));
+			this.children.push(new FancytreeNode(this, children[i]));
 		}
 	},
 	/**
@@ -429,8 +429,8 @@ DynatreeNode.prototype = /**@lends DynatreeNode*/{
      * 
      * @param {String | function(node)} match string to search for, of a function that 
      * returns `true` if a node is matched.
-     * @returns {DynatreeNode[]} array of nodes (may be empty)
-     * @see DynatreeNode#findAll
+     * @returns {FancytreeNode[]} array of nodes (may be empty)
+     * @see FancytreeNode#findAll
      */
     findAll: function(match) {
         match = $.isFunction(match) ? match : _makeNodeTitleMatcher(match);
@@ -446,7 +446,7 @@ DynatreeNode.prototype = /**@lends DynatreeNode*/{
      * 
      * @param {String | function(node)} match string to search for, of a function that 
      * returns `true` if a node is matched.
-     * @returns {DynatreeNode} matching node or null
+     * @returns {FancytreeNode} matching node or null
      * @example
      * <b>fat</b> text
      */
@@ -463,14 +463,14 @@ DynatreeNode.prototype = /**@lends DynatreeNode*/{
     },
 	// TODO: focus()
 	// TODO: fromDict()
-	/** @returns {DynatreeNode[] | undefined} list of child nodes (undefined for unexpanded lazy nodes).*/
+	/** @returns {FancytreeNode[] | undefined} list of child nodes (undefined for unexpanded lazy nodes).*/
 	getChildren: function() {
 		if(this.hasChildren() === undefined){ // TODO: only required for lazy nodes?
 			return undefined; // Lazy node: unloaded, currently loading, or load error
 		}
 		return this.children;
 	},
-    /** @returns {DynatreeNode | null}*/
+    /** @returns {FancytreeNode | null}*/
 	getFirstChild: function() {
 		return this.children ? this.children[0] : null;
 	},
@@ -502,7 +502,7 @@ DynatreeNode.prototype = /**@lends DynatreeNode*/{
 		}, !excludeSelf);
 		return sep + path.join(sep);
 	},
-	/**@returns {DynatreeNode | null} last child of this node.*/
+	/**@returns {FancytreeNode | null} last child of this node.*/
 	getLastChild: function() {
 		return this.children ? this.children[this.children.length - 1] : null;
 	},
@@ -516,7 +516,7 @@ DynatreeNode.prototype = /**@lends DynatreeNode*/{
 		}
 		return level;
 	},
-	/** @returns {DynatreeNode | null} */
+	/** @returns {FancytreeNode | null} */
 	getNextSibling: function() {
 		// TODO: use indexOf, if available: (not in IE6)
 		if( this.parent ){
@@ -529,7 +529,7 @@ DynatreeNode.prototype = /**@lends DynatreeNode*/{
 		}
 		return null;
 	},
-	/** @returns {DynatreeNode | null} returns null for the system root node*/
+	/** @returns {FancytreeNode | null} returns null for the system root node*/
 	getParent: function() {
 		// TODO: return null for top-level nodes?
 		return this.parent;
@@ -537,7 +537,7 @@ DynatreeNode.prototype = /**@lends DynatreeNode*/{
 	/**
 	 * @param {Boolean} [includeRoot=false] 
 	 * @param {Boolean} [includeSelf=false]
-	 * @returns {DynatreeNode[]} 
+	 * @returns {FancytreeNode[]} 
 	 */
 	getParentList: function(includeRoot, includeSelf) {
 		var l = [],
@@ -550,7 +550,7 @@ DynatreeNode.prototype = /**@lends DynatreeNode*/{
 		}
 		return l;
 	},
-    /** @returns {DynatreeNode | null} */
+    /** @returns {FancytreeNode | null} */
 	getPrevSibling: function() {
 		if( this.parent ){
 			var ac = this.parent.children;
@@ -588,14 +588,14 @@ DynatreeNode.prototype = /**@lends DynatreeNode*/{
 		return (this.tree.activeNode === this);
 	},
     /**
-     * @param {DynatreeNode} otherNode
+     * @param {FancytreeNode} otherNode
      * @returns {Boolean} true, if node is a direct child of otherNode
      */
 	isChildOf: function(otherNode) {
 		return (this.parent && this.parent === otherNode);
 	},
     /**
-     * @param {DynatreeNode} otherNode
+     * @param {FancytreeNode} otherNode
      * @returns {Boolean} true, if node is a sub node of otherNode
      */
 	isDescendantOf: function(otherNode) {
@@ -764,19 +764,19 @@ DynatreeNode.prototype = /**@lends DynatreeNode*/{
 
 
 		// Always expand, if it's below minExpandLevel
-//		tree.logDebug ("%s._addChildNode(%o), l=%o", this, dtnode, dtnode.getLevel());
-		if ( opts.minExpandLevel >= dtnode.getLevel() ) {
-//			tree.logDebug ("Force expand for %o", dtnode);
+//		tree.logDebug ("%s._addChildNode(%o), l=%o", this, ftnode, ftnode.getLevel());
+		if ( opts.minExpandLevel >= ftnode.getLevel() ) {
+//			tree.logDebug ("Force expand for %o", ftnode);
 			this.bExpanded = true;
 		}
 
 		// In multi-hier mode, update the parents selection state
 		// issue #82: only if not initializing, because the children may not exist yet
-//		if( !dtnode.data.isStatusNode && opts.selectMode==3 && !isInitializing )
-//			dtnode._fixSelectionState();
+//		if( !ftnode.data.isStatusNode && opts.selectMode==3 && !isInitializing )
+//			ftnode._fixSelectionState();
 
 		// In multi-hier mode, update the parents selection state
-		if( dtnode.bSelected && opts.selectMode==3 ) {
+		if( ftnode.bSelected && opts.selectMode==3 ) {
 			var p = this;
 			while( p ) {
 				if( !p.hasSubSel )
@@ -788,7 +788,7 @@ DynatreeNode.prototype = /**@lends DynatreeNode*/{
 		if ( tree.bEnableUpdate )
 			this.render();
 
-		return dtnode;
+		return ftnode;
 
 */
 	},
@@ -801,19 +801,19 @@ DynatreeNode.prototype = /**@lends DynatreeNode*/{
 		_raiseNotImplemented(); // TODO: implement
 	},
 	/**
-	 * @see Dynatree#nodeRender 
+	 * @see Fancytree#nodeRender 
 	 */
 	render: function(force, deep) {
 		return this.tree._callHook("nodeRender", this, force, deep);
 	},
     /**
-     * @see Dynatree#nodeRenderTitle
+     * @see Fancytree#nodeRenderTitle
      */
 	renderTitle: function() {
 		return this.tree._callHook("nodeRenderTitle", this);
 	},
     /**
-     * @see Dynatree#nodeRenderStatus
+     * @see Fancytree#nodeRenderStatus
      */
 	renderStatus: function() {
 		return this.tree._callHook("nodeRenderStatus", this);
@@ -916,7 +916,7 @@ DynatreeNode.prototype = /**@lends DynatreeNode*/{
 		return this.tree._callHook("nodeToggleSelected", this);
 	},
 	toString: function() {
-		return "DynatreeNode<" + this.key + ", '" + this.title + "'>";
+		return "FancytreeNode<" + this.key + ", '" + this.title + "'>";
 	},
 	/** Call fn(node) for all child nodes. Stop iteration, if fn() returns false.
 	 * Skip current branch, if fn() returns 'skip'.
@@ -968,44 +968,44 @@ DynatreeNode.prototype = /**@lends DynatreeNode*/{
 
 
 /* *****************************************************************************
- * Dynatree
+ * Fancytree
  */
 /**
  * Construct a new tree.
- * @class The controller behind a dynatree.
- * @name Dynatree
+ * @class The controller behind a fancytree.
+ * @name Fancytree
  * @constructor 
  * @param {Widget} widget
  * 
- * @property {DynatreeOptions} options
- * @property {DynatreeNode} rootNode
- * @property {DynatreeNode} activeNode
- * @property {DynatreeNode} focusNode 
+ * @property {FancytreeOptions} options
+ * @property {FancytreeNode} rootNode
+ * @property {FancytreeNode} activeNode
+ * @property {FancytreeNode} focusNode 
  * @property {jQueryObject} $div
  * @property {jQueryObject} $widget
  * @property {String} _id
  * @property {String} statusClassPropName
  * @property {String} nodeContainerAttrName
- * @property {DynatreeNode} lastSelectedNode
+ * @property {FancytreeNode} lastSelectedNode
  */
-function Dynatree($widget){
+function Fancytree($widget){
 	// TODO: rename $widget to widget (it's not a jQuery object)
 	this.$widget = $widget;
 	this.$div = $widget.element;
 	this.options = $widget.options;
-	this._id = $.ui.dynatree._nextId++;
+	this._id = $.ui.fancytree._nextId++;
 	this.activeNode = null;
 	this.focusNode = null;
 	this.statusClassPropName = "span";
 	this.lastSelectedNode = null;
 
 	// Remove previous markup if any
-	this.$div.find(">ul.dynatree-container").remove();
+	this.$div.find(">ul.fancytree-container").remove();
 
 	// Create a node without parent.
 	var fakeParent = { tree: this },
 		$ul;
-	this.rootNode = new DynatreeNode(fakeParent, {
+	this.rootNode = new FancytreeNode(fakeParent, {
 		title: "root",
 		key: "root_" + this._id,
 		children: null
@@ -1014,16 +1014,16 @@ function Dynatree($widget){
 
 	// Create root markup
 	$ul = $("<ul>", {
-		"class": "dynatree-container"
+		"class": "fancytree-container"
 	}).appendTo(this.$div);
 	this.rootNode.ul = $ul[0];
 	this.nodeContainerAttrName = "li";
 }
 
 
-Dynatree.prototype = /**@lends Dynatree*/{
+Fancytree.prototype = /**@lends Fancytree*/{
 	/** Return a context object that can be re-used for _callHook().
-     * @param {Dynatree | DynatreeNode | HookContext} obj
+     * @param {Fancytree | FancytreeNode | HookContext} obj
      * @param {Event} orgEvent
      * @returns {HookContext} 
 	 */
@@ -1035,11 +1035,11 @@ Dynatree.prototype = /**@lends Dynatree*/{
 			}
 			return obj;
 		}else if(obj.tree){
-			// obj is a DynatreeNode
+			// obj is a FancytreeNode
 			var tree = obj.tree;
 			return { node: obj, tree: tree, widget: tree.$widget, options: tree.$widget.options, orgEvent: orgEvent };
 		}else if(obj.$widget){
-			// obj is a Dynatree
+			// obj is a Fancytree
 			return { node: null, tree: obj, widget: obj.$widget, options: obj.$widget.options, orgEvent: orgEvent };
 		}
 		$.error("invalid args");
@@ -1063,17 +1063,17 @@ Dynatree.prototype = /**@lends Dynatree*/{
 	},
 /* TODO: implement
 	activateKey: function(key) {
-        var dtnode = (key === null) ? null : this.getNodeByKey(key);
-        if( !dtnode ) {
+        var ftnode = (key === null) ? null : this.getNodeByKey(key);
+        if( !ftnode ) {
             if( this.activeNode ){
                 this.activeNode.deactivate();
             }
             this.activeNode = null;
             return null;
         }
-        dtnode.focus();
-        dtnode.activate();
-        return dtnode;
+        ftnode.focus();
+        ftnode.activate();
+        return ftnode;
     },
     */
 	/**
@@ -1129,7 +1129,7 @@ Dynatree.prototype = /**@lends Dynatree*/{
 		if(!searchRoot){
 			var el = document.getElementById(this.options.idPrefix + key);
 			if( el ){
-				return el.dtnode ? el.dtnode : null;
+				return el.ftnode ? el.ftnode : null;
 			}
 		}
 		// Not found in the DOM, but still may be in an unrendered part of tree
@@ -1151,7 +1151,7 @@ Dynatree.prototype = /**@lends Dynatree*/{
 	 * Return a list of selected nodes.
 	 * @param {Boolean} [stopOnParents=false] only return the topmost selected 
 	 *     node (useful with selectMode 3)  
-	 * @returns {DynatreeNode[]}
+	 * @returns {FancytreeNode[]}
 	 */
 	getSelectedNodes: function(stopOnParents) {
 		var nodeList = [];
@@ -1250,7 +1250,7 @@ Dynatree.prototype = /**@lends Dynatree*/{
     },
 	/** _Default handling for mouse click events. */
 	nodeClick: function(ctx) {
-//      this.tree.logDebug("dtnode.onClick(" + event.type + "): dtnode:" + this + ", button:" + event.button + ", which: " + event.which);
+//      this.tree.logDebug("ftnode.onClick(" + event.type + "): ftnode:" + this + ", button:" + event.button + ", which: " + event.which);
 		var event = ctx.orgEvent,
 		    targetType = DT.getEventTargetType(event),
 			node = ctx.node;
@@ -1318,7 +1318,7 @@ Dynatree.prototype = /**@lends Dynatree*/{
 			handled = true,
 			KC = $.ui.keyCode,
 			sib = null;
-//      this.tree.logDebug("dtnode.onKeydown(" + event.type + "): dtnode:" + this + ", charCode:" + event.charCode + ", keyCode: " + event.keyCode + ", which: " + event.which);
+//      this.tree.logDebug("ftnode.onKeydown(" + event.type + "): ftnode:" + this + ", charCode:" + event.charCode + ", keyCode: " + event.keyCode + ", which: " + event.which);
 //      alert("keyDown" + event.which);
 
 		switch( event.which ) {
@@ -1477,7 +1477,7 @@ Dynatree.prototype = /**@lends Dynatree*/{
 				// if nodeLoadChildren was called for rootNode, the caller must
 				// use tree.render() instead
 				tree.nodeRender(ctx);
-				// trigger dynatreeloadchildren (except for tree-reload)
+				// trigger fancytreeloadchildren (except for tree-reload)
 				tree._triggerNodeEvent("loadchildren", node);
 			}
 		}).fail(function(){
@@ -1497,10 +1497,10 @@ Dynatree.prototype = /**@lends Dynatree*/{
 	/** Expand all keys that */
 	nodeLoadKeyPath: function(ctx, keyPathList) {
 		// TODO: implement and improve
-		// http://code.google.com/p/dynatree/issues/detail?id=222
+		// http://code.google.com/p/fancytree/issues/detail?id=222
 	},
 	nodeMakeVisible: function(ctx) {
-		// TODO: scroll as neccessary: http://stackoverflow.com/questions/8938352/dynatree-how-to-scroll-to-active-node
+		// TODO: scroll as neccessary: http://stackoverflow.com/questions/8938352/fancytree-how-to-scroll-to-active-node
 		var parents = ctx.node.getParentList(false, false);
 		for(var i=0, l=parents.length; i<l; i++){
 			parents[i].setExpanded(true);
@@ -1511,21 +1511,21 @@ Dynatree.prototype = /**@lends Dynatree*/{
 		if(ctx.orgEvent.type === "focusin"){
 			this.nodeSetFocus(ctx);
 			// if(ctx.tree.focusNode){
-			//     $(ctx.tree.focusNode.li).removeClass("dynatree-focused");
+			//     $(ctx.tree.focusNode.li).removeClass("fancytree-focused");
 			// }
 			// ctx.tree.focusNode = ctx.node;
-			// $(ctx.node.li).addClass("dynatree-focused");
+			// $(ctx.node.li).addClass("fancytree-focused");
 		}else{
 			_assert(ctx.orgEvent.type === "focusout");
 			// ctx.tree.focusNode = null;
-			// $(ctx.node.li).removeClass("dynatree-focused");
+			// $(ctx.node.li).removeClass("fancytree-focused");
 		}
-		// $(ctx.node.li).toggleClass("dynatree-focused", ctx.orgEvent.type === "focus");
+		// $(ctx.node.li).toggleClass("fancytree-focused", ctx.orgEvent.type === "focus");
 	},
 	/**
 	 * Remove a single direct child of ctx.node.
 	 * @param ctx
-	 * @param {DynatreeNode} childNode dircect child of ctx.node
+	 * @param {FancytreeNode} childNode dircect child of ctx.node
 	 */
     nodeRemoveChild: function(ctx, childNode) {
         var node = ctx.node,
@@ -1561,7 +1561,7 @@ Dynatree.prototype = /**@lends Dynatree*/{
     nodeRemoveChildMarkup: function(ctx) {
         var node = ctx.node;
         DT.debug("nodeRemoveChildMarkup()", node.toString());
-        // TODO: Unlink attr.dtnode to support GC
+        // TODO: Unlink attr.ftnode to support GC
         if(node.ul){
             $(node.ul).remove();
             node.visit(function(n){
@@ -1604,7 +1604,7 @@ Dynatree.prototype = /**@lends Dynatree*/{
 	nodeRemoveMarkup: function(ctx) {
 		var node = ctx.node;
 		DT.debug("nodeRemoveMarkup()", node.toString());
-        // TODO: Unlink attr.dtnode to support GC
+        // TODO: Unlink attr.ftnode to support GC
 		if(node.li){
 			$(node.li).remove();
 			node.li = null;
@@ -1624,16 +1624,16 @@ Dynatree.prototype = /**@lends Dynatree*/{
 	 * Note: if a node was created/removed, nodeRender() must be called for the
 	 *       parent!
 	 * <code>
-	 * <li id='KEY' dtnode=NODE>
-	 *     <span class='dynatree-node dynatree-expanded dynatree-has-children dynatree-lastsib dynatree-exp-el dynatree-ico-e'>
-	 *         <span class="dynatree-expander"></span>
-	 *         <span class="dynatree-checkbox"></span> // only present in checkbox mode
-	 *         <span class="dynatree-icon"></span>
-	 *         <a href="#" class="dynatree-title"> Node 1 </a>
+	 * <li id='KEY' ftnode=NODE>
+	 *     <span class='fancytree-node fancytree-expanded fancytree-has-children fancytree-lastsib fancytree-exp-el fancytree-ico-e'>
+	 *         <span class="fancytree-expander"></span>
+	 *         <span class="fancytree-checkbox"></span> // only present in checkbox mode
+	 *         <span class="fancytree-icon"></span>
+	 *         <a href="#" class="fancytree-title"> Node 1 </a>
 	 *     </span>
 	 *     <ul> // only present if node has children
-	 *         <li id='KEY' dtnode=NODE> child1 ... </li>
-	 *         <li id='KEY' dtnode=NODE> child2 ... </li>
+	 *         <li id='KEY' ftnode=NODE> child1 ... </li>
+	 *         <li id='KEY' ftnode=NODE> child2 ... </li>
 	 *     </ul>
 	 * </li>
 	 * </code>
@@ -1682,12 +1682,12 @@ Dynatree.prototype = /**@lends Dynatree*/{
 			if( !node.li ) {
 				firstTime = true;
 				node.li = document.createElement("li");
-				node.li.dtnode = node;
+				node.li.ftnode = node;
 				if( node.key && opts.generateIds ){
 					node.li.id = opts.idPrefix + node.key;
 				}
 				node.span = document.createElement("span");
-				node.span.className = "dynatree-node";
+				node.span.className = "fancytree-node";
 				node.li.appendChild(node.span);
 				// Note: we don't add the LI to the DOM know, but only after we
 				// added all sub elements (hoping that this performs better since
@@ -1733,7 +1733,7 @@ Dynatree.prototype = /**@lends Dynatree*/{
 				var childLI = node.ul.firstChild;
 				for(i=0, l=children.length-1; i<l; i++) {
 					var childNode1 = children[i],
-						childNode2 = childLI.dtnode;
+						childNode2 = childLI.ftnode;
 					if( childNode1 !== childNode2 ) {
 						node.debug("_fixOrder: mismatch at index " + i + ": " + childNode1 + " != " + childNode2);
 						node.ul.insertBefore(childNode1.li, childNode2.li);
@@ -1782,22 +1782,22 @@ Dynatree.prototype = /**@lends Dynatree*/{
 		// TODO: optiimize this if clause
 		if( level < opts.minExpandLevel ) {
 			if(level > 1){
-				ares.push("<span class='dynatree-expander'></span>");
+				ares.push("<span class='fancytree-expander'></span>");
 			}
 			// .. else (i.e. for root level) skip expander/connector alltogether
 		} else {
-			ares.push("<span class='dynatree-expander'></span>");
+			ares.push("<span class='fancytree-expander'></span>");
 		}
 		// Checkbox mode
 		if( opts.checkbox && node.hideCheckbox !== true && !node.isStatusNode ) {
-			ares.push("<span class='dynatree-checkbox'></span>");
+			ares.push("<span class='fancytree-checkbox'></span>");
 		}
 		// folder or doctype icon
 		if ( node.icon ) {
 			ares.push("<img src='" + opts.imagePath + node.icon + "' alt='' />");
 		} else if ( node.icon !== false ) {
 			// icon == false means 'no icon', icon == null means 'default icon'
-			ares.push("<span class='dynatree-icon'></span>");
+			ares.push("<span class='fancytree-icon'></span>");
 		}
 		// node title
 		var nodeTitle = "";
@@ -1809,9 +1809,9 @@ Dynatree.prototype = /**@lends Dynatree*/{
 				href = node.href || "#";
 			if( opts.nolink || node.nolink ) {
 				// TODO: move style='' to CSS
-				nodeTitle = '<span class="dynatree-title"' + tooltip + '>' + node.title + '</span>';
+				nodeTitle = '<span class="fancytree-title"' + tooltip + '>' + node.title + '</span>';
 			} else {
-				nodeTitle = '<a href="' + href + '" class="dynatree-title"' + tooltip + '>' + node.title + '</a>';
+				nodeTitle = '<a href="' + href + '" class="fancytree-title"' + tooltip + '>' + node.title + '</a>';
 			}
 		}
 		ares.push(nodeTitle);
@@ -2080,7 +2080,7 @@ Dynatree.prototype = /**@lends Dynatree*/{
 			// TODO: check if still required on IE 9:
 			// Chrome and Safari don't focus the a-tag on click,
 			// but calling focus() seem to have problems on IE:
-			// http://code.google.com/p/dynatree/issues/detail?id=154
+			// http://code.google.com/p/fancytree/issues/detail?id=154
 			$(node.span).find(">a").focus();
 		} catch(e) { }
 		this._triggerNodeEvent("focus", ctx);
@@ -2285,25 +2285,25 @@ Dynatree.prototype = /**@lends Dynatree*/{
 		switch(status){
 		case "ok":
 		  _clearStatusNode();
-		  $(node.span).removeClass("dynatree-loading");
+		  $(node.span).removeClass("fancytree-loading");
 		  break;
 		case "loading":
-			$(node.span).addClass("dynatree-loading");
+			$(node.span).addClass("fancytree-loading");
 			if(!node.parent){
 				_setStatusNode({
 					title: tree.options.strings.loading +
 						(message ? " (" + message + ") " : ""),
 					tooltip: details,
-					extraClasses: "dynatree-statusnode-wait"
+					extraClasses: "fancytree-statusnode-wait"
 				});
 			}
 			break;
 		case "error":
-			$(node.span).addClass("dynatree-error");
+			$(node.span).addClass("fancytree-error");
 			_setStatusNode({
 				title: tree.options.strings.loadError + " (" + message + ")",
 				tooltip: details,
-				extraClasses: "dynatree-statusnode-error"
+				extraClasses: "fancytree-statusnode-error"
 			});
 			break;
 		default:
@@ -2330,7 +2330,7 @@ Dynatree.prototype = /**@lends Dynatree*/{
 		var tree = ctx.tree;
 		tree.activeNode = null;
 		tree.focusNode = null;
-		tree.$div.find(">ul.dynatree-container").empty();
+		tree.$div.find(">ul.fancytree-container").empty();
 		// TODO: call destructors and remove reference loops
 		tree.rootNode.children = null;
 	},
@@ -2350,7 +2350,7 @@ Dynatree.prototype = /**@lends Dynatree*/{
 	treeInit: function(ctx) {
 		this.treeLoad(ctx);
 	},
-	/** Parse Dynatree from source, as configured in the options.
+	/** Parse Fancytree from source, as configured in the options.
      * @param {HookContext} ctx
 	 * @param {object} [source] new source 
 	 */
@@ -2372,7 +2372,7 @@ Dynatree.prototype = /**@lends Dynatree*/{
 			switch(type){
 			case "html":
 				$ul = $container.find(">ul:first");
-				$ul.addClass("ui-dynatree-source ui-helper-hidden");
+				$ul.addClass("ui-fancytree-source ui-helper-hidden");
 				source = [];
 				_loadFromHtml.call(this, $ul, source);
 				break;
@@ -2393,7 +2393,7 @@ Dynatree.prototype = /**@lends Dynatree*/{
 		}
 
 		// $container.addClass("ui-widget ui-widget-content ui-corner-all");
-		// Trigger dynatreeinit after nodes have been loaded
+		// Trigger fancytreeinit after nodes have been loaded
 		dfd = this.nodeLoadChildren(rootCtx, source).done(function(){
 			tree.render();
 			tree._triggerTreeEvent("init", true);
@@ -2427,7 +2427,7 @@ Dynatree.prototype = /**@lends Dynatree*/{
      * @returns {String} 
      */
     toString: function(){
-        return "Dynatree<" + this._id + ">";
+        return "Fancytree<" + this._id + ">";
     },
 	/** _trigger a widget event with additional node ctx.
 	 * @see HookContext
@@ -2467,17 +2467,17 @@ Dynatree.prototype = /**@lends Dynatree*/{
 
 /* ******************************************************************************
  * jQuery UI widget boilerplate
- * @  name ui_dynatree  
- * @  class The jQuery.ui.dynatree widget
+ * @  name ui_fancytree  
+ * @  class The jQuery.ui.fancytree widget
  */
 /* * @namespace ui */
-/* * @namespace ui.dynatree */
-/** @namespace $.ui.dynatree */
-$.widget("ui.dynatree", 
-	/** @lends $.ui.dynatree.prototype */
+/* * @namespace ui.fancytree */
+/** @namespace $.ui.fancytree */
+$.widget("ui.fancytree", 
+	/** @lends $.ui.fancytree.prototype */
 	{
 	/**These options will be used as defaults 
-	 * @type {DynatreeOptions} 
+	 * @type {FancytreeOptions} 
 	 */
 	options: 
 	{
@@ -2505,48 +2505,48 @@ $.widget("ui.dynatree",
 			loadError: "Load error!"
 		},
 		_classNames: {
-			container: "dynatree-container",
-			node: "dynatree-node",
-			folder: "dynatree-folder",
-			empty: "dynatree-empty",
-			vline: "dynatree-vline",
-			expander: "dynatree-expander",
-//            connector: "dynatree-connector",
-			checkbox: "dynatree-checkbox",
-			icon: "dynatree-icon",
-			title: "dynatree-title",
-			noConnector: "dynatree-no-connector",
-			statusnodeError: "dynatree-statusnode-error",
-			statusnodeWait: "dynatree-statusnode-wait",
-			hidden: "dynatree-hidden",
-			combinedExpanderPrefix: "dynatree-exp-",
-			combinedIconPrefix: "dynatree-ico-",
-			loading: "dynatree-loading",
-			hasChildren: "dynatree-has-children",
-			active: "dynatree-active",
-			selected: "dynatree-selected",
-			expanded: "dynatree-expanded",
-			lazy: "dynatree-lazy",
-			focused: "dynatree-focused",
-			partsel: "dynatree-partsel",
-			lastsib: "dynatree-lastsib"
+			container: "fancytree-container",
+			node: "fancytree-node",
+			folder: "fancytree-folder",
+			empty: "fancytree-empty",
+			vline: "fancytree-vline",
+			expander: "fancytree-expander",
+//            connector: "fancytree-connector",
+			checkbox: "fancytree-checkbox",
+			icon: "fancytree-icon",
+			title: "fancytree-title",
+			noConnector: "fancytree-no-connector",
+			statusnodeError: "fancytree-statusnode-error",
+			statusnodeWait: "fancytree-statusnode-wait",
+			hidden: "fancytree-hidden",
+			combinedExpanderPrefix: "fancytree-exp-",
+			combinedIconPrefix: "fancytree-ico-",
+			loading: "fancytree-loading",
+			hasChildren: "fancytree-has-children",
+			active: "fancytree-active",
+			selected: "fancytree-selected",
+			expanded: "fancytree-expanded",
+			lazy: "fancytree-lazy",
+			focused: "fancytree-focused",
+			partsel: "fancytree-partsel",
+			lastsib: "fancytree-lastsib"
 		},
 		// events
 		lazyload: null
 	},
-	/* Set up the widget, Called on first $().dynatree() */
+	/* Set up the widget, Called on first $().fancytree() */
 	_create: function() {
-		this.tree = new Dynatree(this);
+		this.tree = new Fancytree(this);
 		this._bind();
 		this.$source = this.source
 			|| this.element.data("type") === "json" ? this.element
 			: this.element.find(">ul:first");
-		// Subclass Dynatree instance with all enabled extensions
+		// Subclass Fancytree instance with all enabled extensions
 		var extensions = this.options.extensions,
 			base = this.tree;
 		for(var i=0; i<extensions.length; i++){
 			var extName = extensions[i],
-				extension = $.ui.dynatree._extensions[extName];
+				extension = $.ui.fancytree._extensions[extName];
 			if(!extension){
 				$.error("Could not apply extension '" + extName + "' (it is not registered, did you forget to include it?)");
 			}
@@ -2554,24 +2554,24 @@ $.widget("ui.dynatree",
 //			_assert(!this.tree.options[extName], "Extension name must not exist as option name: " + extName);
 			this.tree.options[extName] = $.extend(true, {}, extension.options, this.tree.options[extName]);
 			// Add a namespace tree.EXTENSION, to hold instance data
-			_assert(!this.tree[extName], "Extension name must not exist as Dynatree attribute: " + extName);
+			_assert(!this.tree[extName], "Extension name must not exist as Fancytree attribute: " + extName);
 //			this.tree[extName] = extension;
 			this.tree[extName] = {};
-			// Subclass Dynatree methods using proxies.
+			// Subclass Fancytree methods using proxies.
 			_subclassObject(this.tree, base, extension, extName);
 			// current extension becomes base for the next extension
 			base = extension;
 		}
 		//
 		this.tree._callHook("treeCreate", this.tree);
-		// Note: 'dynatreecreate' event is fired by widget base class
+		// Note: 'fancytreecreate' event is fired by widget base class
 //        this.tree._triggerTreeEvent("create");
 	},
 
-	/* Called on every $().dynatree() */
+	/* Called on every $().fancytree() */
 	_init: function() {
 		this.tree._callHook("treeInit", this.tree);
-		// Note: 'dynatreeinit' event is fired by 
+		// Note: 'fancytreeinit' event is fired by 
 //		this.tree._triggerTreeEvent("init");
 	},
 
@@ -2608,7 +2608,7 @@ $.widget("ui.dynatree",
 		this._unbind();
 		this.tree._callHook("treeDestroy", this.tree);
 		// this.element.removeClass("ui-widget ui-widget-content ui-corner-all");
-		this.tree.$div.find(">ul.dynatree-container").remove();
+		this.tree.$div.find(">ul.fancytree-container").remove();
 		var _ = this.$source && this.$source.removeClass("ui-helper-hidden");
 		// In jQuery UI 1.8, you must invoke the destroy method from the base widget
 		$.Widget.prototype.destroy.call( this );
@@ -2629,7 +2629,7 @@ $.widget("ui.dynatree",
 				}).join(" ");
 
 		this._unbind();
-		$(document).bind("keydown.dynatree-" + this.tree._id, function(event){
+		$(document).bind("keydown.fancytree-" + this.tree._id, function(event){
 			if(opts.disabled || opts.keyboard === false){
 				return true;
 			}
@@ -2676,22 +2676,22 @@ $.widget("ui.dynatree",
 			}
 		});
 	},
-	/** @returns {DynatreeNode} the active node or null */
+	/** @returns {FancytreeNode} the active node or null */
 	getActiveNode: function() {
 		return this.tree.activeNode;
 	},
 	/**
 	 * @param {String} key 
-	 * @returns {DynatreeNode} the matching node or null 
+	 * @returns {FancytreeNode} the matching node or null 
 	 */
 	getNodeByKey: function(key) {
 		return this.tree.getNodeByKey(key);
 	},
-	/** @returns {DynatreeNode} the invisible system root node */
+	/** @returns {FancytreeNode} the invisible system root node */
 	getRootNode: function() {
 		return this.tree.rootNode;
 	},
-	/** @returns {Dynatree} the current tree instance */
+	/** @returns {Fancytree} the current tree instance */
 	getTree: function() {
 		return this.tree;
 	},
@@ -2701,11 +2701,11 @@ $.widget("ui.dynatree",
 	}
 });
 
-// $.ui.dynatree was created by the widget factory. Create a local shortcut:
-var DT = $.ui.dynatree;
+// $.ui.fancytree was created by the widget factory. Create a local shortcut:
+var DT = $.ui.fancytree;
 
 /* *****************************************************************************
- * Static members in the jQuery.ui.dynatree namespace
+ * Static members in the jQuery.ui.fancytree namespace
  */
 
 function consoleApply(method, args){
@@ -2716,10 +2716,10 @@ function consoleApply(method, args){
 }
 
 /**
- * @  name $.ui.dynatree
+ * @  name $.ui.fancytree
  */
-$.extend($.ui.dynatree, 
-    /** @lends ui.dynatree */ 
+$.extend($.ui.fancytree, 
+    /** @lends ui.fancytree */ 
     {
     /** @type {String} */
 	version: "2.0.0pre",
@@ -2729,21 +2729,21 @@ $.extend($.ui.dynatree,
 	_nextId: 1,
 	_nextNodeKey: 1,
 	_extensions: {},
-	/** Expose class object as $.ui.dynatree._DynatreeClass */
-	_DynatreeClass: Dynatree, 
-    /** Expose class object as $.ui.dynatree._DynatreeNodeClass */
-	_DynatreeNodeClass: DynatreeNode,
+	/** Expose class object as $.ui.fancytree._FancytreeClass */
+	_FancytreeClass: Fancytree, 
+    /** Expose class object as $.ui.fancytree._FancytreeNodeClass */
+	_FancytreeNodeClass: FancytreeNode,
 
 	debug: function(msg){
 		/*jshint expr:true */
-		($.ui.dynatree.debugLevel >= 2) && consoleApply("log", arguments);
-//        ($.ui.dynatree.debugLevel >= 2) && window.console && window.console.log && window.console.log.apply(window.console, arguments);
+		($.ui.fancytree.debugLevel >= 2) && consoleApply("log", arguments);
+//        ($.ui.fancytree.debugLevel >= 2) && window.console && window.console.log && window.console.log.apply(window.console, arguments);
 	},
 	error: function(msg){
 		/*jshint expr:true */
 		window.console && window.console.error && window.console.error.apply(window.console, arguments);
 	},
-	/** Return a {node: DynatreeNode, type: TYPE} object for a mouse event.
+	/** Return a {node: FancytreeNode, type: TYPE} object for a mouse event.
 	 * 
 	 * @param {Event} event Mouse event, e.g. click, ...
 	 * @returns {String} 'title' | 'prefix' | 'expander' | 'checkbox' | 'icon' | undefined
@@ -2751,10 +2751,10 @@ $.extend($.ui.dynatree,
     getEventTargetType: function(event){
         return this.getEventTarget(event).type;
     },
-    /** Return a {node: DynatreeNode, type: TYPE} object for a mouse event.
+    /** Return a {node: FancytreeNode, type: TYPE} object for a mouse event.
      * 
      * @param {Event} event Mouse event, e.g. click, ...
-     * @returns {object} Return a {node: DynatreeNode, type: TYPE} object
+     * @returns {object} Return a {node: FancytreeNode, type: TYPE} object
      *     TYPE: 'title' | 'prefix' | 'expander' | 'checkbox' | 'icon' | undefined
      */
     getEventTarget: function(event){
@@ -2762,38 +2762,38 @@ $.extend($.ui.dynatree,
 			res = {node: this.getNode(event.target), type: undefined};
 		// TODO: use map for fast lookup
 		// FIXME: cannot work, when tcn also contains UI themeroller classes
-		if( tcn === "dynatree-title" ){
+		if( tcn === "fancytree-title" ){
 			res.type = "title";
-		}else if( tcn === "dynatree-expander" ){
+		}else if( tcn === "fancytree-expander" ){
 			res.type = (res.node.hasChildren() === false ? "prefix" : "expander");
-		}else if( tcn === "dynatree-checkbox" ){
+		}else if( tcn === "fancytree-checkbox" ){
 			res.type = "checkbox";
-		}else if( tcn === "dynatree-icon" ){
+		}else if( tcn === "fancytree-icon" ){
 			res.type = "icon";
-		}else if( tcn.indexOf("dynatree-node") >= 0 ){
-			// TODO: issue #93 (http://code.google.com/p/dynatree/issues/detail?id=93)
+		}else if( tcn.indexOf("fancytree-node") >= 0 ){
+			// TODO: issue #93 (http://code.google.com/p/fancytree/issues/detail?id=93)
 //			res.type = this._getTypeForOuterNodeEvent(event);
             res.type = "title";
 		}
 		return res;
 	},
-	/** Return a DynatreeNode instance from element.
+	/** Return a FancytreeNode instance from element.
 	 * 
 	 * @param {Element | jQueryObject} el
-	 * @returns {DynatreeNode} matching node or null
+	 * @returns {FancytreeNode} matching node or null
 	 */
 	getNode: function(el){
-		if(el instanceof DynatreeNode){
-			return el; // el already was a DynatreeNode
+		if(el instanceof FancytreeNode){
+			return el; // el already was a FancytreeNode
 		}
 		if(el.selector !== undefined){
 			el = el[0]; // el was a jQuery object: use the DOM element
 		}
-		// $el.parents("[dtnode]") does not work (jQuery 1.6.1), maybe because
-		// dtnode is a property, not an attribute. This is faster anyway:
+		// $el.parents("[ftnode]") does not work (jQuery 1.6.1), maybe because
+		// ftnode is a property, not an attribute. This is faster anyway:
 		while( el ) {
-			if(el.dtnode) {
-				return el.dtnode;
+			if(el.ftnode) {
+				return el.ftnode;
 			}
 			el = el.parentNode;
 		}
@@ -2803,13 +2803,13 @@ $.extend($.ui.dynatree,
 		/*jshint expr:true */
 		(DT.debugLevel >= 1) && window.console && window.console.info && window.console.info.apply(window.console, arguments);
 	},
-	/** Add Dynatree extension definition to the list of globally available extensions.
+	/** Add Fancytree extension definition to the list of globally available extensions.
 	 * 
 	 * @param name
 	 * @param definition
 	 */
 	registerExtension: function(name, definition){
-		$.ui.dynatree._extensions[name] = definition;
+		$.ui.fancytree._extensions[name] = definition;
 	},
 	warn: function(msg){
 		/*jshint expr:true */
@@ -2830,7 +2830,7 @@ $.extend($.ui.dynatree,
 /*
 if( typeof define === "function" && define.amd ) {
 	define( ["jquery"], function () {
-		return jQuery.ui.dynatree;
+		return jQuery.ui.fancytree;
 	});
 }
 */
@@ -2838,10 +2838,10 @@ if( typeof define === "function" && define.amd ) {
 
 
 /* *****************************************************************************
- * Dynatree extension: profiler
+ * Fancytree extension: profiler
  */
 (function($) {
-	$.ui.dynatree.registerExtension("profiler", {
+	$.ui.fancytree.registerExtension("profiler", {
 		// Default options for this extension
 		options: {
 			prefix: ""
@@ -2860,17 +2860,17 @@ if( typeof define === "function" && define.amd ) {
 
 
 /*******************************************************************************
- * Dynatree extension: aria
+ * Fancytree extension: aria
  */
 (function($) {
-	$.ui.dynatree.registerExtension("aria", {
+	$.ui.fancytree.registerExtension("aria", {
 		// Default options for this extension.
 		options: {
 		},
 		// Overide virtual methods for this extension.
 		// `this`       : is this extension object
-		// `this._base` : the Dynatree instance
-		// `this._super`: the virtual function that was overriden (member of prev. extension or Dynatree)
+		// `this._base` : the Fancytree instance
+		// `this._super`: the virtual function that was overriden (member of prev. extension or Fancytree)
 		treeInit: function(ctx){
 			// TODO: bind to option change to set aria-disabled
 			// ctx.widget$( "#something" ).multi( "option", "disabled", function(event){

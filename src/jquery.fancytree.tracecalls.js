@@ -1,13 +1,13 @@
 /*************************************************************************
-	jquery.dynatree.tracecalls.js
-	Table extension for jquery.dynatree.js.
+	jquery.fancytree.tracecalls.js
+	Table extension for jquery.fancytree.js.
 
 	Copyright (c) 2012, Martin Wendt (http://wwWendt.de)
 	Dual licensed under the MIT or GPL Version 2 licenses.
-	http://code.google.com/p/dynatree/wiki/LicenseInfo
+	http://code.google.com/p/fancytree/wiki/LicenseInfo
 
 	A current version and some documentation is available at
-		http://dynatree.googlecode.com/
+		http://fancytree.googlecode.com/
 
 	$Version:$
 	$Revision:$
@@ -15,7 +15,7 @@
 	@depends: jquery.js
 	@depends: jquery.ui.widget.js
 	@depends: jquery.ui.core.js
-	@depends: jquery.dynatree.js
+	@depends: jquery.fancytree.js
 *************************************************************************/
 
 // Start of local namespace
@@ -26,8 +26,8 @@
 "use strict";
 
 // prevent duplicate loading
-// if ( $.ui.dynatree && $.ui.dynatree.version ) {
-//     $.ui.dynatree.warn("Dynatree: duplicate include");
+// if ( $.ui.fancytree && $.ui.fancytree.version ) {
+//     $.ui.fancytree.warn("Fancytree: duplicate include");
 //     return;
 // }
 
@@ -43,7 +43,7 @@ function _raiseNotImplemented(msg){
 /*******************************************************************************
  * Extension code
  */
-$.ui.dynatree.registerExtension("tracecalls", {
+$.ui.fancytree.registerExtension("tracecalls", {
 	nodeClick: function(ctx) {
 	},
 	nodeCollapseSiblings: function(ctx) {

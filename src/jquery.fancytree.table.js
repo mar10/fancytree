@@ -1,13 +1,13 @@
 /*************************************************************************
-	jquery.dynatree.table.js
-	Table extension for jquery.dynatree.js.
+	jquery.fancytree.table.js
+	Table extension for jquery.fancytree.js.
 
 	Copyright (c) 2012, Martin Wendt (http://wwWendt.de)
 	Dual licensed under the MIT or GPL Version 2 licenses.
-	http://code.google.com/p/dynatree/wiki/LicenseInfo
+	http://code.google.com/p/fancytree/wiki/LicenseInfo
 
 	A current version and some documentation is available at
-		http://dynatree.googlecode.com/
+		http://fancytree.googlecode.com/
 
 	$Version:$
 	$Revision:$
@@ -15,7 +15,7 @@
 	@depends: jquery.js
 	@depends: jquery.ui.widget.js
 	@depends: jquery.ui.core.js
-	@depends: jquery.dynatree.js
+	@depends: jquery.fancytree.js
 *************************************************************************/
 
 // Start of local namespace
@@ -26,8 +26,8 @@
 "use strict";
 
 // prevent duplicate loading
-// if ( $.ui.dynatree && $.ui.dynatree.version ) {
-//     $.ui.dynatree.warn("Dynatree: duplicate include");
+// if ( $.ui.fancytree && $.ui.fancytree.version ) {
+//     $.ui.fancytree.warn("Fancytree: duplicate include");
 //     return;
 // }
 
@@ -60,7 +60,7 @@ function setChildRowVisibility(node, flag) {
 		lastNode = node.getNextSibling();
 	}
 	tr = tr.nextSibling;
-	while(tr && tr.dtnode !== lastNode){
+	while(tr && tr.ftnode !== lastNode){
 		tr.style.display = flag ? "" : "none";
 		tr = tr.nextSibling;
 	}
@@ -96,7 +96,7 @@ function findPrevRowNode(node){
 }
 
 
-$.ui.dynatree.registerExtension("table", {
+$.ui.fancytree.registerExtension("table", {
 	// Default options for this extension.
 	options: {
 		indentation: 16,  // indent every node level by 16px
@@ -104,26 +104,26 @@ $.ui.dynatree.registerExtension("table", {
 	},
 	// Overide virtual methods for this extension.
 	// `this`       : is this extension object
-	// `this._super`: the virtual function that was overriden (member of prev. extension or Dynatree)
+	// `this._super`: the virtual function that was overriden (member of prev. extension or Fancytree)
 	treeInit: function(ctx){
 		var tree = ctx.tree,
 			$table = tree.$widget.element;
-		$table.addClass("dynatree-container dynatree-ext-table");
+		$table.addClass("fancytree-container fancytree-ext-table");
 		tree.tbody = $("table#treetable tbody")[0];
-//        table.addClass("dynatree-container");
+//        table.addClass("fancytree-container");
 		tree.columnCount = $("thead >tr >th", $table).length;
 		$(tree.tbody).empty();
 
 		tree.rowFragment = document.createDocumentFragment();
 		// TODO: handle opts.table.nodeColumnIdx
-		var $row = $("<tr><td><span class='dynatree-title'></span></td></tr>");
+		var $row = $("<tr><td><span class='fancytree-title'></span></td></tr>");
 		for(var i=0; i<tree.columnCount - 1; i++) {
 			$row.append("<td>");
 		}
 		tree.rowFragment.appendChild($row.get(0));
 
 		this._super(ctx);
-		// standard Dynatree created a root UL
+		// standard Fancytree created a root UL
 		$(tree.rootNode.ul).remove();
 		tree.rootNode.ul = null;
 		// Make sure that status classes are set on the node's <tr> elements
@@ -165,7 +165,7 @@ $.ui.dynatree.registerExtension("table", {
 				var newRow = tree.rowFragment.firstChild.cloneNode(true),
 					prevNode = findPrevRowNode(node);
 				firstTime = true;
-				$.ui.dynatree.debug("*** nodeRender " + node + ": prev: " + prevNode.key);
+				$.ui.fancytree.debug("*** nodeRender " + node + ": prev: " + prevNode.key);
 				_assert(prevNode);
 				if(collapsed === true && _recursive){
 					// hide all child rows, so we can use an animation to show it later
@@ -181,8 +181,8 @@ $.ui.dynatree.registerExtension("table", {
 				if( node.key && opts.generateIds ){
 					node.tr.id = opts.idPrefix + node.key;
 				}
-				node.tr.dtnode = node;
-				node.span = $("span.dynatree-title", node.tr).get(0);
+				node.tr.ftnode = node;
+				node.span = $("span.fancytree-title", node.tr).get(0);
 //                var indent = (node.getLevel() - 1) * opts.table.indentation;
 //                if(indent){
 //                    $(node.span).css({marginLeft: indent + "px"});

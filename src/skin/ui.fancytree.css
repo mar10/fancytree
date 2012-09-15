@@ -5,7 +5,7 @@
 	display: none;
 }
 
-ul.dynatree-container
+ul.fancytree-container
 {
 	font-family: tahoma, arial, helvetica;
 	font-size: 10pt; /* font size should not be too big */
@@ -18,13 +18,13 @@ ul.dynatree-container
 /*	height: 100%; /* issue 263 */
 }
 
-ul.dynatree-container ul
+ul.fancytree-container ul
 {
 	padding: 0 0 0 16px;
 	margin: 0;
 }
 
-ul.dynatree-container li
+ul.fancytree-container li
 {
 	list-style-image: none;
 	list-style-position: outside;
@@ -45,18 +45,18 @@ ul.dynatree-container li
 	padding: 1px 0 0 0;
 }
 /* Suppress lines for last child node */
-ul.dynatree-container li.dynatree-lastsib
+ul.fancytree-container li.fancytree-lastsib
 {
 	background-image: none;
 }
 /* Suppress lines if level is fixed expanded (option minExpandLevel) */
-ul.dynatree-no-connector > li
+ul.fancytree-no-connector > li
 {
 	background-image: none;
 }
 
 /* Style, when control is disabled */
-.ui-dynatree-disabled ul.dynatree-container
+.ui-fancytree-disabled ul.fancytree-container
 {
 	opacity: 0.5;
 /*	filter: alpha(opacity=50); /* Yields a css warning */
@@ -66,15 +66,15 @@ ul.dynatree-no-connector > li
 /*******************************************************************************
  * Common icon definitions
  */
-span.dynatree-empty,
-span.dynatree-vline,
-/*span.dynatree-connector,*/
-span.dynatree-expander,
-span.dynatree-icon,
-span.dynatree-checkbox,
-span.dynatree-radio,
-span.dynatree-drag-helper-img,
-#dynatree-drop-marker
+span.fancytree-empty,
+span.fancytree-vline,
+/*span.fancytree-connector,*/
+span.fancytree-expander,
+span.fancytree-icon,
+span.fancytree-checkbox,
+span.fancytree-radio,
+span.fancytree-drag-helper-img,
+#fancytree-drop-marker
 {
 	width: 16px;
 	height: 16px;
@@ -89,7 +89,7 @@ span.dynatree-drag-helper-img,
 }
 
 /** Used by 'icon' node option: */
-ul.dynatree-container img
+ul.fancytree-container img
 {
 	width: 16px;
 	height: 16px;
@@ -104,7 +104,7 @@ ul.dynatree-container img
  */
  
 /* 
-span.dynatree-connector
+span.fancytree-connector
 {
 	background-position: -16px -64px;
 }
@@ -115,47 +115,47 @@ span.dynatree-connector
  * Note: IE6 doesn't correctly evaluate multiples class names,
  *		 so we create combined class names that can be used in the CSS.
  *
- * Prefix: dynatree-exp-
+ * Prefix: fancytree-exp-
  * 1st character: 'e': expanded, 'c': collapsed, 'n': no children
  * 2nd character (optional): 'd': lazy (Delayed)
  * 3rd character (optional): 'l': Last sibling
  */
 
-span.dynatree-expander
+span.fancytree-expander
 {
 	background-position: 0px -80px;
 	cursor: pointer;
 }
-.dynatree-exp-cl span.dynatree-expander /* Collapsed, not delayed, last sibling */
+.fancytree-exp-cl span.fancytree-expander /* Collapsed, not delayed, last sibling */
 {
 	background-position: 0px -96px;
 }
-.dynatree-exp-cd span.dynatree-expander /* Collapsed, delayed, not last sibling */
+.fancytree-exp-cd span.fancytree-expander /* Collapsed, delayed, not last sibling */
 {
 	background-position: -64px -80px;
 }
-.dynatree-exp-cdl span.dynatree-expander /* Collapsed, delayed, last sibling */
+.fancytree-exp-cdl span.fancytree-expander /* Collapsed, delayed, last sibling */
 {
 	background-position: -64px -96px;
 }
-.dynatree-exp-e span.dynatree-expander,  /* Expanded, not delayed, not last sibling */
-.dynatree-exp-ed span.dynatree-expander  /* Expanded, delayed, not last sibling */
+.fancytree-exp-e span.fancytree-expander,  /* Expanded, not delayed, not last sibling */
+.fancytree-exp-ed span.fancytree-expander  /* Expanded, delayed, not last sibling */
 {
 	background-position: -32px -80px;
 }
-.dynatree-exp-el span.dynatree-expander,  /* Expanded, not delayed, last sibling */
-.dynatree-exp-edl span.dynatree-expander  /* Expanded, delayed, last sibling */
+.fancytree-exp-el span.fancytree-expander,  /* Expanded, not delayed, last sibling */
+.fancytree-exp-edl span.fancytree-expander  /* Expanded, delayed, last sibling */
 {
 	background-position: -32px -96px;
 }
-.dynatree-loading span.dynatree-expander  /* 'Loading' status overrides all others */
+.fancytree-loading span.fancytree-expander  /* 'Loading' status overrides all others */
 {
 	background-position: 0 0;
 	background-image: url("loading.gif");
 }
 
-.dynatree-exp-n span.dynatree-expander, /* Connector instead of expander, if node has no children */
-.dynatree-exp-nl span.dynatree-expander
+.fancytree-exp-n span.fancytree-expander, /* Connector instead of expander, if node has no children */
+.fancytree-exp-nl span.fancytree-expander
 {
     background-position: -16px -64px;
     cursor: default;
@@ -165,30 +165,30 @@ span.dynatree-expander
 /*******************************************************************************
  * Checkbox icon
  */
-span.dynatree-checkbox
+span.fancytree-checkbox
 {
 	margin-left: 3px;
 	background-position: 0px -32px;
 }
-span.dynatree-checkbox:hover
+span.fancytree-checkbox:hover
 {
 	background-position: -16px -32px;
 }
 
-.dynatree-partsel span.dynatree-checkbox
+.fancytree-partsel span.fancytree-checkbox
 {
 	background-position: -64px -32px;
 }
-.dynatree-partsel span.dynatree-checkbox:hover
+.fancytree-partsel span.fancytree-checkbox:hover
 {
 	background-position: -80px -32px;
 }
 
-.dynatree-selected span.dynatree-checkbox
+.fancytree-selected span.fancytree-checkbox
 {
 	background-position: -32px -32px;
 }
-.dynatree-selected span.dynatree-checkbox:hover
+.fancytree-selected span.fancytree-checkbox:hover
 {
 	background-position: -48px -32px;
 }
@@ -196,61 +196,61 @@ span.dynatree-checkbox:hover
 /*******************************************************************************
  * Radiobutton icon
  * This is a customization, that may be activated by overriding the 'checkbox'
- * class name as 'dynatree-radio' in the tree options.
+ * class name as 'fancytree-radio' in the tree options.
  */
-.dynatree-radio span.dynatree-checkbox
+.fancytree-radio span.fancytree-checkbox
 {
 	margin-left: 3px;
 	background-position: 0px -48px;
 }
-.dynatree-radio span.dynatree-checkbox:hover
+.fancytree-radio span.fancytree-checkbox:hover
 {
 	background-position: -16px -48px;
 }
 
-.dynatree-radio .dynatree-partsel span.dynatree-checkbox
+.fancytree-radio .fancytree-partsel span.fancytree-checkbox
 {
 	background-position: -64px -48px;
 }
-.dynatree-radio .dynatree-partsel span.dynatree-checkbox:hover
+.fancytree-radio .fancytree-partsel span.fancytree-checkbox:hover
 {
 	background-position: -80px -48px;
 }
 
-.dynatree-radio .dynatree-selected span.dynatree-checkbox
+.fancytree-radio .fancytree-selected span.fancytree-checkbox
 {
 	background-position: -32px -48px;
 }
-.dynatree-radio .dynatree-selected span.dynatree-checkbox:hover
+.fancytree-radio .fancytree-selected span.fancytree-checkbox:hover
 {
 	background-position: -48px -48px;
 }
  
 /*
-span.dynatree-radio
+span.fancytree-radio
 {
 	margin-left: 3px;
 	background-position: 0px -48px;
 }
-span.dynatree-radio:hover
+span.fancytree-radio:hover
 {
 	background-position: -16px -48px;
 }
 
-.dynatree-partsel span.dynatree-radio
+.fancytree-partsel span.fancytree-radio
 {
 	background-position: -64px -48px;
 }
-.dynatree-partsel span.dynatree-radio:hover
+.fancytree-partsel span.fancytree-radio:hover
 {
 	background-position: -80px -48px;
 }
 
-.dynatree-selected span.dynatree-radio
+.fancytree-selected span.fancytree-radio
 {
 	background-position: -32px -48px;
 }
-.dynatree-selected span.dynatree-radio:hover
+.fancytree-selected span.fancytree-radio:hover
 {
 	background-position: -48px -48px;
 }
@@ -262,35 +262,35 @@ span.dynatree-radio:hover
  * Note: IE6 doesn't correctly evaluate multiples class names,
  *		 so we create combined class names that can be used in the CSS.
  *
- * Prefix: dynatree-ico-
+ * Prefix: fancytree-ico-
  * 1st character: 'e': expanded, 'c': collapsed
  * 2nd character (optional): 'f': folder
  */
 
-span.dynatree-icon /* Default icon */
+span.fancytree-icon /* Default icon */
 {
 	margin-left: 3px;
 	background-position: 0px 0px;
 }
 
-.dynatree-ico-cf span.dynatree-icon  /* Collapsed Folder */
+.fancytree-ico-cf span.fancytree-icon  /* Collapsed Folder */
 {
 	background-position: 0px -16px;
 }
 
-.dynatree-ico-ef span.dynatree-icon  /* Expanded Folder */
+.fancytree-ico-ef span.fancytree-icon  /* Expanded Folder */
 {
 	background-position: -64px -16px;
 }
 
 /* Status node icons */
 
-.dynatree-statusnode-wait span.dynatree-icon
+.fancytree-statusnode-wait span.fancytree-icon
 {
 	background-image: url("loading.gif");
 }
 
-.dynatree-statusnode-error span.dynatree-icon
+.fancytree-statusnode-error span.fancytree-icon
 {
 	background-position: 0px -112px;
 /*	background-image: url("ltError.gif");*/
@@ -301,15 +301,15 @@ span.dynatree-icon /* Default icon */
  */
 
 /* Remove blue color and underline from title links */
-a.dynatree-title
+a.fancytree-title
 {
 	text-decoration: none;
 }
-span.dynatree-title
+span.fancytree-title
 {
 	display: inline-block;
 }
-.dynatree-title
+.fancytree-title
 {
 	font-size: 10pt; /* required for IE, quirks mode */
 	display: inline-block; /* Better alignment, when title contains <br> */
@@ -320,40 +320,40 @@ span.dynatree-title
 	margin: 0px;
 	margin-left: 3px;
 }
-.dynatree-title:hover
+.fancytree-title:hover
 {
 /*	text-decoration: underline; */
 	background-color: #F2F7FD; /* light blue */
 	border-color: #B8D6FB; /* darker light blue */
 }
 
-a.dynatree-title:focus,
-span.dynatree-focused a:link  /* @IE */
+a.fancytree-title:focus,
+span.fancytree-focused a:link  /* @IE */
 {
     outline: 1px dotted black;
     background-color: #EFEBDE; /* gray */
 }
 
-span.dynatree-folder .dynatree-title
+span.fancytree-folder .fancytree-title
 {
 	font-weight: bold;
 }
 
-span.dynatree-has-children a
+span.fancytree-has-children a
 {
 }
 
-span.dynatree-expanded a
+span.fancytree-expanded a
 {
 }
 
-span.dynatree-selected a
+span.fancytree-selected a
 {
 	color: green;
 	font-style: italic;
 }
 
-span.dynatree-active a
+span.fancytree-active a
 {
 	background-color: #3169C6 !important;
 	color: white !important; /* @ IE6 */
@@ -363,24 +363,24 @@ span.dynatree-active a
  * 'table' extension
  */
 /*
-table.dynatree-ext-table {
+table.fancytree-ext-table {
 	border-collapse: collapse;
 	width: 100%;
 }
-table.dynatree-ext-table tbody tr:nth-child(even){
+table.fancytree-ext-table tbody tr:nth-child(even){
 	background-color: #f4f4f8;
 }
-table.dynatree-ext-table tbody tr td {
+table.fancytree-ext-table tbody tr td {
 	border: 1px solid lightgray;
 }
 */
-table.dynatree-ext-table tbody tr.dynatree-focused {
+table.fancytree-ext-table tbody tr.fancytree-focused {
     background-color: #99DEFD;
 }
-table.dynatree-ext-table tbody tr.dynatree-active {
+table.fancytree-ext-table tbody tr.fancytree-active {
 	background-color: royalblue;
 }
-table.dynatree-ext-table tbody tr.dynatree-selected {
+table.fancytree-ext-table tbody tr.fancytree-selected {
 	background-color: #99FDDE;
 }
 
@@ -388,16 +388,16 @@ table.dynatree-ext-table tbody tr.dynatree-selected {
  * 'columnview' extension
  */
 /*
-table.dynatree-ext-columnview {
+table.fancytree-ext-columnview {
 	border-collapse: collapse;
 	width: 100%;
 }
 */
-table.dynatree-ext-columnview td >ul
+table.fancytree-ext-columnview td >ul
 {
 	padding: 0;
 }
-table.dynatree-ext-columnview td >ul li
+table.fancytree-ext-columnview td >ul li
 {
 	list-style-image: none;
 	list-style-position: outside;
@@ -415,27 +415,27 @@ table.dynatree-ext-columnview td >ul li
 	padding:1px 0 0 0;
 }
 /*
-table.dynatree-ext-columnview tbody tr[0] {
+table.fancytree-ext-columnview tbody tr[0] {
 	height: 200px;
 }
 */
-table.dynatree-ext-columnview tbody tr td {
+table.fancytree-ext-columnview tbody tr td {
 	border: 1px solid gray;
 	vertical-align: top;
 	overflow: auto;
 }
-table.dynatree-ext-columnview span.dynatree-node {
+table.fancytree-ext-columnview span.fancytree-node {
 	display: inline-block;
 	width: 100%;
 }
-table.dynatree-ext-columnview span.dynatree-node a{
+table.fancytree-ext-columnview span.fancytree-node a{
 	border: 1px solid transparent;
 	background-color: transparent;
 }
-table.dynatree-ext-columnview span.dynatree-node.dynatree-expanded {
+table.fancytree-ext-columnview span.fancytree-node.fancytree-expanded {
 	background-color: #ccc;
 }
-table.dynatree-ext-columnview span.dynatree-node.dynatree-active {
+table.fancytree-ext-columnview span.fancytree-node.fancytree-active {
 	background-color: royalblue;
 }
 
@@ -443,15 +443,15 @@ table.dynatree-ext-columnview span.dynatree-node.dynatree-active {
 /*******************************************************************************
  * 'filter' extension
  */
-.dynatree-ext-filter span.dynatree-node .dynatree-title {
+.fancytree-ext-filter span.fancytree-node .fancytree-title {
 	color: silver;
 	font-weight: lighter;
 }
-.dynatree-ext-filter span.dynatree-node.dynatree-submatch .dynatree-title {
+.fancytree-ext-filter span.fancytree-node.fancytree-submatch .fancytree-title {
 	color: black;
 	font-weight: normal;
 }
-.dynatree-ext-filter span.dynatree-node.dynatree-match .dynatree-title {
+.fancytree-ext-filter span.fancytree-node.fancytree-match .fancytree-title {
 	color: black;
 	font-weight: bold;
 }
@@ -462,10 +462,10 @@ table.dynatree-ext-columnview span.dynatree-node.dynatree-active {
  */
 
 /*** Helper object ************************************************************/
-div.dynatree-drag-helper
+div.fancytree-drag-helper
 {
 }
-div.dynatree-drag-helper a
+div.fancytree-drag-helper a
 {
 	border: 1px solid gray;
 	background-color: white;
@@ -473,35 +473,35 @@ div.dynatree-drag-helper a
 	padding-right: 5px;
 	opacity: 0.8;
 }
-span.dynatree-drag-helper-img
+span.fancytree-drag-helper-img
 {
 	/*
 	position: relative;
 	left: -16px;
 	*/
 }
-div.dynatree-drag-helper /*.dynatree-drop-accept*/
+div.fancytree-drag-helper /*.fancytree-drop-accept*/
 {
 
 /*    border-color: green;
 	background-color: red;*/
 }
-div.dynatree-drop-accept span.dynatree-drag-helper-img
+div.fancytree-drop-accept span.fancytree-drag-helper-img
 {
 	background-position: -32px -112px;
 }
-div.dynatree-drag-helper.dynatree-drop-reject
+div.fancytree-drag-helper.fancytree-drop-reject
 {
 	border-color: red;
 }
-div.dynatree-drop-reject span.dynatree-drag-helper-img
+div.fancytree-drop-reject span.fancytree-drag-helper-img
 {
 	background-position: -16px -112px;
 }
 
 /*** Drop marker icon *********************************************************/
 
-#dynatree-drop-marker
+#fancytree-drop-marker
 {
 	width: 24px;
 	position: absolute;
@@ -509,54 +509,54 @@ div.dynatree-drop-reject span.dynatree-drag-helper-img
 	margin: 0;
 /*	border: 1px solid red; */
 }
-#dynatree-drop-marker.dynatree-drop-after,
-#dynatree-drop-marker.dynatree-drop-before
+#fancytree-drop-marker.fancytree-drop-after,
+#fancytree-drop-marker.fancytree-drop-before
 {
 	width:64px;
 	background-position: 0 -144px;
 }
-#dynatree-drop-marker.dynatree-drop-copy
+#fancytree-drop-marker.fancytree-drop-copy
 {
 	background-position: -64px -128px;
 }
-#dynatree-drop-marker.dynatree-drop-move
+#fancytree-drop-marker.fancytree-drop-move
 {
 	background-position: -64px -128px;
 }
 
 /*** Source node while dragging ***********************************************/
 
-span.dynatree-drag-source
+span.fancytree-drag-source
 {
 	/* border: 1px dotted gray; */
 	background-color: #e0e0e0;
 }
-span.dynatree-drag-source a
+span.fancytree-drag-source a
 {
 	color: gray;
 }
 
 /*** Target node while dragging cursor is over it *****************************/
 
-span.dynatree-drop-target
+span.fancytree-drop-target
 {
 	/*border: 1px solid gray;*/
 }
-span.dynatree-drop-target a
+span.fancytree-drop-target a
 {
 }
-span.dynatree-drop-target.dynatree-drop-accept a
+span.fancytree-drop-target.fancytree-drop-accept a
 {
 	/*border: 1px solid green;*/
 	background-color: #3169C6 !important;
 	color: white !important; /* @ IE6 */
 	text-decoration: none;
 }
-span.dynatree-drop-target.dynatree-drop-reject
+span.fancytree-drop-target.fancytree-drop-reject
 {
 	/*border: 1px solid red;*/
 }
-span.dynatree-drop-target.dynatree-drop-after a
+span.fancytree-drop-target.fancytree-drop-after a
 {
 }
 

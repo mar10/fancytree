@@ -5,16 +5,16 @@
  * Context object passed too hook functions.
  * @name HookContext
  * 
- * @property {Dynatree} tree
+ * @property {Fancytree} tree
  * @property {any} widget
- * @property {DynatreeOptions} options
+ * @property {FancytreeOptions} options
  * @property {Event} orgEvent
- * @property {DynatreeNode | null} node
+ * @property {FancytreeNode | null} node
  */
 var HookContext = {};
 
 /**
- * Data object passed to DynatreeNode() constructor.
+ * Data object passed to FancytreeNode() constructor.
  * @name NodeData
  * 
  * @property {String} title
@@ -22,15 +22,15 @@ var HookContext = {};
 var NodeData = {};
 
 /**
- * Data object passed to DynatreeNode#applyPatch.
+ * Data object passed to FancytreeNode#applyPatch.
  * @name NodePatch
  * 
  * @property {String} title
  */
 var NodePatch = {};
 
-/** Dynatree options
- * @name DynatreeOptions
+/** Fancytree options
+ * @name FancytreeOptions
  *
  * @property {object} ajax $.Ajax options
  * @property {Boolean} activeVisible: true: Make sure, active nodes are visible (expanded).
@@ -46,4 +46,4 @@ var NodePatch = {};
  * Events:
  * @property {function} lazyload
  */
-var DynatreeOptions = {};
+var FancytreeOptions = {};

@@ -22,13 +22,13 @@ module.exports = function(grunt) {
             all: {
                 src: ["<banner:meta.banner>", 
                       "<file_strip_banner:src/<%= pkg.name %>.js>",
-                      "src/jquery.dynatree.columnview.js",
-                      "src/jquery.dynatree.dnd.js",
-                      "src/jquery.dynatree.filter.js",
-                      "src/jquery.dynatree.persist.js",
-                      "src/jquery.dynatree.table.js",
-                      "src/jquery.dynatree.themeroller.js",
-                      "src/jquery.dynatree.tracecalls.js"
+                      "src/jquery.fancytree.columnview.js",
+                      "src/jquery.fancytree.dnd.js",
+                      "src/jquery.fancytree.filter.js",
+                      "src/jquery.fancytree.persist.js",
+                      "src/jquery.fancytree.table.js",
+                      "src/jquery.fancytree.themeroller.js",
+                      "src/jquery.fancytree.tracecalls.js"
                       ],
                 dest: "dist/<%= pkg.name %>-<%= pkg.version %>-all.js"
             }
@@ -55,7 +55,7 @@ module.exports = function(grunt) {
                            "test/unit/test-core.js"
                            ],
 //            beforeconcat: ["grunt.js"],
-//            beforeconcat: ["grunt.js", "src/jquery.dynatree.js", "tests/**/*.js"],
+//            beforeconcat: ["grunt.js", "src/jquery.fancytree.js", "tests/**/*.js"],
             afterconcat: ["<config:concat.core.dest>",
                           "<config:concat.all.dest>"
                           ]
@@ -90,7 +90,7 @@ module.exports = function(grunt) {
                 smarttabs: true,
 //                globalstrict: true,
                 // Environments:
-//              node: true,  // TODO: only for grunt.js and dynatree-server.json
+//              node: true,  // TODO: only for grunt.js and fancytree-server.json
                 browser: true
             },
             globals: {

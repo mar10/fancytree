@@ -2,20 +2,20 @@
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
-	<title>Dynatree 2.0 - Example</title>
+	<title>Fancytree 2.0 - Example</title>
 
 	<script src="../lib/jquery.js" type="text/javascript"></script>
 	<script src="../lib/jquery-ui.custom.js" type="text/javascript"></script>
 
-  	<link href="../src/skin-vista/ui.dynatree.css" rel="stylesheet" type="text/css">
-	<script src="../src/jquery.dynatree.js" type="text/javascript"></script>
+  	<link href="../src/skin-vista/ui.fancytree.css" rel="stylesheet" type="text/css">
+	<script src="../src/jquery.fancytree.js" type="text/javascript"></script>
 
 	<script type="text/javascript">
 		$(function(){
-			var DT = $.ui.dynatree;
-			$.ui.dynatree.debug("Using dynatree " + $.ui.dynatree.version);
+			var DT = $.ui.fancytree;
+			$.ui.fancytree.debug("Using fancytree " + $.ui.fancytree.version);
 			// attach to all instances
-			$("#tree, #tree3").dynatree({
+			$("#tree, #tree3").fancytree({
 				extensions: ["profiler", "aria"],
 				checkbox: true,
 				selectMode: 1,
@@ -24,7 +24,7 @@
 				},
 				// using default options
 				activate: function(e, data){
-					$.ui.dynatree.debug("activate: e=", e, ", data=", data);
+					$.ui.fancytree.debug("activate: e=", e, ", data=", data);
 				},
 				lazyload: function(e, data){
 					data.result = {url: "unit/ajax-sub2.json"};
@@ -34,17 +34,17 @@
 				// 		DT.debug("No render");
 				// 	}
 				// }
-			}).bind("dynatreeactivate", function(e, data){
-				$.ui.dynatree.debug("dynatreeactivate: e=", e, ", data=", data);
+			}).bind("fancytreeactivate", function(e, data){
+				$.ui.fancytree.debug("fancytreeactivate: e=", e, ", data=", data);
 				return false;
-//				$(this).dynatree("debug", "dynatreeactivate");
+//				$(this).fancytree("debug", "fancytreeactivate");
 			});
-			var tree = $("div:ui-dynatree").data("dynatree").getTree();
-			DT.debug("Test ':ui-dynatree' expression " + $("div:ui-dynatree").length);
+			var tree = $("div:ui-fancytree").data("fancytree").getTree();
+			DT.debug("Test ':ui-fancytree' expression " + $("div:ui-fancytree").length);
 
 			/* Load tree from Ajax JSON
 			 */
-			$("#tree2").dynatree({
+			$("#tree2").fancytree({
 				source: {
 					url: "ajax-tree-plain.json"
 				},
@@ -59,14 +59,14 @@
 				}
 			});
 			// call methods on multiple instances
-			$("div:ui-dynatree").dynatree("foo", "after init");
+			$("div:ui-fancytree").fancytree("foo", "after init");
 			//
 			$("button").button();
 			$("button#destroy").click(function(e){
-				$(":ui-dynatree").dynatree("destroy");
+				$(":ui-fancytree").fancytree("destroy");
 			});
 			$("button#init").click(function(e){
-				$(".sampletree").dynatree();
+				$(".sampletree").fancytree();
 			});
 			$("button#reload").click(function(e){
 				tree.reload([
@@ -84,7 +84,7 @@
 				});
 			});
 			$("button#setSource").click(function(e){
-				$(".sampletree").dynatree("option", "source", [
+				$(".sampletree").fancytree("option", "source", [
 				    {title: "node1"}
 				]);
 			});

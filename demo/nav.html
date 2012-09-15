@@ -6,10 +6,10 @@
 	<script src="../lib/jquery.js" type="text/javascript"></script>
 	<script src="../lib/jquery-ui.custom.js" type="text/javascript"></script>
 
-	<link href="../src/skin-vista/ui.dynatree.css" rel="stylesheet" type="text/css">
-	<script src="../src/jquery.dynatree.js" type="text/javascript"></script>
+	<link href="../src/skin-vista/ui.fancytree.css" rel="stylesheet" type="text/css">
+	<script src="../src/jquery.fancytree.js" type="text/javascript"></script>
 	<script src="sample.js" type="text/javascript"></script>
-	<title>Dynatree - Example Browser</title>
+	<title>Fancytree - Example Browser</title>
 
 <style type="text/css">
 body {
@@ -34,24 +34,24 @@ div#tree {
 	padding: 5px;
 	margin-right: 16px;
 }
-ul.dynatree-container {
+ul.fancytree-container {
 	height: 100%;
 	width: 100%;
 	background-color: transparent;
 }
-ul.dynatree-container a {
+ul.fancytree-container a {
 	color: white;
 	border: 1px solid transparent;
 	background-color: transparent;
 }
-ul.dynatree-container a:hover {
+ul.fancytree-container a:hover {
 	background-color: transparent;
 }
-ul.dynatree-container a:focus, span.dynatree-focused a:link {
+ul.fancytree-container a:focus, span.fancytree-focused a:link {
 	background-color: gray;
 }
-.dynatree-title:hover,
-span.dynatree-active .dynatree-title {
+.fancytree-title:hover,
+span.fancytree-active .fancytree-title {
     color: #39414A;
 }
 </style>
@@ -59,7 +59,7 @@ span.dynatree-active .dynatree-title {
 <script type="text/javascript">
 	$(function(){
 		// --- Initialize sample trees
-		$("#tree").dynatree({
+		$("#tree").fancytree({
 			autoFocus: true,
 			minExpandLevel: 2,
 			focus: function(e, data) {

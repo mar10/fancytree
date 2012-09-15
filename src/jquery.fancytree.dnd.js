@@ -1,13 +1,13 @@
 /*!
- * jquery.dynatree.dnd.js
- * Drag'n'drop extension for jquery.dynatree.js.
+ * jquery.fancytree.dnd.js
+ * Drag'n'drop extension for jquery.fancytree.js.
  *
  * Copyright (c) 2012, Martin Wendt (http://wwWendt.de)
  * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://code.google.com/p/dynatree/wiki/LicenseInfo
+ * http://code.google.com/p/fancytree/wiki/LicenseInfo
  *
  * A current version and some documentation is available at
- *	http://dynatree.googlecode.com/
+ *	http://fancytree.googlecode.com/
  */
 
 (function($) {
@@ -23,7 +23,7 @@ function _assert(cond, msg){
 		$.error("Assertion failed " + msg);
 	}
 }
-var logMsg = $.ui.dynatree.debug;
+var logMsg = $.ui.fancytree.debug;
 
 
 /* *****************************************************************************
@@ -31,11 +31,11 @@ var logMsg = $.ui.dynatree.debug;
  */
 function _initDragAndDrop(tree) {
 	var dnd = tree.options.dnd || null;
-	// Register 'connectToDynatree' option with ui.draggable
+	// Register 'connectToFancytree' option with ui.draggable
 	if(dnd /*&& (dnd.onDragStart || dnd.onDrop)*/) {
 		_registerDnd();
 	}
-	// Attach ui.draggable to this Dynatree instance
+	// Attach ui.draggable to this Fancytree instance
 	if(dnd && dnd.onDragStart ) {
 		tree.$widget.element.draggable({
 			addClasses: false,
@@ -44,14 +44,14 @@ function _initDragAndDrop(tree) {
 			delay: 0,
 			distance: 4,
 			revert: false,
-			scroll: true, // issue 244: enable scrolling (if ul.dynatree-container)
+			scroll: true, // issue 244: enable scrolling (if ul.fancytree-container)
 			scrollSpeed: 7,
 			scrollSensitivity: 10,
 			// Delegate draggable.start, drag, and stop events to our handler
-			connectToDynatree: true,
+			connectToFancytree: true,
 			// Let source tree create the helper element
 			helper: function(event) {
-				var sourceNode = $.ui.dynatree.getNode(event.target);
+				var sourceNode = $.ui.fancytree.getNode(event.target);
 				if(!sourceNode){ // issue 211
 					// TODO: remove this hint, when we understand when it happens
 					return "<div>ERROR?: helper requested but sourceNode not found</div>";
@@ -59,13 +59,13 @@ function _initDragAndDrop(tree) {
 				return sourceNode.tree.dnd._onDragEvent("helper", sourceNode, null, event, null, null);
 			},
 			start: function(event, ui) {
-//              var sourceNode = $.ui.dynatree.getNode(event.target);
+//              var sourceNode = $.ui.fancytree.getNode(event.target);
 				// don't return false if sourceNode == null (see issue 268)
 			},
 			_last: null
 		});
 	}
-	// Attach ui.droppable to this Dynatree instance
+	// Attach ui.droppable to this Fancytree instance
 	if(dnd && dnd.onDrop) {
 		tree.$widget.element.droppable({
 			addClasses: false,
@@ -87,11 +87,11 @@ function _registerDnd() {
 	// TODO: ui.plugin is deprecated; use the proxy pattern instead
 
 	// Register proxy-functions for draggable.start/drag/stop
-	$.ui.plugin.add("draggable", "connectToDynatree", {
+	$.ui.plugin.add("draggable", "connectToFancytree", {
 		start: function(event, ui) {
 			var draggable = $(this).data("draggable"),
 				sourceNode = ui.helper.data("dtSourceNode") || null;
-//          logMsg("draggable-connectToDynatree.start, %s", sourceNode);
+//          logMsg("draggable-connectToFancytree.start, %s", sourceNode);
 //          logMsg("    this: %o", this);
 //          logMsg("    event: %o", event);
 //          logMsg("    draggable: %o", draggable);
@@ -112,22 +112,22 @@ function _registerDnd() {
 			var draggable = $(this).data("draggable"),
 				sourceNode = ui.helper.data("dtSourceNode") || null,
 				prevTargetNode = ui.helper.data("dtTargetNode") || null,
-				targetNode = $.ui.dynatree.getNode(event.target);
-//            logMsg("$.ui.dynatree.getNode(%o): %s", event.target, targetNode);
-//            logMsg("connectToDynatree.drag: helper: %o", ui.helper[0]);
+				targetNode = $.ui.fancytree.getNode(event.target);
+//            logMsg("$.ui.fancytree.getNode(%o): %s", event.target, targetNode);
+//            logMsg("connectToFancytree.drag: helper: %o", ui.helper[0]);
 			if(event.target && !targetNode){
 				// We got a drag event, but the targetNode could not be found
 				// at the event location. This may happen,
 				// 1. if the mouse jumped over the drag helper,
-				// 2. or if a non-dynatree element is dragged
+				// 2. or if a non-fancytree element is dragged
 				// We ignore it:
-				var isHelper = $(event.target).closest("div.dynatree-drag-helper,#dynatree-drop-marker").length > 0;
+				var isHelper = $(event.target).closest("div.fancytree-drag-helper,#fancytree-drop-marker").length > 0;
 				if(isHelper){
 					logMsg("Drag event over helper: ignored.");
 					return;
 				}
 			}
-//            logMsg("draggable-connectToDynatree.drag: targetNode(from event): %s, dtTargetNode: %s", targetNode, ui.helper.data("dtTargetNode"));
+//            logMsg("draggable-connectToFancytree.drag: targetNode(from event): %s, dtTargetNode: %s", targetNode, ui.helper.data("dtTargetNode"));
 			ui.helper.data("dtTargetNode", targetNode);
 			// Leaving a tree node
 			if(prevTargetNode && prevTargetNode !== targetNode ) {
@@ -153,8 +153,8 @@ function _registerDnd() {
 				mouseDownEvent = draggable._mouseDownEvent,
 				eventType = event.type,
 				dropped = (eventType === "mouseup" && event.which === 1);
-//            logMsg("draggable-connectToDynatree.stop: targetNode(from event): %s, dtTargetNode: %s", targetNode, ui.helper.data("dtTargetNode"));
-//            logMsg("draggable-connectToDynatree.stop, %s", sourceNode);
+//            logMsg("draggable-connectToFancytree.stop: targetNode(from event): %s, dtTargetNode: %s", targetNode, ui.helper.data("dtTargetNode"));
+//            logMsg("draggable-connectToFancytree.stop, %s", sourceNode);
 //            logMsg("    type: %o, downEvent: %o, upEvent: %o", eventType, mouseDownEvent, event);
 //            logMsg("    targetNode: %o", targetNode);
 			if(!dropped){
@@ -177,10 +177,10 @@ function _registerDnd() {
 /* *****************************************************************************
  * 
  */
-/** @namespace $.ui.dynatree.dnd */
-$.ui.dynatree.registerExtension("dnd",
-    /** @scope ui_dynatree 
-     * @lends $.ui.dynatree.dnd.prototype 
+/** @namespace $.ui.fancytree.dnd */
+$.ui.fancytree.registerExtension("dnd",
+    /** @scope ui_fancytree 
+     * @lends $.ui.fancytree.dnd.prototype 
      */
     {
 	// Default options for this extension.
@@ -199,8 +199,8 @@ $.ui.dynatree.registerExtension("dnd",
 		onDragLeave: null // Callback(targetNode, sourceNode)
 	},
 	// Override virtual methods for this extension.
-	// `this`       : Dynatree instance
-	// `this._super`: the virtual function that was overriden (member of prev. extension or Dynatree)
+	// `this`       : Fancytree instance
+	// `this._super`: the virtual function that was overriden (member of prev. extension or Fancytree)
 	treeInit: function(ctx){
 		var tree = ctx.tree;
 		this._super(ctx);
@@ -221,7 +221,7 @@ $.ui.dynatree.registerExtension("dnd",
 			$source = sourceNode ? $(sourceNode.span) : null,
 			$target = $(targetNode.span);
 		if( !instData.$dropMarker ) {
-			instData.$dropMarker = $("<div id='dynatree-drop-marker'></div>")
+			instData.$dropMarker = $("<div id='fancytree-drop-marker'></div>")
 				.hide()
 				.css({"z-index": 1000})
 				.prependTo($(this.$div).parent());
@@ -232,31 +232,31 @@ $.ui.dynatree.registerExtension("dnd",
 		if(hitMode === "start"){
 		}
 		if(hitMode === "stop"){
-//          sourceNode.removeClass("dynatree-drop-target");
+//          sourceNode.removeClass("fancytree-drop-target");
 		}
 */
 //      this.$dropMarker.attr("class", hitMode);
 		if(hitMode === "after" || hitMode === "before" || hitMode === "over"){
-//          $source && $source.addClass("dynatree-drag-source");
+//          $source && $source.addClass("fancytree-drag-source");
 			var markerOffset = "0 0";
 
-//          $target.addClass("dynatree-drop-target");
+//          $target.addClass("fancytree-drop-target");
 
 			switch(hitMode){
 			case "before":
-				instData.$dropMarker.removeClass("dynatree-drop-after dynatree-drop-over");
-				instData.$dropMarker.addClass("dynatree-drop-before");
+				instData.$dropMarker.removeClass("fancytree-drop-after fancytree-drop-over");
+				instData.$dropMarker.addClass("fancytree-drop-before");
 				markerOffset = "0 -8";
 				break;
 			case "after":
-				instData.$dropMarker.removeClass("dynatree-drop-before dynatree-drop-over");
-				instData.$dropMarker.addClass("dynatree-drop-after");
+				instData.$dropMarker.removeClass("fancytree-drop-before fancytree-drop-over");
+				instData.$dropMarker.addClass("fancytree-drop-after");
 				markerOffset = "0 8";
 				break;
 			default:
-				instData.$dropMarker.removeClass("dynatree-drop-after dynatree-drop-before");
-				instData.$dropMarker.addClass("dynatree-drop-over");
-				$target.addClass("dynatree-drop-target");
+				instData.$dropMarker.removeClass("fancytree-drop-after fancytree-drop-before");
+				instData.$dropMarker.addClass("fancytree-drop-over");
+				$target.addClass("fancytree-drop-target");
 				markerOffset = "8 0";
 			}
 //            logMsg("Creating marker: %o", this.$dropMarker);
@@ -275,48 +275,48 @@ $.ui.dynatree.registerExtension("dnd",
 					of: $target,
 					offset: markerOffset
 				});
-//          helper.addClass("dynatree-drop-hover");
+//          helper.addClass("fancytree-drop-hover");
 		} else {
-//          $source && $source.removeClass("dynatree-drag-source");
-			$target.removeClass("dynatree-drop-target");
+//          $source && $source.removeClass("fancytree-drag-source");
+			$target.removeClass("fancytree-drop-target");
 			instData.$dropMarker.hide();
-//          helper.removeClass("dynatree-drop-hover");
+//          helper.removeClass("fancytree-drop-hover");
 		}
 		if(hitMode === "after"){
-			$target.addClass("dynatree-drop-after");
+			$target.addClass("fancytree-drop-after");
 		} else {
-			$target.removeClass("dynatree-drop-after");
+			$target.removeClass("fancytree-drop-after");
 		}
 		if(hitMode === "before"){
-			$target.addClass("dynatree-drop-before");
+			$target.addClass("fancytree-drop-before");
 		} else {
-			$target.removeClass("dynatree-drop-before");
+			$target.removeClass("fancytree-drop-before");
 		}
 		if(accept === true){
 			if($source){
-				$source.addClass("dynatree-drop-accept");
+				$source.addClass("fancytree-drop-accept");
 			}
-			$target.addClass("dynatree-drop-accept");
-			helper.addClass("dynatree-drop-accept");
+			$target.addClass("fancytree-drop-accept");
+			helper.addClass("fancytree-drop-accept");
 		}else{
 			if($source){
-				$source.removeClass("dynatree-drop-accept");
+				$source.removeClass("fancytree-drop-accept");
 			}
-			$target.removeClass("dynatree-drop-accept");
-			helper.removeClass("dynatree-drop-accept");
+			$target.removeClass("fancytree-drop-accept");
+			helper.removeClass("fancytree-drop-accept");
 		}
 		if(accept === false){
 			if($source){
-				$source.addClass("dynatree-drop-reject");
+				$source.addClass("fancytree-drop-reject");
 			}
-			$target.addClass("dynatree-drop-reject");
-			helper.addClass("dynatree-drop-reject");
+			$target.addClass("fancytree-drop-reject");
+			helper.addClass("fancytree-drop-reject");
 		}else{
 			if($source){
-				$source.removeClass("dynatree-drop-reject");
+				$source.removeClass("fancytree-drop-reject");
 			}
-			$target.removeClass("dynatree-drop-reject");
-			helper.removeClass("dynatree-drop-reject");
+			$target.removeClass("fancytree-drop-reject");
+			helper.removeClass("fancytree-drop-reject");
 		}
 	},
 
@@ -351,10 +351,10 @@ $.ui.dynatree.registerExtension("dnd",
 		switch (eventName) {
 		case "helper":
 			// Only event and node argument is available
-			var $helper = $("<div class='dynatree-drag-helper'><span class='dynatree-drag-helper-img' /></div>")
+			var $helper = $("<div class='fancytree-drag-helper'><span class='fancytree-drag-helper-img' /></div>")
 				.append($(event.target).closest("a").clone());
 			// issue 244: helper should be child of scrollParent
-			$("ul.dynatree-container", node.tree.$div).append($helper);
+			$("ul.fancytree-container", node.tree.$div).append($helper);
 //          $(node.tree.divTree).append($helper);
 			// Attach node reference to helper object
 			$helper.data("dtSourceNode", node);
@@ -376,7 +376,7 @@ $.ui.dynatree.registerExtension("dnd",
 				ui.helper.trigger("mouseup");
 				ui.helper.hide();
 			} else {
-				nodeTag.addClass("dynatree-drag-source");
+				nodeTag.addClass("fancytree-drag-source");
 			}
 			break;
 		case "enter":
@@ -485,7 +485,7 @@ $.ui.dynatree.registerExtension("dnd",
 			}
 			break;
 		case "stop":
-			nodeTag.removeClass("dynatree-drag-source");
+			nodeTag.removeClass("fancytree-drag-source");
 			if(dnd.onDragStop){
 				dnd.onDragStop(node);
 			}

@@ -11,9 +11,9 @@
  * Usage:
 	$("select#skinswitcher").skinswitcher({
 		base: "../src/",
-		choices: [{name: "XP", value: "xp", href: "skin/ui.dynatree.css"},
-		          {name: "Vista", value: "vista", href: "skin-vista/ui.dynatree.css"},
-		          {name: "Lion", value: "lion", href: "skin-lion/ui.dynatree.css"}
+		choices: [{name: "XP", value: "xp", href: "skin/ui.fancytree.css"},
+		          {name: "Vista", value: "vista", href: "skin-vista/ui.fancytree.css"},
+		          {name: "Lion", value: "lion", href: "skin-lion/ui.fancytree.css"}
 		          ],
 		init: "lion"
 	});
@@ -130,7 +130,7 @@ function initCodeSamples()
 		}
 	);
 	if(jQuery.ui){
-		var info = "Dynatree " + jQuery.ui.dynatree.version
+		var info = "Fancytree " + jQuery.ui.fancytree.version
 			+ ", jQuery UI " + jQuery.ui.version
 			+ ", jQuery " + jQuery.fn.jquery;
 /*
@@ -170,9 +170,10 @@ $(function(){
 
 	$("select#skinswitcher").skinswitcher({
 		base: "../src/",
-		choices: [{name: "XP", value: "xp", href: "skin/ui.dynatree.css"},
-		          {name: "Vista", value: "vista", href: "skin-vista/ui.dynatree.css"},
-		          {name: "Lion", value: "lion", href: "skin-lion/ui.dynatree.css"}
+		choices: [{name: "XP", value: "xp", href: "skin/ui.fancytree.css"},
+		          {name: "Vista-Classic", value: "vista-classic", href: "skin-vista-classic/ui.fancytree.css"},
+		          {name: "Vista", value: "vista", href: "skin-vista/ui.fancytree.css"},
+		          {name: "Lion", value: "lion", href: "skin-lion/ui.fancytree.css"}
 		          ]
 //		init: "lion"
 	});

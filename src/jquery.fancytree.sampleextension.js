@@ -1,11 +1,11 @@
 /*!
- * jquery.dynatree.sampleextension.js
- * Sample extension for jquery.dynatree.js (http://dynatree.googlecode.com/).
+ * jquery.fancytree.sampleextension.js
+ * Sample extension for jquery.fancytree.js (http://fancytree.googlecode.com/).
  * 
  * Copyright (c) 2012, Martin Wendt (http://wwWendt.de)
  * 
  * Dual licensed under the MIT or GPL Version 2 licenses.
- *     http://code.google.com/p/dynatree/wiki/LicenseInfo
+ *     http://code.google.com/p/fancytree/wiki/LicenseInfo
  */
 
 (function($) {
@@ -13,23 +13,23 @@
 "use strict";
 
 // prevent duplicate loading
-// if ( $.ui.dynatree && $.ui.dynatree.version ) {
-//     $.ui.dynatree.warn("Dynatree: duplicate include");
+// if ( $.ui.fancytree && $.ui.fancytree.version ) {
+//     $.ui.fancytree.warn("Fancytree: duplicate include");
 //     return;
 // }
 
 /**
- * Sample function that extends Dynatree class. 
+ * Sample function that extends Fancytree class. 
  * 
  * Called like 
  *     tree.fooBar("mymode");
  * for example
- *     $("#tree").dynatree("getTree").fooBar("mymode");
+ *     $("#tree").fancytree("getTree").fooBar("mymode");
  *     
- * @lends Dynatree.prototype
- * @requires jquery.dynatree.sampleextension.js
+ * @lends Fancytree.prototype
+ * @requires jquery.fancytree.sampleextension.js
  */
-$.ui.dynatree._DynatreeClass.prototype.fooBar = function(mode){
+$.ui.fancytree._FancytreeClass.prototype.fooBar = function(mode){
 	var tree = this,
 	    treeOptions = tree.options,
 	    extOptions = tree.options.sampleextension,
@@ -41,11 +41,11 @@ $.ui.dynatree._DynatreeClass.prototype.fooBar = function(mode){
  * Sample function that extends the widget API. 
  * 
  * Called like 
- *     $("#tree").dynatree("widgetMethod1", "abc");
+ *     $("#tree").fancytree("widgetMethod1", "abc");
  *
- * @requires jquery.dynatree.sampleextension.js
+ * @requires jquery.fancytree.sampleextension.js
  */
-$.ui.dynatree.prototype.widgetMethod1 = function(arg1){
+$.ui.fancytree.prototype.widgetMethod1 = function(arg1){
 	var tree = this.tree,
 	    treeOptions = tree.options,
 	    extOptions = tree.options.sampleextension,
@@ -58,7 +58,7 @@ $.ui.dynatree.prototype.widgetMethod1 = function(arg1){
 /**
  * Extension code
  */
-$.ui.dynatree.registerExtension("sampleextension", {
+$.ui.fancytree.registerExtension("sampleextension", {
 	/** @type String Optional version information */
 	version: "1.0.0",
 	/** Default options for this extension. */
@@ -77,8 +77,8 @@ $.ui.dynatree.registerExtension("sampleextension", {
 	},
 	// Overide virtual methods for this extension.
 	// `this`       : is this extension object
-	// `this._base` : the Dynatree instance
-	// `this._super`: the virtual function that was overriden (member of prev. extension or Dynatree)
+	// `this._base` : the Fancytree instance
+	// `this._super`: the virtual function that was overriden (member of prev. extension or Fancytree)
 	treeInit: function(ctx){
 		var tree = ctx.tree,
 			opts = ctx.options,
@@ -86,10 +86,10 @@ $.ui.dynatree.registerExtension("sampleextension", {
 
 		// TODO: use tree ID in cookie ID prefix by default
 		this.delimiter = "";
-		this.cookiePrefix = opts.persist.cookiePrefix || "dynatree-" + tree._id + "-";
+		this.cookiePrefix = opts.persist.cookiePrefix || "fancytree-" + tree._id + "-";
 		
 		// Bind postinit-handler to apply cookie state
-		tree.$div.bind("dynatreepostinit", function(e){
+		tree.$div.bind("fancytreepostinit", function(e){
 			var cookie,
 				prevFocus = $.cookie(self.cookiePrefix + "focus"), // record this before we activate
 				node;

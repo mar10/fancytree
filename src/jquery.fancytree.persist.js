@@ -1,18 +1,18 @@
 /*!
- * jquery.dynatree.persist.js
- * Persistence extension for jquery.dynatree.js (http://dynatree.googlecode.com/).
+ * jquery.fancytree.persist.js
+ * Persistence extension for jquery.fancytree.js (http://fancytree.googlecode.com/).
  * 
  * Copyright (c) 2012, Martin Wendt (http://wwWendt.de)
  * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://code.google.com/p/dynatree/wiki/LicenseInfo
+ * http://code.google.com/p/fancytree/wiki/LicenseInfo
  */
 (function($) {
 
 "use strict";
 
 // prevent duplicate loading
-// if ( $.ui.dynatree && $.ui.dynatree.version ) {
-//     $.ui.dynatree.warn("Dynatree: duplicate include");
+// if ( $.ui.fancytree && $.ui.fancytree.version ) {
+//     $.ui.fancytree.warn("Fancytree: duplicate include");
 //     return;
 // }
 
@@ -35,12 +35,12 @@ var ACTIVE = "active",
 /**
  * 
  * Called like 
- *     $("#tree").dynatree("getTree").clearCookies("active expanded focus selected");
+ *     $("#tree").fancytree("getTree").clearCookies("active expanded focus selected");
  * 
- * @lends Dynatree.prototype
- * @requires jquery.dynatree.persist.js
+ * @lends Fancytree.prototype
+ * @requires jquery.fancytree.persist.js
  */
-$.ui.dynatree._DynatreeClass.prototype.clearCookies = function(types){
+$.ui.fancytree._FancytreeClass.prototype.clearCookies = function(types){
 	var cookiePrefix = this.persist.cookiePrefix;
 	types = types || "active expanded focus selected";
 	// TODO: optimize
@@ -71,11 +71,11 @@ DynaTreeStatus._getTreePersistData = function(cookieId, cookieOpts) {
 /*******************************************************************************
  * Extension code
  */
-$.ui.dynatree.registerExtension("persist", {
+$.ui.fancytree.registerExtension("persist", {
 	// Default options for this extension.
 	options: {
 		cookieDelimiter: "~",
-		cookiePrefix: undefined, // 'dynatree-<treeId>-' by default 
+		cookiePrefix: undefined, // 'fancytree-<treeId>-' by default 
 		cookie: {
 			raw: false,
 			expires: "",
@@ -106,8 +106,8 @@ $.ui.dynatree.registerExtension("persist", {
 		$.cookie(cookieName, cookieList.join(instOpts.cookieDelimiter), instOpts.cookie);
 	},
 	// Overide virtual methods for this extension.
-	// `this`       : is this Dynatree object
-	// `this._super`: the virtual function that was overridden (member of prev. extension or Dynatree)
+	// `this`       : is this Fancytree object
+	// `this._super`: the virtual function that was overridden (member of prev. extension or Fancytree)
 	treeInit: function(ctx){
 		var tree = ctx.tree,
 			opts = ctx.options,
@@ -116,14 +116,14 @@ $.ui.dynatree.registerExtension("persist", {
 
 		_assert($.cookie, "Missing required plugin for 'persist' extension: jquery.cookie.js");
 
-		instData.cookiePrefix = instOpts.cookiePrefix || "dynatree-" + tree._id + "-";
+		instData.cookiePrefix = instOpts.cookiePrefix || "fancytree-" + tree._id + "-";
 		instData.storeActive = instOpts.types.indexOf(ACTIVE) >= 0;
 		instData.storeExpanded = instOpts.types.indexOf(EXPANDED) >= 0;
 		instData.storeSelected = instOpts.types.indexOf(SELECTED) >= 0;
 		instData.storeFocus = instOpts.types.indexOf(FOCUS) >= 0;
 		
 		// Bind init-handler to apply cookie state
-		tree.$div.bind("dynatreeinit", function(e){
+		tree.$div.bind("fancytreeinit", function(e){
 			var cookie,
 				keyList,
 				i,

@@ -1,13 +1,13 @@
 /*************************************************************************
-	jquery.dynatree.filter.js
-	Table extension for jquery.dynatree.js.
+	jquery.fancytree.filter.js
+	Table extension for jquery.fancytree.js.
 
 	Copyright (c) 2012, Martin Wendt (http://wwWendt.de)
 	Dual licensed under the MIT or GPL Version 2 licenses.
-	http://code.google.com/p/dynatree/wiki/LicenseInfo
+	http://code.google.com/p/fancytree/wiki/LicenseInfo
 
 	A current version and some documentation is available at
-		http://dynatree.googlecode.com/
+		http://fancytree.googlecode.com/
 *************************************************************************/
 
 // Start of local namespace
@@ -18,8 +18,8 @@
 "use strict";
 
 // prevent duplicate loading
-// if ( $.ui.dynatree && $.ui.dynatree.version ) {
-//     $.ui.dynatree.warn("Dynatree: duplicate include");
+// if ( $.ui.fancytree && $.ui.fancytree.version ) {
+//     $.ui.fancytree.warn("Fancytree: duplicate include");
 //     return;
 // }
 
@@ -52,10 +52,10 @@ function _escapeRegex(str){
  * 
  * @param {function | string} filter
  * @returns {integer} count
- * @lends Dynatree.prototype
- * @requires jquery.dynatree.filter.js
+ * @lends Fancytree.prototype
+ * @requires jquery.fancytree.filter.js
  */
-$.ui.dynatree._DynatreeClass.prototype.applyFilter = function(filter){
+$.ui.fancytree._FancytreeClass.prototype.applyFilter = function(filter){
 	var count = 0;
 	// Reset current filter
 	this.visit(function(node){
@@ -73,7 +73,7 @@ $.ui.dynatree._DynatreeClass.prototype.applyFilter = function(filter){
 	}
 	
 	this.enableFilter = true;
-	this.$div.addClass("dynatree-ext-filter");
+	this.$div.addClass("fancytree-ext-filter");
 	this.visit(function(node){
 		if(filter(node)){
 			count++;
@@ -90,10 +90,10 @@ $.ui.dynatree._DynatreeClass.prototype.applyFilter = function(filter){
 /**
  * Reset the filter.
  * 
- * @lends Dynatree.prototype
- * @requires jquery.dynatree.filter.js
+ * @lends Fancytree.prototype
+ * @requires jquery.fancytree.filter.js
  */
-$.ui.dynatree._DynatreeClass.prototype.clearFilter = function(){
+$.ui.fancytree._FancytreeClass.prototype.clearFilter = function(){
 	this.visit(function(node){
 		delete node.match;
 		delete node.subMatch;
@@ -102,22 +102,22 @@ $.ui.dynatree._DynatreeClass.prototype.clearFilter = function(){
 	
 	this.enableFilter = false;
 	this.render();
-	this.$div.removeClass("dynatree-ext-filter");
+	this.$div.removeClass("fancytree-ext-filter");
 };
 
 
 /*******************************************************************************
  * Extension code
  */
-$.ui.dynatree.registerExtension("filter", {
+$.ui.fancytree.registerExtension("filter", {
 	// Default options for this extension.
 	options: {
 		mode: "dimm"
 	},
 	// Override virtual methods for this extension.
 	// `this`       : is this extension object
-	// `this._base` : the Dynatree instance
-	// `this._super`: the virtual function that was overriden (member of prev. extension or Dynatree)
+	// `this._base` : the Fancytree instance
+	// `this._super`: the virtual function that was overriden (member of prev. extension or Fancytree)
 	treeInit: function(ctx){
 		this._super(ctx);
 		ctx.tree.filter = false;
@@ -140,14 +140,14 @@ $.ui.dynatree.registerExtension("filter", {
 			return;
 		}
 		if( node.match ){
-			$span.addClass("dynatree-match");
+			$span.addClass("fancytree-match");
 		}else{
-			$span.removeClass("dynatree-match");
+			$span.removeClass("fancytree-match");
 		}
 		if( node.subMatch ){
-			$span.addClass("dynatree-submatch");
+			$span.addClass("fancytree-submatch");
 		}else{
-			$span.removeClass("dynatree-submatch");
+			$span.removeClass("fancytree-submatch");
 		}
 		if(opts.filter.mode === "hide"){
 			var visible = !!(node.match || node.subMatch);
