@@ -1287,7 +1287,8 @@ Fancytree.prototype = /**@lends Fancytree*/{
 				if(!activate){
 //                    this._callHook("nodeSetFocus", ctx);
 				}
-				this._callHook("nodeSetExpanded", ctx, true);
+//				this._callHook("nodeSetExpanded", ctx, true);
+	            this._callHook("nodeToggleExpanded", ctx);
 			}
 		}
 		// Make sure that clicks stop, otherwise <a href='#'> jumps to the top
@@ -2498,7 +2499,7 @@ $.widget("ui.fancytree",
 		extensions: [],
 		fx: { height: "toggle", duration: 200 },
 //		hooks: {},
-		idPrefix: "dt_",
+		idPrefix: "ft_",
 		keyPathSeparator: "/",
 		strings: {
 			loading: "Loading&#8230;",
