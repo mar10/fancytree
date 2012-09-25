@@ -1794,7 +1794,8 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		}
 		// folder or doctype icon
 		if ( node.icon ) {
-			ares.push("<img src='" + opts.imagePath + node.icon + "' alt='' />");
+			var imageSrc = (node.icon.charAt(0) === "/") ? node.icon : (opts.imagePath + node.icon);
+			ares.push("<img src='" + imageSrc + "' alt='' />");
 		} else if ( node.icon !== false ) {
 			// icon == false means 'no icon', icon == null means 'default icon'
 			ares.push("<span class='fancytree-icon'></span>");
