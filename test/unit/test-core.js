@@ -48,10 +48,12 @@ function _getNode(key){
     return node;
 }
 
+
 /** Get FancytreeNode from current tree. */
 function _getTree(key){
     return $("#tree").fancytree("getTree");
 }
+
 
 /** Get node title as rendered in the DOM. */
 function _getNodeTitle(key){
@@ -62,12 +64,33 @@ function _getNodeTitle(key){
     return $(node.span).find(".fancytree-title").html();
 }
 
+
 /** Convert array of nodes to array to array of node keys. */
 function _getNodeKeyArray(nodeArray){
     if(!$.isArray(nodeArray)){
         return nodeArray;
     }
     return $.map(nodeArray, function(n){ return n.key; });
+}
+
+
+/** Fake an Ajax request, return a $.Promise. */
+function _fakeAjaxLoad(node, count, delay){
+    // fake ajax response with 5 subnodes
+    var dfd = new $.Deferred();
+    setTimeout(function(){
+        var children = [];
+        for(var i=0; i<count; i++){
+            children.push({
+                key: node.key + "_" + (i+1), 
+                title: node.title + "_" + (i+1),
+                lazy: true
+                });
+        }
+        // emulate ajax.done(data, textStatus, jqXHR)
+        dfd.resolveWith(this, [children, null, null]);
+    }, delay);
+    return dfd.promise();
 }
 
 /*******************************************************************************
@@ -174,12 +197,12 @@ test("Create fancytree", function() {
             equal(data.tree.rootNode.children.length, TESTDATA_TOPNODES, "tree.rootNode has all child nodes");
 
 //            var tree = data.tree;
-            equal($("li#dt_2 a.fancytree-title").attr("title"), "Look, a tool tip!", "tooltip set");
-            equal($("li#dt_3 a.fancytree-title").html(), "<span>item2 with <b>html</b> inside a span tag</span>", "raw html allowed");
-            equal($("li#dt_4 a.fancytree-title").html(), null, "`nolink` suppresses <a> tag");
-            equal($("li#dt_4 span.fancytree-title").length, 1, "`nolink` uses <span> tag");
-            equal($("li#dt_5 a.fancytree-title").attr("href"), "http://www.wwWendt.de/", "href set");
-            ok($("li#dt_6 span.fancytree-node").hasClass("my-extra-class"), "custom class added");
+            equal($("li#ft_2 a.fancytree-title").attr("title"), "Look, a tool tip!", "tooltip set");
+            equal($("li#ft_3 a.fancytree-title").html(), "<span>item2 with <b>html</b> inside a span tag</span>", "raw html allowed");
+            equal($("li#ft_4 a.fancytree-title").html(), null, "`nolink` suppresses <a> tag");
+            equal($("li#ft_4 span.fancytree-title").length, 1, "`nolink` uses <span> tag");
+            equal($("li#ft_5 a.fancytree-title").attr("href"), "http://www.wwWendt.de/", "href set");
+            ok($("li#ft_6 span.fancytree-node").hasClass("my-extra-class"), "custom class added");
 
             start();
         }
@@ -492,7 +515,7 @@ test(".click() to expand a folder", function() {
             start();
         }
     });
-    $("#tree #dt_10 span.fancytree-expander").click();
+    $("#tree #ft_10 span.fancytree-expander").click();
 });
 
 
@@ -517,7 +540,7 @@ test(".click() to activate a node", function() {
             start();
         }
     });
-    $("#tree #dt_2").click();
+    $("#tree #ft_2").click();
 });
 
 
@@ -543,7 +566,7 @@ test(".click() to activate a folder (clickFolderMode 3 triggers expand)", functi
             start();
         }
     });
-    $("#tree #dt_10").click();
+    $("#tree #ft_10").click();
 });
 
 
@@ -569,7 +592,7 @@ test(".click() to select a node", function() {
             start();
         }
     });
-    $("#tree #dt_2 span.fancytree-checkbox").click();
+    $("#tree #ft_2 span.fancytree-checkbox").click();
 });
 
 /*******************************************************************************
@@ -590,7 +613,7 @@ test(".click() to expand a lazy folder (lazyload returns ajax options)", functio
             equal(data.tree.count(), TESTDATA_NODES, "lazy tree has 23 nodes");
             equal($("#tree li").length, TESTDATA_VISIBLENODES, "lazy tree has rendered 13 node elements");
             // now expand a lazy folder
-            $("#tree #dt_30 span.fancytree-expander").click();
+            $("#tree #ft_30 span.fancytree-expander").click();
         },
         queryexpand: function(e, data){
             equal(sequence++, 2, "receive `queryexpand` callback");
@@ -692,26 +715,67 @@ test("apply patch", function() {
  */
 module("keypath");
 
-test("loadKeyPath", function() {
+test("loadKeyPath (allready loaded)", function() {
+    _setupAsync();
+    expect(1);
+
+    $("#tree").fancytree({
+        source: testData
+    });
+    var tree = _getTree();
+    // TODO: test with numeric keys: 
+
+    tree.loadKeyPath("/10/10_1/10_1_2", function(node, status){
+        _appendEvent(status + " #" + (node ? node.key : "null"));
+    }).done(function(data){
+        _appendEvent("done.");
+        deepEqual(EVENT_SEQUENCE, 
+                ["loaded #10",
+                 "loaded #10_1",
+                 "ok #10_1_2",
+                 "done."], "event sequence");
+        start();
+    });
+});
+
+test("loadKeyPath (lazy nodes)", function() {
     _setupAsync();
     expect(1);
 
     $("#tree").fancytree({
         source: testData,
+//        lazyload: function(e, data){
+//            // fake ajax response with 5 subnodes
+//            var node = data.node,
+//                children = [];
+//            for(var i=0; i<5; i++){
+//                children.push({
+//                    key: node.key + "_" + (i+1), 
+//                    title: node.title + "_" + (i+1),
+//                    lazy: true
+//                    });
+//            }
+//            data.result = children;
+//        }
         lazyload: function(e, data){
-            data.result = {url: "ajax-sub2.json"};
+            data.result = _fakeAjaxLoad(data.node, 5, 1000);
         }
     });
     var tree = _getTree();
-    tree.loadKeyPath("/10/10_1/10_1_2").progress(function(data){
-        _appendEvent("progress: " + data);
+    // TODO: test with numeric keys: 
+
+    tree.loadKeyPath("/30/30_3/30_3_2", function(node, status){
+        _appendEvent(status + " #" + (node ? node.key : "null"));
     }).done(function(data){
-        _appendEvent("done: " + data);
-        deepEqual(EVENT_SEQUENCE, [], "event sequence");
+        _appendEvent("done.");
+        deepEqual(EVENT_SEQUENCE, 
+                ["loaded #30",
+                 "loaded #30_3",
+                 "ok #30_3_2",
+                 "done."], "event sequence");
         start();
     });
 });
-
 // --- 
 // expand first info section
 // setTimeout(function(){

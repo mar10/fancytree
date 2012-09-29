@@ -160,6 +160,19 @@ function _makeNodeTitleMatcher(s){
 } 
 
 
+function _findDirectChild(node, key){
+    var cl = node.children;
+    if($.isArray(cl)){
+        for(var i=0, l=cl.length; i<l; i++){
+            if(cl[i].key === key){
+                return cl[i];
+            }
+        }
+    }
+    return null;
+}
+
+
 // Boolean attributes that can be set with equivalent class names in the LI tags
 var i,
     CLASS_ATTRS = ["active", "expanded", "focus", "folder", "lazy", "nolink", "selected"],
@@ -422,7 +435,6 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 			this.removeChildren();
 			return this.setExpanded(false);
 		}
-		// TODO: return promise
 	},
 	// TODO: expand(flag)
     /**Find all nodes that contain `match` in the title.
@@ -792,14 +804,21 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 
 */
 	},
-	// TODO: reload(force)
-	/**
-	 * Discard and reload all children of a lazy node
-	 * @returns {$.Promise}
-	 */
-	reloadChildren: function() {
-		_raiseNotImplemented(); // TODO: implement
-	},
+    /**
+     * Discard and reload all children of a lazy node.
+     * @param {Boolean} [discard=false]
+     * @returns $.Promise
+     */
+    lazyLoad: function(discard) {
+        if(discard){
+            this.discard();
+        }else{
+            _assert(!$.isArray(this.children));
+        }
+        var source = this.tree._triggerNodeEvent("lazyload", this);
+        _assert(typeof source !== "boolean", "lazyload event must return source in data.result");
+        return this.tree._callHook("nodeLoadChildren", this, source);
+    },
 	/**
 	 * @see Fancytree#nodeRender 
 	 */
@@ -1181,8 +1200,11 @@ Fancytree.prototype = /**@lends Fancytree*/{
     },
 */
 	/**
-     * @param {String} keyPath
-     * @param {function} keyPath
+	 * Expand all parents of one or more nodes.
+	 * Calls 
+     * @param {String | String[]} keyPath one or more key paths (e.g. '/3/2_1/7')
+     * @param {function} callback callbeck(mode) is called for every visited node
+     * @returns $.Promise
 	 */
 	/*
     _loadKeyPath: function(keyPath, callback) {
@@ -1234,19 +1256,70 @@ Fancytree.prototype = /**@lends Fancytree*/{
     },
 
 	 */
-    loadKeyPath: function(keyPath, callback) {
-        var segList = keyPath.split(this.options.keyPathSeparator);
-        // Remove leading '/'
-        if(segList[0] === ""){
-            segList.shift();
+    loadKeyPath: function(keyPathList, callback, _rootNode) {
+        var root = _rootNode || this.rootNode,
+            sep = this.options.keyPathSeparator,
+            self = this,
+            path, key, node, segList;
+        if(!$.isArray(keyPathList)){
+            keyPathList = [keyPathList];
         }
-        // Remove leading system root key
-        if(segList[0] === this.tnRoot.data.key){
-            this.logDebug("Removed leading root key.");
-            segList.shift();
+        // Pass 1: handle all path segments for nodes that are already loaded
+        // Collect distinct top-most lazy nodes in a map
+        var loadMap = {};
+        
+        for(var i=0; i<keyPathList.length; i++){
+            path = keyPathList[i];
+            // strip leading slash
+            if(path.charAt(0) === sep){
+                path = path.substr(1);
+            }
+            // traverse and strip keys, until we hit a lazy, unloaded node
+            segList = path.split(sep);
+            while(segList.length){
+                key = segList.shift();
+                node = _findDirectChild(root, key);
+                if(!node){
+                    this.warn("loadKeyPath: key not found: " + key + " (parent: " + root + ")");
+                    callback.call(this, key, "error");
+                    break;
+                }else if(segList.length === 0){
+                    callback.call(this, node, "ok");
+                    break;
+                }else if(!node.lazy || (node.hasChildren() !== undefined )){
+                    callback.call(this, node, "loaded");
+                    root = node;
+                }else{
+                    callback.call(this, node, "loaded");
+//                    segList.unshift(key);
+                    if(loadMap[key]){
+                        loadMap[key].push(segList.join(sep));
+                    }else{
+                        loadMap[key] = [segList.join(sep)];
+                    }
+                    break;
+                }
+            }
         }
-        keyPath = segList.join(this.options.keyPathSeparator);
-        return this.tnRoot._loadKeyPath(keyPath, callback);
+//        alert("loadKeyPath: loadMap=" + JSON.stringify(loadMap));
+        // Now load all lazy nodes and continue itearation for remaining paths
+        var deferredList = [];
+        for(key in loadMap){
+            node = _findDirectChild(root, key);
+            alert("loadKeyPath: lazy node(" + key + ") = " + node);
+            var dfd = new $.Deferred();
+            deferredList.push(dfd);
+            node.lazyLoad().done(function(){
+//                callback.call(self, node, "loaded2");
+                self.loadKeyPath.call(self, loadMap[key], callback, node).always(_makeResolveFunc(dfd, self));
+            }).fail(function(errMsg){
+                self.warn("loadKeyPath: error loading: " + key + " (parent: " + root + ")");
+                callback.call(self, node, "error");
+                dfd.reject();
+            });
+        }
+        // Return a promise that is resovled, when ALL paths were loaded
+        return $.when.apply($, deferredList).promise();
     },
 	/** _Default handling for mouse click events. */
 	nodeClick: function(ctx) {
@@ -1474,10 +1547,12 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		dfd.done(function(){
 			_assert($.isArray(children), "expected array of children");
 			node.addChildren(children);
-			if(!!node.parent){
+			if(node.parent){
 				// if nodeLoadChildren was called for rootNode, the caller must
 				// use tree.render() instead
-				tree.nodeRender(ctx);
+			    if(node.isVisible()){
+	                tree.nodeRender(ctx);
+			    }
 				// trigger fancytreeloadchildren (except for tree-reload)
 				tree._triggerNodeEvent("loadchildren", node);
 			}
@@ -1500,6 +1575,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		// TODO: implement and improve
 		// http://code.google.com/p/fancytree/issues/detail?id=222
 	},
+    /** Expand all parents.*/
 	nodeMakeVisible: function(ctx) {
 		// TODO: scroll as neccessary: http://stackoverflow.com/questions/8938352/fancytree-how-to-scroll-to-active-node
 		var parents = ctx.node.getParentList(false, false);
@@ -1651,12 +1727,9 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		 *
 		 * - node was not yet rendered:
 		 *   create markup
-		 * - node was rendered
-		 *   exit fast
+		 * - node was rendered: exit fast
 		 * - children have been added
 		 * - childern have been removed
-		 *
-		 *
 		 */
 		var node = ctx.node,
 			tree = ctx.tree,
@@ -2040,6 +2113,17 @@ Fancytree.prototype = /**@lends Fancytree*/{
 
 		// Load lazy nodes, if any. Then continue with _afterLoad()
 		if(flag && node.lazy && node.hasChildren() === undefined){
+            node.debug("nodeSetExpanded: load start...");
+		    node.lazyLoad().done(function(){
+                node.debug("nodeSetExpanded: load done");
+                if(dfd.notifyWith){ // requires jQuery 1.6+
+                    dfd.notifyWith(node, ["loaded"]);
+                }
+                _afterLoad.call(tree);
+            }).fail(function(errMsg){
+                dfd.rejectWith(node, ["load failed (" + errMsg + ")"]);
+            });
+/*		    
 			var source = tree._triggerNodeEvent("lazyload", node, ctx.orgEvent);
 			_assert(typeof source !== "boolean", "lazyload event must return source in data.result");
             node.debug("nodeSetExpanded: load start...");
@@ -2052,6 +2136,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			}).fail(function(errMsg){
 				dfd.rejectWith(node, ["load failed (" + errMsg + ")"]);
 			});
+*/
 		}else{
 			_afterLoad();
 		}
