@@ -76,7 +76,10 @@ function _getNodeKeyArray(nodeArray){
 
 /** Fake an Ajax request, return a $.Promise. */
 function _fakeAjaxLoad(node, count, delay){
-    // fake ajax response with 5 subnodes
+    delay = delay || 0;
+    if($.isArray(delay)){ // random delay range [min..max]
+        delay = Math.round(delay[0] + Math.random() * (delay[1] - delay[0]));
+    }
     var dfd = new $.Deferred();
     setTimeout(function(){
         var children = [];
@@ -87,7 +90,7 @@ function _fakeAjaxLoad(node, count, delay){
                 lazy: true
                 });
         }
-        // emulate ajax.done(data, textStatus, jqXHR)
+        // emulate ajax deferred: done(data, textStatus, jqXHR)
         dfd.resolveWith(this, [children, null, null]);
     }, delay);
     return dfd.promise();
@@ -744,21 +747,9 @@ test("loadKeyPath (lazy nodes)", function() {
 
     $("#tree").fancytree({
         source: testData,
-//        lazyload: function(e, data){
-//            // fake ajax response with 5 subnodes
-//            var node = data.node,
-//                children = [];
-//            for(var i=0; i<5; i++){
-//                children.push({
-//                    key: node.key + "_" + (i+1), 
-//                    title: node.title + "_" + (i+1),
-//                    lazy: true
-//                    });
-//            }
-//            data.result = children;
-//        }
         lazyload: function(e, data){
-            data.result = _fakeAjaxLoad(data.node, 5, 1000);
+            // fake an async, deleayed Ajax request that generates 5 lazy nodes
+            data.result = _fakeAjaxLoad(data.node, 5, 10);
         }
     });
     var tree = _getTree();
@@ -770,9 +761,46 @@ test("loadKeyPath (lazy nodes)", function() {
         _appendEvent("done.");
         deepEqual(EVENT_SEQUENCE, 
                 ["loaded #30",
+                 "loading #30",
                  "loaded #30_3",
+                 "loading #30_3",
                  "ok #30_3_2",
                  "done."], "event sequence");
+        start();
+    });
+});
+
+test("loadKeyPath (multiple lazy nodes with expand)", function() {
+    _setupAsync();
+    expect(7);
+
+    $("#tree").fancytree({
+        source: testData,
+        lazyload: function(e, data){
+            data.result = _fakeAjaxLoad(data.node, 5, [0, 30]);
+        }
+    });
+    var tree = _getTree(),
+        pathList = ["/30/30_3/30_3_2",
+                    "/30/30_3/30_3_1",
+                    "/30/30_5/30_5_1",
+                    "/30/30_5/30_5_XXX"];
+    
+    tree.loadKeyPath(pathList, function(node, status){
+        _appendEvent(status + " #" + (node.key ? node.key : node));
+        if(status === "loaded" || status === "ok"){
+            node.makeVisible();
+        }
+    }).done(function(data){
+        _appendEvent("done.");
+        // the event sequence depends on random delay, so we check for 'ok' only
+        ok($.inArray("ok #30_3_1", EVENT_SEQUENCE) >= 0, "node was loaded");
+        equal(_getNode("30_3_1").isVisible(), true, "node was expanded");
+        ok($.inArray("ok #30_3_2", EVENT_SEQUENCE) >= 0, "node was loaded");
+        equal(_getNode("30_3_2").isVisible(), true, "node was expanded");
+        ok($.inArray("ok #30_5_1", EVENT_SEQUENCE) >= 0, "node was loaded");
+        equal(_getNode("30_5_1").isVisible(), true, "node was expanded");
+        ok($.inArray("error #30_5_XXX", EVENT_SEQUENCE) >= 0, "missing node was reported");
         start();
     });
 });

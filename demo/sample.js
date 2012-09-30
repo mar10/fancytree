@@ -170,9 +170,9 @@ $(function(){
 
 	$("select#skinswitcher").skinswitcher({
 		base: "../src/",
-		choices: [{name: "XP", value: "xp", href: "skin/ui.fancytree.css"},
-		          {name: "Vista-Classic", value: "vista-classic", href: "skin-vista-classic/ui.fancytree.css"},
-		          {name: "Vista", value: "vista", href: "skin-vista/ui.fancytree.css"},
+		choices: [{name: "XP", value: "xp", href: "skin-xp/ui.fancytree.css"},
+		          {name: "Vista (classic Dynatree)", value: "vista", href: "skin-vista/ui.fancytree.css"},
+		          {name: "Win7", value: "win7", href: "skin-win7/ui.fancytree.css"},
 		          {name: "Lion", value: "lion", href: "skin-lion/ui.fancytree.css"}
 		          ]
 //		init: "lion"

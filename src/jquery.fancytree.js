@@ -669,7 +669,13 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 		}
 		return true;
 	},
-	// TODO: makeVisible()
+    /** Make sure, all parents are expanded. */
+    makeVisible: function() {
+        var parents = this.getParentList(false, false);
+        for(var i=0, l=parents.length; i<l; i++){
+            parents[i].setExpanded(true);
+        }
+    },
 	/** Move this node to targetNode.
 	 *  @param {String} mode
 	 *      'child': append this node as last child of targetNode.
@@ -1304,19 +1310,23 @@ Fancytree.prototype = /**@lends Fancytree*/{
 //        alert("loadKeyPath: loadMap=" + JSON.stringify(loadMap));
         // Now load all lazy nodes and continue itearation for remaining paths
         var deferredList = [];
+        // Avoid jshint warning 'Don't make functions within a loop.':
+        function __lazyload(key, node, dfd){
+            callback.call(this, node, "loading");
+            node.lazyLoad().done(function(){
+              self.loadKeyPath.call(self, loadMap[key], callback, node).always(_makeResolveFunc(dfd, self));
+          }).fail(function(errMsg){
+              self.warn("loadKeyPath: error loading: " + key + " (parent: " + root + ")");
+              callback.call(self, node, "error");
+              dfd.reject();
+          });
+        }
         for(key in loadMap){
             node = _findDirectChild(root, key);
-            alert("loadKeyPath: lazy node(" + key + ") = " + node);
+//            alert("loadKeyPath: lazy node(" + key + ") = " + node);
             var dfd = new $.Deferred();
             deferredList.push(dfd);
-            node.lazyLoad().done(function(){
-//                callback.call(self, node, "loaded2");
-                self.loadKeyPath.call(self, loadMap[key], callback, node).always(_makeResolveFunc(dfd, self));
-            }).fail(function(errMsg){
-                self.warn("loadKeyPath: error loading: " + key + " (parent: " + root + ")");
-                callback.call(self, node, "error");
-                dfd.reject();
-            });
+            __lazyload(key, node, dfd);
         }
         // Return a promise that is resovled, when ALL paths were loaded
         return $.when.apply($, deferredList).promise();
@@ -1868,7 +1878,8 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		}
 		// folder or doctype icon
 		if ( node.icon ) {
-			ares.push("<img src='" + opts.imagePath + node.icon + "' alt='' />");
+			var imageSrc = (node.icon.charAt(0) === "/") ? node.icon : (opts.imagePath + node.icon);
+			ares.push("<img src='" + imageSrc + "' alt='' />");
 		} else if ( node.icon !== false ) {
 			// icon == false means 'no icon', icon == null means 'default icon'
 			ares.push("<span class='fancytree-icon'></span>");

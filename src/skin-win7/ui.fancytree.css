@@ -1,22 +1,6 @@
 /*
  * Fancytree Vista styles
-
- See also: http://www.colorzilla.com/gradient-editor/
- 
-both: 
-   unselected background: #FCFCFC 'nearly white'
-   hover bar (unselected, inactive): #F8FCFE..#EFF9FE (border: #D8F0FA) 'very light blue'
-   active node: #F6FBFD..#D5EFFC (border: #99DEFD)  'light blue'
-   active node with hover: #F2F9FD..#C4E8FA (border: #B6E6FB) 
- 
-Tree view:
-   active node, tree inactive: #FAFAFB..#E5E5E5 (border: #D9D9D9) 'light gray, selected, but tree not active'
-
-List view:
-   selected bar: --> active bar
-   focus  bar: active + border 1px dotted #090402 (inside the blue border)
-   
-   table left/right border: #EDEDED 'light gray'
+ * (See also vista_colors.txt)
  */
 .ui-helper-hidden {
 	display: none;
@@ -29,7 +13,7 @@ List view:
 	white-space: nowrap;
 	padding: 3px;
 	margin: 0; /* issue 201 */
-	background-color: white;
+	background-color: #FCFCFC;
 	border: 1px dotted gray;
 	overflow: auto;
 	height: 100%; /* issue 263 */
@@ -46,7 +30,7 @@ ul.fancytree-container li
 	list-style-image: none;
 	list-style-position: outside;
 	list-style-type: none;
-	-moz-background-clip:border;
+	-moz-background-clip: border;
 	-moz-background-inline-policy: continuous;
 	-moz-background-origin: padding;
 	background-attachment: scroll;
@@ -83,7 +67,6 @@ ul.fancytree-no-connector > li
  */
 span.fancytree-empty,
 span.fancytree-vline,
-/*span.fancytree-connector,*/
 span.fancytree-expander,
 span.fancytree-icon,
 span.fancytree-checkbox,
@@ -93,8 +76,6 @@ span.fancytree-drag-helper-img,
 {
 	width: 16px;
 	height: 16px;
-/*	display: -moz-inline-box; /* @ FF 1+2 removed for issue 221*/
-/*	-moz-box-align: start; /* issue 221 */
 	display: inline-block; /* Required to make a span sizeable */
 	vertical-align: top;
 	background-repeat: no-repeat;
@@ -186,97 +167,28 @@ span.fancytree-expander:hover
 /*******************************************************************************
  * Checkbox icon
  */
-span.fancytree-checkbox
-{
+span.fancytree-checkbox {
 	margin-left: 3px;
 	background-position: 0px -32px;
 }
-span.fancytree-checkbox:hover
-{
-	background-position: -16px -32px;
-}
-
-.fancytree-partsel span.fancytree-checkbox
-{
-	background-position: -64px -32px;
-}
-.fancytree-partsel span.fancytree-checkbox:hover
-{
-	background-position: -80px -32px;
-}
-
-.fancytree-selected span.fancytree-checkbox
-{
-	background-position: -32px -32px;
-}
-.fancytree-selected span.fancytree-checkbox:hover
-{
-	background-position: -48px -32px;
-}
+span.fancytree-checkbox:hover  background-position: -16px -32px; }
+.fancytree-partsel span.fancytree-checkbox { background-position: -64px -32px; }
+.fancytree-partsel span.fancytree-checkbox:hover { background-position: -80px -32px; }
+.fancytree-selected span.fancytree-checkbox {	background-position: -32px -32px; }
+.fancytree-selected span.fancytree-checkbox:hover { background-position: -48px -32px; }
 
 /*******************************************************************************
  * Radiobutton icon
- * This is a customization, that may be activated by overriding the 'checkbox'
- * class name as 'fancytree-radio' in the tree options.
  */
-.fancytree-radio span.fancytree-checkbox
-{
+.fancytree-radio span.fancytree-checkbox {
 	margin-left: 3px;
 	background-position: 0px -48px;
 }
-.fancytree-radio span.fancytree-checkbox:hover
-{
-	background-position: -16px -48px;
-}
-
-.fancytree-radio .fancytree-partsel span.fancytree-checkbox
-{
-	background-position: -64px -48px;
-}
-.fancytree-radio .fancytree-partsel span.fancytree-checkbox:hover
-{
-	background-position: -80px -48px;
-}
-
-.fancytree-radio .fancytree-selected span.fancytree-checkbox
-{
-	background-position: -32px -48px;
-}
-.fancytree-radio .fancytree-selected span.fancytree-checkbox:hover
-{
-	background-position: -48px -48px;
-}
-
-/*
-span.fancytree-radio
-{
-	margin-left: 3px;
-	background-position: 0px -48px;
-}
-span.fancytree-radio:hover
-{
-	background-position: -16px -48px;
-}
-
-.fancytree-partsel span.fancytree-radio
-{
-	background-position: -64px -48px;
-}
-.fancytree-partsel span.fancytree-radio:hover
-{
-	background-position: -80px -48px;
-}
-
-.fancytree-selected span.fancytree-radio
-{
-	background-position: -32px -48px;
-}
-.fancytree-selected span.fancytree-radio:hover
-{
-	background-position: -48px -48px;
-}
-*/
-
+.fancytree-radio span.fancytree-checkbox:hover { background-position: -16px -48px; }
+.fancytree-radio .fancytree-partsel span.fancytree-checkbox { background-position: -64px -48px; }
+.fancytree-radio .fancytree-partsel span.fancytree-checkbox:hover { background-position: -80px -48px; }
+.fancytree-radio .fancytree-selected span.fancytree-checkbox { background-position: -32px -48px; }
+.fancytree-radio .fancytree-selected span.fancytree-checkbox:hover { background-position: -48px -48px; }
 
 /*******************************************************************************
  * Node type icon
@@ -287,122 +199,128 @@ span.fancytree-radio:hover
  * 1st character: 'e': expanded, 'c': collapsed
  * 2nd character (optional): 'f': folder
  */
-
 span.fancytree-icon /* Default icon */
 {
 	margin-left: 3px;
 	background-position: 0px 0px;
 }
-
-.fancytree-has-children span.fancytree-icon /* Default icon */
-{
-/*    background-position: 0px -16px; */
-}
-
-.fancytree-ico-cf span.fancytree-icon  /* Collapsed Folder */
-{
-	background-position: 0px -16px;
-}
-
-.fancytree-ico-ef span.fancytree-icon  /* Expanded Folder */
-{
-	background-position: -64px -16px;
-}
-
-/* Status node icons */
-
-.fancytree-statusnode-wait span.fancytree-icon
-{
-	background-image: url("loading.gif");
-}
-
-.fancytree-statusnode-error span.fancytree-icon
-{
-	background-position: 0px -112px;
-/*	background-image: url("ltError.gif");*/
-}
+.fancytree-ico-cf span.fancytree-icon { background-position: 0px -16px; } /* Collapsed Folder */
+.fancytree-ico-ef span.fancytree-icon { background-position: -64px -16px; } /* Expanded Folder */
+.fancytree-statusnode-wait span.fancytree-icon { background-image: url("loading.gif"); } /* Status node icons */
+.fancytree-statusnode-error span.fancytree-icon { background-position: 0px -112px; }
 
 /*******************************************************************************
  * Node titles
  */
-
-span.fancytree-title
-{
-	display: inline-block;
-}
-/* Remove blue color and underline from title links */
-a.fancytree-title
-{
-    text-decoration: none;
-}
-
 .fancytree-title
 {
 	display: inline-block; /* Better alignment, when title contains <br> */
-/*	vertical-align: top;*/
 	padding-left: 3px;
 	padding-right: 3px; /* Otherwise italic font will be outside bounds */
-	/*	line-height: 16px; /* should be the same as img height, in case 16 px */
     color: black; /* inherit doesn't work on IE */
     vertical-align: top;
     margin: 0px;
     margin-left: 3px;
-/*  outline: 0; /* @ Firefox, prevent dotted border after click */
-    /* Set transparent border to prevent jumping when active node gets a border
-       (we can do this, because this theme doesn't use vertical lines)
-       */
-    border: 1px solid white; /* Note: 'transparent' would not work in IE6 */
-
+/*    border: 1px solid #FCFCFC; /* reserve some space for status borders (Note: 'transparent' would not work in IE6) */
+    border: 1px solid transparent; /* reserve some space for status borders */
+    border-radius: 3px;
+    text-decoration: none;
 }
 
 .fancytree-title:hover
 {
-/*	text-decoration: underline; */
-	background-color: #F2F7FD; /* light blue */
-	border-color: #B8D6FB; /* darker light blue */
+	border-color: #D8F0FA; /* darker light blue */
+    background: #f8fcfe; /* Old browsers */
+    background: -moz-linear-gradient(top, #f8fcfe 0%, #eff9fe 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f8fcfe), color-stop(100%,#eff9fe)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #f8fcfe 0%,#eff9fe 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #f8fcfe 0%,#eff9fe 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #f8fcfe 0%,#eff9fe 100%); /* IE10+ */
+    background: linear-gradient(to bottom, #f8fcfe 0%,#eff9fe 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f8fcfe', endColorstr='#eff9fe',GradientType=0 ); /* IE6-9 */   
 }
 
-.fancytree-folder .fancytree-title
+span.fancytree-folder .fancytree-title
 {
-/*	font-weight: bold; */ /* custom */
+/*	font-weight: bold; */
 }
 
 a.fancytree-title:focus,
 span.fancytree-focused a:link  /* @IE */
 {
-	background-color: #EFEBDE; /* gray */
+    outline: 1px dotted black;
 }
 
-span.fancytree-has-children a
+span.fancytree-active .fancytree-title,
+span.fancytree-selected .fancytree-title
 {
-/*	font-style: oblique; /* custom: */
+	border: 1px solid #99DEFD;
+    background: #f6fbfd; /* Old browsers */
+    background: -moz-linear-gradient(top, #f6fbfd 0%, #d5effc 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f6fbfd), color-stop(100%,#d5effc)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #f6fbfd 0%,#d5effc 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #f6fbfd 0%,#d5effc 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #f6fbfd 0%,#d5effc 100%); /* IE10+ */
+    background: linear-gradient(to bottom, #f6fbfd 0%,#d5effc 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f6fbfd', endColorstr='#d5effc',GradientType=0 ); /* IE6-9 */
 }
 
-span.fancytree-expanded a
+span.fancytree-active .fancytree-title:hover,
+span.fancytree-active.fancytree-focused .fancytree-title,
+span.fancytree-selected .fancytree-title:hover,
+span.fancytree-selected.fancytree-focused .fancytree-title
 {
+    border: 1px solid #B6E6FB;
+    background: #f2f9fd; /* Old browsers */
+    background: -moz-linear-gradient(top, #f2f9fd 0%, #c4e8fa 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f2f9fd), color-stop(100%,#c4e8fa)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #f2f9fd 0%,#c4e8fa 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #f2f9fd 0%,#c4e8fa 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #f2f9fd 0%,#c4e8fa 100%); /* IE10+ */
+    background: linear-gradient(to bottom, #f2f9fd 0%,#c4e8fa 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2f9fd', endColorstr='#c4e8fa',GradientType=0 ); /* IE6-9 */ 
 }
 
-span.fancytree-selected a
+/* File Explorer does not distinguish selected and active (if multiple nodes are selected,
+   ) */
+.NEVER span.fancytree-active .fancytree-title,
+.NEVER span.fancytree-active.fancytree-focused .fancytree-title
 {
-/*	color: green; */
+    border: 1px solid #3399FF;
+	background: #daedff; /* Old browsers */
+	background: -moz-linear-gradient(top, #daedff 0%, #b4d9ff 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#daedff), color-stop(100%,#b4d9ff)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #daedff 0%,#b4d9ff 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #daedff 0%,#b4d9ff 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #daedff 0%,#b4d9ff 100%); /* IE10+ */
+	background: linear-gradient(to bottom, #daedff 0%,#b4d9ff 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#daedff', endColorstr='#b4d9ff',GradientType=0 ); /* IE6-9 */    
+}
+
+span.fancytree-selected .fancytree-title
+{
 	font-style: italic;
 }
 
-span.fancytree-active a
+span.fancytree-has-children .fancytree-title
 {
-	border: 1px solid #99DEFD;
-	background-color: #D8F0FA;
 }
+
+span.fancytree-expanded .fancytree-title
+{
+}
+
 
 /*******************************************************************************
  * 'table' extension
  */
 
-/*
 table.fancytree-ext-table {
-	border-collapse: collapse;
-	width: 100%;
+    border-spacing: 0;
+/*	border-collapse: collapse;*/
+/*	width: 100%;*/
 }
+/*
 table.fancytree-ext-table tbody tr:nth-child(even){
 	background-color: #f4f4f8;
 }
@@ -410,15 +328,54 @@ table.fancytree-ext-table tbody tr td {
 	border: 1px solid lightgray;
 }
 */
-table.fancytree-ext-table tbody tr.fancytree-focused {
-    background-color: #99DEFD;
+table.fancytree-ext-table tbody tr td {
+    border: 1px solid #EDEDED;
 }
-table.fancytree-ext-table tbody tr.fancytree-active {
-	background-color: royalblue;
+table.fancytree-ext-table tbody tr:hover td {
+	border: 1px solid #D8F0FA;
+	background: #f8fcfe; /* Old browsers */
+	background: -moz-linear-gradient(top, #f8fcfe 0%, #eff9fe 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f8fcfe), color-stop(100%,#eff9fe)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #f8fcfe 0%,#eff9fe 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #f8fcfe 0%,#eff9fe 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #f8fcfe 0%,#eff9fe 100%); /* IE10+ */
+	background: linear-gradient(to bottom, #f8fcfe 0%,#eff9fe 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f8fcfe', endColorstr='#eff9fe',GradientType=0 ); /* IE6-9 */   
 }
+table.fancytree-ext-table tbody tr.fancytree-focused td {
+/*    background-color: #99DEFD;*/
+    border: 1px dotted #090402;
+}
+table.fancytree-ext-table tbody tr.fancytree-active,
+table.fancytree-ext-table tbody tr.fancytree-selected {
+/*	background-color: royalblue;*/
+	background: #f6fbfd; /* Old browsers */
+	background: -moz-linear-gradient(top, #f6fbfd 0%, #d5effc 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f6fbfd), color-stop(100%,#d5effc)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #f6fbfd 0%,#d5effc 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #f6fbfd 0%,#d5effc 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #f6fbfd 0%,#d5effc 100%); /* IE10+ */
+	background: linear-gradient(to bottom, #f6fbfd 0%,#d5effc 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f6fbfd', endColorstr='#d5effc',GradientType=0 ); /* IE6-9 */
+}
+table.fancytree-ext-table tbody tr.fancytree-active:hover,
+table.fancytree-ext-table tbody tr.fancytree-selected:hover {
+/*  background-color: royalblue;*/
+	background: #f2f9fd; /* Old browsers */
+	background: -moz-linear-gradient(top, #f2f9fd 0%, #c4e8fa 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f2f9fd), color-stop(100%,#c4e8fa)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #f2f9fd 0%,#c4e8fa 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #f2f9fd 0%,#c4e8fa 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #f2f9fd 0%,#c4e8fa 100%); /* IE10+ */
+	background: linear-gradient(to bottom, #f2f9fd 0%,#c4e8fa 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2f9fd', endColorstr='#c4e8fa',GradientType=0 ); /* IE6-9 */ 
+}
+/*
 table.fancytree-ext-table tbody tr.fancytree-selected {
 	background-color: #99FDDE;
 }
+*/
+
 
 /*******************************************************************************
  * 'columnview' extension
@@ -505,7 +462,7 @@ div.fancytree-drag-helper
 div.fancytree-drag-helper a
 {
 	border: 1px solid gray;
-	background-color: white;
+	background-color: transparent;
 	padding-left: 5px;
 	padding-right: 5px;
 	opacity: 0.8;
