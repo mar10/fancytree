@@ -113,7 +113,15 @@ $.ui.fancytree.registerExtension("columnview", {
 			node = ctx.node;
 		// Render standard nested <ul> - <li> hierarchy
 		this._super(ctx, force, deep, collapsed, _recursive);
-		// Move <ul> with children into the appropriate <td>
+        // Remove expander and add a trailing triangle instead
+//        var $expander = $(node.span).find("span.fancytree-expander").detach();
+//        $(node.span).append($expander);
+//        $(node.span).find("span.fancytree-expander").hide();
+        $(node.span).find("span.fancytree-expander").remove();
+        if(node.hasChildren() !== false && !$(node.span).find("span.fancytree-cv-right").length){
+            $(node.span).append($("<span class='fancytree-icon fancytree-cv-right'>"));
+        }
+        // Move <ul> with children into the appropriate <td>
 		if(node.ul){
 			var level = node.getLevel();
 			if(level < tree.columnCount){

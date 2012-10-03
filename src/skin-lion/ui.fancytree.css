@@ -311,7 +311,8 @@ table.fancytree-ext-columnview tbody tr td {
 }
 table.fancytree-ext-columnview span.fancytree-node {
 	display: inline-block;
-	width: 100%;
+    position: relative; /* allow positioning of embedded spans*/
+    width: 100%;
 }
 table.fancytree-ext-columnview span.fancytree-node a{
 	border: 1px solid transparent;
@@ -321,7 +322,12 @@ table.fancytree-ext-columnview span.fancytree-node.fancytree-expanded {
 	background-color: #ccc;
 }
 table.fancytree-ext-columnview span.fancytree-node.fancytree-active {
-	background-color: royalblue;
+    background-color: royalblue;
+}
+table.fancytree-ext-columnview span.fancytree-cv-right {
+    background-position: 0px -80px;
+    position: absolute;
+    right: 3px;
 }
 
 

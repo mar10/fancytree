@@ -9,7 +9,7 @@
 
 	<script src="http://www.google-analytics.com/ga.js" type="text/javascript"></script>
 
-	<script src="../lib/jquery.min.js" type="text/javascript"></script>
+	<script src="../lib/jquery.js" type="text/javascript"></script>
 
 	<!-- Convert tabs to spaces and doc CSS -->
 	<link rel="stylesheet" type="text/css" href="howto.css">
@@ -62,93 +62,47 @@
     This is an info.
 </p>
 
-<h2>Initialisation</h2>
+<h2>Initialization</h2>
 <p>
     This section contains ... 
 </p>
-<dl>
-<dt>How do I ...</dt>
-<dd>
-    Fancytree is a complete rewrite that also led to some bigger (some subtle) 
-    changes in the API.
-    I felt that this would lead to some confusion, when googling for solutions
-    or looking at code samples in Stackoverflow that refer to older versions
-    of Fancytree.
+<h3>Initialize the tree using a callback</h3>
+<pre class="prettyprint">
+$("#tree").fancytree({
+    source: function(e, data) {
+        data.result = [
+            {title: "node 1", key: "1"},
+            {title: "node 2", key: "2", folder: true},
+            ]; 
+    },
+});
+</pre>
 
-    <div class="codesample">
-    <a href="sample-quick.html">Try this example...</a>
-    <pre class="prettyprint">
-    &lt;html>
-    &lt;head>
-        &lt;!-- Include the required JavaScript libraries: -->
-        &lt;script src='jquery/jquery.js' type="text/javascript">&lt;/script>
-        &lt;script src='jquery/jquery.ui.core.js' type="text/javascript">&lt;/script>
-        &lt;script src='jquery/jquery.cookie.js' type="text/javascript">&lt;/script>
-    
-        &lt;link rel='stylesheet' type='text/css' href='skin/ui.fancytree.css'>
-        &lt;script src='jquery.fancytree.js' type="text/javascript">&lt;/script>
-    
-        &lt;!-- Add code to initialize the tree when the document is loaded: -->
-        &lt;script type="text/javascript">
-        $(function(){
-            // Attach the fancytree widget to an existing &lt;div id="tree"> element
-            // and pass the tree options as an argument to the fancytree() function:
-            $("#tree").fancytree({
-                onActivate: function(node) {
-                    // A FancytreeNode object is passed to the activation handler
-                    // Note: we also get this event, if persistence is on, and the page is reloaded.
-                    alert("You activated " + node.data.title);
-                },
-                persist: true,
-                children: [ // Pass an array of nodes.
-                    {title: "Item 1"},
-                    {title: "Folder 2", isFolder: true,
-                        children: [
-                            {title: "Sub-item 2.1"},
-                            {title: "Sub-item 2.2"}
-                        ]
-                    },
-                    {title: "Item 3"}
-                ]
-            });
-        });
-        &lt;/script>
-    &lt;/head>
-    &lt;body>
-        &lt;!-- Add a &lt;div> element where the tree should appear: -->
-        &lt;div id="tree"> &lt;/div>
-    &lt;/body>
-    &lt;/html>
-    </pre>
-    </div>
-</dd>
-</dl>
 
-<h2>Programming the tree model</h2>
+<h2>Event handling</h2>
 <p>
-	This section contains ... 
+    This section contains ... 
 </p>
-<dl>
-<dt>How do I ...</dt>
-<dd>
-    Blah...
+<h3>Retrieve a FancytreeNode in a fancytree event handler</h3>
+<pre class="prettyprint">
+$("#tree").fancytree({
+    [...]
+    click: function(e, data) {
+        var node = data.node, 
+            tt = $.ui.fancytree.getEventTargetType(e.originalEvent); 
+    },
+});
+</pre>
 
-    <div class="codesample">
-    <a href="sample-quick.html">Try this example...</a>
-    <pre class="prettyprint">
-    &lt;html>
-    &lt;head>
-        &lt;!-- Include the required JavaScript libraries: -->
-    &lt;/head>
-    &lt;body>
-        &lt;!-- Add a &lt;div> element where the tree should appear: -->
-        &lt;div id="tree"> &lt;/div>
-    &lt;/body>
-    &lt;/html>
-    </pre>
-    </div>
-</dd>
-</dl>
+
+<h3>Retrieve a FancytreeNode in an arbitrary event handler</h3>
+<pre class="prettyprint">
+$(document).click()function(e, data) {
+    var node = $.ui.fancytree.getNode(e), 
+        tt = $.ui.fancytree.getEventTargetType(e); 
+});
+</pre>
+
 
 </body>
 </html>

@@ -328,7 +328,7 @@ function FancytreeNode(parent, data){
 
 	// Fix missing key
 	if(!this.key){
-		this.key = "_" + DT._nextNodeKey++;
+		this.key = "_" + FT._nextNodeKey++;
 	}
 	// Fix tree.activeNode
 	// TODO: not elegant: we use data.active as marker to set tree.activeNode
@@ -427,7 +427,7 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 	// TODO: deactivate()
 	debug: function(msg){
 		Array.prototype.unshift.call(arguments, this.toString());
-		DT.debug.apply(this, arguments);
+		FT.debug.apply(this, arguments);
 	},
 	/** Remove all children of a lazy node and collapse.*/
 	discard: function(){
@@ -1142,7 +1142,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
     // TODO: disable()
 	debug: function(msg){
 		Array.prototype.unshift.call(arguments, this.toString());
-		DT.debug.apply(this, arguments);
+		FT.debug.apply(this, arguments);
 	},
     // TODO: enable()
     // TODO: enableUpdate()
@@ -1192,7 +1192,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	},
 	info: function(msg){
 		Array.prototype.unshift.call(arguments, this.toString());
-		DT.info.apply(this, arguments);
+		FT.info.apply(this, arguments);
 	},
 /*	
     TODO: isInitializing: function() {
@@ -1335,7 +1335,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	nodeClick: function(ctx) {
 //      this.tree.logDebug("ftnode.onClick(" + event.type + "): ftnode:" + this + ", button:" + event.button + ", which: " + event.which);
 		var event = ctx.orgEvent,
-		    targetType = DT.getEventTargetType(event),
+		    targetType = FT.getEventTargetType(event),
 			node = ctx.node;
 		// TODO: use switch
 		// TODO: make sure clicks on embedded <input> doesn't steal focus (see table sample)
@@ -1375,7 +1375,9 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			}
 		}
 		// Make sure that clicks stop, otherwise <a href='#'> jumps to the top
-		event.preventDefault();
+		if(event.target.localName === "a" && event.target.className === "fancytree-title"){
+			event.preventDefault();
+		}
 		// TODO: return promise?
 	},
 	nodeCollapseSiblings: function(ctx) {
@@ -1617,7 +1619,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
     nodeRemoveChild: function(ctx, childNode) {
         var node = ctx.node,
             children = node.children;
-        DT.debug("nodeRemoveChild()", node.toString(), childNode.toString());
+        FT.debug("nodeRemoveChild()", node.toString(), childNode.toString());
 
         if( children.length === 1 ) {
             _assert(childNode === children[0]);
@@ -1647,7 +1649,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
      */
     nodeRemoveChildMarkup: function(ctx) {
         var node = ctx.node;
-        DT.debug("nodeRemoveChildMarkup()", node.toString());
+        FT.debug("nodeRemoveChildMarkup()", node.toString());
         // TODO: Unlink attr.ftnode to support GC
         if(node.ul){
             $(node.ul).remove();
@@ -1663,7 +1665,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
     nodeRemoveChildren: function(ctx) {
         var node = ctx.node,
             children = node.children;
-        DT.debug("nodeRemoveChildren()", node.toString());
+        FT.debug("nodeRemoveChildren()", node.toString());
         if(!children){
             return;
         }
@@ -1690,7 +1692,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
      */
 	nodeRemoveMarkup: function(ctx) {
 		var node = ctx.node;
-		DT.debug("nodeRemoveMarkup()", node.toString());
+		FT.debug("nodeRemoveMarkup()", node.toString());
         // TODO: Unlink attr.ftnode to support GC
 		if(node.li){
 			$(node.li).remove();
@@ -1749,7 +1751,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			isRootNode = !parent,
 			children = node.children,
 			i, l;
-		DT.debug("nodeRender(" + !!force + ", " + !!deep + ")", node.toString());
+		FT.debug("nodeRender(" + !!force + ", " + !!deep + ")", node.toString());
 
 		_assert(isRootNode || parent.ul, "parent UL must exist");
 
@@ -2557,7 +2559,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	},
 	warn: function(msg){
 		Array.prototype.unshift.call(arguments, this.toString());
-		DT.warn.apply(this, arguments);
+		FT.warn.apply(this, arguments);
 	}
 };
 
@@ -2730,7 +2732,7 @@ $.widget("ui.fancytree",
 			if(opts.disabled || opts.keyboard === false){
 				return true;
 			}
-			var node = DT.getNode(event.target);
+			var node = FT.getNode(event.target);
 			if( node && node.tree === that.tree ){
 				var ctx = that.tree._makeHookContext(node, event);
 				return ( that.tree._triggerNodeEvent("keydown", node, event) === false ) ? false : that.tree._callHook("nodeKeydown", ctx);
@@ -2740,7 +2742,7 @@ $.widget("ui.fancytree",
 			if(opts.disabled){
 				return true;
 			}
-			var node = DT.getNode(event.target);
+			var node = FT.getNode(event.target);
 			if( !node ){
 				return true;  // Allow bubbling of other events
 			}
@@ -2799,7 +2801,7 @@ $.widget("ui.fancytree",
 });
 
 // $.ui.fancytree was created by the widget factory. Create a local shortcut:
-var DT = $.ui.fancytree;
+var FT = $.ui.fancytree;
 
 /* *****************************************************************************
  * Static members in the jQuery.ui.fancytree namespace
@@ -2876,18 +2878,17 @@ $.extend($.ui.fancytree,
 	},
 	/** Return a FancytreeNode instance from element.
 	 * 
-	 * @param {Element | jQueryObject} el
+	 * @param {Element | jQueryObject | Event} el
 	 * @returns {FancytreeNode} matching node or null
 	 */
 	getNode: function(el){
 		if(el instanceof FancytreeNode){
 			return el; // el already was a FancytreeNode
-		}
-		if(el.selector !== undefined){
+		}else if(el.selector !== undefined){
 			el = el[0]; // el was a jQuery object: use the DOM element
+		}else if(el.originalEvent !== undefined){
+			el = el.target; // el was an Event
 		}
-		// $el.parents("[ftnode]") does not work (jQuery 1.6.1), maybe because
-		// ftnode is a property, not an attribute. This is faster anyway:
 		while( el ) {
 			if(el.ftnode) {
 				return el.ftnode;
@@ -2898,7 +2899,7 @@ $.extend($.ui.fancytree,
 	},
 	info: function(msg){
 		/*jshint expr:true */
-		(DT.debugLevel >= 1) && window.console && window.console.info && window.console.info.apply(window.console, arguments);
+		(FT.debugLevel >= 1) && window.console && window.console.info && window.console.info.apply(window.console, arguments);
 	},
 	/** Add Fancytree extension definition to the list of globally available extensions.
 	 * 
