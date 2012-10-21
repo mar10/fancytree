@@ -171,10 +171,10 @@ span.fancytree-checkbox {
 	margin-left: 3px;
 	background-position: 0px -32px;
 }
-span.fancytree-checkbox:hover  background-position: -16px -32px; }
+span.fancytree-checkbox:hover { background-position: -16px -32px; }
 .fancytree-partsel span.fancytree-checkbox { background-position: -64px -32px; }
 .fancytree-partsel span.fancytree-checkbox:hover { background-position: -80px -32px; }
-.fancytree-selected span.fancytree-checkbox {	background-position: -32px -32px; }
+.fancytree-selected span.fancytree-checkbox { background-position: -32px -32px; }
 .fancytree-selected span.fancytree-checkbox:hover { background-position: -48px -32px; }
 
 /*******************************************************************************
