@@ -1,47 +1,45 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
-	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
-	<title>Dynatree - Example</title>
+    <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+    <title>Fancytree - Example</title>
 
-	<script src="../jquery/jquery.js" type="text/javascript"></script>
-	<script src="../jquery/jquery-ui.custom.js" type="text/javascript"></script>
-	<script src="../jquery/jquery.cookie.js" type="text/javascript"></script>
+    <script src="../lib/jquery.js" type="text/javascript"></script>
+    <script src="../lib/jquery-ui.custom.js" type="text/javascript"></script>
 
-	<link href="../src/skin/ui.dynatree.css" rel="stylesheet" type="text/css">
-	<script src="../src/jquery.dynatree.js" type="text/javascript"></script>
+    <link href="../src/skin-win7/ui.fancytree.css" rel="stylesheet" type="text/css">
+    <script src="../src/jquery.fancytree.js" type="text/javascript"></script>
 
-	<!-- Start_Exclude: This block is not part of the sample code -->
-	<link href="prettify.css" rel="stylesheet">
-	<script src="prettify.js" type="text/javascript"></script>
-	<link href="sample.css" rel="stylesheet" type="text/css">
-	<script src="sample.js" type="text/javascript"></script>
-	<!-- End_Exclude -->
+    <!-- Start_Exclude: This block is not part of the sample code -->
+    <link href="../lib/prettify.css" rel="stylesheet">
+    <script src="../lib/prettify.js" type="text/javascript"></script>
+    <link href="sample.css" rel="stylesheet" type="text/css">
+    <script src="sample.js" type="text/javascript"></script>
+    <!-- End_Exclude -->
 
 <script type="text/javascript">
 	$(function(){
 		// Initialize the tree inside the <div>element.
 		// The tree structure is read from the contained <ul> tag.
-		$("#tree").dynatree({
-			title: "Programming Sample",
-			onActivate: function(node) {
-				$("#echoActive").text(node.data.title);
+		$("#tree").fancytree({
+			activate: function(e, data) {
+				$("#echoActive").text(data.node.title);
 //				alert(node.getKeyPath());
-				if( node.data.url )
-					window.open(node.data.url, node.data.target);
+				if( data.node.url )
+					window.open(data.node.url, data.node.target);
 			},
-			onDeactivate: function(node) {
+			deactivate: function(e, data) {
 				$("#echoSelected").text("-");
 			},
-			onFocus: function(node) {
-				$("#echoFocused").text(node.data.title);
+			focus: function(e, data) {
+				$("#echoFocused").text(data.node.title);
 			},
-			onBlur: function(node) {
+			blur: function(e, data) {
 				$("#echoFocused").text("-");
 			},
-			onLazyRead: function(node){
+			lazyread: function(e, data){
 				var fakeJsonResult = [
-					{ title: 'Lazy node 1', isLazy: true },
+					{ title: 'Lazy node 1', lazy: true },
 					{ title: 'Simple node 2', select: true }
 				];
 //				alert ("Let's pretend we're using this AJAX response to load the branch:\n " + jsonResult);
@@ -59,7 +57,7 @@
 		$("#btnAddCode").click(function(){
 			// Sample: add an hierarchic branch using code.
 			// This is how we would add tree nodes programatically
-			var rootNode = $("#tree").dynatree("getRoot");
+			var rootNode = $("#tree").fancytree("getRootNode");
 			var childNode = rootNode.addChild({
 				title: "Programatically addded nodes",
 				tooltip: "This folder and all child nodes were added programmatically.",
@@ -74,17 +72,17 @@
 		$("#btnAddObject").click(function(){
 			// Sample: add an hierarchic branch using an array
 			var obj = [
-				{ title: 'Lazy node 1', isLazy: true },
-				{ title: 'Lazy node 2', isLazy: true },
-				{ title: 'Folder node 3', isFolder: true,
+				{ title: "Lazy node 1", isLazy: true },
+				{ title: "Lazy node 2", isLazy: true },
+				{ title: "Folder node 3", isFolder: true,
 					children: [
-						{ title: 'node 3.1' },
-						{ title: 'node 3.2',
+						{ title: "node 3.1" },
+						{ title: "node 3.2",
 							children: [
-								{ title: 'node 3.2.1' },
-								{ title: 'node 3.2.2',
+								{ title: "node 3.2.1" },
+								{ title: "node 3.2.2",
 									children: [
-										{ title: 'node 3.2.2.1' }
+										{ title: "node 3.2.2.1" }
 									]
 								}
 							]
@@ -92,68 +90,68 @@
 					]
 				}
 			];
-			$("#tree").dynatree("getRoot").addChild(obj);
+			$("#tree").fancytree("getRootNode").addChild(obj);
 		});
 
 		$("#btnActiveNode").click(function(){
-			$("#tree").dynatree("getTree").activateKey("id4.3.2");
-//			$("#tree").dynatree("getTree").getNodeByKey("id4.3.2").activate();
+			$("#tree").fancytree("getTree").activateKey("id4.3.2");
+//			$("#tree").fancytree("getTree").getNodeByKey("id4.3.2").activate();
 		});
 		$("#btnSetTitle").click(function(){
-			var node = $("#tree").dynatree("getActiveNode");
+			var node = $("#tree").fancytree("getActiveNode");
 			if( !node ) return;
-			node.setTitle(node.data.title + ", " + new Date());
+			node.setTitle(data.node.title + ", " + new Date());
 			// this is a shortcut for
-			// node.fromDict({title: node.data.title + new Date()});
+			// node.fromDict({title: data.node.title + new Date()});
 		});
 		$("#btnFromDict").click(function(){
-			var node = $("#tree").dynatree("getActiveNode");
+			var node = $("#tree").fancytree("getActiveNode");
 			if( !node ) return;
 			// Set node data and - optionally - replace children
 			node.fromDict({
-				title: node.data.title + new Date(),
+				title: data.node.title + new Date(),
 				children: [{title: "t1"}, {title: "t2"}]
 			});
 		});
 
 		$("#btnShowActive").click(function(){
-			var node = $("#tree").dynatree("getActiveNode");
+			var node = $("#tree").fancytree("getActiveNode");
 			if( node ){
-				alert("Currently active: " + node.data.title);
+				alert("Currently active: " + data.node.title);
 			}else{
 				alert("No active node.");
 			}
 		});
 
 		$("#btnDisable").toggle(function(){
-				$("#tree").dynatree("disable");
+				$("#tree").fancytree("disable");
 				$(this).text("Enable");
 				return false;
 			}, function(){
-				$("#tree").dynatree("enable");
+				$("#tree").fancytree("enable");
 				$(this).text("Disable");
 				return false;
 			});
 		$("#btnToggleExpand").click(function(){
-			$("#tree").dynatree("getRoot").visit(function(node){
-				node.toggleExpand();
+			$("#tree").fancytree("getRootNode").visit(function(node){
+				node.toggleExpanded();
 			});
 			return false;
 		});
 		$("#btnCollapseAll").click(function(){
-			$("#tree").dynatree("getRoot").visit(function(node){
-				node.expand(false);
+			$("#tree").fancytree("getRootNode").visit(function(node){
+				node.setExpanded(false);
 			});
 			return false;
 		});
 		$("#btnExpandAll").click(function(){
-			$("#tree").dynatree("getRoot").visit(function(node){
-				node.expand(true);
+			$("#tree").fancytree("getRootNode").visit(function(node){
+				node.setExpanded(true);
 			});
 			return false;
 		});
 		$("#btnSortActive").click(function(){
-			var node = $("#tree").dynatree("getActiveNode");
+			var node = $("#tree").fancytree("getActiveNode");
 			// Custom compare function (optional) that sorts case insensitive
 			var cmp = function(a, b) {
 				a = a.data.title.toLowerCase();
@@ -163,7 +161,7 @@
 			node.sortChildren(cmp, false);
 		});
 		$("#btnSortAll").click(function(){
-			var node = $("#tree").dynatree("getRoot");
+			var node = $("#tree").fancytree("getRootNode");
 			node.sortChildren(null, true);
 		});
 	});
@@ -171,9 +169,9 @@
 </head>
 
 <body class="example">
-	<h1>Dynatree API</h1>
+	<h1>Fancytree API</h1>
 	<p class="description">
-		This example demonstrates the usage of some DynaTree and DynaTreeNode
+		This example demonstrates the usage of some Fancyree and FancyreeNode
 		API functions.
 	</p>
 
@@ -191,7 +189,7 @@
 		<ul>
 			<li>This simple node (and the following) have been created from html.
 			<li id="id1" title="This is item #1">item1 with key and tooltip
-			<li id="id2">item2 with key 'id2'
+			<li id="id2">item2 with key "id2"
 
 			<li id="id3" class="folder">Standard Folder with some children
 				<ul>
@@ -238,7 +236,7 @@
 	<!-- Start_Exclude: This block is not part of the sample code -->
 	<hr>
 	<p class="sample-links  no_code">
-		<a class="hideInsideFS" href="http://dynatree.googlecode.com">jquery.dynatree.js project home</a>
+		<a class="hideInsideFS" href="http://fancytree.googlecode.com">jquery.fancytree.js project home</a>
 		<a class="hideOutsideFS" href="#">Link to this page</a>
 		<a class="hideInsideFS" href="samples.html">Example Browser</a>
 		<a href="#" id="codeExample">View source code</a>
