@@ -24,8 +24,18 @@ body.example p.sample-links
 
 p.version-info
 {
-	color: gray;
-	font-size: 0.6em;
+    color: gray;
+    font-size: 0.6em;
+}
+
+p.warning,
+p.info,
+div.info {
+    background-color: #ffffa0;
+    background-image: url(../doc/iconInfo_32x32.png);
+    background-repeat: no-repeat;
+    padding: 5px;
+    padding-left: 40px;
 }
 
 p.sample-links a,

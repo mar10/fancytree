@@ -1312,7 +1312,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
         var deferredList = [];
         // Avoid jshint warning 'Don't make functions within a loop.':
         function __lazyload(key, node, dfd){
-            callback.call(this, node, "loading");
+            callback.call(self, node, "loading");
             node.lazyLoad().done(function(){
               self.loadKeyPath.call(self, loadMap[key], callback, node).always(_makeResolveFunc(dfd, self));
           }).fail(function(errMsg){
