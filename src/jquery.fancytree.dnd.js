@@ -462,6 +462,7 @@ $.ui.fancytree.registerExtension("dnd",
 				node.scheduleAction("expand", dnd.autoExpandMS);
 			}
 			if(hitMode && dnd.onDragOver){
+				// TODO: http://code.google.com/p/dynatree/source/detail?r=625
 				res = dnd.onDragOver(node, otherNode, hitMode);
 			}
 			// issue 332
