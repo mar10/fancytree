@@ -116,10 +116,18 @@ $.ui.fancytree.registerExtension("table", {
 
 		tree.rowFragment = document.createDocumentFragment();
 		// TODO: handle opts.table.nodeColumnIdx
-		var $row = $("<tr><td><span class='fancytree-title'></span></td></tr>");
-		for(var i=0; i<tree.columnCount - 1; i++) {
-			$row.append("<td>");
-		}
+        var $row = $("<tr>");
+        for(var i=0; i<tree.columnCount; i++) {
+            if(ctx.options.table.nodeColumnIdx === i){
+                $row.append("<td><span class='fancytree-title'></span></td>");
+            }else{
+                $row.append("<td>");
+            }
+        }
+//        var $row = $("<tr><td><span class='fancytree-title'></span></td></tr>");
+//        for(var i=0; i<tree.columnCount - 1; i++) {
+//            $row.append("<td>");
+//        }
 		tree.rowFragment.appendChild($row.get(0));
 
 		this._super(ctx);

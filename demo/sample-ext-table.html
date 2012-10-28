@@ -44,7 +44,8 @@
 			rendercolumns: function(e, data) {
 				var node = data.node,
 					$tdList = $(node.tr).find(">td");
-				$tdList.eq(1).text(node.getIndexHier());
+				$tdList.eq(0).text(node.getIndexHier());
+				// (index #1 is rendered by fancytree) 
 				$tdList.eq(2).text(node.key);
 				$tdList.eq(3).html("<input type='checkbox' name='like' value='" + node.key + "'>");
 			}
