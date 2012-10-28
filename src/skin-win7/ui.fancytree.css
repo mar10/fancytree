@@ -246,9 +246,16 @@ span.fancytree-folder .fancytree-title
 }
 
 a.fancytree-title:focus,
-span.fancytree-focused a:link  /* @IE */
+span.fancytree-focused a:link /* @IE */
 {
     outline: 1px dotted black;
+}
+/* Safari does not support outline on a tags?*/
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+	span.fancytree-focused a:link 
+	{
+		border: 1px dotted black; 
+	}
 }
 
 span.fancytree-active .fancytree-title,

@@ -40,6 +40,17 @@ div.info {
     padding-left: 40px;
     min-height: 25px;
 }
+.sampleButtonContainer
+{
+    margin-right: 10px;
+}
+.sampleButtonContainer a
+{
+    color: navy;
+    text-decoration: none;
+    padding: 1px 3px;
+    font-size: 50%;
+}
 
 p.sample-links a,
 p.sample-links a:visited

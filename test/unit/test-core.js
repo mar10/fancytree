@@ -375,6 +375,7 @@ test("FancytreeNode class", function() {
 //  setSelected: function(flag){
 //  setTitle: function(title){
 //  sortChildren: function(title){
+//  toDict
 //  toggleExpanded: function(){
 //  toggleSelected: function(){
 //  toString: function() {
@@ -417,6 +418,7 @@ test("Fancytree class", function() {
 //    tree.nodeContainerAttrName = "li";
 
     // Methods
+    // TODO: activateByKey()
     equal(tree.count(), TESTDATA_NODES, "count()");
     equal(tree.getNodeByKey("10_2").key, "10_2", "getNodeByKey()");
     equal(tree.getNodeByKey("foobar"), null, "getNodeByKey() not found");

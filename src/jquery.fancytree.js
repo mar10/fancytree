@@ -350,8 +350,11 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
     // TODO: activate()
     // TODO: activateSilently()
 	/**
-	 * Add children. 
-	 * NOTE: current children are replaced!
+	 * Set list of child nodes.
+     * NOTE: current children are replaced! Use applyPatch for more control.
+     * 
+	 * TODO: rename to setChildren() or add 'insertBefore' parameter
+	 * @param {NodeData[]} children array of child node definitions 
 	 */
 	addChildren: function(children){
 		_assert(!!children && (!this.children || this.children.length === 0), "only init supported");
@@ -910,8 +913,6 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
      * @param {Boolean} [deep] pass true to sort all descendant nodes
      */
     sortChildren: function(cmp, deep) {
-        // TODO: not tested
-        _raiseNotImplemented();
         var cl = this.children;
         if( !cl ){
             return;
@@ -933,7 +934,25 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
             this.render();
         }
     },
-    // TODO: toDict: function(recursive, callback)
+    toDict: function(recursive, callback) {
+        var dict = $.extend({}, this.data);
+        dict.activate = ( this.tree.activeNode === this );
+        dict.focus = ( this.tree.focusNode === this );
+        dict.expand = this.bExpanded;
+        dict.select = this.bSelected;
+        if( callback ){
+            callback(dict);
+        }
+        if( recursive && this.childList ) {
+            dict.children = [];
+            for(var i=0, l=this.childList.length; i<l; i++ ){
+                dict.children.push(this.childList[i].toDict(true, callback));
+            }
+        } else {
+            delete dict.children;
+        }
+        return dict;
+    },
 	toggleExpanded: function(){
 		return this.tree._callHook("nodeToggleExpanded", this);
 	},
@@ -1086,21 +1105,22 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		this.debug("_hook", funcName, ctx.node && ctx.node.toString() || ctx.tree.toString(), args);
 		return fn.apply(this, args);
 	},
-/* TODO: implement
+	/** Activate node with a given key.
+	 * 
+	 * A prevously activated node will be deactivated.
+	 * Pass key = false, to deactivate the current node only.
+	 * @param {String} key
+	 * @returns {FancytreeNode} activated node (null, if not found)
+	 */
 	activateKey: function(key) {
-        var ftnode = (key === null) ? null : this.getNodeByKey(key);
-        if( !ftnode ) {
-            if( this.activeNode ){
-                this.activeNode.deactivate();
-            }
-            this.activeNode = null;
-            return null;
+        var node = this.getNodeByKey(key);
+        if(node){
+            node.setActive();
+        }else if(this.activeNode){
+            this.activeNode.setActive(false);
         }
-        ftnode.focus();
-        ftnode.activate();
-        return ftnode;
+        return node;
     },
-    */
 	/**
 	 * 
 	 * @param {Array} patchList array of [key, NodePatch] arrays
@@ -1996,15 +2016,13 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			isActive = (node === tree.activeNode);
 		// flag defaults to true
 		flag = (flag !== false);
-		this.debug("nodeSetActive", !!flag);
+		this.debug("nodeSetActive", flag);
 
 		if(isActive === flag){
 			// Nothing to do
-//			return $.Deferred(function(){this.resolveWith(node);}).promise();
             return _getResolvedPromise(node);
 		}else if(flag && this._triggerNodeEvent("queryactivate", node, ctx.orgEvent) === false ){
 			// Callback returned false
-//			return $.Deferred(function(){this.rejectWith(node, ["rejected"]);}).promise();
             return _getRejectedPromise(node, ["rejected"]);
 		}
 		if(flag){

@@ -97,6 +97,8 @@ Event arguments have been unified to `data`.
 Events cannot return values (except for `false` to prevent default handling).
 The return value must be assigned to `data.result` instead.
 
+TODO: `this` == FancytreeNode?
+
 Events with flags have changed (applies to (onSelect, onQuerySelect, ...)
 
   Fancytree 1:

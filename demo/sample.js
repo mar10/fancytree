@@ -93,10 +93,67 @@
 })( jQuery );
 
 
-
+/*
 function viewSourceCode()
 {
-	window.location = "view-source:" + window.location.href;
+    window.location = "view-source:" + window.location.href;
+}
+*/
+
+SAMPLE_BUTTON_DEFAULTS = {
+    id: undefined,
+    label: "Sample",
+    newline: true,
+    code: function(){ alert("not implemented"); }
+};
+function addSampleButton(options)
+{
+    var opts = $.extend({}, SAMPLE_BUTTON_DEFAULTS, options),
+        $container;
+    $container = $("<span>", {
+        "class": "sampleButtonContainer"
+    });
+    $("<button>", {
+        id: opts.id,
+        text: opts.label
+    }).click(function(e){
+        e.preventDefault();
+        opts.code();
+    }).appendTo($container);
+    
+    $("<a>", {
+        text: "Source code",
+        href: "#",
+        "class": "showCode"
+    }).appendTo($container)
+      .click(function(e){
+          try {
+              prettyPrint();
+          } catch (e) {
+              alert(e);
+          }
+        $container.find("pre").toggle("slow");
+        return false;
+    });
+    var sourceCode = "" + opts.code;
+    // Remove outer function(){ CODE }
+//    sourceCode = sourceCode.match(/[]\{(.*)\}/);
+    sourceCode = sourceCode.substring(
+        sourceCode.indexOf("{") + 1, 
+        sourceCode.lastIndexOf("}"));
+//    sourceCode = $.trim(sourceCode);
+    // Reduce tabs from 8 to 2 characters
+    sourceCode = sourceCode.replace(/\t/g, "  ");
+    // Format code samples
+
+    $("<pre>", {
+        text: sourceCode,
+        "class": "prettyprint"
+    }).hide().appendTo($container);
+    if(opts.newline){
+        $container.append($("<br>"));
+    }
+    $container.appendTo($("p#sampleButtons"));
 }
 
 
