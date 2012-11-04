@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+	<title>Dynatree - Editable nodes</title>
+
+	<script src="../jquery/jquery.js" type="text/javascript"></script>
+	<script src="../jquery/jquery-ui.custom.js" type="text/javascript"></script>
+	<script src="../jquery/jquery.cookie.js" type="text/javascript"></script>
+
+	<link href="../src/skin/ui.dynatree.css" rel="stylesheet" type="text/css">
+	<script src="../src/jquery.dynatree.js" type="text/javascript"></script>
+
+	<!-- Start_Exclude: This block is not part of the sample code -->
+	<link href="prettify.css" rel="stylesheet">
+	<script src="prettify.js" type="text/javascript"></script>
+	<link href="sample.css" rel="stylesheet" type="text/css">
+	<script src="sample.js" type="text/javascript"></script>
+	<!-- End_Exclude -->
+
+<script type="text/javascript">
+/**
+ * Implement inline editing for a dynatree node
+ */
+function editNode(node){
+	var prevTitle = node.data.title,
+		tree = node.tree;
+	// Disable dynatree mouse- and key handling
+	tree.$widget.unbind();
+	// Replace node with <input>
+	$(".dynatree-title", node.span).html("<input id='editNode' value='" + prevTitle + "'>");
+	// Focus <input> and bind keyboard handler
+	$("input#editNode")
+		.focus()
+		.keydown(function(event){
+			switch( event.which ) {
+			case 27: // [esc]
+				// discard changes on [esc]
+				$("input#editNode").val(prevTitle);
+				$(this).blur();
+				break;
+			case 13: // [enter]
+				// simulate blur to accept new value
+				$(this).blur();
+				break;
+			}
+		}).blur(function(event){
+			// Accept new value, when user leaves <input>
+			var title = $("input#editNode").val();
+			node.setTitle(title);
+			// Re-enable mouse and keyboard handlling
+			tree.$widget.bind();
+			node.focus();
+		});
+}
+
+// ----------
+
+$(function(){
+	var isMac = /Mac/.test(navigator.platform);
+	$("#tree").dynatree({
+		title: "Event samples",
+		onClick: function(node, event) {
+			if( event.shiftKey ){
+				editNode(node);
+				return false;
+			}
+		},
+		onDblClick: function(node, event) {
+			editNode(node);
+			return false;
+		},
+		onKeydown: function(node, event) {
+			switch( event.which ) {
+			case 113: // [F2]
+				editNode(node);
+				return false;
+			case 13: // [enter]
+				if( isMac ){
+					editNode(node);
+					return false;
+				}
+			}
+		}
+	});
+});
+</script>
+</head>
+
+<body class="example">
+	<h1>Example: edit nodes</h1>
+	<p class="description">
+		Demos how to edit node titles with<br>
+		- dblclick<br>
+		- Shift + click
+		- [F2]<br>
+		- [Enter] (on Mac)<br>
+	</p>
+
+	<div id="tree">
+		<ul>
+			<li class="folder">Folder 1
+				<ul>
+					<li>Node 1
+					<li>Node 2
+					<li>Node 3
+				</ul>
+
+			<li class="folder">Folder 2
+				<ul>
+					<li>Node 1
+					<li>Node 2
+					<li>Node 3
+				</ul>
+		</ul>
+	</div>
+
+	<!-- Start_Exclude: This block is not part of the sample code -->
+	<hr>
+	<p class="sample-links  no_code">
+		<a class="hideInsideFS" href="http://dynatree.googlecode.com">jquery.dynatree.js project home</a>
+		<a class="hideOutsideFS" href="#">Link to this page</a>
+		<a class="hideInsideFS" href="samples.html">Example Browser</a>
+		<a href="#" id="codeExample">View source code</a>
+	</p>
+	<pre id="sourceCode" class="prettyprint" style="display:none"></pre>
+	<!-- End_Exclude -->
+</body>
+</html>

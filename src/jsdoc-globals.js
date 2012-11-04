@@ -10,6 +10,7 @@
  * @property {FancytreeOptions} options
  * @property {Event} orgEvent
  * @property {FancytreeNode | null} node
+ * @property {String | undefined} targetType (only for click and dblclick events) 'title' | 'prefix' | 'expander' | 'checkbox' | 'icon' 
  */
 var HookContext = {};
 
@@ -22,7 +23,8 @@ var HookContext = {};
 var NodeData = {};
 
 /**
- * Data object passed to FancytreeNode#applyPatch.
+ * Data object similar to {@link NodeData}, but with additional options.
+ * May be passed to {@link FancytreeNode#applyPatch}.
  * @name NodePatch
  * 
  * @property {String} title
@@ -141,7 +143,20 @@ var FancytreeOptions = {};
 /** Fancytree events
  * @name FancytreeEvents
  *
- * Events:
+ * @description
+ * Events are called this way:
+ *    CALLBACK_NAME(event, data)
+ * where `event` is a jQuery Event object and `data` is of type {@link HookContext} 
+ * 
+ * @see <a href="http://api.jquery.com/category/events/event-object/">jQuery Event</a>
+ * @see HookContext
+ * 
+ * @example $("#tree").fancytree({
+ *     activate: function(event, data){
+ *         var node = data.node;
+ *     }
+ * });
+ *
  * @property {function} lazyload
  */
 var FancytreeEvents = {};

@@ -23,24 +23,18 @@
         $.ui.fancytree.debug("Using fancytree " + $.ui.fancytree.version);
         // attach to all instances
         $("#tree, #tree3").fancytree({
-            extensions: ["profiler", "aria"],
             checkbox: true,
             selectMode: 1,
-            profiler: {
-                prefix: "HURZ "
-            },
-            // using default options
             activate: function(e, data){
+                var node = data.node;
                 $.ui.fancytree.debug("activate: e=", e, ", data=", data);
+                if(!$.isEmptyObject(node.data)){
+                    alert("custom node data: " + JSON.stringify(node.data));
+                }
             },
             lazyload: function(e, data){
                 data.result = {url: "unit/ajax-sub2.json"};
             }
-            // hooks: {
-            //  nodeRender: function(ctx){
-            //      DT.debug("No render");
-            //  }
-            // }
         }).bind("fancytreeactivate", function(e, data){
             $.ui.fancytree.debug("fancytreeactivate: e=", e, ", data=", data);
             return false;
@@ -120,10 +114,12 @@
     <div id="tree" class="sampletree">
         <ul id="treeData" styleXXX="display: none;">
             <li>simple node (no explicit id, so a default key is generated)
-            <li id="id1" title="Look, a tool tip!">item1 with key and tooltip
+            <li id="id1" title="Look, a tool tip!">Define key and tooltip using 'id' and 'title' attributes
             <li id="id2"><span>item2 with <b>html</b> inside a span tag</span>
-            <li class="nolink">this nodes uses 'nolink', so no &lt;a> tag is generated
-            <li><a href="http:/wwwwendt.de/">using single a-tag to pass href</a>
+            <li class="nolink">this nodes adds class 'nolink', so no &lt;a> tag is generated
+            <li><a href="http:/wwwwendt.de/">using single a-tag to pass href (this would be clickable even if JavaScript is off)</a>
+            <li data-foo="bar">defining custom node.data.foo = 'bar' using a data-foo attribute
+            <li data-json='{"foo": "bar"}'>defining node.data.foo = 'bar' using a data-json attribute
             <li class="my-extra-class">node with some extra classes (will be added to the generated markup)
             <li id="id3" class="folder">Folder with some children
                 <ul>
