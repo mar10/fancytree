@@ -1,7 +1,7 @@
 /*!
  * jquery.fancytree.persist.js
  * Persistence extension for jquery.fancytree.js (http://fancytree.googlecode.com/).
- * 
+ *
  * Copyright (c) 2012, Martin Wendt (http://wwWendt.de)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://code.google.com/p/fancytree/wiki/LicenseInfo
@@ -33,10 +33,10 @@ var ACTIVE = "active",
 	SELECTED = "selected";
 
 /**
- * 
- * Called like 
+ *
+ * Called like
  *     $("#tree").fancytree("getTree").clearCookies("active expanded focus selected");
- * 
+ *
  * @lends Fancytree.prototype
  * @requires jquery.fancytree.persist.js
  */
@@ -75,7 +75,7 @@ $.ui.fancytree.registerExtension("persist", {
 	// Default options for this extension.
 	options: {
 		cookieDelimiter: "~",
-		cookiePrefix: undefined, // 'fancytree-<treeId>-' by default 
+		cookiePrefix: undefined, // 'fancytree-<treeId>-' by default
 		cookie: {
 			raw: false,
 			expires: "",
@@ -86,16 +86,16 @@ $.ui.fancytree.registerExtension("persist", {
 		overrideSource: false,  // true: cookie takes precedence over `source` data attributes.
 		types: "active expanded focus selected"
 	},
-	
+
 	/**Append `key` to a cookie. */
 	_setKey: function(type, key, flag){
 		var instData = this.persist,
-		    instOpts = this.options.persist,
-		    cookieName = instData.cookiePrefix + type,
-		    cookie = $.cookie(cookieName),
+			instOpts = this.options.persist,
+			cookieName = instData.cookiePrefix + type,
+			cookie = $.cookie(cookieName),
 			cookieList = cookie ? cookie.split(instOpts.cookieDelimiter) : [];
 		// Remove, even if we add a key,  so the key is always the last entry
-		var idx = $.inArray(key, cookieList); 
+		var idx = $.inArray(key, cookieList);
 		if(idx >= 0){
 			cookieList.splice(idx, 1);
 		}
@@ -112,7 +112,7 @@ $.ui.fancytree.registerExtension("persist", {
 		var tree = ctx.tree,
 			opts = ctx.options,
 			instData = this.persist,
-		    instOpts = this.options.persist;
+			instOpts = this.options.persist;
 
 		_assert($.cookie, "Missing required plugin for 'persist' extension: jquery.cookie.js");
 
@@ -121,7 +121,7 @@ $.ui.fancytree.registerExtension("persist", {
 		instData.storeExpanded = instOpts.types.indexOf(EXPANDED) >= 0;
 		instData.storeSelected = instOpts.types.indexOf(SELECTED) >= 0;
 		instData.storeFocus = instOpts.types.indexOf(FOCUS) >= 0;
-		
+
 		// Bind init-handler to apply cookie state
 		tree.$div.bind("fancytreeinit", function(e){
 			var cookie,
@@ -131,7 +131,7 @@ $.ui.fancytree.registerExtension("persist", {
 				node;
 
 			tree.debug("COOKIE " + document.cookie);
-			
+
 			if(instData.storeExpanded){
 				cookie = $.cookie(instData.cookiePrefix + EXPANDED);
 				if(cookie){
@@ -149,7 +149,7 @@ $.ui.fancytree.registerExtension("persist", {
 							instData._setKey(EXPANDED, keyList[i], false);
 						}
 					}
-			    }
+				}
 			}
 			if(instData.storeSelected){
 				cookie = $.cookie(instData.cookiePrefix + SELECTED);
@@ -168,7 +168,7 @@ $.ui.fancytree.registerExtension("persist", {
 							instData._setKey(SELECTED, keyList[i], false);
 						}
 					}
-			    }
+				}
 			}
 			if(instData.storeActive){
 				cookie = $.cookie(instData.cookiePrefix + ACTIVE);
@@ -194,42 +194,42 @@ $.ui.fancytree.registerExtension("persist", {
 //	},
 	nodeSetActive: function(ctx, flag) {
 		var instData = this.persist,
-		    instOpts = this.options.persist;
+			instOpts = this.options.persist;
 		this._super(ctx, flag);
 		if(instData.storeActive){
-			$.cookie(instData.cookiePrefix + ACTIVE, 
-					 this.activeNode ? this.activeNode.key : null, 
+			$.cookie(instData.cookiePrefix + ACTIVE,
+					 this.activeNode ? this.activeNode.key : null,
 					 instOpts.cookie);
 		}
 	},
 	nodeSetExpanded: function(ctx, flag) {
 		var node = ctx.node,
 			instData = this.persist;
-		
+
 		this._super(ctx, flag);
-		
+
 		if(instData.storeExpanded){
 			instData._setKey(EXPANDED, node.key, flag);
 		}
 	},
 	nodeSetFocus: function(ctx) {
 		var instData = this.persist,
-		    instOpts = this.options.persist;
-		
+			instOpts = this.options.persist;
+
 		this._super(ctx);
-		
+
 		if(instData.storeFocus){
-			$.cookie(this.cookiePrefix + FOCUS, 
-					 this.focusNode ? this.focusNode.key : null, 
+			$.cookie(this.cookiePrefix + FOCUS,
+					 this.focusNode ? this.focusNode.key : null,
 					 instOpts.cookie);
 		}
 	},
 	nodeSetSelected: function(ctx, flag) {
 		var node = ctx.node,
 			instData = this.persist;
-		
+
 		this._super(ctx, flag);
-		
+
 		if(instData.storeSelected){
 			instData._setKey(SELECTED, node.key, flag);
 		}

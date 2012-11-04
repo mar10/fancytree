@@ -8,13 +8,13 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js" type="text/javascript"></script>
 	<link href="../src/skin-win7/ui.fancytree.css" rel="stylesheet" type="text/css">
 <!--
-    <script src="../dist/jquery.fancytree-all.min.js" type="text/javascript"></script>
-    <script src="../dist/jquery.fancytree-2.0.0pre-all.js" type="text/javascript"></script>
+	<script src="../dist/jquery.fancytree-all.min.js" type="text/javascript"></script>
+	<script src="../dist/jquery.fancytree-2.0.0pre-all.js" type="text/javascript"></script>
 -->
-    <script src="../src/jquery.fancytree.js" type="text/javascript"></script>
-    <script src="../src/jquery.fancytree.columnview.js" type="text/javascript"></script>
-    <script src="../src/jquery.fancytree.dnd.js" type="text/javascript"></script>
-    <script src="../src/jquery.fancytree.table.js" type="text/javascript"></script>
+	<script src="../src/jquery.fancytree.js" type="text/javascript"></script>
+	<script src="../src/jquery.fancytree.columnview.js" type="text/javascript"></script>
+	<script src="../src/jquery.fancytree.dnd.js" type="text/javascript"></script>
+	<script src="../src/jquery.fancytree.table.js" type="text/javascript"></script>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
 	<link href="../lib/prettify.css" rel="stylesheet">
@@ -25,7 +25,7 @@
 <style type="text/css">
 	/* Fancytree extension 'table' */
 	table.fancytree-ext-table {
-        font-size: 80%; 
+		font-size: 80%;
 		border-collapse: collapse;
 		width: 100%;
 	}
@@ -38,7 +38,7 @@
 
 	/* Fancytree extension 'columnview' */
 	table.fancytree-ext-columnview {
-        font-size: 80%; 
+		font-size: 80%;
 		border-collapse: collapse;
 		width: 100%;
 	}
@@ -49,10 +49,10 @@
 	<!-- Add code to initialize the tree when the document is loaded: -->
 <script type="text/javascript">
 	$(function(){
-	    <!-- Start_Exclude: This block is not part of the sample code -->
-        <!-- End_Exclude -->
+		<!-- Start_Exclude: This block is not part of the sample code -->
+		<!-- End_Exclude -->
 
-        // Attach the fancytree widget to an existing <div id="tree"> element
+		// Attach the fancytree widget to an existing <div id="tree"> element
 		// and pass the tree options as an argument to the fancytree() function:
 		$("#tree").fancytree({
 			extensions: ["dnd"],
@@ -81,8 +81,8 @@
 					// Don't allow dropping *over* a node (would create a child)
 					return ["before", "after"];
 */
-                   return true;
- 				},
+				   return true;
+				},
 				onDrop: function(node, sourceNode, hitMode, ui, draggable) {
 					sourceNode.move(node, hitMode);
 				}
@@ -121,8 +121,8 @@
 					// Don't allow dropping *over* a node (would create a child)
 					return ["before", "after"];
 */
-                   return true;
- 				},
+				   return true;
+				},
 				onDrop: function(node, sourceNode, hitMode, ui, draggable) {
 					sourceNode.move(node, hitMode);
 				}
@@ -155,12 +155,12 @@
 					// Don't allow dropping *over* a node (would create a child)
 					return ["before", "after"];
 */
-                   return true;
- 				},
+				   return true;
+				},
 				onDrop: function(node, sourceNode, hitMode, ui, draggable) {
 					sourceNode.move(node, hitMode);
 				}
-			}			
+			}
 		});
 	});
 		</script>
@@ -171,9 +171,9 @@
 		This sample shows, how <a href="http://jqueryui.com/themeroller/" target="_blank">jQuery Themeroller</a> styles can be applied by
 		adding the 'themeroller' extension.
 	</p>
-    <div>
-        <label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
-    </div>
+	<div>
+		<label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
+	</div>
 	<!-- Add a <table> element where the tree should appear: -->
 	<p class="description">
 		Standard tree:

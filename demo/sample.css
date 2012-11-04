@@ -2,7 +2,7 @@ body.example
 {
 	margin: 15px;
 	font-family: sans-serif;
-    font-size: 1em;
+	font-size: 1em;
 }
 
 body.example h1
@@ -25,31 +25,31 @@ body.example p.sample-links
 
 p.version-info
 {
-    color: gray;
-    font-size: 0.6em;
+	color: gray;
+	font-size: 0.6em;
 }
 
 p.warning,
 p.info,
 div.info {
-    font-size: small;
+	font-size: small;
 				background-color: #ffffa0;
-    background-image: url(../doc/iconInfo_32x32.png);
-    background-repeat: no-repeat;
-    padding: 5px;
-    padding-left: 40px;
-    min-height: 25px;
+	background-image: url(../doc/iconInfo_32x32.png);
+	background-repeat: no-repeat;
+	padding: 5px;
+	padding-left: 40px;
+	min-height: 25px;
 }
 .sampleButtonContainer
 {
-    margin-right: 10px;
+	margin-right: 10px;
 }
 .sampleButtonContainer a
 {
-    color: navy;
-    text-decoration: none;
-    padding: 1px 3px;
-    font-size: 50%;
+	color: navy;
+	text-decoration: none;
+	padding: 1px 3px;
+	font-size: 50%;
 }
 
 p.sample-links a,
@@ -59,7 +59,7 @@ p.sample-links a:visited
 	text-decoration: none;
 	margin-left: 15px;
 	padding: 1px 3px;
-    font-size: small;
+	font-size: small;
 }
 p.sample-links a:hover
 {

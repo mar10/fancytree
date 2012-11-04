@@ -8,7 +8,7 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js" type="text/javascript"></script>
 
 	<link href="../src/skin-xp/ui.fancytree.css" rel="stylesheet" type="text/css"">
-    <script src="../src/jquery.fancytree.js" type="text/javascript"></script>
+	<script src="../src/jquery.fancytree.js" type="text/javascript"></script>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
 	<link href="../lib/prettify.css" rel="stylesheet">
@@ -61,7 +61,7 @@ var OPT_LIST = [
 				optList = [];
 				for(i=0; i<OPT_LIST.length; i++){
 					var o = OPT_LIST[i],
-					    n = o[0];
+						n = o[0];
 					if( opts[n] !== o[1] && opts[n] !== undefined){
 						optList.push(o);
 					}
@@ -70,9 +70,9 @@ var OPT_LIST = [
 			tmplEntries.push('$("#tree").fancytree({');
 			for(i=0; i<optList.length; i++){
 				var o = optList[i],
-				    n = o[0],
-				    v = opts[n],
-				    comma = (i === (optList.length - 1)) ? "" : ",";
+					n = o[0],
+					v = opts[n],
+					comma = (i === (optList.length - 1)) ? "" : ",";
 				if(typeof v === "string"){
 					tmplEntries.push("    " + n + ': "' + v + '"' + comma + " // " + o[2]);
 				}else{
@@ -112,15 +112,15 @@ var OPT_LIST = [
 </head>
 <body class="example">
 	<h1>Fancytree option cofigurator</h1>
-    <p class="description">
-        This sample shows, how titles could displayed as aligned columns.
-    </p>
-    <p class="warning">
-        TODO: this is work in progress.
-    </p>
-    <div>
-        <label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
-    </div>
+	<p class="description">
+		This sample shows, how titles could displayed as aligned columns.
+	</p>
+	<p class="warning">
+		TODO: this is work in progress.
+	</p>
+	<div>
+		<label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
+	</div>
 	<p>
 		<div id="tree"> </div>
 		<fieldset>

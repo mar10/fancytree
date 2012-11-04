@@ -59,38 +59,38 @@
 </div>
 
 <p class="info">
-    This is an info.
+	This is an info.
 </p>
 
 <h2>Initialization</h2>
 <p>
-    This section contains ... 
+	This section contains ...
 </p>
 <h3>Initialize the tree using a callback</h3>
 <pre class="prettyprint">
 $("#tree").fancytree({
-    source: function(e, data) {
-        data.result = [
-            {title: "node 1", key: "1"},
-            {title: "node 2", key: "2", folder: true},
-            ]; 
-    },
+	source: function(e, data) {
+		data.result = [
+			{title: "node 1", key: "1"},
+			{title: "node 2", key: "2", folder: true},
+			];
+	},
 });
 </pre>
 
 
 <h2>Event handling</h2>
 <p>
-    This section contains ... 
+	This section contains ...
 </p>
 <h3>Retrieve a FancytreeNode in a fancytree event handler</h3>
 <pre class="prettyprint">
 $("#tree").fancytree({
-    [...]
-    click: function(e, data) {
-        var node = data.node, 
-            tt = $.ui.fancytree.getEventTargetType(e.originalEvent); 
-    },
+	[...]
+	click: function(e, data) {
+		var node = data.node,
+			tt = $.ui.fancytree.getEventTargetType(e.originalEvent);
+	},
 });
 </pre>
 
@@ -98,8 +98,8 @@ $("#tree").fancytree({
 <h3>Retrieve a FancytreeNode in an arbitrary event handler</h3>
 <pre class="prettyprint">
 $(document).click()function(e, data) {
-    var node = $.ui.fancytree.getNode(e), 
-        tt = $.ui.fancytree.getEventTargetType(e); 
+	var node = $.ui.fancytree.getNode(e),
+		tt = $.ui.fancytree.getEventTargetType(e);
 });
 </pre>
 

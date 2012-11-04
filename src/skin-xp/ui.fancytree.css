@@ -102,8 +102,8 @@ ul.fancytree-container img
 /*******************************************************************************
  * Lines and connectors
  */
- 
-/* 
+
+/*
 span.fancytree-connector
 {
 	background-position: -16px -64px;
@@ -157,8 +157,8 @@ span.fancytree-expander
 .fancytree-exp-n span.fancytree-expander, /* Connector instead of expander, if node has no children */
 .fancytree-exp-nl span.fancytree-expander
 {
-    background-position: -16px -64px;
-    cursor: default;
+	background-position: -16px -64px;
+	cursor: default;
 }
 
 
@@ -225,7 +225,7 @@ span.fancytree-checkbox:hover
 {
 	background-position: -48px -48px;
 }
- 
+
 /*
 span.fancytree-radio
 {
@@ -330,8 +330,8 @@ span.fancytree-title
 a.fancytree-title:focus,
 span.fancytree-focused a:link  /* @IE */
 {
-    outline: 1px dotted black;
-    background-color: #EFEBDE; /* gray */
+	outline: 1px dotted black;
+	background-color: #EFEBDE; /* gray */
 }
 
 span.fancytree-folder .fancytree-title
@@ -375,7 +375,7 @@ table.fancytree-ext-table tbody tr td {
 }
 */
 table.fancytree-ext-table tbody tr.fancytree-focused {
-    background-color: #99DEFD;
+	background-color: #99DEFD;
 }
 table.fancytree-ext-table tbody tr.fancytree-active {
 	background-color: royalblue;

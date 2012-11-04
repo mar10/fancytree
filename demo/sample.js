@@ -4,17 +4,17 @@
 
 /*******************************************************************************
  * jQuery.skinswitcher plugin.
- * 
+ *
  * Change CSS include when combobox selection changes.
  * Copyright (c) 2012 Martin Wendt
- * 
+ *
  * Usage:
 	$("select#skinswitcher").skinswitcher({
 		base: "../src/",
 		choices: [{name: "XP", value: "xp", href: "skin/ui.fancytree.css"},
-		          {name: "Vista", value: "vista", href: "skin-vista/ui.fancytree.css"},
-		          {name: "Lion", value: "lion", href: "skin-lion/ui.fancytree.css"}
-		          ],
+				  {name: "Vista", value: "vista", href: "skin-vista/ui.fancytree.css"},
+				  {name: "Lion", value: "lion", href: "skin-lion/ui.fancytree.css"}
+				  ],
 		init: "lion"
 	});
  */
@@ -24,9 +24,9 @@
 		defaultOptions = {
 			/**RegEx that returns prefix, tag, and suffix of the CSS href.*/
 			skinPattern: "^(\W/skin-)().css$",
-			mode: "combo", // {String} mode 'combo' or 'radio' 
+			mode: "combo", // {String} mode 'combo' or 'radio'
 			base: "",
-			choices: [] 
+			choices: []
 		},
 		methods = {
 			init: function(options) {
@@ -34,7 +34,7 @@
 					hrefs = [],
 					$link = null,
 					initialChoice = undefined;
-		    	// Find <link> tag, figure out current setting and mark for
+				// Find <link> tag, figure out current setting and mark for
 				// later access
 				$.each(opts.choices, function(){
 					hrefs.push(this.href.toLowerCase());
@@ -48,29 +48,29 @@
 						}
 					}
 				});
-			    return this.each(function() {
-			    	// Add options to dropdown list
-			    	var $combo = $(this);
-			    	$combo.empty();
-			    	$.each(opts.choices, function(i, choice){
-			    		var $opt = $("<option>", {
-			    				text: choice.name,
-			    				value: choice.value
-			    			}).data("choice", choice);
-			    		$combo.append($opt);
-			    	});
-			    	// Switch include
-			    	$combo.change(function(){
-			    		var choice = $(":selected", this).data("choice");
-			    		$("link.skinswitcher").attr("href", opts.base + choice.href);
-			    	});
-			    	if(opts.init){
-			    		$combo.val(opts.init).change();
-			    	}else if (initialChoice){
-						// select combobox value to match current <link> tag 
-			    		$combo.val(initialChoice.value);
-			    	}
-			    });
+				return this.each(function() {
+					// Add options to dropdown list
+					var $combo = $(this);
+					$combo.empty();
+					$.each(opts.choices, function(i, choice){
+						var $opt = $("<option>", {
+								text: choice.name,
+								value: choice.value
+							}).data("choice", choice);
+						$combo.append($opt);
+					});
+					// Switch include
+					$combo.change(function(){
+						var choice = $(":selected", this).data("choice");
+						$("link.skinswitcher").attr("href", opts.base + choice.href);
+					});
+					if(opts.init){
+						$combo.val(opts.init).change();
+					}else if (initialChoice){
+						// select combobox value to match current <link> tag
+						$combo.val(initialChoice.value);
+					}
+				});
 			},
 			change: function(href) {
 				this.val("");
@@ -81,78 +81,78 @@
 		};
 
 	$.fn[PLUGIN_NAME] = function(method) {
-	    // Method calling logic
+		// Method calling logic
 		if ( methods[method] ) {
 			return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
 		} else if ( typeof method === "object" || ! method ) {
 			return methods.init.apply(this, arguments);
 		} else {
 			$.error("Method " +  method + " does not exist on jQuery." + PLUGIN_NAME);
-		}    
+		}
 	};
 })( jQuery );
 
 
 SAMPLE_BUTTON_DEFAULTS = {
-    id: undefined,
-    label: "Sample",
-    newline: true,
-    code: function(){ alert("not implemented"); }
+	id: undefined,
+	label: "Sample",
+	newline: true,
+	code: function(){ alert("not implemented"); }
 };
 function addSampleButton(options)
 {
-    var opts = $.extend({}, SAMPLE_BUTTON_DEFAULTS, options),
-        $container;
-    $container = $("<span>", {
-        "class": "sampleButtonContainer"
-    });
-    $("<button>", {
-        id: opts.id,
-        text: opts.label
-    }).click(function(e){
-        e.preventDefault();
-        opts.code();
-    }).appendTo($container);
-    
-    $("<a>", {
-        text: "Source code",
-        href: "#",
-        "class": "showCode"
-    }).appendTo($container)
-    .click(function(e){
-        try {
-            prettyPrint();
-        } catch (e) {
-            alert(e);
-        }
-        var $pre = $container.find("pre");
-        if($pre.is(":visible")){
-        	$(this).text("Source code");
-        }else{
-        	$(this).text("Hide source");
-        }
-        $pre.toggle("slow");
-        return false;
-    });
-    var sourceCode = "" + opts.code;
-    // Remove outer function(){ CODE }
-//    sourceCode = sourceCode.match(/[]\{(.*)\}/);
-    sourceCode = sourceCode.substring(
-        sourceCode.indexOf("{") + 1, 
-        sourceCode.lastIndexOf("}"));
-//    sourceCode = $.trim(sourceCode);
-    // Reduce tabs from 8 to 2 characters
-    sourceCode = sourceCode.replace(/\t/g, "  ");
-    // Format code samples
+	var opts = $.extend({}, SAMPLE_BUTTON_DEFAULTS, options),
+		$container;
+	$container = $("<span>", {
+		"class": "sampleButtonContainer"
+	});
+	$("<button>", {
+		id: opts.id,
+		text: opts.label
+	}).click(function(e){
+		e.preventDefault();
+		opts.code();
+	}).appendTo($container);
 
-    $("<pre>", {
-        text: sourceCode,
-        "class": "prettyprint"
-    }).hide().appendTo($container);
-    if(opts.newline){
-        $container.append($("<br>"));
-    }
-    $container.appendTo($("p#sampleButtons"));
+	$("<a>", {
+		text: "Source code",
+		href: "#",
+		"class": "showCode"
+	}).appendTo($container)
+	.click(function(e){
+		try {
+			prettyPrint();
+		} catch (e) {
+			alert(e);
+		}
+		var $pre = $container.find("pre");
+		if($pre.is(":visible")){
+			$(this).text("Source code");
+		}else{
+			$(this).text("Hide source");
+		}
+		$pre.toggle("slow");
+		return false;
+	});
+	var sourceCode = "" + opts.code;
+	// Remove outer function(){ CODE }
+//    sourceCode = sourceCode.match(/[]\{(.*)\}/);
+	sourceCode = sourceCode.substring(
+		sourceCode.indexOf("{") + 1,
+		sourceCode.lastIndexOf("}"));
+//    sourceCode = $.trim(sourceCode);
+	// Reduce tabs from 8 to 2 characters
+	sourceCode = sourceCode.replace(/\t/g, "  ");
+	// Format code samples
+
+	$("<pre>", {
+		text: sourceCode,
+		"class": "prettyprint"
+	}).hide().appendTo($container);
+	if(opts.newline){
+		$container.append($("<br>"));
+	}
+	$container.appendTo($("p#sampleButtons"));
 }
 
 
@@ -227,10 +227,10 @@ $(function(){
 	$("select#skinswitcher").skinswitcher({
 		base: "../src/",
 		choices: [{name: "XP", value: "xp", href: "skin-xp/ui.fancytree.css"},
-		          {name: "Vista (classic Dynatree)", value: "vista", href: "skin-vista/ui.fancytree.css"},
-		          {name: "Win7", value: "win7", href: "skin-win7/ui.fancytree.css"},
-		          {name: "Lion", value: "lion", href: "skin-lion/ui.fancytree.css"}
-		          ]
+				  {name: "Vista (classic Dynatree)", value: "vista", href: "skin-vista/ui.fancytree.css"},
+				  {name: "Win7", value: "win7", href: "skin-win7/ui.fancytree.css"},
+				  {name: "Lion", value: "lion", href: "skin-lion/ui.fancytree.css"}
+				  ]
 //		init: "lion"
 	});
 

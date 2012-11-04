@@ -175,14 +175,14 @@ function _registerDnd() {
 }
 
 /* *****************************************************************************
- * 
+ *
  */
 /** @namespace $.ui.fancytree.dnd */
 $.ui.fancytree.registerExtension("dnd",
-    /** @scope ui_fancytree 
-     * @lends $.ui.fancytree.dnd.prototype 
-     */
-    {
+	/** @scope ui_fancytree
+	 * @lends $.ui.fancytree.dnd.prototype
+	 */
+	{
 	// Default options for this extension.
 	options: {
 		// Make tree nodes draggable:

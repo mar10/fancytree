@@ -8,14 +8,14 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js" type="text/javascript"></script>
 
 <style type="text/css">
-    /* Set alternating row colors (define BEFORE standard css). */
-    table.fancytree-ext-table tbody tr:nth-child(even){
-        background-color: #f4f4f8;
-    }
+	/* Set alternating row colors (define BEFORE standard css). */
+	table.fancytree-ext-table tbody tr:nth-child(even){
+		background-color: #f4f4f8;
+	}
 </style>
 	<link href="../src/skin-win7/ui.fancytree.css" rel="stylesheet" type="text/css">
-    <script src="../src/jquery.fancytree.js" type="text/javascript"></script>
-    <script src="../src/jquery.fancytree.table.js" type="text/javascript"></script>
+	<script src="../src/jquery.fancytree.js" type="text/javascript"></script>
+	<script src="../src/jquery.fancytree.table.js" type="text/javascript"></script>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
 	<link href="../lib/prettify.css" rel="stylesheet">
@@ -33,7 +33,7 @@
 			checkbox: true,
 			table: {
 				indentation: 20,  // indent 20px per node level
-				nodeColumnIdx: 1  // render the node title into the 2nd column 
+				nodeColumnIdx: 1  // render the node title into the 2nd column
 			},
 			source: {
 				url: "ajax-tree-plain.json"
@@ -45,22 +45,22 @@
 				var node = data.node,
 					$tdList = $(node.tr).find(">td");
 				$tdList.eq(0).text(node.getIndexHier());
-				// (index #1 is rendered by fancytree) 
+				// (index #1 is rendered by fancytree)
 				$tdList.eq(2).text(node.key);
 				$tdList.eq(3).html("<input type='checkbox' name='like' value='" + node.key + "'>");
 			}
 		});
-	    /* Handle custom checkbox clicks */
-	    $("#treetable").delegate("input[name=like]", "click", function(e){
-	    	var node = $.ui.fancytree.getNode(e),
-	    	   $input = $(e.target);
-            e.stopPropagation();  // prevent fancytree activate for this row
-            if($input.is(":checked")){
-                alert("like " + $input.val());
-            }else{
-                alert("dislike " + $input.val());
-            }
-	    });
+		/* Handle custom checkbox clicks */
+		$("#treetable").delegate("input[name=like]", "click", function(e){
+			var node = $.ui.fancytree.getNode(e),
+			   $input = $(e.target);
+			e.stopPropagation();  // prevent fancytree activate for this row
+			if($input.is(":checked")){
+				alert("like " + $input.val());
+			}else{
+				alert("dislike " + $input.val());
+			}
+		});
 	});
 </script>
 </head>
@@ -69,13 +69,13 @@
 	<p class="description">
 		This sample shows, how Fancytree renders itself as a table.
 	</p>
-    <div>
-        <label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
-    </div>
+	<div>
+		<label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
+	</div>
 	<!-- Add a <table> element where the tree should appear: -->
 	<table id="treetable">
 		<colgroup>
-        <col width="*"></col>
+		<col width="*"></col>
 		<col width="20px"></col>
 		<col width="200px"></col>
 		<col width="50px"></col>

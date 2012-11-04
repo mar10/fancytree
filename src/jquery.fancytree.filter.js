@@ -43,13 +43,13 @@ function _assert(cond, msg){
 
 function _escapeRegex(str){
 	/*jshint regexdash:true */
-    return (str + "").replace(/([.?*+\^\$\[\]\\(){}|-])/g, "\\$1");
+	return (str + "").replace(/([.?*+\^\$\[\]\\(){}|-])/g, "\\$1");
 }
 
 
 /**
  * Dimm or hide nodes.
- * 
+ *
  * @param {function | string} filter
  * @returns {integer} count
  * @lends Fancytree.prototype
@@ -62,16 +62,16 @@ $.ui.fancytree._FancytreeClass.prototype.applyFilter = function(filter){
 		delete node.match;
 		delete node.subMatch;
 	});
-	
+
 	// Default to 'match title substring (not case sensitive)'
 	if(typeof filter === "string"){
 		var match = _escapeRegex(filter), // make sure a '.' is treated literally
-		    re = new RegExp(".*" + match + ".*", "i");
+			re = new RegExp(".*" + match + ".*", "i");
 		filter = function(node){
 			return !!re.exec(node.title);
 		};
 	}
-	
+
 	this.enableFilter = true;
 	this.$div.addClass("fancytree-ext-filter");
 	this.visit(function(node){
@@ -89,7 +89,7 @@ $.ui.fancytree._FancytreeClass.prototype.applyFilter = function(filter){
 
 /**
  * Reset the filter.
- * 
+ *
  * @lends Fancytree.prototype
  * @requires jquery.fancytree.filter.js
  */
@@ -99,7 +99,7 @@ $.ui.fancytree._FancytreeClass.prototype.clearFilter = function(){
 		delete node.subMatch;
 		$(node.li).show();
 	});
-	
+
 	this.enableFilter = false;
 	this.render();
 	this.$div.removeClass("fancytree-ext-filter");
@@ -131,7 +131,7 @@ $.ui.fancytree.registerExtension("filter", {
 			opts = ctx.options,
 			tree = ctx.tree,
 			$span = $(node[tree.statusClassPropName]);
-		
+
 		if(!$span.length){
 			return; // nothing to do, if node was not yet rendered
 		}
