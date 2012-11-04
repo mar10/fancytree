@@ -251,13 +251,14 @@ span.fancytree-focused a:link /* @IE */
     outline: 1px dotted black;
 }
 /* Safari does not support outline on a tags?*/
+/*
 @media screen and (-webkit-min-device-pixel-ratio:0) {
 	span.fancytree-focused a:link 
 	{
 		border: 1px dotted black; 
 	}
 }
-
+*/
 span.fancytree-active .fancytree-title,
 span.fancytree-selected .fancytree-title
 {
@@ -353,20 +354,26 @@ table.fancytree-ext-table tbody tr:hover {
 table.fancytree-ext-table tbody tr.fancytree-focused {
 /*    background-color: #99DEFD;*/
 /*    border: 1px dotted #090402;*/
-    outline: 1px dotted #090402;
+/*    outline: 1px dotted #090402;*/
 }
+/*
 table.fancytree-ext-table a.fancytree-title:focus, 
-span.fancytree-focused a:link {
+table.fancytree-ext-table span.fancytree-focused a:link {
   outline: none;
 }
-table.fancytree-ext-table a.fancytree-title:hover { /* undo standard node formatting*/
+*/
+/* TODO: title get's a white background, when hovered!
+   undo standard node formatting 
+*/
+/*
+table.fancytree-ext-table a.fancytree-title:hover { 
 	border: 1px solid transparent;
 	background: inherit; 
 	background: transparent;
 	background: none;
-	background-color: green;
 	filter: none;   
 }
+*/
 table.fancytree-ext-table tbody tr.fancytree-active,
 table.fancytree-ext-table tbody tr.fancytree-selected {
     background: #f6fbfd; /* Old browsers */
@@ -378,6 +385,10 @@ table.fancytree-ext-table tbody tr.fancytree-selected {
 	background: -ms-linear-gradient(top, #f6fbfd 0%,#d5effc 100%); /* IE10+ */
 	background: linear-gradient(to bottom, #f6fbfd 0%,#d5effc 100%); /* W3C */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f6fbfd', endColorstr='#d5effc',GradientType=0 ); /* IE6-9 */
+}
+table.fancytree-ext-table tbody tr.fancytree-selected .fancytree-title
+{
+    font-style: italic;
 }
 table.fancytree-ext-table tbody tr.fancytree-active:hover,
 table.fancytree-ext-table tbody tr.fancytree-selected:hover {
