@@ -53,124 +53,152 @@ $(function(){
             window.setTimeout(fakeAjaxResponse(), 1500);
         }
     });
+});
+</script>
 
-
+<!-- Start_Exclude: This block is not part of the sample code -->
+ <script>
+$(function(){
+	addSampleButton({
+	    label: "Disable",
+	    id: "btnDisable",
+	    code: function(){
+	        if( $("#tree").fancytree("option", "disabled") ){
+	            $("#tree").fancytree("enable");
+	            $("#btnDisable").text("Disable");
+	        }else{
+	            $("#tree").fancytree("disable");
+	            $("#btnDisable").text("Enable");
+	        }
+	        
+	    }
+	});
+	addSampleButton({
+	    label: "Expand all",
+	    newline: false,
+	    code: function(){
+	        $("#tree").fancytree("getRootNode").visit(function(node){
+	            node.setExpanded(true);
+	        });
+	    }
+	});
+	addSampleButton({
+	    label: "Collapse all",
+	    newline: false,
+	    code: function(){
+	        $("#tree").fancytree("getRootNode").visit(function(node){
+	            node.setExpanded(false);
+	        });
+	    }
+	});
+	addSampleButton({
+	    label: "Toggle expand",
+	    code: function(){
+	        $("#tree").fancytree("getRootNode").visit(function(node){
+	            node.toggleExpanded();
+	        });
+	    }
+	});
+	addSampleButton({
+	    label: "tree.getActiveNode()",
+	    code: function(){
+	        var node = $("#tree").fancytree("getActiveNode");
+	        if( node ){
+	            alert("Currently active: " + node.title);
+	        }else{
+	            alert("No active node.");
+	        }
+	    }
+	});
+	addSampleButton({
+	    label: "activateKey('id4.3.2')",
+	    code: function(){
+	        $("#tree").fancytree("getTree").activateKey("id4.3.2");
+	        // also possible:
+//	              $("#tree").fancytree("getTree").getNodeByKey("id4.3.2").setActive();
+	    }
+	});
+	addSampleButton({
+	    label: "setTitle()",
+	    code: function(){
+	        var node = $("#tree").fancytree("getActiveNode");
+	        if( !node ) return;
+	        node.setTitle(node.title + ", " + new Date());
+	        // this is a shortcut for
+	        // node.fromDict({title: data.node.title + new Date()});
+	    }
+	});
+	addSampleButton({
+	    label: "Add nodes with API",
+	    newline: false,
+	    code: function(){
+	        // Sample: add an hierarchic branch using code.
+	        // This is how we would add tree nodes programatically
+	        var rootNode = $("#tree").fancytree("getRootNode");
+	        var childNode = rootNode.addChildren({
+	            title: "Programatically addded nodes",
+	            tooltip: "This folder and all child nodes were added programmatically.",
+	            folder: true
+	        });
+	        childNode.addChildren({
+	            title: "Document using a custom icon",
+	            icon: "customdoc1.gif"
+	        });
+	    }
+	});
+	addSampleButton({
+	    label: "node.addChildren()",
+	    code: function(){
+	        // Sample: add an hierarchic branch using an array
+	        var obj = [
+	            { title: "Lazy node 1", lazy: true },
+	            { title: "Lazy node 2", lazy: true },
+	            { title: "Folder node 3", folder: true,
+	                children: [
+	                    { title: "node 3.1" },
+	                    { title: "node 3.2",
+	                        children: [
+	                            { title: "node 3.2.1" },
+	                            { title: "node 3.2.2",
+	                                children: [
+	                                    { title: "node 3.2.2.1" }
+	                                ]
+	                            }
+	                        ]
+	                    }
+	                ]
+	            }
+	        ];
+	        $("#tree").fancytree("getRootNode").addChildren(obj);
+	    }
+	});
     addSampleButton({
-        label: "Disable",
-        id: "btnDisable",
-        code: function(){
-            if( $("#tree").fancytree("option", "disabled") ){
-                $("#tree").fancytree("enable");
-                $("#btnDisable").text("Disable");
-            }else{
-                $("#tree").fancytree("disable");
-                $("#btnDisable").text("Enable");
-            }
-            
-        }
-    });
-    addSampleButton({
-        label: "Expand all",
+        label: "tree.toDict()",
         newline: false,
         code: function(){
-            $("#tree").fancytree("getRootNode").visit(function(node){
-                node.setExpanded(true);
-            });
+            // Convert the whole tree into an dictionary 
+            var tree = $("#tree").fancytree("getTree");
+            var d = tree.toDict(true);
+            alert(JSON.stringify(d));
         }
     });
-    addSampleButton({
-        label: "Collapse all",
+    CLIPBOARD = null;
+	addSampleButton({
+	    label: "node.toDict()",
         newline: false,
-        code: function(){
-            $("#tree").fancytree("getRootNode").visit(function(node){
-                node.setExpanded(false);
-            });
-        }
-    });
-    addSampleButton({
-        label: "Toggle expand",
-        code: function(){
-            $("#tree").fancytree("getRootNode").visit(function(node){
-                node.toggleExpanded();
-            });
-        }
-    });
-    addSampleButton({
-        label: "tree.getActiveNode()",
-        code: function(){
+	    code: function(){
+	    	// Convert active node (and descendants) to a dictionary and store
+	    	// in 
             var node = $("#tree").fancytree("getActiveNode");
-            if( node ){
-                alert("Currently active: " + node.title);
-            }else{
-                alert("No active node.");
-            }
-        }
-    });
-    addSampleButton({
-        label: "activateKey('id4.3.2')",
-        code: function(){
-            $("#tree").fancytree("getTree").activateKey("id4.3.2");
-            // also possible:
-//              $("#tree").fancytree("getTree").getNodeByKey("id4.3.2").setActive();
-        }
-    });
-    addSampleButton({
-        label: "setTitle()",
-        code: function(){
-            var node = $("#tree").fancytree("getActiveNode");
-            if( !node ) return;
-            node.setTitle(node.title + ", " + new Date());
-            // this is a shortcut for
-            // node.fromDict({title: data.node.title + new Date()});
-        }
-    });
-    addSampleButton({
-        label: "Add nodes with API",
-        newline: false,
-        code: function(){
-            // Sample: add an hierarchic branch using code.
-            // This is how we would add tree nodes programatically
-            var rootNode = $("#tree").fancytree("getRootNode");
-            var childNode = rootNode.addChildren({
-                title: "Programatically addded nodes",
-                tooltip: "This folder and all child nodes were added programmatically.",
-                folder: true
+            var d = node.toDict(true, function(dict){
+            	// Remove keys
+                delete dict.key;
             });
-            childNode.addChildren({
-                title: "Document using a custom icon",
-                icon: "customdoc1.gif"
-            });
-        }
-    });
-    addSampleButton({
-        label: "node.addChildren()",
-        code: function(){
-            // Sample: add an hierarchic branch using an array
-            var obj = [
-                { title: "Lazy node 1", lazy: true },
-                { title: "Lazy node 2", lazy: true },
-                { title: "Folder node 3", folder: true,
-                    children: [
-                        { title: "node 3.1" },
-                        { title: "node 3.2",
-                            children: [
-                                { title: "node 3.2.1" },
-                                { title: "node 3.2.2",
-                                    children: [
-                                        { title: "node 3.2.2.1" }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ];
-            $("#tree").fancytree("getRootNode").addChildren(obj);
-        }
-    });
+	        alert(JSON.stringify(d));
+	    }
+	});
     addSampleButton({
         label: "node.fromDict()",
-        newline: false,
         code: function(){
             var node = $("#tree").fancytree("getActiveNode");
             if( !node ) return;
@@ -181,43 +209,37 @@ $(function(){
             });            
         }
     });
-    addSampleButton({
-        label: "Store node.toDict()",
-        code: function(){
-            var node = $("#tree").fancytree("getRootNode");
-            var d = node.toDict();
-            alert(JSON.stringify(d));
-        }
-    });
-    addSampleButton({
-        label: "Sort tree",
-        newline: false,
-        code: function(){
-            var node = $("#tree").fancytree("getRootNode");
-            node.sortChildren(null, true);
-        }
-    });
-    addSampleButton({
-        label: "Sort active banch",
-        code: function(){
-            var node = $("#tree").fancytree("getActiveNode");
-            // Custom compare function (optional) that sorts case insensitive
-            var cmp = function(a, b) {
-                a = a.title.toLowerCase();
-                b = b.title.toLowerCase();
-                return a > b ? 1 : a < b ? -1 : 0;
-            };
-            node.sortChildren(cmp, false);
-        }
-    });
+	addSampleButton({
+	    label: "Sort tree",
+	    newline: false,
+	    code: function(){
+	        var node = $("#tree").fancytree("getRootNode");
+	        node.sortChildren(null, true);
+	    }
+	});
+	addSampleButton({
+	    label: "Sort active banch",
+	    code: function(){
+	        var node = $("#tree").fancytree("getActiveNode");
+	        // Custom compare function (optional) that sorts case insensitive
+	        var cmp = function(a, b) {
+	            a = a.title.toLowerCase();
+	            b = b.title.toLowerCase();
+	            return a > b ? 1 : a < b ? -1 : 0;
+	        };
+	        node.sortChildren(cmp, false);
+	    }
+	});
 });
 </script>
+<!-- End_Exclude -->
+
 </head>
 
 <body class="example">
 	<h1>Fancytree API</h1>
 	<p class="description">
-		This example demonstrates the usage of some Fancyree and FancyreeNode
+		This example demonstrates the usage of some Fancytree and FancytreeNode
 		API functions.
 	</p>
     <div>
@@ -264,9 +286,9 @@ $(function(){
 
 	<div>Active node: <span id="echoActive">-</span></div>
 	<div>Focused node: <span id="echoFocused">-</span></div>
-	<p id="sampleButtons">
-	</p>
 	<!-- Start_Exclude: This block is not part of the sample code -->
+    <p id="sampleButtons">
+    </p>
 	<hr>
 	<p class="sample-links  no_code">
 		<a class="hideInsideFS" href="http://fancytree.googlecode.com">jquery.fancytree.js project home</a>

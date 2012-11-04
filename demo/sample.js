@@ -93,13 +93,6 @@
 })( jQuery );
 
 
-/*
-function viewSourceCode()
-{
-    window.location = "view-source:" + window.location.href;
-}
-*/
-
 SAMPLE_BUTTON_DEFAULTS = {
     id: undefined,
     label: "Sample",
@@ -126,13 +119,19 @@ function addSampleButton(options)
         href: "#",
         "class": "showCode"
     }).appendTo($container)
-      .click(function(e){
-          try {
-              prettyPrint();
-          } catch (e) {
-              alert(e);
-          }
-        $container.find("pre").toggle("slow");
+    .click(function(e){
+        try {
+            prettyPrint();
+        } catch (e) {
+            alert(e);
+        }
+        var $pre = $container.find("pre");
+        if($pre.is(":visible")){
+        	$(this).text("Source code");
+        }else{
+        	$(this).text("Hide source");
+        }
+        $pre.toggle("slow");
         return false;
     });
     var sourceCode = "" + opts.code;
