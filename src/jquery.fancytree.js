@@ -175,16 +175,17 @@ function _findDirectChild(node, key){
 
 // Boolean attributes that can be set with equivalent class names in the LI tags
 var i,
-    CLASS_ATTRS = ["active", "expanded", "focus", "folder", "lazy", "nolink", "selected"],
+    CLASS_ATTRS = "active expanded focus folder lazy nolink selected".split(" "),
 	CLASS_ATTR_MAP = {};
 for(i=0; i<CLASS_ATTRS.length; i++){ CLASS_ATTR_MAP[CLASS_ATTRS[i]] = true; }
 
 // Top-level Fancytree node attributes, that can be set by dict
-var NODE_ATTRS = ["expanded", "extraClasses", /*"focus", */ "folder", "href", "key",
-                  "lazy", "nolink", "selected", "target", "title", "tooltip"],
+var NODE_ATTRS = "expanded extraClasses folder href key lazy nolink selected target title tooltip".split(" "),
     NODE_ATTR_MAP = {};
 for(i=0; i<NODE_ATTRS.length; i++){ NODE_ATTR_MAP[NODE_ATTRS[i]] = true; }
 
+// Attribute names that should NOT be added to node.data
+var NONE_NODE_DATA_MAP = {"active": true, "children": true, "focus": true};
 
 /** Parse tree data from HTML <ul> markup */
 function _loadFromHtml($ul, children) {
@@ -321,7 +322,7 @@ function FancytreeNode(parent, data){
 	}
 	// copy all other attributes to this.data.xxx
     for(name in data){
-        if(!NODE_ATTR_MAP[name] && !$.isFunction(data[name])){
+        if(!NODE_ATTR_MAP[name] && !$.isFunction(data[name]) && !NONE_NODE_DATA_MAP[name]){
             this.data[name] = data[name];
         }
     }
@@ -934,22 +935,41 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
             this.render();
         }
     },
+    /** Convert node (or whole branch) into a dictionary. 
+     * 
+     * The result is compatible with node.addChildren().
+     * 
+     * @param {Boolean} recursive
+     * @param {function} callback callback(dict) is called for every dict (), in order to allow modifications
+     * @returns {NodePatch}
+     */
     toDict: function(recursive, callback) {
-        var dict = $.extend({}, this.data);
-        dict.activate = ( this.tree.activeNode === this );
-        dict.focus = ( this.tree.focusNode === this );
-        dict.expand = this.bExpanded;
-        dict.select = this.bSelected;
+ 		var dict = {},
+ 			self = this;
+ 		$.each(NODE_ATTRS, function(i, a){
+// 			if(self[a] !== undefined && self[a] !== null){
+ 			if(self[a] || self[a] === false){
+ 	 			dict[a] = self[a];
+ 			}
+ 		});
+ 		if(!$.isEmptyObject(this.data)){
+ 			dict.data = $.extend({}, this.data);
+ 			if($.isEmptyObject(dict.data)){
+ 	 			delete dict.data;
+ 			}
+ 		}
         if( callback ){
             callback(dict);
         }
-        if( recursive && this.childList ) {
-            dict.children = [];
-            for(var i=0, l=this.childList.length; i<l; i++ ){
-                dict.children.push(this.childList[i].toDict(true, callback));
-            }
-        } else {
-            delete dict.children;
+        if( recursive ) {
+        	if(this.hasChildren()){
+                dict.children = [];
+                for(var i=0, l=this.children.length; i<l; i++ ){
+                    dict.children.push(this.children[i].toDict(true, callback));
+                }
+        	}else{
+//                dict.children = null;
+        	}
         }
         return dict;
     },
@@ -2539,7 +2559,12 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	},
 	// TODO: selectKey: function(key, select)
 	// TODO: serializeArray: function(stopOnParents)
-	// TODO: toDict()  with optional callback?
+	/**
+	 * @see FancytreeNode#toDict
+	 */
+    toDict: function(recursive, callback){
+        return this.rootNode.toDict(recursive, callback);
+    },
     /**Implicitly called for string conversions.
      * @returns {String} 
      */
