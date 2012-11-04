@@ -67,9 +67,10 @@ span.fancytree-active .fancytree-title {
 			autoFocus: true,
 			minExpandLevel: 2,
 			focus: function(e, data) {
+                var node = data.node;
 				// Auto-activate focused node after 1 second
-				if(data.node.href){
-					data.node.scheduleAction("activate", 1000);
+				if(node.data.href){
+					node.scheduleAction("activate", 1000);
 				}
 			},
 			blur: function(e, data) {
@@ -77,8 +78,10 @@ span.fancytree-active .fancytree-title {
 			},
 //            activate: function(e, data){
             click: function(e, data){ // handle click instead of activate, to allow re-loads
-				if(data.node.href){
-					window.open(data.node.href, data.node.target);
+                var node = data.node;
+//            alert("node.data=" + JSON.stringify(node.data));
+				if(node.data.href){
+					window.open(node.data.href, node.data.target);
 				}
 			}
 		});
@@ -95,7 +98,7 @@ span.fancytree-active .fancytree-title {
         <li><a target="_blank" href="../doc/tutorial.html">Tutorial&circ;</a>
         <li><a target="content" href="../doc/faq.html">FAQ</a>
         <li><a target="content" href="../doc/howto.html">Howtos</a>
-        <li><a target="_blank" href="../doc/jsdoc3/index.html">API reference&circ;</a>
+        <li><a target="_blank" href="../doc/jsdoc/index.html">API reference&circ;</a>
         <li><a target="_blank" href="http://fancytree.googlecode.com">Project page&circ;</a>
         <li><a target="_blank" href="http://jsfiddle.net/mar10/4GjRv/">Fiddle&circ;</a>
         </ul>
@@ -104,10 +107,12 @@ span.fancytree-active .fancytree-title {
             <li><a target="content" href="welcome.html">Welcome</a>
             <li><a target="content" href="sample-default.html">Default options</a>
 			<li><a target="content" href="sample-source.html">Initialization</a>
+            <li><a target="content" href="sample-events.html">Event handling</a>
 			<li><a target="content" href="sample-configurator.html">Option configurator</a>
             <li><a target="content" href="sample-iframe.html">URL navigation and &lt;iframe></a>
             <li><a target="content" href="sample-api.html">Programming API</a>
 			<li><a target="content" href="sample-select.html">Checkbox &amp; select</a>
+            <li><a target="content" href="sample-theming.html">Theming</a>
 <!--				
 			<li><a target="content" href="sample-quick.html">Init from JS object</a>
 			<li><a target="content" href="sample-init-lazy.html">Init from external data</a>
@@ -140,9 +145,11 @@ span.fancytree-active .fancytree-title {
 			<li class="folder">Tweaks
 				<ul>
                 <li><a target="content" href="sample-accordion.html">Accordion</a>
-                <li><a target="content" href="test-table.html">Column layout</a>
+                <li><a target="content" href="sample-contextmenu.html">Context menu, Copy/paste</a>
 				<li><a target="content" href="sample-inline-edit.html">Edit nodes</a>
                 <li><a target="content" href="sample-rtl.html">RTL</a>
+                <li><a target="content" href="sample-form.html">Embed in forms</a>
+                <li><a target="content" href="sample-multiline.html">Large nodes</a>
 				</ul>
 			<li class="folder">Test
 				<ul>

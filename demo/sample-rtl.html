@@ -54,7 +54,14 @@
 		        init: function(){
 		        	// Set RTL attribute on init
 		        	$(this).find(".fancytree-container").attr("DIR", "RTL").addClass("fancytree-rtl");
-		        }
+		        },
+	            keydown: function(node, event) {
+	                switch( event.which ) {
+	                // TODO: swap left/right key
+	                case $.ui.keyCode.LEFT:
+	                    alert("left");
+	                }
+	            }		        
 			});
 		});
 	</script>

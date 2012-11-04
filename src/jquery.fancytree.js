@@ -180,12 +180,12 @@ var i,
 for(i=0; i<CLASS_ATTRS.length; i++){ CLASS_ATTR_MAP[CLASS_ATTRS[i]] = true; }
 
 // Top-level Fancytree node attributes, that can be set by dict
-var NODE_ATTRS = "expanded extraClasses folder href key lazy nolink selected target title tooltip".split(" "),
+var NODE_ATTRS = "expanded extraClasses folder key lazy nolink selected title tooltip".split(" "),
     NODE_ATTR_MAP = {};
 for(i=0; i<NODE_ATTRS.length; i++){ NODE_ATTR_MAP[NODE_ATTRS[i]] = true; }
 
 // Attribute names that should NOT be added to node.data
-var NONE_NODE_DATA_MAP = {"active": true, "children": true, "focus": true};
+var NONE_NODE_DATA_MAP = {"active": true, "children": true, "data": true, "focus": true};
 
 /** Parse tree data from HTML <ul> markup */
 function _loadFromHtml($ul, children) {
@@ -199,7 +199,7 @@ function _loadFromHtml($ul, children) {
 		var $li = $(this),
 			$liSpan = $li.find(">span:first", this),
 			$liA = $liSpan.length ? null : $li.find(">a:first"),
-			d = {href: null, target: null, tooltip: null };
+			d = { tooltip: null, data: {} };
 
 		if( $liSpan.length ) {
 			d.title = $liSpan.html();
@@ -207,8 +207,8 @@ function _loadFromHtml($ul, children) {
 		} else if( $liA && $liA.length ) {
 			// If a <li><a> tag is specified, use it literally and extract href/target.
 			d.title = $liA.html();
-			d.href = $liA.attr("href");
-			d.target = $liA.attr("target");
+			d.data.href = $liA.attr("href");
+			d.data.target = $liA.attr("target");
 			d.tooltip = $liA.attr("title");
 
 		} else {
@@ -248,20 +248,23 @@ function _loadFromHtml($ul, children) {
 		if( tmp ){
 			d.key = tmp;
 		}
-		// If a data attribute is present, evaluate as a JavaScript object
-		// if( $li.attr("data") ) {
-		//     var dataAttr = $.trim($li.attr("data"));
-		//     if( dataAttr ) {
-		//         if( dataAttr.charAt(0) != "{" ){
-		//             dataAttr = "{" + dataAttr + "}";
-		//         }
-		//         try {
-		//             $.extend(data, eval("(" + dataAttr + ")"));
-		//         } catch(e) {
-		//             throw ("Error parsing node data: " + e + "\ndata:\n'" + dataAttr + "'");
-		//         }
-		//     }
-		// }
+        // Add <li data-NAME='...'> as node.data.NAME
+        // See http://api.jquery.com/data/#data-html5
+		var allData = $li.data();
+        if(allData && !$.isEmptyObject(allData)) {
+            // Special handling for <li data-json='...'> 
+            var jsonData = allData.json;
+            delete allData.json;
+            $.extend(d.data, allData);
+//            alert("$li.data()" + JSON.stringify(allData));
+            // If a 'data-json' attribute is present, evaluate and add to node.data
+            if(jsonData) {
+                // <li data-json='...'> is already returned as object
+                // see http://api.jquery.com/data/#data-html5
+                $.extend(d.data, jsonData);
+            }
+//            alert("d: " + JSON.stringify(d));
+        }
 //        that.debug("parse ", d);
 //        var childNode = parentTreeNode.addChild(data);
 		// Recursive reading of child nodes, if LI tag contains an UL tag
@@ -293,7 +296,7 @@ function _loadFromHtml($ul, children) {
  * @property {FancytreeNode} parent Parent node
  * @property {String} key
  * @property {String} title
- * @property {object} data
+ * @property {object} data Contains all custom data that was passed on node creation
  * @property {FancytreeNode[] | null | undefined} children list of child nodes
  * @property {Boolean} isStatusNode
  * @property {Boolean} expanded
@@ -306,7 +309,7 @@ function _loadFromHtml($ul, children) {
  * @property {String} target
  * @property {String} tooltip
  */
-function FancytreeNode(parent, data){
+function FancytreeNode(parent, obj){
 	var i, l, name, cl;
 	this.parent = parent;
 	this.tree = parent.tree;
@@ -315,15 +318,20 @@ function FancytreeNode(parent, data){
 	this.isStatusNode = false;
 	this.data = {};
 
-	// copy attributes from data object
+	// copy attributes from obj object
 	for(i=0, l=NODE_ATTRS.length; i<l; i++){
 		name = NODE_ATTRS[i];
-		this[name] = data[name];
+		this[name] = obj[name];
 	}
+    // node.data += obj.data
+    if(obj.data){
+        $.extend(this.data, obj.data);
+    }
 	// copy all other attributes to this.data.xxx
-    for(name in data){
-        if(!NODE_ATTR_MAP[name] && !$.isFunction(data[name]) && !NONE_NODE_DATA_MAP[name]){
-            this.data[name] = data[name];
+    for(name in obj){
+        if(!NODE_ATTR_MAP[name] && !$.isFunction(obj[name]) && !NONE_NODE_DATA_MAP[name]){
+            // node.data.NAME = obj.NAME
+            this.data[name] = obj[name];
         }
     }
 
@@ -332,16 +340,16 @@ function FancytreeNode(parent, data){
 		this.key = "_" + FT._nextNodeKey++;
 	}
 	// Fix tree.activeNode
-	// TODO: not elegant: we use data.active as marker to set tree.activeNode
+	// TODO: not elegant: we use obj.active as marker to set tree.activeNode
 	// when loading from a dictionary.
-	if(data.active){
+	if(obj.active){
 		_assert(this.tree.activeNode === null, "only one active node allowed");
 		this.tree.activeNode = this;
 	}
-	// TODO: handle data.focus = true
+	// TODO: handle obj.focus = true
 	// Create child nodes
 	this.children = null;
-	cl = data.children;
+	cl = obj.children;
 	if(cl && cl.length){
 		this.addChildren(cl);
 	}
@@ -1094,7 +1102,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	_makeHookContext: function(obj, orgEvent) {
 		if(obj.node !== undefined){
 			// obj is already a context object
-			if(orgEvent){
+			if(orgEvent && obj.orgEvent !== orgEvent){
 				$.error("invalid args");
 			}
 			return obj;
@@ -1122,7 +1130,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			$.error("_callHook('" + funcName + "') is not a function");
 		}
 		args.unshift(ctx);
-		this.debug("_hook", funcName, ctx.node && ctx.node.toString() || ctx.tree.toString(), args);
+//		this.debug("_hook", funcName, ctx.node && ctx.node.toString() || ctx.tree.toString(), args);
 		return fn.apply(this, args);
 	},
 	/** Activate node with a given key.
@@ -1552,8 +1560,8 @@ Fancytree.prototype = /**@lends Fancytree*/{
 
 		if($.isFunction(source)){
 			source = source();
-//            alert("source() = " + source);
 		}
+//        alert("nodeLoadChildren() source = " + JSON.stringify(source));
 		if(source.url || $.isFunction(source.done)){
 			tree.nodeSetStatus(ctx, "loading");
 			if(source.url){
@@ -1791,7 +1799,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			isRootNode = !parent,
 			children = node.children,
 			i, l;
-		FT.debug("nodeRender(" + !!force + ", " + !!deep + ")", node.toString());
+//		FT.debug("nodeRender(" + !!force + ", " + !!deep + ")", node.toString());
 
 		_assert(isRootNode || parent.ul, "parent UL must exist");
 
@@ -1933,7 +1941,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		}
 		if(!nodeTitle){
 			var tooltip = node.tooltip ? ' title="' + node.tooltip.replace(/\"/g, '&quot;') + '"' : '',
-				href = node.href || "#";
+				href = node.data.href || "#";
 			if( opts.nolink || node.nolink ) {
 				// TODO: move style='' to CSS
 				nodeTitle = '<span class="fancytree-title"' + tooltip + '>' + node.title + '</span>';
@@ -2576,7 +2584,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	 */
 	_triggerNodeEvent: function(type, node, orgEvent) {
 		var ctx = this._makeHookContext(node, orgEvent);
-		this.debug("_trigger(" + type + "): '" + ctx.node.title + "'", ctx);
+//		this.debug("_trigger(" + type + "): '" + ctx.node.title + "'", ctx);
 		var res = this.$widget._trigger(type, orgEvent, ctx);
 		if(res !== false && ctx.result !== undefined){
 			return ctx.result;
@@ -2586,7 +2594,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	/** _trigger a widget event with additional tree data. */
 	_triggerTreeEvent: function(type, orgEvent) {
 		var ctx = this._makeHookContext(this, orgEvent);
-		this.debug("_trigger(" + type + ")", ctx);
+//		this.debug("_trigger(" + type + ")", ctx);
 		var res = this.$widget._trigger(type, orgEvent, ctx);
 		if(res !== false && ctx.result !== undefined){
 			return ctx.result;
@@ -2785,7 +2793,9 @@ $.widget("ui.fancytree",
 			if(opts.disabled){
 				return true;
 			}
-			var node = FT.getNode(event.target);
+			var et = FT.getEventTarget(event),
+			    node = et.node;
+//			    node = FT.getNode(event.target);
 			if( !node ){
 				return true;  // Allow bubbling of other events
 			}
@@ -2798,10 +2808,13 @@ $.widget("ui.fancytree",
 				tree.phase = "userEvent";
 				switch(event.type) {
 				case "click":
-					// return ( that._triggerNodeEvent(node, "click", event) === false ) ? false : node._onClick(event);
-					return ( tree._triggerNodeEvent("click", node, event) === false ) ? false : tree._callHook("nodeClick", ctx);
+				    ctx.targetType = et.type;
+                    return ( tree._triggerNodeEvent("click", ctx, event) === false ) ? false : tree._callHook("nodeClick", ctx);
+//                  return ( tree._triggerNodeEvent("click", node, event) === false ) ? false : tree._callHook("nodeClick", ctx);
 				case "dblclick":
-					return ( tree._triggerNodeEvent("dblclick", node, event) === false ) ? false : tree._callHook("nodeDblclick", ctx);
+                    ctx.targetType = et.type;
+                    return ( tree._triggerNodeEvent("dblclick", ctx, event) === false ) ? false : tree._callHook("nodeDblclick", ctx);
+//                    return ( tree._triggerNodeEvent("dblclick", node, event) === false ) ? false : tree._callHook("nodeDblclick", ctx);
 				case "keydown":
 					return ( tree._triggerNodeEvent("keydown", node, event) === false ) ? false : tree._callHook("nodeKeydown", ctx);
 				case "keypress":

@@ -38,10 +38,11 @@
 				this.reactivate();
 			},
 			activate: function(e, data) {
+			    var node = data.node;
 				// Use <a> href and target attributes to load the content:
-				if( data.node.href ){
+				if( node.data.href ){
 					// Open target
-					window.open(data.node.href, data.node.target);
+					window.open(node.data.href, node.data.target);
 					// or open target in iframe
 //                $("[name=contentFrame]").attr("src", node.data.href);
 				}
