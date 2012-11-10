@@ -49,7 +49,7 @@ function _getNode(key){
 }
 
 
-/** Get FancytreeNode from current tree. */
+/** Get current Fancytree. */
 function _getTree(key){
 	return $("#tree").fancytree("getTree");
 }
@@ -307,7 +307,7 @@ test("FancytreeNode class", function() {
 
 
 	// Methods
-//  addChildren: function(children){
+//  addChildren: function(children){	
 //  applyPatch: function(patch) {
 //  collapseSiblings: function() {
 //  countChildren: function() {
@@ -645,7 +645,57 @@ test(".click() to expand a lazy folder (lazyload returns ajax options)", functio
 /*******************************************************************************
  *
  */
-module("patches");
+module("add children & patches");
+
+test("add children", function() {
+    _setupAsync();
+    expect(15);
+
+    var childList = [
+            {title: "New 1", key: "test1", tooltip: "new tip", data: {foo: "works"}},
+            {title: "New 2", key: "test2", folder: true, children: [
+                {title: "New 2.1", key: "test2_1"},
+                {title: "New 2.2", key: "test2_2"}
+             ]},
+            {title: "New 3", key: "test3", expanded: true, children: [
+                {title: "New 3.1", key: "test3_1", selected: true},
+                {title: "New 3.2", key: "test3_2", extraClasses: "customClass"}
+             ]}
+        ];
+
+    $("#tree").fancytree({
+        source: testData,
+        lazyload: function(e, data){
+            data.result = {url: "ajax-sub2.json"};
+        },
+        init: function(e, data){
+            data.tree.rootNode.addChildren(childList);
+
+            equal(_getNodeTitle("test1"), "New 1", "simple node");
+            var $span = $(_getNode("test1").span);
+            equal($span.find("a.fancytree-title").attr("title"), "new tip", "set tooltip");
+            equal(_getNode("test1").data.foo, "works", "set custom data");
+
+            equal(_getNode("test2").isFolder(), true, "is folder");
+            equal(_getNode("test2").isExpanded(), false, "folder was collapsed");
+            equal($(_getNode("test2").span).hasClass("fancytree-expanded"), false, "folder was rendered as collapsed");
+            equal(_getNode("test2_1").title, "New 2.1", "subnode created");
+            equal(_getNodeTitle("test2_1"), null, "subnode NOT rendered");
+
+            equal(_getNode("test3").expanded, true, "node was expanded");
+            equal($(_getNode("test3").span).hasClass("fancytree-expanded"), true, "folder was rendered as expanded");
+            equal(_getNode("test3_1").title, "New 3.1", "subnode created");
+            equal(_getNodeTitle("test3_1"), "New 3.1", "subnode rendered expanded");
+            equal(_getNode("test3_1").isSelected(), true, "select");
+            equal($(_getNode("test3_1").span).hasClass("fancytree-selected"), true, "node was rendered as selected");
+            equal($(_getNode("test3_2").span).hasClass("customClass"), true, "set custom class");
+
+//            deepEqual(EVENT_SEQUENCE, [], "event sequence");
+
+            start();
+        }
+    });
+});
 
 test("apply patch", function() {
 	_setupAsync();

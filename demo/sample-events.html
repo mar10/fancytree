@@ -28,6 +28,14 @@
 	$(function(){
 		$("#tree").fancytree({
 			checkbox: true,
+			// Tree events
+			init: function(event, data, flag) {
+				logEvent(event, data, "flag=" + flag);
+			},
+			create: function(event, data, flag) {
+				logEvent(event, data, "flag=" + flag);
+			},
+			// Node events
 			queryactivate: function(event, data) {
 				logEvent(event, data, "current state=" + data.node.isActive());
 				// return false to prevent default behavior (i.e. activation)
@@ -77,6 +85,9 @@
 					{title: "Another node", selected: true}
 					];
 			},
+			loadchildren: function(event, data) {
+				logEvent(event, data);
+			},
 			focus: function(event, data) {
 				logEvent(event, data);
 				$("#echoFocused").text(data.node.title);
@@ -105,6 +116,15 @@
 				}
 			},
 			keypress: function(event, data) {
+				logEvent(event, data);
+			},
+			createnode: function(event, data) {
+				// Optionally tweak data.node.span or bind handlers here
+				logEvent(event, data);
+			},
+			rendernode: function(event, data) {
+				// Optionally tweak data.node.span
+//              $(data.node.span).text(">>" + data.node.title);
 				logEvent(event, data);
 			}
 		}).bind("fancytreeactivate", function(event, data){

@@ -159,7 +159,8 @@ function _makeNodeTitleMatcher(s){
 	};
 }
 
-
+/* TODO: use node._findDirectChild(key) instead */
+/*
 function _findDirectChild(node, key){
 	var cl = node.children;
 	if($.isArray(cl)){
@@ -171,7 +172,7 @@ function _findDirectChild(node, key){
 	}
 	return null;
 }
-
+*/
 
 // Boolean attributes that can be set with equivalent class names in the LI tags
 var i,
@@ -351,31 +352,70 @@ function FancytreeNode(parent, obj){
 	this.children = null;
 	cl = obj.children;
 	if(cl && cl.length){
-		this.addChildren(cl);
+	    this._setChildren(cl);
 	}
 }
 
+
 FancytreeNode.prototype = /**@lends FancytreeNode*/{
+    /* Return the direct child FancytreeNode with a given key, index. */
+    _findDirectChild: function(ptr){
+        var cl = this.children;
+        if(cl){
+            if(typeof ptr === "string"){
+                for(var i=0, l=cl.length; i<l; i++){
+                    if(cl[i].key === ptr){
+                        return cl[i];
+                    }
+                }
+            }else if(typeof ptr === "number"){
+                return this.children[ptr];
+            }else if(ptr.parent === this){
+                return ptr;
+            }
+        }
+        return null;
+    },
 	// TODO: activate()
 	// TODO: activateSilently()
+    /* Internal helper called in recursive addChildrenn sequence.*/
+    _setChildren: function(children){
+        _assert(children && (!this.children || this.children.length === 0), "only init supported");
+        this.children = [];
+        for(var i=0, l=children.length; i<l; i++){
+            this.children.push(new FancytreeNode(this, children[i]));
+        }
+    },
 	/**
-	 * Set list of child nodes.
-	 * NOTE: current children are replaced! Use applyPatch for more control.
+	 * Append (or insert) a list of child nodes.
 	 *
-	 * TODO: rename to setChildren() or add 'insertBefore' parameter
-	 * @param {NodeData[]} children array of child node definitions
+     * @param {NodeData[]} children array of child node definitions
+     * @param {FancytreeNode | String | Integer} [insertBefore] child node (or key or index of such).
+     *     If omitted, the new children are appended.
+     *      
+     * @see {@link applyPatch} tp modify existing child nodes.
 	 */
-	addChildren: function(children){
-		_assert(!!children && (!this.children || this.children.length === 0), "only init supported");
-		this.children = [];
-		for(var i=0, l=children.length; i<l; i++){
-			this.children.push(new FancytreeNode(this, children[i]));
+	addChildren: function(children, insertBefore){
+		if(!this.children){
+	        this.children = [];
 		}
+        if(insertBefore === undefined){
+//            this._setChildren(children);
+            for(var i=0, l=children.length; i<l; i++){
+                this.children.push(new FancytreeNode(this, children[i]));
+            }
+        }else{
+            // TODO: not implemented
+            _assert(!insertBefore, "not implemented");
+            insertBefore = this._findDirectChild(insertBefore);
+        }
+		this.render();
 	},
 	/**
 	 *
 	 * @param {NodePatch} patch
 	 * @returns {$.Promise}
+     * @see {@link applyPatch} tp modify existing child nodes.
 	 */
 	applyPatch: function(patch) {
 		// patch [key, null] means 'remove'
@@ -400,8 +440,9 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 		// Remove and/or create children
 		if(patch.hasOwnProperty("children")){
 			this.removeChildren();
-			if(patch.children){
-				this.addChildren(patch.children);
+			if(patch.children){ // only if not null and not empty list
+			    // TODO: addChildren instead?
+				this._setChildren(patch.children);
 			}
 			// TODO: how can we APPEND or INSERT child nodes?
 		}
@@ -955,7 +996,7 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 		var dict = {},
 			self = this;
 		$.each(NODE_ATTRS, function(i, a){
-// 			if(self[a] !== undefined && self[a] !== null){
+//			if(self[a] !== undefined && self[a] !== null){
 			if(self[a] || self[a] === false){
 				dict[a] = self[a];
 			}
@@ -1332,7 +1373,8 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			segList = path.split(sep);
 			while(segList.length){
 				key = segList.shift();
-				node = _findDirectChild(root, key);
+//                node = _findDirectChild(root, key);
+                node = root._findDirectChild(key);
 				if(!node){
 					this.warn("loadKeyPath: key not found: " + key + " (parent: " + root + ")");
 					callback.call(this, key, "error");
@@ -1370,7 +1412,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		  });
 		}
 		for(key in loadMap){
-			node = _findDirectChild(root, key);
+			node = root._findDirectChild(key);
 //            alert("loadKeyPath: lazy node(" + key + ") = " + node);
 			var dfd = new $.Deferred();
 			deferredList.push(dfd);
@@ -1606,7 +1648,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		}
 		dfd.done(function(){
 			_assert($.isArray(children), "expected array of children");
-			node.addChildren(children);
+			node._setChildren(children);
 			if(node.parent){
 				// if nodeLoadChildren was called for rootNode, the caller must
 				// use tree.render() instead
@@ -1833,16 +1875,10 @@ Fancytree.prototype = /**@lends Fancytree*/{
 				this.nodeRenderTitle(ctx);
 
 				// Allow tweaking and binding, after node was created for the first time
-				if(opts.onCreate){
-					// TODO: _trigger
-					opts.onCreate.call(tree, node, node.span);
-				}
+				tree._triggerNodeEvent("createnode", ctx);
 			}
 			// Allow tweaking after node state was rendered
-			if(opts.onRender){
-				// TODO: _trigger
-				opts.onRender.call(tree, node, node.span);
-			}
+			tree._triggerNodeEvent("rendernode", ctx);
 		}
 
 		// Visit child nodes
@@ -2421,7 +2457,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 				tree._callHook("nodeRender", firstChild);
 			} else {
 				data.key = "_statusNode";
-				node.addChildren([data]);
+				node._setChildren([data]);
 				node.children[0].isStatusNode = true;
 				tree.render();
 			}
@@ -2816,6 +2852,7 @@ $.widget("ui.fancytree",
 					return ( tree._triggerNodeEvent("dblclick", ctx, event) === false ) ? false : tree._callHook("nodeDblclick", ctx);
 //                    return ( tree._triggerNodeEvent("dblclick", node, event) === false ) ? false : tree._callHook("nodeDblclick", ctx);
 				case "keydown":
+					// TODO: duplicate? see above
 					return ( tree._triggerNodeEvent("keydown", node, event) === false ) ? false : tree._callHook("nodeKeydown", ctx);
 				case "keypress":
 					return ( tree._triggerNodeEvent("keypress", node, event) === false ) ? false : tree._callHook("nodeKeypress", ctx);

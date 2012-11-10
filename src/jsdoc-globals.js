@@ -14,13 +14,16 @@
  */
 var HookContext = {};
 
+
 /**
  * Data object passed to FancytreeNode() constructor.
  * @name NodeData
  *
  * @property {String} title
+ * @property {String} key unique key for this node (quto-generated if omitted)
  */
 var NodeData = {};
+
 
 /**
  * Data object similar to {@link NodeData}, but with additional options.
@@ -30,6 +33,15 @@ var NodeData = {};
  * @property {String} title
  */
 var NodePatch = {};
+
+
+/**
+ * List of [key, {@link NodePatch}]  tuples.
+ * May be passed to {@link Fancytree#applyPatch}.
+ * @name NodePatch
+ *
+ */
+var TreePatch = {};
 
 /*
 	title: "Dynatree", // Tree's name (only used for debug output)
