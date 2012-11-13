@@ -188,98 +188,6 @@ for(i=0; i<NODE_ATTRS.length; i++){ NODE_ATTR_MAP[NODE_ATTRS[i]] = true; }
 // Attribute names that should NOT be added to node.data
 var NONE_NODE_DATA_MAP = {"active": true, "children": true, "data": true, "focus": true};
 
-/** Parse tree data from HTML <ul> markup */
-function _loadFromHtml($ul, children) {
-	// TODO: understand this:
-	/*jshint validthis:true */
-	var that = this,
-		$children = $ul.find(">li"),
-		extraClasses, i, l, iPos, tmp, classes, className;
-
-	$children.each(function() {
-		var $li = $(this),
-			$liSpan = $li.find(">span:first", this),
-			$liA = $liSpan.length ? null : $li.find(">a:first"),
-			d = { tooltip: null, data: {} };
-
-		if( $liSpan.length ) {
-			d.title = $liSpan.html();
-
-		} else if( $liA && $liA.length ) {
-			// If a <li><a> tag is specified, use it literally and extract href/target.
-			d.title = $liA.html();
-			d.data.href = $liA.attr("href");
-			d.data.target = $liA.attr("target");
-			d.tooltip = $liA.attr("title");
-
-		} else {
-			// If only a <li> tag is specified, use the trimmed string up to
-			// the next child <ul> tag.
-			d.title = $li.html();
-			iPos = d.title.search(/<ul/i);
-			if( iPos >= 0 ){
-				d.title = d.title.substring(0, iPos);
-			}
-		}
-		d.title = $.trim(d.title);
-
-		// Make sure all fields exist
-		for(i=0, l=CLASS_ATTRS.length; i<l; i++){
-			d[CLASS_ATTRS[i]] = undefined;
-		}
-		// Initialize to `true`, if class is set and collect extraClasses
-		classes = this.className.split(" ");
-		extraClasses = [];
-		for(i=0, l=classes.length; i<l; i++){
-			className = classes[i];
-			if(CLASS_ATTR_MAP[className]){
-				d[className] = true;
-			}else{
-				extraClasses.push(className);
-			}
-		}
-		d.extraClasses = extraClasses.join(" ");
-
-		// Parse node options from ID, title and class attributes
-		tmp = $li.attr("title");
-		if( tmp ){
-			d.tooltip = tmp; // overrides <a title='...'>
-		}
-		tmp = $li.attr("id");
-		if( tmp ){
-			d.key = tmp;
-		}
-		// Add <li data-NAME='...'> as node.data.NAME
-		// See http://api.jquery.com/data/#data-html5
-		var allData = $li.data();
-		if(allData && !$.isEmptyObject(allData)) {
-			// Special handling for <li data-json='...'>
-			var jsonData = allData.json;
-			delete allData.json;
-			$.extend(d.data, allData);
-//            alert("$li.data()" + JSON.stringify(allData));
-			// If a 'data-json' attribute is present, evaluate and add to node.data
-			if(jsonData) {
-				// <li data-json='...'> is already returned as object
-				// see http://api.jquery.com/data/#data-html5
-				$.extend(d.data, jsonData);
-			}
-//            alert("d: " + JSON.stringify(d));
-		}
-//        that.debug("parse ", d);
-//        var childNode = parentTreeNode.addChild(data);
-		// Recursive reading of child nodes, if LI tag contains an UL tag
-		$ul = $li.find(">ul:first");
-		if( $ul.length ) {
-			d.children = [];
-			_loadFromHtml.call(that, $ul, d.children); // must use 'that', because 'this' is the each() context
-		}else{
-			d.children = d.lazy ? undefined : null;
-		}
-		children.push(d);
-	});
-}
-
 /* *****************************************************************************
  * FancytreeNode
  */
@@ -415,7 +323,7 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 	 *
 	 * @param {NodePatch} patch
 	 * @returns {$.Promise}
-     * @see {@link applyPatch} tp modify existing child nodes.
+     * @see FancytreeNode#addChildren
 	 */
 	applyPatch: function(patch) {
 		// patch [key, null] means 'remove'
@@ -2554,8 +2462,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			case "html":
 				$ul = $container.find(">ul:first");
 				$ul.addClass("ui-fancytree-source ui-helper-hidden");
-				source = [];
-				_loadFromHtml.call(this, $ul, source);
+				source = $.ui.fancytree.parseHtml($ul);
 				break;
 			case "json":
 	//            $().addClass("ui-helper-hidden");
@@ -2993,6 +2900,102 @@ $.extend($.ui.fancytree,
 	info: function(msg){
 		/*jshint expr:true */
 		(FT.debugLevel >= 1) && window.console && window.console.info && window.console.info.apply(window.console, arguments);
+	},
+	/**
+	 * Parse tree data from HTML <ul> markup
+	 * 
+	 * @param {jQueryObject} $ul 
+	 * @returns{NodeData[]}
+	 */
+	parseHtml: function($ul) {
+		// TODO: understand this:
+		/*jshint validthis:true */
+		var $children = $ul.find(">li"),
+			extraClasses, i, l, iPos, tmp, classes, className,
+			children = [];
+
+		$children.each(function() {
+			var $li = $(this),
+				$liSpan = $li.find(">span:first", this),
+				$liA = $liSpan.length ? null : $li.find(">a:first"),
+				d = { tooltip: null, data: {} };
+
+			if( $liSpan.length ) {
+				d.title = $liSpan.html();
+
+			} else if( $liA && $liA.length ) {
+				// If a <li><a> tag is specified, use it literally and extract href/target.
+				d.title = $liA.html();
+				d.data.href = $liA.attr("href");
+				d.data.target = $liA.attr("target");
+				d.tooltip = $liA.attr("title");
+
+			} else {
+				// If only a <li> tag is specified, use the trimmed string up to
+				// the next child <ul> tag.
+				d.title = $li.html();
+				iPos = d.title.search(/<ul/i);
+				if( iPos >= 0 ){
+					d.title = d.title.substring(0, iPos);
+				}
+			}
+			d.title = $.trim(d.title);
+
+			// Make sure all fields exist
+			for(i=0, l=CLASS_ATTRS.length; i<l; i++){
+				d[CLASS_ATTRS[i]] = undefined;
+			}
+			// Initialize to `true`, if class is set and collect extraClasses
+			classes = this.className.split(" ");
+			extraClasses = [];
+			for(i=0, l=classes.length; i<l; i++){
+				className = classes[i];
+				if(CLASS_ATTR_MAP[className]){
+					d[className] = true;
+				}else{
+					extraClasses.push(className);
+				}
+			}
+			d.extraClasses = extraClasses.join(" ");
+
+			// Parse node options from ID, title and class attributes
+			tmp = $li.attr("title");
+			if( tmp ){
+				d.tooltip = tmp; // overrides <a title='...'>
+			}
+			tmp = $li.attr("id");
+			if( tmp ){
+				d.key = tmp;
+			}
+			// Add <li data-NAME='...'> as node.data.NAME
+			// See http://api.jquery.com/data/#data-html5
+			var allData = $li.data();
+			if(allData && !$.isEmptyObject(allData)) {
+				// Special handling for <li data-json='...'>
+				var jsonData = allData.json;
+				delete allData.json;
+				$.extend(d.data, allData);
+//	            alert("$li.data()" + JSON.stringify(allData));
+				// If a 'data-json' attribute is present, evaluate and add to node.data
+				if(jsonData) {
+					// <li data-json='...'> is already returned as object
+					// see http://api.jquery.com/data/#data-html5
+					$.extend(d.data, jsonData);
+				}
+//	            alert("d: " + JSON.stringify(d));
+			}
+//	        that.debug("parse ", d);
+//	        var childNode = parentTreeNode.addChild(data);
+			// Recursive reading of child nodes, if LI tag contains an UL tag
+			$ul = $li.find(">ul:first");
+			if( $ul.length ) {
+				d.children = $.ui.fancytree.parseHtml($ul);
+			}else{
+				d.children = d.lazy ? undefined : null;
+			}
+			children.push(d);
+		});
+		return children;
 	},
 	/** Add Fancytree extension definition to the list of globally available extensions.
 	 *
