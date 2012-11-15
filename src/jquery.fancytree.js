@@ -283,25 +283,36 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 	/**
 	 * Append (or insert) a list of child nodes.
 	 *
-	 * @param {NodeData[]} children array of child node definitions
+	 * @param {NodeData[]} children array of child node definitions (also single child accepted)
 	 * @param {FancytreeNode | String | Integer} [insertBefore] child node (or key or index of such).
 	 *     If omitted, the new children are appended.
+	 * @returns {FancytreeNode} first child added
 	 *
-     * @see applyPatch to modify existing child nodes.
-     * @see FanctreeNode.applyPatch to modify existing child nodes.
-     * @see FanctreeNode#applyPatch to modify existing child nodes.
-     * @see applyPatch
-     * @see FanctreeNode.applyPatch
-     * @see FanctreeNode#applyPatch
+	 * @see applyPatch to modify existing child nodes.
+	 * @see FanctreeNode.applyPatch to modify existing child nodes.
+	 * @see FanctreeNode#applyPatch to modify existing child nodes.
+	 * @see applyPatch
+	 * @see FanctreeNode.applyPatch
+	 * @see FanctreeNode#applyPatch
 	 */
 	addChildren: function(children, insertBefore){
+	    var firstNode = null,
+	        node;
+	    if($.isPlainObject(children) ){
+	        children = [children];
+	    }
 		if(!this.children){
 			this.children = [];
 		}
 		if(insertBefore === undefined){
 //            this._setChildren(children);
 			for(var i=0, l=children.length; i<l; i++){
-				this.children.push(new FancytreeNode(this, children[i]));
+				if(i === 0){
+				    firstNode = new FancytreeNode(this, children[i]);
+		            this.children.push(firstNode);
+				}else{
+	                this.children.push(new FancytreeNode(this, children[i]));
+				}
 			}
 		}else{
 			// TODO: not implemented
@@ -309,13 +320,14 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 			insertBefore = this._findDirectChild(insertBefore);
 		}
 		this.render();
+		return firstNode;
 	},
 	/**
 	 *
 	 * @param {NodePatch} patch
 	 * @returns {$.Promise}
 	 * @see {@link applyPatch} tp modify existing child nodes.
-     * @see FancytreeNode#addChildren
+	 * @see FancytreeNode#addChildren
 	 */
 	applyPatch: function(patch) {
 		// patch [key, null] means 'remove'
@@ -1390,8 +1402,8 @@ Fancytree.prototype = /**@lends Fancytree*/{
 					activate = false;
 					break;
 				case 3: // expand and activate
-                    activate = true;
-                    expand = !node.isExpanded();
+					activate = true;
+					expand = !node.isExpanded();
 					break;
 				}
 			}
@@ -1820,7 +1832,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 				// Allow tweaking and binding, after node was created for the first time
 				tree._triggerNodeEvent("createnode", ctx);
 			}else{
-                this.nodeRenderTitle(ctx);
+				this.nodeRenderTitle(ctx);
 			}
 			// Allow tweaking after node state was rendered
 			tree._triggerNodeEvent("rendernode", ctx);
@@ -1911,7 +1923,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		if ( node.icon ) {
 			var imageSrc = (node.icon.charAt(0) === "/") ? node.icon : (opts.imagePath + node.icon);
 			ares.push("<img src='" + imageSrc + "' alt='' />");
-        } else if ( node.icon !== false ) {
+		} else if ( node.icon !== false ) {
 			// icon == false means 'no icon', icon == null means 'default icon'
 			ares.push("<span class='fancytree-icon'></span>");
 		}
@@ -2940,8 +2952,8 @@ $.extend($.ui.fancytree,
 	},
 	/**
 	 * Parse tree data from HTML <ul> markup
-	 * 
-	 * @param {jQueryObject} $ul 
+	 *
+	 * @param {jQueryObject} $ul
 	 * @returns{NodeData[]}
 	 */
 	parseHtml: function($ul) {
