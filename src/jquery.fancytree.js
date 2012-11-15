@@ -159,21 +159,6 @@ function _makeNodeTitleMatcher(s){
 	};
 }
 
-/* TODO: use node._findDirectChild(key) instead */
-/*
-function _findDirectChild(node, key){
-	var cl = node.children;
-	if($.isArray(cl)){
-		for(var i=0, l=cl.length; i<l; i++){
-			if(cl[i].key === key){
-				return cl[i];
-			}
-		}
-	}
-	return null;
-}
-*/
-
 // Boolean attributes that can be set with equivalent class names in the LI tags
 var i,
 	CLASS_ATTRS = "active expanded focus folder lazy nolink selected".split(" "),
@@ -227,6 +212,7 @@ function FancytreeNode(parent, obj){
 	this.isStatusNode = false;
 	this.data = {};
 
+	// TODO: merge this code with node.toDict()
 	// copy attributes from obj object
 	for(i=0, l=NODE_ATTRS.length; i<l; i++){
 		name = NODE_ATTRS[i];
@@ -236,7 +222,7 @@ function FancytreeNode(parent, obj){
 	if(obj.data){
 		$.extend(this.data, obj.data);
 	}
-	// copy all other attributes to this.data.xxx
+	// copy all other attributes to this.data.NAME
 	for(name in obj){
 		if(!NODE_ATTR_MAP[name] && !$.isFunction(obj[name]) && !NONE_NODE_DATA_MAP[name]){
 			// node.data.NAME = obj.NAME
@@ -246,7 +232,7 @@ function FancytreeNode(parent, obj){
 
 	// Fix missing key
 	if(!this.key){
-		this.key = "_" + FT._nextNodeKey++;
+		this.key = "_" + (FT._nextNodeKey++);
 	}
 	// Fix tree.activeNode
 	// TODO: not elegant: we use obj.active as marker to set tree.activeNode
@@ -260,69 +246,75 @@ function FancytreeNode(parent, obj){
 	this.children = null;
 	cl = obj.children;
 	if(cl && cl.length){
-	    this._setChildren(cl);
+		this._setChildren(cl);
 	}
 }
 
 
 FancytreeNode.prototype = /**@lends FancytreeNode*/{
-    /* Return the direct child FancytreeNode with a given key, index. */
-    _findDirectChild: function(ptr){
-        var cl = this.children;
-        if(cl){
-            if(typeof ptr === "string"){
-                for(var i=0, l=cl.length; i<l; i++){
-                    if(cl[i].key === ptr){
-                        return cl[i];
-                    }
-                }
-            }else if(typeof ptr === "number"){
-                return this.children[ptr];
-            }else if(ptr.parent === this){
-                return ptr;
-            }
-        }
-        return null;
-    },
+	/* Return the direct child FancytreeNode with a given key, index. */
+	_findDirectChild: function(ptr){
+		var cl = this.children;
+		if(cl){
+			if(typeof ptr === "string"){
+				for(var i=0, l=cl.length; i<l; i++){
+					if(cl[i].key === ptr){
+						return cl[i];
+					}
+				}
+			}else if(typeof ptr === "number"){
+				return this.children[ptr];
+			}else if(ptr.parent === this){
+				return ptr;
+			}
+		}
+		return null;
+	},
 	// TODO: activate()
 	// TODO: activateSilently()
-    /* Internal helper called in recursive addChildrenn sequence.*/
-    _setChildren: function(children){
-        _assert(children && (!this.children || this.children.length === 0), "only init supported");
-        this.children = [];
-        for(var i=0, l=children.length; i<l; i++){
-            this.children.push(new FancytreeNode(this, children[i]));
-        }
-    },
+	/* Internal helper called in recursive addChildrenn sequence.*/
+	_setChildren: function(children){
+		_assert(children && (!this.children || this.children.length === 0), "only init supported");
+		this.children = [];
+		for(var i=0, l=children.length; i<l; i++){
+			this.children.push(new FancytreeNode(this, children[i]));
+		}
+	},
 	/**
 	 * Append (or insert) a list of child nodes.
 	 *
-     * @param {NodeData[]} children array of child node definitions
-     * @param {FancytreeNode | String | Integer} [insertBefore] child node (or key or index of such).
-     *     If omitted, the new children are appended.
-     *      
-     * @see {@link applyPatch} tp modify existing child nodes.
+	 * @param {NodeData[]} children array of child node definitions
+	 * @param {FancytreeNode | String | Integer} [insertBefore] child node (or key or index of such).
+	 *     If omitted, the new children are appended.
+	 *
+     * @see applyPatch to modify existing child nodes.
+     * @see FanctreeNode.applyPatch to modify existing child nodes.
+     * @see FanctreeNode#applyPatch to modify existing child nodes.
+     * @see applyPatch
+     * @see FanctreeNode.applyPatch
+     * @see FanctreeNode#applyPatch
 	 */
 	addChildren: function(children, insertBefore){
 		if(!this.children){
-	        this.children = [];
+			this.children = [];
 		}
-        if(insertBefore === undefined){
+		if(insertBefore === undefined){
 //            this._setChildren(children);
-            for(var i=0, l=children.length; i<l; i++){
-                this.children.push(new FancytreeNode(this, children[i]));
-            }
-        }else{
-            // TODO: not implemented
-            _assert(!insertBefore, "not implemented");
-            insertBefore = this._findDirectChild(insertBefore);
-        }
+			for(var i=0, l=children.length; i<l; i++){
+				this.children.push(new FancytreeNode(this, children[i]));
+			}
+		}else{
+			// TODO: not implemented
+			_assert(!insertBefore, "not implemented");
+			insertBefore = this._findDirectChild(insertBefore);
+		}
 		this.render();
 	},
 	/**
 	 *
 	 * @param {NodePatch} patch
 	 * @returns {$.Promise}
+	 * @see {@link applyPatch} tp modify existing child nodes.
      * @see FancytreeNode#addChildren
 	 */
 	applyPatch: function(patch) {
@@ -349,7 +341,7 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 		if(patch.hasOwnProperty("children")){
 			this.removeChildren();
 			if(patch.children){ // only if not null and not empty list
-			    // TODO: addChildren instead?
+				// TODO: addChildren instead?
 				this._setChildren(patch.children);
 			}
 			// TODO: how can we APPEND or INSERT child nodes?
@@ -435,7 +427,49 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 		return res;
 	},
 	// TODO: focus()
-	// TODO: fromDict()
+	/**
+	 * Update node data. If dict contains 'children', then also replace
+	 * the hole sub tree.
+	 * @param {NodeData} dict
+	 *
+	 * @see FancytreeNode#addChildren
+	 * @see FancytreeNode#applyPatch
+	 */
+	fromDict: function(dict) {
+		// copy all other attributes to this.data.xxx
+		for(var name in dict){
+			if(NODE_ATTR_MAP[name]){
+				// node.NAME = dict.NAME
+				this[name] = dict[name];
+			}else if(name === "data"){
+				// node.data += dict.data
+				$.extend(this.data, dict.data);
+			}else if(!$.isFunction(dict[name]) && !NONE_NODE_DATA_MAP[name]){
+				// node.data.NAME = dict.NAME
+				this.data[name] = dict[name];
+			}
+		}
+		if(dict.children){
+			// recursively set children and render
+			this.removeChildren();
+			this.addChildren(dict.children);
+		}else{
+			this.renderTitle();
+		}
+/*
+		var children = dict.children;
+		if(children === undefined){
+			this.data = $.extend(this.data, dict);
+			this.render();
+			return;
+		}
+		dict = $.extend({}, dict);
+		dict.children = undefined;
+		this.data = $.extend(this.data, dict);
+		this.removeChildren();
+		this.addChild(children);
+*/
+	},
 	/** @returns {FancytreeNode[] | undefined} list of child nodes (undefined for unexpanded lazy nodes).*/
 	getChildren: function() {
 		if(this.hasChildren() === undefined){ // TODO: only required for lazy nodes?
@@ -1282,7 +1316,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			while(segList.length){
 				key = segList.shift();
 //                node = _findDirectChild(root, key);
-                node = root._findDirectChild(key);
+				node = root._findDirectChild(key);
 				if(!node){
 					this.warn("loadKeyPath: key not found: " + key + " (parent: " + root + ")");
 					callback.call(this, key, "error");
@@ -1356,7 +1390,8 @@ Fancytree.prototype = /**@lends Fancytree*/{
 					activate = false;
 					break;
 				case 3: // expand and activate
-					activate = expand = true;
+                    activate = true;
+                    expand = !node.isExpanded();
 					break;
 				}
 			}
@@ -1784,6 +1819,8 @@ Fancytree.prototype = /**@lends Fancytree*/{
 
 				// Allow tweaking and binding, after node was created for the first time
 				tree._triggerNodeEvent("createnode", ctx);
+			}else{
+                this.nodeRenderTitle(ctx);
 			}
 			// Allow tweaking after node state was rendered
 			tree._triggerNodeEvent("rendernode", ctx);
@@ -1874,7 +1911,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		if ( node.icon ) {
 			var imageSrc = (node.icon.charAt(0) === "/") ? node.icon : (opts.imagePath + node.icon);
 			ares.push("<img src='" + imageSrc + "' alt='' />");
-		} else if ( node.icon !== false ) {
+        } else if ( node.icon !== false ) {
 			// icon == false means 'no icon', icon == null means 'default icon'
 			ares.push("<span class='fancytree-icon'></span>");
 		}

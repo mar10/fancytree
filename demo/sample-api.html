@@ -184,7 +184,7 @@ $(function(){
 	});
 	CLIPBOARD = null;
 	addSampleButton({
-		label: "node.toDict()",
+		label: "Clipboard = node.toDict()",
 		newline: false,
 		code: function(){
 			// Convert active node (and descendants) to a dictionary and store
@@ -194,7 +194,8 @@ $(function(){
 				// Remove keys
 				delete dict.key;
 			});
-			alert(JSON.stringify(d));
+			CLIPBOARD = d;
+			alert("CLIPBOARD = " + JSON.stringify(d));
 		}
 	});
 	addSampleButton({
@@ -207,6 +208,15 @@ $(function(){
 				title: node.title + new Date(),
 				children: [{title: "t1"}, {title: "t2"}]
 			});
+		}
+	});
+	addSampleButton({
+		label: "node.fromDict(Clipboard)",
+		code: function(){
+			var node = $("#tree").fancytree("getActiveNode");
+			if( !node ) return;
+			// Set node data and - optionally - replace children
+			node.fromDict(CLIPBOARD);
 		}
 	});
 	addSampleButton({
