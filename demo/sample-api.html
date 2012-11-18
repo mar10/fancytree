@@ -101,6 +101,7 @@ $(function(){
 	});
 	addSampleButton({
 		label: "tree.getActiveNode()",
+		newline: false,
 		code: function(){
 			var node = $("#tree").fancytree("getActiveNode");
 			if( node ){
@@ -110,6 +111,15 @@ $(function(){
 			}
 		}
 	});
+    addSampleButton({
+        label: "tree.toDict()",
+        code: function(){
+            // Convert the whole tree into an dictionary
+            var tree = $("#tree").fancytree("getTree");
+            var d = tree.toDict(true);
+            alert(JSON.stringify(d));
+        }
+    });
 	addSampleButton({
 		label: "activateKey('id4.3.2')",
 		code: function(){
@@ -128,8 +138,31 @@ $(function(){
 			// node.fromDict({title: data.node.title + new Date()});
 		}
 	});
+    addSampleButton({
+        label: "Sort tree",
+        newline: false,
+        code: function(){
+            var node = $("#tree").fancytree("getRootNode");
+            node.sortChildren(null, true);
+        }
+    });
+    addSampleButton({
+        label: "Sort active banch",
+        code: function(){
+            var node = $("#tree").fancytree("getActiveNode");
+            // Custom compare function (optional) that sorts case insensitive
+            var cmp = function(a, b) {
+                a = a.title.toLowerCase();
+                b = b.title.toLowerCase();
+                return a > b ? 1 : a < b ? -1 : 0;
+            };
+            node.sortChildren(cmp, false);
+        }
+    });
 	addSampleButton({
-		label: "Add nodes with API",
+	    header: "Create nodes",
+	    tooltip: "Use node.addChildren() with single objects",
+		label: "Add single nodes",
 		newline: false,
 		code: function(){
 			// Sample: add an hierarchic branch using code.
@@ -147,7 +180,8 @@ $(function(){
 		}
 	});
 	addSampleButton({
-		label: "node.addChildren()",
+		label: "ROOT.addChildren()",
+        tooltip: "Use node.addChildren() with recursive arrays",
 		code: function(){
 			// Sample: add an hierarchic branch using an array
 			var obj = [
@@ -172,16 +206,18 @@ $(function(){
 			$("#tree").fancytree("getRootNode").addChildren(obj);
 		}
 	});
-	addSampleButton({
-		label: "tree.toDict()",
-		newline: false,
-		code: function(){
-			// Convert the whole tree into an dictionary
-			var tree = $("#tree").fancytree("getTree");
-			var d = tree.toDict(true);
-			alert(JSON.stringify(d));
-		}
-	});
+    addSampleButton({
+        label: "node.fromDict()",
+        code: function(){
+            var node = $("#tree").fancytree("getActiveNode");
+            if( !node ) return;
+            // Set node data and - optionally - replace children
+            node.fromDict({
+                title: node.title + new Date(),
+                children: [{title: "t1"}, {title: "t2"}]
+            });
+        }
+    });
 	CLIPBOARD = null;
 	addSampleButton({
 		label: "Clipboard = node.toDict()",
@@ -191,55 +227,24 @@ $(function(){
 			// in
 			var node = $("#tree").fancytree("getActiveNode");
 			var d = node.toDict(true, function(dict){
-				// Remove keys
+				// Remove keys, so they will be re-generated when this dict is 
+				// passed to addChildren()
 				delete dict.key;
 			});
+			// Store in a globael variable
 			CLIPBOARD = d;
 			alert("CLIPBOARD = " + JSON.stringify(d));
 		}
 	});
-	addSampleButton({
-		label: "node.fromDict()",
-		code: function(){
-			var node = $("#tree").fancytree("getActiveNode");
-			if( !node ) return;
-			// Set node data and - optionally - replace children
-			node.fromDict({
-				title: node.title + new Date(),
-				children: [{title: "t1"}, {title: "t2"}]
-			});
-		}
-	});
-	addSampleButton({
-		label: "node.fromDict(Clipboard)",
-		code: function(){
-			var node = $("#tree").fancytree("getActiveNode");
-			if( !node ) return;
-			// Set node data and - optionally - replace children
-			node.fromDict(CLIPBOARD);
-		}
-	});
-	addSampleButton({
-		label: "Sort tree",
-		newline: false,
-		code: function(){
-			var node = $("#tree").fancytree("getRootNode");
-			node.sortChildren(null, true);
-		}
-	});
-	addSampleButton({
-		label: "Sort active banch",
-		code: function(){
-			var node = $("#tree").fancytree("getActiveNode");
-			// Custom compare function (optional) that sorts case insensitive
-			var cmp = function(a, b) {
-				a = a.title.toLowerCase();
-				b = b.title.toLowerCase();
-				return a > b ? 1 : a < b ? -1 : 0;
-			};
-			node.sortChildren(cmp, false);
-		}
-	});
+    addSampleButton({
+        label: "node.fromDict(Clipboard)",
+        code: function(){
+            var node = $("#tree").fancytree("getActiveNode");
+            if( !node ) return;
+            // Set node data and - optionally - replace children
+            node.fromDict(CLIPBOARD);
+        }
+    });
 });
 </script>
 <!-- End_Exclude -->

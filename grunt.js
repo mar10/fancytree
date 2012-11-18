@@ -25,6 +25,7 @@ module.exports = function(grunt) {
                       "src/jquery.fancytree.columnview.js",
                       "src/jquery.fancytree.dnd.js",
                       "src/jquery.fancytree.filter.js",
+                      "src/jquery.fancytree.menu.js",
                       "src/jquery.fancytree.persist.js",
                       "src/jquery.fancytree.table.js",
                       "src/jquery.fancytree.themeroller.js",

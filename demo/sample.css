@@ -46,10 +46,17 @@ div.info {
 }
 .sampleButtonContainer a
 {
-	color: navy;
-	text-decoration: none;
-	padding: 1px 3px;
-	font-size: 50%;
+    color: navy;
+    text-decoration: none;
+    padding: 1px 3px;
+    font-size: 50%;
+}
+p#sampleButtons h5
+{
+    font-size: 9pt;
+    margin-top: 3px;
+    margin-bottom: 3px;
+    font-weight: bold;
 }
 
 p.sample-links a,

@@ -894,7 +894,26 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 		}
 //        this.tree.debug("setTimeout(%s, %s): %s", mode, ms, this.tree.timer);
 	},
-	// TODO: select(flag)
+    // TODO: NEW: scrollIntoView()
+	// from jQuery.menu:
+//    _scrollIntoView: function( item ) {
+//        var borderTop, paddingTop, offset, scroll, elementHeight, itemHeight;
+//        if ( this._hasScroll() ) {
+//            borderTop = parseFloat( $.css( this.activeMenu[0], "borderTopWidth" ) ) || 0;
+//            paddingTop = parseFloat( $.css( this.activeMenu[0], "paddingTop" ) ) || 0;
+//            offset = item.offset().top - this.activeMenu.offset().top - borderTop - paddingTop;
+//            scroll = this.activeMenu.scrollTop();
+//            elementHeight = this.activeMenu.height();
+//            itemHeight = item.height();
+//
+//            if ( offset < 0 ) {
+//                this.activeMenu.scrollTop( scroll + offset );
+//            } else if ( offset + itemHeight > elementHeight ) {
+//                this.activeMenu.scrollTop( scroll + offset - elementHeight + itemHeight );
+//            }
+//        }
+//    },
+    // TODO: select(flag)
 	setActive: function(flag){
 		return this.tree._callHook("nodeSetActive", this, flag);
 	},
@@ -1379,7 +1398,8 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	nodeClick: function(ctx) {
 //      this.tree.logDebug("ftnode.onClick(" + event.type + "): ftnode:" + this + ", button:" + event.button + ", which: " + event.which);
 		var event = ctx.orgEvent,
-			targetType = FT.getEventTargetType(event),
+//            targetType = FT.getEventTargetType(event),
+            targetType = ctx.targetType,
 			node = ctx.node;
 		// TODO: use switch
 		// TODO: make sure clicks on embedded <input> doesn't steal focus (see table sample)
@@ -1832,7 +1852,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 				// Allow tweaking and binding, after node was created for the first time
 				tree._triggerNodeEvent("createnode", ctx);
 			}else{
-				this.nodeRenderTitle(ctx);
+//				this.nodeRenderTitle(ctx);
 			}
 			// Allow tweaking after node state was rendered
 			tree._triggerNodeEvent("rendernode", ctx);

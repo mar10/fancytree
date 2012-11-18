@@ -108,6 +108,7 @@ function addSampleButton(options)
 	});
 	$("<button>", {
 		id: opts.id,
+		title: opts.tooltip,
 		text: opts.label
 	}).click(function(e){
 		e.preventDefault();
@@ -151,6 +152,9 @@ function addSampleButton(options)
 	}).hide().appendTo($container);
 	if(opts.newline){
 		$container.append($("<br>"));
+	}
+	if(opts.header){
+	    $("<h5>", {text: opts.header}).appendTo($("p#sampleButtons"));
 	}
 	$container.appendTo($("p#sampleButtons"));
 }
