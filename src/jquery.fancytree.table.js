@@ -107,7 +107,7 @@ $.ui.fancytree.registerExtension("table", {
 	// `this._super`: the virtual function that was overriden (member of prev. extension or Fancytree)
 	treeInit: function(ctx){
 		var tree = ctx.tree,
-			$table = tree.$widget.element;
+			$table = tree.widget.element;
 		$table.addClass("fancytree-container fancytree-ext-table");
 		tree.tbody = $("table#treetable tbody")[0];
 //        table.addClass("fancytree-container");

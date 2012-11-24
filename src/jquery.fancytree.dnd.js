@@ -37,7 +37,7 @@ function _initDragAndDrop(tree) {
 	}
 	// Attach ui.draggable to this Fancytree instance
 	if(dnd && dnd.onDragStart ) {
-		tree.$widget.element.draggable({
+		tree.widget.element.draggable({
 			addClasses: false,
 			appendTo: "body",
 			containment: false,
@@ -67,7 +67,7 @@ function _initDragAndDrop(tree) {
 	}
 	// Attach ui.droppable to this Fancytree instance
 	if(dnd && dnd.onDrop) {
-		tree.$widget.element.droppable({
+		tree.widget.element.droppable({
 			addClasses: false,
 			tolerance: "intersect",
 			greedy: false,

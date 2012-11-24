@@ -26,7 +26,7 @@ function editNode(node){
 	var prevTitle = node.data.title,
 		tree = node.tree;
 	// Disable dynatree mouse- and key handling
-	tree.$widget.unbind();
+	tree.widget.unbind();
 	// Replace node with <input>
 	$(".dynatree-title", node.span).html("<input id='editNode' value='" + prevTitle + "'>");
 	// Focus <input> and bind keyboard handler
@@ -49,7 +49,7 @@ function editNode(node){
 			var title = $("input#editNode").val();
 			node.setTitle(title);
 			// Re-enable mouse and keyboard handlling
-			tree.$widget.bind();
+			tree.widget.bind();
 			node.focus();
 		});
 }

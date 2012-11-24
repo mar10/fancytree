@@ -395,9 +395,9 @@ test("Fancytree class", function() {
 	});
 	var tree = $("#tree").fancytree("getTree");
   // Properties
-//    tree.$widget = $widget;
-//    tree.$div = $widget.element;
-//    tree.options = $widget.options;
+//    tree.widget = widget;
+//    tree.$div = widget.element;
+//    tree.options = widget.options;
 //    tree._id = $.ui.fancytree._nextId++;
 //    tree.activeNode = null;
 //    tree.focusNode = null;

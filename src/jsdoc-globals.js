@@ -132,7 +132,7 @@ var TreePatch = {};
  * @example $("#tree").fancytree({source: "/myService"});
  *
  * @property {Boolean} activeVisible Make sure that the active node is always visible, i.e. it's parents are expanded (default: true).
- * @property {object} ajax $.Ajax options used for lazy loading, when only a URL is passed
+ * @property {object} ajax
  * @property {Boolean} autoCollapse Automatically collapse all siblings, when a node is expanded (default: false).
  * @property {Boolean} autoFocus Set focus to first child, when expanding or lazy-loading (default: true).
  * @property {Boolean} checkbox Display checkboxes to allow selection  (default: false)
@@ -145,6 +145,7 @@ var TreePatch = {};
  * @property {Boolean} keyboard Support keyboard navigation (default: true).
  * @property {Integer} minExpandLevel 1: root node is not collapsible (default: 1)
  * @property {Boolean} noLink Use <span> instead of <a> tags for all nodes (default: false)
+ * @property {Boolean} tabbable add 'tabindex=0' to container (default: true)
  * @property {Integer} selectMode 1:single, 2:multi, 3:multi-hier (default: 2)
  * @property {any} source Used to Initialize the tree.
  *     line 2

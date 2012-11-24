@@ -91,6 +91,8 @@ $.ui.fancytree.registerExtension("tracecalls", {
 	treeInit: function(ctx) {
 	},
 	treeLoad: function(ctx, source) {
+	},
+	treeSetFocus: function(ctx, flag) {
 	}
 });
 }(jQuery));

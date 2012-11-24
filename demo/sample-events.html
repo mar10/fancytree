@@ -88,6 +88,12 @@
 			loadchildren: function(event, data) {
 				logEvent(event, data);
 			},
+			focustree: function(event, data) {
+				logEvent(event, data);
+			},
+			blurtree: function(event, data) {
+				logEvent(event, data);
+			},
 			focus: function(event, data) {
 				logEvent(event, data);
 				$("#echoFocused").text(data.node.title);
@@ -111,7 +117,7 @@
 				logEvent(event, data);
 				switch( event.which ) {
 				case 32: // [space]
-					node.toggleSelect();
+					data.node.toggleSelected();
 					return false;
 				}
 			},

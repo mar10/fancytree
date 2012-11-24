@@ -154,7 +154,7 @@ function addSampleButton(options)
 		$container.append($("<br>"));
 	}
 	if(opts.header){
-	    $("<h5>", {text: opts.header}).appendTo($("p#sampleButtons"));
+		$("<h5>", {text: opts.header}).appendTo($("p#sampleButtons"));
 	}
 	$container.appendTo($("p#sampleButtons"));
 }

@@ -47,7 +47,7 @@ $.ui.fancytree.registerExtension("columnview", {
 	// `this._super`: the virtual function that was overriden (member of prev. extension or Fancytree)
 	treeInit: function(ctx){
 		var tree = ctx.tree,
-			$table = tree.$widget.element;
+			$table = tree.widget.element;
 		tree.tr = $("tbody tr", $table)[0];
 		tree.columnCount = $(">td", tree.tr).length;
 		// Perform default behavior
@@ -62,8 +62,8 @@ $.ui.fancytree.registerExtension("columnview", {
 		$ul.detach().appendTo($tdFirst);
 
 		// Force some required options
-		tree.$widget.options.autoCollapse = true;
-		tree.$widget.options.clickFolderMode = 1;
+		tree.widget.options.autoCollapse = true;
+		tree.widget.options.clickFolderMode = 1;
 
 		// Make sure that only active path is expanded when a node is activated:
 		$table.bind("fancytreeactivate", function(e, data){

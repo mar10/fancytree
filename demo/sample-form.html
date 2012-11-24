@@ -2,32 +2,37 @@
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
-	<title>Dynatree - Example</title>
+	<title>Fancytree - Example: Forms and embedded controls</title>
 
-	<script src="../jquery/jquery.js" type="text/javascript"></script>
-	<script src="../jquery/jquery-ui.custom.js" type="text/javascript"></script>
-	<script src="../jquery/jquery.cookie.js" type="text/javascript"></script>
+	<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.1/themes/base/jquery-ui.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
+	<!--
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js" type="text/javascript"></script>
+	-->
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.js" type="text/javascript"></script>
 
-	<link href="../src/skin/ui.dynatree.css" rel="stylesheet" type="text/css">
-	<script src="../src/jquery.dynatree.js" type="text/javascript"></script>
+	<link href="../src/skin-win7/ui.fancytree.css" rel="stylesheet" type="text/css">
+	<script src="../src/jquery.fancytree.js" type="text/javascript"></script>
+	<script src="../src/jquery.fancytree.menu.js" type="text/javascript"></script>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
-	<link href="prettify.css" rel="stylesheet">
-	<script src="prettify.js" type="text/javascript"></script>
+	<link href="../lib/prettify.css" rel="stylesheet">
+	<script src="../lib/prettify.js" type="text/javascript"></script>
 	<link href="sample.css" rel="stylesheet" type="text/css">
 	<script src="sample.js" type="text/javascript"></script>
 	<!-- End_Exclude -->
 
+<style type="text/css">
+</style>
+
 	<!-- Add code to initialize the tree when the document is loaded: -->
 <script type="text/javascript">
 	$(function(){
-		$("#tree").dynatree({
+		$("#tree").fancytree({
 			checkbox: true,
-			// Override class name for checkbox icon, so rasio buttons are displayed:
-			//classNames: {checkbox: "dynatree-radio"},
-			// Select mode 3: multi-hier
 			selectMode: 3,
-			children: [
+			tabbable: false,
+			source: [
 				{title: "Item 1", key: "node1"},
 				{title: "Folder 2", isFolder: true, key: "node2",
 					children: [
@@ -63,12 +68,33 @@
 		});
 	});
 </script>
+
+<!-- Start_Exclude: This block is not part of the sample code -->
+<script>
+$(function(){
+    addSampleButton({
+        label: "Send data",
+        code: function(){
+            alert("TODO");
+        }
+    });
+    addSampleButton({
+        label: "Generate <input> elements",
+        code: function(){
+            alert("TODO");
+        }
+    });
+});
+</script>
+<!-- End_Exclude -->
+
 </head>
 
 <body class="example">
 	<h1>Example: Form</h1>
 	<p class="description">
-		This checkbox tree is embedded in a form.
+		This checkbox tree is embedded in a form.<br>
+		Use TAB key to move the focus.<br> 
 		The [Submit] handler serializes the selected tree nodes as if they were
 		standard checkboxes.<br>
 		The values are then POSTed to the server (together with the other form
@@ -100,6 +126,8 @@
 	</form>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
+    <p id="sampleButtons">
+    </p>
 	<hr>
 	<p class="sample-links  no_code">
 		<a class="hideInsideFS" href="http://dynatree.googlecode.com">jquery.dynatree.js project home</a>

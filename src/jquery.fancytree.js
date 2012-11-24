@@ -296,11 +296,11 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 	 * @see FanctreeNode#applyPatch
 	 */
 	addChildren: function(children, insertBefore){
-	    var firstNode = null,
-	        node;
-	    if($.isPlainObject(children) ){
-	        children = [children];
-	    }
+		var firstNode = null,
+			node;
+		if($.isPlainObject(children) ){
+			children = [children];
+		}
 		if(!this.children){
 			this.children = [];
 		}
@@ -308,10 +308,10 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 //            this._setChildren(children);
 			for(var i=0, l=children.length; i<l; i++){
 				if(i === 0){
-				    firstNode = new FancytreeNode(this, children[i]);
-		            this.children.push(firstNode);
+					firstNode = new FancytreeNode(this, children[i]);
+					this.children.push(firstNode);
 				}else{
-	                this.children.push(new FancytreeNode(this, children[i]));
+					this.children.push(new FancytreeNode(this, children[i]));
 				}
 			}
 		}else{
@@ -600,7 +600,7 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 	},
 	/**@returns {Boolean} true, if node has keyboard focus*/
 	hasFocus: function() {
-		return (this.tree.focusNode === this);
+		return (this.tree.hasFocus() && this.tree.focusNode === this);
 	},
 	/**@returns {Boolean} true, if node is active*/
 	isActive: function() {
@@ -894,7 +894,7 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 		}
 //        this.tree.debug("setTimeout(%s, %s): %s", mode, ms, this.tree.timer);
 	},
-    // TODO: NEW: scrollIntoView()
+	// TODO: NEW: scrollIntoView()
 	// from jQuery.menu:
 //    _scrollIntoView: function( item ) {
 //        var borderTop, paddingTop, offset, scroll, elementHeight, itemHeight;
@@ -913,17 +913,29 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 //            }
 //        }
 //    },
-    // TODO: select(flag)
+	/**Activate this node.
+	 * @param {Boolean} [flag=true] pass false to deactivate
+	 */
 	setActive: function(flag){
 		return this.tree._callHook("nodeSetActive", this, flag);
 	},
+	/**Expand this node.
+	 * @param {Boolean} [flag=true] pass false to collapse
+	 */
 	setExpanded: function(flag){
 		return this.tree._callHook("nodeSetExpanded", this, flag);
 	},
-	setFocus: function(){
-		return this.tree._callHook("nodeSetFocus", this);
+	/**Set keyboard focus to this node.
+	 * @param {Boolean} [flag=true] pass false to blur
+	 * @see Fancytree#setFocus
+	 */
+	setFocus: function(flag){
+		return this.tree._callHook("nodeSetFocus", this, flag);
 	},
 	// TODO: setLazyNodeStatus
+	/**Select this node.
+	 * @param {Boolean} [flag=true] pass false to deselect
+	 */
 	setSelected: function(flag){
 		return this.tree._callHook("nodeSetSelected", this, flag);
 	},
@@ -1068,17 +1080,17 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
  * @property {FancytreeNode} activeNode
  * @property {FancytreeNode} focusNode
  * @property {jQueryObject} $div
- * @property {jQueryObject} $widget
+ * @property {object} widget
  * @property {String} _id
  * @property {String} statusClassPropName
  * @property {String} nodeContainerAttrName
  * @property {FancytreeNode} lastSelectedNode
  */
-function Fancytree($widget){
-	// TODO: rename $widget to widget (it's not a jQuery object)
-	this.$widget = $widget;
-	this.$div = $widget.element;
-	this.options = $widget.options;
+function Fancytree(widget){
+	// TODO: rename widget to widget (it's not a jQuery object)
+	this.widget = widget;
+	this.$div = widget.element;
+	this.options = widget.options;
 	this._id = $.ui.fancytree._nextId++;
 	this.activeNode = null;
 	this.focusNode = null;
@@ -1102,8 +1114,19 @@ function Fancytree($widget){
 	$ul = $("<ul>", {
 		"class": "fancytree-container"
 	}).appendTo(this.$div);
+	this.$container = $ul;
 	this.rootNode.ul = $ul[0];
 	this.nodeContainerAttrName = "li";
+
+	// Add container to the TAB chain
+	if(this.options.tabbable){
+	    this.$container.attr("tabindex", "0");
+	}
+	// TODO: use namespace
+	var tree = this;
+	$ul.bind("focusin focusout", function(event){
+		tree.treeOnFocusInOut(event);
+	});
 }
 
 
@@ -1123,10 +1146,10 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		}else if(obj.tree){
 			// obj is a FancytreeNode
 			var tree = obj.tree;
-			return { node: obj, tree: tree, widget: tree.$widget, options: tree.$widget.options, orgEvent: orgEvent };
-		}else if(obj.$widget){
+			return { node: obj, tree: tree, widget: tree.widget, options: tree.widget.options, orgEvent: orgEvent };
+		}else if(obj.widget){
 			// obj is a Fancytree
-			return { node: null, tree: obj, widget: obj.$widget, options: obj.$widget.options, orgEvent: orgEvent };
+			return { node: null, tree: obj, widget: obj.widget, options: obj.widget.options, orgEvent: orgEvent };
 		}
 		$.error("invalid args");
 	},
@@ -1209,7 +1232,22 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	// TODO: enable()
 	// TODO: enableUpdate()
 	// TODO: fromDict
-	// TODO: getActiveNode()
+	/**
+	 * Return node that is active.
+	 * @returns {FancytreeNode}
+	 */
+	getActiveNode: function() {
+		return this.activeNode;
+	},
+	/**
+	 * Return node that has keyboard focus.
+	 * @param {Boolean} [ifTreeHasFocus=false]
+	 * @returns {FancytreeNode}
+	 */
+	getFocusNode: function(ifTreeHasFocus) {
+		// TODO: implement ifTreeHasFocus
+		return this.focusNode;
+	},
 	getNodeByKey: function(key, searchRoot) {
 		// Search the DOM by element ID (assuming this is faster than traversing all nodes).
 		// $("#...") has problems, if the key contains '.', so we use getElementById()
@@ -1251,6 +1289,12 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			}
 		});
 		return nodeList;
+	},
+	/**
+	 * @returns {Boolean} true if the tree control has keyboard focus
+	 */
+	hasFocus: function(){
+		return FT.focusTree === this;
 	},
 	info: function(msg){
 		Array.prototype.unshift.call(arguments, this.toString());
@@ -1399,7 +1443,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 //      this.tree.logDebug("ftnode.onClick(" + event.type + "): ftnode:" + this + ", button:" + event.button + ", which: " + event.which);
 		var event = ctx.orgEvent,
 //            targetType = FT.getEventTargetType(event),
-            targetType = ctx.targetType,
+			targetType = ctx.targetType,
 			node = ctx.node;
 		// TODO: use switch
 		// TODO: make sure clicks on embedded <input> doesn't steal focus (see table sample)
@@ -1469,7 +1513,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			handled = true,
 			KC = $.ui.keyCode,
 			sib = null;
-//      this.tree.logDebug("ftnode.onKeydown(" + event.type + "): ftnode:" + this + ", charCode:" + event.charCode + ", keyCode: " + event.keyCode + ", which: " + event.which);
+        tree.debug("ftnode.nodeKeydown(" + event.type + "): ftnode:" + this + ", charCode:" + event.charCode + ", keyCode: " + event.keyCode + ", which: " + event.which);
 //      alert("keyDown" + event.which);
 
 		switch( event.which ) {
@@ -1660,22 +1704,22 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			parents[i].setExpanded(true);
 		}
 	},
-	/** Handle focusin/focusout events.*/
-	nodeOnFocusInOut: function(ctx) {
-		if(ctx.orgEvent.type === "focusin"){
-			this.nodeSetFocus(ctx);
-			// if(ctx.tree.focusNode){
-			//     $(ctx.tree.focusNode.li).removeClass("fancytree-focused");
-			// }
-			// ctx.tree.focusNode = ctx.node;
-			// $(ctx.node.li).addClass("fancytree-focused");
-		}else{
-			_assert(ctx.orgEvent.type === "focusout");
-			// ctx.tree.focusNode = null;
-			// $(ctx.node.li).removeClass("fancytree-focused");
-		}
-		// $(ctx.node.li).toggleClass("fancytree-focused", ctx.orgEvent.type === "focus");
-	},
+//	/** Handle focusin/focusout events.*/
+//	nodeOnFocusInOut: function(ctx) {
+//		if(ctx.orgEvent.type === "focusin"){
+//			this.nodeSetFocus(ctx);
+//			// if(ctx.tree.focusNode){
+//			//     $(ctx.tree.focusNode.li).removeClass("fancytree-focused");
+//			// }
+//			// ctx.tree.focusNode = ctx.node;
+//			// $(ctx.node.li).addClass("fancytree-focused");
+//		}else{
+//			_assert(ctx.orgEvent.type === "focusout");
+//			// ctx.tree.focusNode = null;
+//			// $(ctx.node.li).removeClass("fancytree-focused");
+//		}
+//		// $(ctx.node.li).toggleClass("fancytree-focused", ctx.orgEvent.type === "focus");
+//	},
 	/**
 	 * Remove a single direct child of ctx.node.
 	 * @param ctx
@@ -1943,6 +1987,9 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		if ( node.icon ) {
 			var imageSrc = (node.icon.charAt(0) === "/") ? node.icon : (opts.imagePath + node.icon);
 			ares.push("<img src='" + imageSrc + "' alt='' />");
+        } else if ( node.data.iconclass ) {
+            // TODO: review and test and document
+            ares.push("<span class='fancytree-icon" + " " + node.data.iconclass +  "'></span>");
 		} else if ( node.icon !== false ) {
 			// icon == false means 'no icon', icon == null means 'default icon'
 			ares.push("<span class='fancytree-icon'></span>");
@@ -2047,6 +2094,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	 * If flag is true, the node is activated (must be a synchronous operation)
 	 * If flag is false, the node is deactivated (must be a synchronous operation)
 	 * @param {HookContext} ctx
+	 * @param {Boolean} [flag=true]
 	 */
 	nodeSetActive: function(ctx, flag) {
 		// Handle user click / [space] / [enter], according to clickFolderMode.
@@ -2090,6 +2138,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	/** Expand or collapse node, return Deferred.promise.
 	 *
 	 * @param {HookContext} ctx
+	 * @param {Boolean} [flag=true]
 	 * @returns {$.Promise} The deferred will be resolved as soon as the (lazy)
 	 *     data was retrieved, rendered, and the expand animation finshed.
 	 */
@@ -2217,13 +2266,14 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	},
 	/**
 	 * @param {HookContext} ctx
+	 * @param {Boolean} [flag=true]
 	 */
-	nodeSetFocus: function(ctx) {
+	nodeSetFocus: function(ctx, flag) {
 		var tree = ctx.tree,
 			node = ctx.node;
 
 		if(tree.focusNode){
-			if(tree.focusNode === node){
+			if(tree.focusNode === node && flag !== false){
 				return; // prevent recursion, when span.focus would be called again
 			}
 			var ctx2 = $.extend({}, ctx, {node: tree.focusNode});
@@ -2231,18 +2281,17 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			this._triggerNodeEvent("blur", ctx2);
 			this._callHook("nodeRenderStatus", ctx2);
 		}
-		this.nodeMakeVisible(ctx);
-		tree.focusNode = node;
-		try {
-			// issue 154
-			// TODO: check if still required on IE 9:
-			// Chrome and Safari don't focus the a-tag on click,
-			// but calling focus() seem to have problems on IE:
-			// http://code.google.com/p/fancytree/issues/detail?id=154
-			$(node.span).find(">a").focus();
-		} catch(e) { }
-		this._triggerNodeEvent("focus", ctx);
-		this._callHook("nodeRenderStatus", ctx);
+		if(flag !== false){
+		    if(FT.focusTree !== tree){
+		        // safari, when tabbable=false
+		        node.debug("nodeSetFocus: forcing container focus");
+		        tree.setFocus();
+		    }
+			this.nodeMakeVisible(ctx);
+			tree.focusNode = node;
+			this._triggerNodeEvent("focus", ctx);
+			this._callHook("nodeRenderStatus", ctx);
+		}
 	},
 	/*
 	_setSubSel: function(hasSubSel) {
@@ -2560,6 +2609,39 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		});
 		return dfd;
 	},
+	treeOnFocusInOut: function(event) {
+		var flag = event.type === "focusin";
+		this.debug("treeOnFocusInOut(" + flag + ")");
+		if(FT.focusTree){
+			if(this !== FT.focusTree || !flag ){
+				// node looses focus, if tree blurs
+				if(FT.focusTree.focusNode){
+					FT.focusTree.focusNode.setFocus(false);
+				}
+				FT.focusTree.$container.removeClass("fancytree-focus");
+				this._triggerTreeEvent("blurtree");
+			}
+		}
+		if( flag ){
+			FT.focusTree = this;
+			this.$container.addClass("fancytree-focus");
+			// Set focus to a node
+			if(!this.focusNode ){
+				if( this.activeNode ){
+					this.activeNode.setFocus();
+				}else if( this.rootNode.hasChildren()){
+					this.rootNode.getFirstChild().setFocus();
+				}
+			}
+			this._triggerTreeEvent("focustree");
+		}else{
+			FT.focusTree = null;
+		}
+	},
+	treeSetFocus: function(ctx, flag) {
+//        alert("treeSetFocus");
+		ctx.tree.$container.focus();
+	},
 	// TODO: reactivate()
 	// TODO: redraw()
 	/** Reload tree from source and return a promise.
@@ -2580,6 +2662,13 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	// TODO: selectKey: function(key, select)
 	// TODO: serializeArray: function(stopOnParents)
 	/**
+	 * @param {Boolean} [flag=true]
+	 */
+	setFocus: function(flag) {
+//        _assert(false, "Not implemented");
+		return this._callHook("treeSetFocus", this, flag);
+	},
+	/**
 	 * @see FancytreeNode#toDict
 	 */
 	toDict: function(recursive, callback){
@@ -2597,7 +2686,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	_triggerNodeEvent: function(type, node, orgEvent) {
 		var ctx = this._makeHookContext(node, orgEvent);
 //		this.debug("_trigger(" + type + "): '" + ctx.node.title + "'", ctx);
-		var res = this.$widget._trigger(type, orgEvent, ctx);
+		var res = this.widget._trigger(type, orgEvent, ctx);
 		if(res !== false && ctx.result !== undefined){
 			return ctx.result;
 		}
@@ -2607,7 +2696,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	_triggerTreeEvent: function(type, orgEvent) {
 		var ctx = this._makeHookContext(this, orgEvent);
 //		this.debug("_trigger(" + type + ")", ctx);
-		var res = this.$widget._trigger(type, orgEvent, ctx);
+		var res = this.widget._trigger(type, orgEvent, ctx);
 		if(res !== false && ctx.result !== undefined){
 			return ctx.result;
 		}
@@ -2662,6 +2751,7 @@ $.widget("ui.fancytree",
 //		hooks: {},
 		idPrefix: "ft_",
 		keyPathSeparator: "/",
+		tabbable: true, // add tabindex='0' to container, so tree can be reached using TAB
 		strings: {
 			loading: "Loading&#8230;",
 			loadError: "Load error!"
@@ -2689,7 +2779,7 @@ $.widget("ui.fancytree",
 			selected: "fancytree-selected",
 			expanded: "fancytree-expanded",
 			lazy: "fancytree-lazy",
-			focused: "fancytree-focused",
+			focused: "fancytree-focused ui-status-focus",
 			partsel: "fancytree-partsel",
 			lastsib: "fancytree-lastsib"
 		},
@@ -2773,7 +2863,7 @@ $.widget("ui.fancytree",
 		this.tree.$div.find(">ul.fancytree-container").remove();
 		var _ = this.$source && this.$source.removeClass("ui-helper-hidden");
 		// In jQuery UI 1.8, you must invoke the destroy method from the base widget
-		$.Widget.prototype.destroy.call( this );
+		$.Widget.prototype.destroy.call(this);
 		// TODO: delete tree and nodes to make garbage collect easier?
 		// TODO: In jQuery UI 1.9 and above, you would define _destroy instead of destroy and not call the base method
 	},
@@ -2784,21 +2874,32 @@ $.widget("ui.fancytree",
 	_bind: function() {
 		var that = this,
 			opts = this.options,
-			eventNames = $.map(["click", "dblclick", /*"keypress", "keydown",*/
-				"focusin", "focusout"/*, "focus", "blur", "mousein", "mouseout" */],
+			tree = this.tree,
+			eventNames = $.map(["click", "dblclick"/*, "keypress", "keydown",*/
+				/*"focusin", "focusout"*/ /*, "focus", "blur", "mousein", "mouseout" */],
 				function(name){
 					return name + "." + that.widgetName + "-" + that.tree._id;
 				}).join(" ");
 
 		this._unbind();
-		$(document).bind("keydown.fancytree-" + this.tree._id, function(event){
-			if(opts.disabled || opts.keyboard === false){
+		$(document).bind("keydown.fancytree-" + tree._id, function(event){
+			// TODO: also bind keyup and keypress
+			if(opts.disabled || opts.keyboard === false || tree !== FT.focusTree){
 				return true;
 			}
-			var node = FT.getNode(event.target);
-			if( node && node.tree === that.tree ){
-				var ctx = that.tree._makeHookContext(node, event);
-				return ( that.tree._triggerNodeEvent("keydown", node, event) === false ) ? false : that.tree._callHook("nodeKeydown", ctx);
+			var node = tree.focusNode,
+				// node may be null
+				ctx = tree._makeHookContext(node || tree, event),
+				prevPhase = tree.phase;
+			try {
+				tree.phase = "userEvent";
+				if(node){
+					return ( tree._triggerNodeEvent("keydown", node, event) === false ) ? false : tree._callHook("nodeKeydown", ctx);
+				}else{
+					return ( tree._triggerTreeEvent("keydown", event) === false ) ? false : tree._callHook("nodeKeydown", ctx);
+				}
+			} finally {
+				tree.phase = prevPhase;
 			}
 		});
 		this.element.bind(eventNames, function(event){
@@ -2815,26 +2916,16 @@ $.widget("ui.fancytree",
 //                o = that.options,
 				ctx = tree._makeHookContext(node, event),
 				prevPhase = tree.phase;
-			that.tree.debug("event(" + event.type + "): node: ", node);
+//			that.tree.debug("event(" + event.type + "): node: ", node);
 			try {
 				tree.phase = "userEvent";
 				switch(event.type) {
 				case "click":
 					ctx.targetType = et.type;
 					return ( tree._triggerNodeEvent("click", ctx, event) === false ) ? false : tree._callHook("nodeClick", ctx);
-//                  return ( tree._triggerNodeEvent("click", node, event) === false ) ? false : tree._callHook("nodeClick", ctx);
 				case "dblclick":
 					ctx.targetType = et.type;
 					return ( tree._triggerNodeEvent("dblclick", ctx, event) === false ) ? false : tree._callHook("nodeDblclick", ctx);
-//                    return ( tree._triggerNodeEvent("dblclick", node, event) === false ) ? false : tree._callHook("nodeDblclick", ctx);
-				case "keydown":
-					// TODO: duplicate? see above
-					return ( tree._triggerNodeEvent("keydown", node, event) === false ) ? false : tree._callHook("nodeKeydown", ctx);
-				case "keypress":
-					return ( tree._triggerNodeEvent("keypress", node, event) === false ) ? false : tree._callHook("nodeKeypress", ctx);
-				case "focusin":
-				case "focusout":
-					return tree._callHook("nodeOnFocusInOut", ctx);
 				}
 //             } catch(e) {
 // //                var _ = null; // issue 117 // TODO
@@ -2897,6 +2988,7 @@ $.extend($.ui.fancytree,
 	_nextId: 1,
 	_nextNodeKey: 1,
 	_extensions: {},
+	_focusedTree: null,
 	/** Expose class object as $.ui.fancytree._FancytreeClass */
 	_FancytreeClass: Fancytree,
 	/** Expose class object as $.ui.fancytree._FancytreeNodeClass */

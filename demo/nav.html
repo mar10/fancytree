@@ -66,6 +66,7 @@ span.fancytree-active .fancytree-title {
 		$("#tree").fancytree({
 			autoFocus: true,
 			minExpandLevel: 2,
+			tabbable: false, // we don't want the focus frame
 			focus: function(e, data) {
 				var node = data.node;
 				// Auto-activate focused node after 1 second
@@ -133,6 +134,7 @@ span.fancytree-active .fancytree-title {
 			<li><a target="content" href="sample-form.html">Embed in forms</a>
 			<li><a target="content" href="sample-multiline.html">Large nodes</a>
 -->
+			<li><a target="content" href="sample-form.html">Embed in forms</a>
 			<li class="folder">Extensions
 				<ul>
 				<li><a target="_blank" href="sample-ext-persist.html">Persist&circ;</a>
@@ -140,8 +142,8 @@ span.fancytree-active .fancytree-title {
 				<li><a target="content" href="sample-ext-table.html">Table</a>
 				<li><a target="content" href="sample-ext-columnview.html">Column view</a>
 				<li><a target="content" href="sample-ext-themeroller.html">Themeroller</a>
-                <li><a target="content" href="sample-ext-filter.html">Filter</a>
-                <li><a target="content" href="sample-ext-menu.html">Context menu</a>
+				<li><a target="content" href="sample-ext-filter.html">Filter</a>
+				<li><a target="content" href="sample-ext-menu.html">Context menu</a>
 				</ul>
 			<li class="folder">Tweaks
 				<ul>
