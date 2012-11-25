@@ -35,7 +35,9 @@ function _appendEvent(res){
 /** Helper to reset environment for asynchronous Fancytree tests. */
 function _setupAsync(){
 	QUnit.reset();
-	$("#tree").fancytree("destroy");
+	if( $("#tree").data("fancytree") ){
+		$("#tree").fancytree("destroy");
+	}
 	EVENT_SEQUENCE = [];
 	stop();
 }
@@ -142,7 +144,9 @@ module("Initialization");
 
 test("Version info", function() {
 	QUnit.reset();
-	$("#tree").fancytree("destroy");
+	if( $("#tree").data("fancytree") ){
+		$("#tree").fancytree("destroy");
+	}
 	expect(4);
 
 	ok(true, "Fancytree v" + $.ui.fancytree.version);
@@ -160,7 +164,9 @@ test("Static members", function() {
 	// non-async test tht runs before any Fancytrees are created
 //    _setupAsync();
 	QUnit.reset();
-	$("#tree").fancytree("destroy");
+	if( $("#tree").data("fancytree") ){
+		$("#tree").fancytree("destroy");
+	}
 	expect(1);
 
 	ok($.isFunction($.ui.fancytree.debug), "ui.fancytree.debug function is defined");
@@ -285,7 +291,9 @@ module("API");
 test("FancytreeNode class", function() {
 //  _setupAsync();
 	QUnit.reset();
-	$("#tree").fancytree("destroy");
+	if( $("#tree").data("fancytree") ){
+		$("#tree").fancytree("destroy");
+	}
 	expect(18);
 
 	$("#tree").fancytree({
@@ -387,7 +395,9 @@ test("FancytreeNode class", function() {
 test("Fancytree class", function() {
 //  _setupAsync();
 	QUnit.reset();
-	$("#tree").fancytree("destroy");
+	if( $("#tree").data("fancytree") ){
+		$("#tree").fancytree("destroy");
+	}
 	expect(14);
 
 	$("#tree").fancytree({
