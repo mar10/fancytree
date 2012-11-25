@@ -3066,7 +3066,7 @@ $.extend($.ui.fancytree,
 	 * Parse tree data from HTML <ul> markup
 	 *
 	 * @param {jQueryObject} $ul
-	 * @returns{NodeData[]}
+	 * @returns {NodeData[]}
 	 */
 	parseHtml: function($ul) {
 		// TODO: understand this:
