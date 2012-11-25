@@ -35,11 +35,6 @@
 /*******************************************************************************
  * Private functions and variables
  */
-function _raiseNotImplemented(msg){
-	msg = msg || "";
-	$.error("Not implemented: " + msg);
-}
-
 function _assert(cond, msg){
 	msg = msg || "";
 	if(!cond){
@@ -110,12 +105,10 @@ $.ui.fancytree.registerExtension("table", {
 			$table = tree.widget.element;
 		$table.addClass("fancytree-container fancytree-ext-table");
 		tree.tbody = $("table#treetable tbody")[0];
-//        table.addClass("fancytree-container");
 		tree.columnCount = $("thead >tr >th", $table).length;
 		$(tree.tbody).empty();
 
 		tree.rowFragment = document.createDocumentFragment();
-		// TODO: handle opts.table.nodeColumnIdx
 		var $row = $("<tr>");
 		for(var i=0; i<tree.columnCount; i++) {
 			if(ctx.options.table.nodeColumnIdx === i){
@@ -124,16 +117,17 @@ $.ui.fancytree.registerExtension("table", {
 				$row.append("<td>");
 			}
 		}
-//        var $row = $("<tr><td><span class='fancytree-title'></span></td></tr>");
-//        for(var i=0; i<tree.columnCount - 1; i++) {
-//            $row.append("<td>");
-//        }
 		tree.rowFragment.appendChild($row.get(0));
 
 		this._super(ctx);
 		// standard Fancytree created a root UL
 		$(tree.rootNode.ul).remove();
 		tree.rootNode.ul = null;
+		tree.$container = $table;
+	    // Add container to the TAB chain
+	    if(tree.options.tabbable){
+	        tree.$container.attr("tabindex", "0");
+	    }
 		// Make sure that status classes are set on the node's <tr> elements
 		tree.statusClassPropName = "tr";
 	},
@@ -159,7 +153,7 @@ $.ui.fancytree.registerExtension("table", {
 		}
 		this.nodeRemoveChildMarkup(ctx);
 	},
-	/** Override standard render. */
+	/* Override standard render. */
 	nodeRender: function(ctx, force, deep, collapsed, _recursive) {
 		var tree = ctx.tree,
 			node = ctx.node,
@@ -261,7 +255,7 @@ $.ui.fancytree.registerExtension("table", {
 			 $(node.span).css({marginLeft: indent + "px"});
 		 }
 	 },
-	/** Expand node, return Deferred.promise. */
+	/* Expand node, return Deferred.promise. */
 	nodeSetExpanded: function(ctx, flag) {
 		var node = ctx.node,
 			dfd = new $.Deferred();
@@ -280,6 +274,11 @@ $.ui.fancytree.registerExtension("table", {
 			}
 		}
 		this._super(ctx, status, message, details);
-	}
+	},
+    treeSetFocus: function(ctx, flag) {
+//	        alert("treeSetFocus" + ctx.tree.$container);
+        ctx.tree.$container.focus();
+        $.ui.fancytree.focusTree = ctx.tree;
+    }
 });
 }(jQuery));
