@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
-	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
 	<title>Fancytree - Example: Forms and embedded controls</title>
 
 	<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.1/themes/base/jquery-ui.css">
@@ -13,7 +13,6 @@
 
 	<link href="../src/skin-win7/ui.fancytree.css" rel="stylesheet" type="text/css">
 	<script src="../src/jquery.fancytree.js" type="text/javascript"></script>
-	<script src="../src/jquery.fancytree.menu.js" type="text/javascript"></script>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
 	<link href="../lib/prettify.css" rel="stylesheet">
@@ -31,7 +30,7 @@
 		$("#tree").fancytree({
 			checkbox: true,
 			selectMode: 3,
-			tabbable: false,
+//			tabbable: false,
 			source: [
 				{title: "Item 1", key: "node1"},
 				{title: "Folder 2", isFolder: true, key: "node2",
@@ -43,28 +42,39 @@
 				{title: "Item 3", key: "node3"}
 			]
 		});
+        $("#tree2").fancytree({
+            checkbox: false,
+//            selectMode: 3,
+//          tabbable: false,
+            source: [
+                {title: "Item 1", key: "node1"},
+                {title: "Folder 2", isFolder: true, key: "node2",
+                    children: [
+                        {title: "Sub-item 2.1", key: "node2.1"},
+                        {title: "Sub-item 2.2", key: "node2.2"}
+                    ]
+                },
+                {title: "Item 3", key: "node3"}
+            ]
+        });
 		$("form").submit(function() {
-			// Serialize standard form fields:
-			var formData = $(this).serializeArray();
+			// Render hidden <input> elements for active and selected nodes
+            $("#tree").fancytree("getTree").generateInputElements();
+            $("#tree2").fancytree("getTree").generateInputElements();
 
-			// then append Dynatree selected 'checkboxes':
-			var tree = $("#tree").dynatree("getTree");
-			formData = formData.concat(tree.serializeArray());
+			alert("POSTing this:\n" + jQuery.param($(this).serializeArray()));
 
-			// and/or add the active node as 'radio button':
-			if(tree.getActiveNode()){
-				formData.push({name: "activeNode", value: tree.getActiveNode().data.key});
-			}
-
-			alert("POSTing this:\n" + jQuery.param(formData));
-
-			$.post("http://127.0.0.1:8001/submit_data",
+/*
+            // Serialize standard form fields:
+            var formData = $(this).serializeArray();
+            $.post("http://127.0.0.1:8001/submit_data",
 				   formData,
 				   function(response, textStatus, xhr){
 					   alert("POST returned " + response + ", " + textStatus);
 				   }
 			);
 			return false;
+ */
 		});
 	});
 </script>
@@ -72,18 +82,15 @@
 <!-- Start_Exclude: This block is not part of the sample code -->
 <script>
 $(function(){
-    addSampleButton({
-        label: "Send data",
-        code: function(){
-            alert("TODO");
-        }
-    });
+/*	
     addSampleButton({
         label: "Generate <input> elements",
         code: function(){
-            alert("TODO");
+            $("#tree").fancytree("getTree").generateInput();
+            $("#tree2").fancytree("getTree").generateInput();
         }
     });
+*/
 });
 </script>
 <!-- End_Exclude -->
@@ -100,6 +107,9 @@ $(function(){
 		The values are then POSTed to the server (together with the other form
 		elements).
 	</p>
+    <ul class="description">
+    <li>f1
+    </ul>
 	<!--
 	<form action="http://127.0.0.1:8001/submit_data" method="POST">
 	 -->
@@ -112,15 +122,26 @@ $(function(){
 		<input type="radio" name="rb1" value="bar"> Bar
 		<input type="radio" name="rb1" value="baz"> Baz
 		<br>
-		<input type="checkbox" name="cb1" value="John" checked>John
-		<input type="checkbox" name="cb1" value="Paul">Paul
-		<input type="checkbox" name="cb1" value="George">George
-		<input type="checkbox" name="cb1" value="Ringo">Ringo
+		<fieldset>
+		    <legend>Checkboxes</legend>
+			<input type="checkbox" name="cb1" value="John" checked>John
+			<input type="checkbox" name="cb1" value="Paul">Paul
+			<input type="checkbox" name="cb1" value="George">George
+			<input type="checkbox" name="cb1" value="Ringo">Ringo
+		</fieldset>
 		<br>
 
 		<!-- The name attribute is used by tree.serializeArray()  -->
-		<div id="tree" name="selNodes">
-		</div>
+        <fieldset>
+            <legend>Select 1</legend>
+            <div id="tree" name="selNodes">
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>Select 2</legend>
+            <div id="tree2" name="selNodes2">
+            </div>
+        </fieldset>
 
 		<input type="submit" value="Send data">
 	</form>

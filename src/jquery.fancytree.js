@@ -1130,6 +1130,11 @@ function Fancytree(widget){
 	this.$container.bind("focusin focusout", function(event){
 		tree.treeOnFocusInOut(event);
 	});
+	this.$container.delegate("a.fancytree-title", "focus blur", function(event){
+		FT.debug("<a> got event " + event.type);
+		event.preventDefault();
+		return false;
+	});
 }
 
 
@@ -1235,6 +1240,48 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	// TODO: enable()
 	// TODO: enableUpdate()
 	// TODO: fromDict
+	/**
+	 * Generate INPUT elements that can be submitted with html forms.
+	 * 
+	 * In selectMode 3 only the topmost selected nodes are considered.
+	 * 
+	 * @param {Boolean | String} [selected=true]
+	 * @param {Boolean | String} [active=true]
+	 */
+	generateFormElements: function(selected, active) {
+		// TODO: test case
+		var selectedName = (selected !== false) ? "ft_" + this._id : selected,
+			activeName = (active !== false) ? "ft_" + this._id + "_active" : active,
+			id = "fancytree_result_" + this._id,
+		    $result = this.$container.find("div#" + id);
+		    
+		if($result.length){
+			$result.empty();
+		}else{
+			$result = $("<div>", {
+				id: id
+			}).hide().appendTo(this.$container);
+		}
+		if(selectedName){
+			var nodeList = this.getSelectedNodes( this.options.selectMode === 3 );
+			$.each(nodeList, function(idx, node){
+				$result.append($("<input>", {
+					type: "checkbox",
+					name: selectedName,
+					value: node.key,
+					checked: true
+				}));
+			});
+		}
+		if(activeName && this.activeNode){
+			$result.append($("<input>", {
+				type: "radio",
+				name: activeName,
+				value: this.activeNode.key,
+				checked: true
+			}));
+		}
+	},
 	/**
 	 * Return node that is active.
 	 * @returns {FancytreeNode}
@@ -2002,13 +2049,12 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			nodeTitle = opts.onCustomRender.call(tree, node) || "";
 		}
 		if(!nodeTitle){
-			var tooltip = node.tooltip ? ' title="' + node.tooltip.replace(/\"/g, '&quot;') + '"' : '',
+			var tooltip = node.tooltip ? " title='" + node.tooltip.replace(/\"/g, '&quot;') + "'" : "",
 				href = node.data.href || "#";
 			if( opts.nolink || node.nolink ) {
-				// TODO: move style='' to CSS
-				nodeTitle = '<span class="fancytree-title"' + tooltip + '>' + node.title + '</span>';
+				nodeTitle = "<span class='fancytree-title'" + tooltip + ">" + node.title + "</span>";
 			} else {
-				nodeTitle = '<a href="' + href + '" class="fancytree-title"' + tooltip + '>' + node.title + '</a>';
+				nodeTitle = "<a href='" + href + "' tabindex='-1' class='fancytree-title'" + tooltip + ">" + node.title + "</a>";
 			}
 		}
 		ares.push(nodeTitle);
