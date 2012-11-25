@@ -676,8 +676,30 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 		}
 		return true;
 	},
-	/** Make sure, all parents are expanded. */
+    // TODO: NEW: scrollIntoView()
+    // from jQuery.menu:
+//    _scrollIntoView: function( item ) {
+//        var borderTop, paddingTop, offset, scroll, elementHeight, itemHeight;
+//        if ( this._hasScroll() ) {
+//            borderTop = parseFloat( $.css( this.activeMenu[0], "borderTopWidth" ) ) || 0;
+//            paddingTop = parseFloat( $.css( this.activeMenu[0], "paddingTop" ) ) || 0;
+//            offset = item.offset().top - this.activeMenu.offset().top - borderTop - paddingTop;
+//            scroll = this.activeMenu.scrollTop();
+//            elementHeight = this.activeMenu.height();
+//            itemHeight = item.height();
+//
+//            if ( offset < 0 ) {
+//                this.activeMenu.scrollTop( scroll + offset );
+//            } else if ( offset + itemHeight > elementHeight ) {
+//                this.activeMenu.scrollTop( scroll + offset - elementHeight + itemHeight );
+//            }
+//        }
+//    },
+    /** Expand all parents and optionally scroll into visible area as neccessary (async). 
+     * 
+     */
 	makeVisible: function() {
+	    // TODO: implement scolling
 		var parents = this.getParentList(false, false);
 		for(var i=0, l=parents.length; i<l; i++){
 			parents[i].setExpanded(true);
@@ -894,25 +916,6 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 		}
 //        this.tree.debug("setTimeout(%s, %s): %s", mode, ms, this.tree.timer);
 	},
-	// TODO: NEW: scrollIntoView()
-	// from jQuery.menu:
-//    _scrollIntoView: function( item ) {
-//        var borderTop, paddingTop, offset, scroll, elementHeight, itemHeight;
-//        if ( this._hasScroll() ) {
-//            borderTop = parseFloat( $.css( this.activeMenu[0], "borderTopWidth" ) ) || 0;
-//            paddingTop = parseFloat( $.css( this.activeMenu[0], "paddingTop" ) ) || 0;
-//            offset = item.offset().top - this.activeMenu.offset().top - borderTop - paddingTop;
-//            scroll = this.activeMenu.scrollTop();
-//            elementHeight = this.activeMenu.height();
-//            itemHeight = item.height();
-//
-//            if ( offset < 0 ) {
-//                this.activeMenu.scrollTop( scroll + offset );
-//            } else if ( offset + itemHeight > elementHeight ) {
-//                this.activeMenu.scrollTop( scroll + offset - elementHeight + itemHeight );
-//            }
-//        }
-//    },
 	/**Activate this node.
 	 * @param {Boolean} [flag=true] pass false to deactivate
 	 */
@@ -1124,7 +1127,7 @@ function Fancytree(widget){
 	}
 	// TODO: use namespace
 	var tree = this;
-	$ul.bind("focusin focusout", function(event){
+	this.$container.bind("focusin focusout", function(event){
 		tree.treeOnFocusInOut(event);
 	});
 }
@@ -1682,7 +1685,6 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		});
 		return dfd;
 	},
-	/** Expand all parents and scroll into visible area as neccessary (async). */
 	// isVisible: function() {
 	//     // Return true, if all parents are expanded.
 	//     var parents = ctx.node.getParentList(false, false);
@@ -2639,7 +2641,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		}
 	},
 	treeSetFocus: function(ctx, flag) {
-//        alert("treeSetFocus");
+//        alert("treeSetFocus" + ctx.tree.$container);
 		ctx.tree.$container.focus();
 	},
 	// TODO: reactivate()
