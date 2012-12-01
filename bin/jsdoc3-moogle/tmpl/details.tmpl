@@ -1,17 +1,6 @@
 <?js var self = this; ?>
 <dl class="details">
     <?js
-        var methods = data.methods;
-        if (methods && methods.length && methods.forEach) { 
-    ?>
-        
-        <h5 class="subsection-title">Methods:</h5>
-        
-        <dl><?js= this.partial('methods_list.tmpl', methods) ?></dl>
-        
-    <?js } ?>
-        
-    <?js
         var properties = data.properties;
         if (properties && properties.length && properties.forEach) { 
     ?>
@@ -19,6 +8,17 @@
         <h5 class="subsection-title">Properties:</h5>
         
         <dl><?js= this.partial('properties.tmpl', properties) ?></dl>
+        
+    <?js } ?>
+        
+    <?js
+        var methods = self.find({kind: 'function', memberof: data.longname});
+        if (methods && methods.length && methods.forEach) { 
+    ?>
+        
+        <h5 class="subsection-title">Methods:</h5>
+        
+        <dl><?js= this.partial('methods.tmpl', methods) ?></dl>
         
     <?js } ?>
         
