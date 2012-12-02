@@ -102,7 +102,43 @@
             <?js= self.partial('members.tmpl', p) ?>
         <?js }); ?></dl>
     <?js } ?>
-    
+<!-- 
+    <?js
+        var methods = self.find({kind: 'function', memberof: title === 'Globals'? {isUndefined: true} : doc.longname});
+        if (methods && methods.length && methods.forEach) { 
+    ?>
+        <h3 class="subsection-title">Methods Overview</h3>
+        <dl class="methods-overview">
+            <?js methods.forEach(function(m) { ?>
+                <dt>
+                    <?js= self.partial('method_sig.tmpl', m) ?>
+                    <a href="#<?js=m.id?>">details</a>
+                </dt>
+                <dd>
+			    <div class="description">
+			        <?js= m.description ?>
+			    </div>
+                </dd>
+            <?js }); ?>
+        </dl>
+        XXX
+        <table class="methods">
+            <?js methods.forEach(function(m) { ?>
+            <tr>
+                <td>
+                    <?js= self.partial('method_sig.tmpl', m) ?>
+                </td>
+                <td class="description">
+                    <?js= m.description ?>
+                </td>
+                <td>
+                    <a href="#<?js=m.id?>">details</a>
+                </td>
+            </tr>
+            <?js }); ?>
+        </table>
+    <?js } ?>
+-->
     <?js
         var methods = self.find({kind: 'function', memberof: title === 'Globals'? {isUndefined: true} : doc.longname});
         if (methods && methods.length && methods.forEach) { 

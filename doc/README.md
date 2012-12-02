@@ -1,6 +1,6 @@
 #Fancytree
 
-README.md
+API documentation for [Fancytree](http://fancytree.googlecode.com)
 
 Sample
 
@@ -8,4 +8,5 @@ Sample
             source: {url: "myAjaxProvider"}
         });
 
-TODO: 
+Note: 
+    This is work in Progres
