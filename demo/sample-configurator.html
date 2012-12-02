@@ -31,8 +31,8 @@
 <script type="text/javascript">
 
 var OPT_LIST = [
-    ["activeVisible", true, "Make sure, active nodes are visible (expanded)."],
-    ["aria", true, "Enable WAI-ARIA support."],
+	["activeVisible", true, "Make sure, active nodes are visible (expanded)."],
+	["aria", true, "Enable WAI-ARIA support."],
 	["autoCollapse", false, "Automatically collapse all siblings, when a node is expanded."],
 	["autoFocus", true, "Set focus to first child, when expanding or lazy-loading."],
 	["clickFolderMode", 4, "1:activate, 2:expand, 3:activate and expand, 4:activate (dblclick expands)"],
@@ -50,37 +50,37 @@ var OPT_LIST = [
 	];
 
 function renderCode(){
-    var tree = $("#tree").fancytree("getTree"),
-        hideDefaults = true,
-        opts = tree.options,
-        optList = OPT_LIST,
-        tmplEntries = [],
-        i;
+	var tree = $("#tree").fancytree("getTree"),
+		hideDefaults = true,
+		opts = tree.options,
+		optList = OPT_LIST,
+		tmplEntries = [],
+		i;
 
-    if(hideDefaults){
-        optList = [];
-        for(i=0; i<OPT_LIST.length; i++){
-            var o = OPT_LIST[i],
-                n = o[0];
-            if( opts[n] !== o[1] && opts[n] !== undefined){
-                optList.push(o);
-            }
-        }
-    }
-    tmplEntries.push('$("#tree").fancytree({');
-    for(i=0; i<optList.length; i++){
-        var o = optList[i],
-            n = o[0],
-            v = opts[n],
-            comma = (i === (optList.length - 1)) ? "" : ",";
-        if(typeof v === "string"){
-            tmplEntries.push("    " + n + ': "' + v + '"' + comma + " // " + o[2]);
-        }else{
-            tmplEntries.push("    " + n + ": " + v + comma + " // " + o[2]);
-        }
-    }
-    tmplEntries.push("});");
-    $("#sourceCode").text(tmplEntries.join("\n"));
+	if(hideDefaults){
+		optList = [];
+		for(i=0; i<OPT_LIST.length; i++){
+			var o = OPT_LIST[i],
+				n = o[0];
+			if( opts[n] !== o[1] && opts[n] !== undefined){
+				optList.push(o);
+			}
+		}
+	}
+	tmplEntries.push('$("#tree").fancytree({');
+	for(i=0; i<optList.length; i++){
+		var o = optList[i],
+			n = o[0],
+			v = opts[n],
+			comma = (i === (optList.length - 1)) ? "" : ",";
+		if(typeof v === "string"){
+			tmplEntries.push("    " + n + ': "' + v + '"' + comma + " // " + o[2]);
+		}else{
+			tmplEntries.push("    " + n + ": " + v + comma + " // " + o[2]);
+		}
+	}
+	tmplEntries.push("});");
+	$("#sourceCode").text(tmplEntries.join("\n"));
 }
 
 $(function(){
@@ -130,17 +130,17 @@ $(function(){
 			<legend>Fancytree options</legend>
 			<ul id="options">
 				<li><label><input name="activeVisible" type="checkbox" checked="checked"> activeVisible</label>
-                <li><label><input name="aria" type="checkbox" checked="checked"> aria </label>
-                <li><label><input name="autoCollapse" type="checkbox"> autoCollapse</label>
+				<li><label><input name="aria" type="checkbox" checked="checked"> aria </label>
+				<li><label><input name="autoCollapse" type="checkbox"> autoCollapse</label>
 				<li><label><input name="autoFocus" type="checkbox" checked="checked"> autoFocus</label>
 				<li><label><input name="checkbox" type="checkbox"> checkbox</label>
-                <li><label><input name="tabbable" type="checkbox"> tabbable</label>
+				<li><label><input name="tabbable" type="checkbox"> tabbable</label>
 				<li>clickFolderMode
 					<select name="clickFolderMode" size="1">
 						<option value="1">activate (1)</option>
 						<option value="2">expand (2)</option>
-                        <option value="3">activate and expand with single click (3)</option>
-                        <option value="4" selected="selected">activate with single click, expand with dblclick (4)</option>
+						<option value="3">activate and expand with single click (3)</option>
+						<option value="4" selected="selected">activate with single click, expand with dblclick (4)</option>
 					</select>
 				<li>debugLevel
 					<select name="debugLevel" size="1">

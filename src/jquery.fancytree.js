@@ -678,8 +678,8 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 		}
 		return true;
 	},
-    // TODO: NEW: scrollIntoView()
-    // from jQuery.menu:
+	// TODO: NEW: scrollIntoView()
+	// from jQuery.menu:
 //    _scrollIntoView: function( item ) {
 //        var borderTop, paddingTop, offset, scroll, elementHeight, itemHeight;
 //        if ( this._hasScroll() ) {
@@ -697,11 +697,11 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 //            }
 //        }
 //    },
-    /** Expand all parents and optionally scroll into visible area as neccessary (async). 
-     * 
-     */
+	/** Expand all parents and optionally scroll into visible area as neccessary (async).
+	 *
+	 */
 	makeVisible: function() {
-	    // TODO: implement scolling
+		// TODO: implement scolling
 		var parents = this.getParentList(false, false);
 		for(var i=0, l=parents.length; i<l; i++){
 			parents[i].setExpanded(true);
@@ -1097,7 +1097,7 @@ function Fancytree(widget){
 	this.$div = widget.element;
 	this.options = widget.options;
 	this._id = $.ui.fancytree._nextId++;
-	this._ns = ".fancytree-" + this._id; // append for namespaced events 
+	this._ns = ".fancytree-" + this._id; // append for namespaced events
 	this.activeNode = null;
 	this.focusNode = null;
 	this.statusClassPropName = "span";
@@ -1126,10 +1126,10 @@ function Fancytree(widget){
 
 	// Add container to the TAB chain
 	if(this.options.tabbable){
-	    this.$container.attr("tabindex", "0");
+		this.$container.attr("tabindex", "0");
 	}
 	if(this.options.aria){
-	    this.$container.attr("role", "tree");
+		this.$container.attr("role", "tree");
 	}
 	var tree = this,
 		selstartEvent = ( $.support.selectstart ? "selectstart" : "mousedown" ) + tree._ns;
@@ -1253,9 +1253,9 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	// TODO: fromDict
 	/**
 	 * Generate INPUT elements that can be submitted with html forms.
-	 * 
+	 *
 	 * In selectMode 3 only the topmost selected nodes are considered.
-	 * 
+	 *
 	 * @param {Boolean | String} [selected=true]
 	 * @param {Boolean | String} [active=true]
 	 */
@@ -1264,8 +1264,8 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		var selectedName = (selected !== false) ? "ft_" + this._id : selected,
 			activeName = (active !== false) ? "ft_" + this._id + "_active" : active,
 			id = "fancytree_result_" + this._id,
-		    $result = this.$container.find("div#" + id);
-		    
+			$result = this.$container.find("div#" + id);
+
 		if($result.length){
 			$result.empty();
 		}else{
@@ -1570,7 +1570,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 //			this._callHook("nodeSetActive", ctx, true);
 			this._callHook("nodeToggleExpanded", ctx);
 		}
-		// TODO: prevent text selection on dblclicks 
+		// TODO: prevent text selection on dblclicks
 		if( ctx.targetType === "title" ) {
 			ctx.orgEvent.preventDefault();
 		}
@@ -1585,7 +1585,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			handled = true,
 			KC = $.ui.keyCode,
 			sib = null;
-        tree.debug("ftnode.nodeKeydown(" + event.type + "): ftnode:" + this + ", charCode:" + event.charCode + ", keyCode: " + event.keyCode + ", which: " + event.which);
+		tree.debug("ftnode.nodeKeydown(" + event.type + "): ftnode:" + this + ", charCode:" + event.charCode + ", keyCode: " + event.keyCode + ", which: " + event.which);
 //      alert("keyDown" + event.which);
 
 		switch( event.which ) {
@@ -1952,7 +1952,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 				if(opts.aria){
 					// TODO: why doesn't this work:
 //					node.li.role = "treeitem";
-				    $(node.li).attr("role", "treeitem");
+					$(node.li).attr("role", "treeitem");
 				}
 				if( node.key && opts.generateIds ){
 					node.li.id = opts.idPrefix + node.key;
@@ -2063,9 +2063,9 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		if ( node.icon ) {
 			var imageSrc = (node.icon.charAt(0) === "/") ? node.icon : (opts.imagePath + node.icon);
 			ares.push("<img src='" + imageSrc + "' alt='' />");
-        } else if ( node.data.iconclass ) {
-            // TODO: review and test and document
-            ares.push("<span role='img' class='fancytree-icon" + " " + node.data.iconclass +  "'></span>");
+		} else if ( node.data.iconclass ) {
+			// TODO: review and test and document
+			ares.push("<span role='img' class='fancytree-icon" + " " + node.data.iconclass +  "'></span>");
 		} else if ( node.icon !== false ) {
 			// icon == false means 'no icon', icon == null means 'default icon'
 			ares.push("<span role='img' class='fancytree-icon'></span>");
@@ -2365,11 +2365,11 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			this._callHook("nodeRenderStatus", ctx2);
 		}
 		if(flag !== false){
-		    if(FT.focusTree !== tree){
-		        // safari, when tabbable=false
-		        node.debug("nodeSetFocus: forcing container focus");
-		        tree.setFocus();
-		    }
+			if(FT.focusTree !== tree){
+				// safari, when tabbable=false
+				node.debug("nodeSetFocus: forcing container focus");
+				tree.setFocus();
+			}
 			this.nodeMakeVisible(ctx);
 			tree.focusNode = node;
 			this._triggerNodeEvent("focus", ctx);

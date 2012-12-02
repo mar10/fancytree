@@ -124,10 +124,10 @@ $.ui.fancytree.registerExtension("table", {
 		$(tree.rootNode.ul).remove();
 		tree.rootNode.ul = null;
 		tree.$container = $table;
-	    // Add container to the TAB chain
-	    if(tree.options.tabbable){
-	        tree.$container.attr("tabindex", "0");
-	    }
+		// Add container to the TAB chain
+		if(tree.options.tabbable){
+			tree.$container.attr("tabindex", "0");
+		}
 		// Make sure that status classes are set on the node's <tr> elements
 		tree.statusClassPropName = "tr";
 	},
@@ -275,10 +275,10 @@ $.ui.fancytree.registerExtension("table", {
 		}
 		this._super(ctx, status, message, details);
 	},
-    treeSetFocus: function(ctx, flag) {
+	treeSetFocus: function(ctx, flag) {
 //	        alert("treeSetFocus" + ctx.tree.$container);
-        ctx.tree.$container.focus();
-        $.ui.fancytree.focusTree = ctx.tree;
-    }
+		ctx.tree.$container.focus();
+		$.ui.fancytree.focusTree = ctx.tree;
+	}
 });
 }(jQuery));
