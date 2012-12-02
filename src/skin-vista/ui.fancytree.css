@@ -368,27 +368,29 @@ a.fancytree-title
 }
 
 a.fancytree-title:focus,
-span.fancytree-focused a:link  /* @IE */
+span.fancytree-focused a:link,  /* @IE */
+span.fancytree-focused span.fancytree-title 
 {
 	background-color: #EFEBDE; /* gray */
+	outline: 1px dotted gray;
 }
 
-span.fancytree-has-children a
+span.fancytree-has-children span.fancytree-title
 {
 /*	font-style: oblique; /* custom: */
 }
 
-span.fancytree-expanded a
+span.fancytree-expanded span.fancytree-title
 {
 }
 
-span.fancytree-selected a
+span.fancytree-selected span.fancytree-title
 {
 /*	color: green; */
 	font-style: italic;
 }
 
-span.fancytree-active a
+span.fancytree-active span.fancytree-title
 {
 	border: 1px solid #99DEFD;
 	background-color: #D8F0FA;

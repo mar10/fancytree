@@ -301,10 +301,12 @@ span.fancytree-icon /* Default icon */
  */
 
 /* Remove blue color and underline from title links */
+/*
 a.fancytree-title
 {
 	text-decoration: none;
 }
+*/
 span.fancytree-title
 {
 	display: inline-block;
@@ -328,7 +330,8 @@ span.fancytree-title
 }
 
 a.fancytree-title:focus,
-span.fancytree-focused a:link  /* @IE */
+span.fancytree-focused a:link,  /* @IE */
+span.fancytree-focused span.fancytree-title
 {
 	outline: 1px dotted black;
 	background-color: #EFEBDE; /* gray */
@@ -347,13 +350,14 @@ span.fancytree-expanded a
 {
 }
 
-span.fancytree-selected a
+span.fancytree-selected span.fancytree-title
 {
 	color: green;
 	font-style: italic;
 }
 
-span.fancytree-active a
+span.fancytree-active a,
+span.fancytree-active span.fancytree-title
 {
 	background-color: #3169C6 !important;
 	color: white !important; /* @ IE6 */
@@ -565,7 +569,7 @@ span.fancytree-drop-target.fancytree-drop-after a
  * Custom node classes (sample)
  */
 
-span.custom1 a
+span.custom1 span.fancytree-title
 {
 	background-color: maroon;
 	color: yellow;
