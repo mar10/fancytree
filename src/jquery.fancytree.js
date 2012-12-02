@@ -161,12 +161,14 @@ function _makeNodeTitleMatcher(s){
 
 // Boolean attributes that can be set with equivalent class names in the LI tags
 var i,
-	CLASS_ATTRS = "active expanded focus folder lazy nolink selected".split(" "),
+//	CLASS_ATTRS = "active expanded focus folder lazy nolink selected".split(" "),
+	CLASS_ATTRS = "active expanded focus folder lazy selected".split(" "),
 	CLASS_ATTR_MAP = {};
 for(i=0; i<CLASS_ATTRS.length; i++){ CLASS_ATTR_MAP[CLASS_ATTRS[i]] = true; }
 
 // Top-level Fancytree node attributes, that can be set by dict
-var NODE_ATTRS = "expanded extraClasses folder key lazy nolink selected title tooltip".split(" "),
+//var NODE_ATTRS = "expanded extraClasses folder key lazy nolink selected title tooltip".split(" "),
+var NODE_ATTRS = "expanded extraClasses folder key lazy selected title tooltip".split(" "),
 	NODE_ATTR_MAP = {};
 for(i=0; i<NODE_ATTRS.length; i++){ NODE_ATTR_MAP[NODE_ATTRS[i]] = true; }
 
@@ -198,7 +200,7 @@ var NONE_NODE_DATA_MAP = {"active": true, "children": true, "data": true, "focus
  * @property {Boolean} href
  * @property {String} extraClasses
  * @property {Boolean} lazy
- * @property {Boolean} nolink
+ * @property {Boolean} nolink OBSOLETE
  * @property {Boolean} selected
  * @property {String} target
  * @property {String} tooltip
@@ -1095,6 +1097,7 @@ function Fancytree(widget){
 	this.$div = widget.element;
 	this.options = widget.options;
 	this._id = $.ui.fancytree._nextId++;
+	this._ns = ".fancytree-" + this._id; // append for namespaced events 
 	this.activeNode = null;
 	this.focusNode = null;
 	this.statusClassPropName = "span";
@@ -1125,15 +1128,23 @@ function Fancytree(widget){
 	if(this.options.tabbable){
 	    this.$container.attr("tabindex", "0");
 	}
-	// TODO: use namespace
-	var tree = this;
-	this.$container.bind("focusin focusout", function(event){
+	if(this.options.aria){
+	    this.$container.attr("role", "tree");
+	}
+	var tree = this,
+		selstartEvent = ( $.support.selectstart ? "selectstart" : "mousedown" ) + tree._ns;
+
+	this.$container.bind("focusin" + this._ns + " focusout" + this._ns, function(event){
 		tree.treeOnFocusInOut(event);
-	});
-	this.$container.delegate("a.fancytree-title", "focus blur", function(event){
-		FT.debug("<a> got event " + event.type);
+	}).delegate("span.fancytree-title", selstartEvent, function(event){
+		// prevent mouse-drags to select text ranges
+		FT.debug("<span> got event " + event.type);
 		event.preventDefault();
-		return false;
+//		return false;
+//	}).delegate("a.fancytree-title", "focus blur", function(event){
+//		FT.debug("<a> got event " + event.type);
+//		event.preventDefault();
+//		return false;
 	});
 }
 
@@ -1517,8 +1528,9 @@ Fancytree.prototype = /**@lends Fancytree*/{
 					break;
 				case 3: // expand and activate
 					activate = true;
-					expand = !node.isExpanded();
+					expand = true; //!node.isExpanded();
 					break;
+				// else 1 or 4: just activate
 				}
 			}
 			if( activate ) {
@@ -1552,6 +1564,16 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		}
 	},
 	nodeDblclick: function(ctx) {
+		// TODO: return promise?
+		if( ctx.targetType === "title" && ctx.options.clickFolderMode === 4) {
+//			this.nodeSetFocus(ctx);
+//			this._callHook("nodeSetActive", ctx, true);
+			this._callHook("nodeToggleExpanded", ctx);
+		}
+		// TODO: prevent text selection on dblclicks 
+		if( ctx.targetType === "title" ) {
+			ctx.orgEvent.preventDefault();
+		}
 	},
 	/** Default handling for mouse keydown events. */
 	nodeKeydown: function(ctx) {
@@ -1927,6 +1949,11 @@ Fancytree.prototype = /**@lends Fancytree*/{
 				firstTime = true;
 				node.li = document.createElement("li");
 				node.li.ftnode = node;
+				if(opts.aria){
+					// TODO: why doesn't this work:
+//					node.li.role = "treeitem";
+				    $(node.li).attr("role", "treeitem");
+				}
 				if( node.key && opts.generateIds ){
 					node.li.id = opts.idPrefix + node.key;
 				}
@@ -2022,15 +2049,15 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		// TODO: optiimize this if clause
 		if( level < opts.minExpandLevel ) {
 			if(level > 1){
-				ares.push("<span class='fancytree-expander'></span>");
+				ares.push("<span role='button' class='fancytree-expander'></span>");
 			}
 			// .. else (i.e. for root level) skip expander/connector alltogether
 		} else {
-			ares.push("<span class='fancytree-expander'></span>");
+			ares.push("<span role='button' class='fancytree-expander'></span>");
 		}
 		// Checkbox mode
 		if( opts.checkbox && node.hideCheckbox !== true && !node.isStatusNode ) {
-			ares.push("<span class='fancytree-checkbox'></span>");
+			ares.push("<span class='fancytree-checkbox' role='checkbox'></span>");
 		}
 		// folder or doctype icon
 		if ( node.icon ) {
@@ -2038,10 +2065,10 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			ares.push("<img src='" + imageSrc + "' alt='' />");
         } else if ( node.data.iconclass ) {
             // TODO: review and test and document
-            ares.push("<span class='fancytree-icon" + " " + node.data.iconclass +  "'></span>");
+            ares.push("<span role='img' class='fancytree-icon" + " " + node.data.iconclass +  "'></span>");
 		} else if ( node.icon !== false ) {
 			// icon == false means 'no icon', icon == null means 'default icon'
-			ares.push("<span class='fancytree-icon'></span>");
+			ares.push("<span role='img' class='fancytree-icon'></span>");
 		}
 		// node title
 		var nodeTitle = "";
@@ -2049,13 +2076,14 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			nodeTitle = opts.onCustomRender.call(tree, node) || "";
 		}
 		if(!nodeTitle){
+			// TODO: escape tooltip string
 			var tooltip = node.tooltip ? " title='" + node.tooltip.replace(/\"/g, '&quot;') + "'" : "",
 				href = node.data.href || "#";
-			if( opts.nolink || node.nolink ) {
-				nodeTitle = "<span class='fancytree-title'" + tooltip + ">" + node.title + "</span>";
-			} else {
-				nodeTitle = "<a href='" + href + "' tabindex='-1' class='fancytree-title'" + tooltip + ">" + node.title + "</a>";
-			}
+//			if( opts.nolink || node.nolink ) {
+				nodeTitle = "<span tabindex='-1' class='fancytree-title'" + tooltip + ">" + node.title + "</span>";
+//			} else {
+//				nodeTitle = "<a href='" + href + "' tabindex='-1' class='fancytree-title'" + tooltip + ">" + node.title + "</a>";
+//			}
 		}
 		ares.push(nodeTitle);
 		// Note: this will trigger focusout, if node had the focus
@@ -2068,13 +2096,15 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		// Set classes for current status
 		var node = ctx.node,
 			tree = ctx.tree,
+			opts = ctx.options,
 //			nodeContainer = node[tree.nodeContainerAttrName],
 			hasChildren = node.hasChildren(),
 			isLastSib = node.isLastSibling(),
-			cn = ctx.options._classNames,
-			cnList = [];
+			cn = opts._classNames,
+			cnList = [],
+			statusElem = node[tree.statusClassPropName];
 
-		if( !node[tree.statusClassPropName]){
+		if( !statusElem ){
 			// if this function is called for an unrendered node, ignore it (will be updated on nect render anyway)
 			return;
 		}
@@ -2085,6 +2115,11 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		}
 		if( tree.focusNode === node ){
 			cnList.push(cn.focused);
+			if(opts.aria){
+				$(">span.fancytree-title", statusElem).attr("tabindex", "0");
+			}
+		}else if(opts.aria){
+			$(">span.fancytree-title", statusElem).attr("tabindex", "-1");
 		}
 		if( node.expanded ){
 			cnList.push(cn.expanded);
@@ -2666,13 +2701,13 @@ Fancytree.prototype = /**@lends Fancytree*/{
 				if(FT.focusTree.focusNode){
 					FT.focusTree.focusNode.setFocus(false);
 				}
-				FT.focusTree.$container.removeClass("fancytree-focus");
+				FT.focusTree.$container.removeClass("fancytree-focused");
 				this._triggerTreeEvent("blurtree");
 			}
 		}
 		if( flag ){
 			FT.focusTree = this;
-			this.$container.addClass("fancytree-focus");
+			this.$container.addClass("fancytree-focused");
 			// Set focus to a node
 			if(!this.focusNode ){
 				if( this.activeNode ){
@@ -2790,10 +2825,11 @@ $.widget("ui.fancytree",
 		},  //
 		/** @type {Boolean}  Make sure, active nodes are visible (expanded). */
 		activeVisible: true, // Make sure, active nodes are visible (expanded).
+		aria: true,
 		autoCollapse: false,
 		checkbox: false,
 		/**defines click behavior*/
-		clickFolderMode: 3,
+		clickFolderMode: 4,
 		extensions: [],
 		fx: { height: "toggle", duration: 200 },
 //		hooks: {},
@@ -2880,9 +2916,10 @@ $.widget("ui.fancytree",
 		var callDefault = true,
 			rerender = false;
 		switch( key ) {
+		case "aria":
 		case "checkbox":
 		case "minExpandLevel":
-		case "nolink":
+//		case "nolink":
 			this.tree._callHook("treeCreate", this.tree);
 			rerender = true;
 			break;
@@ -2923,14 +2960,13 @@ $.widget("ui.fancytree",
 		var that = this,
 			opts = this.options,
 			tree = this.tree,
-			eventNames = $.map(["click", "dblclick"/*, "keypress", "keydown",*/
-				/*"focusin", "focusout"*/ /*, "focus", "blur", "mousein", "mouseout" */],
+			eventNames = $.map(["click", "dblclick"],
 				function(name){
-					return name + "." + that.widgetName + "-" + that.tree._id;
+					return name + tree._ns;
 				}).join(" ");
 
 		this._unbind();
-		$(document).bind("keydown.fancytree-" + tree._id, function(event){
+		$(document).bind("keydown" + tree._ns, function(event){
 			// TODO: also bind keyup and keypress
 			if(opts.disabled || opts.keyboard === false || tree !== FT.focusTree){
 				return true;
@@ -3004,7 +3040,8 @@ $.widget("ui.fancytree",
 	},
 	/* Remove all event handlers for our namespace */
 	_unbind: function() {
-		this.element.unbind("." + this.widgetName + "-" + this.tree._id);
+//		this.element.unbind("." + this.widgetName + "-" + this.tree._id);
+		this.element.unbind(this.tree._ns);
 	}
 });
 
@@ -3262,9 +3299,10 @@ if( typeof define === "function" && define.amd ) {
 }(jQuery));
 
 
-/*******************************************************************************
+/* *****************************************************************************
  * Fancytree extension: aria
  */
+/*
 (function($) {
 	$.ui.fancytree.registerExtension("aria", {
 		// Default options for this extension.
@@ -3289,3 +3327,4 @@ if( typeof define === "function" && define.amd ) {
 		}
 	 });
 }(jQuery));
+*/

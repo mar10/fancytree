@@ -28,6 +28,7 @@
 	$(function(){
 		$("#tree").fancytree({
 			checkbox: true,
+			nolink: true,
 			// Tree events
 			init: function(event, data, flag) {
 				logEvent(event, data, "flag=" + flag);
@@ -47,7 +48,7 @@
 				// acces node attributes
 				$("#echoActive").text(node.title);
 				if( !$.isEmptyObject(node.data) ){
-					alert("custom node data: " + JSON.stringify(node.data));
+//					alert("custom node data: " + JSON.stringify(node.data));
 				}
 			},
 			deactivate: function(event, data) {
@@ -97,8 +98,6 @@
 			focus: function(event, data) {
 				logEvent(event, data);
 				$("#echoFocused").text(data.node.title);
-				// Auto-activate focused node after 2 seconds
-				data.node.scheduleAction("activate", 2000);
 			},
 			blur: function(event, data) {
 				logEvent(event, data);
@@ -111,7 +110,7 @@
 			},
 			dblclick: function(event, data) {
 				logEvent(event, data);
-				node.toggleSelect();
+//				data.node.toggleSelect();
 			},
 			keydown: function(event, data) {
 				logEvent(event, data);
@@ -144,15 +143,14 @@
 
 <body class="example">
 	<h1>Example: Events</h1>
-	<p class="description">
-		Implements all callbacks.<br>
-		Use the Firebug plugin in Firefox to see the event log.<br>
-		The 'links' folders contain nodes with an custom data.url option.
-		This is used to open the URL in the onActivate event. <br>
-		Note: the lazy reading is not implemented in this example.<br>
-		A focused node will automatically be activated after 2 seconds (use the
-		keyboard to try this out).
-	</p>
+	<div class="description">
+		Implements all callbacks.
+		<ul>
+        <li>Use the Firebug plugin in Firefox to see the event log.
+        <li>The 'links' folders contain nodes with an custom data.url option.
+            This is used to open the URL in the onActivate event.
+		</ul>
+	</div>
 	<div>
 		<label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
 	</div>

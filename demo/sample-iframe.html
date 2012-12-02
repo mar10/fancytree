@@ -37,6 +37,10 @@
 			postinit: function(isReloading, isError) {
 				this.reactivate();
 			},
+            focus: function(event, data) {
+                // Auto-activate focused node after 2 seconds
+                data.node.scheduleAction("activate", 2000);
+            },
 			activate: function(e, data) {
 				var node = data.node;
 				// Use <a> href and target attributes to load the content:
@@ -57,10 +61,12 @@
 		This sample shows, how to use fancytree as a navigation menu.<br>
 		The tree initialization uses <code>&lt;a href='URL', target='TARGET'>title&lt;/a></code>
 		tags.<br>
-		The <code>activate</code> handler then uses <code>node.href</code>
+		The <code>activate</code> handler then uses <code>node.data.href</code>
 		to open the the pages in the embedded iframe.<br>
 		Note that the navigation will fallback to standard HTML links,
 		when JavaScript is disabled.<br>
+	    A focused node will automatically be activated after 2 seconds (use the
+        keyboard to try this out).<br>
 		<br>
 		The [Toggle tree] button in the embedded welcome page also gives an example on
 		how to access a tree that exists outside the own frame.

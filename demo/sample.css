@@ -14,13 +14,14 @@ body.example h2
 	font-size: 1em;
 }
 
-body.example p.description,
-body.example p.sample-links
+body.example .description,
+body.example .sample-links
 {
 /*	border: thin solid gray; */
 	background-color: #d0d0f0;
-	padding: 5px;
-	font-size: small;
+    padding: 5px;
+    margin: 5px 0;
+font-size: small;
 }
 
 p.version-info
@@ -33,7 +34,7 @@ p.warning,
 p.info,
 div.info {
 	font-size: small;
-				background-color: #ffffa0;
+	background-color: #ffffa0;
 	background-image: url(../doc/iconInfo_32x32.png);
 	background-repeat: no-repeat;
 	padding: 5px;

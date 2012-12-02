@@ -7,7 +7,7 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js" type="text/javascript"></script>
 
-	<link href="../src/skin-xp/ui.fancytree.css" rel="stylesheet" type="text/css"">
+	<link href="../src/skin-win7/ui.fancytree.css" rel="stylesheet" type="text/css"">
 	<script src="../src/jquery.fancytree.js" type="text/javascript"></script>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
@@ -31,10 +31,11 @@
 <script type="text/javascript">
 
 var OPT_LIST = [
-	["activeVisible", true, "Make sure, active nodes are visible (expanded)."],
+    ["activeVisible", true, "Make sure, active nodes are visible (expanded)."],
+    ["aria", true, "Enable WAI-ARIA support."],
 	["autoCollapse", false, "Automatically collapse all siblings, when a node is expanded."],
 	["autoFocus", true, "Set focus to first child, when expanding or lazy-loading."],
-	["clickFolderMode", 3, "1:activate, 2:expand, 3:activate and expand"],
+	["clickFolderMode", 4, "1:activate, 2:expand, 3:activate and expand, 4:activate (dblclick expands)"],
 	["checkbox", false, "Show checkboxes."],
 	["debugLevel", 2, "0:quiet, 1:normal, 2:debug"],
 	["fx", null, 'Animations, e.g. null or { height: "toggle", duration: 200 }'],
@@ -48,73 +49,75 @@ var OPT_LIST = [
 	["selectMode", 2, "1:single, 2:multi, 3:multi-hier"]
 	];
 
-	$(function(){
-		function renderCode(){
-			var tree = $("#tree").fancytree("getTree"),
-				hideDefaults = true,
-				opts = tree.options,
-				optList = OPT_LIST,
-				tmplEntries = [],
-				i;
+function renderCode(){
+    var tree = $("#tree").fancytree("getTree"),
+        hideDefaults = true,
+        opts = tree.options,
+        optList = OPT_LIST,
+        tmplEntries = [],
+        i;
 
-			if(hideDefaults){
-				optList = [];
-				for(i=0; i<OPT_LIST.length; i++){
-					var o = OPT_LIST[i],
-						n = o[0];
-					if( opts[n] !== o[1] && opts[n] !== undefined){
-						optList.push(o);
-					}
-				}
-			}
-			tmplEntries.push('$("#tree").fancytree({');
-			for(i=0; i<optList.length; i++){
-				var o = optList[i],
-					n = o[0],
-					v = opts[n],
-					comma = (i === (optList.length - 1)) ? "" : ",";
-				if(typeof v === "string"){
-					tmplEntries.push("    " + n + ': "' + v + '"' + comma + " // " + o[2]);
-				}else{
-					tmplEntries.push("    " + n + ": " + v + comma + " // " + o[2]);
-				}
-			}
-			tmplEntries.push("});");
-			$("#sourceCode").text(tmplEntries.join("\n"));
+    if(hideDefaults){
+        optList = [];
+        for(i=0; i<OPT_LIST.length; i++){
+            var o = OPT_LIST[i],
+                n = o[0];
+            if( opts[n] !== o[1] && opts[n] !== undefined){
+                optList.push(o);
+            }
+        }
+    }
+    tmplEntries.push('$("#tree").fancytree({');
+    for(i=0; i<optList.length; i++){
+        var o = optList[i],
+            n = o[0],
+            v = opts[n],
+            comma = (i === (optList.length - 1)) ? "" : ",";
+        if(typeof v === "string"){
+            tmplEntries.push("    " + n + ': "' + v + '"' + comma + " // " + o[2]);
+        }else{
+            tmplEntries.push("    " + n + ": " + v + comma + " // " + o[2]);
+        }
+    }
+    tmplEntries.push("});");
+    $("#sourceCode").text(tmplEntries.join("\n"));
+}
+
+$(function(){
+	$("ul#options input,ul#options select").change(function(e){
+		var $this = $(this),
+			n = $this.attr("name"),
+			v = $this.val();
+		if($this.is(":checkbox")){
+			v = $this.is(":checked");
+		}else if(!isNaN(parseInt(v, 10))){
+			v = parseInt(v, 10);
 		}
-		$("ul#options input,ul#options select").change(function(e){
-			var $this = $(this),
-				n = $this.attr("name"),
-				v = $this.val();
-			if($this.is(":checkbox")){
-				v = $this.is(":checked");
-			}else if(!isNaN(parseInt(v, 10))){
-				v = parseInt(v, 10);
-			}
-			$("#tree").fancytree("option", n, v);
-			renderCode();
-		});
-
-		// Attach the fancytree widget to an existing <div id="tree"> element
-		// and pass the tree options as an argument to the fancytree() function:
-		$("#tree").fancytree({
-			source: {
-				url: "ajax-tree-plain.json"
-			},
-			lazyload: function(e, data) {
-				data.result = {url: "ajax-sub2.json"}
-			}
-		});
-
+		$("#tree").fancytree("option", n, v);
 		renderCode();
 	});
+
+	// Attach the fancytree widget to an existing <div id="tree"> element
+	// and pass the tree options as an argument to the fancytree() function:
+	$("#tree").fancytree({
+		source: {
+			url: "ajax-tree-plain.json"
+		},
+		lazyload: function(e, data) {
+			data.result = {url: "ajax-sub2.json"}
+		}
+	});
+
+	renderCode();
+});
 </script>
 </head>
+
 <body class="example">
 	<h1>Fancytree option cofigurator</h1>
-	<p class="description">
+	<div class="description">
 		This sample shows, how titles could displayed as aligned columns.
-	</p>
+	</div>
 	<p class="warning">
 		TODO: this is work in progress.
 	</p>
@@ -127,14 +130,17 @@ var OPT_LIST = [
 			<legend>Fancytree options</legend>
 			<ul id="options">
 				<li><label><input name="activeVisible" type="checkbox" checked="checked"> activeVisible</label>
-				<li><label><input name="autoCollapse" type="checkbox"> autoCollapse</label>
+                <li><label><input name="aria" type="checkbox" checked="checked"> aria </label>
+                <li><label><input name="autoCollapse" type="checkbox"> autoCollapse</label>
 				<li><label><input name="autoFocus" type="checkbox" checked="checked"> autoFocus</label>
 				<li><label><input name="checkbox" type="checkbox"> checkbox</label>
+                <li><label><input name="tabbable" type="checkbox"> tabbable</label>
 				<li>clickFolderMode
 					<select name="clickFolderMode" size="1">
 						<option value="1">activate (1)</option>
 						<option value="2">expand (2)</option>
-						<option value="3" selected="selected">activate and expand (3)</option>
+                        <option value="3">activate and expand with single click (3)</option>
+                        <option value="4" selected="selected">activate with single click, expand with dblclick (4)</option>
 					</select>
 				<li>debugLevel
 					<select name="debugLevel" size="1">

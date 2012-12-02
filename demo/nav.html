@@ -20,7 +20,7 @@ body {
 	background-image: url("nav_bg.png");
 	background-repeat: repeat-x;
 }
-a {
+.fancytree-title {
 	color: white;
 	text-decoration: none;
 }
@@ -65,7 +65,9 @@ span.fancytree-active .fancytree-title {
 		// --- Initialize sample trees
 		$("#tree").fancytree({
 			autoFocus: true,
-			minExpandLevel: 2,
+            minExpandLevel: 2,
+            clickFolderMode: 3, // expand with single click
+            autoCollapse: true,
 			tabbable: false, // we don't want the focus frame
 			focus: function(e, data) {
 				var node = data.node;
@@ -159,6 +161,7 @@ span.fancytree-active .fancytree-title {
                 <li><a target="_blank" href="../test/unit/test-core.html">Core unit tests&circ;</a>
                 <li><a target="_blank" href="../test/unit/test-jQuery-latest.html">Core unit tests (latest jQuery)&circ;</a>
                 <li><a target="_blank" href="../test/unit/test-jQuery-legacy.html">Core unit tests (oldest jQuery)&circ;</a>
+                <li><a target="_blank" href="../test/unit/test-jQuery-20.html">Core unit tests (jQueryUI 2.0)&circ;</a>
 				<li><a target="content" href="test-ext-dnd.html">Drag'n'drop</a>
 				<li><a target="content" href="test-bench.html">Benchmark large trees</a>
 				<li><a target="content" href="sample-pyserver.html">Local server</a>

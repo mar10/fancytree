@@ -136,7 +136,7 @@ var TreePatch = {};
  * @property {Boolean} autoCollapse Automatically collapse all siblings, when a node is expanded (default: false).
  * @property {Boolean} autoFocus Set focus to first child, when expanding or lazy-loading (default: true).
  * @property {Boolean} checkbox Display checkboxes to allow selection  (default: false)
- * @property {Integer} clickFolderMode Defines what happens, when the user click a folder node.<br>1:activate, 2:expand, 3:activate and expand  (default: 3)
+ * @property {Integer} clickFolderMode Defines what happens, when the user click a folder node.<br>1:activate, 2:expand, 3:activate and expand, 4:activate/dblclick expands  (default: 4)
  * @property {String[]} extensions List of active extensions (default: [])
  * @property {String} idPrefix (default: "ft_")
  * @property {String} keyPathSeparator (default: "/")

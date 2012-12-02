@@ -225,6 +225,7 @@ span.fancytree-icon /* Default icon */
 	border: 1px solid transparent; /* reserve some space for status borders */
 	border-radius: 3px;
 	text-decoration: none;
+	
 }
 
 .fancytree-title:hover
@@ -246,6 +247,7 @@ span.fancytree-folder .fancytree-title
 }
 
 a.fancytree-title:focus,
+span.fancytree-focused span.fancytree-title, /* nolink */
 span.fancytree-focused a:link /* @IE */
 {
 	outline: 1px dotted black;
@@ -259,11 +261,26 @@ span.fancytree-focused a:link /* @IE */
 	}
 }
 */
-span.fancytree-active .fancytree-title,
+
+/* active nodes inside an UN-focused tree are gray instead of blue*/
+span.fancytree-active .fancytree-title
+{
+	border: 1px solid #D9D9D9;
+    background: #E5E5E5; /* gray, Old browsers */
+    background: -moz-linear-gradient(top, #fafafb 0%, #e5e5e5 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fafafb), color-stop(100%,#e5e5e5)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #fafafb 0%,#e5e5e5 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #fafafb 0%,#e5e5e5 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #fafafb 0%,#e5e5e5 100%); /* IE10+ */
+    background: linear-gradient(to bottom, #fafafb 0%,#e5e5e5 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fafafb', endColorstr='#e5e5e5',GradientType=0 ); /* IE6-9 */
+}
+
+.fancytree-focused span.fancytree-active .fancytree-title,
 span.fancytree-selected .fancytree-title
 {
 	border: 1px solid #99DEFD;
-	background: #f6fbfd; /* Old browsers */
+	background: #f6fbfd; /* light blue, Old browsers */
 	background: -moz-linear-gradient(top, #f6fbfd 0%, #d5effc 100%); /* FF3.6+ */
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f6fbfd), color-stop(100%,#d5effc)); /* Chrome,Safari4+ */
 	background: -webkit-linear-gradient(top, #f6fbfd 0%,#d5effc 100%); /* Chrome10+,Safari5.1+ */

@@ -35,7 +35,7 @@ function _appendEvent(res){
 /** Helper to reset environment for asynchronous Fancytree tests. */
 function _setupAsync(){
 	QUnit.reset();
-	if( $("#tree").data("fancytree") ){
+	if( $("#tree").is(":ui-fancytree") ){
 		$("#tree").fancytree("destroy");
 	}
 	EVENT_SEQUENCE = [];
@@ -144,7 +144,7 @@ module("Initialization");
 
 test("Version info", function() {
 	QUnit.reset();
-	if( $("#tree").data("fancytree") ){
+	if( $("#tree").is(":ui-fancytree") ){
 		$("#tree").fancytree("destroy");
 	}
 	expect(4);
@@ -164,7 +164,7 @@ test("Static members", function() {
 	// non-async test tht runs before any Fancytrees are created
 //    _setupAsync();
 	QUnit.reset();
-	if( $("#tree").data("fancytree") ){
+	if( $("#tree").is(":ui-fancytree") ){
 		$("#tree").fancytree("destroy");
 	}
 	expect(1);
@@ -177,7 +177,7 @@ test("Static members", function() {
 
 test("Create fancytree", function() {
 	_setupAsync();
-	expect(27);
+	expect(25);
 
 	var insideContructor = true;
 
@@ -206,11 +206,12 @@ test("Create fancytree", function() {
 			equal(data.tree.rootNode.children.length, TESTDATA_TOPNODES, "tree.rootNode has all child nodes");
 
 //            var tree = data.tree;
-			equal($("li#ft_2 a.fancytree-title").attr("title"), "Look, a tool tip!", "tooltip set");
-			equal($("li#ft_3 a.fancytree-title").html(), "<span>item2 with <b>html</b> inside a span tag</span>", "raw html allowed");
-			equal($("li#ft_4 a.fancytree-title").html(), null, "`nolink` suppresses <a> tag");
-			equal($("li#ft_4 span.fancytree-title").length, 1, "`nolink` uses <span> tag");
-			equal($("li#ft_5 a.fancytree-title").attr("href"), "http://www.wwWendt.de/", "href set");
+			equal($("li#ft_2 span.fancytree-title").attr("title"), "Look, a tool tip!", "tooltip set");
+			equal($("li#ft_3 span.fancytree-title").html(), "<span>item2 with <b>html</b> inside a span tag</span>", "raw html allowed");
+//			equal($("li#ft_4 a.fancytree-title").html(), null, "`nolink` suppresses <a> tag");
+//			equal($("li#ft_4 span.fancytree-title").length, 1, "`nolink` uses <span> tag");
+			equal($("li#ft_4 span.fancytree-title").length, 1, "using <span> tag");
+//			equal($("li#ft_5 a.fancytree-title").attr("href"), "http://www.wwWendt.de/", "href set");
 			ok($("li#ft_6 span.fancytree-node").hasClass("my-extra-class"), "custom class added");
 
 			start();
@@ -291,7 +292,7 @@ module("API");
 test("FancytreeNode class", function() {
 //  _setupAsync();
 	QUnit.reset();
-	if( $("#tree").data("fancytree") ){
+	if( $("#tree").is(":ui-fancytree") ){
 		$("#tree").fancytree("destroy");
 	}
 	expect(18);
@@ -395,7 +396,7 @@ test("FancytreeNode class", function() {
 test("Fancytree class", function() {
 //  _setupAsync();
 	QUnit.reset();
-	if( $("#tree").data("fancytree") ){
+	if( $("#tree").is(":ui-fancytree") ){
 		$("#tree").fancytree("destroy");
 	}
 	expect(14);
@@ -683,7 +684,8 @@ test("add children", function() {
 
 			equal(_getNodeTitle("test1"), "New 1", "simple node");
 			var $span = $(_getNode("test1").span);
-			equal($span.find("a.fancytree-title").attr("title"), "new tip", "set tooltip");
+//			equal($span.find("a.fancytree-title").attr("title"), "new tip", "set tooltip");
+			equal($span.find("span.fancytree-title").attr("title"), "new tip", "set tooltip");
 			equal(_getNode("test1").data.foo, "works", "set custom data");
 
 			equal(_getNode("test2").isFolder(), true, "is folder");
@@ -739,7 +741,8 @@ test("apply patch", function() {
 
 				var $span = $(_getNode("2").span);
 				equal(_getNodeTitle("2"), "node 2: new", "rename nodes");
-				equal($span.find("a.fancytree-title").attr("title"), "new tip", "set tooltip");
+//				equal($span.find("a.fancytree-title").attr("title"), "new tip", "set tooltip");
+				equal($span.find("span.fancytree-title").attr("title"), "new tip", "set tooltip");
 				equal(_getNode("2").data.foo, "works", "set custom data");
 
 				ok(_getNode("3").isSelected(), "select");
