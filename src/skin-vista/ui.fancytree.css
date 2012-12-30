@@ -369,7 +369,7 @@ a.fancytree-title
 
 a.fancytree-title:focus,
 span.fancytree-focused a:link,  /* @IE */
-span.fancytree-focused span.fancytree-title 
+span.fancytree-focused span.fancytree-title
 {
 	background-color: #EFEBDE; /* gray */
 	outline: 1px dotted gray;

@@ -679,6 +679,7 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 		return true;
 	},
 	// TODO: NEW: scrollIntoView()
+	// TODO: implement scolling (http://www.w3.org/TR/wai-aria-practices/#visualfocus)
 	// from jQuery.menu:
 //    _scrollIntoView: function( item ) {
 //        var borderTop, paddingTop, offset, scroll, elementHeight, itemHeight;
@@ -701,7 +702,7 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 	 *
 	 */
 	makeVisible: function() {
-		// TODO: implement scolling
+		// TODO: implement scolling (http://www.w3.org/TR/wai-aria-practices/#visualfocus)
 		var parents = this.getParentList(false, false);
 		for(var i=0, l=parents.length; i<l; i++){
 			parents[i].setExpanded(true);
@@ -1125,6 +1126,7 @@ function Fancytree(widget){
 	this.nodeContainerAttrName = "li";
 
 	// Add container to the TAB chain
+	// See http://www.w3.org/TR/wai-aria-practices/#focus_activedescendant
 //	if(this.options.tabbable){
 	this.$container.attr("tabindex", "0");
 //	}
@@ -1133,7 +1135,6 @@ function Fancytree(widget){
 	}
 	var tree = this,
 		selstartEvent = ( $.support.selectstart ? "selectstart" : "mousedown" ) + tree._ns;
-
 	this.$container.bind("focusin" + this._ns + " focusout" + this._ns, function(event){
 		tree.treeOnFocusInOut(event);
 	}).delegate("span.fancytree-title", selstartEvent, function(event){
@@ -1209,7 +1210,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	 *
 	 * @param {Array} patchList array of [key, NodePatch] arrays
 	 * @returns {$.Promise} resolved, when all patches have been applied
-	 * @see NodePatch
+	 * @see TreePatch
 	 */
 	applyPatch: function(patchList) {
 		var patchCount = patchList.length,
@@ -2121,11 +2122,15 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		}
 		if( tree.focusNode === node ){
 			cnList.push(cn.focused);
-//			if(opts.aria){
+			if(opts.aria){
 //				$(">span.fancytree-title", statusElem).attr("tabindex", "0");
-//			}
+				// TODO: is this the right element for this attribute?
+				// TODO: cache $statusElement
+				$(node[tree.statusClassPropName]).attr("aria-activedescendant", true);
+			}
 		}else if(opts.aria){
 //			$(">span.fancytree-title", statusElem).attr("tabindex", "-1");
+			$(node[tree.statusClassPropName]).removeAttr("aria-activedescendant");
 		}
 		if( node.expanded ){
 			cnList.push(cn.expanded);
@@ -2702,7 +2707,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	treeOnFocusInOut: function(event) {
 		var flag = (event.type === "focusin");
 		this.debug("treeOnFocusInOut(" + flag + ")", event.type, event);
-		
+
 		if(FT.focusTree){
 			if(this !== FT.focusTree || !flag ){
 				// node looses focus, if tree blurs

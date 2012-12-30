@@ -109,12 +109,17 @@ $.ui.fancytree.registerExtension("table", {
 		$(tree.tbody).empty();
 
 		tree.rowFragment = document.createDocumentFragment();
-		var $row = $("<tr>");
+		var $row = $("<tr>"),
+			tdRole = "";
+		if(ctx.options.aria){
+			$row.attr("role", "row");
+			tdRole = " role='gridcell'"
+		}
 		for(var i=0; i<tree.columnCount; i++) {
 			if(ctx.options.table.nodeColumnIdx === i){
-				$row.append("<td><span class='fancytree-title'></span></td>");
+				$row.append("<td" + tdRole + "><span class='fancytree-title'></span></td>");
 			}else{
-				$row.append("<td>");
+				$row.append("<td" + tdRole + ">");
 			}
 		}
 		tree.rowFragment.appendChild($row.get(0));
@@ -125,8 +130,10 @@ $.ui.fancytree.registerExtension("table", {
 		tree.rootNode.ul = null;
 		tree.$container = $table;
 		// Add container to the TAB chain
-		if(tree.options.tabbable){
-			tree.$container.attr("tabindex", "0");
+		tree.$container.attr("tabindex", "0");
+		if(this.options.aria){
+			tree.$container.attr("role", "treegrid");
+			tree.$container.attr("aria-readonly", true);
 		}
 		// Make sure that status classes are set on the node's <tr> elements
 		tree.statusClassPropName = "tr";

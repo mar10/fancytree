@@ -225,14 +225,14 @@ span.fancytree-icon /* Default icon */
 	margin-left: 3px;
 /*    border: 1px solid white; /* reserve some space for status borders (Note: 'transparent' would not work in IE6) */
 	border: 1px solid transparent; /* reserve some space for status borders */
-    border-radius: 0;
+	border-radius: 0;
 	text-decoration: none;
 }
 a.fancytree-title:focus,
 span.fancytree-focused a:link, /* @IE */
-span.fancytree-focused .fancytree-title { 
+span.fancytree-focused .fancytree-title {
 	outline: 1px dotted black;
-    color: whhite;
+	color: whhite;
 }
 span.fancytree-selected .fancytree-title {
 	background-color: #D4D4D4; /*gray*/

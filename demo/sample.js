@@ -71,7 +71,7 @@
 						// decouple this call to prevent IE6 exception
 						setTimeout(function(){
 							$combo.val(initialChoice.value);
-						}, 10)
+						}, 100)
 					}
 				});
 			},
