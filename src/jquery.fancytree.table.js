@@ -32,7 +32,7 @@
 // }
 
 
-/*******************************************************************************
+/* *****************************************************************************
  * Private functions and variables
  */
 function _assert(cond, msg){
@@ -46,22 +46,34 @@ function insertSiblingAfter(referenceNode, newNode) {
 	referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
 }
 
-function setChildRowVisibility(node, flag) {
-	var tr = node.tr,
-		lastNode = node.getNextSibling();
-	// If lastNode is null, check for parent.nextsibling !!
-	while(!lastNode && node.parent.parent){
-		node = node.parent;
-		lastNode = node.getNextSibling();
-	}
-	tr = tr.nextSibling;
-	while(tr && tr.ftnode !== lastNode){
-		tr.style.display = flag ? "" : "none";
-		tr = tr.nextSibling;
-	}
+/* Show/hide all rows that are structural descendants of `node` */
+//function setChildRowVisibility(node, flag) {
+//	var tr = node.tr,
+//		lastNode = node.getNextSibling();
+//	// If lastNode is null, check for parent.nextsibling !!
+//	while(!lastNode && node.parent.parent){
+//		node = node.parent;
+//		lastNode = node.getNextSibling();
+//	}
+//	tr = tr.nextSibling;
+//	while(tr && tr.ftnode !== lastNode){
+//		tr.style.display = flag ? "" : "none";
+//		tr = tr.nextSibling;
+//	}
+//}
+function setChildRowVisibility(parent, flag) {
+	parent.visit(function(node){
+		var tr = node.tr;
+		if(tr){
+			tr.style.display = flag ? "" : "none";
+		}
+		if(!node.expanded){
+			return "skip";
+		}
+	});
 }
 
-/** Find node that is rendered in previous row. */
+/* Find node that is rendered in previous row. */
 function findPrevRowNode(node){
 	var parent = node.parent,
 		siblings = parent ? parent.children : null,
