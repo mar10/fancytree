@@ -56,8 +56,13 @@ $.ui.fancytree.registerExtension("columnview", {
 		var $ul = $(tree.rootNode.ul),
 //            tdList = $(">td", tree.tr).get(),
 			$tdFirst = $(">td", tree.tr).eq(0);
+
 		$ul.removeClass("fancytree-container");
+		$ul.removeAttr("tabindex");
+		tree.$container = $table;
 		$table.addClass("fancytree-container fancytree-ext-columnview");
+		$ul.attr("tabindex", "0");
+
 		$tdFirst.empty();
 		$ul.detach().appendTo($tdFirst);
 

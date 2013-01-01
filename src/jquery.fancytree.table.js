@@ -46,21 +46,7 @@ function insertSiblingAfter(referenceNode, newNode) {
 	referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
 }
 
-/* Show/hide all rows that are structural descendants of `node` */
-//function setChildRowVisibility(node, flag) {
-//	var tr = node.tr,
-//		lastNode = node.getNextSibling();
-//	// If lastNode is null, check for parent.nextsibling !!
-//	while(!lastNode && node.parent.parent){
-//		node = node.parent;
-//		lastNode = node.getNextSibling();
-//	}
-//	tr = tr.nextSibling;
-//	while(tr && tr.ftnode !== lastNode){
-//		tr.style.display = flag ? "" : "none";
-//		tr = tr.nextSibling;
-//	}
-//}
+/* Show/hide all rows that are structural descendants of `parent`. */
 function setChildRowVisibility(parent, flag) {
 	parent.visit(function(node){
 		var tr = node.tr;
@@ -78,11 +64,9 @@ function findPrevRowNode(node){
 	var parent = node.parent,
 		siblings = parent ? parent.children : null,
 		prev, i;
-	//
+
 	if(siblings && siblings.length > 1 && siblings[0] !== node){
 		// use the lowest descendant of the preceeding sibling
-		// TODO: doesn't work for IE 6
-//		i = siblings.indexOf(node);
 		i = $.inArray(node, siblings);
 		prev = siblings[i - 1];
 		_assert(prev.tr);
@@ -97,7 +81,6 @@ function findPrevRowNode(node){
 	}else{
 		// if there is no preceding sibling, use the direct parent
 		prev = parent;
-	//                _assert(prev.tr);
 	}
 	return prev;
 }
@@ -125,7 +108,7 @@ $.ui.fancytree.registerExtension("table", {
 			tdRole = "";
 		if(ctx.options.aria){
 			$row.attr("role", "row");
-			tdRole = " role='gridcell'"
+			tdRole = " role='gridcell'";
 		}
 		for(var i=0; i<tree.columnCount; i++) {
 			if(ctx.options.table.nodeColumnIdx === i){
@@ -177,15 +160,15 @@ $.ui.fancytree.registerExtension("table", {
 		var tree = ctx.tree,
 			node = ctx.node,
 			opts = ctx.options,
-			isRootNode = !node.parent,
-			firstTime = false;
+			isRootNode = !node.parent;
+//			firstTime = false;
 
 		if( !isRootNode ){
 			if(!node.tr){
 				// Create new <tr> after previous row
 				var newRow = tree.rowFragment.firstChild.cloneNode(true),
 					prevNode = findPrevRowNode(node);
-				firstTime = true;
+//				firstTime = true;
 				$.ui.fancytree.debug("*** nodeRender " + node + ": prev: " + prevNode.key);
 				_assert(prevNode);
 				if(collapsed === true && _recursive){
@@ -204,11 +187,6 @@ $.ui.fancytree.registerExtension("table", {
 				}
 				node.tr.ftnode = node;
 				node.span = $("span.fancytree-title", node.tr).get(0);
-//                var indent = (node.getLevel() - 1) * opts.table.indentation;
-//                if(indent){
-//                    $(node.span).css({marginLeft: indent + "px"});
-//                }
-
 				// Set icon, link, and title (normally this is only required on initial render)
 				this.nodeRenderTitle(ctx);
 				// Allow tweaking, binding, after node was created for the first time
@@ -293,11 +271,11 @@ $.ui.fancytree.registerExtension("table", {
 			}
 		}
 		this._super(ctx, status, message, details);
-	},
+	}/*,
 	treeSetFocus: function(ctx, flag) {
 //	        alert("treeSetFocus" + ctx.tree.$container);
 		ctx.tree.$container.focus();
 		$.ui.fancytree.focusTree = ctx.tree;
-	}
+	}*/
 });
 }(jQuery));
