@@ -30,8 +30,8 @@
 //			tabbable: false,
 			nolink: true,
 			source: [
-				{title: "Item 1", key: "node1"},
-				{title: "Folder 2", folder: true, key: "node2",
+				{title: "Item 1 with embedded html: <input type='input' name='node1info'>", key: "node1"},
+				{title: "Folder 2", folder: true, expanded: true, key: "node2",
 					children: [
 						{title: "Sub-item 2.1", key: "node2.1"},
 						{title: "Sub-item 2.2", key: "node2.2"}
@@ -104,13 +104,12 @@ $(function(){
 	<div>
 		<label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
 	</div>
+	<hr>
 	<!-- End_Exclude -->
 	<!--
 	<form action="http://127.0.0.1:8001/submit_data" method="POST">
 	 -->
 	<form action="/submit_data" method="POST">
-		Username: <input type="text" name="userName" />
-		<br>
 		<textarea name="comment"></textarea>
 		<br>
 		<input type="radio" name="rb1" value="foo" checked> Foo
@@ -124,6 +123,9 @@ $(function(){
 			<input type="checkbox" name="cb1" value="George">George
 			<input type="checkbox" name="cb1" value="Ringo">Ringo
 		</fieldset>
+		<br>
+
+		Username: <input type="text" name="userName" />
 		<br>
 
 		<!-- The name attribute is used by tree.serializeArray()  -->

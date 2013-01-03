@@ -679,6 +679,7 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 		return true;
 	},
 	// TODO: NEW: scrollIntoView()
+	// TODO: implement scolling (http://www.w3.org/TR/wai-aria-practices/#visualfocus)
 	// from jQuery.menu:
 //    _scrollIntoView: function( item ) {
 //        var borderTop, paddingTop, offset, scroll, elementHeight, itemHeight;
@@ -701,7 +702,7 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 	 *
 	 */
 	makeVisible: function() {
-		// TODO: implement scolling
+		// TODO: implement scolling (http://www.w3.org/TR/wai-aria-practices/#visualfocus)
 		var parents = this.getParentList(false, false);
 		for(var i=0, l=parents.length; i<l; i++){
 			parents[i].setExpanded(true);
@@ -1125,27 +1126,13 @@ function Fancytree(widget){
 	this.nodeContainerAttrName = "li";
 
 	// Add container to the TAB chain
-	if(this.options.tabbable){
-		this.$container.attr("tabindex", "0");
-	}
+	// See http://www.w3.org/TR/wai-aria-practices/#focus_activedescendant
+//	if(this.options.tabbable){
+	this.$container.attr("tabindex", "0");
+//	}
 	if(this.options.aria){
 		this.$container.attr("role", "tree");
 	}
-	var tree = this,
-		selstartEvent = ( $.support.selectstart ? "selectstart" : "mousedown" ) + tree._ns;
-
-	this.$container.bind("focusin" + this._ns + " focusout" + this._ns, function(event){
-		tree.treeOnFocusInOut(event);
-	}).delegate("span.fancytree-title", selstartEvent, function(event){
-		// prevent mouse-drags to select text ranges
-		FT.debug("<span> got event " + event.type);
-		event.preventDefault();
-//		return false;
-//	}).delegate("a.fancytree-title", "focus blur", function(event){
-//		FT.debug("<a> got event " + event.type);
-//		event.preventDefault();
-//		return false;
-	});
 }
 
 
@@ -1209,7 +1196,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	 *
 	 * @param {Array} patchList array of [key, NodePatch] arrays
 	 * @returns {$.Promise} resolved, when all patches have been applied
-	 * @see NodePatch
+	 * @see TreePatch
 	 */
 	applyPatch: function(patchList) {
 		var patchCount = patchList.length,
@@ -2081,7 +2068,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			var tooltip = node.tooltip ? " title='" + node.tooltip.replace(/\"/g, '&quot;') + "'" : "",
 				href = node.data.href || "#";
 //			if( opts.nolink || node.nolink ) {
-				nodeTitle = "<span tabindex='-1' class='fancytree-title'" + tooltip + ">" + node.title + "</span>";
+				nodeTitle = "<span class='fancytree-title'" + tooltip + ">" + node.title + "</span>";
 //			} else {
 //				nodeTitle = "<a href='" + href + "' tabindex='-1' class='fancytree-title'" + tooltip + ">" + node.title + "</a>";
 //			}
@@ -2113,14 +2100,23 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		cnList.push(cn.node);
 		if( tree.activeNode === node ){
 			cnList.push(cn.active);
+//			$(">span.fancytree-title", statusElem).attr("tabindex", "0");
+//			tree.$container.removeAttr("tabindex");
+		}else{
+//			$(">span.fancytree-title", statusElem).removeAttr("tabindex");
+//			tree.$container.attr("tabindex", "0");
 		}
 		if( tree.focusNode === node ){
 			cnList.push(cn.focused);
 			if(opts.aria){
-				$(">span.fancytree-title", statusElem).attr("tabindex", "0");
+//				$(">span.fancytree-title", statusElem).attr("tabindex", "0");
+				// TODO: is this the right element for this attribute?
+				// TODO: cache $statusElement
+				$(node[tree.statusClassPropName]).attr("aria-activedescendant", true);
 			}
 		}else if(opts.aria){
-			$(">span.fancytree-title", statusElem).attr("tabindex", "-1");
+//			$(">span.fancytree-title", statusElem).attr("tabindex", "-1");
+			$(node[tree.statusClassPropName]).removeAttr("aria-activedescendant");
 		}
 		if( node.expanded ){
 			cnList.push(cn.expanded);
@@ -2839,7 +2835,7 @@ $.widget("ui.fancytree",
 //		hooks: {},
 		idPrefix: "ft_",
 		keyPathSeparator: "/",
-		tabbable: true, // add tabindex='0' to container, so tree can be reached using TAB
+//		tabbable: true, // add tabindex='0' to container, so tree can be reached using TAB
 		strings: {
 			loading: "Loading&#8230;",
 			loadError: "Load error!"
@@ -2877,7 +2873,7 @@ $.widget("ui.fancytree",
 	/* Set up the widget, Called on first $().fancytree() */
 	_create: function() {
 		this.tree = new Fancytree(this);
-		this._bind();
+
 		this.$source = this.source
 			|| this.element.data("type") === "json" ? this.element
 			: this.element.find(">ul:first");
@@ -2911,8 +2907,10 @@ $.widget("ui.fancytree",
 	/* Called on every $().fancytree() */
 	_init: function() {
 		this.tree._callHook("treeInit", this.tree);
-		// Note: 'fancytreeinit' event is fired by
-//		this.tree._triggerTreeEvent("init");
+		// TODO: currently we call bind after treeInit, because treeInit
+		// might change tree.$container.
+		// It would be better, to move ebent binding into hooks altogether
+		this._bind();
 	},
 
 	/* Use the _setOption method to respond to changes to options */
@@ -2959,20 +2957,40 @@ $.widget("ui.fancytree",
 
 	// -------------------------------------------------------------------------
 
+	/* Remove all event handlers for our namespace */
+	_unbind: function() {
+		var ns = this.tree._ns;
+		this.element.unbind(ns);
+		this.tree.$container.unbind(ns);
+		$(document).unbind(ns);
+	},
 	/* Add mouse and kyboard handlers to the container */
 	_bind: function() {
 		var that = this,
 			opts = this.options,
 			tree = this.tree,
-			eventNames = $.map(["click", "dblclick"],
-				function(name){
-					return name + tree._ns;
-				}).join(" ");
+			ns = tree._ns,
+			selstartEvent = ( $.support.selectstart ? "selectstart" : "mousedown" );
 
+		// Remove all previuous handlers for this tree 
 		this._unbind();
-		$(document).bind("keydown" + tree._ns, function(event){
+		
+		//alert("keydown" + ns + "foc=" + tree.hasFocus() + tree.$container);
+		tree.debug("bind events; container: ", tree.$container);
+		tree.$container.bind("focusin" + ns + " focusout" + ns, function(event){
+			tree.debug("Tree container got event " + event.type);
+			tree.treeOnFocusInOut(event);
+		}).delegate("span.fancytree-title", selstartEvent + ns, function(event){
+			// prevent mouse-drags to select text ranges
+			tree.debug("<span> got event " + event.type);
+			event.preventDefault();
+		});
+		// keydown must be bound to document, because $container might not 
+		// receive these events
+		$(document).bind("keydown" + ns, function(event){
 			// TODO: also bind keyup and keypress
-			if(opts.disabled || opts.keyboard === false || tree !== FT.focusTree){
+			tree.debug("doc got event " + event.type + ", hasFocus:" + tree.hasFocus());
+			if(opts.disabled || opts.keyboard === false || !tree.hasFocus()){
 				return true;
 			}
 			var node = tree.focusNode,
@@ -2990,13 +3008,12 @@ $.widget("ui.fancytree",
 				tree.phase = prevPhase;
 			}
 		});
-		this.element.bind(eventNames, function(event){
+		this.element.bind("click" + ns + " dblclick" + ns, function(event){
 			if(opts.disabled){
 				return true;
 			}
 			var et = FT.getEventTarget(event),
 				node = et.node;
-//			    node = FT.getNode(event.target);
 			if( !node ){
 				return true;  // Allow bubbling of other events
 			}
@@ -3041,11 +3058,6 @@ $.widget("ui.fancytree",
 	/** @returns {Fancytree} the current tree instance */
 	getTree: function() {
 		return this.tree;
-	},
-	/* Remove all event handlers for our namespace */
-	_unbind: function() {
-//		this.element.unbind("." + this.widgetName + "-" + this.tree._id);
-		this.element.unbind(this.tree._ns);
 	}
 });
 
@@ -3305,34 +3317,3 @@ if( typeof define === "function" && define.amd ) {
 		}
 	 });
 }(jQuery));
-
-
-/* *****************************************************************************
- * Fancytree extension: aria
- */
-/*
-(function($) {
-	$.ui.fancytree.registerExtension("aria", {
-		// Default options for this extension.
-		options: {
-		},
-		// Overide virtual methods for this extension.
-		// `this`       : is this extension object
-		// `this._base` : the Fancytree instance
-		// `this._super`: the virtual function that was overriden (member of prev. extension or Fancytree)
-		treeInit: function(ctx){
-			// TODO: bind to option change to set aria-disabled
-			// ctx.widget$( "#something" ).multi( "option", "disabled", function(event){
-			//     alert( "I cleared the multiselect!" );
-			// });
-			this._super(ctx);
-			$(ctx.tree.rootNode.ul).addClass("role-tree");
-		},
-		nodeRenderStatus: function(ctx){
-			this._super(ctx);
-			$(ctx.node.li).addClass("role-treeitem");
-			// TODO: aria-expanded: "true", aria-selected: "true"
-		}
-	 });
-}(jQuery));
-*/

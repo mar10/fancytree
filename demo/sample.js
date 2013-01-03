@@ -68,7 +68,10 @@
 						$combo.val(opts.init).change();
 					}else if (initialChoice){
 						// select combobox value to match current <link> tag
-						$combo.val(initialChoice.value);
+						// decouple this call to prevent IE6 exception
+						setTimeout(function(){
+							$combo.val(initialChoice.value);
+						}, 100)
 					}
 				});
 			},

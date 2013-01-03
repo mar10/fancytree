@@ -38,7 +38,7 @@ var NodePatch = {};
 /**
  * List of [key, {@link NodePatch}]  tuples.
  * May be passed to {@link Fancytree#applyPatch}.
- * @name NodePatch
+ * @name TreePatch
  *
  */
 var TreePatch = {};
@@ -145,7 +145,6 @@ var TreePatch = {};
  * @property {Boolean} keyboard Support keyboard navigation (default: true).
  * @property {Integer} minExpandLevel 1: root node is not collapsible (default: 1)
  * @property {Boolean} noLink Use <span> instead of <a> tags for all nodes (default: false)
- * @property {Boolean} tabbable add 'tabindex=0' to container (default: true)
  * @property {Integer} selectMode 1:single, 2:multi, 3:multi-hier (default: 2)
  * @property {any} source Used to Initialize the tree.
  *     line 2

@@ -1,4 +1,5 @@
 /*jshint node:true */
+"use strict";
 
 var assert = require('assert'),
 	http = require('http'),

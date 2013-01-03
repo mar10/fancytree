@@ -1,6 +1,9 @@
 /*jslint node:true */
+"use strict";
 
 module.exports = function(grunt) {
+	grunt.loadNpmTasks("grunt-contrib-compress");
+
     // Project configuration.
     grunt.initConfig({
         pkg: "<json:package.json>",
@@ -44,6 +47,13 @@ module.exports = function(grunt) {
                 dest: "dist/<%= pkg.name %>-all.min.js"
             }
         },
+//        compress: {
+//            zip: {
+//               files: {
+//                 "dist/<%= pkg.name %>-all.min.js.gz": "dist/<%= pkg.name %>-all.min.js"
+//               }
+//            }
+//        },
         qunit: {
             files: ["test/unit/**/*.html"]
         },

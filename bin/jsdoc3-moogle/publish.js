@@ -6,14 +6,14 @@
         helper = require('jsdoc/util/templateHelper'),
         scopeToPunc = { 'static': '.', 'inner': '~', 'instance': '#' },
         hasOwnProp = Object.prototype.hasOwnProperty;
-    
     /**
         @global
         @param {TAFFY} data See <http://taffydb.com/>.
         @param {object} opts
         @param {Tutorial} tutorials
      */
-    publish = function(data, opts, tutorials) {
+    exports.publish = function(data, opts, tutorials) {
+//    publish = function(data, opts, tutorials) {
         var defaultTemplatePath = 'templates/default';
         var templatePath = (opts.template) ? opts.template : defaultTemplatePath;
         var out = '',
