@@ -1769,7 +1769,8 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	},
 	/** Expand all parents.*/
 	nodeMakeVisible: function(ctx) {
-		// TODO: scroll as neccessary: http://stackoverflow.com/questions/8938352/fancytree-how-to-scroll-to-active-node
+		// TODO: also scroll as neccessary: http://stackoverflow.com/questions/8938352/fancytree-how-to-scroll-to-active-node
+		// Do we need an extra parameter?
 		var parents = ctx.node.getParentList(false, false);
 		for(var i=0, l=parents.length; i<l; i++){
 			parents[i].setExpanded(true);
@@ -2366,7 +2367,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		}
 		if(flag !== false){
 			if(FT.focusTree !== tree){
-				// safari, when tabbable=false
+				// Safari, when tabbable=false
 				node.debug("nodeSetFocus: forcing container focus");
 				tree.setFocus();
 			}
@@ -2692,9 +2693,11 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		});
 		return dfd;
 	},
+	/* Handle focus and blur events for the container and embedded nodes. */
 	treeOnFocusInOut: function(event) {
-		var flag = event.type === "focusin";
-		this.debug("treeOnFocusInOut(" + flag + ")");
+		var flag = (event.type === "focusin");
+		this.debug("treeOnFocusInOut(" + flag + ")", event.type, event);
+		
 		if(FT.focusTree){
 			if(this !== FT.focusTree || !flag ){
 				// node looses focus, if tree blurs
@@ -2721,6 +2724,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			FT.focusTree = null;
 		}
 	},
+	/* */
 	treeSetFocus: function(ctx, flag) {
 //        alert("treeSetFocus" + ctx.tree.$container);
 		ctx.tree.$container.focus();
@@ -3073,7 +3077,8 @@ $.extend($.ui.fancytree,
 	_nextId: 1,
 	_nextNodeKey: 1,
 	_extensions: {},
-	_focusedTree: null,
+//	_focusedTree: null,
+	focusTree: null,
 	/** Expose class object as $.ui.fancytree._FancytreeClass */
 	_FancytreeClass: Fancytree,
 	/** Expose class object as $.ui.fancytree._FancytreeNodeClass */
@@ -3086,7 +3091,8 @@ $.extend($.ui.fancytree,
 	},
 	error: function(msg){
 		/*jshint expr:true */
-		window.console && window.console.error && window.console.error.apply(window.console, arguments);
+//		window.console && window.console.error && window.console.error.apply(window.console, arguments);
+		consoleApply("error", arguments);
 	},
 	/** Return a {node: FancytreeNode, type: TYPE} object for a mouse event.
 	 *
@@ -3145,7 +3151,8 @@ $.extend($.ui.fancytree,
 	},
 	info: function(msg){
 		/*jshint expr:true */
-		(FT.debugLevel >= 1) && window.console && window.console.info && window.console.info.apply(window.console, arguments);
+//		(FT.debugLevel >= 1) && window.console && window.console.info && window.console.info.apply(window.console, arguments);
+		($.ui.fancytree.debugLevel >= 1) && consoleApply("info", arguments);
 	},
 	/**
 	 * Parse tree data from HTML <ul> markup
@@ -3253,7 +3260,8 @@ $.extend($.ui.fancytree,
 	},
 	warn: function(msg){
 		/*jshint expr:true */
-		window.console && window.console.warn && window.console.warn.apply(window.console, arguments);
+//		window.console && window.console.warn && window.console.warn.apply(window.console, arguments);
+		consoleApply("warn", arguments);
 	}
 });
 
