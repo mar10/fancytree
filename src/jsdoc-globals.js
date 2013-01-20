@@ -147,8 +147,8 @@ var TreePatch = {};
  * @property {Boolean} noLink Use <span> instead of <a> tags for all nodes (default: false)
  * @property {Integer} selectMode 1:single, 2:multi, 3:multi-hier (default: 2)
  * @property {any} source Used to Initialize the tree.
- *     line 2
  * @property {object} strings Translation table
+ * @property {Boolean} tabbable // add tabindex='0' to container, so tree can be reached using TAB
  */
 var FancytreeOptions = {};
 
