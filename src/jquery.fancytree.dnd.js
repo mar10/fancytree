@@ -206,7 +206,7 @@ $.ui.fancytree.registerExtension("dnd",
 		this._super(ctx);
 		_initDragAndDrop(tree);
 	},
-	/** Override key handler in order to cancel dnd on escape.*/
+	/* Override key handler in order to cancel dnd on escape.*/
 	nodeKeydown: function(ctx) {
 		var event = ctx.orgEvent;
 		if( event.which === $.ui.keyCode.ESCAPE) {

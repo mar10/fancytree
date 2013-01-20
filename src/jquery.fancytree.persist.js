@@ -68,7 +68,7 @@ DynaTreeStatus._getTreePersistData = function(cookieId, cookieOpts) {
 };
 */
 
-/*******************************************************************************
+/* *****************************************************************************
  * Extension code
  */
 $.ui.fancytree.registerExtension("persist", {
@@ -87,7 +87,7 @@ $.ui.fancytree.registerExtension("persist", {
 		types: "active expanded focus selected"
 	},
 
-	/**Append `key` to a cookie. */
+	/* Append `key` to a cookie. */
 	_setKey: function(type, key, flag){
 		var instData = this.persist,
 			instOpts = this.options.persist,

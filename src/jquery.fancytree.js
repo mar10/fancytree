@@ -2693,7 +2693,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	treeOnFocusInOut: function(event) {
 		var flag = (event.type === "focusin");
 		this.debug("treeOnFocusInOut(" + flag + ")", event.type, event);
-		
+
 		if(FT.focusTree){
 			if(this !== FT.focusTree || !flag ){
 				// node looses focus, if tree blurs
@@ -2972,9 +2972,9 @@ $.widget("ui.fancytree",
 			ns = tree._ns,
 			selstartEvent = ( $.support.selectstart ? "selectstart" : "mousedown" );
 
-		// Remove all previuous handlers for this tree 
+		// Remove all previuous handlers for this tree
 		this._unbind();
-		
+
 		//alert("keydown" + ns + "foc=" + tree.hasFocus() + tree.$container);
 		tree.debug("bind events; container: ", tree.$container);
 		tree.$container.bind("focusin" + ns + " focusout" + ns, function(event){
@@ -2985,7 +2985,7 @@ $.widget("ui.fancytree",
 			tree.debug("<span> got event " + event.type);
 			event.preventDefault();
 		});
-		// keydown must be bound to document, because $container might not 
+		// keydown must be bound to document, because $container might not
 		// receive these events
 		$(document).bind("keydown" + ns, function(event){
 			// TODO: also bind keyup and keypress

@@ -66,7 +66,7 @@ $.ui.fancytree.registerExtension("sampleextension", {
 		color: "#001122",
 		types: "active expanded focus selected"
 	},
-	/** Local function.
+	/* Local function.
 	 *
 	 * Local functions are prefixed with an underscore '_'.
 	 */

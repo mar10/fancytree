@@ -54,7 +54,7 @@ TreeModel.prototype.remove = function(key){
 };
 
 
-/**
+/*
  * Init a new tree with some sample data
  */
 var _tree = new TreeModel();

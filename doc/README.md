@@ -9,4 +9,4 @@ Sample
         });
 
 Note: 
-    This is work in Progres
+    This is work in progress

@@ -12,8 +12,8 @@
         @param {object} opts
         @param {Tutorial} tutorials
      */
-    exports.publish = function(data, opts, tutorials) {
-//    publish = function(data, opts, tutorials) {
+//    exports.publish = function(data, opts, tutorials) {
+    publish = function(data, opts, tutorials) {
         var defaultTemplatePath = 'templates/default';
         var templatePath = (opts.template) ? opts.template : defaultTemplatePath;
         var out = '',

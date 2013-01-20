@@ -367,9 +367,9 @@ table.fancytree-ext-table tbody tr:hover {
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f8fcfe', endColorstr='#eff9fe',GradientType=0 ); /* IE6-9 */
 }
 table.fancytree-ext-table tbody tr.fancytree-focused {
-/*    background-color: #99DEFD;*/
+	background-color: #99DEFD;
 /*    border: 1px dotted #090402;*/
-    outline: 1px dotted #090402;
+	outline: 1px dotted #090402;
 }
 
 table.fancytree-ext-table span.fancytree-focused span.fancytree-title {
