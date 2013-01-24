@@ -1,0 +1,23 @@
+= jquery.fancytree.js =
+
+Fancytree 2.x is the designated successor of [http://dynatree.googlecode.com/ DynaTree 1.x].
+
+
+== Status ==
+
+Alpha!
+
+Read [WhatsNew What's New] and [http://wwwendt.de/tech/fancytree/demo take a look at the preview demo].
+
+*Note:*
+The API (events, functions, and parameters) are still subject to change!
+
+One main motivation of this rewrite was a more consistent and intuitive API, 
+so this is also a *Call for comments*: let me know, if you have proposals for 
+improvements on the API or architecture.
+
+Seasoned JS programmers are invited to comment or participate ;-)
+
+Have fun
+
+Martin
