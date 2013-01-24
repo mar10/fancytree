@@ -1128,7 +1128,7 @@ function Fancytree(widget){
 	// Add container to the TAB chain
 	// See http://www.w3.org/TR/wai-aria-practices/#focus_activedescendant
 	if(this.options.tabbable){
-	    this.$container.attr("tabindex", "0");
+		this.$container.attr("tabindex", "0");
 	}
 	if(this.options.aria){
 		this.$container.attr("role", "tree");
@@ -2824,7 +2824,7 @@ $.widget("ui.fancytree",
 			dataType: "json" // Expect json format and pass json object to callbacks.
 		},  //
 		/** @type {Boolean}  Make sure, active nodes are visible (expanded). */
-		activeVisible: true, 
+		activeVisible: true,
 		aria: true,
 		autoCollapse: false,
 		checkbox: false,
@@ -2839,7 +2839,7 @@ $.widget("ui.fancytree",
 			loading: "Loading&#8230;",
 			loadError: "Load error!"
 		},
-        tabbable: true, 
+		tabbable: true,
 		_classNames: {
 			container: "fancytree-container",
 			node: "fancytree-node",
