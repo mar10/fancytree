@@ -517,8 +517,8 @@ test(".click() to expand a folder", function() {
 	$("#tree").fancytree({
 		source: testData,
 		generateIds: true,
-		queryexpand: function(e, data){
-			equal(e.type, "fancytreequeryexpand", "receive `queryexpand` callback");
+		beforeexpand: function(e, data){
+			equal(e.type, "fancytreebeforeexpand", "receive `beforeexpand` callback");
 			ok($(data.node.span).hasClass("fancytree-node"), "data.node.span has class fancytree-node");
 			ok(!$(data.node.span).hasClass("fancytree-expanded"), "data.node.span has NOT class fancytree-expanded");
 		},
@@ -542,8 +542,8 @@ test(".click() to activate a node", function() {
 	$("#tree").fancytree({
 		source: testData,
 		generateIds: true, // for testing
-		queryactivate: function(e, data){
-			equal(e.type, "fancytreequeryactivate", "receive `queryactivate` callback");
+		beforeactivate: function(e, data){
+			equal(e.type, "fancytreebeforeactivate", "receive `beforeactivate` callback");
 			ok($(data.node.span).hasClass("fancytree-node"), "data.node.span has class fancytree-node");
 			ok(!$(data.node.span).hasClass("fancytree-active"), "data.node.span has NOT class fancytree-active");
 		},
@@ -568,14 +568,14 @@ test(".click() to activate a folder (clickFolderMode 3 triggers expand)", functi
 		source: testData,
 		clickFolderMode: 3,
 		generateIds: true, // for testing
-		queryactivate: function(e, data){
-			equal(sequence++, 1, "receive `queryactivate` callback");
+		beforeactivate: function(e, data){
+			equal(sequence++, 1, "receive `beforeactivate` callback");
 		},
 		activate: function(e, data){
 			equal(sequence++, 2, "receive `activate` callback");
 		},
-		queryexpand: function(e, data){
-			equal(sequence++, 3, "receive `queryexpand` callback");
+		beforeexpand: function(e, data){
+			equal(sequence++, 3, "receive `beforeexpand` callback");
 		},
 		expand: function(e, data){
 			equal(sequence++, 4, "receive `expand` callback");
@@ -594,8 +594,8 @@ test(".click() to select a node", function() {
 		source: testData,
 		checkbox: true,
 		generateIds: true, // for testing
-		queryselect: function(e, data){
-			equal(e.type, "fancytreequeryselect", "receive `queryselect` callback");
+		beforeselect: function(e, data){
+			equal(e.type, "fancytreebeforeselect", "receive `beforeselect` callback");
 			ok($(data.node.span).hasClass("fancytree-node"), "data.node.span has class fancytree-node");
 			ok(!$(data.node.span).hasClass("fancytree-selected"), "data.node.span has NOT class fancytree-selected");
 		},
@@ -631,8 +631,8 @@ test(".click() to expand a lazy folder (lazyload returns ajax options)", functio
 			// now expand a lazy folder
 			$("#tree #ft_30 span.fancytree-expander").click();
 		},
-		queryexpand: function(e, data){
-			equal(sequence++, 2, "receive `queryexpand` callback");
+		beforeexpand: function(e, data){
+			equal(sequence++, 2, "receive `beforeexpand` callback");
 		},
 		lazyload: function(e, data){
 			equal(sequence++, 3, "receive `lazyload` callback");

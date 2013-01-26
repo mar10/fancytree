@@ -86,16 +86,18 @@ See also HowtoMigration for details.
 
   * Most attribute names, event names and method signatures have changed.
 {{{
+// Fancytree              vs DynaTree
 // Attributes
 node.expanded             <= was node.bExpanded 
-n.a.                      <= was node.data.expand
-                             // Status read from initialization source is no longer used
+
 // Methods
 node.toggleSelected()     <= was node.toggleSelect() 
 node.setSelected()        <= node.select()
+
 // Events
-queryexpand(event, data)  <= onQueryExpand(flag, node)
+beforeexpand(event, data)  <= onQueryExpand(flag, node)
 select(event, data)       <= onSelect(flag, node)
+
 // Options
 source                    <= initAjax, init
 }}}

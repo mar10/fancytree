@@ -37,7 +37,7 @@
 				logEvent(event, data, "flag=" + flag);
 			},
 			// Node events
-			queryactivate: function(event, data) {
+			beforeactivate: function(event, data) {
 				logEvent(event, data, "current state=" + data.node.isActive());
 				// return false to prevent default behavior (i.e. activation)
 //              return false;
@@ -55,7 +55,7 @@
 				logEvent(event, data);
 				$("#echoActive").text("-");
 			},
-			queryselect: function(event, data) {
+			beforeselect: function(event, data) {
 				logEvent(event, data, "current state=" + data.node.isSelected());
 				// return false to prevent default behavior (i.e. selecting or deselecting)
 //				if( data.node.isFolder() ){
@@ -67,7 +67,7 @@
 				var s = data.tree.getSelectedNodes().join(", ");
 				$("#echoSelected").text(s);
 			},
-			queryexpand: function(event, data) {
+			beforeexpand: function(event, data) {
 				logEvent(event, data, "current state=" + data.node.isExpanded());
 				// return false to prevent default behavior (i.e. expanding or collapsing)
 //				return false;

@@ -159,7 +159,7 @@
 			checkbox: false,
 			selectMode: 2,
 			source: treeData,
-			queryselect: function(e, data) {
+			beforeselect: function(e, data) {
 				if( data.node.folder ){
 					return false;
 				}
