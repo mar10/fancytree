@@ -32,7 +32,7 @@
 // }
 
 
-/*******************************************************************************
+/* *****************************************************************************
  * Private functions and variables
  */
 function _raiseNotImplemented(msg){
@@ -40,11 +40,51 @@ function _raiseNotImplemented(msg){
 	$.error("Not implemented: " + msg);
 }
 
-/*******************************************************************************
+var HOOK_NAMES = "nodeClick nodeCollapseSiblings".split(" ");
+var EVENT_NAMES = "activate beforeactivate".split(" ");
+var HOOK_NAME_MAP = {},
+    EVENT_NAME_MAP = {},
+    i;
+
+for(i=0; i<HOOK_NAMES.length; i++){ HOOK_NAME_MAP[HOOK_NAMES[i]] = true; }
+for(i=0; i<EVENT_NAMES.length; i++){ EVENT_NAME_MAP[EVENT_NAMES[i]] = true; }
+
+/* *****************************************************************************
  * Extension code
  */
 $.ui.fancytree.registerExtension("tracecalls", {
+    // Default options for this extension.
+    options: {
+        logTarget: null,   // optional redirect logging to this <div> tag
+        traceEvents: false, // `true`or list of hook names
+        traceHooks: false  // `true`or list of event names
+    },
+    // Overide virtual methods for this extension.
+    // `this`       : is this Fancytree object
+    // `this._super`: the virtual function that was overridden (member of prev. extension or Fancytree)
+    treeInit: function(ctx){
+        var tree = ctx.tree,
+            opts = ctx.options,
+            instData = this.persist,
+            instOpts = this.options.persist;
+
+        instData.cookiePrefix = instOpts.cookiePrefix || "fancytree-" + tree._id + "-";
+        instData.storeActive = instOpts.types.indexOf(ACTIVE) >= 0;
+        instData.storeExpanded = instOpts.types.indexOf(EXPANDED) >= 0;
+        instData.storeSelected = instOpts.types.indexOf(SELECTED) >= 0;
+        instData.storeFocus = instOpts.types.indexOf(FOCUS) >= 0;
+
+        // Bind init-handler to apply cookie state
+        tree.$div.bind("fancytreeinit", function(e){
+            tree.debug("COOKIE " + document.cookie);
+        });
+        // Init the tree
+        this._super(ctx);
+    },
 	nodeClick: function(ctx) {
+	    if(this.options.tracecalls.traceHooks){
+	        this.debug();
+	    }
 	},
 	nodeCollapseSiblings: function(ctx) {
 	},

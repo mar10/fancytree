@@ -77,6 +77,7 @@ nodes is partly expanded, only those visible nodes will have DOM elements.
 == Dropped features ==
 
   * Required minimum versions for jQuery have been lifted to jQuery 1.5+ (1.6+ recommended) and jQuery UI 1.8.6+
+  * jQueryUI 1.10 [http://jqueryui.com/upgrade-guide/1.10/#removed-support-for-ie6 removed support for IE 6]
   * `onDeactivate` event was removed (use `activate` and check `data.node.isActive()` instead).
 
 

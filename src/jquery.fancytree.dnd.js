@@ -150,7 +150,7 @@ function _registerDnd() {
 		},
 		stop: function(event, ui) {
             // 'draggable' was renamed to 'ui-draggable' since jQueryUI 1.10 
-            var draggable = $(this).data("ui-draggable") || $(this).data("draggable"),
+		    var draggable = $(this).data("ui-draggable") || $(this).data("draggable"),
 				sourceNode = ui.helper.data("dtSourceNode") || null,
 				targetNode = ui.helper.data("dtTargetNode") || null,
 				mouseDownEvent = draggable._mouseDownEvent,

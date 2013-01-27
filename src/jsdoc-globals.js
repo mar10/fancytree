@@ -20,7 +20,7 @@ var HookContext = {};
  * @name NodeData
  *
  * @property {String} title
- * @property {String} key unique key for this node (quto-generated if omitted)
+ * @property {String} key unique key for this node (auto-generated if omitted)
  */
 var NodeData = {};
 

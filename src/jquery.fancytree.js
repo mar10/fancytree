@@ -274,7 +274,7 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 	},
 	// TODO: activate()
 	// TODO: activateSilently()
-	/* Internal helper called in recursive addChildrenn sequence.*/
+	/* Internal helper called in recursive addChildren sequence.*/
 	_setChildren: function(children){
 		_assert(children && (!this.children || this.children.length === 0), "only init supported");
 		this.children = [];
@@ -328,7 +328,7 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 	 *
 	 * @param {NodePatch} patch
 	 * @returns {$.Promise}
-	 * @see {@link applyPatch} tp modify existing child nodes.
+	 * @see {@link applyPatch} to modify existing child nodes.
 	 * @see FancytreeNode#addChildren
 	 */
 	applyPatch: function(patch) {
