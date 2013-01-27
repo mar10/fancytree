@@ -89,7 +89,8 @@ function _registerDnd() {
 	// Register proxy-functions for draggable.start/drag/stop
 	$.ui.plugin.add("draggable", "connectToFancytree", {
 		start: function(event, ui) {
-			var draggable = $(this).data("draggable"),
+            // 'draggable' was renamed to 'ui-draggable' since jQueryUI 1.10 
+			var draggable = $(this).data("ui-draggable") || $(this).data("draggable"),
 				sourceNode = ui.helper.data("dtSourceNode") || null;
 //          logMsg("draggable-connectToFancytree.start, %s", sourceNode);
 //          logMsg("    this: %o", this);
@@ -109,7 +110,8 @@ function _registerDnd() {
 			}
 		},
 		drag: function(event, ui) {
-			var draggable = $(this).data("draggable"),
+            // 'draggable' was renamed to 'ui-draggable' since jQueryUI 1.10 
+            var draggable = $(this).data("ui-draggable") || $(this).data("draggable"),
 				sourceNode = ui.helper.data("dtSourceNode") || null,
 				prevTargetNode = ui.helper.data("dtTargetNode") || null,
 				targetNode = $.ui.fancytree.getNode(event.target);
@@ -147,7 +149,8 @@ function _registerDnd() {
 			// else go ahead with standard event handling
 		},
 		stop: function(event, ui) {
-			var draggable = $(this).data("draggable"),
+            // 'draggable' was renamed to 'ui-draggable' since jQueryUI 1.10 
+            var draggable = $(this).data("ui-draggable") || $(this).data("draggable"),
 				sourceNode = ui.helper.data("dtSourceNode") || null,
 				targetNode = ui.helper.data("dtTargetNode") || null,
 				mouseDownEvent = draggable._mouseDownEvent,
