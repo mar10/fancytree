@@ -1,5 +1,15 @@
+/*
+ * TODO: implement a simple nose-based server that
+ *
+ *     - serves the demo folder, so we don't need to use restricted local file
+ *       file://... access
+ *     - act as an ajax server that send lazy subnodes
+ *     - See https://gist.github.com/701407
+ */
+
 /*jshint node:true */
-"use strict";
+// TODO enable strict mode again
+//"use strict";
 
 var assert = require('assert'),
 	http = require('http'),

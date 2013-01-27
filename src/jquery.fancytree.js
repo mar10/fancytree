@@ -3076,10 +3076,14 @@ function consoleApply(method, args){
 }
 
 /**
+ * Static functiions in the `$.ui.fancytree` namespace.
  * @  name $.ui.fancytree
+ * @example:
+ * alert(""version: " + $.ui.fancytree.version);
+ * var node = $.ui.fancytree.()
  */
 $.extend($.ui.fancytree,
-	/** @lends ui.fancytree */
+	/** @lends $.ui.fancytree */
 	{
 	/** @type {String} */
 	version: "2.0.0pre",
@@ -3108,6 +3112,7 @@ $.extend($.ui.fancytree,
 	},
 	/** Return a {node: FancytreeNode, type: TYPE} object for a mouse event.
 	 *
+	 * @static
 	 * @param {Event} event Mouse event, e.g. click, ...
 	 * @returns {String} 'title' | 'prefix' | 'expander' | 'checkbox' | 'icon' | undefined
 	 */
@@ -3161,6 +3166,28 @@ $.extend($.ui.fancytree,
 		}
 		return null;
 	},
+	/* Return a Fancytree instance from element.
+	*
+	* @param {Element | jQueryObject | Event} el
+	* @returns {Fancytree} matching tree or null
+	* /
+	getTree: function(el){
+		if(el instanceof Fancytree){
+			return el; // el already was a Fancytree
+		}else if(el.selector !== undefined){
+			el = el[0]; // el was a jQuery object: use the DOM element
+		}else if(el.originalEvent !== undefined){
+			el = el.target; // el was an Event
+		}
+		while( el ) {
+			if(el.ftnode) {
+				return el.ftnode;
+			}
+			el = el.parentNode;
+		}
+		return null;
+	},
+	*/
 	info: function(msg){
 		/*jshint expr:true */
 //		(FT.debugLevel >= 1) && window.console && window.console.info && window.console.info.apply(window.console, arguments);

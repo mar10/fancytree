@@ -190,7 +190,7 @@ test("Create fancytree", function() {
 			ok(!!data, "event data is empty");
 			equal(this.nodeName, "DIV", "`this` is div#tree");
 			ok($(">ul:first", this).hasClass("fancytree-container"), "div#tree contains ul.fancytree-container");
-			var widget = $(this).data("fancytree");
+			var widget = $(this).data("ui-fancytree") || $(this).data("fancytree");
 			ok(!!widget, "widget is attached to div#tree");
 			var tree = widget.tree;
 			equal(tree.rootNode.children, null, "`tree.rootNode` is empty");
@@ -227,7 +227,7 @@ test("Create fancytree", function() {
 	insideContructor = false;
 
 	equal($(":ui-fancytree").length, 1, ":ui-fancytree widget selector works");
-	var widget = $("div#tree").data("fancytree");
+	var widget = $("div#tree").data("ui-fancytree") || $("div#tree").data("fancytree");
 	ok(!!widget, "widget is attached to div#tree");
 	ok(!!widget.tree, "widget.tree is defined");
 //    equal(widget.tree._id, 1, "tree id is 1");

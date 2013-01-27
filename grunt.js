@@ -1,8 +1,9 @@
-/*jslint node:true */
-"use strict";
+/*jshint node:true */
 
 module.exports = function(grunt) {
-	grunt.loadNpmTasks("grunt-contrib-compress");
+    "use strict";
+    
+//	grunt.loadNpmTasks("grunt-contrib-compress");
 
     // Project configuration.
     grunt.initConfig({

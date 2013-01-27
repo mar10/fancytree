@@ -89,7 +89,7 @@ function _registerDnd() {
 	// Register proxy-functions for draggable.start/drag/stop
 	$.ui.plugin.add("draggable", "connectToFancytree", {
 		start: function(event, ui) {
-            // 'draggable' was renamed to 'ui-draggable' since jQueryUI 1.10 
+			// 'draggable' was renamed to 'ui-draggable' since jQueryUI 1.10
 			var draggable = $(this).data("ui-draggable") || $(this).data("draggable"),
 				sourceNode = ui.helper.data("dtSourceNode") || null;
 //          logMsg("draggable-connectToFancytree.start, %s", sourceNode);
@@ -110,8 +110,8 @@ function _registerDnd() {
 			}
 		},
 		drag: function(event, ui) {
-            // 'draggable' was renamed to 'ui-draggable' since jQueryUI 1.10 
-            var draggable = $(this).data("ui-draggable") || $(this).data("draggable"),
+			// 'draggable' was renamed to 'ui-draggable' since jQueryUI 1.10
+			var draggable = $(this).data("ui-draggable") || $(this).data("draggable"),
 				sourceNode = ui.helper.data("dtSourceNode") || null,
 				prevTargetNode = ui.helper.data("dtTargetNode") || null,
 				targetNode = $.ui.fancytree.getNode(event.target);
@@ -149,8 +149,8 @@ function _registerDnd() {
 			// else go ahead with standard event handling
 		},
 		stop: function(event, ui) {
-            // 'draggable' was renamed to 'ui-draggable' since jQueryUI 1.10 
-		    var draggable = $(this).data("ui-draggable") || $(this).data("draggable"),
+			// 'draggable' was renamed to 'ui-draggable' since jQueryUI 1.10
+			var draggable = $(this).data("ui-draggable") || $(this).data("draggable"),
 				sourceNode = ui.helper.data("dtSourceNode") || null,
 				targetNode = ui.helper.data("dtTargetNode") || null,
 				mouseDownEvent = draggable._mouseDownEvent,
@@ -356,7 +356,7 @@ $.ui.fancytree.registerExtension("dnd",
 			// Only event and node argument is available
 			var $helper = $("<div class='fancytree-drag-helper'><span class='fancytree-drag-helper-img' /></div>")
 //                .append($(event.target).closest("a").clone());
-			    .append($(event.target).closest("span.fancytree-title").clone());
+				.append($(event.target).closest("span.fancytree-title").clone());
 			// issue 244: helper should be child of scrollParent
 			$("ul.fancytree-container", node.tree.$div).append($helper);
 //          $(node.tree.divTree).append($helper);
