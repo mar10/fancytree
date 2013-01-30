@@ -1,4 +1,4 @@
-#summary Design golas, new and changed features.
+#summary Design goals, new and changed features.
 
 = Fancytree Overview =
 

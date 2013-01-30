@@ -2,7 +2,7 @@
  * jquery.fancytree.js
  * Dynamic tree view control, with support for lazy loading of branches.
  *
- * Copyright (c) 2008-2012, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2013, Martin Wendt (http://wwWendt.de)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://code.google.com/p/fancytree/wiki/LicenseInfo
  *
@@ -2048,13 +2048,14 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			ares.push("<span class='fancytree-checkbox' role='checkbox'></span>");
 		}
 		// folder or doctype icon
-		if ( node.icon ) {
-			var imageSrc = (node.icon.charAt(0) === "/") ? node.icon : (opts.imagePath + node.icon);
+		var icon = node.data.icon;
+		if ( icon ) {
+			var imageSrc = (icon.charAt(0) === "/") ? icon : (opts.imagePath + icon);
 			ares.push("<img src='" + imageSrc + "' alt='' />");
 		} else if ( node.data.iconclass ) {
 			// TODO: review and test and document
-			ares.push("<span role='img' class='fancytree-icon" + " " + node.data.iconclass +  "'></span>");
-		} else if ( node.icon !== false ) {
+			ares.push("<span role='img' class='fancytree-custom-icon" + " " + node.data.iconclass +  "'></span>");
+		} else if ( icon !== false ) {
 			// icon == false means 'no icon', icon == null means 'default icon'
 			ares.push("<span role='img' class='fancytree-icon'></span>");
 		}
@@ -2109,14 +2110,18 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		if( tree.focusNode === node ){
 			cnList.push(cn.focused);
 			if(opts.aria){
-//				$(">span.fancytree-title", statusElem).attr("tabindex", "0");
+//              $(">span.fancytree-title", statusElem).attr("tabindex", "0");
 				// TODO: is this the right element for this attribute?
 				// TODO: cache $statusElement
-				$(node[tree.statusClassPropName]).attr("aria-activedescendant", true);
+				$(node[tree.statusClassPropName])
+					.attr("aria-activedescendant", true)
+					.attr("tabindex", "-1");
 			}
 		}else if(opts.aria){
 //			$(">span.fancytree-title", statusElem).attr("tabindex", "-1");
-			$(node[tree.statusClassPropName]).removeAttr("aria-activedescendant");
+			$(node[tree.statusClassPropName])
+				.removeAttr("aria-activedescendant")
+				.removeAttr("tabindex");
 		}
 		if( node.expanded ){
 			cnList.push(cn.expanded);
@@ -3167,7 +3172,7 @@ $.extend($.ui.fancytree,
 		return null;
 	},
 	/* Return a Fancytree instance from element.
-	*
+	* TODO: this function could help to get around the data('fancytree') / data('ui-fancytree') problem
 	* @param {Element | jQueryObject | Event} el
 	* @returns {Fancytree} matching tree or null
 	* /
@@ -3179,12 +3184,7 @@ $.extend($.ui.fancytree,
 		}else if(el.originalEvent !== undefined){
 			el = el.target; // el was an Event
 		}
-		while( el ) {
-			if(el.ftnode) {
-				return el.ftnode;
-			}
-			el = el.parentNode;
-		}
+		...
 		return null;
 	},
 	*/
@@ -3204,7 +3204,8 @@ $.extend($.ui.fancytree,
 		/*jshint validthis:true */
 		var $children = $ul.find(">li"),
 			extraClasses, i, l, iPos, tmp, classes, className,
-			children = [];
+			children = [],
+			that = this;
 
 		$children.each(function() {
 			var $li = $(this),
@@ -3262,19 +3263,19 @@ $.extend($.ui.fancytree,
 			// Add <li data-NAME='...'> as node.data.NAME
 			// See http://api.jquery.com/data/#data-html5
 			var allData = $li.data();
+//            alert("d: " + JSON.stringify(allData));
 			if(allData && !$.isEmptyObject(allData)) {
 				// Special handling for <li data-json='...'>
 				var jsonData = allData.json;
 				delete allData.json;
 				$.extend(d.data, allData);
-//	            alert("$li.data()" + JSON.stringify(allData));
 				// If a 'data-json' attribute is present, evaluate and add to node.data
 				if(jsonData) {
+//	              alert("$li.data()" + JSON.stringify(jsonData));
 					// <li data-json='...'> is already returned as object
 					// see http://api.jquery.com/data/#data-html5
 					$.extend(d.data, jsonData);
 				}
-//	            alert("d: " + JSON.stringify(d));
 			}
 //	        that.debug("parse ", d);
 //	        var childNode = parentTreeNode.addChild(data);
@@ -3286,6 +3287,7 @@ $.extend($.ui.fancytree,
 				d.children = d.lazy ? undefined : null;
 			}
 			children.push(d);
+//            FT.debug("parse ", d, children);
 		});
 		return children;
 	},

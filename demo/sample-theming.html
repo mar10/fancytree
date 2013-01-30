@@ -24,6 +24,12 @@
 	<!-- End_Exclude -->
 
 <style type="text/css">
+span.fancytree-node.custom1 > span.fancytree-title {
+	color: maroon;
+}
+.fancytree-custom-icon {
+	display: inline-block; /* Required to make a span sizeable */
+}
 </style>
 
 <script type="text/javascript">
@@ -31,8 +37,15 @@
 		$("#tree").fancytree({
 			// Image folder used for data.icon attribute.
 			imagePath: "skin-custom/",
-			select: function(node) {
-				alert ("You selected " + node);
+			rendernode: function(event, data) {
+				// Optionally tweak data.node.span
+				var node = data.node;
+				if(node.key === "renderNode1"){
+					var $span = $(node.span);
+//                    $(node.span).text(">>" + node.title);
+					$span.find("> span.fancytree-title").text(">>" + node.title);
+					$span.find("> span.fancytree-icon").css("border", "2px solid green");
+				}
 			}
 		});
 		addSampleButton({
@@ -42,7 +55,6 @@
 			}
 		});
 	});
-
 </script>
 </head>
 
@@ -55,9 +67,6 @@
 	</p>
 	<p class="warning">
 		TODO: this is work in progress.
-		<ul>
-		<li></li>
-		</ul>
 	</p>
 	<div>
 		<label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
@@ -75,31 +84,29 @@
 					<li>Sub-item 4.2
 				</ul>
 
-			<li class="folder">A folder (different icon when expanded)
+			<li class="folder expanded">Override CSS style per node
 				<ul>
-					<li>Node 2.1
-					<li>Node 2.2
+					<li class="custom1">class="custom1": Additional classes are copied over to outer &lt;span>
+					<li class="folder custom1">class="custom1": Additional classes are copied over to outer &lt;span>
 				</ul>
 
-			<li class="folder expanded">Override style per node
+			<li class="folder expanded">Use 'data-NAME' attributes to define additional data
 				<ul>
-					<li class="custom1">class="custom1": Additinal classes are copied over to &lt;span>
-					<li data-iconClass="ui-icon ui-icon-heart">data-iconclass will be used for ...
+					<li data-icon="customDoc1.gif">Node with standard CSS, but custom icon
+					<li class="folder" data-icon="folder_docs.gif">Folder with standard CSS but custom icon
+					<li data-iconclass="ui-icon ui-icon-heart">'iconclass' is directly added to the image &lt;span>, so jQuery stock icons may be used
 				</ul>
 
-			<li data="isFolder: true, addClass:'custom2'">Folder with custom class 2
+			<li class="folder expanded">Use 'data-json' attribute to define additional data
 				<ul>
-					<li class="ui-icon-heart" data="addClass:'custom1'">Node 4.1 (using custom class 1)
-					<li>Node 4.2
+					<li data-json='{"icon": "customDoc1.gif"}'>Node with standard CSS, but custom 'data-icon'
+					<li data-json='{"folder": true, "icon": "folder_docs.gif"}'>Folder with standard CSS but custom icon
 				</ul>
 
-			<li data="icon: 'customDoc1.gif'">Node with standard CSS, but custom icon
-			<li data="isFolder: true, icon: 'folder_docs.gif'">Folder with standard CSS but custom icon
+			<li class="folder expanded">Use render callback
 				<ul>
-					<li>Node 4.1
-					<li>Node 4.2
+					<li id="renderNode1">Node hat will be handled by 'render' calback
 				</ul>
-
 
 		</ul>
 	</div>
