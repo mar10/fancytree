@@ -87,7 +87,10 @@ span.fancytree-drag-helper-img,
 	background-image: url("icons.gif");
 	background-position: 0 0;
 }
-
+/** Used by iconclass option */
+span.fancytree-custom-icon {
+	display: inline-block;
+}
 /** Used by 'icon' node option: */
 ul.fancytree-container img
 {
@@ -562,15 +565,4 @@ span.fancytree-drop-target.fancytree-drop-reject
 }
 span.fancytree-drop-target.fancytree-drop-after a
 {
-}
-
-
-/*******************************************************************************
- * Custom node classes (sample)
- */
-
-span.custom1 span.fancytree-title
-{
-	background-color: maroon;
-	color: yellow;
 }

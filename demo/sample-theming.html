@@ -27,8 +27,9 @@
 span.fancytree-node.custom1 > span.fancytree-title {
 	color: maroon;
 }
-.fancytree-custom-icon {
-	display: inline-block; /* Required to make a span sizeable */
+span.fancytree-node.custom1 > span.fancytree-icon {
+	background-image: url("skin-custom/customDoc2.gif");
+	background-position: 0 0;
 }
 </style>
 
@@ -40,11 +41,16 @@ span.fancytree-node.custom1 > span.fancytree-title {
 			rendernode: function(event, data) {
 				// Optionally tweak data.node.span
 				var node = data.node;
-				if(node.key === "renderNode1"){
+				if(node.data.cstrender){
 					var $span = $(node.span);
-//                    $(node.span).text(">>" + node.title);
-					$span.find("> span.fancytree-title").text(">>" + node.title);
-					$span.find("> span.fancytree-icon").css("border", "2px solid green");
+					$span.find("> span.fancytree-title").text(">> " + node.title).css({
+						fontStyle: "italic"
+					});
+					$span.find("> span.fancytree-icon").css({
+//                      border: "1px solid green",
+						backgroundImage: "url(skin-custom/customDoc2.gif)",
+						backgroundPosition: "0 0"
+					});
 				}
 			}
 		});
@@ -100,12 +106,11 @@ span.fancytree-node.custom1 > span.fancytree-title {
 			<li class="folder expanded">Use 'data-json' attribute to define additional data
 				<ul>
 					<li data-json='{"icon": "customDoc1.gif"}'>Node with standard CSS, but custom 'data-icon'
-					<li data-json='{"folder": true, "icon": "folder_docs.gif"}'>Folder with standard CSS but custom icon
 				</ul>
 
 			<li class="folder expanded">Use render callback
 				<ul>
-					<li id="renderNode1">Node hat will be handled by 'render' calback
+					<li id="renderNode1" data-cstrender="true">Node hat will be handled by 'render' calback
 				</ul>
 
 		</ul>

@@ -76,14 +76,17 @@ span.fancytree-drag-helper-img,
 {
 	width: 16px;
 	height: 16px;
-	display: inline-block; /* Required to make a span sizeable */
+	display: inline-block; /* Required to make a span sizable */
 	vertical-align: top;
 	background-repeat: no-repeat;
 	background-position: left;
 	background-image: url("icons.gif");
 	background-position: 0 0;
 }
-
+/** Used by iconclass option */
+span.fancytree-custom-icon {
+	display: inline-block;
+}
 /** Used by 'icon' node option: */
 .fancytree-container img
 {
