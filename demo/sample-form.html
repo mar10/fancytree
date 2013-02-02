@@ -19,16 +19,18 @@
 	<!-- End_Exclude -->
 
 <style type="text/css">
+/*
 [aria-activedescendant]{
 	outline: 1px dotted red;
 }
+*/
 </style>
 
 	<!-- Add code to initialize the tree when the document is loaded: -->
 <script type="text/javascript">
 	$(function(){
 		$("#tree").fancytree({
-//		    aria: true,
+		    aria: true,
 			checkbox: true,
 			selectMode: 2,
 //			tabbable: false,
@@ -45,6 +47,7 @@
 			]
 		});
 		$("#tree2").fancytree({
+            aria: true,
 			checkbox: false,
 			selectMode: 3,
 //          tabbable: false,

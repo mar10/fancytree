@@ -51,7 +51,7 @@
 	This document describes fancytree version: <strong>$Version:$</strong>.<br>
 	Document revision: $Revision:$.<br>
 	A current version may be found at the project site
-	<a href="http://wwwendt.de/tech/fancytree/index.html">http://wwwendt.de/tech/fancytree/index.html</a>.
+    <a href="http://fancytree.googlecode.com">http://fancytree.googlecode.com</a>.
 </div>
 
 <!-- jquery.planize will generate a TOC here: -->
@@ -69,7 +69,7 @@
 <h3>Initialize the tree using a callback</h3>
 <pre class="prettyprint">
 $("#tree").fancytree({
-	source: function(e, data) {
+	source: function(event, data) {
 		data.result = [
 			{title: "node 1", key: "1"},
 			{title: "node 2", key: "2", folder: true},
@@ -87,9 +87,9 @@ $("#tree").fancytree({
 <pre class="prettyprint">
 $("#tree").fancytree({
 	[...]
-	click: function(e, data) {
+	click: function(event, data) {
 		var node = data.node,
-			tt = $.ui.fancytree.getEventTargetType(e.originalEvent);
+			tt = $.ui.fancytree.getEventTargetType(event.originalEvent);
 	},
 });
 </pre>
@@ -97,9 +97,9 @@ $("#tree").fancytree({
 
 <h3>Retrieve a FancytreeNode in an arbitrary event handler</h3>
 <pre class="prettyprint">
-$(document).click()function(e, data) {
-	var node = $.ui.fancytree.getNode(e),
-		tt = $.ui.fancytree.getEventTargetType(e);
+$(document).click(function(event, data) {
+	var node = $.ui.fancytree.getNode(event),
+		tt = $.ui.fancytree.getEventTargetType(event);
 });
 </pre>
 

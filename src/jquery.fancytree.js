@@ -56,7 +56,7 @@ TODO:
 
 // prevent duplicate loading
 if ( $.ui.fancytree && $.ui.fancytree.version ) {
-	$.ui.fancytree.warn("Fancytree: duplicate include");
+	$.ui.fancytree.warn("Fancytree: ignored duplicate include");
 	return;
 }
 
@@ -1089,6 +1089,7 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
  * @property {object} widget
  * @property {String} _id
  * @property {String} statusClassPropName
+ * @property {String} ariaPropName
  * @property {String} nodeContainerAttrName
  * @property {FancytreeNode} lastSelectedNode
  */
@@ -1102,6 +1103,7 @@ function Fancytree(widget){
 	this.activeNode = null;
 	this.focusNode = null;
 	this.statusClassPropName = "span";
+	this.ariaPropName = "li";
 	this.lastSelectedNode = null;
 
 	// Remove previous markup if any
@@ -1131,7 +1133,8 @@ function Fancytree(widget){
 		this.$container.attr("tabindex", "0");
 	}
 	if(this.options.aria){
-		this.$container.attr("role", "tree");
+		this.$container.attr("role", "tree")
+		    .attr("aria-multiselectable", true);
 	}
 }
 
@@ -1914,6 +1917,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		var node = ctx.node,
 			tree = ctx.tree,
 			opts = ctx.options,
+			aria = opts.aria,
 			firstTime = false,
 			parent = node.parent,
 			isRootNode = !parent,
@@ -1937,16 +1941,18 @@ Fancytree.prototype = /**@lends Fancytree*/{
 				firstTime = true;
 				node.li = document.createElement("li");
 				node.li.ftnode = node;
-				if(opts.aria){
+				if(aria){
 					// TODO: why doesn't this work:
 //					node.li.role = "treeitem";
-					$(node.li).attr("role", "treeitem");
+					$(node.li).attr("role", "treeitem")
+					    .attr("aria-labelledby", "ftal_" + node.key);
 				}
 				if( node.key && opts.generateIds ){
 					node.li.id = opts.idPrefix + node.key;
 				}
 				node.span = document.createElement("span");
 				node.span.className = "fancytree-node";
+                $(node.span).attr("aria-labelledby", "ftal_" + node.key);
 				node.li.appendChild(node.span);
 				// Note: we don't add the LI to the DOM know, but only after we
 				// added all sub elements (hoping that this performs better since
@@ -2067,9 +2073,10 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		if(!nodeTitle){
 			// TODO: escape tooltip string
 			var tooltip = node.tooltip ? " title='" + node.tooltip.replace(/\"/g, '&quot;') + "'" : "",
+			    id = opts.aria ? " id='ftal_" + node.key + "'" : "",
 				href = node.data.href || "#";
 //			if( opts.nolink || node.nolink ) {
-				nodeTitle = "<span class='fancytree-title'" + tooltip + ">" + node.title + "</span>";
+				nodeTitle = "<span class='fancytree-title'" + id + tooltip + ">" + node.title + "</span>";
 //			} else {
 //				nodeTitle = "<a href='" + href + "' tabindex='-1' class='fancytree-title'" + tooltip + ">" + node.title + "</a>";
 //			}
@@ -2089,6 +2096,8 @@ Fancytree.prototype = /**@lends Fancytree*/{
 //			nodeContainer = node[tree.nodeContainerAttrName],
 			hasChildren = node.hasChildren(),
 			isLastSib = node.isLastSibling(),
+			aria = opts.aria,
+			$ariaElem = aria ? $(node[tree.ariaPropName]) : null,
 			cn = opts._classNames,
 			cnList = [],
 			statusElem = node[tree.statusClassPropName];
@@ -2109,23 +2118,27 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		}
 		if( tree.focusNode === node ){
 			cnList.push(cn.focused);
-			if(opts.aria){
+			if(aria){
 //              $(">span.fancytree-title", statusElem).attr("tabindex", "0");
 				// TODO: is this the right element for this attribute?
-				// TODO: cache $statusElement
-				$(node[tree.statusClassPropName])
+			    $ariaElem
 					.attr("aria-activedescendant", true)
 					.attr("tabindex", "-1");
 			}
-		}else if(opts.aria){
+		}else if(aria){
 //			$(">span.fancytree-title", statusElem).attr("tabindex", "-1");
-			$(node[tree.statusClassPropName])
+		    $ariaElem
 				.removeAttr("aria-activedescendant")
 				.removeAttr("tabindex");
 		}
 		if( node.expanded ){
 			cnList.push(cn.expanded);
-		}
+            if(aria){
+                $ariaElem.attr("aria-expanded", true);
+            }
+        }else if(aria){
+            $ariaElem.removeAttr("aria-expanded");
+        }
 		if( node.folder ){
 			cnList.push(cn.folder);
 		}
@@ -2144,6 +2157,11 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		}
 		if( node.selected ){
 			cnList.push(cn.selected);
+            if(aria){
+                $ariaElem.attr("aria-selected", true);
+            }
+        }else if(aria){
+            $ariaElem.attr("aria-selected", false);
 		}
 		if( node.extraClasses ){
 			cnList.push(node.extraClasses);
@@ -2820,21 +2838,21 @@ $.widget("ui.fancytree",
 	 */
 	options:
 	{
-		// TODO: required anymore?
-		disabled: false,
+        /** @type {Boolean}  Make sure, active nodes are visible (expanded). */
+        activeVisible: true,
 		ajax: {
 			type: "GET",
 			cache: false, // false: Append random '_' argument to the request url to prevent caching.
 //          timeout: 0, // >0: Make sure we get an ajax error if error is unreachable
 			dataType: "json" // Expect json format and pass json object to callbacks.
 		},  //
-		/** @type {Boolean}  Make sure, active nodes are visible (expanded). */
-		activeVisible: true,
 		aria: true,
 		autoCollapse: false,
 		checkbox: false,
 		/**defines click behavior*/
 		clickFolderMode: 4,
+        // TODO: required anymore?
+        disabled: false,
 		extensions: [],
 		fx: { height: "toggle", duration: 200 },
 //		hooks: {},
