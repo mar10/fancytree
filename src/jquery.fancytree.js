@@ -1134,7 +1134,7 @@ function Fancytree(widget){
 	}
 	if(this.options.aria){
 		this.$container.attr("role", "tree")
-		    .attr("aria-multiselectable", true);
+			.attr("aria-multiselectable", true);
 	}
 }
 
@@ -1945,14 +1945,14 @@ Fancytree.prototype = /**@lends Fancytree*/{
 					// TODO: why doesn't this work:
 //					node.li.role = "treeitem";
 					$(node.li).attr("role", "treeitem")
-					    .attr("aria-labelledby", "ftal_" + node.key);
+						.attr("aria-labelledby", "ftal_" + node.key);
 				}
 				if( node.key && opts.generateIds ){
 					node.li.id = opts.idPrefix + node.key;
 				}
 				node.span = document.createElement("span");
 				node.span.className = "fancytree-node";
-                $(node.span).attr("aria-labelledby", "ftal_" + node.key);
+				$(node.span).attr("aria-labelledby", "ftal_" + node.key);
 				node.li.appendChild(node.span);
 				// Note: we don't add the LI to the DOM know, but only after we
 				// added all sub elements (hoping that this performs better since
@@ -2073,7 +2073,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		if(!nodeTitle){
 			// TODO: escape tooltip string
 			var tooltip = node.tooltip ? " title='" + node.tooltip.replace(/\"/g, '&quot;') + "'" : "",
-			    id = opts.aria ? " id='ftal_" + node.key + "'" : "",
+				id = opts.aria ? " id='ftal_" + node.key + "'" : "",
 				href = node.data.href || "#";
 //			if( opts.nolink || node.nolink ) {
 				nodeTitle = "<span class='fancytree-title'" + id + tooltip + ">" + node.title + "</span>";
@@ -2121,24 +2121,24 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			if(aria){
 //              $(">span.fancytree-title", statusElem).attr("tabindex", "0");
 				// TODO: is this the right element for this attribute?
-			    $ariaElem
+				$ariaElem
 					.attr("aria-activedescendant", true)
 					.attr("tabindex", "-1");
 			}
 		}else if(aria){
 //			$(">span.fancytree-title", statusElem).attr("tabindex", "-1");
-		    $ariaElem
+			$ariaElem
 				.removeAttr("aria-activedescendant")
 				.removeAttr("tabindex");
 		}
 		if( node.expanded ){
 			cnList.push(cn.expanded);
-            if(aria){
-                $ariaElem.attr("aria-expanded", true);
-            }
-        }else if(aria){
-            $ariaElem.removeAttr("aria-expanded");
-        }
+			if(aria){
+				$ariaElem.attr("aria-expanded", true);
+			}
+		}else if(aria){
+			$ariaElem.removeAttr("aria-expanded");
+		}
 		if( node.folder ){
 			cnList.push(cn.folder);
 		}
@@ -2157,11 +2157,11 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		}
 		if( node.selected ){
 			cnList.push(cn.selected);
-            if(aria){
-                $ariaElem.attr("aria-selected", true);
-            }
-        }else if(aria){
-            $ariaElem.attr("aria-selected", false);
+			if(aria){
+				$ariaElem.attr("aria-selected", true);
+			}
+		}else if(aria){
+			$ariaElem.attr("aria-selected", false);
 		}
 		if( node.extraClasses ){
 			cnList.push(node.extraClasses);
@@ -2838,8 +2838,8 @@ $.widget("ui.fancytree",
 	 */
 	options:
 	{
-        /** @type {Boolean}  Make sure, active nodes are visible (expanded). */
-        activeVisible: true,
+		/** @type {Boolean}  Make sure, active nodes are visible (expanded). */
+		activeVisible: true,
 		ajax: {
 			type: "GET",
 			cache: false, // false: Append random '_' argument to the request url to prevent caching.
@@ -2851,8 +2851,8 @@ $.widget("ui.fancytree",
 		checkbox: false,
 		/**defines click behavior*/
 		clickFolderMode: 4,
-        // TODO: required anymore?
-        disabled: false,
+		// TODO: required anymore?
+		disabled: false,
 		extensions: [],
 		fx: { height: "toggle", duration: 200 },
 //		hooks: {},
