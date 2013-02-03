@@ -432,6 +432,7 @@ table.fancytree-ext-columnview tbody tr td {
 	overflow: auto;
 }
 table.fancytree-ext-columnview span.fancytree-node {
+	position: relative; /* allow positioning of embedded spans*/
 	display: inline-block;
 	width: 100%;
 }
@@ -444,6 +445,11 @@ table.fancytree-ext-columnview span.fancytree-node.fancytree-expanded {
 }
 table.fancytree-ext-columnview span.fancytree-node.fancytree-active {
 	background-color: royalblue;
+}
+table.fancytree-ext-columnview span.fancytree-cv-right {
+	background-position: 0px -80px;
+	position: absolute;
+	right: 3px;
 }
 
 

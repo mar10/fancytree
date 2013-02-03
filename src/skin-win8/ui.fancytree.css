@@ -1,20 +1,20 @@
 /*
- * Fancytree Vista styles
+ * Fancytree Win8 styles
 
- See also: http://www.colorzilla.com/gradient-editor/
+Borders have NO radius and NO gradients are used!
 
 both:
-   unselected background: #FCFCFC 'nearly white'
-   hover bar (unselected, inactive): #F8FCFE..#EFF9FE (border: #D8F0FA) 'very light blue'
-   active node: #F6FBFD..#D5EFFC (border: #99DEFD)  'light blue'
-   active node with hover: #F2F9FD..#C4E8FA (border: #B6E6FB)
+   unselected background: white
+   hover bar (unselected, inactive): #E5F3FB (border: #70C0E7) 'very light blue'
+   active node: #CBE8F6 (border: #26A0DA)  'light blue'
+   active node with hover: wie active node
 
 Tree view:
-   active node, tree inactive: #FAFAFB..#E5E5E5 (border: #D9D9D9) 'light gray, selected, but tree not active'
+   active node, tree inactive: #F7F7F7 (border: #DEDEDE) 'light gray, selected, but tree not active'
 
 List view:
    selected bar: --> active bar
-   focus  bar: active + border 1px dotted #090402 (inside the blue border)
+   focus  bar: transparent(white) + border 1px solid #3399FF  ()
 
    table left/right border: #EDEDED 'light gray'
  */
@@ -77,6 +77,13 @@ ul.fancytree-no-connector > li
 	background-color: silver;
 }
 
+
+span.fancytree-node
+{
+	display: inline-block;
+	width: 100%;
+	border: 1px solid transparent;
+}
 
 /*******************************************************************************
  * Common icon definitions
@@ -250,36 +257,6 @@ span.fancytree-checkbox:hover
 	background-position: -48px -48px;
 }
 
-/*
-span.fancytree-radio
-{
-	margin-left: 3px;
-	background-position: 0px -48px;
-}
-span.fancytree-radio:hover
-{
-	background-position: -16px -48px;
-}
-
-.fancytree-partsel span.fancytree-radio
-{
-	background-position: -64px -48px;
-}
-.fancytree-partsel span.fancytree-radio:hover
-{
-	background-position: -80px -48px;
-}
-
-.fancytree-selected span.fancytree-radio
-{
-	background-position: -32px -48px;
-}
-.fancytree-selected span.fancytree-radio:hover
-{
-	background-position: -48px -48px;
-}
-*/
-
 
 /*******************************************************************************
  * Node type icon
@@ -354,50 +331,38 @@ a.fancytree-title
 	/* Set transparent border to prevent jumping when active node gets a border
 	   (we can do this, because this theme doesn't use vertical lines)
 	   */
-	border: 1px solid white; /* Note: 'transparent' would not work in IE6 */
+/*	border: 1px solid white; /* Note: 'transparent' would not work in IE6 */
 
 }
-
-.fancytree-title:hover
+span.fancytree-node:hover
 {
-/*	text-decoration: underline; */
-	background-color: #F2F7FD; /* light blue */
-	border-color: #B8D6FB; /* darker light blue */
+	background-color: #E5F3FB;
+	border-color: #70C0E7;
 }
-
-.fancytree-folder .fancytree-title
+.fancytree-container.fancytree-focused span.fancytree-node.fancytree-focused
 {
-/*	font-weight: bold; */ /* custom */
+	border-color: #3399FF;
+/*	outline: 1px solid #3399FF; */
 }
-
-a.fancytree-title:focus,
-span.fancytree-focused a:link,  /* @IE */
-span.fancytree-focused span.fancytree-title
-{
-	background-color: #EFEBDE; /* gray */
-	outline: 1px dotted gray;
+span.fancytree-node.fancytree-active,
+span.fancytree-node.fancytree-selected
+{ /* active/selcted nodes inside inactive tree */
+	background-color: #F7F7F7;
+	border-color: #DEDEDE;
 }
-
-span.fancytree-has-children span.fancytree-title
+.fancytree-container.fancytree-focused span.fancytree-node.fancytree-active,
+.fancytree-container.fancytree-focused span.fancytree-node.fancytree-selected,
+span.fancytree-node.fancytree-active:hover,
+span.fancytree-node.fancytree-selected:hover
 {
-/*	font-style: oblique; /* custom: */
+	background-color: #CBE8F6;
+	border-color: #26A0DA;
 }
-
-span.fancytree-expanded span.fancytree-title
+span.fancytree-node.fancytree-selected
 {
-}
-
-span.fancytree-selected span.fancytree-title
-{
-/*	color: green; */
 	font-style: italic;
 }
 
-span.fancytree-active span.fancytree-title
-{
-	border: 1px solid #99DEFD;
-	background-color: #D8F0FA;
-}
 
 /*******************************************************************************
  * 'table' extension
@@ -415,14 +380,28 @@ table.fancytree-ext-table tbody tr td {
 	border: 1px solid lightgray;
 }
 */
-table.fancytree-ext-table tbody tr.fancytree-focused {
-	background-color: #99DEFD;
+table.fancytree-ext-table tbody tr:hover {
+	background-color: #E5F3FB;
+	outline: 1px solid #70C0E7;
 }
-table.fancytree-ext-table tbody tr.fancytree-active {
-	background-color: royalblue;
+table.fancytree-ext-table.fancytree-container.fancytree-focused span.fancytree-node.fancytree-focused
+{
+	outline: 1px solid #3399FF;
 }
-table.fancytree-ext-table tbody tr.fancytree-selected {
-	background-color: #99FDDE;
+table.fancytree-ext-table.fancytree-focused tbody tr.fancytree-focused {
+	outline: 1px solid #26A0DA;
+}
+table.fancytree-ext-table.fancytree-focused tbody tr.fancytree-active,
+table.fancytree-ext-table.fancytree-focused tbody tr.fancytree-selected
+{
+	background-color: #CBE8F6;
+	outline: 1px solid #26A0DA;
+}
+table.fancytree-ext-table tbody tr.fancytree-active,
+table.fancytree-ext-table tbody tr.fancytree-selected
+{
+	background-color: #F7F7F7;
+	outline: 1px solid #DEDEDE;
 }
 
 /*******************************************************************************
@@ -435,6 +414,10 @@ table.fancytree-ext-columnview {
 	width: 100%;
 }
 */
+table.fancytree-ext-columnview td
+{
+	position: relative;
+}
 table.fancytree-ext-columnview td >ul
 {
 	padding: 0;
@@ -468,25 +451,20 @@ table.fancytree-ext-columnview tbody tr td {
 }
 table.fancytree-ext-columnview span.fancytree-node {
 	position: relative; /* allow positioning of embedded spans*/
-	display: inline-block;
-	width: 100%;
-}
-table.fancytree-ext-columnview span.fancytree-node a{
-	border: 1px solid transparent;
-	background-color: transparent;
 }
 table.fancytree-ext-columnview span.fancytree-node.fancytree-expanded {
-	background-color: #ccc;
+	background-color: #CBE8F6;
 }
+/*
 table.fancytree-ext-columnview span.fancytree-node.fancytree-active {
 	background-color: royalblue;
 }
+*/
 table.fancytree-ext-columnview span.fancytree-cv-right {
 	background-position: 0px -80px;
 	position: absolute;
 	right: 3px;
 }
-
 
 /*******************************************************************************
  * 'filter' extension
