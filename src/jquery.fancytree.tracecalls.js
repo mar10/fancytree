@@ -38,7 +38,7 @@ function _raiseNotImplemented(msg){
 }
 
 var HOOK_NAMES = "nodeClick nodeCollapseSiblings".split(" ");
-var EVENT_NAMES = "activate beforeactivate".split(" ");
+var EVENT_NAMES = "activate beforeActivate".split(" ");
 var HOOK_NAME_MAP = {},
 	EVENT_NAME_MAP = {},
 	i;

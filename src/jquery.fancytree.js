@@ -2213,7 +2213,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		if(isActive === flag){
 			// Nothing to do
 			return _getResolvedPromise(node);
-		}else if(flag && this._triggerNodeEvent("beforeactivate", node, ctx.orgEvent) === false ){
+		}else if(flag && this._triggerNodeEvent("beforeActivate", node, ctx.orgEvent) === false ){
 			// Callback returned false
 			return _getRejectedPromise(node, ["rejected"]);
 		}
@@ -2266,7 +2266,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		}else if( !flag && node.getLevel() < opts.minExpandLevel ) {
 			// Prevent collapsing locked levels
 			return _getRejectedPromise(node, ["locked"]);
-		}else if ( this._triggerNodeEvent("beforeexpand", node, ctx.orgEvent) === false ){
+		}else if ( this._triggerNodeEvent("beforeExpand", node, ctx.orgEvent) === false ){
 			// Callback returned false
 			return _getRejectedPromise(node, ["rejected"]);
 		}
@@ -2533,7 +2533,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 //        if( !!node.expanded === !!flag){
 		if((node.selected && flag) || (!node.selected && !flag)){
 			return !!node.selected;
-		}else if ( this._triggerNodeEvent("beforeselect", node, ctx.orgEvent) === false ){
+		}else if ( this._triggerNodeEvent("beforeSelect", node, ctx.orgEvent) === false ){
 			return !!node.selected;
 		}
 		if(flag && opts.selectMode === 1){
