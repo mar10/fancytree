@@ -17,27 +17,6 @@
  * @license     MIT or GPL v2
  *
  *
-TODO:
-- http://onwebdev.blogspot.com/2011/08/jquery-jsdoc-and-plugin-development.html
-- tree.dump()
-
-- this.options
-  this.name, this.namespace
-  this.widgetEventPrefix
-
-- use this.element.css({background: greenlevels[level]});
-- sortChildren
-- findFirst()
-- Die Hilfetexte aus der alten Doku verwenden!
-- documentation generator
-  https://groups.google.com/forum/?fromgroups=#!topic/jsdoc-users/85qIXAunrfU
-- Example code for JSDoc
-  @examples and @description
-  http://code.google.com/p/jsdoc-toolkit/wiki/TagExample
-- use @this to document th method contexts
-- document all events that can be triggered, and mention this = container <div>
-  (was Fancytree in relese 1.x)
-
 	$Version:$
 	$Revision:$
 
@@ -1020,7 +999,7 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 		return this.tree._callHook("nodeToggleSelected", this);
 	},
 	toString: function() {
-		return "FancytreeNode<" + this.key + ", '" + this.title + "'>";
+		return "<FancytreeNode(#" + this.key + ", '" + this.title + "')>";
 	},
 	/** Call fn(node) for all child nodes. Stop iteration, if fn() returns false.
 	 * Skip current branch, if fn() returns 'skip'.
@@ -1102,9 +1081,11 @@ function Fancytree(widget){
 	this._ns = ".fancytree-" + this._id; // append for namespaced events
 	this.activeNode = null;
 	this.focusNode = null;
-	this.statusClassPropName = "span";
+    this.lastSelectedNode = null;
+
+    this.statusClassPropName = "span";
 	this.ariaPropName = "li";
-	this.lastSelectedNode = null;
+    this.nodeContainerAttrName = "li";
 
 	// Remove previous markup if any
 	this.$div.find(">ul.fancytree-container").remove();
@@ -1125,7 +1106,6 @@ function Fancytree(widget){
 	}).appendTo(this.$div);
 	this.$container = $ul;
 	this.rootNode.ul = $ul[0];
-	this.nodeContainerAttrName = "li";
 
 	// Add container to the TAB chain
 	// See http://www.w3.org/TR/wai-aria-practices/#focus_activedescendant
@@ -1575,9 +1555,13 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			handled = true,
 			KC = $.ui.keyCode,
 			sib = null;
-		tree.debug("ftnode.nodeKeydown(" + event.type + "): ftnode:" + this + ", charCode:" + event.charCode + ", keyCode: " + event.keyCode + ", which: " + event.which);
+		node.debug("ftnode.nodeKeydown(" + event.type + "): ftnode:" + this + ", charCode:" + event.charCode + ", keyCode: " + event.keyCode + ", which: " + event.which);
 //      alert("keyDown" + event.which);
-
+		function _goto(n){
+            if( n ){
+                return (event.ctrlKey || !opts.autoActivate ) ? n.setFocus() : n.setActive();
+            }
+		}
 		switch( event.which ) {
 			// charCodes:
 			case KC.NUMPAD_ADD: //107: // '+'
@@ -1599,24 +1583,26 @@ Fancytree.prototype = /**@lends Fancytree*/{
 				tree.nodeSetActive(ctx, true);
 				break;
 			case KC.BACKSPACE:
-				if( node.parent ){
-					node.parent.setFocus();
-				}
+				_goto(node.parent);
 				break;
 			case KC.LEFT:
 				if( node.expanded ) {
 					tree.nodeSetExpanded(ctx, false);
-					tree.nodeSetFocus(ctx);
+//					tree.nodeSetFocus(ctx);
+					_goto(node);
 				} else if( node.parent && node.parent.parent ) {
-					node.parent.setFocus();
+//					node.parent.setFocus();
+					_goto(node.parent);
 				}
 				break;
 			case KC.RIGHT:
 				if( !node.expanded && (node.children || node.lazy) ) {
 					tree.nodeSetExpanded(ctx, true);
-					tree.nodeSetFocus(ctx);
+//					tree.nodeSetFocus(ctx);
+                    _goto(node);
 				} else if( node.children ) {
-					node.children[0].setFocus();
+//					node.children[0].setFocus();
+                    _goto(node.children[0]);
 				}
 				break;
 			case KC.UP:
@@ -1627,9 +1613,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 				if( !sib && node.parent && node.parent.parent ){
 					sib = node.parent;
 				}
-				if( sib ){
-					sib.setFocus();
-				}
+				_goto(sib);
 				break;
 			case KC.DOWN:
 				if( node.expanded && node.children ) {
@@ -1641,9 +1625,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 						if( sib ){ break; }
 					}
 				}
-				if( sib ){
-					sib.setFocus();
-				}
+                _goto(sib);
 				break;
 			default:
 				handled = false;
@@ -1944,8 +1926,8 @@ Fancytree.prototype = /**@lends Fancytree*/{
 				if(aria){
 					// TODO: why doesn't this work:
 //					node.li.role = "treeitem";
-					$(node.li).attr("role", "treeitem")
-						.attr("aria-labelledby", "ftal_" + node.key);
+//                    $(node.li).attr("role", "treeitem")
+//                    .attr("aria-labelledby", "ftal_" + node.key);
 				}
 				if( node.key && opts.generateIds ){
 					node.li.id = opts.idPrefix + node.key;
@@ -1982,6 +1964,9 @@ Fancytree.prototype = /**@lends Fancytree*/{
 						// hide top UL, so we can use an animation to show it later
 						node.ul.style.display = "none";
 					}
+	                if(aria){
+	                    $(node.ul).attr("role", "group");
+	                }
 					node.li.appendChild(node.ul);
 				}
 				// Add child markup
@@ -2073,10 +2058,11 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		if(!nodeTitle){
 			// TODO: escape tooltip string
 			var tooltip = node.tooltip ? " title='" + node.tooltip.replace(/\"/g, '&quot;') + "'" : "",
-				id = opts.aria ? " id='ftal_" + node.key + "'" : "",
-				href = node.data.href || "#";
+				id = opts.aria ? " id='ftal_" + node.key + "'" : "";
+//				href = node.data.href || "#";
 //			if( opts.nolink || node.nolink ) {
-				nodeTitle = "<span class='fancytree-title'" + id + tooltip + ">" + node.title + "</span>";
+//            nodeTitle = "<span role='treeitem' tabindex='-1' class='fancytree-title'" + id + tooltip + ">" + node.title + "</span>";
+            nodeTitle = "<span role='treeitem' class='fancytree-title'" + id + tooltip + ">" + node.title + "</span>";
 //			} else {
 //				nodeTitle = "<a href='" + href + "' tabindex='-1' class='fancytree-title'" + tooltip + ">" + node.title + "</a>";
 //			}
@@ -2097,7 +2083,8 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			hasChildren = node.hasChildren(),
 			isLastSib = node.isLastSibling(),
 			aria = opts.aria,
-			$ariaElem = aria ? $(node[tree.ariaPropName]) : null,
+//            $ariaElem = aria ? $(node[tree.ariaPropName]) : null,
+            $ariaElem = $(node.span).find(".fancytree-title"),
 			cn = opts._classNames,
 			cnList = [],
 			statusElem = node[tree.statusClassPropName];
@@ -2120,16 +2107,17 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			cnList.push(cn.focused);
 			if(aria){
 //              $(">span.fancytree-title", statusElem).attr("tabindex", "0");
+//                $(">span.fancytree-title", statusElem).attr("tabindex", "-1");
 				// TODO: is this the right element for this attribute?
 				$ariaElem
-					.attr("aria-activedescendant", true)
-					.attr("tabindex", "-1");
+					.attr("aria-activedescendant", true);
+//					.attr("tabindex", "-1");
 			}
 		}else if(aria){
 //			$(">span.fancytree-title", statusElem).attr("tabindex", "-1");
 			$ariaElem
-				.removeAttr("aria-activedescendant")
-				.removeAttr("tabindex");
+				.removeAttr("aria-activedescendant");
+//				.removeAttr("tabindex");
 		}
 		if( node.expanded ){
 			cnList.push(cn.expanded);
@@ -2208,7 +2196,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			isActive = (node === tree.activeNode);
 		// flag defaults to true
 		flag = (flag !== false);
-		this.debug("nodeSetActive", flag);
+		node.debug("nodeSetActive", flag);
 
 		if(isActive === flag){
 			// Nothing to do
@@ -2392,7 +2380,12 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			}
 			this.nodeMakeVisible(ctx);
 			tree.focusNode = node;
+//			node.debug("FOCUS...");
+//			$(node.span).find(".fancytree-title").focus();
 			this._triggerNodeEvent("focus", ctx);
+//			if(ctx.options.autoActivate){
+//			    tree.nodeSetActive(ctx, true);
+//			}
 			this._callHook("nodeRenderStatus", ctx);
 		}
 	},
@@ -2747,6 +2740,8 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	treeSetFocus: function(ctx, flag) {
 //        alert("treeSetFocus" + ctx.tree.$container);
 		ctx.tree.$container.focus();
+//	    var node = ctx.tree.focusNode || ctx.tree.rootNode.getFirstChild();
+//		node.setFocus();
 	},
 	// TODO: reactivate()
 	// TODO: redraw()
@@ -2784,7 +2779,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	 * @returns {String}
 	 */
 	toString: function(){
-		return "Fancytree<" + this._id + ">";
+		return "<Fancytree(#" + this._id + ")>";
 	},
 	/** _trigger a widget event with additional node ctx.
 	 * @see HookContext
@@ -2846,8 +2841,9 @@ $.widget("ui.fancytree",
 //          timeout: 0, // >0: Make sure we get an ajax error if error is unreachable
 			dataType: "json" // Expect json format and pass json object to callbacks.
 		},  //
-		aria: true,
-		autoCollapse: false,
+		aria: false, // TODO: default to true
+        autoActivate: false,
+        autoCollapse: false,
 		checkbox: false,
 		/**defines click behavior*/
 		clickFolderMode: 4,
