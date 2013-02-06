@@ -359,7 +359,7 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 		return this.tree._callHook("nodeCollapseSiblings", this);
 	},
 	/** Count direct and indirect children.
-	 * 
+	 *
 	 * @param {Boolean} [deep=true] pass 'false' to only count direct children
 	 * @returns {int} number of child nodes
 	 */
@@ -370,9 +370,9 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 		}
 		n = cl.length;
 		if(deep !== false){
-	        for(i=0, l=n; i<l; i++){
-	            n += cl[i].countChildren();
-	        }
+			for(i=0, l=n; i<l; i++){
+				n += cl[i].countChildren();
+			}
 		}
 		return n;
 	},
@@ -1087,11 +1087,11 @@ function Fancytree(widget){
 	this._ns = ".fancytree-" + this._id; // append for namespaced events
 	this.activeNode = null;
 	this.focusNode = null;
-    this.lastSelectedNode = null;
+	this.lastSelectedNode = null;
 
-    this.statusClassPropName = "span";
+	this.statusClassPropName = "span";
 	this.ariaPropName = "li";
-    this.nodeContainerAttrName = "li";
+	this.nodeContainerAttrName = "li";
 
 	// Remove previous markup if any
 	this.$div.find(">ul.fancytree-container").remove();
@@ -1564,9 +1564,9 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		node.debug("ftnode.nodeKeydown(" + event.type + "): ftnode:" + this + ", charCode:" + event.charCode + ", keyCode: " + event.keyCode + ", which: " + event.which);
 //      alert("keyDown" + event.which);
 		function _goto(n){
-            if( n ){
-                return (event.ctrlKey || !opts.autoActivate ) ? n.setFocus() : n.setActive();
-            }
+			if( n ){
+				return (event.ctrlKey || !opts.autoActivate ) ? n.setFocus() : n.setActive();
+			}
 		}
 		switch( event.which ) {
 			// charCodes:
@@ -1605,10 +1605,10 @@ Fancytree.prototype = /**@lends Fancytree*/{
 				if( !node.expanded && (node.children || node.lazy) ) {
 					tree.nodeSetExpanded(ctx, true);
 //					tree.nodeSetFocus(ctx);
-                    _goto(node);
+					_goto(node);
 				} else if( node.children ) {
 //					node.children[0].setFocus();
-                    _goto(node.children[0]);
+					_goto(node.children[0]);
 				}
 				break;
 			case KC.UP:
@@ -1631,7 +1631,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 						if( sib ){ break; }
 					}
 				}
-                _goto(sib);
+				_goto(sib);
 				break;
 			default:
 				handled = false;
@@ -1970,9 +1970,9 @@ Fancytree.prototype = /**@lends Fancytree*/{
 						// hide top UL, so we can use an animation to show it later
 						node.ul.style.display = "none";
 					}
-	                if(aria){
-	                    $(node.ul).attr("role", "group");
-	                }
+					if(aria){
+						$(node.ul).attr("role", "group");
+					}
 					node.li.appendChild(node.ul);
 				}
 				// Add child markup
@@ -2068,7 +2068,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 //				href = node.data.href || "#";
 //			if( opts.nolink || node.nolink ) {
 //            nodeTitle = "<span role='treeitem' tabindex='-1' class='fancytree-title'" + id + tooltip + ">" + node.title + "</span>";
-            nodeTitle = "<span role='treeitem' class='fancytree-title'" + id + tooltip + ">" + node.title + "</span>";
+			nodeTitle = "<span role='treeitem' class='fancytree-title'" + id + tooltip + ">" + node.title + "</span>";
 //			} else {
 //				nodeTitle = "<a href='" + href + "' tabindex='-1' class='fancytree-title'" + tooltip + ">" + node.title + "</a>";
 //			}
@@ -2090,7 +2090,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			isLastSib = node.isLastSibling(),
 			aria = opts.aria,
 //            $ariaElem = aria ? $(node[tree.ariaPropName]) : null,
-            $ariaElem = $(node.span).find(".fancytree-title"),
+			$ariaElem = $(node.span).find(".fancytree-title"),
 			cn = opts._classNames,
 			cnList = [],
 			statusElem = node[tree.statusClassPropName];
@@ -2848,8 +2848,8 @@ $.widget("ui.fancytree",
 			dataType: "json" // Expect json format and pass json object to callbacks.
 		},  //
 		aria: false, // TODO: default to true
-        autoActivate: true,
-        autoCollapse: false,
+		autoActivate: true,
+		autoCollapse: false,
 		checkbox: false,
 		/**defines click behavior*/
 		clickFolderMode: 4,

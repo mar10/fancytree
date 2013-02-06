@@ -7,9 +7,9 @@ var $ = jQuery;
  * QUnit setup
  */
 QUnit.log = function(data) {
-  if (window.console && window.console.log) {
-	  window.console.log(data.result +' :: '+ data.message);
-  }
+	if (window.console && window.console.log) {
+		window.console.log(data.result + " :: " + data.message);
+	}
 };
 
 /*******************************************************************************

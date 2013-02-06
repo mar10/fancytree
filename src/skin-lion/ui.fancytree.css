@@ -237,10 +237,10 @@ span.fancytree-focused .fancytree-title {
 }
 span.fancytree-selected .fancytree-title,
 span.fancytree-active .fancytree-title {
-    background-color: #D4D4D4; /*gray*/
+	background-color: #D4D4D4; /*gray*/
 }
 span.fancytree-selected .fancytree-title {
-    font-style: italic;
+	font-style: italic;
 }
 .fancytree-focused span.fancytree-selected .fancytree-title,
 .fancytree-focused span.fancytree-active .fancytree-title {
