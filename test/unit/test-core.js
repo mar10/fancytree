@@ -450,7 +450,7 @@ test("Fancytree class", function() {
 //    reload: function(source) {
 //    render: function(force, deep) {
 
-	equal(tree.toString(), "Fancytree<" + tree._id + ">", "toString()");
+	equal(tree.toString(), "<Fancytree(#" + tree._id + ")>", "toString()");
 	equal("" + tree, tree.toString(), "toString() implicit");
 
 	var c = 0;

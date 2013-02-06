@@ -358,15 +358,21 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 	collapseSiblings: function() {
 		return this.tree._callHook("nodeCollapseSiblings", this);
 	},
-	/** @returns {int} number of child nodes*/
-	countChildren: function() {
+	/** Count direct and indirect children.
+	 * 
+	 * @param {Boolean} [deep=true] pass 'false' to only count direct children
+	 * @returns {int} number of child nodes
+	 */
+	countChildren: function(deep) {
 		var cl = this.children, i, l, n;
 		if( !cl ){
 			return 0;
 		}
 		n = cl.length;
-		for(i=0, l=n; i<l; i++){
-			n += cl[i].countChildren();
+		if(deep !== false){
+	        for(i=0, l=n; i<l; i++){
+	            n += cl[i].countChildren();
+	        }
 		}
 		return n;
 	},
@@ -2842,7 +2848,7 @@ $.widget("ui.fancytree",
 			dataType: "json" // Expect json format and pass json object to callbacks.
 		},  //
 		aria: false, // TODO: default to true
-        autoActivate: false,
+        autoActivate: true,
         autoCollapse: false,
 		checkbox: false,
 		/**defines click behavior*/
