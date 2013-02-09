@@ -135,7 +135,7 @@ test("Version info", function() {
 //    ok(true, "DOCTYPE 2 " + window.document.doctype);
 });
 */
-
+/*
 module("API");
 
 test("Create dynatree", function() {
@@ -219,7 +219,7 @@ test("Create dynatree", function() {
 	equal(widget.tree._id, 1, "tree id is 1");
 	equal($.ui.dynatree._nextId, 2, "next tree instance counter is 2");
 });
-
+*/
 /*******************************************************************************
  * Module Load
  */
@@ -243,29 +243,20 @@ test("Add nodes to folder using API witout expanding", function() {
 });
 
 test(".click() top level nodes (triggers lazy loading)", function() {
-	expect(3);
-/*
-	benchmark("Click add100_flat_u", function() {
-		$("#dynatree-id-_1").click();
-	});
-	benchmark("Click add100_flat", function() {
-		$("#dynatree-id-_2").click();
-	});
-*/
-	benchmark("Click add1000_flat", function() {
-		$("#dynatree-id-_3").click();
+	expect(2);
+
+	var tree = _resetEmptyTree();
+	benchmark("1000 nodes flat and force render(deep=true)", function() {
+		var node = tree.getNodeByKey("root");
+		addNodes(node, 1000, 0, 0);
+		tree.render(true, true);
 	});
 
-	benchmark("Click add1000_deep", function() {
-		$("#dynatree-id-_4").click();
-	});
-/*
-	benchmark("Click add10000_deep", function() {
-		$("#dynatree-id-_5").click();
-	});
-	*/
-	benchmark("Click addJsonFile", function() {
-		$("#dynatree-id-_6").click();
+	tree = _resetEmptyTree();
+	benchmark("1000 nodes deep (10x10x10) and force render(deep=true)", function() {
+		var node = tree.getNodeByKey("root");
+		addNodes(node, 10, 10, 10);
+		tree.render(true, true);
 	});
 });
 /*
@@ -311,7 +302,7 @@ test("", function() {
 	ok(true, "Browser: " + _getBrowserInfo());
 	ok(true, "Cumulated test time: " + TOTAL_ELAP + " milliseconds");
 	setTimeout(function(){
-		$("li#qunit-test-output3 ol").show();
+		$("li#qunit-test-output3 ol").show("slow");
 	}, 1000)
 });
 // ---

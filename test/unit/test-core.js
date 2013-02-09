@@ -295,7 +295,7 @@ test("FancytreeNode class", function() {
 	if( $("#tree").is(":ui-fancytree") ){
 		$("#tree").fancytree("destroy");
 	}
-	expect(18);
+	expect(28);
 
 	$("#tree").fancytree({
 		source: testData
@@ -319,7 +319,11 @@ test("FancytreeNode class", function() {
 //  addChildren: function(children){
 //  applyPatch: function(patch) {
 //  collapseSiblings: function() {
-//  countChildren: function() {
+
+	equal(root.countChildren(), TESTDATA_NODES, "countChildren() - root");
+	equal(root.countChildren(true), TESTDATA_NODES, "countChildren(true) - root");
+	equal(root.countChildren(false), TESTDATA_TOPNODES, "countChildren(false) - root");
+
 //  debug: function(msg){
 //  discard: function(){
 
@@ -344,15 +348,31 @@ test("FancytreeNode class", function() {
 	//  getChildren: function() {
 //  getFirstChild: function() {
 	equal(node.getIndex(), 1, "getIndex()");
+
 	equal(node.getIndexHier(), "7.1.2", "getIndexHier()");
 	equal(node.getIndexHier("/"), "7/1/2", "getIndexHier('/')");
+
 	equal(node.getKeyPath(), "/10/10_1/10_1_2", "getKeyPath()");
+	equal(node.getKeyPath(false), "/10/10_1/10_1_2", "getKeyPath(false)");
 	equal(node.getKeyPath(true), "/10/10_1", "getKeyPath(true)");
 //  getLastChild: function() {
 //  getLevel: function() {
 //  getNextSibling: function() {
-//  getParent: function() {
+
+	equal(node.getParent().key, "10_1", "getParent()");
+
 //  getParentList: function(includeRoot, includeSelf) {
+	deepEqual(_getNodeKeyArray(node.getParentList()),
+			["10", "10_1"], "getParentList()");
+	deepEqual(_getNodeKeyArray(node.getParentList(false, false)),
+			["10", "10_1"], "getParentList(false, false)");
+	deepEqual(_getNodeKeyArray(node.getParentList(true, true)),
+			["root_1", "10", "10_1", "10_1_2"], "getParentList(true, true)");
+	deepEqual(_getNodeKeyArray(node.getParentList(false, true)),
+			["10", "10_1", "10_1_2"], "getParentList(false, true)");
+	deepEqual(_getNodeKeyArray(node.getParentList(true, false)),
+			["root_1", "10", "10_1"], "getParentList(true, false)");
+
 //  getPrevSibling: function() {
 //  hasChildren: function() {
 //  hasFocus: function() {
@@ -369,6 +389,7 @@ test("FancytreeNode class", function() {
 //  isRoot: function() {
 //  isSelected: function() {
 //  isVisible: function() {
+//  makeVisible
 //  move: function(targetNode, mode) {
 //  reloadChildren: function() {
 //  render: function(force, deep) {
@@ -378,6 +399,7 @@ test("FancytreeNode class", function() {
 //  removeChild: function(childNode) {
 //  removeChildren: function() {
 //  scheduleAction: function(mode, ms) {
+//  scrollIntoView
 //  setActive: function(flag){
 //  setExpanded: function(flag){
 //  setFocus: function(){
@@ -431,6 +453,7 @@ test("Fancytree class", function() {
 	// Methods
 	// TODO: activateByKey()
 	equal(tree.count(), TESTDATA_NODES, "count()");
+	// TODO: getFirstChild()
 	equal(tree.getNodeByKey("10_2").key, "10_2", "getNodeByKey()");
 	equal(tree.getNodeByKey("foobar"), null, "getNodeByKey() not found");
 	var node = _getNode("10_2");

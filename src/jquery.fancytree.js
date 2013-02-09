@@ -300,7 +300,10 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 			_assert(!insertBefore, "not implemented");
 			insertBefore = this._findDirectChild(insertBefore);
 		}
-		this.render();
+		if(!this.parent || this.parent.ul){
+			// render if the parent was rendered (or this is a root node)
+			this.render();
+		}
 		return firstNode;
 	},
 	/**
@@ -663,31 +666,12 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 		}
 		return true;
 	},
-	// TODO: NEW: scrollIntoView()
-	// TODO: implement scolling (http://www.w3.org/TR/wai-aria-practices/#visualfocus)
-	// from jQuery.menu:
-//    _scrollIntoView: function( item ) {
-//        var borderTop, paddingTop, offset, scroll, elementHeight, itemHeight;
-//        if ( this._hasScroll() ) {
-//            borderTop = parseFloat( $.css( this.activeMenu[0], "borderTopWidth" ) ) || 0;
-//            paddingTop = parseFloat( $.css( this.activeMenu[0], "paddingTop" ) ) || 0;
-//            offset = item.offset().top - this.activeMenu.offset().top - borderTop - paddingTop;
-//            scroll = this.activeMenu.scrollTop();
-//            elementHeight = this.activeMenu.height();
-//            itemHeight = item.height();
-//
-//            if ( offset < 0 ) {
-//                this.activeMenu.scrollTop( scroll + offset );
-//            } else if ( offset + itemHeight > elementHeight ) {
-//                this.activeMenu.scrollTop( scroll + offset - elementHeight + itemHeight );
-//            }
-//        }
-//    },
 	/** Expand all parents and optionally scroll into visible area as neccessary (async).
 	 *
 	 */
 	makeVisible: function() {
 		// TODO: implement scolling (http://www.w3.org/TR/wai-aria-practices/#visualfocus)
+		// TODO: return $.promise
 		var parents = this.getParentList(false, false);
 		for(var i=0, l=parents.length; i<l; i++){
 			parents[i].setExpanded(true);
@@ -904,6 +888,68 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 		}
 //        this.tree.debug("setTimeout(%s, %s): %s", mode, ms, this.tree.timer);
 	},
+	/**
+	 *
+	 * @param {Boolean | PlainObject} [effects=false] animation options.
+	 * @param {FancytreeNode} [topNode=null] this node will remain visible in
+	 *     any case, even if `this` is outside the scroll pane.
+	 * @returns $.Promise
+	 */
+	scrollIntoView: function(effects, topNode) {
+		effects = (effects === true) ? {duration: 200, queue: false} : effects;
+		var dfd = new $.Deferred(),
+			nodeY = $(this.span).position().top,
+			nodeHeight = $(this.span).height(),
+			$container = this.tree.$container,
+			containerHeight = $container.height(),
+			scrollTop = $container[0].scrollTop,
+			newScrollTop = null;
+
+		if(nodeY < 0){
+			newScrollTop = scrollTop + nodeY;
+		}else if((nodeY + nodeHeight) > containerHeight){
+			newScrollTop = scrollTop + nodeY - containerHeight + nodeHeight;
+			// If a topNode was passed, make sure that it is never scrolled
+			// outside the upper border
+			if(topNode){
+				var topNodeY = topNode ? $(topNode.span).position().top : 0;
+				if((nodeY - topNodeY) > containerHeight){
+					newScrollTop = scrollTop + nodeY;
+				}
+			}
+		}
+		if(newScrollTop !== null){
+			if(effects){
+				// TODO: resolve dfd after animation
+				var that = this;
+				$container.animate({scrollTop: newScrollTop}, effects);
+			}else{
+				$container[0].scrollTop = newScrollTop;
+				dfd.resolveWith(this);
+			}
+		}else{
+			dfd.resolveWith(this);
+		}
+		return dfd.promise();
+/* from jQuery.menu:
+		var borderTop, paddingTop, offset, scroll, elementHeight, itemHeight;
+		if ( this._hasScroll() ) {
+			borderTop = parseFloat( $.css( this.activeMenu[0], "borderTopWidth" ) ) || 0;
+			paddingTop = parseFloat( $.css( this.activeMenu[0], "paddingTop" ) ) || 0;
+			offset = item.offset().top - this.activeMenu.offset().top - borderTop - paddingTop;
+			scroll = this.activeMenu.scrollTop();
+			elementHeight = this.activeMenu.height();
+			itemHeight = item.height();
+
+			if ( offset < 0 ) {
+				this.activeMenu.scrollTop( scroll + offset );
+			} else if ( offset + itemHeight > elementHeight ) {
+				this.activeMenu.scrollTop( scroll + offset - elementHeight + itemHeight );
+			}
+		}
+		*/
+	},
+
 	/**Activate this node.
 	 * @param {Boolean} [flag=true] pass false to deactivate
 	 */
@@ -1276,6 +1322,10 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	getActiveNode: function() {
 		return this.activeNode;
 	},
+	/** @returns {FancytreeNode | null}*/
+	getFirstChild: function() {
+		return this.rootNode.getFirstChild();
+	},
 	/**
 	 * Return node that has keyboard focus.
 	 * @param {Boolean} [ifTreeHasFocus=false]
@@ -1565,6 +1615,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 //      alert("keyDown" + event.which);
 		function _goto(n){
 			if( n ){
+				n.makeVisible();
 				return (event.ctrlKey || !opts.autoActivate ) ? n.setFocus() : n.setActive();
 			}
 		}
