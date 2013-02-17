@@ -99,7 +99,7 @@ $.ui.fancytree.registerExtension("table", {
 		var tree = ctx.tree,
 			$table = tree.widget.element;
 		$table.addClass("fancytree-container fancytree-ext-table");
-		tree.tbody = $("table#treetable tbody")[0];
+		tree.tbody = $table.find("> tbody")[0];
 		tree.columnCount = $("thead >tr >th", $table).length;
 		$(tree.tbody).empty();
 

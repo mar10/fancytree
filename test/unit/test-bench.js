@@ -9,22 +9,29 @@ QUnit.log = function(data) {
 	}
 };
 
+QUnit.done(function( details ) {
+	// Expand last section when all tests are run
+	$("ol#qunit-tests > li:last > ol").show("slow");
+});
+
 /*******************************************************************************
  * Tool functions
  */
 var TOTAL_ELAP = 0;
 
-function _resetEmptyTree(){
+function _resetEmptyTree(options){
 	QUnit.reset();
-	var $tree = $("#tree");
-	if( $tree.is(":ui-fancytree") ){
-		$tree.fancytree("destroy");
-	}
-	$tree.fancytree({
-		source: [{title: "root node", key: "root"}]
-	});
-	return $tree.fancytree("getTree");
+	$(":ui-fancytree").fancytree("destroy");
 
+	var $tree = $("#tree");
+//    if( $tree.is(":ui-fancytree") ){
+//        $tree.fancytree("destroy");
+//    }
+	var opts = $.extend({
+		source: [{title: "root node", key: "root"}]
+	}, options);
+	$tree.fancytree(opts);
+	return $tree.fancytree("getTree");
 }
 
 
@@ -270,6 +277,46 @@ test("Load 100 nodes (flat)", function() {
 	ok( true, "all pass" );
 });
 */
+
+/*******************************************************************************
+ * Module Load
+ */
+module("Table tree");
+
+test("tabletree", function() {
+	expect(1);
+
+	_resetEmptyTree();
+
+	var $tree = $("#tabletree").fancytree({
+		extensions: ["table"],
+		source: [{title: "root node", key: "root"}],
+		table: {
+			indentation: 20,  // indent 20px per node level
+			nodeColumnIdx: 1  // render the node title into the 2nd column
+		},
+		rendercolumns: function(e, data) {
+			var node = data.node,
+				$tdList = $(node.tr).find(">td");
+			$tdList.eq(0).text(node.getIndexHier()).addClass("alignRight");
+			// (index #1 is rendered by fancytree)
+			$tdList.eq(2).text(node.key);
+//            $tdList.eq(3).html("<input type='checkbox' name='like' value='" + node.key + "'>");
+			$tdList.eq(3).text("x");
+		}
+	});
+	var tree = $tree.fancytree("getTree");
+
+	benchmark("1000 nodes (10 x 10 x 10) and force render(deep=true)", function() {
+		var node = tree.getNodeByKey("root");
+//        addNodes(node, 1000, 0, 0);
+		addNodes(node, 10, 10, 10);
+		tree.render(true, true);
+	});
+
+});
+
+
 /*******************************************************************************
  * Module Cleanup
  */
@@ -301,9 +348,6 @@ test("", function() {
 //    ok(true, "DOCTYPE " + doctypePid + " " + doctypeSid);
 	ok(true, "Browser: " + _getBrowserInfo());
 	ok(true, "Cumulated test time: " + TOTAL_ELAP + " milliseconds");
-	setTimeout(function(){
-		$("li#qunit-test-output3 ol").show("slow");
-	}, 1000)
 });
 // ---
 });
