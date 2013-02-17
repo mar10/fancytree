@@ -2,7 +2,7 @@
 	jquery.fancytree.table.js
 	Table extension for jquery.fancytree.js.
 
-	Copyright (c) 2012, Martin Wendt (http://wwWendt.de)
+	Copyright (c) 2013, Martin Wendt (http://wwWendt.de)
 	Dual licensed under the MIT or GPL Version 2 licenses.
 	http://code.google.com/p/fancytree/wiki/LicenseInfo
 

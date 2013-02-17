@@ -3386,6 +3386,7 @@ $.extend($.ui.fancytree,
 // }
 
 // TODO: maybe like so:?
+// https://raw.github.com/malsup/blockui/master/jquery.blockUI.js
 /*
 if( typeof define === "function" && define.amd ) {
 	define( ["jquery"], function () {
