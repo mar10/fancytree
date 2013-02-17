@@ -163,18 +163,24 @@ $.ui.fancytree.registerExtension("table", {
 			opts = ctx.options,
 			isRootNode = !node.parent;
 //			firstTime = false;
-
+		if( !_recursive ){
+			ctx.hasCollapsedParents = node.parent && !node.parent.expanded;
+		}
 		if( !isRootNode ){
 			if(!node.tr){
 				// Create new <tr> after previous row
 				var newRow = tree.rowFragment.firstChild.cloneNode(true),
 					prevNode = findPrevRowNode(node);
 //				firstTime = true;
-				$.ui.fancytree.debug("*** nodeRender " + node + ": prev: " + prevNode.key);
+//				$.ui.fancytree.debug("*** nodeRender " + node + ": prev: " + prevNode.key);
 				_assert(prevNode);
 				if(collapsed === true && _recursive){
 					// hide all child rows, so we can use an animation to show it later
 					newRow.style.display = "none";
+				}else if(deep && ctx.hasCollapsedParents){
+					// also hide this row if deep === true but any parent is collapsed
+					newRow.style.display = "none";
+//					newRow.style.color = "red";
 				}
 				if(!prevNode.tr){
 					_assert(!prevNode.parent, "prev. row must have a tr, or is system root");
@@ -207,6 +213,7 @@ $.ui.fancytree.registerExtension("table", {
 		if(children && (isRootNode || deep || node.expanded)){
 			for(i=0, l=children.length; i<l; i++) {
 				var subCtx = $.extend({}, ctx, {node: children[i]});
+				subCtx.hasCollapsedParents = subCtx.hasCollapsedParents || !node.expanded;
 				this.nodeRender(subCtx, force, deep, collapsed, true);
 			}
 		}

@@ -287,22 +287,42 @@ test("tabletree", function() {
 	expect(1);
 
 	_resetEmptyTree();
-
+	
+	var $ico1 = $("<img>", {src: "/src/skin-win8/icons.gif"});
+	var $ico2 = $("<span>", {
+		"class": "fancytree-icon"
+//		css: "/src/skin-win8/icons.gif"
+		});
+	
 	var $tree = $("#tabletree").fancytree({
 		extensions: ["table"],
 		source: [{title: "root node", key: "root"}],
 		table: {
 			indentation: 20,  // indent 20px per node level
-			nodeColumnIdx: 1  // render the node title into the 2nd column
+			nodeColumnIdx: 0  // render the node title into the 2nd column
 		},
 		rendercolumns: function(e, data) {
 			var node = data.node,
 				$tdList = $(node.tr).find(">td");
-			$tdList.eq(0).text(node.getIndexHier()).addClass("alignRight");
-			// (index #1 is rendered by fancytree)
-			$tdList.eq(2).text(node.key);
+//			$tdList.eq(0).text(node.getIndexHier()).addClass("alignRight");
+			// (index #0 is rendered by fancytree)
+//			$tdList.eq(1).append($ico2);
+//			$tdList.eq(2).append($("<img>", {src: "/src/skin-win8/icons.gif"}));
+			$tdList.eq(1).append( $("<span>", {
+				"class": "fancytree-icon"
+//					css: "/src/skin-win8/icons.gif"
+					}));
+			$tdList.eq(2).append( $("<span>", {
+				"class": "fancytree-icon"
+//					css: "/src/skin-win8/icons.gif"
+					}));
+			$tdList.eq(3).append( $("<span>", {
+				"class": "fancytree-icon"
+//					css: "/src/skin-win8/icons.gif"
+					}));
 //            $tdList.eq(3).html("<input type='checkbox' name='like' value='" + node.key + "'>");
-			$tdList.eq(3).text("x");
+			$tdList.eq(4).text("2013-02-17");
+			$tdList.eq(5).text("Homer Simpson");
 		}
 	});
 	var tree = $tree.fancytree("getTree");
@@ -310,7 +330,8 @@ test("tabletree", function() {
 	benchmark("1000 nodes (10 x 10 x 10) and force render(deep=true)", function() {
 		var node = tree.getNodeByKey("root");
 //        addNodes(node, 1000, 0, 0);
-		addNodes(node, 10, 10, 10);
+//		addNodes(node, 10, 10, 10);
+		addNodes(node, 1, 390, 0);
 		tree.render(true, true);
 	});
 
