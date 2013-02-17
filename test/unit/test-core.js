@@ -12,6 +12,11 @@ QUnit.log = function(data) {
 	}
 };
 
+QUnit.done(function( details ) {
+    // Expand first section when all tests are run
+    $("ol#qunit-tests > li:first > ol").show("slow");
+});
+
 /*******************************************************************************
  * Tool functions
  */
@@ -40,6 +45,18 @@ function _setupAsync(){
 	}
 	EVENT_SEQUENCE = [];
 	stop();
+}
+
+
+function _getBrowserInfo(){
+    var n = navigator.appName,
+        ua = navigator.userAgent,
+        tem,
+        m = ua.match(/(opera|chrome|safari|firefox|msie)\/?\s*(\.?\d+(\.\d+)*)/i);
+    if(m && (tem = ua.match(/version\/([\.\d]+)/i)) !== null)
+        m[2]= tem[1];
+    m = m ? [m[1], m[2]] : [n, navigator.appVersion, "-?"];
+    return m.join(", ");
 }
 
 
@@ -147,7 +164,7 @@ test("Version info", function() {
 	if( $("#tree").is(":ui-fancytree") ){
 		$("#tree").fancytree("destroy");
 	}
-	expect(4);
+	expect(5);
 
 	ok(true, "Fancytree v" + $.ui.fancytree.version);
 	ok(true, "jQuery UI " + jQuery.ui.version);
@@ -157,6 +174,10 @@ test("Version info", function() {
 		doctypePid = doctype.publicId;
 	ok(true, "DOCTYPE " + doctypePid + " " + doctypeSid);
 //    ok(true, "DOCTYPE 2 " + window.document.doctype);
+	
+    ok(true, "Browser: " + _getBrowserInfo());
+//    ok(true, "Cumulated test time: " + TOTAL_ELAP + " milliseconds");
+	
 });
 
 

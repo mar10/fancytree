@@ -1938,10 +1938,9 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	 * </code>
 	 *
 	 * @param: {HookContext} ctx
-	 * @param: force re-render, even if html markup was already created
-	 * @param: deep also render all descendants, even if parent is collapsed
-	 * @param: collapsed force root node to be collapsed, so we can apply animated expand later
-	 * @param: _recursive internal use only (don't pass it)
+	 * @param: {Boolean} [force=false] re-render, even if html markup was already created
+	 * @param: {Boolean} [deep=false] also render all descendants, even if parent is collapsed
+	 * @param: {Boolean} [collapsed=false] force root node to be collapsed, so we can apply animated expand later
 	 */
 	nodeRender: function(ctx, force, deep, collapsed, _recursive) {
 		/* This method must take care of all cases where the current data mode
@@ -2017,7 +2016,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 				// Create a UL to hold the children
 				if( !node.ul ){
 					node.ul = document.createElement("ul");
-					if(collapsed === true && !_recursive){
+					if((collapsed === true && !_recursive) || !node.expanded){
 						// hide top UL, so we can use an animation to show it later
 						node.ul.style.display = "none";
 					}
