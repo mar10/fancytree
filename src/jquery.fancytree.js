@@ -3178,11 +3178,8 @@ $.extend($.ui.fancytree,
 	debug: function(msg){
 		/*jshint expr:true */
 		($.ui.fancytree.debugLevel >= 2) && consoleApply("log", arguments);
-//        ($.ui.fancytree.debugLevel >= 2) && window.console && window.console.log && window.console.log.apply(window.console, arguments);
 	},
 	error: function(msg){
-		/*jshint expr:true */
-//		window.console && window.console.error && window.console.error.apply(window.console, arguments);
 		consoleApply("error", arguments);
 	},
 	/** Return a {node: FancytreeNode, type: TYPE} object for a mouse event.
@@ -3260,7 +3257,6 @@ $.extend($.ui.fancytree,
 	*/
 	info: function(msg){
 		/*jshint expr:true */
-//		(FT.debugLevel >= 1) && window.console && window.console.info && window.console.info.apply(window.console, arguments);
 		($.ui.fancytree.debugLevel >= 1) && consoleApply("info", arguments);
 	},
 	/**
@@ -3370,8 +3366,6 @@ $.extend($.ui.fancytree,
 		$.ui.fancytree._extensions[name] = definition;
 	},
 	warn: function(msg){
-		/*jshint expr:true */
-//		window.console && window.console.warn && window.console.warn.apply(window.console, arguments);
 		consoleApply("warn", arguments);
 	}
 });

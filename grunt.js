@@ -63,6 +63,7 @@ module.exports = function(grunt) {
             beforeconcat: ["src/*.js", 
 //                           "demo/sample.js",
                            "grunt.js",
+                           "test/unit/test-bench.js",
                            "test/unit/test-core.js",
                            "test/unit/test-extensions.js"
                            ],

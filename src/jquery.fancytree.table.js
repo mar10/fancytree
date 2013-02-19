@@ -270,6 +270,7 @@ $.ui.fancytree.registerExtension("table", {
 		var node = ctx.node,
 			dfd = new $.Deferred();
 		this._super(ctx, flag).done(function(){
+			flag = (flag !== false);
 			setChildRowVisibility(ctx.node, flag);
 			dfd.resolveWith(node);
 		});

@@ -914,12 +914,5 @@ test("loadKeyPath (multiple lazy nodes with expand)", function() {
 		start();
 	});
 });
-// ---
-// expand first info section
-// setTimeout(function(){
-//     alert($("li#qunit-test-output0").length);
-// QUnit.triggerEvent($("li#qunit-test-output0")[0], "click");
-//     $("li#qunit-test-output0").click();
-// }, 1000)
 
 });
