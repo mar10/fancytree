@@ -1967,15 +1967,18 @@ Fancytree.prototype = /**@lends Fancytree*/{
 
 		// Render the node
 		if( !isRootNode ){
-			// Discard markup on force-mode, or if if it is not linked to parent <ul>
+			// Discard markup on force-mode, or if it is not linked to parent <ul>
 			if(node.li && (force || (node.li.parentNode !== node.parent.ul) ) ){
 				if(node.li.parentNode !== node.parent.ul){
 					alert("unlink " + node + " (must be child of " + node.parent + ")");
 				}
+//	            this.debug("nodeRemoveMarkup...");
 				this.nodeRemoveMarkup(ctx);
 			}
 			// Create <li><span /> </li>
+//			node.debug("render...");
 			if( !node.li ) {
+//	            node.debug("render... really");
 				firstTime = true;
 				node.li = document.createElement("li");
 				node.li.ftnode = node;

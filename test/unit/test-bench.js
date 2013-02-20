@@ -24,7 +24,7 @@ var EVENT_SEQUENCE = [];
 var TOTAL_ELAP = 0;
 
 function AsyncTimer(name, start){
-	this.name = "AsyncTimer(" + this.name + ")";
+	this.name = "AsyncTimer(" + name + ")";
 	this.stamp = null;
 	if(start !== false){
 		this.start();
