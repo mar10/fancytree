@@ -680,8 +680,8 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 	/** Move this node to targetNode.
 	 *  @param {String} mode
 	 *      'child': append this node as last child of targetNode.
-	 *                This is the default. To be compatble with the D'n'd
-	 *                hitMode, we also accept 'over'.
+	 *               This is the default. To be compatble with the D'n'd
+	 *               hitMode, we also accept 'over'.
 	 *  mode 'before': add this node as sibling before targetNode.
 	 *  mode 'after': add this node as sibling after targetNode.
 	 */
@@ -2354,6 +2354,10 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		// Trigger expand/collapse after expanding
 		dfd.done(function(){
 			ctx.tree._triggerNodeEvent(flag ? "expand" : "collapse", ctx);
+            if(opts.autoScroll){
+                // Scroll down to last child, but keep current node visible
+                node.getLastChild().scrollIntoView(true, node);
+            }
 		});
 
 		// vvv Code below is executed after loading finished:
@@ -2459,9 +2463,12 @@ Fancytree.prototype = /**@lends Fancytree*/{
 //			node.debug("FOCUS...");
 //			$(node.span).find(".fancytree-title").focus();
 			this._triggerNodeEvent("focus", ctx);
-//			if(ctx.options.autoActivate){
-//			    tree.nodeSetActive(ctx, true);
-//			}
+//          if(ctx.options.autoActivate){
+//              tree.nodeSetActive(ctx, true);
+//          }
+            if(ctx.options.autoScroll){
+                node.scrollIntoView();
+            }
 			this._callHook("nodeRenderStatus", ctx);
 		}
 	},
@@ -2921,6 +2928,7 @@ $.widget("ui.fancytree",
 		autoActivate: true,
 		autoCollapse: false,
 //      autoFocus: false,
+        autoScroll: false,
 		checkbox: false,
 		/**defines click behavior*/
 		clickFolderMode: 4,

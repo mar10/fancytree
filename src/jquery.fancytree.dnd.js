@@ -91,7 +91,7 @@ function _registerDnd() {
 		start: function(event, ui) {
 			// 'draggable' was renamed to 'ui-draggable' since jQueryUI 1.10
 			var draggable = $(this).data("ui-draggable") || $(this).data("draggable"),
-				sourceNode = ui.helper.data("dtSourceNode") || null;
+				sourceNode = ui.helper.data("ftSourceNode") || null;
 //          logMsg("draggable-connectToFancytree.start, %s", sourceNode);
 //          logMsg("    this: %o", this);
 //          logMsg("    event: %o", event);
@@ -112,8 +112,8 @@ function _registerDnd() {
 		drag: function(event, ui) {
 			// 'draggable' was renamed to 'ui-draggable' since jQueryUI 1.10
 			var draggable = $(this).data("ui-draggable") || $(this).data("draggable"),
-				sourceNode = ui.helper.data("dtSourceNode") || null,
-				prevTargetNode = ui.helper.data("dtTargetNode") || null,
+				sourceNode = ui.helper.data("ftSourceNode") || null,
+				prevTargetNode = ui.helper.data("ftTargetNode") || null,
 				targetNode = $.ui.fancytree.getNode(event.target);
 //            logMsg("$.ui.fancytree.getNode(%o): %s", event.target, targetNode);
 //            logMsg("connectToFancytree.drag: helper: %o", ui.helper[0]);
@@ -129,8 +129,8 @@ function _registerDnd() {
 					return;
 				}
 			}
-//            logMsg("draggable-connectToFancytree.drag: targetNode(from event): %s, dtTargetNode: %s", targetNode, ui.helper.data("dtTargetNode"));
-			ui.helper.data("dtTargetNode", targetNode);
+//            logMsg("draggable-connectToFancytree.drag: targetNode(from event): %s, ftTargetNode: %s", targetNode, ui.helper.data("ftTargetNode"));
+			ui.helper.data("ftTargetNode", targetNode);
 			// Leaving a tree node
 			if(prevTargetNode && prevTargetNode !== targetNode ) {
 				prevTargetNode.tree.dnd._onDragEvent("leave", prevTargetNode, sourceNode, event, ui, draggable);
@@ -151,12 +151,12 @@ function _registerDnd() {
 		stop: function(event, ui) {
 			// 'draggable' was renamed to 'ui-draggable' since jQueryUI 1.10
 			var draggable = $(this).data("ui-draggable") || $(this).data("draggable"),
-				sourceNode = ui.helper.data("dtSourceNode") || null,
-				targetNode = ui.helper.data("dtTargetNode") || null,
+				sourceNode = ui.helper.data("ftSourceNode") || null,
+				targetNode = ui.helper.data("ftTargetNode") || null,
 				mouseDownEvent = draggable._mouseDownEvent,
 				eventType = event.type,
 				dropped = (eventType === "mouseup" && event.which === 1);
-//            logMsg("draggable-connectToFancytree.stop: targetNode(from event): %s, dtTargetNode: %s", targetNode, ui.helper.data("dtTargetNode"));
+//            logMsg("draggable-connectToFancytree.stop: targetNode(from event): %s, ftTargetNode: %s", targetNode, ui.helper.data("ftTargetNode"));
 //            logMsg("draggable-connectToFancytree.stop, %s", sourceNode);
 //            logMsg("    type: %o, downEvent: %o, upEvent: %o", eventType, mouseDownEvent, event);
 //            logMsg("    targetNode: %o", targetNode);
@@ -361,9 +361,9 @@ $.ui.fancytree.registerExtension("dnd",
 			$("ul.fancytree-container", node.tree.$div).append($helper);
 //          $(node.tree.divTree).append($helper);
 			// Attach node reference to helper object
-			$helper.data("dtSourceNode", node);
+			$helper.data("ftSourceNode", node);
 			logMsg("helper=%o", $helper);
-			logMsg("helper.sourceNode=%o", $helper.data("dtSourceNode"));
+			logMsg("helper.sourceNode=%o", $helper.data("ftSourceNode"));
 			res = $helper;
 			break;
 		case "start":
