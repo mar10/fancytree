@@ -24,6 +24,20 @@ body {
 	color: white;
 	text-decoration: none;
 }
+
+a.external
+{
+	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAMAAAC67D+PAAAAFVBMVEVmmcwzmcyZzP8AZswAZv////////9E6giVAAAAB3RSTlP///////8AGksDRgAAADhJREFUGFcly0ESAEAEA0Ei6/9P3sEcVB8kmrwFyni0bOeyyDpy9JTLEaOhQq7Ongf5FeMhHS/4AVnsAZubxDVmAAAAAElFTkSuQmCC") 100% 50% no-repeat;
+	padding-right: 13px;
+}
+/* This works with Safari: */
+span.external span.fancytree-title:after
+{
+	content: "";
+	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAMAAAC67D+PAAAAFVBMVEVmmcwzmcyZzP8AZswAZv////////9E6giVAAAAB3RSTlP///////8AGksDRgAAADhJREFUGFcly0ESAEAEA0Ei6/9P3sEcVB8kmrwFyni0bOeyyDpy9JTLEaOhQq7Ongf5FeMhHS/4AVnsAZubxDVmAAAAAElFTkSuQmCC") 100% 50% no-repeat;
+	padding-right: 13px;
+}
+
 a:hover {
 	text-decoration: underline;
 }
@@ -98,12 +112,12 @@ span.fancytree-active .fancytree-title {
 	<ul>
 	<li class="folder expanded">Documentation
 		<ul>
-		<li><a target="_blank" href="../doc/tutorial.html">Tutorial&circ;</a>
+		<li class="external"><a target="_blank" href="../doc/tutorial.html">Tutorial</a>
 		<li><a target="content" href="../doc/faq.html">FAQ</a>
 		<li><a target="content" href="../doc/howto.html">Howtos</a>
-		<li><a target="_blank" href="../doc/jsdoc/index.html">API reference&circ;</a>
-		<li><a target="_blank" href="http://fancytree.googlecode.com">Project page&circ;</a>
-		<li><a target="_blank" href="http://jsfiddle.net/mar10/4GjRv/">Fiddle&circ;</a>
+		<li class="external"><a target="_blank" href="../doc/jsdoc/index.html">API reference</a>
+		<li class="external"><a target="_blank" href="http://fancytree.googlecode.com">Project page</a>
+		<li class="external"><a target="_blank" href="http://jsfiddle.net/mar10/4GjRv/">Fiddle</a>
 		</ul>
 	<li class="folder expanded"> Examples
 		<ul>
@@ -139,7 +153,7 @@ span.fancytree-active .fancytree-title {
 			<li><a target="content" href="sample-form.html">Embed in forms</a>
 			<li class="folder">Extensions
 				<ul>
-				<li><a target="_blank" href="sample-ext-persist.html">Persist&circ;</a>
+				<li class="external"><a target="_blank" href="sample-ext-persist.html">Persist</a>
 				<li><a target="content" href="sample-ext-dnd.html">Drag'n'drop</a>
 				<li><a target="content" href="sample-ext-table.html">Table</a>
 				<li><a target="content" href="sample-ext-columnview.html">Column view</a>
@@ -159,12 +173,12 @@ span.fancytree-active .fancytree-title {
 				</ul>
 			<li class="folder">Test
 				<ul>
-				<li><a target="_blank" href="../test/unit/test-core.html">Core unit tests&circ;</a>
-				<li><a target="_blank" href="../test/unit/test-jQuery-latest.html">Core unit tests (latest jQuery)&circ;</a>
-				<li><a target="_blank" href="../test/unit/test-jQuery-legacy.html">Core unit tests (oldest jQuery)&circ;</a>
-				<li><a target="_blank" href="../test/unit/test-jQuery-20.html">Core unit tests (jQueryUI 2.0)&circ;</a>
+				<li class="external"><a target="_blank" href="../test/unit/test-core.html">Core unit tests</a>
+				<li class="external"><a target="_blank" href="../test/unit/test-jQuery-latest.html">Core unit tests (latest jQuery)</a>
+				<li class="external"><a target="_blank" href="../test/unit/test-jQuery-legacy.html">Core unit tests (oldest jQuery)</a>
+				<li class="external"><a target="_blank" href="../test/unit/test-jQuery-20.html">Core unit tests (jQueryUI 2.0)</a>
 				<li><a target="content" href="test-ext-dnd.html">Drag'n'drop</a>
-				<li><a target="_blank" href="../test/unit/test-bench.html">Benchmarks&circ;</a>
+				<li class="external"><a target="_blank" href="../test/unit/test-bench.html">Benchmarks</a>
 				<li><a target="content" href="sample-pyserver.html">Local server</a>
 				<li class="folder">DTD
 					<ul>

@@ -48,6 +48,7 @@ $.ui.fancytree.registerExtension("menu", {
 		position: {},    //
 		create: $.noop,  //
 		open: $.noop,    //
+		focus: $.noop,   //
 		select: $.noop,  //
 		close: $.noop    //
 	},

@@ -66,9 +66,9 @@ $.ui.fancytree.registerExtension("columnview", {
 		$ul.detach().appendTo($tdFirst);
 
 		// Force some required options
-        tree.widget.options.autoCollapse = true;
+		tree.widget.options.autoCollapse = true;
 //      tree.widget.options.autoActivate = true;
-        tree.widget.options.fx = false;
+		tree.widget.options.fx = false;
 		tree.widget.options.clickFolderMode = 1;
 
 		// Make sure that only active path is expanded when a node is activated:
@@ -118,16 +118,16 @@ $.ui.fancytree.registerExtension("columnview", {
 		// Render standard nested <ul> - <li> hierarchy
 		this._super(ctx, force, deep, collapsed, _recursive);
 		// Remove expander and add a trailing triangle instead
-        var tree = ctx.tree,
-            node = ctx.node,
-            $span = $(node.span);
+		var tree = ctx.tree,
+			node = ctx.node,
+			$span = $(node.span);
 		$span.find("span.fancytree-expander").remove();
 		if(node.hasChildren() !== false && !$span.find("span.fancytree-cv-right").length){
 			$span.append($("<span class='fancytree-icon fancytree-cv-right'>"));
 		}
 		// Move <ul> with children into the appropriate <td>
 		if(node.ul){
-		    node.ul.style.display = ""; // might be hidden if RIGHT was pressed
+			node.ul.style.display = ""; // might be hidden if RIGHT was pressed
 			var level = node.getLevel();
 			if(level < tree.columnCount){
 				var $tdChild = $(">td", tree.tr).eq(level),
