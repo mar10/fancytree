@@ -12,11 +12,7 @@
 	<script src="../lib/jquery.configurator.js" type="text/javascript"></script>
 
 	<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?autoload=true&amp;skin=sons-of-obsidian"></script>
-<!--
-	<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?autoload=true&amp;skin=sunburst"></script>
-	<link href="../lib/prettify.css" rel="stylesheet">
-	<script src="../lib/prettify.js" type="text/javascript"></script>
- -->
+
 	<!-- Start_Exclude: This block is not part of the sample code -->
 	<link href="sample.css" rel="stylesheet" type="text/css">
 	<script src="sample.js" type="text/javascript"></script>
@@ -44,8 +40,8 @@ var OPT_LIST = [
 	 hint: "Automatically activate a node when it is focused (using keys)."},
 	{name: "autoCollapse", value: false,
 	 hint: "Automatically collapse all siblings, when a node is expanded."},
-	{name: "autoFocus", value: true,
-	 hint: "Set focus to first child, when expanding or lazy-loading."},
+//	{name: "autoFocus", value: true,
+//	 hint: "Set focus to first child, when expanding or lazy-loading."},
 	{name: "clickFolderMode", value: [{name: "activate", value: 1},
 									  {name: "expand", value: 2},
 									  {name: "activate and expand", value: 3},
@@ -59,11 +55,11 @@ var OPT_LIST = [
 //   hint: "0:quiet, 1:normal, 2:debug"},
 	{name: "disabled", value: false,
 	 hint: "Disable control"},
-	{name: "fx", value: null,
-	 hint: 'Animations, e.g. null or { height: "toggle", duration: 200 }'},
+//	{name: "fx", value: null,
+//	 hint: 'Animations, e.g. null or { height: "toggle", duration: 200 }'},
 	{name: "generateIds", value: false,
 	 hint: "Generate id attributes like <span id='fancytree-id-KEY'>"},
-	{name: "idPrefix", value: "fancytree-id-",
+	{name: "idPrefix", value: "ft_",
 	 hint: 'Used to generate node id´s like <span id="fancytree-id-<key>">.'},
 	{name: "keyboard", value: true,
 	 hint: "Support keyboard navigation."},
@@ -73,15 +69,15 @@ var OPT_LIST = [
 	 hint: "1: root node is not collapsible"},
 //    {name: "nolink", value: false,
 //     hint: "Use <span> instead of <a> tags for all nodes"},
-	{name: "persist", value: false,
-	 hint: "Persist expand-status to a cookie"},
+//	{name: "persist", value: false,
+//	 hint: "Persist expand-status to a cookie"},
 	{name: "selectMode", value: [{name: "single", value: 1},
 								 {name: "multi", value: 2, selected: true},
 								 {name: "multi-hier", value: 3}],
 	 hint: "1:single, 2:multi, 3:multi-hier"},
-	{name: "strings", value: {loading: "Loading&#8230;",
-							  loadError: "Load error!"},
-	 hint: "Translations"},
+//	{name: "strings", value: {loading: "Loading&#8230;",
+//							  loadError: "Load error!"},
+//	 hint: "Translations"},
 	{name: "tabbable", value: true,
 	 hint: "Whole tree behaves as one single control"}
 	];

@@ -1993,7 +1993,9 @@ Fancytree.prototype = /**@lends Fancytree*/{
 				}
 				node.span = document.createElement("span");
 				node.span.className = "fancytree-node";
-				$(node.span).attr("aria-labelledby", "ftal_" + node.key);
+				if(aria){
+					$(node.span).attr("aria-labelledby", "ftal_" + node.key);
+				}
 				node.li.appendChild(node.span);
 				// Note: we don't add the LI to the DOM know, but only after we
 				// added all sub elements (hoping that this performs better since
@@ -2073,6 +2075,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		var node = ctx.node,
 			tree = ctx.tree,
 			opts = ctx.options,
+			aria = opts.aria,
 			level = node.getLevel(),
 			ares = [];
 		if(title !== undefined){
@@ -2087,27 +2090,40 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		// TODO: optiimize this if clause
 		if( level < opts.minExpandLevel ) {
 			if(level > 1){
-				ares.push("<span role='button' class='fancytree-expander'></span>");
+				if(aria){
+					ares.push("<span role='button' class='fancytree-expander'></span>");
+				}else{
+					ares.push("<span class='fancytree-expander'></span>");
+				}
 			}
 			// .. else (i.e. for root level) skip expander/connector alltogether
 		} else {
-			ares.push("<span role='button' class='fancytree-expander'></span>");
+			if(aria){
+				ares.push("<span role='button' class='fancytree-expander'></span>");
+			}else{
+				ares.push("<span class='fancytree-expander'></span>");
+			}
 		}
 		// Checkbox mode
 		if( opts.checkbox && node.hideCheckbox !== true && !node.isStatusNode ) {
-			ares.push("<span class='fancytree-checkbox' role='checkbox'></span>");
+			if(aria){
+				ares.push("<span role='checkbox' class='fancytree-checkbox'></span>");
+			}else{
+				ares.push("<span class='fancytree-checkbox'></span>");
+			}
 		}
 		// folder or doctype icon
-		var icon = node.data.icon;
+		var icon = node.data.icon,
+			role = aria ? " role='img'" : "";
 		if ( icon ) {
 			var imageSrc = (icon.charAt(0) === "/") ? icon : (opts.imagePath + icon);
 			ares.push("<img src='" + imageSrc + "' alt='' />");
 		} else if ( node.data.iconclass ) {
 			// TODO: review and test and document
-			ares.push("<span role='img' class='fancytree-custom-icon" + " " + node.data.iconclass +  "'></span>");
+			ares.push("<span " + role + " class='fancytree-custom-icon" + " " + node.data.iconclass +  "'></span>");
 		} else if ( icon !== false ) {
 			// icon == false means 'no icon', icon == null means 'default icon'
-			ares.push("<span role='img' class='fancytree-icon'></span>");
+			ares.push("<span " + role + " class='fancytree-icon'></span>");
 		}
 		// node title
 		var nodeTitle = "";
@@ -2117,11 +2133,12 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		if(!nodeTitle){
 			// TODO: escape tooltip string
 			var tooltip = node.tooltip ? " title='" + node.tooltip.replace(/\"/g, '&quot;') + "'" : "",
-				id = opts.aria ? " id='ftal_" + node.key + "'" : "";
+				id = aria ? " id='ftal_" + node.key + "'" : "",
+				role = aria ? " role='treeitem'" : "";
 //				href = node.data.href || "#";
 //			if( opts.nolink || node.nolink ) {
 //            nodeTitle = "<span role='treeitem' tabindex='-1' class='fancytree-title'" + id + tooltip + ">" + node.title + "</span>";
-			nodeTitle = "<span role='treeitem' class='fancytree-title'" + id + tooltip + ">" + node.title + "</span>";
+			nodeTitle = "<span " + role + " class='fancytree-title'" + id + tooltip + ">" + node.title + "</span>";
 //			} else {
 //				nodeTitle = "<a href='" + href + "' tabindex='-1' class='fancytree-title'" + tooltip + ">" + node.title + "</a>";
 //			}
@@ -2903,6 +2920,7 @@ $.widget("ui.fancytree",
 		aria: false, // TODO: default to true
 		autoActivate: true,
 		autoCollapse: false,
+//      autoFocus: false,
 		checkbox: false,
 		/**defines click behavior*/
 		clickFolderMode: 4,
@@ -2911,8 +2929,12 @@ $.widget("ui.fancytree",
 		extensions: [],
 		fx: { height: "toggle", duration: 200 },
 //		hooks: {},
+		generateIds: false,
 		idPrefix: "ft_",
+		keyboard: true,
 		keyPathSeparator: "/",
+		minExpandLevel: 1,
+		selectMode: 2,
 		strings: {
 			loading: "Loading&#8230;",
 			loadError: "Load error!"
@@ -2999,6 +3021,7 @@ $.widget("ui.fancytree",
 		case "aria":
 		case "checkbox":
 		case "minExpandLevel":
+		case "tabbable":
 //		case "nolink":
 			this.tree._callHook("treeCreate", this.tree);
 			rerender = true;
@@ -3387,7 +3410,7 @@ $.extend($.ui.fancytree,
 /*
 if( typeof define === "function" && define.amd ) {
 	define( ["jquery"], function () {
-		return jQuery.ui.fancytree;
+»		return jQuery.ui.fancytree;
 	});
 }
 */
