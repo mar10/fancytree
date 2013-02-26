@@ -1835,10 +1835,10 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			_assert(childNode === children[0]);
 			return this.nodeRemoveChildren(ctx);
 		}
-		if( this.activeNode && (childNode === this.activeNode || this.activeNode.isDescendentOf(childNode))){
-			this.activeNode.deactivate(); // TODO: don't fire events
+		if( this.activeNode && (childNode === this.activeNode || this.activeNode.isDescendantOf(childNode))){
+			this.activeNode.setActive(false); // TODO: don't fire events
 		}
-		if( this.focusNode && (childNode === this.focusNode || this.focusNode.isDescendentOf(childNode))){
+		if( this.focusNode && (childNode === this.focusNode || this.focusNode.isDescendantOf(childNode))){
 			this.focusNode = null;
 		}
 		// TODO: persist must take care to clear select and expand cookies
@@ -1879,10 +1879,10 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		if(!children){
 			return;
 		}
-		if( this.activeNode && this.activeNode.isDescendentOf(node)){
-			this.activeNode.deactivate(); // TODO: don't fire events
+		if( this.activeNode && this.activeNode.isDescendantOf(node)){
+			this.activeNode.setActive(false); // TODO: don't fire events
 		}
-		if( this.focusNode && this.focusNode.isDescendentOf(node)){
+		if( this.focusNode && this.focusNode.isDescendantOf(node)){
 			this.focusNode = null;
 		}
 		// TODO: persist must take care to clear select and expand cookies
