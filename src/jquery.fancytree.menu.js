@@ -25,20 +25,6 @@
 //     return;
 // }
 
-
-/*******************************************************************************
- * Private functions and variables
- */
-function _assert(cond, msg){
-	msg = msg || "";
-	if(!cond){
-		$.error("Assertion failed " + msg);
-	}
-}
-
-/*******************************************************************************
- * Extension code
- */
 $.ui.fancytree.registerExtension("menu", {
 	version: "1.0.0pre",
 	// Default options for this extension.
@@ -46,7 +32,9 @@ $.ui.fancytree.registerExtension("menu", {
 		enable: true,
 		selector: null,  //
 		position: {},    //
+		// Events:
 		create: $.noop,  //
+		beforeOpen: $.noop,    //
 		open: $.noop,    //
 		focus: $.noop,   //
 		select: $.noop,  //
@@ -55,65 +43,110 @@ $.ui.fancytree.registerExtension("menu", {
 	// Override virtual methods for this extension.
 	// `this`       : is this extension object
 	// `this._base` : the Fancytree instance
-	// `this._super`: the virtual function that was overriden (member of prev. extension or Fancytree)
+	// `this._super`: the virtual function that was overridden (member of prev. extension or Fancytree)
 	treeInit: function(ctx){
-		this._super(ctx);
-		ctx.options.filter = false;
-
 		var opts = ctx.options,
-			tree = ctx.tree,
-			$menu = null,
-			currentNode = null;
-		// Use jquery.ui.menu / jquery.ui.popup
-		// NOTE: The trigger option is not yet part of the official release!
-		$(opts.menu.selector).menu({
-			trigger: tree.$div,
-			create: function(event, ui){
-					$menu = $(this).menu("widget");
-					var data = {
-						tree: tree,
-						menu: $menu
-						};
-//                    data.menu.position($.extend({my: "left top", at: "left bottom", of: event}, opts.menu.position));
-					opts.menu.create.call(tree, event, data);
-				},
-			select: function(event, ui){
-				var data = {
-						tree: tree,
-						node: currentNode,
-						menu: $menu,
-						menuItem: ui.item,
-						menuId: ui.item.find(">a").attr("href")
-						};
-					opts.menu.select.call(tree, event, data);
-				}
-		}).bind("popupopen", function(event){
-//            alert("pop on " + $.ui.fancytree.getNode(event.originalEvent));
-			$menu.position($.extend({my: "left top", at: "left bottom", of: event}, opts.menu.position));
-			currentNode = $.ui.fancytree.getNode(event.originalEvent);
-			var data = {
-					tree: tree,
-					node: currentNode,
-					menu: $menu
-					};
-			opts.menu.open.call(tree, event, data);
-		}).bind("popupclose", function(event){
-			var data = {
-					tree: tree,
-					menu: $menu
-					};
-			opts.menu.close.call(tree, event, data);
+			tree = ctx.tree;
+
+		this._super(ctx);
+
+		// Prepare an object that will be passed with menu events
+		tree.menu.data = {
+			tree: tree,
+			node: null,
+			$menu: null,
+			menuId: null
+		};
+
+//        tree.$container[0].oncontextmenu = function() {return false;};
+		// Replace the standard browser context menu with out own
+		tree.$container.delegate("span.fancytree-node", "contextmenu", function(event) {
+			var node = $.ui.fancytree.getNode(event),
+				ctx = {node: node, tree: node.tree, orgEvent: event, options: tree.options};
+			tree.menu._openMenu(ctx);
+			return false;
 		});
 
+		// Use jquery.ui.menu
+		$(opts.menu.selector).menu({
+			create: function(event, ui){
+				tree.menu.data.$menu = $(this).menu("widget");
+				var data = $.extend({}, tree.menu.data);
+				opts.menu.create.call(tree, event, data);
+			},
+			focus: function(event, ui){
+				var data = $.extend({}, tree.menu.data, {
+					menuItem: ui.item,
+					menuId: ui.item.find(">a").attr("href")
+				});
+				opts.menu.focus.call(tree, event, data);
+			},
+			select: function(event, ui){
+				var data = $.extend({}, tree.menu.data, {
+					menuItem: ui.item,
+					menuId: ui.item.find(">a").attr("href")
+				});
+				if( opts.menu.select.call(tree, event, data) !== false){
+					tree.menu._closeMenu(ctx);
+				}
+			}
+		}).hide();
 	},
 	treeDestroy: function(ctx){
 		this._super(ctx);
 	},
-	nodeClick: function(ctx) {
-		if($(".ui-menu").is(":visible")){
-			return false;
+	_openMenu: function(ctx){
+		var tree = ctx.tree,
+			opts = ctx.options,
+			$menu = $(opts.menu.selector);
+
+		tree.menu.data.node = ctx.node;
+		var data = $.extend({}, tree.menu.data);
+
+		if( opts.menu.beforeOpen.call(tree, ctx.orgEvent, data) === false){
+			return;
 		}
-		this._super(ctx);
+
+		$(document).bind("keydown.fancytree", function(event){
+			if( event.which === $.ui.keyCode.ESCAPE ){
+				tree.menu._closeMenu(ctx);
+			}
+		}).bind("mousedown.fancytree", function(event){
+			// Close menu when clicked outside menu
+			if( $(event.target).closest(".ui-menu-item").length === 0 ){
+				tree.menu._closeMenu(ctx);
+			}
+		});
+//        $menu.position($.extend({my: "left top", at: "left bottom", of: event}, opts.menu.position));
+		$menu
+			.css("position", "absolute")
+			.show()
+			.position({my: "left top", at: "right top", of: event, collision: "fit"})
+			.focus();
+
+		opts.menu.open.call(tree, ctx.orgEvent, data);
+	},
+	_closeMenu: function(ctx){
+		var tree = ctx.tree,
+			opts = ctx.options,
+			data = $.extend({}, tree.menu.data);
+		if( opts.menu.close.call(tree, ctx.orgEvent, data) === false){
+			return;
+		}
+		var $menu = $(opts.menu.selector);
+		$(document).unbind("keydown.fancytree, mousedown.fancytree");
+		$menu.hide();
+		tree.menu.data.node = null;
 	}
+//	,
+//	nodeClick: function(ctx) {
+//		var event = ctx.orgEvent;
+//		if(event.which === 2 || (event.which === 1 && event.ctrlKey)){
+//			event.preventDefault();
+//			ctx.tree.menu._openMenu(ctx);
+//			return false;
+//		}
+//		this._super(ctx);
+//	}
 });
 }(jQuery));

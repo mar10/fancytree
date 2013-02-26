@@ -2077,7 +2077,8 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			opts = ctx.options,
 			aria = opts.aria,
 			level = node.getLevel(),
-			ares = [];
+			ares = [],
+			role;
 		if(title !== undefined){
 			node.title = title;
 		}
@@ -2113,8 +2114,8 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			}
 		}
 		// folder or doctype icon
-		var icon = node.data.icon,
-			role = aria ? " role='img'" : "";
+		var icon = node.data.icon;
+		role = aria ? " role='img'" : "";
 		if ( icon ) {
 			var imageSrc = (icon.charAt(0) === "/") ? icon : (opts.imagePath + icon);
 			ares.push("<img src='" + imageSrc + "' alt='' />");
@@ -2133,8 +2134,8 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		if(!nodeTitle){
 			// TODO: escape tooltip string
 			var tooltip = node.tooltip ? " title='" + node.tooltip.replace(/\"/g, '&quot;') + "'" : "",
-				id = aria ? " id='ftal_" + node.key + "'" : "",
-				role = aria ? " role='treeitem'" : "";
+				id = aria ? " id='ftal_" + node.key + "'" : "";
+			role = aria ? " role='treeitem'" : "";
 //				href = node.data.href || "#";
 //			if( opts.nolink || node.nolink ) {
 //            nodeTitle = "<span role='treeitem' tabindex='-1' class='fancytree-title'" + id + tooltip + ">" + node.title + "</span>";
@@ -2354,10 +2355,10 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		// Trigger expand/collapse after expanding
 		dfd.done(function(){
 			ctx.tree._triggerNodeEvent(flag ? "expand" : "collapse", ctx);
-            if(opts.autoScroll){
-                // Scroll down to last child, but keep current node visible
-                node.getLastChild().scrollIntoView(true, node);
-            }
+			if(opts.autoScroll){
+				// Scroll down to last child, but keep current node visible
+				node.getLastChild().scrollIntoView(true, node);
+			}
 		});
 
 		// vvv Code below is executed after loading finished:
@@ -2466,9 +2467,9 @@ Fancytree.prototype = /**@lends Fancytree*/{
 //          if(ctx.options.autoActivate){
 //              tree.nodeSetActive(ctx, true);
 //          }
-            if(ctx.options.autoScroll){
-                node.scrollIntoView();
-            }
+			if(ctx.options.autoScroll){
+				node.scrollIntoView();
+			}
 			this._callHook("nodeRenderStatus", ctx);
 		}
 	},
@@ -2928,7 +2929,7 @@ $.widget("ui.fancytree",
 		autoActivate: true,
 		autoCollapse: false,
 //      autoFocus: false,
-        autoScroll: false,
+		autoScroll: false,
 		checkbox: false,
 		/**defines click behavior*/
 		clickFolderMode: 4,
@@ -3418,7 +3419,7 @@ $.extend($.ui.fancytree,
 /*
 if( typeof define === "function" && define.amd ) {
 	define( ["jquery"], function () {
-»		return jQuery.ui.fancytree;
+		return jQuery.ui.fancytree;
 	});
 }
 */

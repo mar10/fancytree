@@ -44,15 +44,22 @@
 				selector: "#myMenu",
 				position: {my: "center"},
 				create: function(event, data){
-//                  alert("Menu create " + data.menu + ", " + data.node);
+					$.ui.fancytree.debug("Menu create ", data.$menu);
+				},
+				beforeOpen: function(event, data){
+					$.ui.fancytree.debug("Menu beforeOpen ", data.$menu, data.node);
 				},
 				open: function(event, data){
-//                  alert("Menu create " + data.menu + ", " + data.node);
+					$.ui.fancytree.debug("Menu open ", data.$menu, data.node);
+				},
+				focus: function(event, data){
+					$.ui.fancytree.debug("Menu focus ", data.menuId, data.node);
 				},
 				select: function(event, data){
-					alert("Menu command " + data.menuId + ", " + data.node);
+					alert("Menu select " + data.menuId + ", " + data.node);
 				},
 				close: function(event, data){
+					$.ui.fancytree.debug("Menu close ", data.$menu, data.node);
 				}
 			},
 			activate: function(e, data) {
@@ -76,16 +83,9 @@
 <body class="example">
 	<h1>Example: 'menu' extension</h1>
 	<div class="description">
-		This sample shows context menu support using
-		<a href="http://api.jqueryui.com/menu/" target="_blank">http://api.jqueryui.com/menu/</a>
-		and <a href="http://docs.jquery.com/UI/Popup" target="_blank">http://docs.jquery.com/UI/Popup</a>.
+		Utilize the standard jQuery menu plugin <a href="http://api.jqueryui.com/menu/" target="_blank" class="external">
+		http://api.jqueryui.com/menu/</a> (requires jQueryUI 1.9+).
 	</div>
-	<p class="warning">
-		TODO: this is work in progress.
-		<br>
-		Note that jQuery.menu is part of jQueryUI 1.9+ and jQuery.popup is not yet released.
-		See the "Tweaks - Context menu" for a working sample.
-	</p>
 	<div>
 		<label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
 	</div>
@@ -94,14 +94,14 @@
 	</div>
 
 	<!-- Definition of context menu -->
-	<ul id="myMenu" class="contextMenu ui-helper-hiddenXXX">
+	<ul id="myMenu" class="contextMenu ui-helper-hidden">
 		<li class="edit"><a href="#edit">Edit</a></li>
-		<li class="cut separator"><a href="#cut">Cut</a></li>
+		<li class="cut"><a href="#cut">Cut</a></li>
 		<li class="copy"><a href="#copy">Copy</a></li>
 		<li class="paste"><a href="#paste">Paste</a></li>
 		<li class="ui-state-disabled"><a href="#delete">Delete</a></li>
 		<li>---</li>
-		<li class="quit separator"><a href="#quit">Quit</a></li>
+		<li class="quit"><a href="#quit">Quit</a></li>
 		<li><a href="#save"><span class="ui-icon ui-icon-disk"></span>Save</a></li>
 	</ul>
 
