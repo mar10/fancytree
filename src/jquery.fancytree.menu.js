@@ -121,7 +121,7 @@ $.ui.fancytree.registerExtension("menu", {
 		$menu
 			.css("position", "absolute")
 			.show()
-			.position({my: "left top", at: "right top", of: event, collision: "fit"})
+			.position({my: "left top", at: "right top", of: ctx.orgEvent, collision: "fit"})
 			.focus();
 
 		opts.menu.open.call(tree, ctx.orgEvent, data);
