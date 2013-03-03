@@ -384,16 +384,17 @@ test("FancytreeNode class", function() {
 	equal(node.getParent().key, "10_1", "getParent()");
 
 //  getParentList: function(includeRoot, includeSelf) {
+	var ROOT_NODE_KEY = tree.rootNode.key;
 	deepEqual(_getNodeKeyArray(node.getParentList()),
 			["10", "10_1"], "getParentList()");
 	deepEqual(_getNodeKeyArray(node.getParentList(false, false)),
 			["10", "10_1"], "getParentList(false, false)");
 	deepEqual(_getNodeKeyArray(node.getParentList(true, true)),
-			["root_1", "10", "10_1", "10_1_2"], "getParentList(true, true)");
+			[ROOT_NODE_KEY, "10", "10_1", "10_1_2"], "getParentList(true, true)");
 	deepEqual(_getNodeKeyArray(node.getParentList(false, true)),
 			["10", "10_1", "10_1_2"], "getParentList(false, true)");
 	deepEqual(_getNodeKeyArray(node.getParentList(true, false)),
-			["root_1", "10", "10_1"], "getParentList(true, false)");
+			[ROOT_NODE_KEY, "10", "10_1"], "getParentList(true, false)");
 
 //  getPrevSibling: function() {
 //  hasChildren: function() {
