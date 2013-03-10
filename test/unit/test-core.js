@@ -493,7 +493,8 @@ test("Fancytree class", function() {
 	deepEqual(_getNodeKeyArray(tree.getSelectedNodes(true)),
 			["10_2"], "getSelectedNodes(true)");
 
-//    reload: function(source) {
+//  reactivate: function(source) {
+//  reload: function(source) {
 //    render: function(force, deep) {
 
 	equal(tree.toString(), "<Fancytree(#" + tree._id + ")>", "toString()");

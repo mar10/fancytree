@@ -25,12 +25,6 @@ body {
 	text-decoration: none;
 }
 
-a.external
-{
-	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAMAAAC67D+PAAAAFVBMVEVmmcwzmcyZzP8AZswAZv////////9E6giVAAAAB3RSTlP///////8AGksDRgAAADhJREFUGFcly0ESAEAEA0Ei6/9P3sEcVB8kmrwFyni0bOeyyDpy9JTLEaOhQq7Ongf5FeMhHS/4AVnsAZubxDVmAAAAAElFTkSuQmCC") 100% 50% no-repeat;
-	padding-right: 13px;
-}
-/* This works with Safari: */
 span.external span.fancytree-title:after
 {
 	content: "";
@@ -38,9 +32,6 @@ span.external span.fancytree-title:after
 	padding-right: 13px;
 }
 
-a:hover {
-	text-decoration: underline;
-}
 div#tree {
 	position: absolute;
 	height: 95%;
@@ -52,21 +43,10 @@ ul.fancytree-container {
 	height: 100%;
 	width: 100%;
 	background-color: transparent;
-/*
-	border-radius: 15px;
-	box-shadow: inset 0px 2px 13px #999;
-*/
 }
-ul.fancytree-container a {
-	color: white;
-	border: 1px solid transparent;
-	background-color: transparent;
-}
-ul.fancytree-container a:hover {
-	background-color: transparent;
-}
-ul.fancytree-container a:focus, span.fancytree-focused a:link {
-	background-color: gray;
+span.fancytree-focused span.fancytree-title
+{
+    outline-color: white;
 }
 .fancytree-title:hover,
 span.fancytree-active .fancytree-title {
@@ -81,7 +61,8 @@ span.fancytree-active .fancytree-title {
 //			autoFocus: true,
 			minExpandLevel: 2,
 			clickFolderMode: 3, // expand with single click
-			autoCollapse: true,
+            autoActivate: false,
+            autoCollapse: true,
 			autoScroll: true,
 			tabbable: false, // we don't want the focus frame
 			focus: function(e, data) {
@@ -94,12 +75,16 @@ span.fancytree-active .fancytree-title {
 			blur: function(e, data) {
 				data.node.scheduleAction("cancel");
 			},
-//            activate: function(e, data){
-			click: function(e, data){ // handle click instead of activate, to allow re-loads
+            activate: function(e, data){
+                var node = data.node;
+                if(node.data.href){
+                    window.open(node.data.href, node.data.target);
+                }
+            },
+			click: function(e, data){ // allow re-loads
 				var node = data.node;
-//            alert("node.data=" + JSON.stringify(node.data));
-				if(node.data.href){
-					window.open(node.data.href, node.data.target);
+				if(node.isActive() && node.data.href){
+					data.tree.reactivate();
 				}
 			}
 		});

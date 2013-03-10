@@ -2827,7 +2827,18 @@ Fancytree.prototype = /**@lends Fancytree*/{
 //	    var node = ctx.tree.focusNode || ctx.tree.rootNode.getFirstChild();
 //		node.setFocus();
 	},
-	// TODO: reactivate()
+	reactivate: function(setFocus) {
+		// Re-fire onQueryActivate and onActivate events.
+		var node = this.activeNode;
+//		this.logDebug("reactivate %o", node);
+		if( node ) {
+			this.activeNode = null; // Force re-activating
+			node.setActive();
+			if( setFocus ){
+				node.setFocus();
+			}
+		}
+	},
 	// TODO: redraw()
 	/** Reload tree from source and return a promise.
 	 * @param source
