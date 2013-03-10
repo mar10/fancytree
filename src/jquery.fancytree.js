@@ -3180,8 +3180,17 @@ var FT = $.ui.fancytree;
 
 function consoleApply(method, args){
 	var fn = window.console ? window.console[method] : null;
-	if(fn && fn.apply){
-		fn.apply(window.console, args);
+	if(fn){
+		if(fn.apply){
+			fn.apply(window.console, args);
+		}else{
+			// IE?
+			var s = "";
+			for( var i=0; i<args.length; i++){
+				s += args[i];
+			}
+			fn(s);
+		}
 	}
 }
 
