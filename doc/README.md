@@ -1,4 +1,4 @@
-#Fancytree
+# Fancytree
 
 API documentation for [Fancytree](http://fancytree.googlecode.com)
 

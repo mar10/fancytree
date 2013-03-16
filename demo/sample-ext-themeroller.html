@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE html>
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
@@ -25,6 +25,17 @@
 
 	<link type="text/css" rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/start/jquery-ui.css" />
 	<script type="text/javascript" src="../lib/Super-Theme-Switcher/jquery.themeswitcher.js"></script>
+
+	<style type="text/css">
+	    body{ 
+/*	       font: 62.5% "Trebuchet MS", sans-serif; 
+	       margin: 50px;
+	       */
+	    }
+		.ui-widget {
+		    font-size: 0.8em;
+		}
+	</style>
 
 	<!-- End_Exclude -->
 <style type="text/css">
@@ -55,20 +66,21 @@
 <script type="text/javascript">
 	$(function(){
 		<!-- Start_Exclude: This block is not part of the sample code -->
-	    $("#switcher").themeswitcher({
-            jqueryuiversion: "1",
-            imgpath: "../lib/Super-Theme-Switcher/images/",
-            loadTheme: "Sunny"
-        });
+		$("#switcher").themeswitcher({
+			jqueryuiversion: "1",
+			imgpath: "../lib/Super-Theme-Switcher/images/",
+			loadTheme: "Smoothness"
+		});
 		<!-- End_Exclude -->
 		// Attach the fancytree widget to an existing <div id="tree"> element
 		// and pass the tree options as an argument to the fancytree() function:
 		$("#tree").fancytree({
 			extensions: ["themeroller"],
 			checkbox: true,
-			source: {
-				url: "ajax-tree-plain.json"
-			},
+			source: [
+				{title: "Node 1"},
+				{title: "Node 2"}
+			],
 			activate: function(e, data) {
 			},
 			lazyload: function(e, data) {
@@ -116,7 +128,9 @@
 	</div>
 	<div>
 		<label for="switcher">Theme:</label> <div id="switcher"></div>
+		<!--
 		<label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
+		-->
 	</div>
 
 	<!-- Add a <table> element where the tree should appear: -->
