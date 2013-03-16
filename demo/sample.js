@@ -34,6 +34,7 @@
 					hrefs = [],
 					$link = null,
 					initialChoice = undefined;
+				this.data("options", opts);
 				// Find <link> tag, figure out current setting and mark for
 				// later access
 				$.each(opts.choices, function(){
@@ -74,6 +75,15 @@
 						}, 100);
 					}
 				});
+			},
+			option: function(name, value) {
+				var opts = this.data("options");
+				alert(name + this + "; " + opts);
+				if(typeof value !== "undefined"){
+					opts[name] = value;
+				}else{
+					return opts[name];
+				}
 			},
 			change: function(href) {
 				this.val("");
