@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE html>
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
@@ -46,7 +46,7 @@ ul.fancytree-container {
 }
 span.fancytree-focused span.fancytree-title
 {
-    outline-color: white;
+	outline-color: white;
 }
 .fancytree-title:hover,
 span.fancytree-active .fancytree-title {
@@ -61,8 +61,8 @@ span.fancytree-active .fancytree-title {
 //			autoFocus: true,
 			minExpandLevel: 2,
 			clickFolderMode: 3, // expand with single click
-            autoActivate: false,
-            autoCollapse: true,
+			autoActivate: false,
+			autoCollapse: true,
 			autoScroll: true,
 			tabbable: false, // we don't want the focus frame
 			focus: function(e, data) {
@@ -75,12 +75,12 @@ span.fancytree-active .fancytree-title {
 			blur: function(e, data) {
 				data.node.scheduleAction("cancel");
 			},
-            activate: function(e, data){
-                var node = data.node;
-                if(node.data.href){
-                    window.open(node.data.href, node.data.target);
-                }
-            },
+			activate: function(e, data){
+				var node = data.node;
+				if(node.data.href){
+					window.open(node.data.href, node.data.target);
+				}
+			},
 			click: function(e, data){ // allow re-loads
 				var node = data.node;
 				if(node.isActive() && node.data.href){
@@ -168,12 +168,12 @@ span.fancytree-active .fancytree-title {
 				<li><a target="content" href="sample-pyserver.html">Local server</a>
 				<li class="folder">DTD
 					<ul>
-					<li><a target="content" href="test-dtd-none.html">No DTD</a>
-					<li><a target="content" href="test-dtd-html4-transitional.html">HTML4 transitional</a>
-					<li><a target="content" href="test-dtd-html4-strict.html">HTML4 strict</a>
-					<li><a target="content" href="test-dtd-html5.html">HTML5</a>
-					<li><a target="content" href="test-dtd-xml-transitional.html">XHTML transitional</a>
-					<li><a target="content" href="test-dtd-xml-strict.html">XHTML strict</a>
+					<li><a target="content" href="../test/doctypes/doctype-none.html">No DTD</a>
+					<li><a target="content" href="../test/doctypes/doctype-html4-loose.html">HTML4 transitional</a>
+					<li><a target="content" href="../test/doctypes/doctype-html4-strict.html">HTML4 strict</a>
+					<li><a target="content" href="../test/doctypes/doctype-html5.html">HTML5</a>
+					<li><a target="content" href="../test/doctypes/doctype-xml-transitional.html">XHTML transitional</a>
+					<li><a target="content" href="../test/doctypes/doctype-xml-strict.html">XHTML strict</a>
 					</ul>
 				</ul>
 		</ul>

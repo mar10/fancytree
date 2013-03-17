@@ -451,8 +451,7 @@ $.ui.fancytree.registerExtension("dnd",
 					}else if(hitMode === "after" && otherNode && node === otherNode.getPrevSibling()){
 						logMsg("    drop before source node prevented");
 						hitMode = null;
-					}else if(hitMode === "over" && otherNode
-							&& otherNode.parent === node && otherNode.isLastSibling() ){
+					}else if(hitMode === "over" && otherNode && otherNode.parent === node && otherNode.isLastSibling() ){
 						logMsg("    drop last child over own parent prevented");
 						hitMode = null;
 					}
@@ -461,8 +460,7 @@ $.ui.fancytree.registerExtension("dnd",
 				ui.helper.data("hitMode", hitMode);
 			}
 			// Auto-expand node (only when 'over' the node, not 'before', or 'after')
-			if(hitMode === "over"
-				&& dnd.autoExpandMS && node.hasChildren() !== false && !node.expanded) {
+			if(hitMode === "over" && dnd.autoExpandMS && node.hasChildren() !== false && !node.expanded) {
 				node.scheduleAction("expand", dnd.autoExpandMS);
 			}
 			if(hitMode && dnd.onDragOver){

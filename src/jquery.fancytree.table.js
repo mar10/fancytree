@@ -112,7 +112,7 @@ $.ui.fancytree.registerExtension("table", {
 		}
 		for(var i=0; i<tree.columnCount; i++) {
 			if(ctx.options.table.nodeColumnIdx === i){
-				$row.append("<td" + tdRole + "><span class='fancytree-title'></span></td>");
+				$row.append("<td" + tdRole + "><span class='fancytree-node'></span></td>");
 			}else{
 				$row.append("<td" + tdRole + ">");
 			}
@@ -198,7 +198,7 @@ $.ui.fancytree.registerExtension("table", {
 //                  node.li.role = "treeitem";
 					$(node.tr).attr("aria-labelledby", "ftal_" + node.key);
 				}
-				node.span = $("span.fancytree-title", node.tr).get(0);
+				node.span = $("span.fancytree-node", node.tr).get(0);
 				// Set icon, link, and title (normally this is only required on initial render)
 				this.nodeRenderTitle(ctx);
 				// Allow tweaking, binding, after node was created for the first time

@@ -78,7 +78,6 @@
 			},
 			option: function(name, value) {
 				var opts = this.data("options");
-				alert(name + this + "; " + opts);
 				if(typeof value !== "undefined"){
 					opts[name] = value;
 				}else{

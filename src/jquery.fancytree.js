@@ -1154,7 +1154,7 @@ function Fancytree(widget){
 
 	// Create root markup
 	$ul = $("<ul>", {
-		"class": "fancytree-container"
+		"class": "ui-fancytree fancytree-container"
 	}).appendTo(this.$div);
 	this.$container = $ul;
 	this.rootNode.ul = $ul[0];
@@ -2828,9 +2828,8 @@ Fancytree.prototype = /**@lends Fancytree*/{
 //		node.setFocus();
 	},
 	reactivate: function(setFocus) {
-		// Re-fire onQueryActivate and onActivate events.
+		// Re-fire beforeactivate and activate events.
 		var node = this.activeNode;
-//		this.logDebug("reactivate %o", node);
 		if( node ) {
 			this.activeNode = null; // Force re-activating
 			node.setActive();
@@ -2983,7 +2982,7 @@ $.widget("ui.fancytree",
 			selected: "fancytree-selected",
 			expanded: "fancytree-expanded",
 			lazy: "fancytree-lazy",
-			focused: "fancytree-focused ui-status-focus",
+			focused: "fancytree-focused ui-state-focus",
 			partsel: "fancytree-partsel",
 			lastsib: "fancytree-lastsib"
 		},
@@ -2994,8 +2993,7 @@ $.widget("ui.fancytree",
 	_create: function() {
 		this.tree = new Fancytree(this);
 
-		this.$source = this.source
-			|| this.element.data("type") === "json" ? this.element
+		this.$source = this.source || this.element.data("type") === "json" ? this.element
 			: this.element.find(">ul:first");
 		// Subclass Fancytree instance with all enabled extensions
 		var extensions = this.options.extensions,

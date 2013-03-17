@@ -380,6 +380,9 @@ table.fancytree-ext-table tbody tr td {
 	border: 1px solid lightgray;
 }
 */
+table.fancytree-ext-table {
+	border-collapse: collapse;
+}
 table.fancytree-ext-table tbody tr:hover {
 	background-color: #E5F3FB;
 	outline: 1px solid #70C0E7;

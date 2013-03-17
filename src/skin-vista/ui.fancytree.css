@@ -415,6 +415,9 @@ table.fancytree-ext-table tbody tr td {
 	border: 1px solid lightgray;
 }
 */
+table.fancytree-ext-table {
+	border-collapse: collapse;
+}
 table.fancytree-ext-table tbody tr.fancytree-focused {
 	background-color: #99DEFD;
 }
