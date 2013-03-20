@@ -82,16 +82,12 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks("grunt-contrib-concat");
 	grunt.loadNpmTasks("grunt-contrib-jshint");
 	grunt.loadNpmTasks("grunt-contrib-uglify");
-	// BLOCKED: https://github.com/gruntjs/grunt-contrib-qunit/issues/23
-//	grunt.loadNpmTasks("grunt-contrib-qunit");
+	grunt.loadNpmTasks("grunt-contrib-qunit");
 
-//  grunt.registerTask("default", "lint:beforeconcat concat lint:afterconcat min qunit");
-//	grunt.registerTask("default", ["jshint", "qunit"]);
     grunt.registerTask("default", ["jshint:beforeconcat", 
                                    "concat", 
                                    "jshint:afterconcat", 
                                    "uglify"]);
-	grunt.registerTask("build", ["jshint", ""]);
-//	grunt.registerTask("ci", ["jshint", "qunit"]);
-	grunt.registerTask("ci", ["jshint"]);
+	grunt.registerTask("build", ["default"]);
+	grunt.registerTask("ci", ["jshint", "qunit"]);
 };
