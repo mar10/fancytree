@@ -8,7 +8,7 @@ var $ = jQuery;
  */
 QUnit.log = function(data) {
 	if (window.console && window.console.log) {
-		window.console.log(data.result + " :: " + data.message);
+//		window.console.log(data.result + " :: " + data.message);
 	}
 };
 

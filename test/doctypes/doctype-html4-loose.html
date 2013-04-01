@@ -39,8 +39,8 @@
 <!-- Add code to initialize the tree when the document is loaded: -->
 <script type="text/javascript">
 	$(function(){
-        // Tell skinswitcher about theme location
-        $("select#skinswitcher").skinswitcher("option", "base", "../../src/");
+		// Tell skinswitcher about theme location
+		$("select#skinswitcher").skinswitcher("option", "base", "../../src/");
 		// Attach the fancytree widget to an existing <div id="tree"> element
 		// and pass the tree options as an argument to the fancytree() function:
 		$("#tree").fancytree({
@@ -49,8 +49,8 @@
 				url: "../unit/ajax-tree-plain.json"
 			},
 			dnd: {
-				preventVoidMoves: true, 
-				preventRecursiveMoves: true, 
+				preventVoidMoves: true,
+				preventRecursiveMoves: true,
 				autoExpandMS: 400,
 				onDragStart: function(node) {
 					return true;
