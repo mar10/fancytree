@@ -1,15 +1,22 @@
 {
-	"boss": true,
-	"browser": true,
+    "bitwise": true,
+    "camelcase": true,
 	"curly": true,
 	"eqeqeq": true,
-	"eqnull": true,
-	"expr": true,
-	"evil": true,
+    "expr": true,
+    "immed": true,
+    "latedef": true,
 	"newcap": true,
-	"noarg": true,
-	"smarttabs": true,
+    "noarg": true,
+    "nonew": true,
 	"undef": true,
+	
+    "boss": true,
+    "eqnull": false,
+    "evil": false,
+    "smarttabs": true,
+
+    "browser": true,
 	"globals": {
 		"define": true,
 		"jQuery": true
