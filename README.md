@@ -24,7 +24,8 @@ Martin
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/mar10/fancytree/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
-[What's New]: https://code.google.com/p/fancytree/wiki/WhatsNew
+[What's New]: https://github.com/mar10/fancytree/wiki/WhatsNew
+
 [take a look at the preview demo]: http://wwwendt.de/tech/fancytree/demo
 [let me know]: http://groups.google.com/group/dynatree
 [comment]: http://groups.google.com/group/dynatree
