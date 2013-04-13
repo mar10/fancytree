@@ -12,7 +12,7 @@
 	"undef": true,
 	
     "boss": true,
-    "eqnull": false,
+    "eqnull": true,
     "evil": false,
     "smarttabs": true,
 

@@ -212,7 +212,7 @@ function FancytreeNode(parent, obj){
 	}
 
 	// Fix missing key
-	if(!this.key){
+	if( this.key == null ){ // test for null OR undefined
 		this.key = "_" + (FT._nextNodeKey++);
 	}
 	// Fix tree.activeNode
