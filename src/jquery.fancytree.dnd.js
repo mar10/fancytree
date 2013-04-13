@@ -2,7 +2,7 @@
  * jquery.fancytree.dnd.js
  * Drag'n'drop extension for jquery.fancytree.js.
  *
- * Copyright (c) 2012, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2013, Martin Wendt (http://wwWendt.de)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://code.google.com/p/fancytree/wiki/LicenseInfo
  *
@@ -43,6 +43,7 @@ function _initDragAndDrop(tree) {
 			containment: false,
 			delay: 0,
 			distance: 4,
+			// TODO: merge Dynatree issue 419
 			revert: false,
 			scroll: true, // issue 244: enable scrolling (if ul.fancytree-container)
 			scrollSpeed: 7,

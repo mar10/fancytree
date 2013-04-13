@@ -14,6 +14,16 @@ module.exports = function (grunt) {
                     "* Copyright (c) <%= grunt.template.today('yyyy') %> <%= pkg.author.name %>;" +
                     " Licensed <%= _.pluck(pkg.licenses, 'type').join(', ') %> */"
         },
+        exec: {
+            tabfixSrc: {
+                // convert 4-spaces to tabs (requires https://code.google.com/p/tabfix/)
+                cmd: "tabfix -trx --no-backup -m*.css -m*.js src",
+                stdout: true
+            },
+            tabfixDoc: {
+                cmd: "tabfix -trx --no-backup -m*.css -m*.js -m*.html doc"
+            }
+        },
 		qunit: {
 			all: ["test/unit/test-core.html"]
 		},
@@ -83,11 +93,14 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks("grunt-contrib-jshint");
 	grunt.loadNpmTasks("grunt-contrib-uglify");
 	grunt.loadNpmTasks("grunt-contrib-qunit");
+    grunt.loadNpmTasks("grunt-exec");
 
     grunt.registerTask("default", ["jshint:beforeconcat", 
                                    "concat", 
                                    "jshint:afterconcat", 
                                    "uglify"]);
-	grunt.registerTask("build", ["default"]);
+    grunt.registerTask("build", ["exec:tabfixSrc",
+                                 "exec:tabfixDoc",
+                                 "default"]);
 	grunt.registerTask("ci", ["jshint", "qunit"]);
 };
