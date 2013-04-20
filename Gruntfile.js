@@ -20,8 +20,14 @@ module.exports = function (grunt) {
                 cmd: "tabfix -trx --no-backup -m*.css -m*.js src",
                 stdout: true
             },
+            tabfixDemo: {
+                cmd: "tabfix -trx --no-backup -m*.css -m*.js -m*.html demo"
+            },
             tabfixDoc: {
                 cmd: "tabfix -trx --no-backup -m*.css -m*.js -m*.html doc"
+            },
+            tabfixTest: {
+                cmd: "tabfix -trx --no-backup -m*.css -m*.js -m*.html test"
             }
         },
 		qunit: {
@@ -99,8 +105,10 @@ module.exports = function (grunt) {
                                    "concat", 
                                    "jshint:afterconcat", 
                                    "uglify"]);
-    grunt.registerTask("build", ["exec:tabfixSrc",
+    grunt.registerTask("build", ["exec:tabfixDemo",
                                  "exec:tabfixDoc",
+                                 "exec:tabfixSrc",
+                                 "exec:tabfixTest",
                                  "default"]);
 	grunt.registerTask("ci", ["jshint", "qunit"]);
 };
