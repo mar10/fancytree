@@ -15,19 +15,10 @@ module.exports = function (grunt) {
                     " Licensed <%= _.pluck(pkg.licenses, 'type').join(', ') %> */"
         },
         exec: {
-            tabfixSrc: {
-                // convert 4-spaces to tabs (requires https://code.google.com/p/tabfix/)
-                cmd: "tabfix -trx --no-backup -m*.css -m*.js src",
+            tabfix: {
+                // convert 4-spaces to tabs (requires https://github.com/mar10/tabfix)
+                cmd: "tabfix -t -r -m*.js,*.css,*.html src demo test",
                 stdout: true
-            },
-            tabfixDemo: {
-                cmd: "tabfix -trx --no-backup -m*.css -m*.js -m*.html demo"
-            },
-            tabfixDoc: {
-                cmd: "tabfix -trx --no-backup -m*.css -m*.js -m*.html doc"
-            },
-            tabfixTest: {
-                cmd: "tabfix -trx --no-backup -m*.css -m*.js -m*.html test"
             }
         },
 		qunit: {
@@ -105,10 +96,7 @@ module.exports = function (grunt) {
                                    "concat", 
                                    "jshint:afterconcat", 
                                    "uglify"]);
-    grunt.registerTask("build", ["exec:tabfixDemo",
-                                 "exec:tabfixDoc",
-                                 "exec:tabfixSrc",
-                                 "exec:tabfixTest",
+    grunt.registerTask("build", ["exec:tabfix",
                                  "default"]);
 	grunt.registerTask("ci", ["jshint", "qunit"]);
 };
