@@ -11,57 +11,36 @@
  */
 (function($, document) {
     'use strict';
-    /**
-     * @param selector Selector matching the trigger objects.
-     * @param menu object|function Items to be listed in contextMenu
-     *  - object example:
-     *    menu: {
-     *        edit: { name: 'Edit', icon: 'edit' },
-     *        delete: { name: 'Delete', disabled: true },
-     *        sep1: '---------',
-     *        quit: { name: 'Quit' }
-     *    }
-     *  - function example:
-     *    menu: function(node) {
-     *        return {
-     *            edit: { name: 'Edit', icon: 'edit' },
-     *            delete: { name: 'Delete', disabled: true },
-     *            sep1: '---------',
-     *            quit: { name: 'Quit' }
-     *        }
-     *    }
-     * @param actions function A callback function to execute if clicked on
-     *        some context menu item
-     */
+    
     var initContextMenu = function(selector, menu, actions) {
         $(document).on('mousedown.contextMenu', function(event) {
             var node = $.ui.fancytree.getNode(event);
             
             if(node) {
-                var menuItems = { },
-                    callback = $.Callbacks().add(actions);
-                
                 node.setFocus(true);
                 node.setActive(true);
-                
-                if($.isFunction(menu)) {
-                    menuItems = menu(node);
-                } else if($.isPlainObject(menu)) {
-                    menuItems = menu;
-                }
                 
                 $.contextMenu({
                     selector: '.' + selector,
                     build: function($trigger, e) {
                         node = $.ui.fancytree.getNode($trigger);
+                        
+                        var menuItems = { }
                         if($.isFunction(menu)) {
                             menuItems = menu(node);
                         } else if($.isPlainObject(menu)) {
                             menuItems = menu;
                         }
+                        
                         return {
                             callback: function(action, options) {
-                                callback.fire(node, action, options);
+                                if($.isFunction(actions)) {
+                                    actions(node, action, options);
+                                } else if($.isPlainObject(actions)) {
+                                    if(actions.hasOwnProperty(action) && $.isFunction(actions[action])) {
+                                        actions[action](node, options);
+                                    }
+                                }
                             },
                             items: menuItems
                         }
@@ -75,7 +54,7 @@
         version: '1.0',
         contextMenu: {
             menu: {},
-            actions: function(node, action, options) { }
+            actions: {}
         },
         treeInit: function(ctx) {
             this._super(ctx);
