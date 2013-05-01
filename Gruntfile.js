@@ -17,8 +17,7 @@ module.exports = function (grunt) {
         exec: {
             tabfix: {
                 // convert 4-spaces to tabs (requires https://github.com/mar10/tabfix)
-                cmd: "tabfix -t -r -m*.js,*.css,*.html src demo test",
-                stdout: true
+                cmd: "tabfix -t -r -m*.js,*.css,*.html src demo test"
             }
         },
 		qunit: {
