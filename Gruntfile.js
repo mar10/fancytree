@@ -18,6 +18,11 @@ module.exports = function (grunt) {
             tabfix: {
                 // convert 4-spaces to tabs (requires https://github.com/mar10/tabfix)
                 cmd: "tabfix -t -r -m*.js,*.css,*.html src demo test"
+            },
+            upload: {
+                // FTP upload the demo files (requires https://github.com/mar10/pyftpsync)
+//                cmd: "pyftpsync upload ~/prj/fancytree ftp://www.wwwendt.de/tech/fancytree --delete-unmatched --omit .*,_* -x"
+                cmd: "pyftpsync upload . ftp://www.wwwendt.de/tech/fancytree --delete-unmatched --omit dist,node_modules,.*,_* -x"
             }
         },
 		qunit: {
@@ -97,5 +102,7 @@ module.exports = function (grunt) {
                                    "uglify"]);
     grunt.registerTask("build", ["exec:tabfix",
                                  "default"]);
+    grunt.registerTask("upload", [//"build",
+                                  "exec:upload"]);
 	grunt.registerTask("ci", ["jshint", "qunit"]);
 };

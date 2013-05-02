@@ -25,7 +25,7 @@
 					build: function($trigger, e) {
 						node = $.ui.fancytree.getNode($trigger);
 
-						var menuItems = { }
+						var menuItems = { };
 						if($.isFunction(menu)) {
 							menuItems = menu(node);
 						} else if($.isPlainObject(menu)) {
@@ -43,12 +43,12 @@
 								}
 							},
 							items: menuItems
-						}
+						};
 					}
 				});
 			}
 		});
-	}
+	};
 
 	$.ui.fancytree.registerExtension('contextMenu', {
 		version: '1.0',
