@@ -2133,7 +2133,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		}
 		if(!nodeTitle){
 			// TODO: escape tooltip string
-			var tooltip = node.tooltip ? " title='" + node.tooltip.replace(/\"/g, '&quot;') + "'" : "",
+			var tooltip = node.tooltip ? " title='" + node.tooltip.replace(/\"/g, "&quot;") + "'" : "",
 				id = aria ? " id='ftal_" + node.key + "'" : "";
 			role = aria ? " role='treeitem'" : "";
 //				href = node.data.href || "#";

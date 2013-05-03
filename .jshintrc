@@ -1,22 +1,27 @@
+
 {
-    "bitwise": true,
-    "camelcase": true,
+	"bitwise": true,
+	"camelcase": true,
 	"curly": true,
 	"eqeqeq": true,
-    "expr": true,
-    "immed": true,
-    "latedef": true,
+	"expr": true,
+	"immed": true,
+	"latedef": true,
 	"newcap": true,
-    "noarg": true,
-    "nonew": true,
+	"noarg": true,
+	"nonew": true,
+	"onevar_LATER": true,
+	"quotmark": "double",
+	"trailing": true,
 	"undef": true,
-	
-    "boss": true,
-    "eqnull": true,
-    "evil": false,
-    "smarttabs": true,
+	"unused_LATER": true,
 
-    "browser": true,
+	"boss": true,
+	"eqnull": true,
+	"evil": false,
+	"smarttabs": true,
+
+	"browser": true,
 	"globals": {
 		"define": true,
 		"jQuery": true

@@ -10,10 +10,10 @@
  * http://code.google.com/p/fancytree/wiki/LicenseInfe
  */
 (function($, document) {
-	'use strict';
+	"use strict";
 
 	var initContextMenu = function(selector, menu, actions) {
-		$(document).on('mousedown.contextMenu', function(event) {
+		$(document).on("mousedown.contextMenu", function(event) {
 			var node = $.ui.fancytree.getNode(event);
 
 			if(node) {
@@ -21,7 +21,7 @@
 				node.setActive(true);
 
 				$.contextMenu({
-					selector: '.' + selector,
+					selector: "." + selector,
 					build: function($trigger, e) {
 						node = $.ui.fancytree.getNode($trigger);
 
@@ -50,8 +50,8 @@
 		});
 	};
 
-	$.ui.fancytree.registerExtension('contextMenu', {
-		version: '1.0',
+	$.ui.fancytree.registerExtension("contextMenu", {
+		version: "1.0",
 		contextMenu: {
 			menu: {},
 			actions: {}

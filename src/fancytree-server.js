@@ -11,9 +11,9 @@
 // TODO enable strict mode again
 //"use strict";
 
-var assert = require('assert'),
-	http = require('http'),
-	url = require('url');
+var assert = require("assert"),
+	http = require("http"),
+	url = require("url");
 
 /*
  * Helpers
@@ -85,7 +85,7 @@ http.createServer(function (request, response) {
 		cmd = parts[0],
 		node = _tree.find(query.key),
 		res = {error: "invalid command"};
-	console.log('args', args, parts);
+	console.log("args", args, parts);
 	switch(cmd){
 	case "get":
 		res = copyNode(node);
@@ -99,12 +99,12 @@ http.createServer(function (request, response) {
 		}
 		break;
 	}
-	console.log('children', node.children);
-	console.log('json', copyNode(node));
+	console.log("children", node.children);
+	console.log("json", copyNode(node));
 
-	response.writeHead(200, {'Content-Type': 'application/json'});
+	response.writeHead(200, {"Content-Type": "application/json"});
 	response.end(JSON.stringify(res));
 }).listen(8124);
 
 
-console.log('Server running at http://127.0.0.1:8124/');
+console.log("Server running at http://127.0.0.1:8124/");
