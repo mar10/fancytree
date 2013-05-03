@@ -14,8 +14,6 @@
 
 // Start of local namespace
 (function($) {
-// relax some jslint checks:
-/*globals alert */
 
 "use strict";
 

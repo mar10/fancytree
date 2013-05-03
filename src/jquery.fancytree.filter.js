@@ -13,7 +13,6 @@
 // Start of local namespace
 (function($) {
 // relax some jslint checks:
-/*globals alert */
 
 "use strict";
 
@@ -27,11 +26,11 @@
 /*******************************************************************************
  * Private functions and variables
  */
+/*
 function _raiseNotImplemented(msg){
 	msg = msg || "";
 	$.error("Not implemented: " + msg);
 }
-
 
 function _assert(cond, msg){
 	msg = msg || "";
@@ -39,6 +38,7 @@ function _assert(cond, msg){
 		$.error("Assertion failed " + msg);
 	}
 }
+*/
 
 
 function _escapeRegex(str){

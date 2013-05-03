@@ -55,8 +55,8 @@ function _assert(cond, msg){
 	}
 }
 // RegExp that tests a function body for usage of '_super' (if browser supports that)
-var dummyFunc = function(){ var xyz; },
-	rexTestSuper = /xyz/.test(dummyFunc) ? /\b_super\b/ : null;
+//var dummyFunc = function(){ var xyz; },
+//	rexTestSuper = /xyz/.test(dummyFunc) ? /\b_super\b/ : null;
 
 /** Return a wrapper that calls sub.fn() and exposes base.fn() as _super(). */
 function _makeVirtualFunction(methodName, base, sub){
@@ -277,8 +277,7 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 	 * @see FanctreeNode#applyPatch
 	 */
 	addChildren: function(children, insertBefore){
-		var firstNode = null,
-			node;
+		var firstNode = null;
 		if($.isPlainObject(children) ){
 			children = [children];
 		}
@@ -921,7 +920,7 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 		if(newScrollTop !== null){
 			if(effects){
 				// TODO: resolve dfd after animation
-				var that = this;
+//				var that = this;
 				$container.animate({scrollTop: newScrollTop}, effects);
 			}else{
 				$container[0].scrollTop = newScrollTop;
@@ -2269,7 +2268,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		var node = ctx.node,
 			tree = ctx.tree,
 			opts = ctx.options,
-			userEvent = !!ctx.orgEvent,
+//			userEvent = !!ctx.orgEvent,
 			isActive = (node === tree.activeNode);
 		// flag defaults to true
 		flag = (flag !== false);
@@ -3067,7 +3066,7 @@ $.widget("ui.fancytree",
 		this.tree._callHook("treeDestroy", this.tree);
 		// this.element.removeClass("ui-widget ui-widget-content ui-corner-all");
 		this.tree.$div.find(">ul.fancytree-container").remove();
-		var _ = this.$source && this.$source.removeClass("ui-helper-hidden");
+		this.$source && this.$source.removeClass("ui-helper-hidden");
 		// In jQuery UI 1.8, you must invoke the destroy method from the base widget
 		$.Widget.prototype.destroy.call(this);
 		// TODO: delete tree and nodes to make garbage collect easier?
@@ -3323,8 +3322,8 @@ $.extend($.ui.fancytree,
 		/*jshint validthis:true */
 		var $children = $ul.find(">li"),
 			extraClasses, i, l, iPos, tmp, classes, className,
-			children = [],
-			that = this;
+			children = [];
+//			that = this;
 
 		$children.each(function() {
 			var $li = $(this),

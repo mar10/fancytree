@@ -12,6 +12,9 @@
 
 "use strict";
 
+// Allow unused variables for demonstration
+/*jshint unused:false */
+
 // prevent duplicate loading
 // if ( $.ui.fancytree && $.ui.fancytree.version ) {
 //     $.ui.fancytree.warn("Fancytree: duplicate include");

@@ -26,13 +26,14 @@
 /*******************************************************************************
  * Private functions and variables
  */
+/*
 function _assert(cond, msg){
 	msg = msg || "";
 	if(!cond){
 		$.error("Assertion failed " + msg);
 	}
 }
-
+*/
 
 /*******************************************************************************
  * Private functions and variables

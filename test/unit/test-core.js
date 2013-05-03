@@ -1,7 +1,10 @@
 jQuery(document).ready(function(){
-/*globals asyncTest,deepEqual,equal,expect,module,notDeepEqual,notEqual,
-	notStrictEqual,ok,QUnit,raises,start,stop,strictEqual,test */
-var $ = jQuery;
+
+// asyncTest,deepEqual,equal,expect,module,notDeepEqual,notEqual,notStrictEqual,ok,QUnit,raises,start,stop,strictEqual,test
+
+/*globals deepEqual,equal,expect,module,ok,QUnit,start,stop,test */
+
+    var $ = jQuery;
 
 /*******************************************************************************
  * QUnit setup
@@ -20,13 +23,13 @@ QUnit.done(function( details ) {
 /*******************************************************************************
  * Tool functions
  */
-function simulateClick(selector) {
-	var e = document.createEvent("MouseEvents");
-	e.initEvent("click", true, true);
-	$(selector).each(function(){
-		this.dispatchEvent(e);
-	});
-}
+//function simulateClick(selector) {
+//	var e = document.createEvent("MouseEvents");
+//	e.initEvent("click", true, true);
+//	$(selector).each(function(){
+//		this.dispatchEvent(e);
+//	});
+//}
 
 
 var EVENT_SEQUENCE = [];

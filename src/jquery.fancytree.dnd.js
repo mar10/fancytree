@@ -17,12 +17,14 @@
 /* *****************************************************************************
  * Private functions and variables
  */
+/*
 function _assert(cond, msg){
 	msg = msg || "";
 	if(!cond){
 		$.error("Assertion failed " + msg);
 	}
 }
+*/
 var logMsg = $.ui.fancytree.debug;
 
 
@@ -154,7 +156,7 @@ function _registerDnd() {
 			var draggable = $(this).data("ui-draggable") || $(this).data("draggable"),
 				sourceNode = ui.helper.data("ftSourceNode") || null,
 				targetNode = ui.helper.data("ftTargetNode") || null,
-				mouseDownEvent = draggable._mouseDownEvent,
+//				mouseDownEvent = draggable._mouseDownEvent,
 				eventType = event.type,
 				dropped = (eventType === "mouseup" && event.which === 1);
 //            logMsg("draggable-connectToFancytree.stop: targetNode(from event): %s, ftTargetNode: %s", targetNode, ui.helper.data("ftTargetNode"));
@@ -221,7 +223,7 @@ $.ui.fancytree.registerExtension("dnd",
 	/* Display drop marker according to hitMode ('after', 'before', 'over', 'out', 'start', 'stop'). */
 	_setDndStatus: function(sourceNode, targetNode, helper, hitMode, accept) {
 		var instData = this.dnd,
-			instOpts = this.options.dnd,
+//			instOpts = this.options.dnd,
 			$source = sourceNode ? $(sourceNode.span) : null,
 			$target = $(targetNode.span);
 		if( !instData.$dropMarker ) {

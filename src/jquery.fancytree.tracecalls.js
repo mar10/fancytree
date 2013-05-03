@@ -32,11 +32,6 @@
 /* *****************************************************************************
  * Private functions and variables
  */
-function _raiseNotImplemented(msg){
-	msg = msg || "";
-	$.error("Not implemented: " + msg);
-}
-
 var HOOK_NAMES = "nodeClick nodeCollapseSiblings".split(" ");
 var EVENT_NAMES = "activate beforeActivate".split(" ");
 var HOOK_NAME_MAP = {},
@@ -60,10 +55,7 @@ $.ui.fancytree.registerExtension("tracecalls", {
 	// `this`       : is this Fancytree object
 	// `this._super`: the virtual function that was overridden (member of prev. extension or Fancytree)
 	treeInit: function(ctx){
-		var tree = ctx.tree,
-			opts = ctx.options,
-			instData = this.persist,
-			instOpts = this.options.persist;
+		var tree = ctx.tree;
 
 		// Bind init-handler to apply cookie state
 		tree.$div.bind("fancytreeinit", function(e){

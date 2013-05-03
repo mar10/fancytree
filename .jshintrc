@@ -10,11 +10,11 @@
 	"newcap": true,
 	"noarg": true,
 	"nonew": true,
-	"onevar_LATER": true,
+	"onevar": false,
 	"quotmark": "double",
 	"trailing": true,
 	"undef": true,
-	"unused_LATER": true,
+	"unused": "vars",
 
 	"boss": true,
 	"eqnull": true,

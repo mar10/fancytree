@@ -1,6 +1,11 @@
 /* *****************************************************************************
  * Virtual objects for jsdoc documentation
  */
+
+// Allow unused variables for demonstration
+/*jshint unused:false */
+
+
 /**
  * Context object passed too hook functions.
  * @name HookContext
