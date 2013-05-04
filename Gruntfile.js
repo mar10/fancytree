@@ -18,7 +18,7 @@ module.exports = function (grunt) {
 			tabfix: {
 				// Cleanup whitespace according to http://contribute.jquery.org/style-guide/js/
 				// (requires https://github.com/mar10/tabfix)
-				cmd: "tabfix -t -r -m*.js,*.css,*.html src demo test"
+				cmd: "tabfix -t -r -m *.js,*.css,*.html;*.json src demo test -d"
 			},
 			upload: {
 				// FTP upload the demo files (requires https://github.com/mar10/pyftpsync)
@@ -37,7 +37,7 @@ module.exports = function (grunt) {
 				"Gruntfile.js",
 				"src/*.js",
 				"demo/3rd-party/**/jquery.fancytree.*.js",
-				"test/unit/test-core.js"
+				"test/unit/*.js"
 			],
 			afterconcat: ["<%= concat.core.dest %>",
 						  "<%= concat.all.dest %>"
@@ -104,7 +104,7 @@ module.exports = function (grunt) {
 								   "uglify"]);
 	grunt.registerTask("build", ["exec:tabfix",
 								 "default"]);
-	grunt.registerTask("upload", [//"build",
+	grunt.registerTask("upload", ["build",
 								  "exec:upload"]);
 	grunt.registerTask("ci", ["jshint", "qunit"]);
 };

@@ -1,6 +1,9 @@
 jQuery(document).ready(function(){
-/*globals asyncTest,deepEqual,equal,expect,module,notDeepEqual,notEqual,
-	notStrictEqual,ok,QUnit,raises,start,stop,strictEqual,test */
+// jQUnit defines:
+// asyncTest,deepEqual,equal,expect,module,notDeepEqual,notEqual,notStrictEqual,ok,QUnit,raises,start,stop,strictEqual,test
+
+/*globals expect,module,ok,QUnit,start,stop,test */
+
 var $ = jQuery;
 
 /* *****************************************************************************
@@ -20,7 +23,7 @@ QUnit.done(function( details ) {
 /* *****************************************************************************
  * Tool functions
  */
-var EVENT_SEQUENCE = [];
+//var EVENT_SEQUENCE = [];
 var TOTAL_ELAP = 0;
 
 function AsyncTimer(name, start){
@@ -70,6 +73,7 @@ function _resetEmptyTree(options){
 
 
 /** Helper to reset environment for asynchronous Fancytree tests. */
+/*
 function _setupAsync(){
 	QUnit.reset();
 	if( $("#tree").is(":ui-fancytree") ){
@@ -78,7 +82,7 @@ function _setupAsync(){
 	EVENT_SEQUENCE = [];
 	stop();
 }
-
+*/
 
 function _getBrowserInfo(){
 	var n = navigator.appName,
