@@ -2121,7 +2121,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		} else if ( node.data.iconclass ) {
 			// TODO: review and test and document
 			ares.push("<span " + role + " class='fancytree-custom-icon" + " " + node.data.iconclass +  "'></span>");
-		} else if ( icon !== false ) {
+		} else if ( icon !== false && opts.icons !== false ) {
 			// icon == false means 'no icon', icon == null means 'default icon'
 			ares.push("<span " + role + " class='fancytree-icon'></span>");
 		}
@@ -2948,6 +2948,7 @@ $.widget("ui.fancytree",
 		fx: { height: "toggle", duration: 200 },
 //		hooks: {},
 		generateIds: false,
+		icons: true,
 		idPrefix: "ft_",
 		keyboard: true,
 		keyPathSeparator: "/",
@@ -3036,7 +3037,8 @@ $.widget("ui.fancytree",
 			rerender = false;
 		switch( key ) {
 		case "aria":
-		case "checkbox":
+        case "checkbox":
+        case "icons":
 		case "minExpandLevel":
 		case "tabbable":
 //		case "nolink":
@@ -3254,6 +3256,7 @@ $.extend($.ui.fancytree,
 			res = {node: this.getNode(event.target), type: undefined};
 		// TODO: use map for fast lookup
 		// FIXME: cannot work, when tcn also contains UI themeroller classes
+		//        Use $(res.node).hasClass() instead
 		if( tcn === "fancytree-title" ){
 			res.type = "title";
 		}else if( tcn === "fancytree-expander" ){
