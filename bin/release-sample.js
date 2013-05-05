@@ -226,7 +226,7 @@ function exec( cmd, args, fn, skip ) {
 		fn( "", "", "" );
 	} else {
 		console.log( cmd + " " + args.join(" ") );
-		child.execFile( cmd, args, { env: process.env }, 
+		child.execFile( cmd, args, { env: process.env },
 			function( err, stdout, stderr ) {
 				if ( err ) {
 					die( stderr || stdout || err );
