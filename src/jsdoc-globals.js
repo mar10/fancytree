@@ -143,6 +143,7 @@ var TreePatch = {};
  * @property {Boolean} checkbox Display checkboxes to allow selection  (default: false)
  * @property {Integer} clickFolderMode Defines what happens, when the user click a folder node.<br>1:activate, 2:expand, 3:activate and expand, 4:activate/dblclick expands  (default: 4)
  * @property {String[]} extensions List of active extensions (default: [])
+ * @property {Boolean} icons Display node icons  (default: true)
  * @property {String} idPrefix (default: "ft_")
  * @property {String} keyPathSeparator (default: "/")
  * @property {object} fx Animation options, null:off (default: { height: "toggle", duration: 200 })
