@@ -18,11 +18,11 @@ module.exports = function (grunt) {
 			tabfix: {
 				// Cleanup whitespace according to http://contribute.jquery.org/style-guide/js/
 				// (requires https://github.com/mar10/tabfix)
-				cmd: "tabfix -t -r -m*.js,*.css,*.html,*.json -inode_modules -d src demo test"
+				cmd: "tabfix -t -r -m*.js,*.css,*.html,*.json -inode_modules src demo test"
 			},
 			upload: {
 				// FTP upload the demo files (requires https://github.com/mar10/pyftpsync)
-				cmd: "pyftpsync upload . ftp://www.wwwendt.de/tech/fancytree --delete-unmatched --omit dist,node_modules,.*,_* -x"
+				cmd: "pyftpsync --progress upload . ftp://www.wwwendt.de/tech/fancytree --delete-unmatched --omit dist,node_modules,.*,_*  -x"
 			}
 		},
 		qunit: {
