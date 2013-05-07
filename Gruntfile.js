@@ -18,7 +18,7 @@ module.exports = function (grunt) {
 			tabfix: {
 				// Cleanup whitespace according to http://contribute.jquery.org/style-guide/js/
 				// (requires https://github.com/mar10/tabfix)
-				cmd: "tabfix -t -r -m*.js,*.css,*.html,*.json -inode_modules -d src demo test"
+				cmd: "tabfix -t -r -m*.js,*.css,*.html,*.json -inode_modules src demo test"
 			},
 			upload: {
 				// FTP upload the demo files (requires https://github.com/mar10/pyftpsync)
@@ -89,22 +89,34 @@ module.exports = function (grunt) {
 					"dist/<%= pkg.name %>-all.min.js": ["<%= concat.all.dest %>"]
 				}
 			}
+		},
+		connect: {
+			demo: {
+				options: {
+					port: 8080,
+					base: "./",
+					keepalive: true
+				}
+			}
 		}
 	});
 
 	grunt.loadNpmTasks("grunt-contrib-concat");
+	grunt.loadNpmTasks("grunt-contrib-connect");
 	grunt.loadNpmTasks("grunt-contrib-jshint");
-	grunt.loadNpmTasks("grunt-contrib-uglify");
 	grunt.loadNpmTasks("grunt-contrib-qunit");
+	grunt.loadNpmTasks("grunt-contrib-uglify");
 	grunt.loadNpmTasks("grunt-exec");
 
-	grunt.registerTask("ci", ["jshint", "qunit"]);
-	grunt.registerTask("default", ["jshint:beforeconcat",
-								   "concat",
-								   "jshint:afterconcat",
-								   "uglify"]);
+	grunt.registerTask("server", ["connect:demo"]);
+	grunt.registerTask("test", ["jshint:beforeconcat", "qunit"]);
+	grunt.registerTask("ci", ["test"]);
+	grunt.registerTask("default", ["test"]);
 	grunt.registerTask("build", ["exec:tabfix",
-								 "default",
+	                             "jshint:beforeconcat",
+								 "concat",
+								 "jshint:afterconcat",
+								 "uglify",
 								 "qunit"]);
 	grunt.registerTask("upload", ["build",
 								  "exec:upload"]);

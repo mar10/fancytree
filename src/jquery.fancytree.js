@@ -3039,8 +3039,8 @@ $.widget("ui.fancytree",
 			rerender = false;
 		switch( key ) {
 		case "aria":
-        case "checkbox":
-        case "icons":
+		case "checkbox":
+		case "icons":
 		case "minExpandLevel":
 		case "tabbable":
 //		case "nolink":
