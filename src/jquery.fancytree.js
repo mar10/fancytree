@@ -1527,7 +1527,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	/** _Default handling for mouse click events. */
 	nodeClick: function(ctx) {
 //      this.tree.logDebug("ftnode.onClick(" + event.type + "): ftnode:" + this + ", button:" + event.button + ", which: " + event.which);
-		var event = ctx.orgEvent,
+		var //event = ctx.orgEvent,
 //            targetType = FT.getEventTargetType(event),
 			targetType = ctx.targetType,
 			node = ctx.node;
@@ -1571,9 +1571,9 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			}
 		}
 		// Make sure that clicks stop, otherwise <a href='#'> jumps to the top
-		if(event.target.localName === "a" && event.target.className === "fancytree-title"){
-			event.preventDefault();
-		}
+//		if(event.target.localName === "a" && event.target.className === "fancytree-title"){
+//			event.preventDefault();
+//		}
 		// TODO: return promise?
 	},
 	nodeCollapseSiblings: function(ctx) {
@@ -2443,6 +2443,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		var tree = ctx.tree,
 			node = ctx.node;
 
+		node.debug("nodeSetFocus(" + flag + "), ctx=", ctx);
 		if(tree.focusNode){
 			if(tree.focusNode === node && flag !== false){
 				return; // prevent recursion, when span.focus would be called again
@@ -2453,11 +2454,11 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			this._callHook("nodeRenderStatus", ctx2);
 		}
 		if(flag !== false){
-			if(FT.focusTree !== tree){
-				// Safari, when tabbable=false
-				node.debug("nodeSetFocus: forcing container focus");
-				tree.setFocus();
-			}
+//			if(FT.focusTree !== tree){
+//				// Safari, when tabbable=false
+//				node.debug("nodeSetFocus: forcing container focus");
+//				tree.setFocus();
+//			}
 			this.nodeMakeVisible(ctx);
 			tree.focusNode = node;
 //			node.debug("FOCUS...");
@@ -2821,6 +2822,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	},
 	/* */
 	treeSetFocus: function(ctx, flag) {
+		this.debug("treeSetFocus(" + flag + ")", ctx);
 //        alert("treeSetFocus" + ctx.tree.$container);
 		ctx.tree.$container.focus();
 //	    var node = ctx.tree.focusNode || ctx.tree.rootNode.getFirstChild();
