@@ -28,14 +28,14 @@ var HookContext = {};
  * @property {String} key unique key for this node (auto-generated if omitted)
  * @property {Boolean} expanded
  * @property {NodeData[]} children
- * 
+ *
  */
 var NodeData = {};
 
 
 /**
  * Data object similar to {@link NodeData}, but with additional options.
- * May be passed to {@link FancytreeNode#applyPatch} 
+ * May be passed to {@link FancytreeNode#applyPatch}
  * (Every property that is omitted (or set to undefined) will be ignored)
  * @name NodePatch
  *
