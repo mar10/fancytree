@@ -1,9 +1,9 @@
 {
   "name": "fancytree",
-  "version": "2.0.0",
+  "version": "2.0.0-pre.1",
 
   "title": "Fancytree",
-  "description": "Fancytree 2.x is the designated successor of DynaTree 1.x.",
+  "description": "Fancytree 2.x is the designated successor of DynaTree 1.x. (Current status: ALPHA)",
 
   "homepage": "https://github.com/mar10/fancytree",
   "author": {
@@ -14,15 +14,9 @@
 	"type": "git",
 	"url": "https://github.com/mar10/fancytree"
   },
-  "demo": {
-    "url": "http://wwwendt.de/tech/fancytree/demo/"
-  },
-  "docs": {
-    "url": "https://github.com/mar10/fancytree/wiki"
-  },
-  "bugs": {
-    "url": "https://github.com/mar10/fancytree/issues"
-  },
+  "demo": "http://wwwendt.de/tech/fancytree/demo/",
+  "docs": "https://github.com/mar10/fancytree/wiki",
+  "bugs": "https://github.com/mar10/fancytree/issues",
   "licenses": [
 	{
 	  "type": "MIT",
@@ -31,7 +25,7 @@
   ],
   "dependencies": {
     "jquery": ">=1.6",
-    "jQuery UI": ">=1.8.6"
+    "jqueryui": ">=1.8.6"
   },
   "keywords": ["tree", "lazy", "ajax", "tabletree", "table"]
 }
