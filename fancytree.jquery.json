@@ -3,26 +3,21 @@
   "version": "2.0.0-pre.0.1",
 
   "title": "Fancytree",
-  "description": "Fancytree 2.x is the designated successor of DynaTree 1.x.",
+  "description": "Fancytree 2.x is the designated successor of DynaTree 1.x. (Current status: ALPHA)",
 
   "homepage": "https://github.com/mar10/fancytree",
   "author": {
 	"name": "Martin Wendt",
+	"email": "jquery@wwwendt.de",
     "url": "http://careers.stackoverflow.com/martin-wendt"
   },
   "repository": {
 	"type": "git",
 	"url": "https://github.com/mar10/fancytree"
   },
-  "demo": {
-    "url": "http://wwwendt.de/tech/fancytree/demo/"
-  },
-  "docs": {
-    "url": "https://github.com/mar10/fancytree/wiki"
-  },
-  "bugs": {
-    "url": "https://github.com/mar10/fancytree/issues"
-  },
+  "demo": "http://wwwendt.de/tech/fancytree/demo/",
+  "docs": "https://github.com/mar10/fancytree/wiki",
+  "bugs": "https://github.com/mar10/fancytree/issues",
   "licenses": [
 	{
 	  "type": "MIT",

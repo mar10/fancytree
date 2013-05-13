@@ -10,7 +10,7 @@ Alpha!
 
 ## Summary
 
-Read [What's New] and [take a look at the preview demo].
+Read [the docs](https://github.com/mar10/fancytree/wiki), [What's New] and [take a look at the preview demo].
 
 Note: The API (events, functions, and parameters) are still subject to change!
 
