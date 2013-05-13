@@ -90,6 +90,17 @@ module.exports = function (grunt) {
 				}
 			}
 		},
+		csslint: {
+		    options: {
+//		        csslintrc: ".csslintrc"
+		    },
+		    strict: {
+		      options: {
+		          import: 2
+		      },
+		      src: ["src/**/*.css"]
+		    }
+		},
 		connect: {
 			demo: {
 				options: {
@@ -102,11 +113,12 @@ module.exports = function (grunt) {
 	});
 
 	grunt.loadNpmTasks("grunt-contrib-concat");
-	grunt.loadNpmTasks("grunt-contrib-connect");
+    grunt.loadNpmTasks("grunt-contrib-connect");
+    grunt.loadNpmTasks("grunt-contrib-csslint");
+    grunt.loadNpmTasks("grunt-exec");
 	grunt.loadNpmTasks("grunt-contrib-jshint");
 	grunt.loadNpmTasks("grunt-contrib-qunit");
 	grunt.loadNpmTasks("grunt-contrib-uglify");
-	grunt.loadNpmTasks("grunt-exec");
 
 	grunt.registerTask("server", ["connect:demo"]);
 	grunt.registerTask("test", ["jshint:beforeconcat", "qunit"]);
