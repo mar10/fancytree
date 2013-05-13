@@ -101,6 +101,9 @@ module.exports = function (grunt) {
 		      src: ["src/**/*.css"]
 		    }
 		},
+		htmllint: {
+	        all: ["demo/**/*.html", "doc/**/*.html", "test/**/*.html"]
+	    },
 		connect: {
 			demo: {
 				options: {
@@ -115,10 +118,11 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks("grunt-contrib-concat");
     grunt.loadNpmTasks("grunt-contrib-connect");
     grunt.loadNpmTasks("grunt-contrib-csslint");
-    grunt.loadNpmTasks("grunt-exec");
 	grunt.loadNpmTasks("grunt-contrib-jshint");
 	grunt.loadNpmTasks("grunt-contrib-qunit");
-	grunt.loadNpmTasks("grunt-contrib-uglify");
+    grunt.loadNpmTasks("grunt-contrib-uglify");
+    grunt.loadNpmTasks("grunt-exec");
+    grunt.loadNpmTasks("grunt-html");
 
 	grunt.registerTask("server", ["connect:demo"]);
 	grunt.registerTask("test", ["jshint:beforeconcat", "qunit"]);
