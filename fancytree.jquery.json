@@ -1,6 +1,6 @@
 {
   "name": "fancytree",
-  "version": "2.0.0",
+  "version": "2.0.0-pre.0.1",
 
   "title": "Fancytree",
   "description": "Fancytree 2.x is the designated successor of DynaTree 1.x.",
@@ -31,7 +31,7 @@
   ],
   "dependencies": {
     "jquery": ">=1.6",
-    "jQuery UI": ">=1.8.6"
+    "jqueryui": ">=1.8.6"
   },
   "keywords": ["tree", "lazy", "ajax", "tabletree", "table"]
 }
