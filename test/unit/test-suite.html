@@ -15,11 +15,19 @@
 	<script src="../../node_modules/qunitjs/qunit/qunit.js"></script>
 	<script src="../../lib/qunit-composite.js"></script>
 	<script>
-		QUnit.testSuites("Fancytree Test Suite # 1", [
-			"test-core.html",
-			"test-jQuery-latest.html",
-			{ name: "jQuery 1.8, jQuery UI 1.8", path: "test-jQuery18-ui18.html" }
+		QUnit.testSuites("Core tests", [
+			"test-core.html"
 		]);
+        QUnit.testSuites("jQuery versions", [
+            { name: "jQuery 1.latest, jQuery UI 1.latest", path: "test-jQuery-latest.html" },
+            { name: "jQuery 1.9+, jQuery UI 1.9+", path: "test-jQuery1x-ui1x.html" },
+            { name: "jQuery 1.8, jQuery UI 1.8", path: "test-jQuery18-ui18.html" },
+            { name: "jQuery 1.5, jQuery UI 1.8.6", path: "test-jQuery-legacy.html" }
+        ]);
+        QUnit.testSuites("Misc", [
+            { name: "Regression tests", path: "test-regression.html" },
+            { name: "Benchmarks", path: "test-bench.html" }
+        ]);
 	</script>
 </head>
 <body>

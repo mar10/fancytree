@@ -14,11 +14,11 @@ var $ = jQuery;
 /*******************************************************************************
  * QUnit setup
  */
-QUnit.log = function(data) {
+QUnit.log(function(data) {
 	if (window.console && window.console.log) {
 		window.console.log(data.result + " :: " + data.message);
 	}
-};
+});
 
 /** Helper to reset environment for asynchronous Fancytree tests. */
 function _setupAsync(){
