@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>QUnit Composite Test Suite</title>
+<!--
+	<link rel="stylesheet" href="../../node_modules/qunitjs/qunit/qunit.css">
+	<script src="../../node_modules/qunitjs/qunit/qunit.js"></script>
+
+	<link rel="stylesheet" href="../../lib/qunit-composite.css">
+	<script src="../../lib/qunit-composite.js"></script>
+-->
+	<link rel="stylesheet" href="../../node_modules/qunitjs/qunit/qunit.css">
+	<link rel="stylesheet" href="../../lib/qunit-composite.css">
+	<script src="../../node_modules/qunitjs/qunit/qunit.js"></script>
+	<script src="../../lib/qunit-composite.js"></script>
+	<script>
+		QUnit.testSuites("Fancytree Test Suite # 1", [
+			"test-core.html",
+			"test-jQuery-latest.html",
+			{ name: "jQuery 1.8, jQuery UI 1.8", path: "test-jQuery18-ui18.html" }
+		]);
+	</script>
+</head>
+<body>
+	<div id="qunit"></div>
+	<div id="qunit-fixture">
+</div>
+</body>
+</html>

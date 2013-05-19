@@ -19,6 +19,9 @@ QUnit.log = function(data) {
 QUnit.done(function( details ) {
 	// Expand first section when all tests are run
 	$("ol#qunit-tests > li:first > ol").show("slow");
+//	if(jQuery.migrateWarnings != null){
+//		alert("" + jQuery.migrateWarnings || "no migrateWarnings");
+//	}
 });
 
 /*******************************************************************************
@@ -172,7 +175,7 @@ test("Version info", function() {
 	expect(5);
 
 	ok(true, "Fancytree v" + $.ui.fancytree.version);
-	ok(true, "jQuery UI " + jQuery.ui.version);
+	ok(true, "jQuery UI " + jQuery.ui.version + " (uiBackCompat=" + $.uiBackCompat + ")");
 	ok(true, "jQuery " + jQuery.fn.jquery);
 	var doctype = document.documentElement.previousSibling,
 		doctypeSid = doctype.systemId,
