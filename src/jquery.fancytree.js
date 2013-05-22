@@ -147,7 +147,7 @@ for(i=0; i<CLASS_ATTRS.length; i++){ CLASS_ATTR_MAP[CLASS_ATTRS[i]] = true; }
 
 // Top-level Fancytree node attributes, that can be set by dict
 //var NODE_ATTRS = "expanded extraClasses folder key lazy nolink selected title tooltip".split(" "),
-var NODE_ATTRS = "expanded extraClasses folder key lazy selected title tooltip".split(" "),
+var NODE_ATTRS = "expanded extraClasses folder hideCheckbox key lazy selected title tooltip".split(" "),
 	NODE_ATTR_MAP = {};
 for(i=0; i<NODE_ATTRS.length; i++){ NODE_ATTR_MAP[NODE_ATTRS[i]] = true; }
 
