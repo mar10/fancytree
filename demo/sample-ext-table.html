@@ -40,7 +40,8 @@
 			checkbox: true,
 			table: {
 				indentation: 20,  // indent 20px per node level
-				nodeColumnIdx: 1  // render the node title into the 2nd column
+                nodeColumnIdx: 2,  // render the node title into the 2nd column
+                checkboxColumnIdx: 0  // render the checkboxes into the 1st column
 			},
 			source: {
 				url: "ajax-tree-plain.json"
@@ -51,10 +52,11 @@
 			rendercolumns: function(e, data) {
 				var node = data.node,
 					$tdList = $(node.tr).find(">td");
-				$tdList.eq(0).text(node.getIndexHier()).addClass("alignRight");
-				// (index #1 is rendered by fancytree)
-				$tdList.eq(2).text(node.key);
-				$tdList.eq(3).html("<input type='checkbox' name='like' value='" + node.key + "'>");
+                // (index #0 is rendered by fancytree by adding the checkbox)
+				$tdList.eq(1).text(node.getIndexHier()).addClass("alignRight");
+				// (index #2 is rendered by fancytree)
+				$tdList.eq(3).text(node.key);
+				$tdList.eq(4).html("<input type='checkbox' name='like' value='" + node.key + "'>");
 			}
 		});
 		/* Handle custom checkbox clicks */
@@ -83,16 +85,17 @@
 	<!-- Add a <table> element where the tree should appear: -->
 	<table id="treetable">
 		<colgroup>
-		<col width="30px"></col>
+        <col width="30px"></col>
+        <col width="30px"></col>
 		<col width="*"></col>
 		<col width="50px"></col>
 		<col width="30px"></col>
 		</colgroup>
 		<thead>
-			<tr> <th>#</th> <th></th> <th>Key</th> <th>Like</th> </tr>
+			<tr> <th></th> <th>#</th> <th></th> <th>Key</th> <th>Like</th> </tr>
 		</thead>
 		<tbody>
-			<tr> <td></td> <td></td> <td></td> </tr>
+			<tr> <td></td> <td></td> <td></td> <td></td> </tr>
 		</tbody>
 	</table>
 

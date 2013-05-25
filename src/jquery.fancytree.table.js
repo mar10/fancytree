@@ -87,7 +87,8 @@ $.ui.fancytree.registerExtension("table", {
 	// Default options for this extension.
 	options: {
 		indentation: 16,  // indent every node level by 16px
-		nodeColumnIdx: 0  // render node expander, icon, and title to column #0
+		nodeColumnIdx: 0,  // render node expander, icon, and title to column #0
+		checkboxColumnIdx: null
 	},
 	// Overide virtual methods for this extension.
 	// `this`       : is this extension object
@@ -124,8 +125,9 @@ $.ui.fancytree.registerExtension("table", {
 		// Add container to the TAB chain
 		tree.$container.attr("tabindex", "0");
 		if(this.options.aria){
-			tree.$container.attr("role", "treegrid");
-			tree.$container.attr("aria-readonly", true);
+			tree.$container
+				.attr("role", "treegrid")
+				.attr("aria-readonly", true);
 		}
 		// Make sure that status classes are set on the node's <tr> elements
 		tree.statusClassPropName = "tr";
@@ -198,6 +200,12 @@ $.ui.fancytree.registerExtension("table", {
 				node.span = $("span.fancytree-node", node.tr).get(0);
 				// Set icon, link, and title (normally this is only required on initial render)
 				this.nodeRenderTitle(ctx);
+				// move checkbox to custom column
+				if(opts.checkbox && opts.table.checkboxColumnIdx != null){
+//					$("span.fancytree-node", node.tr).get(0);
+					var $cb = $("span.fancytree-checkbox", node.span).detach();
+					$(node.tr).find("td:first").append($cb);
+				}
 				// Allow tweaking, binding, after node was created for the first time
 				tree._triggerNodeEvent("createnode", ctx);
 			}
