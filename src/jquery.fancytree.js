@@ -1614,8 +1614,8 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			KC = $.ui.keyCode,
 			sib = null;
 
-		node.debug("ftnode.nodeKeydown(" + event.type + "): ftnode:" + this + ", charCode:" + event.charCode + ", keyCode: " + event.keyCode + ", which: " + event.which);
-//      alert("keyDown" + event.which);
+//		node.debug("ftnode.nodeKeydown(" + event.type + "): ftnode:" + this + ", charCode:" + event.charCode + ", keyCode: " + event.keyCode + ", which: " + event.which);
+
 		function _goto(n){
 			if( n ){
 				n.makeVisible();
