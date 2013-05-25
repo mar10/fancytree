@@ -898,9 +898,18 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 			nodeY = $(this.span).position().top,
 			nodeHeight = $(this.span).height(),
 			$container = this.tree.$container,
-			containerHeight = $container.height(),
 			scrollTop = $container[0].scrollTop,
+			horzScrollHeight = Math.max(0, ($container.innerHeight() - $container[0].clientHeight)),
+//			containerHeight = $container.height(),
+			containerHeight = $container.height() - horzScrollHeight,
 			newScrollTop = null;
+
+//		console.log("horzScrollHeight: " + horzScrollHeight);
+//		console.log("$container[0].scrollTop: " + $container[0].scrollTop);
+//		console.log("$container[0].scrollHeight: " + $container[0].scrollHeight);
+//		console.log("$container[0].clientHeight: " + $container[0].clientHeight);
+//		console.log("$container.innerHeight(): " + $container.innerHeight());
+//		console.log("$container.height(): " + $container.height());
 
 		if(nodeY < 0){
 			newScrollTop = scrollTop + nodeY;
@@ -2912,7 +2921,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	 */
 	_triggerNodeEvent: function(type, node, orgEvent) {
 		var ctx = this._makeHookContext(node, orgEvent);
-		this.debug("_trigger(" + type + "): '" + ctx.node.title + "'", ctx);
+//		this.debug("_trigger(" + type + "): '" + ctx.node.title + "'", ctx);
 		var res = this.widget._trigger(type, orgEvent, ctx);
 		if(res !== false && ctx.result !== undefined){
 			return ctx.result;
@@ -2922,7 +2931,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	/** _trigger a widget event with additional tree data. */
 	_triggerTreeEvent: function(type, orgEvent) {
 		var ctx = this._makeHookContext(this, orgEvent);
-		this.debug("_trigger(" + type + ")", ctx);
+//		this.debug("_trigger(" + type + ")", ctx);
 		var res = this.widget._trigger(type, orgEvent, ctx);
 		if(res !== false && ctx.result !== undefined){
 			return ctx.result;

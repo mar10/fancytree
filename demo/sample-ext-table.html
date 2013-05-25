@@ -39,9 +39,9 @@
 			extensions: ["table"],
 			checkbox: true,
 			table: {
-				indentation: 20,  // indent 20px per node level
-                nodeColumnIdx: 2,  // render the node title into the 2nd column
-                checkboxColumnIdx: 0  // render the checkboxes into the 1st column
+				indentation: 20,      // indent 20px per node level
+				nodeColumnIdx: 2,     // render the node title into the 2nd column
+				checkboxColumnIdx: 0  // render the checkboxes into the 1st column
 			},
 			source: {
 				url: "ajax-tree-plain.json"
@@ -52,7 +52,7 @@
 			rendercolumns: function(e, data) {
 				var node = data.node,
 					$tdList = $(node.tr).find(">td");
-                // (index #0 is rendered by fancytree by adding the checkbox)
+				// (index #0 is rendered by fancytree by adding the checkbox)
 				$tdList.eq(1).text(node.getIndexHier()).addClass("alignRight");
 				// (index #2 is rendered by fancytree)
 				$tdList.eq(3).text(node.key);
@@ -85,8 +85,8 @@
 	<!-- Add a <table> element where the tree should appear: -->
 	<table id="treetable">
 		<colgroup>
-        <col width="30px"></col>
-        <col width="30px"></col>
+		<col width="30px"></col>
+		<col width="30px"></col>
 		<col width="*"></col>
 		<col width="50px"></col>
 		<col width="30px"></col>

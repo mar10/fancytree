@@ -86,9 +86,9 @@ function findPrevRowNode(node){
 $.ui.fancytree.registerExtension("table", {
 	// Default options for this extension.
 	options: {
-		indentation: 16,  // indent every node level by 16px
-		nodeColumnIdx: 0,  // render node expander, icon, and title to column #0
-		checkboxColumnIdx: null
+		indentation: 16,        // indent every node level by 16px
+		nodeColumnIdx: 0,       // render node expander, icon, and title to column #0
+		checkboxColumnIdx: null // render the checkboxes into the 1st column
 	},
 	// Overide virtual methods for this extension.
 	// `this`       : is this extension object
