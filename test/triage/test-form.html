@@ -2,34 +2,51 @@
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8">
-	<title>Fancytree - Example: Forms</title>
+	<title>Test Focus and Aria | Fancytree</title>
 
 	<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.1/themes/base/jquery-ui.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js" type="text/javascript"></script>
 
-	<link href="../src/skin-win7/ui.fancytree.css" rel="stylesheet" type="text/css">
-	<script src="../src/jquery.fancytree.js" type="text/javascript"></script>
+	<link href="../../src/skin-win7/ui.fancytree.css" rel="stylesheet" type="text/css">
+	<script src="../../src/jquery.fancytree.js" type="text/javascript"></script>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
-	<link href="../lib/prettify.css" rel="stylesheet">
-	<script src="../lib/prettify.js" type="text/javascript"></script>
-	<link href="sample.css" rel="stylesheet" type="text/css">
-	<script src="sample.js" type="text/javascript"></script>
+	<link href="../../lib/prettify.css" rel="stylesheet">
+	<script src="../../lib/prettify.js" type="text/javascript"></script>
+	<link href="../../demo/sample.css" rel="stylesheet" type="text/css">
+	<script src="../../demo/sample.js" type="text/javascript"></script>
 	<!-- End_Exclude -->
 
 <style type="text/css">
+/*
+[aria-activedescendant]{
+	outline: 1px dotted red;
+}
+*/
+ul.fancytree-focused{
+	border: 1px solid blue;
+}
+ul.ui-fancytree:focus{
+	border-width: 3px;
+}
+span.fancytree-focused{
+	border: 1px solid green;
+}
+
 </style>
 
 	<!-- Add code to initialize the tree when the document is loaded: -->
 <script type="text/javascript">
 	$(function(){
 		$("#tree").fancytree({
+			aria: true,
 			checkbox: true,
 			selectMode: 2,
+//			tabbable: false,
+			nolink: true,
 			source: [
-//                {title: "Item 1 with embedded html: <input type='input' name='node1info'>", key: "node1"},
-	            {title: "Item 1", key: "node1"},
+				{title: "Item 1 with embedded html: <input type='input' name='node1info'>", key: "node1"},
 				{title: "Folder 2", folder: true, expanded: true, key: "node2",
 					children: [
 						{title: "Sub-item 2.1", key: "node2.1"},
@@ -40,8 +57,11 @@
 			]
 		});
 		$("#tree2").fancytree({
+			aria: true,
 			checkbox: false,
 			selectMode: 3,
+//          tabbable: false,
+			nolink: true,
 			source: [
 				{title: "Item 1", key: "node1"},
 				{title: "Folder 2", folder: true, key: "node2",

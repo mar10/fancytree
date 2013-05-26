@@ -127,7 +127,7 @@ module.exports = function (grunt) {
 
 	grunt.registerTask("server", ["connect:demo"]);
 	grunt.registerTask("test", ["jshint:beforeconcat", "qunit"]);
-	grunt.registerTask("ci", ["test"]);
+	grunt.registerTask("travis", ["test"]);
 	grunt.registerTask("default", ["test"]);
 	grunt.registerTask("build", ["exec:tabfix",
 	                             "jshint:beforeconcat",
