@@ -7,7 +7,7 @@
 	http://code.google.com/p/fancytree/wiki/LicenseInfo
 
 	A current version and some documentation is available at
-		http://fancytree.googlecode.com/
+		https://github.com/mar10/fancytree/
 
 *******************************************************************************/
 

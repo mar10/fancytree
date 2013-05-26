@@ -1,6 +1,6 @@
 /*!
  * jquery.fancytree.sampleextension.js
- * Sample extension for jquery.fancytree.js (http://fancytree.googlecode.com/).
+ * Sample extension for jquery.fancytree.js (https://github.com/mar10/fancytree/).
  *
  * Copyright (c) 2012, Martin Wendt (http://wwWendt.de)
  *

@@ -7,7 +7,7 @@
  * http://code.google.com/p/fancytree/wiki/LicenseInfo
  *
  * A current version and some documentation is available at
- *    http://fancytree.googlecode.com/
+ *    https://github.com/mar10/fancytree/
  *
  * @summary     jQuery UI tree widget
  * @description Dynamic tree view control, with support for lazy loading of branches.

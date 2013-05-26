@@ -1,6 +1,6 @@
 /*!
  * jquery.fancytree.persist.js
- * Persistence extension for jquery.fancytree.js (http://fancytree.googlecode.com/).
+ * Persistence extension for jquery.fancytree.js (https://github.com/mar10/fancytree/).
  *
  * Copyright (c) 2012, Martin Wendt (http://wwWendt.de)
  * Dual licensed under the MIT or GPL Version 2 licenses.
