@@ -27,7 +27,7 @@
 *************************************************************************/
 
 // Start of local namespace
-(function($) {
+;(function($, window, document, undefined) {
 // relax some jslint checks:
 /*globals alert */
 
@@ -1612,7 +1612,10 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			ctx.orgEvent.preventDefault();
 		}
 	},
-	/** Default handling for mouse keydown events. */
+	/** Default handling for mouse keydown events. 
+	 * 
+	 * NOTE: this may be called with node == null if tree (but no node) has focus.
+	 */
 	nodeKeydown: function(ctx) {
 		// TODO: return promise?
 		var event = ctx.orgEvent,
@@ -1625,12 +1628,20 @@ Fancytree.prototype = /**@lends Fancytree*/{
 
 //		node.debug("ftnode.nodeKeydown(" + event.type + "): ftnode:" + this + ", charCode:" + event.charCode + ", keyCode: " + event.keyCode + ", which: " + event.which);
 
+		// Set focus to first node, if no other node has the focus yet
+		if( !node ){
+			this.rootNode.getFirstChild().setFocus();
+			node = ctx.node = this.focusNode;
+			node.debug("Keydown force focus on first node");
+		}
+		// Navigate to node
 		function _goto(n){
 			if( n ){
 				n.makeVisible();
 				return (event.ctrlKey || !opts.autoActivate ) ? n.setFocus() : n.setActive();
 			}
 		}
+
 		switch( event.which ) {
 			// charCodes:
 			case KC.NUMPAD_ADD: //107: // '+'
@@ -2859,7 +2870,8 @@ Fancytree.prototype = /**@lends Fancytree*/{
 				if( this.activeNode ){
 					this.activeNode.setFocus();
 				}else if( this.rootNode.hasChildren()){
-					this.rootNode.getFirstChild().setFocus();
+					this.warn("NOT setting focus to first child");
+//					this.rootNode.getFirstChild().setFocus();
 				}
 			}
 			this._triggerTreeEvent("focustree");
@@ -3485,26 +3497,4 @@ if( typeof define === "function" && define.amd ) {
 	});
 }
 */
-}(jQuery));  //
-
-
-/* *****************************************************************************
- * Fancytree extension: profiler
- */
-(function($) {
-	$.ui.fancytree.registerExtension("profiler", {
-		// Default options for this extension
-		options: {
-			prefix: ""
-		},
-		// Overide virtual methods for this extension
-		nodeRender: function(ctx, force, deep, collapsed){
-			// ctx.tree.debug("**** PROFILER nodeRender");
-			var s = this.options.prefix + "render '" + ctx.node + "'";
-			/*jshint expr:true */
-			window.console && window.console.time && window.console.time(s);
-			this._super(ctx, force, deep, collapsed);
-			window.console && window.console.timeEnd && window.console.timeEnd(s);
-		}
-	 });
-}(jQuery));
+}(jQuery, window, document));
