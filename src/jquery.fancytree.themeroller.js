@@ -10,7 +10,8 @@
 		http://fancytree.googlecode.com/
 *************************************************************************/
 
-(function($) {
+;(function($, window, document, undefined) {
+
 "use strict";
 
 /*******************************************************************************
@@ -71,4 +72,4 @@ $.ui.fancytree.registerExtension("themeroller", {
 //		node.debug("ext-themeroller.nodeRenderStatus: ", node.span.className);
 	}
 });
-}(jQuery));
+}(jQuery, window, document));

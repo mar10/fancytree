@@ -10,7 +10,7 @@
  *	http://fancytree.googlecode.com/
  */
 
-(function($) {
+;(function($, window, document, undefined) {
 
 "use strict";
 
@@ -509,4 +509,4 @@ $.ui.fancytree.registerExtension("dnd",
 		 }
 	}
 });
-}(jQuery));
+}(jQuery, window, document));

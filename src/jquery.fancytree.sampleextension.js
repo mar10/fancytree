@@ -8,7 +8,7 @@
  *     http://code.google.com/p/fancytree/wiki/LicenseInfo
  */
 
-(function($) {
+;(function($, window, document, undefined) {
 
 "use strict";
 
@@ -127,4 +127,4 @@ $.ui.fancytree.registerExtension("sampleextension", {
 		}
 	}
 });
-}(jQuery));
+}(jQuery, window, document));

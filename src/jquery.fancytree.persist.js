@@ -6,7 +6,7 @@
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://code.google.com/p/fancytree/wiki/LicenseInfo
  */
-(function($) {
+;(function($, window, document, undefined) {
 
 "use strict";
 
@@ -235,4 +235,4 @@ $.ui.fancytree.registerExtension("persist", {
 		}
 	}
 });
-}(jQuery));
+}(jQuery, window, document));

@@ -10,9 +10,7 @@
 		http://fancytree.googlecode.com/
 *************************************************************************/
 
-// Start of local namespace
-(function($) {
-// relax some jslint checks:
+;(function($, window, document, undefined) {
 
 "use strict";
 
@@ -156,4 +154,4 @@ $.ui.fancytree.registerExtension("filter", {
 		}
 	}
 });
-}(jQuery));
+}(jQuery, window, document));

@@ -18,8 +18,8 @@
 	@depends: jquery.fancytree.js
 *************************************************************************/
 
-// Start of local namespace
-(function($) {
+;(function($, window, document, undefined) {
+
 "use strict";
 
 // prevent duplicate loading
@@ -297,4 +297,4 @@ $.ui.fancytree.registerExtension("table", {
 		$.ui.fancytree.focusTree = ctx.tree;
 	}*/
 });
-}(jQuery));
+}(jQuery, window, document));

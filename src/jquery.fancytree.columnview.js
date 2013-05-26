@@ -11,8 +11,7 @@
 
 *******************************************************************************/
 
-// Start of local namespace
-(function($) {
+;(function($, window, document, undefined) {
 
 "use strict";
 
@@ -138,4 +137,4 @@ $.ui.fancytree.registerExtension("columnview", {
 		}
 	}
 });
-}(jQuery));
+}(jQuery, window, document));

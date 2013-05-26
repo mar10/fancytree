@@ -12,8 +12,7 @@
 		http://fancytree.googlecode.com/
 *************************************************************************/
 
-// Start of local namespace
-(function($) {
+;(function($, window, document, undefined) {
 
 "use strict";
 
@@ -147,4 +146,4 @@ $.ui.fancytree.registerExtension("menu", {
 //		this._super(ctx);
 //	}
 });
-}(jQuery));
+}(jQuery, window, document));

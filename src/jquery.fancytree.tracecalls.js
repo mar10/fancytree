@@ -18,8 +18,8 @@
 	@depends: jquery.fancytree.js
 *************************************************************************/
 
-// Start of local namespace
-(function($) {
+;(function($, window, document, undefined) {
+
 "use strict";
 
 // prevent duplicate loading
@@ -119,4 +119,27 @@ $.ui.fancytree.registerExtension("tracecalls", {
 	}
 });
 
-}(jQuery));
+}(jQuery, window, document));
+
+
+
+/* *****************************************************************************
+ * Fancytree extension: profiler
+ */
+;(function($, window, document, undefined) {
+	$.ui.fancytree.registerExtension("profiler", {
+		// Default options for this extension
+		options: {
+			prefix: ""
+		},
+		// Overide virtual methods for this extension
+		nodeRender: function(ctx, force, deep, collapsed){
+			// ctx.tree.debug("**** PROFILER nodeRender");
+			var s = this.options.prefix + "render '" + ctx.node + "'";
+			/*jshint expr:true */
+			window.console && window.console.time && window.console.time(s);
+			this._super(ctx, force, deep, collapsed);
+			window.console && window.console.timeEnd && window.console.timeEnd(s);
+		}
+	 });
+}(jQuery, window, document));
