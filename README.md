@@ -1,7 +1,7 @@
 # Fancytree [![Build Status](https://travis-ci.org/mar10/fancytree.png?branch=master)](https://travis-ci.org/mar10/fancytree)
 
 jquery.fancytree.js
-Fancytree 2.x is the designated successor of DynaTree 1.x.
+Fancytree 2.x is the designated successor of [DynaTree 1.x](https://code.google.com/p/dynatree/).
 
 ## Status
 
