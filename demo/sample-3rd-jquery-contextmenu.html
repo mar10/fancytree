@@ -56,15 +56,14 @@
 						{title: "Sub 2", cmd: "sub1"}
 						]}
 					],
-			beforeOpen: function(event) {
-				var node = $.ui.fancytree.getNode(event.relatedTarget);
+			beforeOpen: function(event, ui) {
+				var node = $.ui.fancytree.getNode(ui.target);
 //                node.setFocus();
 				node.setActive();
 			},
 			select: function(event, ui) {
-				var menuId = ui.item.find(">a").attr("href"),
-					node = $.ui.fancytree.getNode(event.relatedTarget);
-				alert("select " + menuId + " on " + node);
+				var node = $.ui.fancytree.getNode(ui.target);
+				alert("select " + ui.cmd + " on " + node);
 			}
 		});
 	});
