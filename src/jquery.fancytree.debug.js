@@ -1,6 +1,7 @@
 /*************************************************************************
-	jquery.fancytree.tracecalls.js
-	Table extension for jquery.fancytree.js.
+	jquery.fancytree.debug.js
+	
+	Misc. debug extensions for jquery.fancytree.js.
 
 	Copyright (c) 2012, Martin Wendt (http://wwWendt.de)
 	Dual licensed under the MIT or GPL Version 2 licenses.

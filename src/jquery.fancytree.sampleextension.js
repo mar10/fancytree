@@ -78,10 +78,10 @@ $.ui.fancytree.registerExtension("sampleextension", {
 			cookie = $.cookie(cookieName),
 			cookieList = cookie ? cookie.split(this.delimiter) : [];
 	},
-	// Overide virtual methods for this extension.
+	// Override virtual methods for this extension.
 	// `this`       : is this extension object
 	// `this._base` : the Fancytree instance
-	// `this._super`: the virtual function that was overriden (member of prev. extension or Fancytree)
+	// `this._super`: the virtual function that was overridden (member of prev. extension or Fancytree)
 	treeInit: function(ctx){
 		var tree = ctx.tree,
 			opts = ctx.options,
