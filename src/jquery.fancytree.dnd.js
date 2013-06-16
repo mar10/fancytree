@@ -20,7 +20,7 @@
 var logMsg = $.ui.fancytree.debug;
 
 function offsetString(n){
-    return n === 0 ? "" :(( n > 0 ) ? ("+" + n) : ("" + n)); 
+	return n === 0 ? "" :(( n > 0 ) ? ("+" + n) : ("" + n));
 }
 
 /* *****************************************************************************
@@ -218,12 +218,12 @@ $.ui.fancytree.registerExtension("dnd",
 	/* Display drop marker according to hitMode ('after', 'before', 'over', 'out', 'start', 'stop'). */
 	_setDndStatus: function(sourceNode, targetNode, helper, hitMode, accept) {
 		var posOpts,
-	        markerOffsetX = 0,
-	        markerOffsetY = 0,
-		    instData = this.dnd,
+			markerOffsetX = 0,
+			markerOffsetY = 0,
+			instData = this.dnd,
 			$source = sourceNode ? $(sourceNode.span) : null,
 			$target = $(targetNode.span);
-			
+
 		if( !instData.$dropMarker ) {
 			instData.$dropMarker = $("<div id='fancytree-drop-marker'></div>")
 				.hide()
@@ -269,20 +269,20 @@ $.ui.fancytree.registerExtension("dnd",
 //            logMsg("    $target.offsetParent=%o, ot:%o", $target.offsetParent(), $target.offsetParent().offset());
 //            logMsg("    $(this.divTree).offset=%o", $(this.divTree).offset());
 //            logMsg("    $(this.divTree).parent=%o", $(this.divTree).parent());
-			// 
+			//
 			if( $.ui.fancytree.jquerySupports.positionMyOfs ){
-                posOpts = {
-                    my: "left" + offsetString(markerOffsetX) + " top" + offsetString(markerOffsetY),
-                    at: "left top",
-                    of: $target
-                };
+				posOpts = {
+					my: "left" + offsetString(markerOffsetX) + " top" + offsetString(markerOffsetY),
+					at: "left top",
+					of: $target
+				};
 			} else {
-                posOpts = {
-                    my: "left top",
-                    at: "left top",
-                    of: $target,
-                    offset: "" + markerOffsetX + " " + markerOffsetY
-                };
+				posOpts = {
+					my: "left top",
+					at: "left top",
+					of: $target,
+					offset: "" + markerOffsetX + " " + markerOffsetY
+				};
 			}
 			instData.$dropMarker
 				.show()

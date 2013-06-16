@@ -58,22 +58,22 @@ function _assert(cond, msg){
 }
 
 /** Return true if dotted version string is equal or higher than requested version.
- * 
+ *
  * See http://jsfiddle.net/mar10/FjSAN/
  */
 function isVersionAtLeast(dottedVersion, major, minor, patch){
-    var i, v, t,
-        verParts = $.map($.trim(dottedVersion).split("."), function(e){ return parseInt(e, 10); }),
-        testParts = $.map(Array.prototype.slice.call(arguments, 1), function(e){ return parseInt(e, 10); });
+	var i, v, t,
+		verParts = $.map($.trim(dottedVersion).split("."), function(e){ return parseInt(e, 10); }),
+		testParts = $.map(Array.prototype.slice.call(arguments, 1), function(e){ return parseInt(e, 10); });
 
-    for( i = 0; i < testParts.length; i++ ){
-        v = verParts[i] || 0;
-        t = testParts[i] || 0;
-        if( v !== t ){
-            return ( v > t );
-        }
-    }
-    return true;
+	for( i = 0; i < testParts.length; i++ ){
+		v = verParts[i] || 0;
+		t = testParts[i] || 0;
+		if( v !== t ){
+			return ( v > t );
+		}
+	}
+	return true;
 }
 
 /** Return a wrapper that calls sub.fn() and exposes base.fn() as _super(). */
@@ -203,7 +203,7 @@ var NONE_NODE_DATA_MAP = {"active": true, "children": true, "data": true, "focus
  */
 function FancytreeNode(parent, obj){
 	var i, l, name, cl;
-	
+
 	this.parent = parent;
 	this.tree = parent.tree;
 	this.ul = null;
@@ -3283,9 +3283,9 @@ $.extend($.ui.fancytree,
 	_FancytreeNodeClass: FancytreeNode,
 	/* Feature checks to provide backwards compatibility */
 	jquerySupports: {
-        // http://jqueryui.com/upgrade-guide/1.9/#deprecated-offset-option-merged-into-my-and-at
-        positionMyOfs: isVersionAtLeast($.ui.version, 1, 9)
-	    },
+		// http://jqueryui.com/upgrade-guide/1.9/#deprecated-offset-option-merged-into-my-and-at
+		positionMyOfs: isVersionAtLeast($.ui.version, 1, 9)
+		},
 	debug: function(msg){
 		/*jshint expr:true */
 		($.ui.fancytree.debugLevel >= 2) && consoleApply("log", arguments);
