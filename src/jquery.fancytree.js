@@ -295,33 +295,53 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 	 * @see FanctreeNode#applyPatch
 	 */
 	addChildren: function(children, insertBefore){
-		var firstNode = null;
+		var i, l, pos,
+			firstNode = null,
+			nodeList = [];
+
 		if($.isPlainObject(children) ){
 			children = [children];
 		}
 		if(!this.children){
 			this.children = [];
 		}
-		if(insertBefore === undefined){
-//            this._setChildren(children);
-			for(var i=0, l=children.length; i<l; i++){
-				if(i === 0){
-					firstNode = new FancytreeNode(this, children[i]);
-					this.children.push(firstNode);
-				}else{
-					this.children.push(new FancytreeNode(this, children[i]));
-				}
-			}
+		for(i=0, l=children.length; i<l; i++){
+			nodeList.push(new FancytreeNode(this, children[i]));
+		}
+		firstNode = nodeList[0];
+		if(insertBefore == null){
+		    this.children = this.children.concat(nodeList);
 		}else{
-			// TODO: not implemented
-			_assert(!insertBefore, "not implemented");
 			insertBefore = this._findDirectChild(insertBefore);
+			pos = $.inArray(insertBefore, this.children);
+			_assert(pos >= 0, "insertBefore must be an existing child");
+			// insert nodeList after children[pos]
+			this.children.splice.apply(this.children, [pos, 0].concat(nodeList));
 		}
 		if(!this.parent || this.parent.ul){
 			// render if the parent was rendered (or this is a root node)
 			this.render();
 		}
 		return firstNode;
+	},
+	/**
+	 * Append or prepend a node, or append a child node.
+	 *
+	 * @param {NodeData} node node definition
+	 * @param {String} [mode] 'before', 'after', or 'child'
+	 * @returns {FancytreeNode} new node
+	 */
+	addNode: function(node, mode){
+		switch(mode){
+		case "after":
+			return this.getParent().addChildren(node, this.getNextSibling());
+		case "before":
+			return this.getParent().addChildren(node, this);
+		case "child":
+		case "over":
+			return this.addChildren(node);
+		}
+		_assert(false, "Invalid mode: " + mode);
 	},
 	/**
 	 *
@@ -723,9 +743,7 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 			this.parent.expanded = false;
 		} else {
 			pos = $.inArray(this, this.parent.children);
-			if( pos < 0 ){
-				throw "Internal error";
-			}
+			_assert(pos >= 0);
 			this.parent.children.splice(pos, 1);
 		}
 		// Remove from source DOM parent
@@ -744,17 +762,13 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 			case "before":
 				// Insert this node before target node
 				pos = $.inArray(targetNode, targetParent.children);
-				if( pos < 0 ){
-					throw "Internal error";
-				}
+				_assert(pos >= 0);
 				targetParent.children.splice(pos, 0, this);
 				break;
 			case "after":
 				// Insert this node after target node
 				pos = $.inArray(targetNode, targetParent.children);
-				if( pos < 0 ){
-					throw "Internal error";
-				}
+				_assert(pos >= 0);
 				targetParent.children.splice(pos+1, 0, this);
 				break;
 			default:

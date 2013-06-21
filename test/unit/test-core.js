@@ -347,6 +347,7 @@ test("FancytreeNode class", function() {
 
 	// Methods
 //  addChildren: function(children){
+//  addNode: function(node, mode){
 //  applyPatch: function(patch) {
 //  collapseSiblings: function() {
 

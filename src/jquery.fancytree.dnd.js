@@ -59,8 +59,7 @@ function _initDragAndDrop(tree) {
 			start: function(event, ui) {
 //              var sourceNode = $.ui.fancytree.getNode(event.target);
 				// don't return false if sourceNode == null (see issue 268)
-			},
-			_last: null
+			}
 		});
 	}
 	// Attach ui.droppable to this Fancytree instance
@@ -68,8 +67,7 @@ function _initDragAndDrop(tree) {
 		tree.widget.element.droppable({
 			addClasses: false,
 			tolerance: "intersect",
-			greedy: false,
-			_last: null
+			greedy: false
 		});
 	}
 }

@@ -1,6 +1,7 @@
 /**
  * Tools inspired by https://github.com/jquery/jquery-ui/blob/master/tests/unit/menu/
  */
+/*
 function TestHelpers() {
 
 	var lastItem = "",
@@ -39,12 +40,12 @@ function TestHelpers() {
 		}
 	};
 }
-
+*/
 
 /** Create a profile wrapper.
  *
  */
-
+/*
 function profileWrapper(fn, flag, opts){
 	if( flag === false ){
 		return fn;
@@ -93,3 +94,4 @@ function profileWrapper(fn, flag, opts){
 	};
 	return wrapper;
 }
+*/
