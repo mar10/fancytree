@@ -17,16 +17,12 @@
 /* *****************************************************************************
  * Private functions and variables
  */
-/*
-function _assert(cond, msg){
-	msg = msg || "";
-	if(!cond){
-		$.error("Assertion failed " + msg);
-	}
-}
-*/
 var logMsg = $.ui.fancytree.debug;
 
+/* Convert number to string and prepend +/-; return empty string for 0.*/
+function offsetString(n){
+	return n === 0 ? "" : (( n > 0 ) ? ("+" + n) : ("" + n));
+}
 
 /* *****************************************************************************
  * Drag and drop support
@@ -64,8 +60,7 @@ function _initDragAndDrop(tree) {
 			start: function(event, ui) {
 //              var sourceNode = $.ui.fancytree.getNode(event.target);
 				// don't return false if sourceNode == null (see issue 268)
-			},
-			_last: null
+			}
 		});
 	}
 	// Attach ui.droppable to this Fancytree instance
@@ -73,8 +68,7 @@ function _initDragAndDrop(tree) {
 		tree.widget.element.droppable({
 			addClasses: false,
 			tolerance: "intersect",
-			greedy: false,
-			_last: null
+			greedy: false
 		});
 	}
 }
@@ -91,6 +85,7 @@ function _registerDnd() {
 
 	// Register proxy-functions for draggable.start/drag/stop
 	$.ui.plugin.add("draggable", "connectToFancytree", {
+//	$.ui.plugin.add("sortable", "connectToFancytree", {
 		start: function(event, ui) {
 			// 'draggable' was renamed to 'ui-draggable' since jQueryUI 1.10
 			var draggable = $(this).data("ui-draggable") || $(this).data("draggable"),
@@ -222,10 +217,13 @@ $.ui.fancytree.registerExtension("dnd",
 	},
 	/* Display drop marker according to hitMode ('after', 'before', 'over', 'out', 'start', 'stop'). */
 	_setDndStatus: function(sourceNode, targetNode, helper, hitMode, accept) {
-		var instData = this.dnd,
-//			instOpts = this.options.dnd,
+		var posOpts,
+			markerOffsetX = 0,
+			markerOffsetY = 0,
+			instData = this.dnd,
 			$source = sourceNode ? $(sourceNode.span) : null,
 			$target = $(targetNode.span);
+
 		if( !instData.$dropMarker ) {
 			instData.$dropMarker = $("<div id='fancytree-drop-marker'></div>")
 				.hide()
@@ -244,7 +242,6 @@ $.ui.fancytree.registerExtension("dnd",
 //      this.$dropMarker.attr("class", hitMode);
 		if(hitMode === "after" || hitMode === "before" || hitMode === "over"){
 //          $source && $source.addClass("fancytree-drag-source");
-			var markerOffset = "0 0";
 
 //          $target.addClass("fancytree-drop-target");
 
@@ -252,18 +249,18 @@ $.ui.fancytree.registerExtension("dnd",
 			case "before":
 				instData.$dropMarker.removeClass("fancytree-drop-after fancytree-drop-over");
 				instData.$dropMarker.addClass("fancytree-drop-before");
-				markerOffset = "0 -8";
+				markerOffsetY = -8;
 				break;
 			case "after":
 				instData.$dropMarker.removeClass("fancytree-drop-before fancytree-drop-over");
 				instData.$dropMarker.addClass("fancytree-drop-after");
-				markerOffset = "0 8";
+				markerOffsetY = 8;
 				break;
 			default:
 				instData.$dropMarker.removeClass("fancytree-drop-after fancytree-drop-before");
 				instData.$dropMarker.addClass("fancytree-drop-over");
 				$target.addClass("fancytree-drop-target");
-				markerOffset = "8 0";
+				markerOffsetX = 8;
 			}
 //            logMsg("Creating marker: %o", this.$dropMarker);
 //            logMsg("    $target.offset=%o", $target);
@@ -272,15 +269,24 @@ $.ui.fancytree.registerExtension("dnd",
 //            logMsg("    $target.offsetParent=%o, ot:%o", $target.offsetParent(), $target.offsetParent().offset());
 //            logMsg("    $(this.divTree).offset=%o", $(this.divTree).offset());
 //            logMsg("    $(this.divTree).parent=%o", $(this.divTree).parent());
-
-			instData.$dropMarker
-				.show()
-				.position({
+			//
+			if( $.ui.fancytree.jquerySupports.positionMyOfs ){
+				posOpts = {
+					my: "left" + offsetString(markerOffsetX) + " top" + offsetString(markerOffsetY),
+					at: "left top",
+					of: $target
+				};
+			} else {
+				posOpts = {
 					my: "left top",
 					at: "left top",
 					of: $target,
-					offset: markerOffset
-				});
+					offset: "" + markerOffsetX + " " + markerOffsetY
+				};
+			}
+			instData.$dropMarker
+				.show()
+				.position(posOpts);
 //          helper.addClass("fancytree-drop-hover");
 		} else {
 //          $source && $source.removeClass("fancytree-drag-source");
