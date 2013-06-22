@@ -310,7 +310,7 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 		}
 		firstNode = nodeList[0];
 		if(insertBefore == null){
-		    this.children = this.children.concat(nodeList);
+			this.children = this.children.concat(nodeList);
 		}else{
 			insertBefore = this._findDirectChild(insertBefore);
 			pos = $.inArray(insertBefore, this.children);
@@ -397,6 +397,16 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 	 */
 	collapseSiblings: function() {
 		return this.tree._callHook("nodeCollapseSiblings", this);
+	},
+	/** Copy this node as sibling or child of `node`.
+	 * 
+	 * @param {FancytreeNode} node source node
+	 * @param {String} mode 'before' | 'after' | 'child'
+	 * @param {Function} [map] callback function(NodeData) that could modify the new node
+	 * @returns {FancytreeNode} new  
+	 */
+	copyTo: function(node, mode, map) {
+		return node.addNode(this.toDict(true, map), mode);
 	},
 	/** Count direct and indirect children.
 	 *
@@ -1646,8 +1656,8 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			ctx.orgEvent.preventDefault();
 		}
 	},
-	/** Default handling for mouse keydown events. 
-	 * 
+	/** Default handling for mouse keydown events.
+	 *
 	 * NOTE: this may be called with node == null if tree (but no node) has focus.
 	 */
 	nodeKeydown: function(ctx) {
@@ -2027,7 +2037,8 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			// Discard markup on force-mode, or if it is not linked to parent <ul>
 			if(node.li && (force || (node.li.parentNode !== node.parent.ul) ) ){
 				if(node.li.parentNode !== node.parent.ul){
-					alert("unlink " + node + " (must be child of " + node.parent + ")");
+//					alert("unlink " + node + " (must be child of " + node.parent + ")");
+					this.warn("unlink " + node + " (must be child of " + node.parent + ")");
 				}
 //	            this.debug("nodeRemoveMarkup...");
 				this.nodeRemoveMarkup(ctx);
@@ -2110,7 +2121,8 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		}else{
 			// No children: remove markup if any
 			if( node.ul ){
-				alert("remove child markup for " + node);
+//				alert("remove child markup for " + node);
+				this.warn("remove child markup for " + node);
 				this.nodeRemoveChildMarkup(ctx);
 			}
 		}
