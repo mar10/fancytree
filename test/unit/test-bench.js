@@ -115,6 +115,8 @@ function benchmark(testName, callback) {
 	makeBenchWrapper(testName, callback).call();
 }
 
+//$.ui.fancytree._FancytreeNodeClass.prototype.addChildren
+//    = profileWrapper($.ui.fancytree._FancytreeNodeClass.prototype.addChildren);
 
 function addNodes(node, level1, level2, level3, forceUpdate) {
 	if( forceUpdate !== true ){
