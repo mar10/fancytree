@@ -219,7 +219,7 @@ $.ui.fancytree.registerExtension("dnd",
 	_setDndStatus: function(sourceNode, targetNode, helper, hitMode, accept) {
 		var posOpts,
 			markerOffsetX = 0,
-			markerOffsetY = 0,
+			markerAt = "center",
 			instData = this.dnd,
 			$source = sourceNode ? $(sourceNode.span) : null,
 			$target = $(targetNode.span);
@@ -249,12 +249,12 @@ $.ui.fancytree.registerExtension("dnd",
 			case "before":
 				instData.$dropMarker.removeClass("fancytree-drop-after fancytree-drop-over");
 				instData.$dropMarker.addClass("fancytree-drop-before");
-				markerOffsetY = -8;
+				markerAt = "top";
 				break;
 			case "after":
 				instData.$dropMarker.removeClass("fancytree-drop-before fancytree-drop-over");
 				instData.$dropMarker.addClass("fancytree-drop-after");
-				markerOffsetY = 8;
+				markerAt = "bottom";
 				break;
 			default:
 				instData.$dropMarker.removeClass("fancytree-drop-after fancytree-drop-before");
@@ -272,16 +272,16 @@ $.ui.fancytree.registerExtension("dnd",
 			//
 			if( $.ui.fancytree.jquerySupports.positionMyOfs ){
 				posOpts = {
-					my: "left" + offsetString(markerOffsetX) + " top" + offsetString(markerOffsetY),
-					at: "left top",
+					my: "left" + offsetString(markerOffsetX) + " center",
+					at: "left " + markerAt,
 					of: $target
 				};
 			} else {
 				posOpts = {
-					my: "left top",
-					at: "left top",
+					my: "left center",
+					at: "left " + markerAt,
 					of: $target,
-					offset: "" + markerOffsetX + " " + markerOffsetY
+					offset: "" + markerOffsetX + " 0"
 				};
 			}
 			instData.$dropMarker
