@@ -332,6 +332,9 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 	 * @returns {FancytreeNode} new node
 	 */
 	addNode: function(node, mode){
+		if(mode === undefined || mode === "over"){
+			mode = "child";
+		}
 		switch(mode){
 		case "after":
 			return this.getParent().addChildren(node, this.getNextSibling());
@@ -399,11 +402,11 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 		return this.tree._callHook("nodeCollapseSiblings", this);
 	},
 	/** Copy this node as sibling or child of `node`.
-	 * 
+	 *
 	 * @param {FancytreeNode} node source node
 	 * @param {String} mode 'before' | 'after' | 'child'
 	 * @param {Function} [map] callback function(NodeData) that could modify the new node
-	 * @returns {FancytreeNode} new  
+	 * @returns {FancytreeNode} new
 	 */
 	copyTo: function(node, mode, map) {
 		return node.addNode(this.toDict(true, map), mode);
@@ -725,14 +728,16 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 		}
 	},
 	/** Move this node to targetNode.
+	 *  @param {FancytreeNode} targetNode
 	 *  @param {String} mode
 	 *      'child': append this node as last child of targetNode.
 	 *               This is the default. To be compatble with the D'n'd
 	 *               hitMode, we also accept 'over'.
-	 *  mode 'before': add this node as sibling before targetNode.
-	 *  mode 'after': add this node as sibling after targetNode.
+	 *  	'before': add this node as sibling before targetNode.
+	 *  	'after': add this node as sibling after targetNode.
+	 *  @param	[map] optional callback(FancytreeNode) to allow modifcations
 	 */
-	move: function(targetNode, mode) {
+	moveTo: function(targetNode, mode, map) {
 		if(mode === undefined || mode === "over"){
 			mode = "child";
 		}
@@ -798,14 +803,21 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 //		// Issue 319: Add to target DOM parent (only if node was already rendered(expanded))
 //		if(this.li){
 //			targetParent.ul.appendChild(this.li);
-//		}
+//		}^
+
+		// Let caller modify the nodes
+		if( map ){
+			targetNode.visit(map, true);
+		}
 		// Handle cross-tree moves
 		if( this.tree !== targetNode.tree ) {
 			// Fix node.tree for all source nodes
-			throw "Cross-tree move is not yet implemented.";
-//			this.visit(function(n){
-//				n.tree = targetNode.tree;
-//			}, null, true);
+//			_assert(false, "Cross-tree move is not yet implemented.");
+			this.warn("Cross-tree moveTo is experimantal!");
+			this.visit(function(n){
+				// TODO: fix selection state and activation, ...
+				n.tree = targetNode.tree;
+			}, true);
 		}
 		// Update HTML markup
 		if( !prevParent.isDescendantOf(targetParent)) {
@@ -1094,9 +1106,11 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 		}
 		return dict;
 	},
+	/** Flip expanded status.  */
 	toggleExpanded: function(){
 		return this.tree._callHook("nodeToggleExpanded", this);
 	},
+	/** Flip selection status.  */
 	toggleSelected: function(){
 		return this.tree._callHook("nodeToggleSelected", this);
 	},
@@ -2185,14 +2199,15 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		// folder or doctype icon
 		var icon = node.data.icon;
 		role = aria ? " role='img'" : "";
-		if ( icon ) {
+		if ( icon && typeof icon === "string" ) {
 			var imageSrc = (icon.charAt(0) === "/") ? icon : (opts.imagePath + icon);
 			ares.push("<img src='" + imageSrc + "' alt='' />");
 		} else if ( node.data.iconclass ) {
 			// TODO: review and test and document
 			ares.push("<span " + role + " class='fancytree-custom-icon" + " " + node.data.iconclass +  "'></span>");
-		} else if ( icon !== false && opts.icons !== false ) {
-			// icon == false means 'no icon', icon == null means 'default icon'
+		} else if ( icon === true || (icon !== false && opts.icons !== false) ) {
+			// opts.icons defines the default behavior.
+			// node.icon == true/false can override this
 			ares.push("<span " + role + " class='fancytree-icon'></span>");
 		}
 		// node title

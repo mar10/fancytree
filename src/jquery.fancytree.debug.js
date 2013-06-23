@@ -1,6 +1,6 @@
 /*************************************************************************
 	jquery.fancytree.debug.js
-	
+
 	Misc. debug extensions for jquery.fancytree.js.
 
 	Copyright (c) 2012, Martin Wendt (http://wwWendt.de)

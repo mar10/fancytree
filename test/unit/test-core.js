@@ -350,6 +350,7 @@ test("FancytreeNode class", function() {
 //  addNode: function(node, mode){
 //  applyPatch: function(patch) {
 //  collapseSiblings: function() {
+//  copyTp: function(targetNode, mode, map) {
 
 	equal(root.countChildren(), TESTDATA_NODES, "countChildren() - root");
 	equal(root.countChildren(true), TESTDATA_NODES, "countChildren(true) - root");
@@ -422,7 +423,7 @@ test("FancytreeNode class", function() {
 //  isSelected: function() {
 //  isVisible: function() {
 //  makeVisible
-//  move: function(targetNode, mode) {
+//  moveTo: function(targetNode, mode, map) {
 //  reloadChildren: function() {
 //  render: function(force, deep) {
 //  renderTitle: function() {
