@@ -733,8 +733,8 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 	 *      'child': append this node as last child of targetNode.
 	 *               This is the default. To be compatble with the D'n'd
 	 *               hitMode, we also accept 'over'.
-	 *  	'before': add this node as sibling before targetNode.
-	 *  	'after': add this node as sibling after targetNode.
+	 *      'before': add this node as sibling before targetNode.
+	 *      'after': add this node as sibling after targetNode.
 	 *  @param	[map] optional callback(FancytreeNode) to allow modifcations
 	 */
 	moveTo: function(targetNode, mode, map) {
