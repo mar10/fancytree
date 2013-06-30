@@ -1,3 +1,8 @@
+// jQUnit defines:
+// asyncTest,deepEqual,equal,expect,module,notDeepEqual,notEqual,notStrictEqual,ok,QUnit,raises,start,stop,strictEqual,test
+
+/*globals ok,start,stop */
+
 /**
  * Tools inspired by https://github.com/jquery/jquery-ui/blob/master/tests/unit/menu/
  */
@@ -41,6 +46,42 @@ function TestHelpers() {
 	};
 }
 */
+
+/**
+ *
+ */
+var TOTAL_ELAP = 0;
+
+
+function AsyncTimer(name, start){
+	this.name = "AsyncTimer(" + name + ")";
+	this.stamp = null;
+	if(start !== false){
+		this.start();
+	}
+}
+AsyncTimer.prototype = {
+	start: function(){
+		/*jshint expr:true */
+		window.console && window.console.time && window.console.time(this.name);
+		// halt QUnit
+		stop();
+		this.stamp = +new Date();
+	},
+	stop: function(){
+		/*jshint expr:true */
+		window.console && window.console.timeEnd && window.console.timeEnd(this.name);
+		var elap = +new Date() - this.stamp;
+		ok(true, this.name + " took " + elap + " milliseconds");
+		TOTAL_ELAP += elap;
+		// Continue QUnit
+		start();
+	},
+	subtime: function(info){
+		var elap = +new Date() - this.stamp;
+		ok(true, "... " + this.name + " until '" + info + "' took " + elap + " milliseconds");
+	}
+};
 
 /** Create a profile wrapper.
  *

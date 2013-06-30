@@ -25,6 +25,11 @@ QUnit.done(function( details ) {
 //	}
 });
 
+
+// Silence, please
+$.ui.fancytree.debugLevel = 1;
+
+
 /*******************************************************************************
  * Tool functions
  */
