@@ -30,7 +30,7 @@ Contributors in order of appearance:
 *  Tomas Norkūnas
 
 
-~~~~
+----
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/mar10/fancytree/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
