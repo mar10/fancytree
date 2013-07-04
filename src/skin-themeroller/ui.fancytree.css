@@ -301,7 +301,7 @@ span.fancytree-title
 	vertical-align: top;
 	margin: 0px;
 	margin-left: 3px;
-
+	cursor: pointer;
 }
 /*
 span.fancytree-node:hover
