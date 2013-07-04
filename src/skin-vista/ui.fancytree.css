@@ -355,7 +355,7 @@ a.fancytree-title
 	   (we can do this, because this theme doesn't use vertical lines)
 	   */
 	border: 1px solid white; /* Note: 'transparent' would not work in IE6 */
-
+	cursor: pointer;
 }
 
 .fancytree-title:hover
