@@ -324,6 +324,7 @@ span.fancytree-title
 	vertical-align: top;
 	margin: 0px;
 	margin-left: 3px;
+	cursor: pointer;
 }
 .fancytree-title:hover
 {
