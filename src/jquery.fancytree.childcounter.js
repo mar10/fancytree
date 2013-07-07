@@ -1,6 +1,8 @@
 // Extending Fanyctree
 // ===================
-
+//
+// See also the [live demo](http://wwwendt.de/tech/fancytree/demo/sample-ext-childcounter.html) of this code.
+//
 // Every extension should have a comment header containing some information
 // about the author, copyright and licensing. Also a pointer to the latest
 // source code.
@@ -13,7 +15,7 @@
  * Copyright (c) 2013, Martin Wendt (http://wwWendt.de)
  *
  * Licensed under the MIT license.
- *     http://code.google.com/p/fancytree/wiki/LicenseInfo
+ *     https://github.com/mar10/fancytree/blob/master/MIT-LICENSE.txt
  */
 
 // To keep the global namespace clean, we wrap everything in a closure
@@ -70,11 +72,14 @@ $.ui.fancytree.prototype.widgetMethod1 = function(arg1){
 
 // Register a Fancytree extension
 // ------------------------------
-// If we want to author a full blown extension, that is available for all trees,
-//
+// A full blown extension, extension is available for all trees and can be
+// enabled like so (see also the [live demo](http://wwwendt.de/tech/fancytree/demo/sample-ext-childcounter.html)):
 //
 //     $("#tree").fancytree({
 //         extensions: ["childcounter"],
+//         childcounter: {
+//             hideExpanded: true
+//         },
 //         ...
 //     });
 //
@@ -92,7 +97,7 @@ $.ui.fancytree.registerExtension("childcounter", {
 	options: {
 		deep: true,
 		hideZeros: true,
-		hideExpanded: true
+		hideExpanded: false
 	},
 
 // Local functions are prefixed with an underscore '_'.
@@ -130,7 +135,7 @@ $.ui.fancytree.registerExtension("childcounter", {
 		this._super(ctx, title);
 // Append a counter badge
 		if( (count || ! extOpts.hideZeros) && (!node.isExpanded() || !extOpts.hideExpanded) ){
-			$(node.span).append($("<span class='fancytree-childcounter'/>").text(count));
+			$("span.fancytree-icon", node.span).append($("<span class='fancytree-childcounter'/>").text(count));
 		}
 	},
 // Overload the `setExpanded` hook, so the conters are updated
