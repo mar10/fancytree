@@ -478,6 +478,112 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 		});
 		return res;
 	},
+	/* Apply selection state (internal use only) */
+	_changeSelectStatusAttrs: function (state) {
+		var changed = false;
+
+		switch(state){
+		case false:
+			changed = ( this.selected || this.partsel );
+			this.selected = false;
+			this.partsel = false;
+			break;
+		case true:
+			changed = ( !this.selected || !this.partsel );
+			this.selected = true;
+			this.partsel = true;
+			break;
+		case undefined:
+			changed = ( this.selected || !this.partsel );
+			this.selected = false;
+			this.partsel = true;
+			break;
+		default:
+			_assert(false, "invalid state: " + state);
+		}
+		this.debug("fixSelection3AfterLoad() _changeSelectStatusAttrs()", state, changed);
+		if( changed ){
+			this.renderStatus();
+		}
+		return changed;
+	},
+	/**
+	 * Fix selection status, after this node was (de)selected in multi-hier mode.
+	 * This includes (de)selecting all children.
+	 */
+	fixSelection3AfterClick: function() {
+		var flag = this.isSelected();
+
+//		this.debug("fixSelection3AfterClick()");
+
+		this.visit(function(node){
+			node._changeSelectStatusAttrs(flag);
+		});
+		this.fixSelection3FromEndNodes();
+	},
+	/**
+	 * Fix selection status for in multi-hier mode.
+	 * Only end-nodes are considered to update the descendants branch ant parents.
+	 * Should be called after this node has loaded new children or after
+	 * children have been modified using the API.
+	 */
+	fixSelection3FromEndNodes: function() {
+//		this.debug("fixSelection3FromEndNodes()");
+
+		// Visit all end nodes and adjust their parent's `selected` and `partsel`
+		// attributes. Return selection state true, false, or undefined.
+		function _walk(node){
+			var i, l, child, s, state, allSelected,someSelected,
+				children = node.children;
+
+			if( children ){
+				// check all children recursively
+				allSelected = true;
+				someSelected = false;
+
+				for( i=0, l=children.length; i<l; i++ ){
+					child = children[i];
+					// the selection state of a node is not relevant; we need the end-nodes
+					s = _walk(child);
+					if( s !== false ) {
+						someSelected = true;
+					}
+					if( s !== true ) {
+						allSelected = false;
+					}
+				}
+				state = allSelected ? true : (someSelected ? undefined : false);
+			}else{
+				// This is an end-node: simply report the status
+				state = ( node.unselectable ) ? undefined : !!node.selected;
+			}
+			node._changeSelectStatusAttrs(state);
+			return state;
+		}
+		_walk(this);
+
+		// Update parent's state
+		this.visitParents(function(node){
+			var i, l, child, state,
+				children = node.children,
+				allSelected = true,
+				someSelected = false;
+
+			for( i=0, l=children.length; i<l; i++ ){
+				child = children[i];
+				// When fixing the parents, we trust the sibling status (i.e.
+				// we don't recurse)
+				if( child.selected || child.partsel ) {
+					someSelected = true;
+				}
+				if( !child.unselectable && !child.selected ) {
+					allSelected = false;
+				}
+			}
+			state = allSelected ? true : (someSelected ? undefined : false);
+			node._changeSelectStatusAttrs(state);
+		});
+	},
 	// TODO: focus()
 	/**
 	 * Update node data. If dict contains 'children', then also replace
@@ -1472,7 +1578,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	 * Calls
 	 * @param {String | String[]} keyPath one or more key paths (e.g. '/3/2_1/7')
 	 * @param {function} callback callbeck(mode) is called for every visited node
-	 * @returns $.Promise
+	 * @returns {$.Promise}
 	 */
 	/*
 	_loadKeyPath: function(keyPath, callback) {
@@ -2615,72 +2721,6 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		return sel;
 	},
 */
-	/**
-	 * Fix selection status, after this node was (de)selected in multi-hier mode.
-	 * This includes (de)selecting all children.
-	 */
-	_fixSelectionState: function(node) {
-//		alert("_fixSelectionState " + this);
-//		this.tree.logDebug("_fixSelectionState(%s) - %o", this.bSelected, this);
-		function _setPartSel(node, flag) {
-			if( (flag && !node.partsel) || (!flag && node.partsel)) {
-				node.partsel = !!flag;
-				node.renderStatus();
-			}
-		}
-		var p, i, l;
-		if( node.selected ) {
-			// Select all children
-			node.visit(function(n){
-				_setPartSel(n.parent, true);
-				if(!n.unselectable && !n.selected){
-					n.selected = true;
-					n.renderStatus();
-				}
-			});
-			// Select parents, if all children are selected
-			p = node.parent;
-			while( p ) {
-				var allChildsSelected = true;
-				for(i=0, l=p.children.length; i<l;  i++) {
-					var n = p.children[i];
-					if( !n.selected && !n.isStatusNode && !n.unselectable) {
-						allChildsSelected = false;
-						break;
-					}
-				}
-				p.partsel = true;
-				p.selected = allChildsSelected;
-				p.renderStatus();
-				p = p.parent;
-			}
-		} else {
-			// Deselect all children
-			_setPartSel(node, false);
-			node.visit(function(n){
-				_setPartSel(n, false);
-				if(n.selected){
-					n.selected = false;
-					n.renderStatus();
-				}
-			});
-			// Deselect parents, and recalc hasSubSel
-			p = node.parent;
-			while( p ) {
-				var someChildsSelected = false;
-				for(i=0, l=p.children.length; i<l;  i++) {
-					if( p.children[i].selected || p.children[i].partsel ) {
-						someChildsSelected = true;
-						break;
-					}
-				}
-				p.selected = false;
-				p.partsel = someChildsSelected;
-				p.renderStatus();
-				p = p.parent;
-			}
-		}
-	},
 	/** (De)Select node, return new status (sync).
 	 *
 	 * @param {HookContext} ctx
@@ -2710,7 +2750,8 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		}else if(opts.selectMode === 3){
 			// multi.hier selection mode
 			node.selected = flag;
-			this._fixSelectionState(node);
+//			this._fixSelectionState(node);
+			node.fixSelection3AfterClick();
 		}
 		node.selected = flag;
 		this.nodeRenderStatus(ctx);
