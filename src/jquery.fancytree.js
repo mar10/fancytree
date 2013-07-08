@@ -1902,7 +1902,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	 *     data was rendered.
 	 */
 	nodeLoadChildren: function(ctx, source) {
-		var children,
+		var children = null,
 			tree = ctx.tree,
 			node = ctx.node,
 			dfd;
@@ -1910,7 +1910,6 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		if($.isFunction(source)){
 			source = source();
 		}
-//        alert("nodeLoadChildren() source = " + JSON.stringify(source));
 		if(source.url || $.isFunction(source.done)){
 			tree.nodeSetStatus(ctx, "loading");
 			if(source.url){
@@ -1941,8 +1940,19 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			}
 			dfd.done(function(data, textStatus, jqXHR){
 				tree.nodeSetStatus(ctx, "ok");
+				if(typeof data === "string"){ $.error("Ajax request returned a string (did you get the JSON dataType wrong?)."); }
+//		        alert("nodeLoadChildren() source = " + JSON.stringify(source));
+				// postProcess is similar to the standard dataFilter hook,
+				// but it is also called for JSONP
+				if( ctx.options.postProcess ){
+					// TODO: enable and test
+//					data = options.postProcess.call(this, data, this.dataType);
+				} else if (data && data.hasOwnProperty("d") && ctx.options.enableAspx ) {
+					// Process ASPX WebMethod JSON object inside "d" property
+				    data = (typeof data.d === "string") ? $.parseJSON(data.d) : data.d;
+				}
 				children = data;
-				if(typeof children === "string"){ $.error("Ajax request returned a string (did you get the JSON dataType wrong?)."); }
+
 			}).fail(function(jqXHR, textStatus, errorThrown){
 				tree.nodeSetStatus(ctx, "error", textStatus, jqXHR.status + ": " + errorThrown);
 				alert("error: " + textStatus + " (" + jqXHR.status + ": " + (errorThrown.message || errorThrown) + ")");
@@ -3100,6 +3110,7 @@ $.widget("ui.fancytree",
 		clickFolderMode: 4,
 		// TODO: required anymore?
 		disabled: false,
+		enableAspx: true, // TODO: document
 		extensions: [],
 		fx: { height: "toggle", duration: 200 },
 //		hooks: {},
@@ -3143,7 +3154,8 @@ $.widget("ui.fancytree",
 			lastsib: "fancytree-lastsib"
 		},
 		// events
-		lazyload: null
+		lazyload: null,
+		postProcess: null
 	},
 	/* Set up the widget, Called on first $().fancytree() */
 	_create: function() {
