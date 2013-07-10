@@ -2922,6 +2922,9 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		// Trigger fancytreeinit after nodes have been loaded
 		dfd = this.nodeLoadChildren(rootCtx, source).done(function(){
 			tree.render();
+			if( ctx.options.selectMode === 3 ){
+				tree.rootNode.fixSelection3FromEndNodes();
+			}
 			tree._triggerTreeEvent("init", true);
 		}).fail(function(){
 			tree.render();
