@@ -322,6 +322,7 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 			// render if the parent was rendered (or this is a root node)
 			this.render();
 		}
+		this.fixSelection3FromEndNodes();
 		return firstNode;
 	},
 	/**
