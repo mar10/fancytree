@@ -14,6 +14,14 @@ module.exports = function (grunt) {
                     "* Copyright (c) <%= grunt.template.today('yyyy') %> <%= pkg.author.name %>;" +
                     " Licensed <%= _.pluck(pkg.licenses, 'type').join(', ') %> */"
         },
+        docco: {
+            docs: {
+                src: ["src/jquery.fancytree.childcounter.js"],
+                options: {
+                    output: "doc/annotated-src"
+                }
+            }
+          },
         exec: {
             tabfix: {
                 // Cleanup whitespace according to http://contribute.jquery.org/style-guide/js/
@@ -133,6 +141,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-contrib-jshint");
     grunt.loadNpmTasks("grunt-contrib-qunit");
     grunt.loadNpmTasks("grunt-contrib-uglify");
+    grunt.loadNpmTasks("grunt-docco2");
     grunt.loadNpmTasks("grunt-exec");
     grunt.loadNpmTasks("grunt-html");
     grunt.loadNpmTasks("grunt-jsdoc");

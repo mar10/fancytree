@@ -35,7 +35,8 @@
     "grunt-contrib-connect": "~0.3.0",
     "grunt-contrib-csslint": "~0.1.2",
     "grunt-html": "~0.3.3",
-    "qunitjs": "1.x"
+    "qunitjs": "1.x",
+    "grunt-docco2": "~0.1.1"
   },
   "scripts": {
     "test": "grunt ci --verbose"

@@ -69,6 +69,27 @@ function _initDragAndDrop(tree) {
 			addClasses: false,
 			tolerance: "intersect",
 			greedy: false
+			/*
+			,
+			activate: function(event, ui) {
+				logMsg("droppable - activate", event, ui, this);
+			},
+			create: function(event, ui) {
+				logMsg("droppable - create", event, ui);
+			},
+			deactivate: function(event, ui) {
+				logMsg("droppable - deactivate", event, ui);
+			},
+			drop: function(event, ui) {
+				logMsg("droppable - drop", event, ui);
+			},
+			out: function(event, ui) {
+				logMsg("droppable - out", event, ui);
+			},
+			over: function(event, ui) {
+				logMsg("droppable - over", event, ui);
+			}
+*/
 		});
 	}
 }
@@ -81,11 +102,9 @@ function _registerDnd() {
 		return;
 	}
 
-	// TODO: ui.plugin is deprecated; use the proxy pattern instead
-
 	// Register proxy-functions for draggable.start/drag/stop
+
 	$.ui.plugin.add("draggable", "connectToFancytree", {
-//	$.ui.plugin.add("sortable", "connectToFancytree", {
 		start: function(event, ui) {
 			// 'draggable' was renamed to 'ui-draggable' since jQueryUI 1.10
 			var draggable = $(this).data("ui-draggable") || $(this).data("draggable"),
@@ -172,8 +191,10 @@ function _registerDnd() {
 			}
 		}
 	});
+
 	didRegisterDnd = true;
 }
+
 
 /* *****************************************************************************
  *

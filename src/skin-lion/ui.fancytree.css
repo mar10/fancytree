@@ -230,10 +230,11 @@ span.fancytree-icon /* Default icon */
 	border: 1px solid transparent; /* reserve some space for status borders */
 	border-radius: 0;
 	text-decoration: none;
+	cursor: pointer;
 }
 span.fancytree-focused .fancytree-title {
 	outline: 1px dotted black;
-	color: whhite;
+	color: white;
 }
 span.fancytree-selected .fancytree-title,
 span.fancytree-active .fancytree-title {
