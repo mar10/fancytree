@@ -322,7 +322,9 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 			// render if the parent was rendered (or this is a root node)
 			this.render();
 		}
-		this.fixSelection3FromEndNodes();
+		if( this.tree.options.selectMode === 3 ){
+			this.fixSelection3FromEndNodes();
+		}
 		return firstNode;
 	},
 	/**
@@ -530,6 +532,7 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 	 */
 	fixSelection3FromEndNodes: function() {
 //		this.debug("fixSelection3FromEndNodes()");
+		_assert(this.tree.options.selectMode === 3, "expected selectMode 3");
 
 		// Visit all end nodes and adjust their parent's `selected` and `partsel`
 		// attributes. Return selection state true, false, or undefined.
@@ -1950,7 +1953,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 //					data = options.postProcess.call(this, data, this.dataType);
 				} else if (data && data.hasOwnProperty("d") && ctx.options.enableAspx ) {
 					// Process ASPX WebMethod JSON object inside "d" property
-				    data = (typeof data.d === "string") ? $.parseJSON(data.d) : data.d;
+					data = (typeof data.d === "string") ? $.parseJSON(data.d) : data.d;
 				}
 				children = data;
 
