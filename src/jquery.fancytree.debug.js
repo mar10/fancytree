@@ -33,11 +33,11 @@
 /* *****************************************************************************
  * Private functions and variables
  */
-var HOOK_NAMES = "nodeClick nodeCollapseSiblings".split(" ");
-var EVENT_NAMES = "activate beforeActivate".split(" ");
-var HOOK_NAME_MAP = {},
-	EVENT_NAME_MAP = {},
-	i;
+var i,
+	HOOK_NAMES = "nodeClick nodeCollapseSiblings".split(" "),
+	EVENT_NAMES = "activate beforeActivate".split(" "),
+	HOOK_NAME_MAP = {},
+	EVENT_NAME_MAP = {};
 
 for(i=0; i<HOOK_NAMES.length; i++){ HOOK_NAME_MAP[HOOK_NAMES[i]] = true; }
 for(i=0; i<EVENT_NAMES.length; i++){ EVENT_NAME_MAP[EVENT_NAMES[i]] = true; }

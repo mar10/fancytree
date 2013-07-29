@@ -10,7 +10,7 @@
 	"newcap": true,
 	"noarg": true,
 	"nonew": true,
-	"onevar": false,
+	"onevar": true,
 	"quotmark": "double",
 	"trailing": true,
 	"undef": true,

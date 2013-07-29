@@ -93,9 +93,9 @@ $.ui.fancytree.registerExtension("persist", {
 			instOpts = this.options.persist,
 			cookieName = instData.cookiePrefix + type,
 			cookie = $.cookie(cookieName),
-			cookieList = cookie ? cookie.split(instOpts.cookieDelimiter) : [];
+			cookieList = cookie ? cookie.split(instOpts.cookieDelimiter) : [],
+			idx = $.inArray(key, cookieList);
 		// Remove, even if we add a key,  so the key is always the last entry
-		var idx = $.inArray(key, cookieList);
 		if(idx >= 0){
 			cookieList.splice(idx, 1);
 		}

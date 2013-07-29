@@ -21,9 +21,10 @@ var assert = require("assert"),
 var NODE_ATTRS = ["title", "key"];
 
 function copyNode(node, deep){
-	var node2 = {};
-	for(var i=0, l=NODE_ATTRS.length; i<l; i++){
-		var name = NODE_ATTRS[i];
+	var i, l, name,
+		node2 = {};
+	for(i=0, l=NODE_ATTRS.length; i<l; i++){
+		name = NODE_ATTRS[i];
 		node2[name] = node[name];
 	}
 	return node2;
@@ -79,7 +80,8 @@ _tree.append(n, {title: "node 2.1", key: "2.1"});
  * Ajax server
  */
 http.createServer(function (request, response) {
-	var args = url.parse(request.url, true),
+	var i,
+		args = url.parse(request.url, true),
 		query = args.query,
 		parts = args.pathname.substring(1).split("/"),
 		cmd = parts[0],
@@ -93,7 +95,7 @@ http.createServer(function (request, response) {
 	case "children":
 		res = [];
 		if(node.children){
-			for(var i=0; i<node.children.length; i++){
+			for(i=0; i<node.children.length; i++){
 				res.push(copyNode(node.children[i]));
 			}
 		}

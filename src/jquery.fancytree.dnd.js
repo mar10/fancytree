@@ -17,7 +17,8 @@
 /* *****************************************************************************
  * Private functions and variables
  */
-var logMsg = $.ui.fancytree.debug;
+var logMsg = $.ui.fancytree.debug,
+	didRegisterDnd = false;
 
 /* Convert number to string and prepend +/-; return empty string for 0.*/
 function offsetString(n){
@@ -95,7 +96,6 @@ function _initDragAndDrop(tree) {
 }
 
 //--- Extend ui.draggable event handling --------------------------------------
-var didRegisterDnd = false;
 
 function _registerDnd() {
 	if(didRegisterDnd){
@@ -128,7 +128,8 @@ function _registerDnd() {
 		},
 		drag: function(event, ui) {
 			// 'draggable' was renamed to 'ui-draggable' since jQueryUI 1.10
-			var draggable = $(this).data("ui-draggable") || $(this).data("draggable"),
+			var isHelper,
+				draggable = $(this).data("ui-draggable") || $(this).data("draggable"),
 				sourceNode = ui.helper.data("ftSourceNode") || null,
 				prevTargetNode = ui.helper.data("ftTargetNode") || null,
 				targetNode = $.ui.fancytree.getNode(event.target);
@@ -140,7 +141,7 @@ function _registerDnd() {
 				// 1. if the mouse jumped over the drag helper,
 				// 2. or if a non-fancytree element is dragged
 				// We ignore it:
-				var isHelper = $(event.target).closest("div.fancytree-drag-helper,#fancytree-drop-marker").length > 0;
+				isHelper = $(event.target).closest("div.fancytree-drag-helper,#fancytree-drop-marker").length > 0;
 				if(isHelper){
 					logMsg("Drag event over helper: ignored.");
 					return;
@@ -368,7 +369,8 @@ $.ui.fancytree.registerExtension("dnd",
 		if(eventName !== "over"){
 			logMsg("tree.dnd._onDragEvent(%s, %o, %o) - %o", eventName, node, otherNode, this);
 		}
-		var enterResponse, hitMode, r,
+		var $helper, nodeOfs, relPos, relPos2,
+			enterResponse, hitMode, r,
 			opts = this.options,
 			dnd = opts.dnd,
 			res = null,
@@ -377,7 +379,7 @@ $.ui.fancytree.registerExtension("dnd",
 		switch (eventName) {
 		case "helper":
 			// Only event and node argument is available
-			var $helper = $("<div class='fancytree-drag-helper'><span class='fancytree-drag-helper-img' /></div>")
+			$helper = $("<div class='fancytree-drag-helper'><span class='fancytree-drag-helper-img' /></div>")
 //                .append($(event.target).closest("a").clone());
 				.append($(event.target).closest("span.fancytree-title").clone());
 			// issue 244: helper should be child of scrollParent
@@ -443,11 +445,11 @@ $.ui.fancytree.registerExtension("dnd",
 				hitMode = enterResponse;
 			} else {
 				// Calculate hitMode from relative cursor position.
-				var nodeOfs = nodeTag.offset();
-				var relPos = { x: event.pageX - nodeOfs.left,
-							   y: event.pageY - nodeOfs.top };
-				var relPos2 = { x: relPos.x / nodeTag.width(),
-								y: relPos.y / nodeTag.height() };
+				nodeOfs = nodeTag.offset();
+				relPos = { x: event.pageX - nodeOfs.left,
+						   y: event.pageY - nodeOfs.top };
+				relPos2 = { x: relPos.x / nodeTag.width(),
+							y: relPos.y / nodeTag.height() };
 
 				if( enterResponse.after && relPos2.y > 0.75 ){
 					hitMode = "after";
