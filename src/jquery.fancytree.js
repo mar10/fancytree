@@ -57,6 +57,22 @@ function _assert(cond, msg){
 	}
 }
 
+function consoleApply(method, args){
+	var fn = window.console ? window.console[method] : null;
+	if(fn){
+		if(fn.apply){
+			fn.apply(window.console, args);
+		}else{
+			// IE?
+			var s = "";
+			for( var i=0; i<args.length; i++){
+				s += args[i];
+			}
+			fn(s);
+		}
+	}
+}
+
 /** Return true if dotted version string is equal or higher than requested version.
  *
  * See http://jsfiddle.net/mar10/FjSAN/
@@ -158,6 +174,7 @@ function _makeNodeTitleMatcher(s){
 
 // Boolean attributes that can be set with equivalent class names in the LI tags
 var i,
+	FT = null, // initialized below
 	CLASS_ATTRS = "active expanded focus folder lazy selected".split(" "),
 	CLASS_ATTR_MAP = {};
 for(i=0; i<CLASS_ATTRS.length; i++){ CLASS_ATTR_MAP[CLASS_ATTRS[i]] = true; }
@@ -433,9 +450,15 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 		return n;
 	},
 	// TODO: deactivate()
+	/** Write to browser console if debugLevel >= 2 (prepending node info)
+	 *
+	 * @param {*} msg string or object or array of such
+	 */
 	debug: function(msg){
-		Array.prototype.unshift.call(arguments, this.toString());
-		FT.debug.apply(this, arguments);
+		if( this.tree.options.debugLevel >= 2 ) {
+			Array.prototype.unshift.call(arguments, this.toString());
+			consoleApply("debug", arguments);
+		}
 	},
 	/** Remove all children of a lazy node and collapse.*/
 	discard: function(){
@@ -1273,9 +1296,13 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 		}
 		return true;
 	},
+	/** Write warning to browser console (prepending node info)
+	 *
+	 * @param {*} msg string or object or array of such
+	 */
 	warn: function(msg){
 		Array.prototype.unshift.call(arguments, this.toString());
-		FT.warn.apply(this, arguments);
+		consoleApply("warn", arguments);
 	}
 };
 
@@ -1338,6 +1365,10 @@ function Fancytree(widget){
 	this.$container = $ul;
 	this.rootNode.ul = $ul[0];
 
+	if(this.options.debugLevel == null){
+		alert("DL" + FT.debugLevel);
+		this.options.debugLevel = FT.debugLevel;
+	}
 	// Add container to the TAB chain
 	// See http://www.w3.org/TR/wai-aria-practices/#focus_activedescendant
 	if(this.options.tabbable){
@@ -1444,11 +1475,17 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	count: function() {
 		return this.rootNode.countChildren();
 	},
-	// TODO: disable()
+	/** Write to browser console if debugLevel >= 2 (prepending tree info)
+	 *
+	 * @param {*} msg string or object or array of such
+	 */
 	debug: function(msg){
-		Array.prototype.unshift.call(arguments, this.toString());
-		FT.debug.apply(this, arguments);
+		if( this.options.debugLevel >= 2 ) {
+			Array.prototype.unshift.call(arguments, this.toString());
+			consoleApply("debug", arguments);
+		}
 	},
+	// TODO: disable()
 	// TODO: enable()
 	// TODO: enableUpdate()
 	// TODO: fromDict
@@ -1562,9 +1599,15 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	hasFocus: function(){
 		return FT.focusTree === this;
 	},
+	/** Write to browser console if debugLevel >= 1 (prepending tree info)
+	 *
+	 * @param {*} msg string or object or array of such
+	 */
 	info: function(msg){
-		Array.prototype.unshift.call(arguments, this.toString());
-		FT.info.apply(this, arguments);
+		if( this.options.debugLevel >= 1 ) {
+			Array.prototype.unshift.call(arguments, this.toString());
+			consoleApply("info", arguments);
+		}
 	},
 /*
 	TODO: isInitializing: function() {
@@ -3076,9 +3119,13 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	visit: function(fn) {
 		return this.rootNode.visit(fn, false);
 	},
+	/** Write warning to browser console (prepending tree info)
+	 *
+	 * @param {*} msg string or object or array of such
+	 */
 	warn: function(msg){
 		Array.prototype.unshift.call(arguments, this.toString());
-		FT.warn.apply(this, arguments);
+		consoleApply("warn", arguments);
 	}
 };
 
@@ -3104,7 +3151,7 @@ $.widget("ui.fancytree",
 		ajax: {
 			type: "GET",
 			cache: false, // false: Append random '_' argument to the request url to prevent caching.
-//          timeout: 0, // >0: Make sure we get an ajax error if error is unreachable
+//          timeout: 0, // >0: Make sure we get an ajax error if server is unreachable
 			dataType: "json" // Expect json format and pass json object to callbacks.
 		},  //
 		aria: false, // TODO: default to true
@@ -3115,12 +3162,11 @@ $.widget("ui.fancytree",
 		checkbox: false,
 		/**defines click behavior*/
 		clickFolderMode: 4,
-		// TODO: required anymore?
-		disabled: false,
+		debugLevel: null, // 0..2 (null: use global setting $.ui.fancytree.debugInfo)
+		disabled: false, // TODO: required anymore?
 		enableAspx: true, // TODO: document
 		extensions: [],
 		fx: { height: "toggle", duration: 200 },
-//		hooks: {},
 		generateIds: false,
 		icons: true,
 		idPrefix: "ft_",
@@ -3134,23 +3180,23 @@ $.widget("ui.fancytree",
 		},
 		tabbable: true,
 		_classNames: {
-			container: "fancytree-container",
+//			container: "fancytree-container",
 			node: "fancytree-node",
 			folder: "fancytree-folder",
-			empty: "fancytree-empty",
-			vline: "fancytree-vline",
-			expander: "fancytree-expander",
+//			empty: "fancytree-empty",
+//			vline: "fancytree-vline",
+//			expander: "fancytree-expander",
 //            connector: "fancytree-connector",
-			checkbox: "fancytree-checkbox",
-			icon: "fancytree-icon",
-			title: "fancytree-title",
-			noConnector: "fancytree-no-connector",
-			statusnodeError: "fancytree-statusnode-error",
-			statusnodeWait: "fancytree-statusnode-wait",
-			hidden: "fancytree-hidden",
+//			checkbox: "fancytree-checkbox",
+//			icon: "fancytree-icon",
+//			title: "fancytree-title",
+//			noConnector: "fancytree-no-connector",
+//			statusnodeError: "fancytree-statusnode-error",
+//			statusnodeWait: "fancytree-statusnode-wait",
+//			hidden: "fancytree-hidden",
 			combinedExpanderPrefix: "fancytree-exp-",
 			combinedIconPrefix: "fancytree-ico-",
-			loading: "fancytree-loading",
+//			loading: "fancytree-loading",
 			hasChildren: "fancytree-has-children",
 			active: "fancytree-active",
 			selected: "fancytree-selected",
@@ -3357,30 +3403,10 @@ $.widget("ui.fancytree",
 });
 
 // $.ui.fancytree was created by the widget factory. Create a local shortcut:
-var FT = $.ui.fancytree;
-
-/* *****************************************************************************
- * Static members in the jQuery.ui.fancytree namespace
- */
-
-function consoleApply(method, args){
-	var fn = window.console ? window.console[method] : null;
-	if(fn){
-		if(fn.apply){
-			fn.apply(window.console, args);
-		}else{
-			// IE?
-			var s = "";
-			for( var i=0; i<args.length; i++){
-				s += args[i];
-			}
-			fn(s);
-		}
-	}
-}
+FT = $.ui.fancytree;
 
 /**
- * Static functiions in the `$.ui.fancytree` namespace.
+ * Static members in the `$.ui.fancytree` namespace.
  * @  name $.ui.fancytree
  * @example:
  * alert(""version: " + $.ui.fancytree.version);
@@ -3392,7 +3418,7 @@ $.extend($.ui.fancytree,
 	/** @type {String} */
 	version: "2.0.0pre",
 	/** @type {int} */
-	debugLevel: 2,
+	debugLevel: 2,  // used by $.ui.fancytree.debug() and as default for tree.options.debugLevel
 
 	_nextId: 1,
 	_nextNodeKey: 1,
@@ -3603,6 +3629,11 @@ $.extend($.ui.fancytree,
 		consoleApply("warn", arguments);
 	}
 });
+
+// Use $.ui.fancytree.debugLevel as default for tree.options.debugLevel
+//$.ui.fancytree.debug($.ui.fancytree.prototype);
+//$.ui.fancytree.prototype.options.debugLevel = $.ui.fancytree.debugLevel;
+
 
 /* *****************************************************************************
  * Register AMD
