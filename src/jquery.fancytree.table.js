@@ -58,9 +58,9 @@ function setChildRowVisibility(parent, flag) {
 
 /* Find node that is rendered in previous row. */
 function findPrevRowNode(node){
-	var parent = node.parent,
-		siblings = parent ? parent.children : null,
-		prev, i;
+	var i, last, prev,
+		parent = node.parent,
+		siblings = parent ? parent.children : null;
 
 	if(siblings && siblings.length > 1 && siblings[0] !== node){
 		// use the lowest descendant of the preceeding sibling
@@ -69,7 +69,7 @@ function findPrevRowNode(node){
 		_assert(prev.tr);
 		// descend to lowest child (with a <tr> tag)
 		while(prev.children){
-			var last = prev.children[prev.children.length - 1];
+			last = prev.children[prev.children.length - 1];
 			if(!last.tr){
 				break;
 			}
@@ -94,21 +94,23 @@ $.ui.fancytree.registerExtension("table", {
 	// `this`       : is this extension object
 	// `this._super`: the virtual function that was overriden (member of prev. extension or Fancytree)
 	treeInit: function(ctx){
-		var tree = ctx.tree,
+		var i, $row, tdRole,
+			tree = ctx.tree,
 			$table = tree.widget.element;
+
 		$table.addClass("fancytree-container fancytree-ext-table");
 		tree.tbody = $table.find("> tbody")[0];
 		tree.columnCount = $("thead >tr >th", $table).length;
 		$(tree.tbody).empty();
 
 		tree.rowFragment = document.createDocumentFragment();
-		var $row = $("<tr>"),
-			tdRole = "";
+		$row = $("<tr>");
+		tdRole = "";
 		if(ctx.options.aria){
 			$row.attr("role", "row");
 			tdRole = " role='gridcell'";
 		}
-		for(var i=0; i<tree.columnCount; i++) {
+		for(i=0; i<tree.columnCount; i++) {
 			if(ctx.options.table.nodeColumnIdx === i){
 				$row.append("<td" + tdRole + "><span class='fancytree-node'></span></td>");
 			}else{
@@ -157,7 +159,8 @@ $.ui.fancytree.registerExtension("table", {
 	},
 	/* Override standard render. */
 	nodeRender: function(ctx, force, deep, collapsed, _recursive) {
-		var tree = ctx.tree,
+		var $cb, children, firstTr, i, l, newRow, prevNode, prevTr, subCtx,
+			tree = ctx.tree,
 			node = ctx.node,
 			opts = ctx.options,
 			isRootNode = !node.parent;
@@ -168,8 +171,8 @@ $.ui.fancytree.registerExtension("table", {
 		if( !isRootNode ){
 			if(!node.tr){
 				// Create new <tr> after previous row
-				var newRow = tree.rowFragment.firstChild.cloneNode(true),
-					prevNode = findPrevRowNode(node);
+				newRow = tree.rowFragment.firstChild.cloneNode(true);
+				prevNode = findPrevRowNode(node);
 //				firstTime = true;
 //				$.ui.fancytree.debug("*** nodeRender " + node + ": prev: " + prevNode.key);
 				_assert(prevNode);
@@ -203,7 +206,7 @@ $.ui.fancytree.registerExtension("table", {
 				// move checkbox to custom column
 				if(opts.checkbox && opts.table.checkboxColumnIdx != null){
 //					$("span.fancytree-node", node.tr).get(0);
-					var $cb = $("span.fancytree-checkbox", node.span).detach();
+					$cb = $("span.fancytree-checkbox", node.span).detach();
 					$(node.tr).find("td:first").append($cb);
 				}
 				// Allow tweaking, binding, after node was created for the first time
@@ -214,18 +217,18 @@ $.ui.fancytree.registerExtension("table", {
 		tree._triggerNodeEvent("rendernode", ctx);
 		// Visit child nodes
 		// Add child markup
-		var children = node.children, i, l;
+		children = node.children;
 		if(children && (isRootNode || deep || node.expanded)){
 			for(i=0, l=children.length; i<l; i++) {
-				var subCtx = $.extend({}, ctx, {node: children[i]});
+				subCtx = $.extend({}, ctx, {node: children[i]});
 				subCtx.hasCollapsedParents = subCtx.hasCollapsedParents || !node.expanded;
 				this.nodeRender(subCtx, force, deep, collapsed, true);
 			}
 		}
 		// Make sure, that <tr> order matches node.children order.
 		if(children && !_recursive){ // we only have to do it once, for the root branch
-			var prevTr = node.tr || null,
-				firstTr = tree.tbody.firstChild;
+			prevTr = node.tr || null;
+			firstTr = tree.tbody.firstChild;
 			// Iterate over all descendants
 			node.visit(function(n){
 				if(n.tr){
@@ -260,12 +263,14 @@ $.ui.fancytree.registerExtension("table", {
 		// let user code write column content
 		ctx.tree._triggerNodeEvent("rendercolumns", node);
 	},
-	 nodeRenderStatus: function(ctx) {
-		 var node = ctx.node,
-			 opts = ctx.options;
+	nodeRenderStatus: function(ctx) {
+		var indent,
+			node = ctx.node,
+			opts = ctx.options;
+
 		 this._super(ctx);
 		 // indent
-		 var indent = (node.getLevel() - 1) * opts.table.indentation;
+		 indent = (node.getLevel() - 1) * opts.table.indentation;
 		 if(indent){
 			 $(node.span).css({marginLeft: indent + "px"});
 		 }

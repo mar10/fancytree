@@ -93,12 +93,13 @@ $.ui.fancytree.registerExtension("menu", {
 		this._super(ctx);
 	},
 	_openMenu: function(ctx){
-		var tree = ctx.tree,
+		var data,
+			tree = ctx.tree,
 			opts = ctx.options,
 			$menu = $(opts.menu.selector);
 
 		tree.menu.data.node = ctx.node;
-		var data = $.extend({}, tree.menu.data);
+		data = $.extend({}, tree.menu.data);
 
 		if( opts.menu.beforeOpen.call(tree, ctx.orgEvent, data) === false){
 			return;
@@ -124,13 +125,14 @@ $.ui.fancytree.registerExtension("menu", {
 		opts.menu.open.call(tree, ctx.orgEvent, data);
 	},
 	_closeMenu: function(ctx){
-		var tree = ctx.tree,
+		var $menu,
+			tree = ctx.tree,
 			opts = ctx.options,
 			data = $.extend({}, tree.menu.data);
 		if( opts.menu.close.call(tree, ctx.orgEvent, data) === false){
 			return;
 		}
-		var $menu = $(opts.menu.selector);
+		$menu = $(opts.menu.selector);
 		$(document).unbind("keydown.fancytree, mousedown.fancytree");
 		$menu.hide();
 		tree.menu.data.node = null;

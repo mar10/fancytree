@@ -5,8 +5,8 @@ var path = require("path");
 var fs   = require("fs");
 
 http.createServer(function(request, response) {
-	var uri = url.parse(request.url).pathname;
-	var filename = path.join(process.cwd(), uri);
+	var uri = url.parse(request.url).pathname,
+		filename = path.join(process.cwd(), uri);
 
 	fs.readFile(filename, "binary", function(err, file) {
 		if (err) {

@@ -34,7 +34,8 @@ function _escapeRegex(str){
  * @requires jquery.fancytree.filter.js
  */
 $.ui.fancytree._FancytreeClass.prototype.applyFilter = function(filter){
-	var count = 0;
+	var match, re,
+		count = 0;
 	// Reset current filter
 	this.visit(function(node){
 		delete node.match;
@@ -43,8 +44,8 @@ $.ui.fancytree._FancytreeClass.prototype.applyFilter = function(filter){
 
 	// Default to 'match title substring (not case sensitive)'
 	if(typeof filter === "string"){
-		var match = _escapeRegex(filter), // make sure a '.' is treated literally
-			re = new RegExp(".*" + match + ".*", "i");
+		match = _escapeRegex(filter); // make sure a '.' is treated literally
+		re = new RegExp(".*" + match + ".*", "i");
 		filter = function(node){
 			return !!re.exec(node.title);
 		};
@@ -105,7 +106,8 @@ $.ui.fancytree.registerExtension("filter", {
 	},
 	nodeRenderStatus: function(ctx) {
 		// Set classes for current status
-		var node = ctx.node,
+		var visible,
+			node = ctx.node,
 			opts = ctx.options,
 			tree = ctx.tree,
 			$span = $(node[tree.statusClassPropName]);
@@ -128,7 +130,7 @@ $.ui.fancytree.registerExtension("filter", {
 			$span.removeClass("fancytree-submatch");
 		}
 		if(opts.filter.mode === "hide"){
-			var visible = !!(node.match || node.subMatch);
+			visible = !!(node.match || node.subMatch);
 			node.debug(node.title + ": visible=" + visible);
 			$(node.li).toggle(visible);
 		}

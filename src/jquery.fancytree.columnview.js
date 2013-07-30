@@ -46,15 +46,17 @@ $.ui.fancytree.registerExtension("columnview", {
 	// `this._base` : the Fancytree instance
 	// `this._super`: the virtual function that was overriden (member of prev. extension or Fancytree)
 	treeInit: function(ctx){
-		var tree = ctx.tree,
+		var $tdFirst, $ul,
+			tree = ctx.tree,
 			$table = tree.widget.element;
+
 		tree.tr = $("tbody tr", $table)[0];
 		tree.columnCount = $(">td", tree.tr).length;
 		// Perform default behavior
 		this._super(ctx);
 		// Standard Fancytree created a root <ul>. Now move this into first table cell
-		var $ul = $(tree.rootNode.ul),
-			$tdFirst = $(">td", tree.tr).eq(0);
+		$ul = $(tree.rootNode.ul);
+		$tdFirst = $(">td", tree.tr).eq(0);
 
 		$ul.removeClass("fancytree-container");
 		$ul.removeAttr("tabindex");
@@ -73,14 +75,15 @@ $.ui.fancytree.registerExtension("columnview", {
 
 		// Make sure that only active path is expanded when a node is activated:
 		$table.bind("fancytreeactivate", function(e, data){
-			var node = data.node,
+			var i, tdList,
+				node = data.node,
 				tree = data.tree,
-				level = node.getLevel(),
-				i;
+				level = node.getLevel();
+
 			tree._callHook("nodeCollapseSiblings", node);
 			// Clear right neighbours
 			if(level <= tree.columnCount){
-				var tdList = $(">td", tree.tr);
+				tdList = $(">td", tree.tr);
 				for(i=level; i<tree.columnCount; i++){
 					tdList.eq(i).empty();
 				}
@@ -118,9 +121,11 @@ $.ui.fancytree.registerExtension("columnview", {
 		// Render standard nested <ul> - <li> hierarchy
 		this._super(ctx, force, deep, collapsed, _recursive);
 		// Remove expander and add a trailing triangle instead
-		var tree = ctx.tree,
+		var level, $tdChild, $ul,
+			tree = ctx.tree,
 			node = ctx.node,
 			$span = $(node.span);
+
 		$span.find("span.fancytree-expander").remove();
 		if(node.hasChildren() !== false && !$span.find("span.fancytree-cv-right").length){
 			$span.append($("<span class='fancytree-icon fancytree-cv-right'>"));
@@ -128,10 +133,10 @@ $.ui.fancytree.registerExtension("columnview", {
 		// Move <ul> with children into the appropriate <td>
 		if(node.ul){
 			node.ul.style.display = ""; // might be hidden if RIGHT was pressed
-			var level = node.getLevel();
+			level = node.getLevel();
 			if(level < tree.columnCount){
-				var $tdChild = $(">td", tree.tr).eq(level),
-					$ul = $(node.ul).detach();
+				$tdChild = $(">td", tree.tr).eq(level);
+				$ul = $(node.ul).detach();
 				$tdChild.empty().append($ul);
 			}
 		}

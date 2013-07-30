@@ -5,7 +5,9 @@ jQuery(document).ready(function(){
 
 /*globals deepEqual,equal,expect,module,ok,QUnit,start,stop,test */
 
-var $ = jQuery;
+var TEST_DATA, TESTDATA_NODES, TESTDATA_TOPNODES, TESTDATA_VISIBLENODES,
+	$ = jQuery,
+	EVENT_SEQUENCE = [];
 
 /*******************************************************************************
  * QUnit setup
@@ -41,8 +43,6 @@ $.ui.fancytree.debugLevel = 1;
 //	});
 //}
 
-
-var EVENT_SEQUENCE = [];
 
 /** Helper to reset environment for asynchronous Fancytree tests. */
 function _appendEvent(res){
@@ -115,8 +115,9 @@ function _fakeAjaxLoad(node, count, delay){
 	}
 	var dfd = new $.Deferred();
 	setTimeout(function(){
-		var children = [];
-		for(var i=0; i<count; i++){
+		var i,
+			children = [];
+		for(i=0; i<count; i++){
 			children.push({
 				key: node.key + "_" + (i+1),
 				title: node.title + "_" + (i+1),
@@ -132,40 +133,40 @@ function _fakeAjaxLoad(node, count, delay){
 /*******************************************************************************
  * test data
  */
-var testData = [
-	{title: "simple node (no explicit id, so a default key is generated)" },
-	{key: "2", title: "item1 with key and tooltip", tooltip: "Look, a tool tip!" },
-	{key: "3", title: "<span>item2 with <b>html</b> inside a span tag</span>" },
-	{key: "4", title: "this nodes uses 'nolink', so no &lt;a> tag is generated", nolink: true},
-	{key: "5", title: "using href", href: "http://www.wwWendt.de/" },
-	{key: "6", title: "node with some extra classes (will be added to the generated markup)", extraClasses: "my-extra-class" },
-	{key: "10", title: "Folder 1", folder: true, children: [
-		{key: "10_1", title: "Sub-item 1.1", children: [
-			{key: "10_1_1", title: "Sub-item 1.1.1"},
-			{key: "10_1_2", title: "Sub-item 1.1.2"}
+TEST_DATA = [
+		{title: "simple node (no explicit id, so a default key is generated)" },
+		{key: "2", title: "item1 with key and tooltip", tooltip: "Look, a tool tip!" },
+		{key: "3", title: "<span>item2 with <b>html</b> inside a span tag</span>" },
+		{key: "4", title: "this nodes uses 'nolink', so no &lt;a> tag is generated", nolink: true},
+		{key: "5", title: "using href", href: "http://www.wwWendt.de/" },
+		{key: "6", title: "node with some extra classes (will be added to the generated markup)", extraClasses: "my-extra-class" },
+		{key: "10", title: "Folder 1", folder: true, children: [
+			{key: "10_1", title: "Sub-item 1.1", children: [
+				{key: "10_1_1", title: "Sub-item 1.1.1"},
+				{key: "10_1_2", title: "Sub-item 1.1.2"}
+			]},
+			{key: "10_2", title: "Sub-item 1.2", children: [
+				{key: "10_2_1", title: "Sub-item 1.2.1"},
+				{key: "10_2_2", title: "Sub-item 1.2.2"}
+			]}
 		]},
-		{key: "10_2", title: "Sub-item 1.2", children: [
-			{key: "10_2_1", title: "Sub-item 1.2.1"},
-			{key: "10_2_2", title: "Sub-item 1.2.2"}
-		]}
-	]},
-	{key: "20", title: "Simple node with active children (expand)", expanded: true, children: [
-		{key: "20_1", title: "Sub-item 2.1", children: [
-			{key: "20_1_1", title: "Sub-item 2.1.1"},
-			{key: "20_1_2", title: "Sub-item 2.1.2"}
+		{key: "20", title: "Simple node with active children (expand)", expanded: true, children: [
+			{key: "20_1", title: "Sub-item 2.1", children: [
+				{key: "20_1_1", title: "Sub-item 2.1.1"},
+				{key: "20_1_2", title: "Sub-item 2.1.2"}
+			]},
+			{key: "10_2", title: "Sub-item 1.2", children: [
+				{key: "20_2_1", title: "Sub-item 2.2.1"},
+				{key: "20_2_2", title: "Sub-item 2.2.2"}
+			]}
 		]},
-		{key: "10_2", title: "Sub-item 1.2", children: [
-			{key: "20_2_1", title: "Sub-item 2.2.1"},
-			{key: "20_2_2", title: "Sub-item 2.2.2"}
-		]}
-	]},
-	{key: "30", title: "Lazy folder", folder: true, lazy: true },
-	{key: "31", title: "Lazy folder (preload)", folder: true, lazy: true, preload: true },
-	{key: "32", title: "Lazy folder (expand on load)", folder: true, lazy: true, expanded: true }
-];
-var TESTDATA_NODES = 23,
-	TESTDATA_TOPNODES = 11,
-	TESTDATA_VISIBLENODES = 13;
+		{key: "30", title: "Lazy folder", folder: true, lazy: true },
+		{key: "31", title: "Lazy folder (preload)", folder: true, lazy: true, preload: true },
+		{key: "32", title: "Lazy folder (expand on load)", folder: true, lazy: true, expanded: true }
+	];
+TESTDATA_NODES = 23,
+TESTDATA_TOPNODES = 11,
+TESTDATA_VISIBLENODES = 13;
 
 
 /*******************************************************************************
@@ -214,26 +215,29 @@ test("Create fancytree", function() {
 	_setupAsync();
 	expect(25);
 
-	var insideContructor = true;
+	var widget,
+		insideConstructor = true;
 
 	$("#tree").fancytree({
-		source: testData,
+		source: TEST_DATA,
 		generateIds: true, // for testing
 		create: function(e, data){
+			var tree, widget;
+
 			equal(e.type, "fancytreecreate", "receive `create` callback");
-			ok(insideContructor, "running synchronously");
+			ok(insideConstructor, "running synchronously");
 			ok(!!data, "event data is empty");
 			equal(this.nodeName, "DIV", "`this` is div#tree");
 			ok($(">ul:first", this).hasClass("fancytree-container"), "div#tree contains ul.fancytree-container");
-			var widget = $(this).data("ui-fancytree") || $(this).data("fancytree");
+			widget = $(this).data("ui-fancytree") || $(this).data("fancytree");
 			ok(!!widget, "widget is attached to div#tree");
-			var tree = widget.tree;
+			tree = widget.tree;
 			equal(tree.rootNode.children, null, "`tree.rootNode` is empty");
 			equal($("div#tree").hasClass("ui-widget"), false, "div#tree has no widget style yet");
 		},
 		init: function(e, data){
 			equal(e.type, "fancytreeinit", "receive `init` callback");
-			ok(insideContructor, "running synchronously");
+			ok(insideConstructor, "running synchronously");
 			ok(!!data.tree.rootNode, "`data.tree` is the tree object");
 			equal(data.options.source.length, TESTDATA_TOPNODES, "data.options.contains widget options");
 //            equal($("div#tree").hasClass("ui-widget"), true, "div#tree has ui-widget class");
@@ -259,10 +263,10 @@ test("Create fancytree", function() {
 //        equal(e.type, "fancytreeinit", "receive `init` bound event");
 //        start();
 	});
-	insideContructor = false;
+	insideConstructor = false;
 
 	equal($(":ui-fancytree").length, 1, ":ui-fancytree widget selector works");
-	var widget = $("div#tree").data("ui-fancytree") || $("div#tree").data("fancytree");
+	widget = $("div#tree").data("ui-fancytree") || $("div#tree").data("fancytree");
 	ok(!!widget, "widget is attached to div#tree");
 	ok(!!widget.tree, "widget.tree is defined");
 //    equal(widget.tree._id, 1, "tree id is 1");
@@ -278,8 +282,8 @@ test("Create fancytree", function() {
 test("Init node status from source", function() {
 	_setupAsync();
 	expect(3);
-	// Add some status info to testData (make a deep copy first!)
-	var children = $.extend(true, [], testData);
+	// Add some status info to TEST_DATA (make a deep copy first!)
+	var children = $.extend(true, [], TEST_DATA);
 	// activate node #10_1_2
 	children[6].children[0].children[1].active = true;
 	// select node #10_1_1
@@ -302,8 +306,8 @@ test("Init node status from source", function() {
 test("Init node with custom data", function() {
 	_setupAsync();
 	expect(2);
-	// Add some status info to testData (make a deep copy first!)
-	var children = $.extend(true, [], testData);
+	// Add some status info to TEST_DATA (make a deep copy first!)
+	var children = $.extend(true, [], TEST_DATA);
 	// node #10_1_1
 	children[6].children[0].children[0].foo = "phew";
 	// node #10_1_2
@@ -333,12 +337,12 @@ test("FancytreeNode class", function() {
 	expect(28);
 
 	$("#tree").fancytree({
-		source: testData
+		source: TEST_DATA
 	});
-	var tree = $("#tree").fancytree("getTree"),
+	var res, ROOT_NODE_KEY,
+		tree = $("#tree").fancytree("getTree"),
 		root = tree.rootNode,
-		node = _getNode("10_1_2"),
-		res;
+		node = _getNode("10_1_2");
 	// Properties
 	equal(node.tree, tree, "node.tree");
 	equal(node.parent, _getNode("10_1"), "node.parent");
@@ -399,7 +403,7 @@ test("FancytreeNode class", function() {
 	equal(node.getParent().key, "10_1", "getParent()");
 
 //  getParentList: function(includeRoot, includeSelf) {
-	var ROOT_NODE_KEY = tree.rootNode.key;
+	ROOT_NODE_KEY = tree.rootNode.key;
 	deepEqual(_getNodeKeyArray(node.getParentList()),
 			["10", "10_1"], "getParentList()");
 	deepEqual(_getNodeKeyArray(node.getParentList(false, false)),
@@ -462,9 +466,11 @@ test("Fancytree class", function() {
 	expect(14);
 
 	$("#tree").fancytree({
-		source: testData
+		source: TEST_DATA
 	});
-	var tree = $("#tree").fancytree("getTree");
+	var c, node,
+		tree = $("#tree").fancytree("getTree");
+
   // Properties
 //    tree.widget = widget;
 //    tree.$div = widget.element;
@@ -494,7 +500,7 @@ test("Fancytree class", function() {
 	// TODO: getFirstChild()
 	equal(tree.getNodeByKey("10_2").key, "10_2", "getNodeByKey()");
 	equal(tree.getNodeByKey("foobar"), null, "getNodeByKey() not found");
-	var node = _getNode("10_2");
+	node = _getNode("10_2");
 	equal(tree.getNodeByKey("10_2_1", node).key, "10_2_1", "getNodeByKey(.., root)");
 	equal(tree.getNodeByKey("10_1_1", node), null, "getNodeByKey(.., root) not found");
 
@@ -515,7 +521,7 @@ test("Fancytree class", function() {
 	equal(tree.toString(), "<Fancytree(#" + tree._id + ")>", "toString()");
 	equal("" + tree, tree.toString(), "toString() implicit");
 
-	var c = 0;
+	c = 0;
 	tree.visit(function(n){
 		c += 1;
 	});
@@ -551,7 +557,7 @@ test("trigger async expand", function() {
 	expect(4);
 
 	$("#tree").fancytree({
-		source: testData
+		source: TEST_DATA
 	});
 //    var node = $("#tree").fancytree("getActiveNode");
 	var tree = $("#tree").fancytree("getTree"),
@@ -577,7 +583,7 @@ test(".click() to expand a folder", function() {
 	expect(8);
 
 	$("#tree").fancytree({
-		source: testData,
+		source: TEST_DATA,
 		generateIds: true,
 		beforeExpand: function(e, data){
 			equal(e.type, "fancytreebeforeexpand", "receive `beforeExpand` callback");
@@ -602,7 +608,7 @@ test(".click() to activate a node", function() {
 	expect(8);
 
 	$("#tree").fancytree({
-		source: testData,
+		source: TEST_DATA,
 		generateIds: true, // for testing
 		beforeActivate: function(e, data){
 			equal(e.type, "fancytreebeforeactivate", "receive `beforeActivate` callback");
@@ -627,7 +633,7 @@ test(".click() to activate a folder (clickFolderMode 3 triggers expand)", functi
 	expect(4);
 	var sequence = 1;
 	$("#tree").fancytree({
-		source: testData,
+		source: TEST_DATA,
 		clickFolderMode: 3,
 		generateIds: true, // for testing
 		beforeActivate: function(e, data){
@@ -653,7 +659,7 @@ test(".click() to select a node", function() {
 	expect(8);
 
 	$("#tree").fancytree({
-		source: testData,
+		source: TEST_DATA,
 		checkbox: true,
 		generateIds: true, // for testing
 		beforeSelect: function(e, data){
@@ -737,7 +743,7 @@ test("add children", function() {
 		];
 
 	$("#tree").fancytree({
-		source: testData,
+		source: TEST_DATA,
 		lazyload: function(e, data){
 			data.result = {url: "ajax-sub2.json"};
 		},
@@ -792,7 +798,7 @@ test("apply patch", function() {
 		];
 
 	$("#tree").fancytree({
-		source: testData,
+		source: TEST_DATA,
 		lazyload: function(e, data){
 			data.result = {url: "ajax-sub2.json"};
 		},
@@ -850,7 +856,7 @@ test("loadKeyPath (allready loaded)", function() {
 	expect(1);
 
 	$("#tree").fancytree({
-		source: testData
+		source: TEST_DATA
 	});
 	var tree = _getTree();
 	// TODO: test with numeric keys:
@@ -873,7 +879,7 @@ test("loadKeyPath (lazy nodes)", function() {
 	expect(1);
 
 	$("#tree").fancytree({
-		source: testData,
+		source: TEST_DATA,
 		lazyload: function(e, data){
 			// fake an async, deleayed Ajax request that generates 5 lazy nodes
 			data.result = _fakeAjaxLoad(data.node, 5, 10);
@@ -902,7 +908,7 @@ test("loadKeyPath (multiple lazy nodes with expand)", function() {
 	expect(7);
 
 	$("#tree").fancytree({
-		source: testData,
+		source: TEST_DATA,
 		lazyload: function(e, data){
 			data.result = _fakeAjaxLoad(data.node, 5, [0, 30]);
 		}

@@ -33,8 +33,8 @@ function _resetEmptyTree(options){
 	// destroy all trees
 	$(":ui-fancytree").fancytree("destroy");
 
-	var $tree = $("#tree");
-	var opts = $.extend({
+	var $tree = $("#tree"),
+		opts = $.extend({
 		source: [{title: "root node", key: "root"}],
 		fx: false
 	}, options);
@@ -58,22 +58,23 @@ function _getBrowserInfo(){
 
 
 function addNodes(node, level1, level2, level3, forceUpdate) {
-	if( forceUpdate !== true ){
+//	if( forceUpdate !== true ){
 //		node.tree.enableUpdate(false);
-	}
-	var key;
-	for(var i=0; i<level1; i++) {
+//	}
+	var d, f, i, j, k, key;
+
+	for(i=0; i<level1; i++) {
 		key = "" + (i+1);
-		var f = node.addChildren({title: "Folder_" + key,
+		f = node.addChildren({title: "Folder_" + key,
 							   key: key,
 							   folder: true
 							   });
-		for (var j=0; j<level2; j++) {
+		for (j=0; j<level2; j++) {
 			key = "" + (i+1) + "." + (j+1);
-			var d = f.addChildren({title: "Node_" + key,
+			d = f.addChildren({title: "Node_" + key,
 							  key: key
 							  });
-			for (var k=0; k<level3; k++) {
+			for (k=0; k<level3; k++) {
 				key = "" + (i+1) + "." + (j+1) + "." + (k+1);
 				d.addChildren({title: "Node_" + key,
 						  key: key
@@ -91,11 +92,12 @@ module("Standard tree");
 
 asyncTest("Repeat 1000 times: create-render-remove 1000 nodes", function() {
 	expect(1);
-	var COUNT = 1000, //1000,   // loops
+	var id,
+		COUNT = 1000, //1000,   // loops
 		DELAY = 100,    // wait 500 ms
 		i = 0;
 
-	var id = setInterval(function(){
+	id = setInterval(function(){
 
 		var tree = _resetEmptyTree(),
 			node = tree.getNodeByKey("root");

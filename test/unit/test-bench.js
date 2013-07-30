@@ -4,7 +4,8 @@ jQuery(document).ready(function(){
 
 /*globals expect,module,ok,QUnit,start,stop,test */
 
-var $ = jQuery;
+var $ = jQuery,
+	TOTAL_ELAP = 0;
 
 /* *****************************************************************************
  * QUnit setup
@@ -23,8 +24,6 @@ QUnit.done(function( details ) {
 /* *****************************************************************************
  * Tool functions
  */
-//var EVENT_SEQUENCE = [];
-var TOTAL_ELAP = 0;
 
 function AsyncTimer(name, start){
 	this.name = "AsyncTimer(" + name + ")";
@@ -62,8 +61,10 @@ function _resetEmptyTree(options){
 	// destroy all trees
 	$(":ui-fancytree").fancytree("destroy");
 
-	var $tree = $("#tree");
-	var opts = $.extend({
+	var opts,
+		$tree = $("#tree");
+
+	opts = $.extend({
 		source: [{title: "root node", key: "root"}],
 		fx: false
 	}, options);
@@ -99,10 +100,11 @@ function _getBrowserInfo(){
 
 function makeBenchWrapper(testName, callback) {
 	return function() {
-		var start = +new Date();
+		var elap,
+			start = +new Date();
 //        callback.apply(this, arguments);
 		callback.call();
-		var elap = +new Date() - start;
+		elap = +new Date() - start;
 		ok(true, testName + " took " + elap + " milliseconds");
 		TOTAL_ELAP += elap;
 	};
@@ -119,22 +121,22 @@ function benchmark(testName, callback) {
 //    = profileWrapper($.ui.fancytree._FancytreeNodeClass.prototype.addChildren);
 
 function addNodes(node, level1, level2, level3, forceUpdate) {
-	if( forceUpdate !== true ){
+//	if( forceUpdate !== true ){
 //		node.tree.enableUpdate(false);
-	}
-	var key;
-	for(var i=0; i<level1; i++) {
+//	}
+	var d, f, i, j, k, key;
+	for(i=0; i<level1; i++) {
 		key = "" + (i+1);
-		var f = node.addChildren({title: "Folder_" + key,
+		f = node.addChildren({title: "Folder_" + key,
 							   key: key,
 							   folder: true
 							   });
-		for (var j=0; j<level2; j++) {
+		for (j=0; j<level2; j++) {
 			key = "" + (i+1) + "." + (j+1);
-			var d = f.addChildren({title: "Node_" + key,
+			d = f.addChildren({title: "Node_" + key,
 							  key: key
 							  });
-			for (var k=0; k<level3; k++) {
+			for (k=0; k<level3; k++) {
 				key = "" + (i+1) + "." + (j+1) + "." + (k+1);
 				d.addChildren({title: "Node_" + key,
 						  key: key
@@ -203,10 +205,9 @@ test("Create and render hidden nodes, but don't make visible (i.e. don't expand)
 test("Expand 1000 nodes deep (with 10 top level nodes, triggers expand -> render and display)", function() {
 	expect(2);
 
-	var tree = _resetEmptyTree();
-	var node = tree.getNodeByKey("root");
-
-	var timer = new AsyncTimer("1000 deep (10x10x10) with expand");
+	var tree = _resetEmptyTree(),
+		node = tree.getNodeByKey("root"),
+		timer = new AsyncTimer("1000 deep (10x10x10) with expand");
 
 	addNodes(node, 10, 10, 10);
 	timer.subtime("addNodes");
@@ -220,10 +221,9 @@ test("Expand 1000 nodes deep (with 10 top level nodes, triggers expand -> render
 test("Expand 1000 top level nodes (triggers expand -> render and display)", function() {
 	expect(2);
 
-	var tree = _resetEmptyTree();
-	var node = tree.getNodeByKey("root");
-
-	var timer = new AsyncTimer("1000 top level nodes flat with expand");
+	var tree = _resetEmptyTree(),
+		node = tree.getNodeByKey("root"),
+		timer = new AsyncTimer("1000 top level nodes flat with expand");
 
 	addNodes(node, 1000, 0, 0);
 	timer.subtime("addNodes");
@@ -238,12 +238,11 @@ test("Expand 1000 top level nodes with ARIA and checkboxes (triggers expand -> r
 	expect(2);
 
 	var tree = _resetEmptyTree({
-		aria: true,
-		checkbox:true
-	});
-	var node = tree.getNodeByKey("root");
-
-	var timer = new AsyncTimer("1000 top level nodes flat with expand");
+			aria: true,
+			checkbox:true
+		}),
+		node = tree.getNodeByKey("root"),
+		timer = new AsyncTimer("1000 top level nodes flat with expand");
 
 	addNodes(node, 1000, 0, 0);
 	timer.subtime("addNodes");
@@ -270,7 +269,9 @@ test("tabletree (6 columns): render and expand", function() {
 ////		css: "/src/skin-win8/icons.gif"
 //		});
 
-	var $tree = $("#tabletree").fancytree({
+	var node, timer, tree, $tree;
+
+	$tree = $("#tabletree").fancytree({
 		extensions: ["table"],
 		source: [{title: "root node", key: "root"}],
 		table: {
@@ -302,10 +303,9 @@ test("tabletree (6 columns): render and expand", function() {
 		}
 	});
 
-	var tree = $tree.fancytree("getTree");
-	var node = tree.getNodeByKey("root");
-
-	var timer = new AsyncTimer("1000 nodes flat and expand");
+	tree = $tree.fancytree("getTree");
+	node = tree.getNodeByKey("root");
+	timer = new AsyncTimer("1000 nodes flat and expand");
 //    var timer = new AsyncTimer("1000 nodes (10 x 10 x 10) and force render(deep=true)");
 
 	addNodes(node, 1000, 0, 0);
