@@ -43,11 +43,11 @@
 					children: [
 						{title: "Sub-item 2.1", key: "node2.1", selected: false,
 							children: [
-										{title: "Sub-item 2.1.1", key: "node2.1", selected: true},
-										{title: "Sub-item 2.1.2", key: "node2.2", selected: false}
+										{title: "Sub-item 2.1.1", key: "node2.1.1", selected: true},
+										{title: "Sub-item 2.1.2", key: "node2.1.2", selected: true}
 									]
 							},
-						{title: "Sub-item 2.2", key: "node2.2", selected: false}
+						{title: "Sub-item 2.2", key: "node2.2", selected: true}
 					]
 				},
 				{title: "Folder 4", folder: true, expanded: true, key: "node4",
@@ -56,12 +56,28 @@
 						{title: "Sub-item 2.2", key: "node2.2", selected: false}
 					]
 				},
-				{title: "Item 3", key: "node3"}
+				{title: "Item 3", key: "node3", lazy: true}
 			],
-			init: function(event, ctx) {
-				ctx.tree.debug("init");
+			lazyload: function(event, ctx) {
+				ctx.result = [
+								{title: "Folder 3", folder: true, expanded: true, key: "node3",
+									children: [
+										{title: "Sub-item 2.1", key: "node2.1", selected: false,
+											children: [
+														{title: "Sub-item 2.1.1", key: "node2.1.1", selected: true},
+														{title: "Sub-item 2.1.2", key: "node2.1.2", selected: false}
+													]
+											},
+										{title: "Sub-item 2.2", key: "node2.2", selected: true}
+									]
+								},
+							  ];
 				ctx.tree.rootNode.fixSelection3FromEndNodes();
 			},
+//			init: function(event, ctx) {
+//				ctx.tree.debug("init");
+//				ctx.tree.rootNode.fixSelection3FromEndNodes();
+//			},
 			loadchildren: function(event, ctx) {
 				ctx.tree.debug("loadchildren");
 				ctx.node.fixSelection3FromEndNodes();

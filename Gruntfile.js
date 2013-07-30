@@ -16,7 +16,7 @@ module.exports = function (grunt) {
         },
         docco: {
             docs: {
-                src: ["src/jquery.fancytree.sampleextension.js"],
+                src: ["src/jquery.fancytree.childcounter.js"],
                 options: {
                     output: "doc/annotated-src"
                 }
