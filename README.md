@@ -27,6 +27,7 @@ Martin
 
 Contributors in order of appearance:
 
+*  <https://github.com/mar10/fancytree/contributors>
 *  Tomas Norkūnas
 
 
