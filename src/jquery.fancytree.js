@@ -119,7 +119,7 @@ function _makeVirtualFunction(methodName, base, sub){
  * Subclass `base` by creating proxy functions
  */
 function _subclassObject(tree, base, extension, extName){
-	$.ui.fancytree.debug("_subclassObject", base, extension, extName);
+//	$.ui.fancytree.debug("_subclassObject", base, extension, extName);
 	for(var attrName in extension){
 		if(typeof extension[attrName] === "function"){
 			if(typeof tree[attrName] === "function"){

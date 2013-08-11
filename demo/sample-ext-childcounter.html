@@ -58,14 +58,6 @@ span.fancytree-childcounter {
 				data.result = {url: "ajax-sub2.json"}
 			}
 		});
-		var tree = $("#tree").fancytree("getTree");
-
-		/*
-		 * Event handlers for our little demo interface
-		 */
-
-		$("#btnResetSearch").click(function(e){
-		}).attr("disabled", true);
 	});
 </script>
 </head>
@@ -89,18 +81,6 @@ span.fancytree-childcounter {
 	<!-- Add a <table> element where the tree should appear: -->
 	<div id="tree">
 	</div>
-
-	<!-- Definition of context menu -->
-	<ul id="myMenu" class="contextMenu ui-helper-hidden">
-		<li class="edit"><a href="#edit">Edit</a></li>
-		<li class="cut"><a href="#cut">Cut</a></li>
-		<li class="copy"><a href="#copy">Copy</a></li>
-		<li class="paste"><a href="#paste">Paste</a></li>
-		<li class="ui-state-disabled"><a href="#delete">Delete</a></li>
-		<li>---</li>
-		<li class="quit"><a href="#quit">Quit</a></li>
-		<li><a href="#save"><span class="ui-icon ui-icon-disk"></span>Save</a></li>
-	</ul>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
 	<hr>

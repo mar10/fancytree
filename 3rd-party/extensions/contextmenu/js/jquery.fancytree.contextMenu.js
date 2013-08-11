@@ -58,7 +58,7 @@
 		},
 		treeInit: function(ctx) {
 			this._super(ctx);
-			initContextMenu(ctx.options._classNames.title, ctx.options.contextMenu.menu, ctx.options.contextMenu.actions);
+			initContextMenu("fancytree-title", ctx.options.contextMenu.menu, ctx.options.contextMenu.actions);
 		}
 	});
 }(jQuery, document));
