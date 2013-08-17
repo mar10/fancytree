@@ -177,10 +177,10 @@ function _makeNodeTitleMatcher(s){
 var i,
 	FT = null, // initialized below
 	//Boolean attributes that can be set with equivalent class names in the LI tags
-	CLASS_ATTRS = "active expanded focus folder lazy selected".split(" "),
+	CLASS_ATTRS = "active expanded focus folder lazy selected unselectable".split(" "),
 	CLASS_ATTR_MAP = {},
 	//	Top-level Fancytree node attributes, that can be set by dict
-	NODE_ATTRS = "expanded extraClasses folder hideCheckbox key lazy selected title tooltip".split(" "),
+	NODE_ATTRS = "expanded extraClasses folder hideCheckbox key lazy selected title tooltip unselectable".split(" "),
 	NODE_ATTR_MAP = {},
 	// Attribute names that should NOT be added to node.data
 	NONE_NODE_DATA_MAP = {"active": true, "children": true, "data": true, "focus": true};
@@ -551,8 +551,8 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 		this.fixSelection3FromEndNodes();
 	},
 	/**
-	 * Fix selection status for in multi-hier mode.
-	 * Only end-nodes are considered to update the descendants branch ant parents.
+	 * Fix selection status for multi-hier mode.
+	 * Only end-nodes are considered to update the descendants branch and parents.
 	 * Should be called after this node has loaded new children or after
 	 * children have been modified using the API.
 	 */
@@ -585,7 +585,8 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 				state = allSelected ? true : (someSelected ? undefined : false);
 			}else{
 				// This is an end-node: simply report the status
-				state = ( node.unselectable ) ? undefined : !!node.selected;
+//				state = ( node.unselectable ) ? undefined : !!node.selected;
+				state = !!node.selected;
 			}
 			node._changeSelectStatusAttrs(state);
 			return state;
@@ -2759,63 +2760,10 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			this._callHook("nodeRenderStatus", ctx);
 		}
 	},
-	/*
-	_setSubSel: function(hasSubSel) {
-		if( hasSubSel ) {
-			this.hasSubSel = true;
-			$(this.span).addClass(this.tree.options.classNames.partsel);
-		} else {
-			this.hasSubSel = false;
-			$(this.span).removeClass(this.tree.options.classNames.partsel);
-		}
-	},
-	*/
-	/*
-	 * Fix selection and partsel status, of parent nodes, according to current status of
-	 * end nodes.
-	 */
-	/*
-	_updatePartSelectionState: function() {
-//		alert("_updatePartSelectionState " + this);
-//		this.tree.logDebug("_updatePartSelectionState() - %o", this);
-		var sel;
-		// Return `true` or `false` for end nodes and remove part-sel flag
-		if( ! this.hasChildren() ){
-			sel = (this.bSelected && !this.data.unselectable && !this.data.isStatusNode);
-			this._setSubSel(false);
-			return sel;
-		}
-		// Return `true`, `false`, or `undefined` for parent nodes
-		var i, l,
-			cl = this.childList,
-			allSelected = true,
-			allDeselected = true;
-		for(i=0, l=cl.length; i<l;  i++) {
-			var n = cl[i],
-				s = n._updatePartSelectionState();
-			if( s !== false){
-				allDeselected = false;
-			}
-			if( s !== true){
-				allSelected = false;
-			}
-		}
-		if( allSelected ){
-			sel = true;
-		} else if ( allDeselected ){
-			sel = false;
-		} else {
-			sel = undefined;
-		}
-		this._setSubSel(sel === undefined);
-		this.bSelected = (sel === true);
-		return sel;
-	},
-*/
 	/** (De)Select node, return new status (sync).
 	 *
 	 * @param {HookContext} ctx
-	 * @param flag
+	 * @param {Boolean} [flag=true]
 	 */
 	nodeSetSelected: function(ctx, flag) {
 		var node = ctx.node,
@@ -2823,8 +2771,11 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			opts = ctx.options;
 		// flag defaults to true
 		flag = (flag !== false);
-
-		node.debug("nodeSetSelected(" + flag + ")");
+		
+		node.debug("nodeSetSelected(" + flag + ")", ctx);
+		if( node.unselectable){
+			return;
+		}
 		// TODO: !!node.expanded is nicer, but doesn't pass jshint
 		// https://github.com/jshint/jshint/issues/455
 //        if( !!node.expanded === !!flag){
