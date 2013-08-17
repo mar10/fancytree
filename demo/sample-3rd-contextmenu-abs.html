@@ -150,7 +150,7 @@
 			  We do it here, so we can also bind to lazy nodes, which do not
 			  exist at load-time. (abeautifulsite.net menu control does not
 			  support event delegation)*/
-			createnode: function(event, data){
+			createNode: function(event, data){
 				bindContextMenu(data.node.span);
 			},
 			/*Load lazy content (to show that context menu will work for new items too)*/

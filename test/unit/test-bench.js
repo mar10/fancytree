@@ -278,7 +278,7 @@ test("tabletree (6 columns): render and expand", function() {
 			indentation: 20,  // indent 20px per node level
 			nodeColumnIdx: 0  // render the node title into the 2nd column
 		},
-		rendercolumns: function(e, data) {
+		renderColumns: function(e, data) {
 			var node = data.node,
 				$tdList = $(node.tr).find(">td");
 //			$tdList.eq(0).text(node.getIndexHier()).addClass("alignRight");

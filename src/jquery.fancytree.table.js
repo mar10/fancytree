@@ -210,11 +210,11 @@ $.ui.fancytree.registerExtension("table", {
 					$(node.tr).find("td:first").append($cb);
 				}
 				// Allow tweaking, binding, after node was created for the first time
-				tree._triggerNodeEvent("createnode", ctx);
+				tree._triggerNodeEvent("createNode", ctx);
 			}
 		}
 		 // Allow tweaking after node state was rendered
-		tree._triggerNodeEvent("rendernode", ctx);
+		tree._triggerNodeEvent("renderNode", ctx);
 		// Visit child nodes
 		// Add child markup
 		children = node.children;
@@ -261,7 +261,7 @@ $.ui.fancytree.registerExtension("table", {
 		var node = ctx.node;
 		this._super(ctx);
 		// let user code write column content
-		ctx.tree._triggerNodeEvent("rendercolumns", node);
+		ctx.tree._triggerNodeEvent("renderColumns", node);
 	},
 	nodeRenderStatus: function(ctx) {
 		var indent,

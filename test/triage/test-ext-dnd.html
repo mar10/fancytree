@@ -86,7 +86,7 @@
 			lazyload: function(e, data) {
 				data.result = {url: "../unit/ajax-sub2.json"}
 			},
-			rendercolumns: function(e, data) {
+			renderColumns: function(e, data) {
 				var node = data.node,
 					$tdList = $(node.tr).find(">td");
 				$tdList.eq(1).text(node.key);

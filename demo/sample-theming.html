@@ -38,7 +38,7 @@ span.fancytree-node.custom1 > span.fancytree-icon {
 		$("#tree").fancytree({
 			// Image folder used for data.icon attribute.
 			imagePath: "skin-custom/",
-			rendernode: function(event, data) {
+			renderNode: function(event, data) {
 				// Optionally tweak data.node.span
 				var node = data.node;
 				if(node.data.cstrender){

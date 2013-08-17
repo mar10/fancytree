@@ -14,7 +14,7 @@
 		background-color: #f4f4f8;
 	}
 */
-	/* custom alignment (set by 'rendercolumns'' event) */
+	/* custom alignment (set by 'renderColumns'' event) */
 	td.alignRight {
 	   text-align: right;
 	}
@@ -49,7 +49,7 @@
 			lazyload: function(e, data) {
 				data.result = {url: "ajax-sub2.json"}
 			},
-			rendercolumns: function(e, data) {
+			renderColumns: function(e, data) {
 				var node = data.node,
 					$tdList = $(node.tr).find(">td");
 				// (index #0 is rendered by fancytree by adding the checkbox)

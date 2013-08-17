@@ -86,13 +86,13 @@
 					{title: "Another node", selected: true}
 					];
 			},
-			loadchildren: function(event, data) {
+			loadChildren: function(event, data) {
 				logEvent(event, data);
 			},
-			focustree: function(event, data) {
+			focusTree: function(event, data) {
 				logEvent(event, data);
 			},
-			blurtree: function(event, data) {
+			blurTree: function(event, data) {
 				logEvent(event, data);
 			},
 			focus: function(event, data) {
@@ -123,11 +123,11 @@
 			keypress: function(event, data) {
 				logEvent(event, data);
 			},
-			createnode: function(event, data) {
+			createNode: function(event, data) {
 				// Optionally tweak data.node.span or bind handlers here
 				logEvent(event, data);
 			},
-			rendernode: function(event, data) {
+			renderNode: function(event, data) {
 				// Optionally tweak data.node.span
 //              $(data.node.span).text(">>" + data.node.title);
 				logEvent(event, data);

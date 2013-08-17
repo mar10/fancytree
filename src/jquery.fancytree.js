@@ -2045,7 +2045,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 					tree.nodeRender(ctx);
 				}
 				// trigger fancytreeloadchildren (except for tree-reload)
-				tree._triggerNodeEvent("loadchildren", node);
+				tree._triggerNodeEvent("loadChildren", node);
 			}
 		}).fail(function(){
 			tree.nodeRender(ctx);
@@ -2280,12 +2280,12 @@ Fancytree.prototype = /**@lends Fancytree*/{
 				this.nodeRenderTitle(ctx);
 
 				// Allow tweaking and binding, after node was created for the first time
-				tree._triggerNodeEvent("createnode", ctx);
+				tree._triggerNodeEvent("createNode", ctx);
 			}else{
 //				this.nodeRenderTitle(ctx);
 			}
 			// Allow tweaking after node state was rendered
-			tree._triggerNodeEvent("rendernode", ctx);
+			tree._triggerNodeEvent("renderNode", ctx);
 		}
 
 		// Visit child nodes
@@ -3001,7 +3001,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 					FT.focusTree.focusNode.setFocus(false);
 				}
 				FT.focusTree.$container.removeClass("fancytree-focused");
-				this._triggerTreeEvent("blurtree");
+				this._triggerTreeEvent("blurTree");
 				FT.focusTree = null;
 			}
 		}
@@ -3023,7 +3023,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 //					this.rootNode.getFirstChild().setFocus();
 				}
 			}
-			this._triggerTreeEvent("focustree");
+			this._triggerTreeEvent("focusTree");
 		}else{
 			FT.focusTree = null;
 		}

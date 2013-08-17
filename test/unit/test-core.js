@@ -706,8 +706,8 @@ test(".click() to expand a lazy folder (lazyload returns ajax options)", functio
 			equal(sequence++, 3, "receive `lazyload` callback");
 			data.result = {url: "ajax-sub2.json"};
 		},
-		loadchildren: function(e, data){
-			equal(sequence++, 4, "receive `loadchildren` callback");
+		loadChildren: function(e, data){
+			equal(sequence++, 4, "receive `loadChildren` callback");
 			equal(data.tree.count(), TESTDATA_NODES + 2, "lazy tree has 25 nodes");
 			equal($("#tree li").length, TESTDATA_VISIBLENODES, "lazy tree has not yet rendered new node elements");
 		},

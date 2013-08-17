@@ -44,7 +44,7 @@ This example uses two extensions ('table' and 'themeroller'):
             activate: function(e, data) {
             },
             // This event is part of the table extension:
-            rendercolumns: function(e, data) {
+            renderColumns: function(e, data) {
                 var node = data.node,
                     $tdList = $(node.tr).find(">td");
                 $tdList.eq(1).text(node.key);
