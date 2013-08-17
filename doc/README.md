@@ -1,6 +1,9 @@
+<!--
+	This file is used as start page for the JSDoc3 site.
+-->
 # Fancytree
 
-API documentation for [Fancytree](http://fancytree.googlecode.com)
+API documentation for [Fancytree](https://github.com/mar10/fancytree/)
 
 Sample
 
