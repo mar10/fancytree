@@ -1,26 +1,33 @@
 # Fancytree [![Build Status](https://travis-ci.org/mar10/fancytree.png?branch=master)](https://travis-ci.org/mar10/fancytree)
 
-jquery.fancytree.js
+Fancytree is a JavaScript dynamic tree view plugin for jQuery with support for 
+persistence, keyboard, checkboxes, tables, drag'n'drop, and lazy loading.
+
 Fancytree 2.x is the designated successor of [DynaTree 1.x](https://code.google.com/p/dynatree/).
+
 
 ## Status
 
-Alpha!
+Concerning performance and functionality I would classify this project *Beta*.
+
+However, one main motivation of this rewrite was a more consistent and intuitive 
+API, so this is also a Call for comments: [let me know], if you have proposals 
+for improvements on the API or architecture.  
+This implies, that the API is not finalized yet: events, functions, and parameters
+are still subject to change.  
 
 
-## Summary
+#### Latest Changes
 
-Read [the docs](https://github.com/mar10/fancytree/wiki), [What's New] and [take a look at the preview demo].
+**2013-08-17**
 
-Note: The API (events, functions, and parameters) are still subject to change!
+  * [BREAKING CHANGE] Renamed events to camelCase as suggested by the jQuery style guide (`rendernnode` -> `renderNode`, ...)
 
-One main motivation of this rewrite was a more consistent and intuitive API, so this is also a Call for comments: [let me know], if you have proposals for improvements on the API or architecture.
+  
+## Get Started
 
-Seasoned JS programmers are invited to [comment] or participate ;-)
-
-Have fun
-
-Martin
+  * Take a look at [the preview demo](http://wwwendt.de/tech/fancytree/demo)
+  * Read [the documentation](https://github.com/mar10/fancytree/wiki) (still incomplete)
 
 
 # Credits
@@ -35,8 +42,4 @@ Contributors in order of appearance:
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/mar10/fancytree/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
-[What's New]: https://github.com/mar10/fancytree/wiki/WhatsNew
-
-[take a look at the preview demo]: http://wwwendt.de/tech/fancytree/demo
 [let me know]: http://groups.google.com/group/dynatree
-[comment]: http://groups.google.com/group/dynatree

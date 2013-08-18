@@ -2771,7 +2771,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			opts = ctx.options;
 		// flag defaults to true
 		flag = (flag !== false);
-		
+
 		node.debug("nodeSetSelected(" + flag + ")", ctx);
 		if( node.unselectable){
 			return;
