@@ -16,6 +16,7 @@
  * @property {Event} orgEvent
  * @property {FancytreeNode | null} node
  * @property {String | undefined} targetType (only for click and dblclick events) 'title' | 'prefix' | 'expander' | 'checkbox' | 'icon'
+ *
  */
 var HookContext = {};
 
@@ -24,10 +25,21 @@ var HookContext = {};
  * Data object passed to FancytreeNode() constructor.
  * @name NodeData
  *
- * @property {String} title
+ * @property {String} title node text (may contain HTML tags)
  * @property {String} key unique key for this node (auto-generated if omitted)
  * @property {Boolean} expanded
- * @property {NodeData[]} children
+ * @property {Boolean} active (initialization only, but will not be stored  with the node).
+ * @property {Boolean} focus (initialization only, but will not be stored  with the node).
+ * @property {Boolean} folder
+ * @property {Boolean} hideCheckbox
+ * @property {Boolean} lazy
+ * @property {Boolean} selected
+ * @property {Boolean} unselectable
+ * @property {NodeData[]} children optional array of child nodes
+ * @property {String} tooltip
+ * @property {String} extraClasses class names added to the node markup (separate with space)
+ * @property {object} data all properties from will be copied to `node.data`
+ * @property {any} OTHER attributes other than listed above will be copied to `node.data`
  *
  */
 var NodeData = {};
@@ -55,85 +67,6 @@ var NodePatch = {};
  */
 var TreePatch = {};
 
-/*
-	title: "Dynatree", // Tree's name (only used for debug output)
-	minExpandLevel: 1, // 1: root node is not collapsible
-	imagePath: null, // Path to a folder containing icons. Defaults to 'skin/' subdirectory.
-	children: null, // Init tree structure from this object array.
-	initId: null, // Init tree structure from a <ul> element with this ID.
-	initAjax: null, // Ajax options used to initialize the tree strucuture.
-	autoFocus: true, // Set focus to first child, when expanding or lazy-loading.
-	keyboard: true, // Support keyboard navigation.
-	persist: false, // Persist expand-status to a cookie
-	autoCollapse: false, // Automatically collapse all siblings, when a node is expanded.
-	clickFolderMode: 3, // 1:activate, 2:expand, 3:activate and expand
-	activeVisible: true, // Make sure, active nodes are visible (expanded).
-	checkbox: false, // Show checkboxes.
-	selectMode: 2, // 1:single, 2:multi, 3:multi-hier
-	fx: null, // Animations, e.g. null or { height: "toggle", duration: 200 }
-	noLink: false, // Use <span> instead of <a> tags for all nodes
-	// Low level event handlers: onEvent(dtnode, event): return false, to stop default processing
-	onClick: null, // null: generate focus, expand, activate, select events.
-	onDblClick: null, // (No default actions.)
-	onKeydown: null, // null: generate keyboard navigation (focus, expand, activate).
-	onKeypress: null, // (No default actions.)
-	onFocus: null, // null: set focus to node.
-	onBlur: null, // null: remove focus from node.
-
-	// Pre-event handlers onQueryEvent(flag, dtnode): return false, to stop processing
-	onQueryActivate: null, // Callback(flag, dtnode) before a node is (de)activated.
-	onQuerySelect: null, // Callback(flag, dtnode) before a node is (de)selected.
-	onQueryExpand: null, // Callback(flag, dtnode) before a node is expanded/collpsed.
-
-	// High level event handlers
-	onPostInit: null, // Callback(isReloading, isError) when tree was (re)loaded.
-	onActivate: null, // Callback(dtnode) when a node is activated.
-	onDeactivate: null, // Callback(dtnode) when a node is deactivated.
-	onSelect: null, // Callback(flag, dtnode) when a node is (de)selected.
-	onExpand: null, // Callback(flag, dtnode) when a node is expanded/collapsed.
-	onLazyRead: null, // Callback(dtnode) when a lazy node is expanded for the first time.
-	onCustomRender: null, // Callback(dtnode) before a node is rendered. Return a HTML string to override.
-	onCreate: null, // Callback(dtnode, nodeSpan) after a node was rendered for the first time.
-	onRender: null, // Callback(dtnode, nodeSpan) after a node was rendered.
-				// postProcess is similar to the standard dataFilter hook,
-				// but it is also called for JSONP
-	postProcess: null, // Callback(data, dataType) before an Ajax result is passed to dynatree
-
-	// Drag'n'drop support
-	dnd: {
-		// Make tree nodes draggable:
-		onDragStart: null, // Callback(sourceNode), return true, to enable dnd
-		onDragStop: null, // Callback(sourceNode)
-//      helper: null,
-		// Make tree nodes accept draggables
-		autoExpandMS: 1000, // Expand nodes after n milliseconds of hovering.
-		preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
-		onDragEnter: null, // Callback(targetNode, sourceNode)
-		onDragOver: null, // Callback(targetNode, sourceNode, hitMode)
-		onDrop: null, // Callback(targetNode, sourceNode, hitMode)
-		onDragLeave: null // Callback(targetNode, sourceNode)
-	},
-	ajaxDefaults: { // Used by initAjax option
-		cache: false, // false: Append random '_' argument to the request url to prevent caching.
-		timeout: 0, // >0: Make sure we get an ajax error for invalid URLs
-		dataType: "json" // Expect json format and pass json object to callbacks.
-	},
-	strings: {
-		loading: "Loading&#8230;",
-		loadError: "Load error!"
-	},
-	generateIds: false, // Generate id attributes like <span id='dynatree-id-KEY'>
-	idPrefix: "dynatree-id-", // Used to generate node id's like <span id="dynatree-id-<key>">.
-	keyPathSeparator: "/", // Used by node.getKeyPath() and tree.loadKeyPath().
-//    cookieId: "dynatree-cookie", // Choose a more unique name, to allow multiple trees.
-	cookieId: "dynatree", // Choose a more unique name, to allow multiple trees.
-	cookie: {
-		expires: null //7, // Days or Date; null: session cookie
-//      path: "/", // Defaults to current page
-//      domain: "jquery.com",
-//      secure: true
-
- */
 /**
  * @name FancytreeOptions
  *
@@ -144,24 +77,30 @@ var TreePatch = {};
  * @example $("#tree").fancytree({source: "/myService"});
  *
  * @property {Boolean} activeVisible Make sure that the active node is always visible, i.e. it's parents are expanded (default: true).
- * @property {object} ajax
+ * @property {object} ajax Default options for ajax requests
+ * @property {Boolean} aria
+ * @property {Boolean} autoActivate (default: true)
  * @property {Boolean} autoCollapse Automatically collapse all siblings, when a node is expanded (default: false).
- * @property {Boolean} autoFocus Set focus to first child, when expanding or lazy-loading (default: true).
+ * @property {Boolean} autoScroll (default: false).
  * @property {Boolean} checkbox Display checkboxes to allow selection  (default: false)
  * @property {Integer} clickFolderMode Defines what happens, when the user click a folder node.<br>1:activate, 2:expand, 3:activate and expand, 4:activate/dblclick expands  (default: 4)
+ * @property {Integer} debugLevel  0..2 (null: use global setting $.ui.fancytree.debugInfo)
+ * @property {Boolean} enableAspx (default: true).
  * @property {String[]} extensions List of active extensions (default: [])
+ * @property {object} fx Animation options, null:off (default: { height: "toggle", duration: 200 })
+ * @property {Boolean} generateIds (default: true).
  * @property {Boolean} icons Display node icons  (default: true)
  * @property {String} idPrefix (default: "ft_")
+ * @property {Boolean} keyboard (default: true).
  * @property {String} keyPathSeparator (default: "/")
- * @property {object} fx Animation options, null:off (default: { height: "toggle", duration: 200 })
  * @property {String} imagePath Path to a folder containing icons (default: null, using 'skin/' subdirectory).
  * @property {Boolean} keyboard Support keyboard navigation (default: true).
  * @property {Integer} minExpandLevel 1: root node is not collapsible (default: 1)
- * @property {Boolean} noLink Use <span> instead of <a> tags for all nodes (default: false)
  * @property {Integer} selectMode 1:single, 2:multi, 3:multi-hier (default: 2)
  * @property {any} source Used to Initialize the tree.
  * @property {object} strings Translation table
- * @property {Boolean} tabbable // add tabindex='0' to container, so tree can be reached using TAB
+ * @property {Boolean} tabbable Add tabindex='0' to container, so tree can be reached using TAB
+ *
  */
 var FancytreeOptions = {};
 
@@ -169,9 +108,9 @@ var FancytreeOptions = {};
  * @name FancytreeEvents
  *
  * @description
- * Events are called this way:
+ * Events are called like this:
  *    CALLBACK_NAME(event, data)
- * where `event` is a jQuery Event object and `data` is of type {@link HookContext}
+ * where `event` is a {@link http://api.jquery.com/category/events/event-object/|jQuery Event} object and `data` is of type {@link HookContext}
  *
  * @see <a href="http://api.jquery.com/category/events/event-object/">jQuery Event</a>
  * @see HookContext
@@ -182,6 +121,29 @@ var FancytreeOptions = {};
  *     }
  * });
  *
- * @property {function} lazyload
+ * @property {function} activate `data.node` was deactivated
+ * @property {function} beforeActivate Return `false` to prevent default processing
+ * @property {function} beforeExpand Return `false` to prevent default processing
+ * @property {function} beforeSelect Return `false` to prevent default processing
+ * @property {function} blur `data.node` lost keyboard focus
+ * @property {function} blurTree `data.tree` lost keyboard focus
+ * @property {function} click `data.node` was clicked. `data.targetType` contains the region ("title", "expander", ...). Return `false` to prevent default processing, i.e. activating, etc.
+ * @property {function} collapse `data.node` was collapsed
+ * @property {function} create
+ * @property {function} createNode
+ * @property {function} dblclick `data.node` was clicked.
+ * @property {function} deactivate `data.node` was deactivated
+ * @property {function} expand `data.node` was expanded
+ * @property {function} focus `data.node` received keyboard focus
+ * @property {function} focusTree `data.tree` received keyboard focus
+ * @property {function} init
+ * @property {function} keydown `data.node` received key. `event.which` contains the key. Return `false` to prevent default processing, i.e. navigation.
+ * @property {function} keypress
+ * @property {function} lazyload `data.node` is lazy a lazy node that is expanded for the first time.
+ * @property {function} loadChildren
+ * @property {function} postProcess ajax request returned
+ * @property {function} renderNode
+ * @property {function} select `data.node` was selected
+ *
  */
 var FancytreeEvents = {};
