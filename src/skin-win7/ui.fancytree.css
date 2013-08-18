@@ -231,17 +231,24 @@ span.fancytree-icon /* Default icon */
 	cursor: pointer;
 }
 
-.fancytree-title:hover
+.fancytree-node:hover
 {
-	border-color: #D8F0FA; /* darker light blue */
-	background: #f8fcfe; /* Old browsers */
-	background: -moz-linear-gradient(top, #f8fcfe 0%, #eff9fe 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f8fcfe), color-stop(100%,#eff9fe)); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(top, #f8fcfe 0%,#eff9fe 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(top, #f8fcfe 0%,#eff9fe 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(top, #f8fcfe 0%,#eff9fe 100%); /* IE10+ */
-	background: linear-gradient(to bottom, #f8fcfe 0%,#eff9fe 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f8fcfe', endColorstr='#eff9fe',GradientType=0 ); /* IE6-9 */
+	border-color: #afc6e1; /* darker light blue */
+	border:1px solid transparent;
+	background: #cbe1fc; /* Old browsers */
+	background: -moz-linear-gradient(top, #eff8ff 0%, #cbe1fc 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#eff8ff), color-stop(100%,#cbe1fc)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #eff8ff 0%,#cbe1fc 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #eff8ff 0%,#cbe1fc 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #eff8ff 0%,#cbe1fc 100%); /* IE10+ */
+	background: linear-gradient(to bottom, #eff8ff 0%,#cbe1fc 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eff8ff', endColorstr='#cbe1fc',GradientType=0 ); /* IE6-9 */
+}
+
+.fancytree-node.fancytree-active
+{
+background:none;
+border:0px;
 }
 
 span.fancytree-folder .fancytree-title
@@ -264,18 +271,7 @@ span.fancytree-focused span.fancytree-title
 */
 
 /* active nodes inside an UN-focused tree are gray instead of blue*/
-span.fancytree-active .fancytree-title
-{
-	border: 1px solid #D9D9D9;
-	background: #E5E5E5; /* gray, Old browsers */
-	background: -moz-linear-gradient(top, #fafafb 0%, #e5e5e5 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fafafb), color-stop(100%,#e5e5e5)); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(top, #fafafb 0%,#e5e5e5 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(top, #fafafb 0%,#e5e5e5 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(top, #fafafb 0%,#e5e5e5 100%); /* IE10+ */
-	background: linear-gradient(to bottom, #fafafb 0%,#e5e5e5 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fafafb', endColorstr='#e5e5e5',GradientType=0 ); /* IE6-9 */
-}
+
 
 .fancytree-focused span.fancytree-active .fancytree-title,
 span.fancytree-selected .fancytree-title
@@ -296,15 +292,16 @@ span.fancytree-active.fancytree-focused .fancytree-title,
 span.fancytree-selected .fancytree-title:hover,
 span.fancytree-selected.fancytree-focused .fancytree-title
 {
-	border: 1px solid #B6E6FB;
-	background: #f2f9fd; /* Old browsers */
-	background: -moz-linear-gradient(top, #f2f9fd 0%, #c4e8fa 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f2f9fd), color-stop(100%,#c4e8fa)); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(top, #f2f9fd 0%,#c4e8fa 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(top, #f2f9fd 0%,#c4e8fa 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(top, #f2f9fd 0%,#c4e8fa 100%); /* IE10+ */
-	background: linear-gradient(to bottom, #f2f9fd 0%,#c4e8fa 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2f9fd', endColorstr='#c4e8fa',GradientType=0 ); /* IE6-9 */
+	border-color: #dfdfdf; /* darker gray border blue */
+	border:1px solid transparent;
+	background: #e3e3e3; /* Old browsers */
+	background: -moz-linear-gradient(top, #f6f6f6 0%, #e3e3e3 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f6f6f6), color-stop(100%,#e3e3e3)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #f6f6f6 0%,#e3e3e3 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #f6f6f6 0%,#e3e3e3 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #f6f6f6 0%,#e3e3e3 100%); /* IE10+ */
+	background: linear-gradient(to bottom, #f6f6f6 0%,#e3e3e3 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f6f6f6', endColorstr='#e3e3e3',GradientType=0 ); /* IE6-9 */
 }
 
 /* File Explorer does not distinguish selected and active (if multiple nodes are selected,
