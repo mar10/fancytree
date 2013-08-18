@@ -4,16 +4,15 @@
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 	<title>Dynatree - Editable nodes</title>
 
-	<script src="../jquery/jquery.js" type="text/javascript"></script>
-	<script src="../jquery/jquery-ui.custom.js" type="text/javascript"></script>
-	<script src="../jquery/jquery.cookie.js" type="text/javascript"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js" type="text/javascript"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.js" type="text/javascript"></script>
 
-	<link href="../src/skin/ui.dynatree.css" rel="stylesheet" type="text/css">
-	<script src="../src/jquery.dynatree.js" type="text/javascript"></script>
+	<link href="../src/skin-win7/ui.fancytree.css" rel="stylesheet" type="text/css">
+	<script src="../src/jquery.fancytree.js" type="text/javascript"></script>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
-	<link href="prettify.css" rel="stylesheet">
-	<script src="prettify.js" type="text/javascript"></script>
+	<link href="../lib/prettify.css" rel="stylesheet">
+	<script src="../lib/prettify.js" type="text/javascript"></script>
 	<link href="sample.css" rel="stylesheet" type="text/css">
 	<script src="sample.js" type="text/javascript"></script>
 	<!-- End_Exclude -->
@@ -23,12 +22,12 @@
  * Implement inline editing for a dynatree node
  */
 function editNode(node){
-	var prevTitle = node.data.title,
+	var prevTitle = node.title,
 		tree = node.tree;
 	// Disable dynatree mouse- and key handling
-	tree.widget.unbind();
+	tree.widget._unbind();
 	// Replace node with <input>
-	$(".dynatree-title", node.span).html("<input id='editNode' value='" + prevTitle + "'>");
+	$(".fancytree-title", node.span).html("<input id='editNode' value='" + prevTitle + "'>");
 	// Focus <input> and bind keyboard handler
 	$("input#editNode")
 		.focus()
@@ -49,8 +48,8 @@ function editNode(node){
 			var title = $("input#editNode").val();
 			node.setTitle(title);
 			// Re-enable mouse and keyboard handlling
-			tree.widget.bind();
-			node.focus();
+			tree.widget._bind();
+			//node.focus();
 		});
 }
 
@@ -58,26 +57,26 @@ function editNode(node){
 
 $(function(){
 	var isMac = /Mac/.test(navigator.platform);
-	$("#tree").dynatree({
+	$("#tree").fancytree({
 		title: "Event samples",
-		onClick: function(node, event) {
-			if( event.shiftKey ){
-				editNode(node);
+		click: function(e, data) {
+			if( e.shiftKey ){
+				editNode(data.node);
 				return false;
 			}
 		},
-		onDblClick: function(node, event) {
-			editNode(node);
+		dblclick: function(e, data) {
+			editNode(data.node);
 			return false;
 		},
-		onKeydown: function(node, event) {
-			switch( event.which ) {
+		keydown: function(e, data) {
+			switch( e.which ) {
 			case 113: // [F2]
-				editNode(node);
+				editNode(data.node);
 				return false;
 			case 13: // [enter]
 				if( isMac ){
-					editNode(node);
+					editNode(data.node);
 					return false;
 				}
 			}
