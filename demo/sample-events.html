@@ -56,6 +56,7 @@
 				$("#echoActive").text("-");
 			},
 			beforeSelect: function(event, data) {
+//				console.log("select", event.originalEvent);
 				logEvent(event, data, "current state=" + data.node.isSelected());
 				// return false to prevent default behavior (i.e. selecting or deselecting)
 //				if( data.node.isFolder() ){
@@ -137,6 +138,10 @@
 //		    logEvent(event, data);
 		});
 
+		$("#btnSelect").click(function(event){
+			var node = $("#tree").fancytree("getActiveNode");
+			node.setSelected( !node.isSelected() );
+		});
 	});
 </script>
 </head>
@@ -179,6 +184,8 @@
 	<div>Active node: <span id="echoActive">-</span></div>
 	<div>Selected node list: <span id="echoSelected">-</span></div>
 	<div>Focused node: <span id="echoFocused">-</span></div>
+	
+	<button type="button" id="btnSelect">Select active node</button>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
 	<hr>
