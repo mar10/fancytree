@@ -1401,9 +1401,9 @@ function Fancytree(widget){
 
 Fancytree.prototype = /**@lends Fancytree*/{
 	/** Return a context object that can be re-used for _callHook().
-	 * @param {Fancytree | FancytreeNode | HookContext} obj
+	 * @param {Fancytree | FancytreeNode | EventData} obj
 	 * @param {Event} orgEvent
-	 * @returns {HookContext}
+	 * @returns {EventData}
 	 */
 	_makeHookContext: function(obj, orgEvent) {
 		if(obj.node !== undefined){
@@ -1424,9 +1424,10 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	},
 	/** Trigger a hook function: funcName(ctx, [...]).
 	 *
-	 * @param {HookContext} ctx
-	 * @param {any} [arguments]
-	 * @returns TODO:
+	 * @param {String} funcName
+	 * @param {Fancytree|FancytreeNode|EventData} contextObject
+	 * @param {any, ...}  [_extraArgs] optional additional arguments
+	 * @returns {any}
 	 */
 	_callHook: function(funcName, contextObject, _extraArgs) {
 		var ctx = this._makeHookContext(contextObject),
@@ -2011,14 +2012,14 @@ Fancytree.prototype = /**@lends Fancytree*/{
 				dfd = source;
 			}
 			dfd.done(function(data, textStatus, jqXHR){
+				var res;
 				tree.nodeSetStatus(ctx, "ok");
 				if(typeof data === "string"){ $.error("Ajax request returned a string (did you get the JSON dataType wrong?)."); }
-//		        alert("nodeLoadChildren() source = " + JSON.stringify(source));
 				// postProcess is similar to the standard dataFilter hook,
 				// but it is also called for JSONP
 				if( ctx.options.postProcess ){
-					// TODO: enable and test
-//					data = options.postProcess.call(this, data, this.dataType);
+					res = tree._triggerNodeEvent("postProcess", ctx, ctx.orgEvent, {response: data, dataType: this.dataType});
+					data = $.isArray(res) ? res : data;
 				} else if (data && data.hasOwnProperty("d") && ctx.options.enableAspx ) {
 					// Process ASPX WebMethod JSON object inside "d" property
 					data = (typeof data.d === "string") ? $.parseJSON(data.d) : data.d;
@@ -2127,7 +2128,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		children.splice(idx, 1);
 	},
 	/**Remove HTML markup for all descendents of ctx.node.
-	 * @param {HookContext} ctx
+	 * @param {EventData} ctx
 	 */
 	nodeRemoveChildMarkup: function(ctx) {
 		var node = ctx.node;
@@ -2142,7 +2143,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		}
 	},
 	/**Remove all descendants of ctx.node.
-	* @param {HookContext} ctx
+	* @param {EventData} ctx
 	*/
 	nodeRemoveChildren: function(ctx) {
 		var node = ctx.node,
@@ -2170,7 +2171,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		this.nodeRenderStatus(ctx);
 	},
 	/**Remove HTML markup for ctx.node and all its descendents.
-	 * @param {HookContext} ctx
+	 * @param {EventData} ctx
 	 */
 	nodeRemoveMarkup: function(ctx) {
 		var node = ctx.node;
@@ -2209,7 +2210,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	 * </li>
 	 * </code>
 	 *
-	 * @param: {HookContext} ctx
+	 * @param: {EventData} ctx
 	 * @param: {Boolean} [force=false] re-render, even if html markup was already created
 	 * @param: {Boolean} [deep=false] also render all descendants, even if parent is collapsed
 	 * @param: {Boolean} [collapsed=false] force root node to be collapsed, so we can apply animated expand later
@@ -2342,7 +2343,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		return;
 	},
 	/** Create HTML for the node's outer <span> (expander, checkbox, icon, and title).
-	 * @param {HookContext} ctx
+	 * @param {EventData} ctx
 	 */
 	nodeRenderTitle: function(ctx, title) {
 		// set node connector images, links and text
@@ -2425,7 +2426,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		node.span.innerHTML = ares.join("");
 	},
 	/** Update element classes according to node state.
-	 * @param {HookContext} ctx
+	 * @param {EventData} ctx
 	 */
 	nodeRenderStatus: function(ctx) {
 		// Set classes for current status
@@ -2537,7 +2538,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	 * flag defaults to true.
 	 * If flag is true, the node is activated (must be a synchronous operation)
 	 * If flag is false, the node is deactivated (must be a synchronous operation)
-	 * @param {HookContext} ctx
+	 * @param {EventData} ctx
 	 * @param {Boolean} [flag=true]
 	 */
 	nodeSetActive: function(ctx, flag) {
@@ -2582,7 +2583,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	},
 	/** Expand or collapse node, return Deferred.promise.
 	 *
-	 * @param {HookContext} ctx
+	 * @param {EventData} ctx
 	 * @param {Boolean} [flag=true]
 	 * @returns {$.Promise} The deferred will be resolved as soon as the (lazy)
 	 *     data was retrieved, rendered, and the expand animation finshed.
@@ -2717,7 +2718,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		return dfd.promise();
 	},
 	/**
-	 * @param {HookContext} ctx
+	 * @param {EventData} ctx
 	 * @param {Boolean} [flag=true]
 	 */
 	nodeSetFocus: function(ctx, flag) {
@@ -2762,7 +2763,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	},
 	/** (De)Select node, return new status (sync).
 	 *
-	 * @param {HookContext} ctx
+	 * @param {EventData} ctx
 	 * @param {Boolean} [flag=true]
 	 */
 	nodeSetSelected: function(ctx, flag) {
@@ -2802,7 +2803,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	},
 	/** Show node status (ok, loading, error) using styles and a dummy child node.
 	 *
-	 * @param {HookContext} ctx
+	 * @param {EventData} ctx
 	 * @param status
 	 * @param message
 	 * @param details
@@ -2873,19 +2874,19 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	},
 	/**
 	 *
-	 * @param {HookContext} ctx
+	 * @param {EventData} ctx
 	 */
 	nodeToggleExpanded: function(ctx) {
 		return this.nodeSetExpanded(ctx, !ctx.node.expanded);
 	},
 	/**
-	 * @param {HookContext} ctx
+	 * @param {EventData} ctx
 	 */
 	nodeToggleSelected: function(ctx) {
 		return this.nodeSetSelected(ctx, !ctx.node.selected);
 	},
 	/** Remove all nodes.
-	 * @param {HookContext} ctx
+	 * @param {EventData} ctx
 	 */
 	treeClear: function(ctx) {
 		var tree = ctx.tree;
@@ -2896,23 +2897,23 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		tree.rootNode.children = null;
 	},
 	/** Widget was created (called only once, even it re-initialized).
-	 * @param {HookContext} ctx
+	 * @param {EventData} ctx
 	 */
 	treeCreate: function(ctx) {
 	},
 	/** Widget was destroyed.
-	 * @param {HookContext} ctx
+	 * @param {EventData} ctx
 	 */
 	treeDestroy: function(ctx) {
 	},
 	/** Widget was (re-)initialized.
-	 * @param {HookContext} ctx
+	 * @param {EventData} ctx
 	 */
 	treeInit: function(ctx) {
 		this.treeLoad(ctx);
 	},
 	/** Parse Fancytree from source, as configured in the options.
-	 * @param {HookContext} ctx
+	 * @param {EventData} ctx
 	 * @param {object} [source] new source
 	 */
 	treeLoad: function(ctx, source) {
@@ -3029,7 +3030,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		}
 
 	},
-	/** Re-fire beforeactivate and activate events. */
+	/** Re-fire beforeActivate and activate events. */
 	reactivate: function(setFocus) {
 		var node = this.activeNode;
 		if( node ) {
@@ -3078,12 +3079,16 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		return "<Fancytree(#" + this._id + ")>";
 	},
 	/** _trigger a widget event with additional node ctx.
-	 * @see HookContext
+	 * @see EventData
 	 */
-	_triggerNodeEvent: function(type, node, orgEvent) {
+	_triggerNodeEvent: function(type, node, orgEvent, extra) {
 //		this.debug("_trigger(" + type + "): '" + ctx.node.title + "'", ctx);
-		var ctx = this._makeHookContext(node, orgEvent),
-			res = this.widget._trigger(type, orgEvent, ctx);
+		var res,
+			ctx = this._makeHookContext(node, orgEvent);
+		if( extra ) {
+			$.extend(ctx, extra);
+		}
+		res = this.widget._trigger(type, orgEvent, ctx);
 
 		if(res !== false && ctx.result !== undefined){
 			return ctx.result;

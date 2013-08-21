@@ -28,13 +28,18 @@
 	$(function(){
 		$("#tree").fancytree({
 			checkbox: true,
-			nolink: true,
 			// Tree events
+			create: function(event, data) {
+				logEvent(event, data);
+			},
 			init: function(event, data, flag) {
 				logEvent(event, data, "flag=" + flag);
 			},
-			create: function(event, data, flag) {
-				logEvent(event, data, "flag=" + flag);
+			focusTree: function(event, data) {
+				logEvent(event, data);
+			},
+			blurTree: function(event, data) {
+				logEvent(event, data);
 			},
 			// Node events
 			beforeActivate: function(event, data) {
@@ -82,19 +87,21 @@
 			lazyload: function(event, data) {
 				logEvent(event, data);
 				// return children or any other node source
-				data.result = [
-					{title: "A Lazy node", lazy: true},
-					{title: "Another node", selected: true}
-					];
+				data.result = {url: "ajax-sub2.json"};
+//				data.result = [
+//					{title: "A Lazy node", lazy: true},
+//					{title: "Another node", selected: true}
+//					];
 			},
 			loadChildren: function(event, data) {
 				logEvent(event, data);
 			},
-			focusTree: function(event, data) {
+			postProcess: function(event, data) {
 				logEvent(event, data);
-			},
-			blurTree: function(event, data) {
-				logEvent(event, data);
+				// either modify the ajax response directly
+				data.response[0].title += " - hello from postProcess";
+				// or setup and return a new response object
+//				data.result = [{title: "set by postProcess"}];
 			},
 			focus: function(event, data) {
 				logEvent(event, data);
@@ -122,6 +129,7 @@
 				}
 			},
 			keypress: function(event, data) {
+				// currently unused
 				logEvent(event, data);
 			},
 			createNode: function(event, data) {
