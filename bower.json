@@ -3,6 +3,6 @@
   "version": "2.0.0pre",
   "dependencies": {
     "jquery": "~1.9",
-    "jquery": "~1.10"
+    "jquery-ui": "~1.10"
   }
 }
