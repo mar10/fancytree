@@ -1,0 +1,8 @@
+{
+  "name": "jquery.fancytree",
+  "version": "2.0.0pre",
+  "dependencies": {
+    "jquery": "~1.9",
+    "jquery": "~1.10"
+  }
+}
