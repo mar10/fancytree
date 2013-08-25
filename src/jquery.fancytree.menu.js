@@ -59,7 +59,7 @@ $.ui.fancytree.registerExtension("menu", {
 		// Replace the standard browser context menu with out own
 		tree.$container.delegate("span.fancytree-node", "contextmenu", function(event) {
 			var node = $.ui.fancytree.getNode(event),
-				ctx = {node: node, tree: node.tree, orgEvent: event, options: tree.options};
+				ctx = {node: node, tree: node.tree, originalEvent: event, options: tree.options};
 			tree.menu._openMenu(ctx);
 			return false;
 		});
@@ -101,7 +101,7 @@ $.ui.fancytree.registerExtension("menu", {
 		tree.menu.data.node = ctx.node;
 		data = $.extend({}, tree.menu.data);
 
-		if( opts.menu.beforeOpen.call(tree, ctx.orgEvent, data) === false){
+		if( opts.menu.beforeOpen.call(tree, ctx.originalEvent, data) === false){
 			return;
 		}
 
@@ -119,17 +119,17 @@ $.ui.fancytree.registerExtension("menu", {
 		$menu
 			.css("position", "absolute")
 			.show()
-			.position({my: "left top", at: "right top", of: ctx.orgEvent, collision: "fit"})
+			.position({my: "left top", at: "right top", of: ctx.originalEvent, collision: "fit"})
 			.focus();
 
-		opts.menu.open.call(tree, ctx.orgEvent, data);
+		opts.menu.open.call(tree, ctx.originalEvent, data);
 	},
 	_closeMenu: function(ctx){
 		var $menu,
 			tree = ctx.tree,
 			opts = ctx.options,
 			data = $.extend({}, tree.menu.data);
-		if( opts.menu.close.call(tree, ctx.orgEvent, data) === false){
+		if( opts.menu.close.call(tree, ctx.originalEvent, data) === false){
 			return;
 		}
 		$menu = $(opts.menu.selector);
@@ -139,7 +139,7 @@ $.ui.fancytree.registerExtension("menu", {
 	}
 //	,
 //	nodeClick: function(ctx) {
-//		var event = ctx.orgEvent;
+//		var event = ctx.originalEvent;
 //		if(event.which === 2 || (event.which === 1 && event.ctrlKey)){
 //			event.preventDefault();
 //			ctx.tree.menu._openMenu(ctx);

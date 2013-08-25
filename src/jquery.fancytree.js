@@ -206,7 +206,7 @@ for(i=0; i<NODE_ATTRS.length; i++){ NODE_ATTR_MAP[NODE_ATTRS[i]] = true; }
  * @property {FancytreeNode} parent Parent node
  * @property {String} key
  * @property {String} title
- * @property {object} data Contains all custom data that was passed on node creation
+ * @property {object} data Contains all extra data that was passed on node creation
  * @property {FancytreeNode[] | null | undefined} children list of child nodes
  * @property {Boolean} isStatusNode
  * @property {Boolean} expanded
@@ -1402,23 +1402,23 @@ function Fancytree(widget){
 Fancytree.prototype = /**@lends Fancytree*/{
 	/** Return a context object that can be re-used for _callHook().
 	 * @param {Fancytree | FancytreeNode | EventData} obj
-	 * @param {Event} orgEvent
+	 * @param {Event} originalEvent
 	 * @returns {EventData}
 	 */
-	_makeHookContext: function(obj, orgEvent) {
+	_makeHookContext: function(obj, originalEvent) {
 		if(obj.node !== undefined){
 			// obj is already a context object
-			if(orgEvent && obj.orgEvent !== orgEvent){
+			if(originalEvent && obj.originalEvent !== originalEvent){
 				$.error("invalid args");
 			}
 			return obj;
 		}else if(obj.tree){
 			// obj is a FancytreeNode
 			var tree = obj.tree;
-			return { node: obj, tree: tree, widget: tree.widget, options: tree.widget.options, orgEvent: orgEvent };
+			return { node: obj, tree: tree, widget: tree.widget, options: tree.widget.options, originalEvent: originalEvent };
 		}else if(obj.widget){
 			// obj is a Fancytree
-			return { node: null, tree: obj, widget: obj.widget, options: obj.widget.options, orgEvent: orgEvent };
+			return { node: null, tree: obj, widget: obj.widget, options: obj.widget.options, originalEvent: originalEvent };
 		}
 		$.error("invalid args");
 	},
@@ -1774,7 +1774,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	nodeClick: function(ctx) {
 //      this.tree.logDebug("ftnode.onClick(" + event.type + "): ftnode:" + this + ", button:" + event.button + ", which: " + event.which);
 		var activate, expand,
-			event = ctx.orgEvent,
+			event = ctx.originalEvent,
 			targetType = ctx.targetType,
 			node = ctx.node;
 
@@ -1846,7 +1846,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		}
 		// TODO: prevent text selection on dblclicks
 		if( ctx.targetType === "title" ) {
-			ctx.orgEvent.preventDefault();
+			ctx.originalEvent.preventDefault();
 		}
 	},
 	/** Default handling for mouse keydown events.
@@ -1856,7 +1856,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	nodeKeydown: function(ctx) {
 		// TODO: return promise?
 		var i, parents,
-			event = ctx.orgEvent,
+			event = ctx.originalEvent,
 			node = ctx.node,
 			tree = ctx.tree,
 			opts = ctx.options,
@@ -1955,7 +1955,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 
 	// /** Default handling for mouse keypress events. */
 	// nodeKeypress: function(ctx) {
-	//     var event = ctx.orgEvent;
+	//     var event = ctx.originalEvent;
 	// },
 
 	// /** Trigger lazyload event (async). */
@@ -2018,7 +2018,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 				// postProcess is similar to the standard dataFilter hook,
 				// but it is also called for JSONP
 				if( ctx.options.postProcess ){
-					res = tree._triggerNodeEvent("postProcess", ctx, ctx.orgEvent, {response: data, dataType: this.dataType});
+					res = tree._triggerNodeEvent("postProcess", ctx, ctx.originalEvent, {response: data, dataType: this.dataType});
 					data = $.isArray(res) ? res : data;
 				} else if (data && data.hasOwnProperty("d") && ctx.options.enableAspx ) {
 					// Process ASPX WebMethod JSON object inside "d" property
@@ -2078,7 +2078,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	},
 //	/** Handle focusin/focusout events.*/
 //	nodeOnFocusInOut: function(ctx) {
-//		if(ctx.orgEvent.type === "focusin"){
+//		if(ctx.originalEvent.type === "focusin"){
 //			this.nodeSetFocus(ctx);
 //			// if(ctx.tree.focusNode){
 //			//     $(ctx.tree.focusNode.li).removeClass("fancytree-focused");
@@ -2086,11 +2086,11 @@ Fancytree.prototype = /**@lends Fancytree*/{
 //			// ctx.tree.focusNode = ctx.node;
 //			// $(ctx.node.li).addClass("fancytree-focused");
 //		}else{
-//			_assert(ctx.orgEvent.type === "focusout");
+//			_assert(ctx.originalEvent.type === "focusout");
 //			// ctx.tree.focusNode = null;
 //			// $(ctx.node.li).removeClass("fancytree-focused");
 //		}
-//		// $(ctx.node.li).toggleClass("fancytree-focused", ctx.orgEvent.type === "focus");
+//		// $(ctx.node.li).toggleClass("fancytree-focused", ctx.originalEvent.type === "focus");
 //	},
 	/**
 	 * Remove a single direct child of ctx.node.
@@ -2547,7 +2547,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			node = ctx.node,
 			tree = ctx.tree,
 			opts = ctx.options,
-//			userEvent = !!ctx.orgEvent,
+//			userEvent = !!ctx.originalEvent,
 			isActive = (node === tree.activeNode);
 		// flag defaults to true
 		flag = (flag !== false);
@@ -2556,7 +2556,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		if(isActive === flag){
 			// Nothing to do
 			return _getResolvedPromise(node);
-		}else if(flag && this._triggerNodeEvent("beforeActivate", node, ctx.orgEvent) === false ){
+		}else if(flag && this._triggerNodeEvent("beforeActivate", node, ctx.originalEvent) === false ){
 			// Callback returned false
 			return _getRejectedPromise(node, ["rejected"]);
 		}
@@ -2610,7 +2610,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		}else if( !flag && node.getLevel() < opts.minExpandLevel ) {
 			// Prevent collapsing locked levels
 			return _getRejectedPromise(node, ["locked"]);
-		}else if ( this._triggerNodeEvent("beforeExpand", node, ctx.orgEvent) === false ){
+		}else if ( this._triggerNodeEvent("beforeExpand", node, ctx.originalEvent) === false ){
 			// Callback returned false
 			return _getRejectedPromise(node, ["rejected"]);
 		}
@@ -2698,7 +2698,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 				dfd.rejectWith(node, ["load failed (" + errMsg + ")"]);
 			});
 /*
-			var source = tree._triggerNodeEvent("lazyload", node, ctx.orgEvent);
+			var source = tree._triggerNodeEvent("lazyload", node, ctx.originalEvent);
 			_assert(typeof source !== "boolean", "lazyload event must return source in data.result");
 			node.debug("nodeSetExpanded: load start...");
 			this._callHook("nodeLoadChildren", ctx, source).done(function(){
@@ -2782,7 +2782,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 //        if( !!node.expanded === !!flag){
 		if((node.selected && flag) || (!node.selected && !flag)){
 			return !!node.selected;
-		}else if ( this._triggerNodeEvent("beforeSelect", node, ctx.orgEvent) === false ){
+		}else if ( this._triggerNodeEvent("beforeSelect", node, ctx.originalEvent) === false ){
 			return !!node.selected;
 		}
 		if(flag && opts.selectMode === 1){
@@ -3081,14 +3081,14 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	/** _trigger a widget event with additional node ctx.
 	 * @see EventData
 	 */
-	_triggerNodeEvent: function(type, node, orgEvent, extra) {
+	_triggerNodeEvent: function(type, node, originalEvent, extra) {
 //		this.debug("_trigger(" + type + "): '" + ctx.node.title + "'", ctx);
 		var res,
-			ctx = this._makeHookContext(node, orgEvent);
+			ctx = this._makeHookContext(node, originalEvent);
 		if( extra ) {
 			$.extend(ctx, extra);
 		}
-		res = this.widget._trigger(type, orgEvent, ctx);
+		res = this.widget._trigger(type, originalEvent, ctx);
 
 		if(res !== false && ctx.result !== undefined){
 			return ctx.result;
@@ -3096,10 +3096,10 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		return res;
 	},
 	/** _trigger a widget event with additional tree data. */
-	_triggerTreeEvent: function(type, orgEvent) {
+	_triggerTreeEvent: function(type, originalEvent) {
 //		this.debug("_trigger(" + type + ")", ctx);
-		var ctx = this._makeHookContext(this, orgEvent),
-			res = this.widget._trigger(type, orgEvent, ctx);
+		var ctx = this._makeHookContext(this, originalEvent),
+			res = this.widget._trigger(type, originalEvent, ctx);
 
 		if(res !== false && ctx.result !== undefined){
 			return ctx.result;

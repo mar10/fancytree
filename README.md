@@ -19,7 +19,11 @@ are still subject to change.
 
 #### Latest Changes
 
-**2013-08-17**
+**2013-08-25**
+
+  * [BREAKING CHANGE] Renamed `data.orgEvent` to `data.originalEvent`
+
+  **2013-08-17**
 
   * [BREAKING CHANGE] Renamed events to camelCase as suggested by the jQuery style guide (`rendernnode` -> `renderNode`, ...)
 
