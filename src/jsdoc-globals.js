@@ -10,12 +10,12 @@
  * Context object passed to events and hook functions.
  * @name EventData
  *
- * @property {Fancytree} tree
- * @property {object} widget
- * @property {FancytreeOptions} options
- * @property {Event} orgEvent
- * @property {FancytreeNode | null} node
- * @property {any} result (output parameter) Event handlers can return values back to the caller. Used by `lazyload, `postProcess`, ...
+ * @property {Fancytree} tree The tree instance
+ * @property {object} widget The {@link http://api.jqueryui.com/jQuery.widget/|jQuery UI tree widget}
+ * @property {FancytreeOptions} options Shortcut to tree.options
+ * @property {Event} orgEvent The {@link http://api.jquery.com/category/events/event-object/|jQuery Event} that initially triggered this call
+ * @property {FancytreeNode | null} node The node that this call applies to (`null` for tree events)
+ * @property {any} result (output parameter) Event handlers can return values back to the caller. Used by `lazyload`, `postProcess`, ...
  * @property {String | undefined} targetType (only for click and dblclick events) 'title' | 'prefix' | 'expander' | 'checkbox' | 'icon'
  * @property {any} response (only for postProcess event) Original ajax response
  */
@@ -79,14 +79,14 @@ var TreePatch = {};
  *
  * @property {Boolean} activeVisible Make sure that the active node is always visible, i.e. it's parents are expanded (default: true).
  * @property {object} ajax Default options for ajax requests
- * @property {Boolean} aria (default: false)
+ * @property {Boolean} aria (default: false) Add WAI-ARIA attributes to markup
  * @property {Boolean} autoActivate Activate a node when focused with the keyboard (default: true)
  * @property {Boolean} autoCollapse Automatically collapse all siblings, when a node is expanded (default: false).
  * @property {Boolean} autoScroll Scroll node into visible area, when focused by keyboard (default: false).
  * @property {Boolean} checkbox Display checkboxes to allow selection  (default: false)
  * @property {Integer} clickFolderMode Defines what happens, when the user click a folder node.<br>1:activate, 2:expand, 3:activate and expand, 4:activate/dblclick expands  (default: 4)
  * @property {Integer} debugLevel  0..2 (null: use global setting $.ui.fancytree.debugInfo)
- * @property {Boolean} enableAspx Accept passing ajax data in a property named `d (default: true).
+ * @property {Boolean} enableAspx Accept passing ajax data in a property named `d` (default: true).
  * @property {String[]} extensions List of active extensions (default: [])
  * @property {object} fx Animation options, null:off (default: { height: "toggle", duration: 200 })
  * @property {Boolean} generateIds Add `id="..."` to node markup (default: true).
@@ -111,6 +111,7 @@ var FancytreeOptions = {};
  * Events are called like this:
  *    CALLBACK_NAME(event, data)
  * where `event` is a {@link http://api.jquery.com/category/events/event-object/|jQuery Event} object and `data` is of type {@link EventData}
+ * The `this` context is set to  tree's the HTMLDivElement
  *
  * @see <a href="http://api.jquery.com/category/events/event-object/">jQuery Event</a>
  * @see EventData
