@@ -13,7 +13,7 @@
  * @property {Fancytree} tree The tree instance
  * @property {object} widget The {@link http://api.jqueryui.com/jQuery.widget/|jQuery UI tree widget}
  * @property {FancytreeOptions} options Shortcut to tree.options
- * @property {Event} orgEvent The {@link http://api.jquery.com/category/events/event-object/|jQuery Event} that initially triggered this call
+ * @property {Event} originalEvent The {@link http://api.jquery.com/category/events/event-object/|jQuery Event} that initially triggered this call
  * @property {FancytreeNode | null} node The node that this call applies to (`null` for tree events)
  * @property {any} result (output parameter) Event handlers can return values back to the caller. Used by `lazyload`, `postProcess`, ...
  * @property {String | undefined} targetType (only for click and dblclick events) 'title' | 'prefix' | 'expander' | 'checkbox' | 'icon'
@@ -83,7 +83,7 @@ var TreePatch = {};
  * @property {Boolean} autoActivate Activate a node when focused with the keyboard (default: true)
  * @property {Boolean} autoCollapse Automatically collapse all siblings, when a node is expanded (default: false).
  * @property {Boolean} autoScroll Scroll node into visible area, when focused by keyboard (default: false).
- * @property {Boolean} checkbox Display checkboxes to allow selection  (default: false)
+ * @property {Boolean} checkbox Display checkboxes to allow selection (default: false)
  * @property {Integer} clickFolderMode Defines what happens, when the user click a folder node.<br>1:activate, 2:expand, 3:activate and expand, 4:activate/dblclick expands  (default: 4)
  * @property {Integer} debugLevel  0..2 (null: use global setting $.ui.fancytree.debugInfo)
  * @property {Boolean} enableAspx Accept passing ajax data in a property named `d` (default: true).
@@ -140,9 +140,9 @@ var FancytreeOptions = {};
  * @property {function} init Widget was (re-)initialized.
  * @property {function} keydown `data.node` received key. `event.which` contains the key. Return `false` to prevent default processing, i.e. navigation.
  * @property {function} keypress (currently unused)
- * @property {function} lazyload `data.node` is lazy a lazy node that is expanded for the first time.
+ * @property {function} lazyload `data.node` is a lazy node that is expanded for the first time. The new child data must be returned in the `data.result` property (see `source` option for available formats).
  * @property {function} loadChildren Node data was loaded, i.e. `node.nodeLoadChildren()` finished
- * @property {function} postProcess (not yet implemented!) allows to modify the ajax response
+ * @property {function} postProcess Allows to modify the ajax response
  * @property {function} renderColumns (used by table extension)
  * @property {function} renderNode Allow tweaking after node state was rendered
  * @property {function} select `data.node` was selected

@@ -1,12 +1,3 @@
-# Fancytree
+## [Fancytree](https://github.com/mar10/fancytree/) API Reference
 
-API reference for [Fancytree](https://github.com/mar10/fancytree/)
-
-Sample
-
-        $("#tree").fancytree({
-            source: {url: "myAjaxProvider"}
-        });
-
-Note: 
-    This is work in progress
+See also the [Fancytree Documentation Wiki](https://github.com/mar10/fancytree/wiki/).
