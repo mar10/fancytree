@@ -2281,12 +2281,12 @@ Fancytree.prototype = /**@lends Fancytree*/{
 				this.nodeRenderTitle(ctx);
 
 				// Allow tweaking and binding, after node was created for the first time
-				tree._triggerNodeEvent("createNode", ctx);
+				if(opts.renderNodeEvents==true){tree._triggerNodeEvent("createNode", ctx);}
 			}else{
 //				this.nodeRenderTitle(ctx);
 			}
 			// Allow tweaking after node state was rendered
-			tree._triggerNodeEvent("renderNode", ctx);
+			if(opts.renderNodeEvents==true){tree._triggerNodeEvent("renderNode", ctx);}
 		}
 
 		// Visit child nodes
@@ -3167,6 +3167,7 @@ $.widget("ui.fancytree",
 		keyboard: true,
 		keyPathSeparator: "/",
 		minExpandLevel: 1,
+		renderNodeEvents: true,
 		selectMode: 2,
 		strings: {
 			loading: "Loading&#8230;",
