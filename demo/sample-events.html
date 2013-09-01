@@ -140,6 +140,12 @@
 				// Optionally tweak data.node.span
 //              $(data.node.span).text(">>" + data.node.title);
 				logEvent(event, data);
+			},
+			renderTitle: function(event, data) {
+				// NOTE: may be removed!
+				// When defined, must return a HTML string for the node title 
+				logEvent(event, data);
+//				return "new title";
 			}
 		}).bind("fancytreeactivate", function(event, data){
 			// alternative way to bind to 'activate' event

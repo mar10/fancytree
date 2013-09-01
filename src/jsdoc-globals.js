@@ -131,7 +131,7 @@ var FancytreeOptions = {};
  * @property {function} click `data.node` was clicked. `data.targetType` contains the region ("title", "expander", ...). Return `false` to prevent default processing, i.e. activating, etc.
  * @property {function} collapse `data.node` was collapsed
  * @property {function} create Widget was created (called only once, even if re-initialized).
- * @property {function} createNode Allow tweaking and binding, after node was created for the first time
+ * @property {function} createNode Allow tweaking and binding, after node was created for the first time (NOTE: this event is only available as callback, but not for bind())
  * @property {function} dblclick `data.node` was double-clicked. `data.targetType` contains the region ("title", "expander", ...). Return `false` to prevent default processing, i.e. expanding, etc.
  * @property {function} deactivate `data.node` was deactivated
  * @property {function} expand `data.node` was expanded
@@ -144,8 +144,8 @@ var FancytreeOptions = {};
  * @property {function} loadChildren Node data was loaded, i.e. `node.nodeLoadChildren()` finished
  * @property {function} postProcess Allows to modify the ajax response
  * @property {function} renderColumns (used by table extension)
- * @property {function} renderNode Allow tweaking after node state was rendered
- * @property {function} renderTitle TODO: preliminary (NOTE: this event is not available for bind())
+ * @property {function} renderNode Allow tweaking after node state was rendered (NOTE: this event is only available as callback, but not for bind())
+ * @property {function} renderTitle TODO: may be removed! (NOTE: this event is only available as callback, but not for bind())
  * @property {function} select `data.node` was selected
  *
  */

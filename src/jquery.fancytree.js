@@ -2281,12 +2281,18 @@ Fancytree.prototype = /**@lends Fancytree*/{
 				this.nodeRenderTitle(ctx);
 
 				// Allow tweaking and binding, after node was created for the first time
-				tree._triggerNodeEvent("createNode", ctx);
+//				tree._triggerNodeEvent("createNode", ctx);
+				if ( opts.createNode ){
+					opts.createNode.call(tree, {type: "createNode"}, ctx);
+				}
 			}else{
 //				this.nodeRenderTitle(ctx);
 			}
 			// Allow tweaking after node state was rendered
-			tree._triggerNodeEvent("renderNode", ctx);
+//			tree._triggerNodeEvent("renderNode", ctx);
+			if ( opts.renderNode ){
+				opts.renderNode.call(tree, {type: "renderNode"}, ctx);
+			}
 		}
 
 		// Visit child nodes
@@ -2405,8 +2411,9 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		}
 		// node title
 		nodeTitle = "";
+		// TODO: currently undocumented; may be removed?
 		if ( opts.renderTitle ){
-			nodeTitle = opts.renderTitle.call(tree, node) || "";
+			nodeTitle = opts.renderTitle.call(tree, {type: "renderTitle"}, ctx) || "";
 		}
 		if(!nodeTitle){
 			// TODO: escape tooltip string

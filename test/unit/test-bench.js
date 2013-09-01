@@ -102,11 +102,13 @@ function _getBrowserInfo(){
 	return m.join(", ");
 }
 
+
 function formatNumber(num) {
 	var parts = num.toFixed(0).toString().split(".");
 	parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 	return parts.join(".");
-};
+}
+
 
 function makeBenchWrapper(testName, count, callback) {
 	return function() {
@@ -168,7 +170,7 @@ module("API");
 
 test("Trigger events", function() {
 	expect(3);
-	benchmark("10000 createNode DOM events", 10000, function() {
+	benchmark("10000 createNode DOM events (widget._trigger())", 10000, function() {
 		var i,
 			tree = _resetEmptyTree({
 				createNode: function(event, data){}
@@ -178,25 +180,23 @@ test("Trigger events", function() {
 			tree._triggerNodeEvent.call(tree, "createNode", node);
 		}
 	});
-	benchmark("10000 createNode callback events (existing)", 10000, function() {
+	benchmark("10000 createNode callback events (options.createNode() defined)", 10000, function() {
 		var i,
 			tree = _resetEmptyTree({
 				createNode: function(event, data){}
-				}),
-			node = tree.getNodeByKey("root");
+				});
 		for(i=0; i<10000; i++){
 			if(tree.options.createNode){
-				tree.options.createNode.call(tree, node);
+				tree.options.createNode.call(tree, {}, {});
 			}
 		}
 	});
-	benchmark("10000 createNode callback events (not existing)", 10000, function() {
+	benchmark("10000 createNode callback events (options.createNode() undefined)", 10000, function() {
 		var i,
-			tree = _resetEmptyTree({}),
-			node = tree.getNodeByKey("root");
+			tree = _resetEmptyTree({});
 		for(i=0; i<10000; i++){
 			if(tree.options.createNode){
-				tree.options.createNode.call(tree, node);
+				tree.options.createNode.call(tree, {}, {});
 			}
 		}
 	});
@@ -270,7 +270,7 @@ test("Expand 1000 nodes deep (with 10 top level nodes, triggers expand -> render
 	node.setExpanded().done(function(){
 		timer.subtime("expand done");
 		// force browser to re-flow?
-		var dummy = tree.$div[0].offsetHeight;
+//		var dummy = tree.$div[0].offsetHeight;
 		timer.subtime("calc offsetHeigth, (force reflow?)");
 		setTimeout(function(){
 			// yield, so browser can redraw
