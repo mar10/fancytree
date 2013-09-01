@@ -73,7 +73,6 @@ var TreePatch = {};
  *
  * @description
  * Fancytree options (see also example)
- * line 2
  *
  * @example $("#tree").fancytree({source: "/myService"});
  *
@@ -100,6 +99,7 @@ var TreePatch = {};
  * @property {any} source Used to Initialize the tree.
  * @property {object} strings Translation table
  * @property {Boolean} tabbable Add tabindex='0' to container, so tree can be reached using TAB
+ * @property {function} EVENT
  *
  */
 var FancytreeOptions = {};
@@ -109,7 +109,7 @@ var FancytreeOptions = {};
  *
  * @description
  * Events are called like this:
- *    CALLBACK_NAME(event, data)
+ *    `CALLBACK_NAME(event, data)`
  * where `event` is a {@link http://api.jquery.com/category/events/event-object/|jQuery Event} object and `data` is of type {@link EventData}
  * The `this` context is set to  tree's the HTMLDivElement
  *
@@ -145,6 +145,7 @@ var FancytreeOptions = {};
  * @property {function} postProcess Allows to modify the ajax response
  * @property {function} renderColumns (used by table extension)
  * @property {function} renderNode Allow tweaking after node state was rendered
+ * @property {function} renderTitle TODO: preliminary (NOTE: this event is not available for bind())
  * @property {function} select `data.node` was selected
  *
  */

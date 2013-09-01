@@ -2405,8 +2405,8 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		}
 		// node title
 		nodeTitle = "";
-		if ( opts.onCustomRender ){
-			nodeTitle = opts.onCustomRender.call(tree, node) || "";
+		if ( opts.renderTitle ){
+			nodeTitle = opts.renderTitle.call(tree, node) || "";
 		}
 		if(!nodeTitle){
 			// TODO: escape tooltip string
