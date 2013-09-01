@@ -25,9 +25,10 @@ QUnit.done(function( details ) {
  * Tool functions
  */
 
-function AsyncTimer(name, start){
+function AsyncTimer(name, count, start){
 	this.name = "AsyncTimer(" + name + ")";
 	this.stamp = null;
+	this.count = count;
 	if(start !== false){
 		this.start();
 	}
@@ -44,7 +45,11 @@ AsyncTimer.prototype = {
 		/*jshint expr:true */
 		window.console && window.console.timeEnd && window.console.timeEnd(this.name);
 		var elap = +new Date() - this.stamp;
-		ok(true, this.name + " took " + elap + " milliseconds");
+		if( this.count && elap ){
+			ok(true, this.name + " took " + elap + " milliseconds, " + formatNumber(1000.0 * this.count / elap) + " items/sec");
+		}else{
+			ok(true, this.name + " took " + elap + " milliseconds");
+		}
 		TOTAL_ELAP += elap;
 		// Continue QUnit
 		start();
@@ -97,15 +102,24 @@ function _getBrowserInfo(){
 	return m.join(", ");
 }
 
+function formatNumber(num) {
+	var parts = num.toFixed(0).toString().split(".");
+	parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+	return parts.join(".");
+};
 
-function makeBenchWrapper(testName, callback) {
+function makeBenchWrapper(testName, count, callback) {
 	return function() {
 		var elap,
 			start = +new Date();
 //        callback.apply(this, arguments);
 		callback.call();
 		elap = +new Date() - start;
-		ok(true, testName + " took " + elap + " milliseconds");
+		if( count && elap ){
+			ok(true, testName + " took " + elap + " milliseconds, " + formatNumber(1000 * count / elap) + " items/sec");
+		}else{
+			ok(true, testName + " took " + elap + " milliseconds");
+		}
 		TOTAL_ELAP += elap;
 	};
 }
@@ -113,8 +127,8 @@ function makeBenchWrapper(testName, callback) {
 /* Execute callback immediately and log timing as test result.
  * This function should be called inside a test() function.
  */
-function benchmark(testName, callback) {
-	makeBenchWrapper(testName, callback).call();
+function benchmark(testName, count, callback) {
+	makeBenchWrapper(testName, count, callback).call();
 }
 
 //$.ui.fancytree._FancytreeNodeClass.prototype.addChildren
@@ -150,6 +164,47 @@ function addNodes(node, level1, level2, level3, forceUpdate) {
 
 //*****************************************************************************
 
+module("API");
+
+test("Trigger events", function() {
+	expect(3);
+	benchmark("10000 createNode DOM events", 10000, function() {
+		var i,
+			tree = _resetEmptyTree({
+				createNode: function(event, data){}
+				}),
+			node = tree.getNodeByKey("root");
+		for(i=0; i<10000; i++){
+			tree._triggerNodeEvent.call(tree, "createNode", node);
+		}
+	});
+	benchmark("10000 createNode callback events (existing)", 10000, function() {
+		var i,
+			tree = _resetEmptyTree({
+				createNode: function(event, data){}
+				}),
+			node = tree.getNodeByKey("root");
+		for(i=0; i<10000; i++){
+			if(tree.options.createNode){
+				tree.options.createNode.call(tree, node);
+			}
+		}
+	});
+	benchmark("10000 createNode callback events (not existing)", 10000, function() {
+		var i,
+			tree = _resetEmptyTree({}),
+			node = tree.getNodeByKey("root");
+		for(i=0; i<10000; i++){
+			if(tree.options.createNode){
+				tree.options.createNode.call(tree, node);
+			}
+		}
+	});
+});
+
+
+//*****************************************************************************
+
 module("Standard tree");
 
 test("Add nodes using API to collapsed node (no rendering)", function() {
@@ -157,19 +212,19 @@ test("Add nodes using API to collapsed node (no rendering)", function() {
 
 	var tree = _resetEmptyTree();
 
-	benchmark("1000 nodes flat", function() {
+	benchmark("1000 nodes flat", 1000, function() {
 		var node = tree.getNodeByKey("root");
 		addNodes(node, 1000, 0, 0);
 	});
 
 	tree = _resetEmptyTree();
-	benchmark("1000 nodes deep (10x10x10)", function() {
+	benchmark("1000 nodes deep (10x10x10)", 1000, function() {
 		var node = tree.getNodeByKey("root");
 		addNodes(node, 10, 10, 10);
 	});
 
 	tree = _resetEmptyTree({aria: true});
-	benchmark("1000 nodes deep (10x10x10) with ARIA", function() {
+	benchmark("1000 nodes deep (10x10x10) with ARIA", 1000, function() {
 		var node = tree.getNodeByKey("root");
 		addNodes(node, 10, 10, 10);
 	});
@@ -180,21 +235,21 @@ test("Create and render hidden nodes, but don't make visible (i.e. don't expand)
 	expect(3);
 
 	var tree = _resetEmptyTree();
-	benchmark("1000 nodes flat and force render(deep=true)", function() {
+	benchmark("1000 nodes flat and force render(deep=true)", 1000, function() {
 		var node = tree.getNodeByKey("root");
 		addNodes(node, 1000, 0, 0);
 		tree.render(true, true);
 	});
 
 	tree = _resetEmptyTree();
-	benchmark("1000 nodes deep (10x10x10) and force render(deep=true)", function() {
+	benchmark("1000 nodes deep (10x10x10) and force render(deep=true)", 1000, function() {
 		var node = tree.getNodeByKey("root");
 		addNodes(node, 10, 10, 10);
 		tree.render(true, true);
 	});
 
 	tree = _resetEmptyTree({aria: true});
-	benchmark("1000 nodes deep (10x10x10) and force render(deep=true) with ARIA", function() {
+	benchmark("1000 nodes deep (10x10x10) and force render(deep=true) with ARIA", 1000, function() {
 		var node = tree.getNodeByKey("root");
 		addNodes(node, 10, 10, 10);
 		tree.render(true, true);
@@ -203,17 +258,25 @@ test("Create and render hidden nodes, but don't make visible (i.e. don't expand)
 
 
 test("Expand 1000 nodes deep (with 10 top level nodes, triggers expand -> render and display)", function() {
-	expect(2);
+	expect(5);
 
 	var tree = _resetEmptyTree(),
 		node = tree.getNodeByKey("root"),
-		timer = new AsyncTimer("1000 deep (10x10x10) with expand");
+		timer = new AsyncTimer("1000 deep (10x10x10) with expand", 1000);
 
 	addNodes(node, 10, 10, 10);
 	timer.subtime("addNodes");
 
 	node.setExpanded().done(function(){
-		timer.stop();
+		timer.subtime("expand done");
+		// force browser to re-flow?
+		var dummy = tree.$div[0].offsetHeight;
+		timer.subtime("calc offsetHeigth, (force reflow?)");
+		setTimeout(function(){
+			// yield, so browser can redraw
+			timer.subtime("setTimeout(0) to allow reflow/redraw");
+			timer.stop();
+		}, 0);
 	});
 });
 
@@ -223,7 +286,7 @@ test("Expand 1000 top level nodes (triggers expand -> render and display)", func
 
 	var tree = _resetEmptyTree(),
 		node = tree.getNodeByKey("root"),
-		timer = new AsyncTimer("1000 top level nodes flat with expand");
+		timer = new AsyncTimer("1000 top level nodes flat with expand", 1000);
 
 	addNodes(node, 1000, 0, 0);
 	timer.subtime("addNodes");
@@ -242,7 +305,7 @@ test("Expand 1000 top level nodes with ARIA and checkboxes (triggers expand -> r
 			checkbox:true
 		}),
 		node = tree.getNodeByKey("root"),
-		timer = new AsyncTimer("1000 top level nodes flat with expand");
+		timer = new AsyncTimer("1000 top level nodes flat with expand", 1000);
 
 	addNodes(node, 1000, 0, 0);
 	timer.subtime("addNodes");
@@ -305,7 +368,7 @@ test("tabletree (6 columns): render and expand", function() {
 
 	tree = $tree.fancytree("getTree");
 	node = tree.getNodeByKey("root");
-	timer = new AsyncTimer("1000 nodes flat and expand");
+	timer = new AsyncTimer("1000 nodes flat and expand", 1000);
 //    var timer = new AsyncTimer("1000 nodes (10 x 10 x 10) and force render(deep=true)");
 
 	addNodes(node, 1000, 0, 0);
