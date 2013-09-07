@@ -3064,7 +3064,35 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	render: function(force, deep) {
 		return this.rootNode.render(force, deep);
 	},
-	// TODO: selectKey: function(key, select)
+	/** Select a array of nodes with given keys.
+	 *
+	 * @param {String} key
+	 * @returns {FancytreeNode} selected node (null, if not found)
+	 */
+	selectKeys: function(keys) {
+		var len = keys.length;
+		var nodes = [];
+		for(var i=0; i<len; i++){
+			var node = this.getNodeByKey(keys[i]);
+			if(node){
+				node.setSelected(true);
+				nodes.push(node);
+			}
+		}
+		return nodes;
+	},
+	/** Select node with a given key.
+	 *
+	 * @param {String} key
+	 * @returns {FancytreeNode} selected node (null, if not found)
+	 */
+	selectKey: function(key) {
+		var node = this.getNodeByKey(key);
+		if(node){
+			node.setSelected(true);
+		}
+		return node;
+	},
 	// TODO: serializeArray: function(stopOnParents)
 	/**
 	 * @param {Boolean} [flag=true]
