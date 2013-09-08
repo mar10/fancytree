@@ -1248,7 +1248,10 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 			if(this.hasChildren()){
 				dict.children = [];
 				for(i=0, l=this.children.length; i<l; i++ ){
-					dict.children.push(this.children[i].toDict(true, callback));
+					node = this.children[i];
+					if( !node.isStatusNode ){
+						dict.children.push(node.toDict(true, callback));
+					}
 				}
 			}else{
 //                dict.children = null;
@@ -3087,10 +3090,16 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		return this._callHook("treeSetFocus", this, flag);
 	},
 	/**
+	 * Return all nodes as nested list of {@link NodeData}.
+	 * 
+	 * @param {Boolean} [includeRoot=false] Returns the hidden system root node (and it's children)
+	 * @param {function} [callback] Called for every node
+	 * @returns {Array | object}
 	 * @see FancytreeNode#toDict
 	 */
-	toDict: function(recursive, callback){
-		return this.rootNode.toDict(recursive, callback);
+	toDict: function(includeRoot, callback){
+		var res = this.rootNode.toDict(true, callback);
+		return includeRoot ? res : res.children;
 	},
 	/**Implicitly called for string conversions.
 	 * @returns {String}
