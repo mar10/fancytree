@@ -1225,7 +1225,7 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 	 * @returns {NodePatch}
 	 */
 	toDict: function(recursive, callback) {
-		var i, l,
+		var i, l, node,
 			dict = {},
 			self = this;
 
