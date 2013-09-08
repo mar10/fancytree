@@ -29,6 +29,9 @@
 		$("#tree").fancytree({
 			checkbox: true,
 			// Tree events
+			blurTree: function(event, data) {
+				logEvent(event, data);
+			},
 			create: function(event, data) {
 				logEvent(event, data);
 			},
@@ -38,15 +41,7 @@
 			focusTree: function(event, data) {
 				logEvent(event, data);
 			},
-			blurTree: function(event, data) {
-				logEvent(event, data);
-			},
 			// Node events
-			beforeActivate: function(event, data) {
-				logEvent(event, data, "current state=" + data.node.isActive());
-				// return false to prevent default behavior (i.e. activation)
-//              return false;
-			},
 			activate: function(event, data) {
 				logEvent(event, data);
 				var node = data.node;
@@ -56,9 +51,15 @@
 //					alert("custom node data: " + JSON.stringify(node.data));
 				}
 			},
-			deactivate: function(event, data) {
-				logEvent(event, data);
-				$("#echoActive").text("-");
+			beforeActivate: function(event, data) {
+				logEvent(event, data, "current state=" + data.node.isActive());
+				// return false to prevent default behavior (i.e. activation)
+//              return false;
+			},
+			beforeExpand: function(event, data) {
+				logEvent(event, data, "current state=" + data.node.isExpanded());
+				// return false to prevent default behavior (i.e. expanding or collapsing)
+//				return false;
 			},
 			beforeSelect: function(event, data) {
 //				console.log("select", event.originalEvent);
@@ -68,20 +69,47 @@
 //					return false;
 //				}
 			},
-			select: function(event, data) {
-				logEvent(event, data, "current state=" + data.node.isSelected());
-				var s = data.tree.getSelectedNodes().join(", ");
-				$("#echoSelected").text(s);
+			blur: function(event, data) {
+				logEvent(event, data);
+				$("#echoFocused").text("-");
 			},
-			beforeExpand: function(event, data) {
-				logEvent(event, data, "current state=" + data.node.isExpanded());
-				// return false to prevent default behavior (i.e. expanding or collapsing)
-//				return false;
+			click: function(event, data) {
+				logEvent(event, data, ", targetType=" + data.targetType);
+				// return false to prevent default behavior (i.e. activation, ...)
+				//return false;
 			},
 			collapse: function(event, data) {
 				logEvent(event, data);
 			},
+			createNode: function(event, data) {
+				// Optionally tweak data.node.span or bind handlers here
+				logEvent(event, data);
+			},
+			dblclick: function(event, data) {
+				logEvent(event, data);
+//				data.node.toggleSelect();
+			},
+			deactivate: function(event, data) {
+				logEvent(event, data);
+				$("#echoActive").text("-");
+			},
 			expand: function(event, data) {
+				logEvent(event, data);
+			},
+			focus: function(event, data) {
+				logEvent(event, data);
+				$("#echoFocused").text(data.node.title);
+			},
+			keydown: function(event, data) {
+				logEvent(event, data);
+				switch( event.which ) {
+				case 32: // [space]
+					data.node.toggleSelected();
+					return false;
+				}
+			},
+			keypress: function(event, data) {
+				// currently unused
 				logEvent(event, data);
 			},
 			lazyload: function(event, data) {
@@ -103,37 +131,8 @@
 				// or setup and return a new response object
 //				data.result = [{title: "set by postProcess"}];
 			},
-			focus: function(event, data) {
-				logEvent(event, data);
-				$("#echoFocused").text(data.node.title);
-			},
-			blur: function(event, data) {
-				logEvent(event, data);
-				$("#echoFocused").text("-");
-			},
-			click: function(event, data) {
-				logEvent(event, data, ", targetType=" + data.targetType);
-				// return false to prevent default behavior (i.e. activation, ...)
-				//return false;
-			},
-			dblclick: function(event, data) {
-				logEvent(event, data);
-//				data.node.toggleSelect();
-			},
-			keydown: function(event, data) {
-				logEvent(event, data);
-				switch( event.which ) {
-				case 32: // [space]
-					data.node.toggleSelected();
-					return false;
-				}
-			},
-			keypress: function(event, data) {
-				// currently unused
-				logEvent(event, data);
-			},
-			createNode: function(event, data) {
-				// Optionally tweak data.node.span or bind handlers here
+			removeNode: function(event, data) {
+				// Optionally release resources
 				logEvent(event, data);
 			},
 			renderNode: function(event, data) {
@@ -146,6 +145,11 @@
 				// When defined, must return a HTML string for the node title
 				logEvent(event, data);
 //				return "new title";
+			},
+			select: function(event, data) {
+				logEvent(event, data, "current state=" + data.node.isSelected());
+				var s = data.tree.getSelectedNodes().join(", ");
+				$("#echoSelected").text(s);
 			}
 		}).bind("fancytreeactivate", function(event, data){
 			// alternative way to bind to 'activate' event
@@ -156,6 +160,10 @@
 			var node = $("#tree").fancytree("getActiveNode");
 			node.setSelected( !node.isSelected() );
 		});
+		$("#btnRemove").click(function(event){
+			var node = $("#tree").fancytree("getActiveNode");
+			node.remove();
+		});
 	});
 </script>
 </head>
@@ -165,7 +173,7 @@
 	<div class="description">
 		Implements all callbacks.
 		<ul>
-		<li>Use the Firebug plugin in Firefox to see the event log.
+		<li>Open your browser's console to see the event log.
 		<li>The 'links' folders contain nodes with an custom data.url option.
 			This is used to open the URL in the onActivate event.
 		</ul>
@@ -200,6 +208,7 @@
 	<div>Focused node: <span id="echoFocused">-</span></div>
 
 	<button type="button" id="btnSelect">Select active node</button>
+	<button type="button" id="btnRemove">Remove active node</button>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
 	<hr>

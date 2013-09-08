@@ -2098,8 +2098,10 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	 * @param {FancytreeNode} childNode dircect child of ctx.node
 	 */
 	nodeRemoveChild: function(ctx, childNode) {
-		var idx, subCtx,
+		var idx,
 			node = ctx.node,
+			opts = ctx.options,
+			subCtx = $.extend({}, ctx, {node: childNode}),
 			children = node.children;
 
 		FT.debug("nodeRemoveChild()", node.toString(), childNode.toString());
@@ -2115,7 +2117,6 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			this.focusNode = null;
 		}
 		// TODO: persist must take care to clear select and expand cookies
-		subCtx = $.extend({}, ctx, {node: childNode});
 		this.nodeRemoveMarkup(subCtx);
 		this.nodeRemoveChildren(subCtx);
 		idx = $.inArray(childNode, children);
@@ -2124,6 +2125,9 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		childNode.visit(function(n){
 			n.parent = null;
 		}, true);
+		if ( opts.removeNode ){
+			opts.removeNode.call(ctx.tree, {type: "removeNode"}, subCtx);
+		}
 		// remove from child list
 		children.splice(idx, 1);
 	},
@@ -2132,6 +2136,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	 */
 	nodeRemoveChildMarkup: function(ctx) {
 		var node = ctx.node;
+
 		FT.debug("nodeRemoveChildMarkup()", node.toString());
 		// TODO: Unlink attr.ftnode to support GC
 		if(node.ul){
@@ -2146,8 +2151,11 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	* @param {EventData} ctx
 	*/
 	nodeRemoveChildren: function(ctx) {
-		var node = ctx.node,
-			children = node.children;
+		var subCtx,
+			node = ctx.node,
+			children = node.children,
+			opts = ctx.options;
+
 		FT.debug("nodeRemoveChildren()", node.toString());
 		if(!children){
 			return;
@@ -2162,8 +2170,13 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		this.nodeRemoveChildMarkup(ctx);
 		// Unlink children to support GC
 		// TODO: also delete this.children (not possible using visit())
+		subCtx = $.extend({}, ctx);
 		node.visit(function(n){
 			n.parent = null;
+			if ( opts.removeNode ){
+				subCtx.node = n;
+				opts.removeNode.call(ctx.tree, {type: "removeNode"}, subCtx);
+			}
 		});
 		// Set to 'undefined' which is interpreted as 'not yet loaded' for lazy nodes
 		node.children = undefined;
