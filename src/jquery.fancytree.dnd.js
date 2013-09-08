@@ -392,7 +392,7 @@ $.ui.fancytree.registerExtension("dnd",
 			res = $helper;
 			break;
 		case "start":
-			if(node.isStatusNode ) {
+			if( node.isStatusNode ) {
 				res = false;
 			} else if(dnd.onDragStart) {
 				res = dnd.onDragStart(node);
@@ -412,7 +412,7 @@ $.ui.fancytree.registerExtension("dnd",
 			if(dnd.preventRecursiveMoves && node.isDescendantOf(otherNode)){
 				r = false;
 			}else{
-				r = dnd.onDragEnter ? dnd.onDragEnter(node, otherNode) : null;
+				r = dnd.onDragEnter ? dnd.onDragEnter(node, otherNode, ui, draggable) : null;
 			}
 			if(!r){
 				// convert null, undefined, false to false
@@ -488,7 +488,7 @@ $.ui.fancytree.registerExtension("dnd",
 			}
 			if(hitMode && dnd.onDragOver){
 				// TODO: http://code.google.com/p/dynatree/source/detail?r=625
-				res = dnd.onDragOver(node, otherNode, hitMode);
+				res = dnd.onDragOver(node, otherNode, hitMode, ui, draggable);
 			}
 			// issue 332
 //			this._setDndStatus(otherNode, node, ui.helper, hitMode, res!==false);
@@ -507,7 +507,7 @@ $.ui.fancytree.registerExtension("dnd",
 			ui.helper.data("hitMode", null);
 			this.dnd._setDndStatus(otherNode, node, ui.helper, "out", undefined);
 			if(dnd.onDragLeave){
-				dnd.onDragLeave(node, otherNode);
+				dnd.onDragLeave(node, otherNode, ui, draggable);
 			}
 			break;
 		case "stop":
