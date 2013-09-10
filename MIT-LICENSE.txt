@@ -1,4 +1,4 @@
-Copyright 2013 Martin Wendt,
+Copyright 2006-2013 Martin Wendt,
 http://wwWendt.de/
 
 Permission is hereby granted, free of charge, to any person obtaining

@@ -1,32 +1,36 @@
 {
   "name": "fancytree",
-  "version": "2.0.0-pre.0.1",
-
+  "version": "2.0.0-22",
   "title": "Fancytree",
-  "description": "Fancytree 2.x is the designated successor of DynaTree 1.x. (Current status: ALPHA)",
-
+  "description": "Fancytree 2.x is the designated successor of DynaTree 1.x. (Current status: BETA)",
   "homepage": "https://github.com/mar10/fancytree",
   "author": {
-	"name": "Martin Wendt",
-	"email": "jquery@wwwendt.de",
+    "name": "Martin Wendt",
+    "email": "jquery@wwwendt.de",
     "url": "http://careers.stackoverflow.com/martin-wendt"
   },
   "repository": {
-	"type": "git",
-	"url": "https://github.com/mar10/fancytree"
+    "type": "git",
+    "url": "https://github.com/mar10/fancytree"
   },
   "demo": "http://wwwendt.de/tech/fancytree/demo/",
   "docs": "https://github.com/mar10/fancytree/wiki",
   "bugs": "https://github.com/mar10/fancytree/issues",
   "licenses": [
-	{
-	  "type": "MIT",
-	  "url": "http://opensource.org/licenses/mit-license.php"
-	}
+    {
+      "type": "MIT",
+      "url": "http://opensource.org/licenses/mit-license.php"
+    }
   ],
   "dependencies": {
     "jquery": ">=1.6",
     "jqueryui": ">=1.8.6"
   },
-  "keywords": ["tree", "lazy", "ajax", "tabletree", "table"]
+  "keywords": [
+    "tree",
+    "lazy",
+    "ajax",
+    "tabletree",
+    "table"
+  ]
 }

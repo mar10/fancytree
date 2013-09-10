@@ -1,30 +1,15 @@
 /*!
  * jquery.fancytree.js
  * Dynamic tree view control, with support for lazy loading of branches.
+ * https://github.com/mar10/fancytree/
  *
  * Copyright (c) 2008-2013, Martin Wendt (http://wwWendt.de)
- * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://code.google.com/p/fancytree/wiki/LicenseInfo
+ * Released under the MIT license
+ * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * A current version and some documentation is available at
- *    https://github.com/mar10/fancytree/
- *
- * @summary     jQuery UI tree widget
- * @description Dynamic tree view control, with support for lazy loading of branches.
- * @file        jquery.fancytree.js
- * @version     2.0
- * @author      Martin Wendt
- * @license     MIT or GPL v2
- *
- *
-	$Version:$
-	$Revision:$
-
-	@depends: jquery.js
-	@depends: jquery.ui.widget.js
-	@depends: jquery.ui.core.js
-	@depends: jquery.cookie.js
-*************************************************************************/
+ * @version DEVELOPMENT
+ * @date DEVELOPMENT
+ */
 
 // Start of local namespace
 ;(function($, window, document, undefined) {
@@ -3091,7 +3076,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	},
 	/**
 	 * Return all nodes as nested list of {@link NodeData}.
-	 * 
+	 *
 	 * @param {Boolean} [includeRoot=false] Returns the hidden system root node (and it's children)
 	 * @param {function} [callback] Called for every node
 	 * @returns {Array | object}
@@ -3442,7 +3427,9 @@ $.extend($.ui.fancytree,
 	/** @lends $.ui.fancytree */
 	{
 	/** @type {String} */
-	version: "2.0.0pre",
+	version: "2.0.0-22",
+	/** @type {String} */
+	buildType: "develop",
 	/** @type {int} */
 	debugLevel: 2,  // used by $.ui.fancytree.debug() and as default for tree.options.debugLevel
 

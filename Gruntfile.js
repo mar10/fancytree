@@ -14,6 +14,101 @@ module.exports = function (grunt) {
                     "* Copyright (c) <%= grunt.template.today('yyyy') %> <%= pkg.author.name %>;" +
                     " Licensed <%= _.pluck(pkg.licenses, 'type').join(', ') %> */"
         },
+        bumpup: {
+            options: {
+                dateformat: "YYYY-MM-DD HH:mm",
+                normalize: true
+            },
+            files: ["package.json", "bower.json", "fancytree.jquery.json"]
+        },
+        clean : {
+			build : {
+				noWrite : true,
+				src : [ "build" ]
+			}
+		},
+		compress: {
+			  build: {
+			    options: {
+			      archive: "dist/<%= pkg.name %>-<%= pkg.version %>.zip"
+			    },
+			    files: [
+			      {expand: true, cwd: "build/", src: ["**/*"], dest: ""}
+			    ]
+			  }
+		},
+        concat: {
+            core: {
+                options: {
+                    stripBanners: true
+                },
+                src: ["<banner:meta.banner>",
+                      "src/<%= pkg.name %>.js"
+                      ],
+                dest: "build/<%= pkg.name %>.js"
+            },
+            all: {
+                options: {
+                    stripBanners: true
+                },
+                src: ["<%= meta.banner %>",
+                      "src/jquery.fancytree.js",
+                      "src/jquery.fancytree.columnview.js",
+                      "src/jquery.fancytree.dnd.js",
+                      "src/jquery.fancytree.filter.js",
+                      "src/jquery.fancytree.menu.js",
+                      "src/jquery.fancytree.persist.js",
+                      "src/jquery.fancytree.table.js",
+                      "src/jquery.fancytree.themeroller.js"
+                      ],
+                dest: "build/<%= pkg.name %>-all.js"
+            }
+        },
+        connect: {
+            demo: {
+                options: {
+                    port: 8080,
+                    base: "./",
+                    keepalive: true
+                }
+            }
+        },
+        copy: {
+			build: {
+				files: [{
+						expand: true, // required for cwd?
+						cwd: "src/",
+						src: ["skin-**/*", "*.txt"],
+						dest: "build/"
+					},{
+						src: ["*.txt", "*.md"],
+						dest: "build/"
+					}]
+				}
+		},
+        csslint: {
+            options: {
+//              csslintrc: ".csslintrc"
+            },
+            strict: {
+              options: {
+                  import: 2
+              },
+              src: ["src/**/*.css"]
+            }
+        },
+        cssmin: {
+			build: {
+				report: true,
+				minify: {
+					expand: true,
+					cwd: "src/skin-win8/",
+					src: ["*.css", "!*.min.css"],
+					dest: "build/",
+					ext: ".min.css"
+				}
+			}
+		},
         docco: {
             docs: {
                 src: ["src/jquery.fancytree.childcounter.js"],
@@ -31,14 +126,14 @@ module.exports = function (grunt) {
             },
             upload: {
                 // FTP upload the demo files (requires https://github.com/mar10/pyftpsync)
-                cmd: "pyftpsync --progress upload . ftp://www.wwwendt.de/tech/fancytree --delete-unmatched --omit dist,node_modules,.*,_*  -x"
+                cmd: "pyftpsync --progress upload . ftp://www.wwwendt.de/tech/fancytree --delete-unmatched --omit build,node_modules,.*,_*  -x"
             }
         },
-        qunit: {
-            all: ["test/unit/test-core.html"]
+        htmllint: {
+            all: ["demo/**/*.html", "doc/**/*.html", "test/**/*.html"]
         },
         jsdoc: {
-            dist: {
+            build: {
                 src: ["src/*.js", "doc/README.md"],
                 // http://usejsdoc.org/about-configuring-jsdoc.html#example
                 options: {
@@ -63,100 +158,123 @@ module.exports = function (grunt) {
                           "<%= concat.all.dest %>"
                           ]
         },
-        concat: {
-            options: {
-                stripBanners: true
-            },
-            core: {
-                src: ["<banner:meta.banner>",
-                      "src/<%= pkg.name %>.js"
-                      ],
-                dest: "dist/<%= pkg.name %>-<%= pkg.version %>.js"
-            },
-            all: {
-                options: {
-                    stripBanners: true
-                },
-                src: ["<%= meta.banner %>",
-                      "src/<%= pkg.name %>.js",
-                      "src/jquery.fancytree.columnview.js",
-                      "src/jquery.fancytree.dnd.js",
-                      "src/jquery.fancytree.filter.js",
-                      "src/jquery.fancytree.menu.js",
-                      "src/jquery.fancytree.persist.js",
-                      "src/jquery.fancytree.table.js",
-                      "src/jquery.fancytree.themeroller.js",
-                      "src/jquery.fancytree.tracecalls.js"
-                      ],
-                dest: "dist/<%= pkg.name %>-<%= pkg.version %>-all.js"
-            }
+        qunit: {
+            build: ["test/unit/test-core-build.html"],
+        	develop: ["test/unit/test-core.html"]
         },
-        uglify: {
-            core: {
+		replace : { // grunt-text-replace
+			bump : {
+				src : ["src/jquery.fancytree.js"],
+				overwrite : true,
+				replacements : [ {
+					from : /version:\s*\"[0-9\.\-]+\"/,
+					to : "version: \"<%= pkg.version %>\""
+				},{
+					from : /@version\s*[0-9\.\-]+/,
+					to : "@version <%= pkg.version %>"
+				},{
+					from : /@date\s*[0-9T\.\-\:]+/,
+					to : "@date <%= grunt.template.today('yyyy-mm-dd\"T\"hh:MM') %>"
+				} ]
+			},
+			build : {
+				src : ["build/*.js"],
+				overwrite : true,
+				replacements : [ {
+					from : /version:\s*\"[0-9\.\-]+\"/,
+					to : "version: \"<%= pkg.version %>\""
+				},{
+					from : /@version\s*DEVELOPMENT/,
+					to : "@version <%= pkg.version %>"
+				},{
+					from : /@date\s*DEVELOPMENT/,
+					to : "@date <%= grunt.template.today('yyyy-mm-dd\"T\"hh:MM') %>"
+				},{
+					from : /buildType:\s*\"[a-zA-Z]+\"/,
+					to : "buildType: \"release\""
+				},{
+					from : /debugLevel:\s*[0-9]/,
+					to : "debugLevel: 1"
+				} ]
+			}
+		},
+	    tagrelease: {
+	        file: "package.json",
+	        commit:  true,
+	        message: "Tagging the %version% release.",
+	        prefix:  "v",
+	        annotate: true
+	    },
+	    uglify: {
+            build: {
                 options: {
-//                  banner: "/*! <%= pkg.name %> v<%= pkg.version %> | <%= pkg.license %> */\\n"
-                    banner: "<%= meta.banner %>"
+                    banner: "<%= meta.banner %>",
+                    sourceMap: "build/jquery.fancytree-all.min.js.map"
                 },
                 files: {
-                    "dist/<%= pkg.name %>.min.js": ["<%= concat.core.dest %>"]
-                }
-            },
-            all: {
-                options: {
-                    banner: "<%= meta.banner %>"
-                },
-                files: {
-                    "dist/<%= pkg.name %>-all.min.js": ["<%= concat.all.dest %>"]
-                }
-            }
-        },
-        csslint: {
-            options: {
-//              csslintrc: ".csslintrc"
-            },
-            strict: {
-              options: {
-                  import: 2
-              },
-              src: ["src/**/*.css"]
-            }
-        },
-        htmllint: {
-            all: ["demo/**/*.html", "doc/**/*.html", "test/**/*.html"]
-        },
-        connect: {
-            demo: {
-                options: {
-                    port: 8080,
-                    base: "./",
-                    keepalive: true
+                    "build/<%= pkg.name %>.min.js": ["<%= concat.core.dest %>"],
+                    "build/<%= pkg.name %>-all.min.js": ["<%= concat.all.dest %>"]
                 }
             }
         }
     });
 
+    grunt.loadNpmTasks("grunt-contrib-clean");
+    grunt.loadNpmTasks("grunt-contrib-compress");
     grunt.loadNpmTasks("grunt-contrib-concat");
     grunt.loadNpmTasks("grunt-contrib-connect");
+    grunt.loadNpmTasks("grunt-contrib-copy");
     grunt.loadNpmTasks("grunt-contrib-csslint");
+    grunt.loadNpmTasks("grunt-contrib-cssmin");
     grunt.loadNpmTasks("grunt-contrib-jshint");
     grunt.loadNpmTasks("grunt-contrib-qunit");
     grunt.loadNpmTasks("grunt-contrib-uglify");
+    grunt.loadNpmTasks("grunt-bumpup");
     grunt.loadNpmTasks("grunt-docco2");
     grunt.loadNpmTasks("grunt-exec");
     grunt.loadNpmTasks("grunt-html");
     grunt.loadNpmTasks("grunt-jsdoc");
+    grunt.loadNpmTasks("grunt-tagrelease");
+    grunt.loadNpmTasks("grunt-text-replace");
+
+    // from jquery:
+//	grunt.loadNpmTasks( "grunt-compare-size" );
+//	grunt.loadNpmTasks( "grunt-git-authors" );
+//	grunt.loadNpmTasks( "grunt-contrib-watch" );
+//	grunt.loadNpmTasks( "grunt-jsonlint" );
+    // from hammer.js
+//    grunt.loadNpmTasks 'grunt-tagrelease'
+
+	// Task for updating the pkg config property. Needs to be run after
+	// bumpup so the next tasks in queue can work with updated values.
+	grunt.registerTask("updatePkg", function() {
+		grunt.config.set("pkg", grunt.file.readJSON("package.json"));
+	});
 
     grunt.registerTask("server", ["connect:demo"]);
-    grunt.registerTask("test", ["jshint:beforeconcat", "qunit"]);
+    grunt.registerTask("test", ["jshint:beforeconcat",
+//                                "csslint",
+                                "qunit:develop"]);
 //    grunt.registerTask("makejsdoc", ["jsdoc"]);
     grunt.registerTask("travis", ["test"]);
     grunt.registerTask("default", ["test"]);
+    grunt.registerTask("bump", ["bumpup:build",
+                                "updatePkg",
+                                "replace:bump"]);
     grunt.registerTask("build", ["exec:tabfix",
-                                 "jshint:beforeconcat",
+                                 "test",
+                                 "clean:build",
+                                 "copy:build",
                                  "concat",
+//                                 "cssmin:build",
+                                 "replace:build",
                                  "jshint:afterconcat",
                                  "uglify",
-                                 "qunit"]);
+//                                 "qunit:build",
+                                 "compress:build",
+//                                 "clean:build",
+                                 "tagrelease"
+                                 ]);
     grunt.registerTask("upload", ["build",
                                   "exec:upload"]);
 };

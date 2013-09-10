@@ -2,7 +2,7 @@
   "name": "jquery.fancytree",
   "title": "jQuery Fancytree Plugin",
   "description": "Fancytree is a JavaScript dynamic tree view plugin for jQuery with support for persistence, keyboard, checkboxes, drag'n'drop, and lazy loading.",
-  "version": "2.0.0pre",
+  "version": "2.0.0-22",
   "homepage": "https://github.com/mar10/fancytree",
   "author": {
     "name": "Martin Wendt",
@@ -36,7 +36,15 @@
     "grunt-contrib-csslint": "~0.1.2",
     "grunt-html": "~0.3.3",
     "qunitjs": "1.x",
-    "grunt-docco2": "~0.1.1"
+    "grunt-docco2": "~0.1.1",
+    "grunt-bumpup": "~0.2.0",
+    "grunt-tagrelease": "~0.2.0",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-contrib-copy": "~0.4.1",
+    "grunt-contrib-cssmin": "~0.6.1",
+    "grunt-contrib-less": "~0.7.0",
+    "grunt-text-replace": "~0.3.7",
+    "grunt-contrib-compress": "~0.5.2"
   },
   "scripts": {
     "test": "grunt ci --verbose"
