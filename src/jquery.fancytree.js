@@ -297,7 +297,8 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 	addChildren: function(children, insertBefore){
 		var i, l, pos,
 			firstNode = null,
-			nodeList = [];
+			nodeList = [],
+			keyStart, newChild;
 
 		if($.isPlainObject(children) ){
 			children = [children];
@@ -305,8 +306,11 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 		if(!this.children){
 			this.children = [];
 		}
+		keyStart = insertBefore ? this._findDirectChild(insertBefore).getIndex() : this.getChildren().length;
 		for(i=0, l=children.length; i<l; i++){
-			nodeList.push(new FancytreeNode(this, children[i]));
+			newChild = children[i];
+			newChild.key = this.getKeyPath().split('/').pop() + '_' + ++keyStart;
+			nodeList.push(new FancytreeNode(this, newChild));
 		}
 		firstNode = nodeList[0];
 		if(insertBefore == null){
