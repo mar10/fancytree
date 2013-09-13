@@ -181,7 +181,7 @@ test("Version info", function() {
 	}
 	expect(5);
 
-	ok(true, "Fancytree v" + $.ui.fancytree.version);
+	ok(true, "Fancytree v" + $.ui.fancytree.version + ", buildType='" + $.ui.fancytree.buildType + "'");
 	ok(true, "jQuery UI " + jQuery.ui.version + " (uiBackCompat=" + $.uiBackCompat + ")");
 	ok(true, "jQuery " + jQuery.fn.jquery);
 	var doctype = document.documentElement.previousSibling,

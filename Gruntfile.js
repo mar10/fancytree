@@ -1,4 +1,4 @@
-/*jshint node: true */
+/*jshint node: true, laxcomma: true */
 
 "use strict";
 
@@ -22,21 +22,21 @@ module.exports = function (grunt) {
             files: ["package.json", "bower.json", "fancytree.jquery.json"]
         },
         clean : {
-			build : {
-				noWrite : true,
-				src : [ "build" ]
-			}
-		},
-		compress: {
-			  build: {
-			    options: {
-			      archive: "dist/<%= pkg.name %>-<%= pkg.version %>.zip"
-			    },
-			    files: [
-			      {expand: true, cwd: "build/", src: ["**/*"], dest: ""}
-			    ]
-			  }
-		},
+            build : {
+                noWrite : true,
+                src : [ "build" ]
+            }
+        },
+        compress: {
+              build: {
+                options: {
+                  archive: "dist/<%= pkg.name %>-<%= pkg.version %>.zip"
+                },
+                files: [
+                  {expand: true, cwd: "build/", src: ["**/*"], dest: ""}
+                ]
+              }
+        },
         concat: {
             core: {
                 options: {
@@ -74,18 +74,18 @@ module.exports = function (grunt) {
             }
         },
         copy: {
-			build: {
-				files: [{
-						expand: true, // required for cwd?
-						cwd: "src/",
-						src: ["skin-**/*", "*.txt"],
-						dest: "build/"
-					},{
-						src: ["*.txt", "*.md"],
-						dest: "build/"
-					}]
-				}
-		},
+            build: {
+                files: [{
+                        expand: true, // required for cwd?
+                        cwd: "src/",
+                        src: ["skin-**/*", "*.txt"],
+                        dest: "build/"
+                    },{
+                        src: ["*.txt", "*.md"],
+                        dest: "build/"
+                    }]
+                }
+        },
         csslint: {
             options: {
 //              csslintrc: ".csslintrc"
@@ -98,17 +98,17 @@ module.exports = function (grunt) {
             }
         },
         cssmin: {
-			build: {
-				report: true,
-				minify: {
-					expand: true,
-					cwd: "src/skin-win8/",
-					src: ["*.css", "!*.min.css"],
-					dest: "build/",
-					ext: ".min.css"
-				}
-			}
-		},
+            build: {
+                report: true,
+                minify: {
+                    expand: true,
+                    cwd: "src/skin-win8/",
+                    src: ["*.css", "!*.min.css"],
+                    dest: "build/",
+                    ext: ".min.css"
+                }
+            }
+        },
         docco: {
             docs: {
                 src: ["src/jquery.fancytree.childcounter.js"],
@@ -160,56 +160,63 @@ module.exports = function (grunt) {
         },
         qunit: {
             build : [ "test/unit/test-core-build.html" ],
-			develop : [ "test/unit/test-core.html" ]
+            develop : [ "test/unit/test-core.html" ]
         },
-		replace : { // grunt-text-replace
-			bump : {
-				src : ["src/jquery.fancytree.js"],
-				overwrite : true,
-				replacements : [ {
-					from : /version:\s*\"[0-9\.\-]+\"/,
-					to : "version: \"<%= pkg.version %>\""
-				},{
-					from : /@version\s*[0-9\.\-]+/,
-					to : "@version <%= pkg.version %>"
-				},{
-					from : /@date\s*[0-9T\.\-\:]+/,
-					to : "@date <%= grunt.template.today('yyyy-mm-dd\"T\"hh:MM') %>"
-				} ]
-			},
-			build : {
-				src : ["build/*.js"],
-				overwrite : true,
-				replacements : [ {
-					from : /version:\s*\"[0-9\.\-]+\"/,
-					to : "version: \"<%= pkg.version %>\""
-				},{
-					from : /@version\s*DEVELOPMENT/,
-					to : "@version <%= pkg.version %>"
-				},{
-					from : /@date\s*DEVELOPMENT/,
-					to : "@date <%= grunt.template.today('yyyy-mm-dd\"T\"hh:MM') %>"
-				},{
-					from : /buildType:\s*\"[a-zA-Z]+\"/,
-					to : "buildType: \"release\""
-				},{
-					from : /debugLevel:\s*[0-9]/,
-					to : "debugLevel: 1"
-				} ]
-			}
-		},
-	    tagrelease: {
-	        file: "package.json",
-	        commit:  true,
-	        message: "Tagging the %version% release.",
-	        prefix:  "v",
-	        annotate: true
-	    },
-	    uglify: {
+        replace : { // grunt-text-replace
+            bump : {
+                src : ["src/jquery.fancytree.js"],
+                overwrite : true,
+                replacements : [ {
+                    from : /version:\s*\"[0-9\.\-]+\"/,
+                    to : "version: \"<%= pkg.version %>\""
+                },{
+                    from : /@version\s*[0-9\.\-]+/,
+                    to : "@version <%= pkg.version %>"
+                },{
+                    from : /@date\s*[0-9T\.\-\:]+/,
+                    to : "@date <%= grunt.template.today('yyyy-mm-dd\"T\"HH:MM') %>"
+                } ]
+            },
+            build : {
+                src : ["build/*.js"],
+                overwrite : true,
+                replacements : [ {
+                    from : /version:\s*\"[0-9\.\-]+\"/,
+                    to : "version: \"<%= pkg.version %>\""
+                },{
+                    from : /@version\s*DEVELOPMENT/,
+                    to : "@version <%= pkg.version %>"
+                },{
+                    from : /@date\s*DEVELOPMENT/,
+                    to : "@date <%= grunt.template.today('yyyy-mm-dd\"T\"HH:MM') %>"
+                },{
+                    from : /buildType:\s*\"[a-zA-Z]+\"/,
+                    to : "buildType: \"release\""
+                },{
+                    from : /debugLevel:\s*[0-9]/,
+                    to : "debugLevel: 1"
+                } ]
+            }
+        },
+        tagrelease: {
+            file: "package.json",
+            commit:  true,
+            message: "Tagging the %version% release.",
+            prefix:  "v",
+            annotate: true
+        },
+        uglify: {
             build: {
                 options: {
-                    banner: "<%= meta.banner %>",
-                    sourceMap: "build/jquery.fancytree-all.min.js.map"
+                    banner: "<%= meta.banner %>"
+                    , report: "min"
+//					, expand: true
+//					, cwd: "build/"
+                    , sourceMap: function(path) { return path.replace(/.js/, ".js.map"); } // "build/jquery.fancytree-all.min.js.map"
+                    , sourceMappingURL: function(path) { return path.replace(/^build\//, "") + ".map"; }
+//			        , sourceMapIn: function(path) { return path.replace(/^build\//, "")}
+//                    , sourceMapRoot: "/" //function(path) { return path.replace(/^build\//, "")}
+                    , sourceMapPrefix: 1
                 },
                 files: {
                     "build/<%= pkg.name %>.min.js": ["<%= concat.core.dest %>"],
@@ -245,11 +252,11 @@ module.exports = function (grunt) {
     // from hammer.js
 //    grunt.loadNpmTasks 'grunt-tagrelease'
 
-	// Task for updating the pkg config property. Needs to be run after
-	// bumpup so the next tasks in queue can work with updated values.
-	grunt.registerTask("updatePkg", function() {
-		grunt.config.set("pkg", grunt.file.readJSON("package.json"));
-	});
+    // Task for updating the pkg config property. Needs to be run after
+    // bumpup so the next tasks in queue can work with updated values.
+    grunt.registerTask("updatePkg", function() {
+        grunt.config.set("pkg", grunt.file.readJSON("package.json"));
+    });
 
     grunt.registerTask("server", ["connect:demo"]);
     grunt.registerTask("test", ["jshint:beforeconcat",
