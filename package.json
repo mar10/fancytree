@@ -22,8 +22,6 @@
     }
   ],
   "dependencies": {
-    "jquery": ">=1.5",
-    "jquery-ui": ">=1.8.6"
   },
   "keywords": [],
   "devDependencies": {
