@@ -159,8 +159,8 @@ module.exports = function (grunt) {
                           ]
         },
         qunit: {
-            build: ["test/unit/test-core-build.html"],
-        	develop: ["test/unit/test-core.html"]
+            build : [ "test/unit/test-core-build.html" ],
+			develop : [ "test/unit/test-core.html" ]
         },
 		replace : { // grunt-text-replace
 			bump : {
@@ -270,7 +270,7 @@ module.exports = function (grunt) {
                                  "replace:build",
                                  "jshint:afterconcat",
                                  "uglify",
-//                                 "qunit:build",
+                                 "qunit:build",
                                  "compress:build",
 //                                 "clean:build",
                                  "tagrelease"

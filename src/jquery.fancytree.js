@@ -3427,7 +3427,7 @@ $.extend($.ui.fancytree,
 	/** @lends $.ui.fancytree */
 	{
 	/** @type {String} */
-	version: "2.0.0-22",
+	version: "2.0.0-1",
 	/** @type {String} */
 	buildType: "develop",
 	/** @type {int} */

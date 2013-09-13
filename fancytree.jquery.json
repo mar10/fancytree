@@ -1,8 +1,8 @@
 {
   "name": "fancytree",
-  "version": "2.0.0-22",
+  "version": "2.0.0-1",
   "title": "Fancytree",
-  "description": "Fancytree 2.x is the designated successor of DynaTree 1.x. (Current status: BETA)",
+  "description": "Fancytree is a JavaScript dynamic tree view plugin for jQuery with support for persistence, keyboard, checkboxes, drag'n'drop, and lazy loading.",
   "homepage": "https://github.com/mar10/fancytree",
   "author": {
     "name": "Martin Wendt",
@@ -23,8 +23,8 @@
     }
   ],
   "dependencies": {
-    "jquery": ">=1.6",
-    "jqueryui": ">=1.8.6"
+    "jquery": ">=1.5",
+    "jquery-ui": ">=1.8.6"
   },
   "keywords": [
     "tree",

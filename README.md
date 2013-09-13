@@ -16,15 +16,10 @@ for improvements on the API or architecture.
 This implies, that the API is not finalized yet: events, functions, and parameters
 are still subject to change.  
 
+See the [change log](https://github.com/mar10/fancytree/blob/master/CHANGELOG.md) 
+for details (including **changes that break backwards compatibility**).
 
-#### Latest Changes
 
-  * **2013-08-31** [BREAKING CHANGE] Renamed `onCustomRender` to `renderTitle`.  
-    `renderTitle`, `renderNode` and `createNode` events are only triggered as options callback (not DOM events), for performance reasons.
-  * **2013-08-25** [BREAKING CHANGE] Renamed `data.orgEvent` to `data.originalEvent`
-  * **2013-08-17** [BREAKING CHANGE] Renamed events to camelCase as suggested by the jQuery style guide (`rendernnode` -> `renderNode`, ...)
-
-  
 ## Get Started
 
   * Take a look at [the preview demo](http://wwwendt.de/tech/fancytree/demo)
