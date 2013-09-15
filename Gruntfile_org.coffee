@@ -37,7 +37,9 @@ module.exports = (grunt) ->
       options:
         dateformat: "YYYY-MM-DD HH:mm"
         normalize: true
-      files: ["package.json", "bower.json", "fancytree.jquery.json"]
+        updateProps: 
+          pkg: "package.json"
+      files: ["package.json", "bower.json", "*.jquery.json"]
 
     checkrepo:
       beforeBump:
@@ -280,8 +282,8 @@ module.exports = (grunt) ->
 
   # Task for updating the pkg config property. Needs to be run after
   # bumpup so the next tasks in queue can work with updated values.
-  grunt.registerTask "updatePkg", () -> 
-    grunt.config.set "pkg", grunt.file.readJSON("package.json")
+  # grunt.registerTask "updatePkg", () -> 
+  #   grunt.config.set "pkg", grunt.file.readJSON("package.json")
 
 
   grunt.registerTask "server", ["connect:demo"]
@@ -293,12 +295,12 @@ module.exports = (grunt) ->
   # grunt.registerTask("makejsdoc", ["jsdoc"]
   grunt.registerTask "travis", ["test"]
   grunt.registerTask "default", ["test"]
-  grunt.registerTask "bump", [
-    "checkrepo:beforeBump"
-    "bumpup:build"
-    "updatePkg"
-    # "replace:bump"
-    ]
+  # grunt.registerTask "bump", [
+  #   "checkrepo:beforeBump"
+  #   "bumpup:build"
+  #   "updatePkg"
+  #   # "replace:bump"
+  #   ]
   grunt.registerTask "build", [
     "exec:tabfix"
     "test"
@@ -311,12 +313,13 @@ module.exports = (grunt) ->
     "uglify"
     "qunit:build"
     "compress:build"
+    # "clean:build"
     ]
   grunt.registerTask "release", [
-    "bump"
+    "checkrepo:beforeRelease"
     "build"
     "tagrelease"
-    # "clean:build"
+    "bumpup:prerelease"
     ]
   grunt.registerTask "upload", [
     "build"

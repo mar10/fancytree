@@ -25,9 +25,12 @@ module.exports = function(grunt) {
     bumpup: {
       options: {
         dateformat: "YYYY-MM-DD HH:mm",
-        normalize: true
+        normalize: true,
+        updateProps: {
+          pkg: "package.json"
+        }
       },
-      files: ["package.json", "bower.json", "fancytree.jquery.json"]
+      files: ["package.json", "bower.json", "*.jquery.json"]
     },
     checkrepo: {
       beforeBump: {
@@ -255,15 +258,11 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks("grunt-jsdoc");
   grunt.loadNpmTasks("grunt-tagrelease");
   grunt.loadNpmTasks("grunt-text-replace");
-  grunt.registerTask("updatePkg", function() {
-    return grunt.config.set("pkg", grunt.file.readJSON("package.json"));
-  });
   grunt.registerTask("server", ["connect:demo"]);
   grunt.registerTask("test", ["jshint:beforeConcat", "qunit:develop"]);
   grunt.registerTask("travis", ["test"]);
   grunt.registerTask("default", ["test"]);
-  grunt.registerTask("bump", ["checkrepo:beforeBump", "bumpup:build", "updatePkg"]);
   grunt.registerTask("build", ["exec:tabfix", "test", "clean:build", "copy:build", "concat", "replace:build", "jshint:afterConcat", "uglify", "qunit:build", "compress:build"]);
-  grunt.registerTask("release", ["bump", "build", "tagrelease"]);
+  grunt.registerTask("release", ["checkrepo:beforeRelease", "build", "tagrelease", "bumpup:prerelease"]);
   return grunt.registerTask("upload", ["build", "exec:upload"]);
 };

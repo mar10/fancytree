@@ -35,7 +35,7 @@
     "grunt-html": "~0.3.3",
     "qunitjs": "1.x",
     "grunt-docco2": "~0.1.1",
-    "grunt-bumpup": "~0.2.0",
+    "grunt-bumpup": "~0.3.1",
     "grunt-tagrelease": "~0.2.0",
     "grunt-contrib-clean": "~0.5.0",
     "grunt-contrib-copy": "~0.4.1",
