@@ -9,7 +9,7 @@
 
  However the generated Gruntfile.js IS working.
   
- So we have a Gruntfile_test.coffee that is compiled to Gruntfile_test.js
+ So we have a Gruntfile_org.coffee that is compiled to Gruntfile_org.js
  and then manually copy/pasted into Gruntfile.js
 */
 
@@ -20,7 +20,7 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON("package.json"),
     meta: {
-      banner: "/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - " + "<%= grunt.template.today('yyyy-mm-dd') %>\n" + "<%= pkg.homepage ? '* ' + pkg.homepage + '\\n' : '' %>" + "* Copyright (c) <%= grunt.template.today('yyyy') %> <%= pkg.author.name %>;" + " Licensed <%= _.pluck(pkg.licenses, 'type').join(', ') %> */"
+      banner: "/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - " + "<%= grunt.template.today('yyyy-mm-dd HH:mm') %>\n" + "<%= pkg.homepage ? '  * ' + pkg.homepage + '\\n' : '' %>" + "  * Copyright (c) <%= grunt.template.today('yyyy') %> <%= pkg.author.name %>;" + " Licensed <%= _.pluck(pkg.licenses, 'type').join(', ') %> */\n"
     },
     bumpup: {
       options: {
@@ -30,6 +30,12 @@ module.exports = function(grunt) {
       files: ["package.json", "bower.json", "fancytree.jquery.json"]
     },
     checkrepo: {
+      beforeBump: {
+        tag: {
+          eq: "<%= pkg.version %>"
+        },
+        clean: true
+      },
       beforeRelease: {
         tag: {
           lt: "<%= pkg.version %>"
@@ -89,7 +95,7 @@ module.exports = function(grunt) {
           {
             expand: true,
             cwd: "src/",
-            src: ["skin-**/*", "*.txt"],
+            src: ["skin-**/*.{css,gif,png}", "*.txt"],
             dest: "build/"
           }, {
             src: ["*.txt", "*.md"],
@@ -150,9 +156,9 @@ module.exports = function(grunt) {
       options: {
         jshintrc: ".jshintrc"
       },
-      beforeconcat: ["Gruntfile.js", "src/*.js", "3rd-party/**/jquery.fancytree.*.js", "test/unit/*.js"]
+      beforeConcat: ["Gruntfile.js", "src/*.js", "3rd-party/**/jquery.fancytree.*.js", "test/unit/*.js"],
+      afterConcat: ["<%= concat.core.dest %>", "<%= concat.all.dest %>"]
     },
-    afterconcat: ["<%= concat.core.dest %>", "<%= concat.all.dest %>"],
     less: {
       development: {
         options: {
@@ -253,11 +259,11 @@ module.exports = function(grunt) {
     return grunt.config.set("pkg", grunt.file.readJSON("package.json"));
   });
   grunt.registerTask("server", ["connect:demo"]);
-  grunt.registerTask("test", ["jshint:beforeconcat", "qunit:develop"]);
+  grunt.registerTask("test", ["jshint:beforeConcat", "qunit:develop"]);
   grunt.registerTask("travis", ["test"]);
   grunt.registerTask("default", ["test"]);
-  grunt.registerTask("bump", ["checkrepo:beforeRelease", "bumpup:build", "updatePkg"]);
-  grunt.registerTask("build", ["exec:tabfix", "test", "clean:build", "copy:build", "concat", "replace:build", "jshint:afterconcat", "uglify", "qunit:build", "compress:build", "tagrelease"]);
-  grunt.registerTask("release", ["bumpup:build"]);
+  grunt.registerTask("bump", ["checkrepo:beforeBump", "bumpup:build", "updatePkg"]);
+  grunt.registerTask("build", ["exec:tabfix", "test", "clean:build", "copy:build", "concat", "replace:build", "jshint:afterConcat", "uglify", "qunit:build", "compress:build"]);
+  grunt.registerTask("release", ["bump", "build", "tagrelease"]);
   return grunt.registerTask("upload", ["build", "exec:upload"]);
 };

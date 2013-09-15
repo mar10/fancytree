@@ -29,10 +29,10 @@ module.exports = (grunt) ->
     # Project metadata, used by the <banner> directive.
     meta:
       banner: "/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - " +
-              "<%= grunt.template.today('yyyy-mm-dd') %>\n" +
-              "<%= pkg.homepage ? '* ' + pkg.homepage + '\\n' : '' %>" +
-              "* Copyright (c) <%= grunt.template.today('yyyy') %> <%= pkg.author.name %>;" +
-              " Licensed <%= _.pluck(pkg.licenses, 'type').join(', ') %> */"
+              "<%= grunt.template.today('yyyy-mm-dd HH:mm') %>\n" +
+              "<%= pkg.homepage ? '  * ' + pkg.homepage + '\\n' : '' %>" +
+              "  * Copyright (c) <%= grunt.template.today('yyyy') %> <%= pkg.author.name %>;" +
+              " Licensed <%= _.pluck(pkg.licenses, 'type').join(', ') %> */\n"
     bumpup:
       options:
         dateformat: "YYYY-MM-DD HH:mm"
@@ -40,6 +40,11 @@ module.exports = (grunt) ->
       files: ["package.json", "bower.json", "fancytree.jquery.json"]
 
     checkrepo:
+      beforeBump:
+        tag:
+          eq: "<%= pkg.version %>" # Check if highest repo tag == pkg.version
+#        tagged: false # Require last commit (HEAD) to be tagged
+        clean: true # // Require repo to be clean (no unstaged changes)
       beforeRelease:
         tag:
           lt: "<%= pkg.version %>" # Check if highest repo tag is lower than pkg.version
@@ -63,23 +68,24 @@ module.exports = (grunt) ->
         core:
             options:
                 stripBanners: true
-            src: ["<banner:meta.banner>",
+            src: ["<banner:meta.banner>"
                   "src/<%= pkg.name %>.js"
                   ]
             dest: "build/<%= pkg.name %>.js"
         all:
             options:
                 stripBanners: true
-            src: ["<%= meta.banner %>",
-                  "src/jquery.fancytree.js",
-                  "src/jquery.fancytree.columnview.js",
-                  "src/jquery.fancytree.dnd.js",
-                  "src/jquery.fancytree.filter.js",
-                  "src/jquery.fancytree.menu.js",
-                  "src/jquery.fancytree.persist.js",
-                  "src/jquery.fancytree.table.js",
-                  "src/jquery.fancytree.themeroller.js"
-                  ]
+            src: [
+              "<%= meta.banner %>"
+              "src/jquery.fancytree.js"
+              "src/jquery.fancytree.columnview.js"
+              "src/jquery.fancytree.dnd.js"
+              "src/jquery.fancytree.filter.js"
+              "src/jquery.fancytree.menu.js"
+              "src/jquery.fancytree.persist.js"
+              "src/jquery.fancytree.table.js"
+              "src/jquery.fancytree.themeroller.js"
+              ]
             dest: "build/<%= pkg.name %>-all.js"
 
     connect:
@@ -94,7 +100,7 @@ module.exports = (grunt) ->
             files: [{
                     expand: true # required for cwd
                     cwd: "src/"
-                    src: ["skin-**/*", "*.txt"]
+                    src: ["skin-**/*.{css,gif,png}", "*.txt"]
                     dest: "build/"
                 }, {
                     src: ["*.txt", "*.md"]
@@ -139,27 +145,28 @@ module.exports = (grunt) ->
         all: ["demo/**/*.html", "doc/**/*.html", "test/**/*.html"]
 
     jsdoc:
-        build:
-            src: ["src/*.js", "doc/README.md"]
-            # http://usejsdoc.org/about-configuring-jsdoc.html#example
-            options:
-                destination: "doc/jsdoc_grunt"
+      build:
+        src: ["src/*.js", "doc/README.md"]
+        # http://usejsdoc.org/about-configuring-jsdoc.html#example
+        options:
+          destination: "doc/jsdoc_grunt"
 #                    template: "bin/jsdoc3-moogle",
-                verbose: true
+          verbose: true
 
     jshint:
-        options:
-            # Linting according to http://contribute.jquery.org/style-guide/js/
-            jshintrc: ".jshintrc"
-        beforeconcat: [
-            "Gruntfile.js",
-            "src/*.js",
-            "3rd-party/**/jquery.fancytree.*.js",
-            "test/unit/*.js"
-          ]
-        afterconcat: ["<%= concat.core.dest %>",
-                      "<%= concat.all.dest %>"
-                      ]
+      options:
+        # Linting according to http://contribute.jquery.org/style-guide/js/
+        jshintrc: ".jshintrc"
+      beforeConcat: [
+        "Gruntfile.js"
+        "src/*.js"
+        "3rd-party/**/jquery.fancytree.*.js"
+        "test/unit/*.js"
+        ]
+      afterConcat: [
+        "<%= concat.core.dest %>"
+        "<%= concat.all.dest %>"
+        ]
 
     less:
         development:
@@ -279,7 +286,7 @@ module.exports = (grunt) ->
 
   grunt.registerTask "server", ["connect:demo"]
   grunt.registerTask "test", [
-    "jshint:beforeconcat",
+    "jshint:beforeConcat",
     # "csslint",
     "qunit:develop"
   ]
@@ -287,7 +294,7 @@ module.exports = (grunt) ->
   grunt.registerTask "travis", ["test"]
   grunt.registerTask "default", ["test"]
   grunt.registerTask "bump", [
-    "checkrepo:beforeRelease"
+    "checkrepo:beforeBump"
     "bumpup:build"
     "updatePkg"
     # "replace:bump"
@@ -300,15 +307,16 @@ module.exports = (grunt) ->
     "concat"
     # "cssmin:build"
     "replace:build"
-    "jshint:afterconcat"
+    "jshint:afterConcat"
     "uglify"
     "qunit:build"
     "compress:build"
-    # "clean:build"
-    "tagrelease"
     ]
   grunt.registerTask "release", [
-    "bumpup:build",
+    "bump"
+    "build"
+    "tagrelease"
+    # "clean:build"
     ]
   grunt.registerTask "upload", [
     "build"
