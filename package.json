@@ -21,8 +21,7 @@
       "url": "https://code.google.com/p/fancytree/wiki/LicenseInfo"
     }
   ],
-  "dependencies": {
-  },
+  "dependencies": {},
   "keywords": [],
   "devDependencies": {
     "grunt": "~0.4.1",
@@ -43,7 +42,8 @@
     "grunt-contrib-cssmin": "~0.6.1",
     "grunt-contrib-less": "~0.7.0",
     "grunt-text-replace": "~0.3.7",
-    "grunt-contrib-compress": "~0.5.2"
+    "grunt-contrib-compress": "~0.5.2",
+    "grunt-contrib-watch": "~0.5.3"
   },
   "scripts": {
     "test": "grunt ci --verbose"
