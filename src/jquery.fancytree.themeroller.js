@@ -1,14 +1,19 @@
-/*************************************************************************
-	jquery.fancytree.themeroller.js
-	Table extension for jquery.fancytree.js.
-
-	Copyright (c) 2012, Martin Wendt (http://wwWendt.de)
-	Dual licensed under the MIT or GPL Version 2 licenses.
-	http://code.google.com/p/fancytree/wiki/LicenseInfo
-
-	A current version and some documentation is available at
-		https://github.com/mar10/fancytree/
-*************************************************************************/
+/*!
+ * jquery.fancytree.themeroller.js
+ *
+ * Enable jQuery UI ThemeRoller styles.
+ * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
+ *
+ * @see http://jqueryui.com/themeroller/
+ *
+ * Copyright (c) 2013, Martin Wendt (http://wwWendt.de)
+ *
+ * Released under the MIT license
+ * https://github.com/mar10/fancytree/wiki/LicenseInfo
+ *
+ * @version DEVELOPMENT
+ * @date DEVELOPMENT
+ */
 
 ;(function($, window, document, undefined) {
 
