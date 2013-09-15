@@ -6,3 +6,5 @@
 npm-debug.log
 /.pydevproject
 /build
+/Gruntfile_test.js
+/Gruntfile_org.js

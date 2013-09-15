@@ -43,7 +43,8 @@
     "grunt-contrib-less": "~0.7.0",
     "grunt-text-replace": "~0.3.7",
     "grunt-contrib-compress": "~0.5.2",
-    "grunt-contrib-watch": "~0.5.3"
+    "grunt-contrib-watch": "~0.5.3",
+    "grunt-checkrepo": "~0.1.0"
   },
   "scripts": {
     "test": "grunt ci --verbose"

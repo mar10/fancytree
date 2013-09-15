@@ -1,3 +1,22 @@
+###
+ Currently the Gruntfile.coffee is not working!!
+  
+	Reading "Gruntfile.coffee" Gruntfile...OK
+	Registering Gruntfile tasks.
+	Loading "Gruntfile.coffee" tasks...ERROR
+	>> ReferenceError: grunt is not defined
+
+ However the generated Gruntfile.js IS working.
+  
+ So we have a Gruntfile_org.coffee that is compiled to Gruntfile_org.js
+ and then manually copy/pasted into Gruntfile.js
+ 
+ ###
+
+# jshint directives for the generated JS:
+
+###jshint node: true, unused: false ###
+
 "use strict"
 
 module.exports = (grunt) ->
@@ -20,9 +39,16 @@ module.exports = (grunt) ->
         normalize: true
       files: ["package.json", "bower.json", "fancytree.jquery.json"]
 
+    checkrepo:
+      beforeRelease:
+        tag:
+          lt: "<%= pkg.version %>" # Check if highest repo tag is lower than pkg.version
+#        tagged: false # Require last commit (HEAD) to be tagged
+        clean: true # // Require repo to be clean (no unstaged changes)
+
     clean:
       build:
-        noWrite : true,
+        noWrite: true
         src: [ "build" ]
 
     compress:
@@ -193,24 +219,24 @@ module.exports = (grunt) ->
         prefix:  "v"
         annotate: true
 
-#     uglify:
-#         build:
-#             options:
-#                 banner: "<%= meta.banner %>"
-#                 report: "min"
-# # //                  , expand: true
-# # //                  , cwd: "build/"
-#                 sourceMap: 
-#                   (path) -> path.replace(/.js/, ".js.map")
-#                 sourceMappingURL: 
-#                   (path) -> path.replace(/^build\//, "") + ".map"
-# # //                  , sourceMapIn: function(path) { return path.replace(/^build\//, "")}
-# # //                    , sourceMapRoot: "/" //function(path) { return path.replace(/^build\//, "")}
-#                 sourceMapPrefix: 1 # strip 'build/' from paths
+    uglify:
+        build:
+            options:
+                banner: "<%= meta.banner %>"
+                report: "min"
+# //                  , expand: true
+# //                  , cwd: "build/"
+                sourceMap: 
+                  (path) -> path.replace(/.js/, ".js.map")
+                sourceMappingURL: 
+                  (path) -> path.replace(/^build\//, "") + ".map"
+# //                  , sourceMapIn: function(path) { return path.replace(/^build\//, "")}
+# //                    , sourceMapRoot: "/" //function(path) { return path.replace(/^build\//, "")}
+                sourceMapPrefix: 1 # strip 'build/' from paths
 
-#             files:
-#                 "build/<%= pkg.name %>.min.js": ["<%= concat.core.dest %>"],
-#                 "build/<%= pkg.name %>-all.min.js": ["<%= concat.all.dest %>"]
+            files:
+                "build/<%= pkg.name %>.min.js": ["<%= concat.core.dest %>"],
+                "build/<%= pkg.name %>-all.min.js": ["<%= concat.all.dest %>"]
 
     watch:
         files: "src/**/*.less"
@@ -229,6 +255,7 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks "grunt-contrib-uglify"
   grunt.loadNpmTasks "grunt-contrib-watch"
   grunt.loadNpmTasks "grunt-bumpup"
+  grunt.loadNpmTasks "grunt-checkrepo"
   grunt.loadNpmTasks "grunt-docco2"
   grunt.loadNpmTasks "grunt-exec"
   grunt.loadNpmTasks "grunt-html"
@@ -236,44 +263,54 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks "grunt-tagrelease"
   grunt.loadNpmTasks "grunt-text-replace"
 
-  #     // from jquery:
-  # //	grunt.loadNpmTasks( "grunt-compare-size" 
-  # //	grunt.loadNpmTasks( "grunt-git-authors" 
-  # //	grunt.loadNpmTasks( "grunt-contrib-watch" 
-  # //	grunt.loadNpmTasks( "grunt-jsonlint" 
-  #     // from hammer.js
-  # //    grunt.loadNpmTasks 'grunt-tagrelease'
+  # from jquery:
+  #   grunt.loadNpmTasks( "grunt-compare-size" 
+  #   grunt.loadNpmTasks( "grunt-git-authors" 
+  #   grunt.loadNpmTasks( "grunt-contrib-watch" 
+  #   grunt.loadNpmTasks( "grunt-jsonlint" 
+  # from hammer.js
+  #   grunt.loadNpmTasks 'grunt-tagrelease'
 
   # Task for updating the pkg config property. Needs to be run after
   # bumpup so the next tasks in queue can work with updated values.
-  grunt.registerTask "updatePkg", () => 
+  grunt.registerTask "updatePkg", () -> 
     grunt.config.set "pkg", grunt.file.readJSON("package.json")
 
 
   grunt.registerTask "server", ["connect:demo"]
-  grunt.registerTask "test", ["jshint:beforeconcat",
-  #//                                "csslint",
-                          "qunit:develop"]
-  #//    grunt.registerTask("makejsdoc", ["jsdoc"]
+  grunt.registerTask "test", [
+    "jshint:beforeconcat",
+    # "csslint",
+    "qunit:develop"
+  ]
+  # grunt.registerTask("makejsdoc", ["jsdoc"]
   grunt.registerTask "travis", ["test"]
   grunt.registerTask "default", ["test"]
-  grunt.registerTask "bump", ["bumpup:build",
-                        "updatePkg"
-  #//                                "replace:bump"
-                        ]
-  grunt.registerTask "build", ["exec:tabfix",
-                         "test",
-                         "clean:build",
-                         "copy:build",
-                         "concat",
-  #//                                 "cssmin:build",
-                         "replace:build",
-                         "jshint:afterconcat",
-                         "uglify",
-                         "qunit:build",
-                         "compress:build",
-  #//                                 "clean:build",
-                         "tagrelease"
-                         ]
-  grunt.registerTask "upload", ["build",
-                          "exec:upload"]
+  grunt.registerTask "bump", [
+    "checkrepo:beforeRelease"
+    "bumpup:build"
+    "updatePkg"
+    # "replace:bump"
+    ]
+  grunt.registerTask "build", [
+    "exec:tabfix"
+    "test"
+    "clean:build"
+    "copy:build"
+    "concat"
+    # "cssmin:build"
+    "replace:build"
+    "jshint:afterconcat"
+    "uglify"
+    "qunit:build"
+    "compress:build"
+    # "clean:build"
+    "tagrelease"
+    ]
+  grunt.registerTask "release", [
+    "bumpup:build",
+    ]
+  grunt.registerTask "upload", [
+    "build"
+    "exec:upload"
+    ]
