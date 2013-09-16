@@ -1,10 +1,9 @@
 /.settings
 /.project
+/.pydevproject
 /node_modules
+npm-debug.log
+/build
 /doc
 /dist
-npm-debug.log
-/.pydevproject
-/build
-/Gruntfile_test.js
-/Gruntfile_org.js
+/Gruntfile.js

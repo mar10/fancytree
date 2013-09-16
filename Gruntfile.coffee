@@ -1,17 +1,6 @@
 ###
- Currently the Gruntfile.coffee is not working!!
-  
-	Reading "Gruntfile.coffee" Gruntfile...OK
-	Registering Gruntfile tasks.
-	Loading "Gruntfile.coffee" tasks...ERROR
-	>> ReferenceError: grunt is not defined
-
- However the generated Gruntfile.js IS working.
-  
- So we have a Gruntfile_org.coffee that is compiled to Gruntfile_org.js
- and then manually copy/pasted into Gruntfile.js
- 
- ###
+Build scripts for Fancytree 
+###
 
 # jshint directives for the generated JS:
 
@@ -205,19 +194,19 @@ module.exports = (grunt) ->
             src: ["build/*.js"]
             overwrite : true
             replacements: [ {
-                from : /version:\s*\"[0-9\.\-]+\"/
+                from : /version:\s*\"[0-9\.\-]+\"/g
                 to : "version: \"<%= pkg.version %>\""
             },{
-                from : /@version\s*DEVELOPMENT/
+                from : /@version\s*DEVELOPMENT/g
                 to : "@version <%= pkg.version %>"
             },{
-                from : /@date\s*DEVELOPMENT/
+                from : /@date\s*DEVELOPMENT/g
                 to : "@date <%= grunt.template.today('yyyy-mm-dd\"T\"HH:MM') %>"
             },{
-                from : /buildType:\s*\"[a-zA-Z]+\"/
+                from : /buildType:\s*\"[a-zA-Z]+\"/g
                 to : "buildType: \"release\""
             },{
-                from : /debugLevel:\s*[0-9]/
+                from : /debugLevel:\s*[0-9]/g
                 to : "debugLevel: 1"
             } ]
 
