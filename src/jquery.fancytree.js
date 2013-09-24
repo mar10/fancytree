@@ -949,6 +949,12 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 				n.tree = targetNode.tree;
 			}, true);
 		}
+
+    // A collaposed node won't re-render children, so we have to remove it manually
+    if( !targetParent.expanded){
+      prevParent.ul.removeChild(this.li);
+    }
+
 		// Update HTML markup
 		if( !prevParent.isDescendantOf(targetParent)) {
 			prevParent.render();
