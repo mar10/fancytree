@@ -1,16 +1,19 @@
-/*************************************************************************
-	jquery.fancytree.menu.js
-	Context menu extension for jquery.fancytree.js.
-
-	@see http://api.jqueryui.com/menu/
-
-	Copyright (c) 2012, Martin Wendt (http://wwWendt.de)
-	Dual licensed under the MIT or GPL Version 2 licenses.
-	http://code.google.com/p/fancytree/wiki/LicenseInfo
-
-	A current version and some documentation is available at
-		https://github.com/mar10/fancytree/
-*************************************************************************/
+/*!
+ * jquery.fancytree.menu.js
+ *
+ * Enable jQuery UI Menu as context menu for tree nodes.
+ * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
+ *
+ * @see http://api.jqueryui.com/menu/
+ *
+ * Copyright (c) 2013, Martin Wendt (http://wwWendt.de)
+ *
+ * Released under the MIT license
+ * https://github.com/mar10/fancytree/wiki/LicenseInfo
+ *
+ * @version DEVELOPMENT
+ * @date DEVELOPMENT
+ */
 
 ;(function($, window, document, undefined) {
 

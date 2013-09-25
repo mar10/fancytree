@@ -1,11 +1,20 @@
 /*!
  * jquery.fancytree.persist.js
- * Persistence extension for jquery.fancytree.js (https://github.com/mar10/fancytree/).
  *
- * Copyright (c) 2012, Martin Wendt (http://wwWendt.de)
- * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://code.google.com/p/fancytree/wiki/LicenseInfo
+ * Persist tree status in cookiesRemove or highlight tree nodes, based on a filter.
+ * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
+ *
+ * @depends: jquery.cookie.js
+ *
+ * Copyright (c) 2013, Martin Wendt (http://wwWendt.de)
+ *
+ * Released under the MIT license
+ * https://github.com/mar10/fancytree/wiki/LicenseInfo
+ *
+ * @version DEVELOPMENT
+ * @date DEVELOPMENT
  */
+
 ;(function($, window, document, undefined) {
 
 "use strict";

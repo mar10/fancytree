@@ -3,7 +3,7 @@
  * Dynamic tree view control, with support for lazy loading of branches.
  * https://github.com/mar10/fancytree/
  *
- * Copyright (c) 2008-2013, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2006-2013, Martin Wendt (http://wwWendt.de)
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
@@ -957,6 +957,12 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 				n.tree = targetNode.tree;
 			}, true);
 		}
+
+    // A collaposed node won't re-render children, so we have to remove it manually
+    if( !targetParent.expanded){
+      prevParent.ul.removeChild(this.li);
+    }
+
 		// Update HTML markup
 		if( !prevParent.isDescendantOf(targetParent)) {
 			prevParent.render();
@@ -3436,7 +3442,7 @@ $.extend($.ui.fancytree,
 	/** @lends $.ui.fancytree */
 	{
 	/** @type {String} */
-	version: "2.0.0-1",
+	version: "development",
 	/** @type {String} */
 	buildType: "develop",
 	/** @type {int} */

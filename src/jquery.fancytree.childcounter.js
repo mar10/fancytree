@@ -10,12 +10,17 @@
 
 /*!
  * jquery.fancytree.childcounter.js
- * Sample extension for jquery.fancytree.js (https://github.com/mar10/fancytree/).
+ *
+ * Add a child counter bubble to tree nodes.
+ * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
  * Copyright (c) 2013, Martin Wendt (http://wwWendt.de)
  *
- * Licensed under the MIT license.
- *     https://github.com/mar10/fancytree/blob/master/MIT-LICENSE.txt
+ * Released under the MIT license
+ * https://github.com/mar10/fancytree/wiki/LicenseInfo
+ *
+ * @version DEVELOPMENT
+ * @date DEVELOPMENT
  */
 
 // To keep the global namespace clean, we wrap everything in a closure
