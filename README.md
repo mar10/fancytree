@@ -28,10 +28,9 @@ for details (including **changes that break backwards compatibility**).
 
 # Credits
 
-Contributors in order of appearance:
+Contributors:
 
 *  <https://github.com/mar10/fancytree/contributors>
-*  Tomas Norkūnas
 
 
 ----

@@ -1,4 +1,10 @@
-# 2.0.0 / Unreleased
+# 2.0.0-3 / Unreleased
+
+  * [BREAKING CHANGE] Changed extension syntax
+  * [FEATURE] Edit extension
+
+
+# 2.0.0-2
 
   * **2013-08-31** [BREAKING CHANGE] Renamed `onCustomRender` to `renderTitle`.  
     `renderTitle`, `renderNode` and `createNode` events are only triggered as options callback (not DOM events), for performance reasons.

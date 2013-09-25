@@ -89,6 +89,7 @@ $.ui.fancytree._FancytreeClass.prototype.clearFilter = function(){
  * Extension code
  */
 $.ui.fancytree.registerExtension("filter", {
+	version: "0.0.1",
 	// Default options for this extension.
 	options: {
 		mode: "dimm"
@@ -99,7 +100,7 @@ $.ui.fancytree.registerExtension("filter", {
 	// `this._super`: the virtual function that was overriden (member of prev. extension or Fancytree)
 	treeInit: function(ctx){
 		this._super(ctx);
-		ctx.tree.filter = false;
+		// ctx.tree.filter = false;
 	},
 	treeDestroy: function(ctx){
 		this._super(ctx);

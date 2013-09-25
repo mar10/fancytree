@@ -22,13 +22,6 @@
 
 "use strict";
 
-// prevent duplicate loading
-// if ( $.ui.fancytree && $.ui.fancytree.version ) {
-//     $.ui.fancytree.warn("Fancytree: duplicate include");
-//     return;
-// }
-
-
 /* *****************************************************************************
  * Private functions and variables
  */
@@ -84,6 +77,7 @@ function findPrevRowNode(node){
 
 
 $.ui.fancytree.registerExtension("table", {
+	version: "0.0.1",
 	// Default options for this extension.
 	options: {
 		indentation: 16,        // indent every node level by 16px

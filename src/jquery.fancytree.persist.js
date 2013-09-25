@@ -10,12 +10,6 @@
 
 "use strict";
 
-// prevent duplicate loading
-// if ( $.ui.fancytree && $.ui.fancytree.version ) {
-//     $.ui.fancytree.warn("Fancytree: duplicate include");
-//     return;
-// }
-
 
 /*******************************************************************************
  * Private functions and variables
@@ -41,7 +35,7 @@ var ACTIVE = "active",
  * @requires jquery.fancytree.persist.js
  */
 $.ui.fancytree._FancytreeClass.prototype.clearCookies = function(types){
-	var cookiePrefix = this.persist.cookiePrefix;
+	var cookiePrefix = this._local.cookiePrefix;
 	types = types || "active expanded focus selected";
 	// TODO: optimize
 	if(types.indexOf(ACTIVE) >= 0){
@@ -72,6 +66,7 @@ DynaTreeStatus._getTreePersistData = function(cookieId, cookieOpts) {
  * Extension code
  */
 $.ui.fancytree.registerExtension("persist", {
+	version: "0.0.1",
 	// Default options for this extension.
 	options: {
 		cookieDelimiter: "~",
@@ -89,7 +84,7 @@ $.ui.fancytree.registerExtension("persist", {
 
 	/* Append `key` to a cookie. */
 	_setKey: function(type, key, flag){
-		var instData = this.persist,
+		var instData = this._local,
 			instOpts = this.options.persist,
 			cookieName = instData.cookiePrefix + type,
 			cookie = $.cookie(cookieName),
@@ -111,7 +106,7 @@ $.ui.fancytree.registerExtension("persist", {
 	treeInit: function(ctx){
 		var tree = ctx.tree,
 			opts = ctx.options,
-			instData = this.persist,
+			instData = this._local,
 			instOpts = this.options.persist;
 
 		_assert($.cookie, "Missing required plugin for 'persist' extension: jquery.cookie.js");
@@ -193,7 +188,7 @@ $.ui.fancytree.registerExtension("persist", {
 //		this._super(ctx);
 //	},
 	nodeSetActive: function(ctx, flag) {
-		var instData = this.persist,
+		var instData = this._local,
 			instOpts = this.options.persist;
 		this._super(ctx, flag);
 		if(instData.storeActive){
@@ -204,7 +199,7 @@ $.ui.fancytree.registerExtension("persist", {
 	},
 	nodeSetExpanded: function(ctx, flag) {
 		var node = ctx.node,
-			instData = this.persist;
+			instData = this._local;
 
 		this._super(ctx, flag);
 
@@ -213,7 +208,7 @@ $.ui.fancytree.registerExtension("persist", {
 		}
 	},
 	nodeSetFocus: function(ctx) {
-		var instData = this.persist,
+		var instData = this._local,
 			instOpts = this.options.persist;
 
 		this._super(ctx);
@@ -226,7 +221,7 @@ $.ui.fancytree.registerExtension("persist", {
 	},
 	nodeSetSelected: function(ctx, flag) {
 		var node = ctx.node,
-			instData = this.persist;
+			instData = this._local;
 
 		this._super(ctx, flag);
 

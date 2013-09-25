@@ -33,58 +33,95 @@ var isMac = /Mac/.test(navigator.platform);
  * @requires jquery.fancytree.edit.js
  */
 $.ui.fancytree._FancytreeNodeClass.prototype.startEdit = function(){
-	// this: tree
-	var prevTitle = this.title,
+	var $input,
 		node = this,
-		tree = this.tree;
+		tree = this.tree,
+		local = tree.ext.edit,
+		prevTitle = node.title,
+		$title = $(".fancytree-title", node.span);
+
+	node.debug("startEdit");
+	// if( tree._trigger)
 	// Disable standard Fancytree mouse- and key handling
 	tree.widget._unbind();
+
 	// Replace node with <input>
-	$(".fancytree-title", node.span)
-		.html("<input id='editNode' value='" + prevTitle + "'>");
-	$.ui.fancytree.assert(!tree.edit.currentNode, "recursive edit");
-	tree.edit.currentNode = this;
+	$input = $("<input>", {
+		"class": "fancytree-edit-input",
+		value: prevTitle
+
+	}).width($title.width());
+	$title.html($input);
+
+	$.ui.fancytree.assert(!local.currentNode, "recursive edit");
+	local.currentNode = this;
 	// Focus <input> and bind keyboard handler
-	$("input#editNode")
+	$input
 		.focus()
-		.keydown(function(event){
+		.change(function(event){
+			$input.addClass("fancytree-dirty");
+		}).keydown(function(event){
 			switch( event.which ) {
-			case 27: // [esc]
-				// discard changes on [esc]
-				$("input#editNode").val(prevTitle);
-				$(this).blur();
+			case $.ui.keyCode.ESCAPE:
+				node.endEdit(false);
 				break;
-			case 13: // [enter]
-				// simulate blur to accept new value
-				$(this).blur();
-				break;
+			case $.ui.keyCode.ENTER:
+				node.endEdit(true);
+				return false; // so we don't start editmode on Mac
 			}
 		}).blur(function(event){
-			// Accept new value, when user leaves <input>
-			var title = $("input#editNode").val();
-			node.setTitle(title);
-			// Re-enable mouse and keyboard handlling
-			tree.widget._bind();
-			tree.edit.currentNode = null;
-			node.setFocus();
+			node.endEdit(true);
 		});
 };
 
 
 /**
- * Start inline editing of current node title.
+ * Stop inline editing.
+ * @param {Boolean} [applyChanges=false]
+ * @lends FancytreeNode.prototype
+ * @requires jquery.fancytree.edit.js
+ */
+$.ui.fancytree._FancytreeNodeClass.prototype.endEdit = function(applyChanges){
+	var // prevTitle = this.title,
+		node = this,
+		tree = this.tree,
+		local = tree.ext.edit,
+		$title = $(".fancytree-title", node.span),
+		$input = $title.find("input.fancytree-edit-input"),
+		dirty = $input.hasClass("fancytree-dirty");
+
+	node.debug("endEdit");
+	$input
+		.removeClass("fancytree-dirty")
+		.unbind();
+
+	if( applyChanges || dirty ){
+		node.setTitle( $input.val() );
+	}else{
+		node.renderTitle();
+	}
+	// Re-enable mouse and keyboard handlling
+	tree.widget._bind();
+	local.currentNode = null;
+	node.setFocus();
+};
+
+
+/**
+ * Check if any node in this tree  in edit mode.
  *
+ * @returns {FancytreeNode | null}
  * @lends Fancytree.prototype
  * @requires jquery.fancytree.edit.js
  */
 $.ui.fancytree._FancytreeClass.prototype.isEditing = function(){
-	return this.edit.currentNode;
+	return this.ext.edit.currentNode;
 };
 
 
 /**
  * Check if this node is in edit mode.
- *
+ * @returns {Boolean} true if node is currently beeing edited
  * @lends FancytreeNode.prototype
  * @requires jquery.fancytree.edit.js
  */
@@ -101,16 +138,18 @@ $.ui.fancytree.registerExtension("edit", {
 	// Default options for this extension.
 	options: {
 		beforeEdit: $.noop,
-		edit: $.noop
+		edit: $.noop // 
 	},
+	// Local attributes
+	currentNode: null,
+
 	// Override virtual methods for this extension.
-	// `this`       : is this extension object
-	// `this._base` : the Fancytree instance
-	// `this._super`: the virtual function that was overriden (member of prev. extension or Fancytree)
+	// `this`       : the Fancytree instance
+	// `this._local`: the namespace that contains extension attributes and private methods (same as this.ext.EXTNAME)
+	// `this._super`: the virtual function that was overridden (member of previous extension or Fancytree)
 	treeInit: function(ctx){
 		this._super(ctx);
-		ctx.tree.$container.addClass("fancytree-ext-edit");
-		ctx.tree.edit.currentNode = null;
+		this.$container.addClass("fancytree-ext-edit");
 	},
 	nodeClick: function(ctx) {
 		if( ctx.originalEvent.shiftKey ){
@@ -125,14 +164,15 @@ $.ui.fancytree.registerExtension("edit", {
 	},
 	nodeKeydown: function(ctx) {
 		switch( ctx.originalEvent.which ) {
-		case 113: // [F2]
+		case $.ui.keyCode.F2:
 			ctx.node.startEdit();
 			return false;
-		case 13: // [enter]
+		case $.ui.keyCode.ENTER:
 			if( isMac ){
 				ctx.node.startEdit();
 				return false;
 			}
+			break;
 		}
 		this._super(ctx);
 	}
