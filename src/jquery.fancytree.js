@@ -3470,24 +3470,38 @@ $.extend($.ui.fancytree,
 	 *     TYPE: 'title' | 'prefix' | 'expander' | 'checkbox' | 'icon' | undefined
 	 */
 	getEventTarget: function(event){
+		// var tcn = event && event.target ? " " + event.target.className + " " : "",
 		var tcn = event && event.target ? event.target.className : "",
 			res = {node: this.getNode(event.target), type: undefined};
-		// TODO: use map for fast lookup
-		// FIXME: cannot work, when tcn also contains UI themeroller classes
-		//        Use $(res.node).hasClass() instead
-		if( tcn === "fancytree-title" ){
+		// tcn may contains UI themeroller or Font Awesome classes, so we use
+		// a fast version of $(res.node).hasClass()
+		// See http://jsperf.com/test-for-classname/2
+		if( /\bfancytree-title\b/.test(tcn) ){
 			res.type = "title";
-		}else if( tcn === "fancytree-expander" ){
+		}else if( /\bfancytree-expander\b/.test(tcn) ){
 			res.type = (res.node.hasChildren() === false ? "prefix" : "expander");
-		}else if( tcn === "fancytree-checkbox" ){
+		}else if( /\bfancytree-checkbox\b/.test(tcn) ){
 			res.type = "checkbox";
-		}else if( tcn === "fancytree-icon" ){
+		}else if( /\bfancytree-icon\b/.test(tcn) ){
 			res.type = "icon";
-		}else if( tcn.indexOf("fancytree-node") >= 0 ){
+		}else if( /\bfancytree-node\b/.test(tcn) ){
 			// TODO: issue #93 (http://code.google.com/p/fancytree/issues/detail?id=93)
 //			res.type = this._getTypeForOuterNodeEvent(event);
 			res.type = "title";
 		}
+// 		if( tcn.indexOf(" fancytree-title ") >= 0 ){
+// 			res.type = "title";
+// 		}else if( tcn.indexOf(" fancytree-expander ") >= 0 ){
+// 			res.type = (res.node.hasChildren() === false ? "prefix" : "expander");
+// 		}else if( tcn.indexOf(" fancytree-checkbox ") >= 0 ){
+// 			res.type = "checkbox";
+// 		}else if( tcn.indexOf(" fancytree-icon ") >= 0 ){
+// 			res.type = "icon";
+// 		}else if( tcn.indexOf(" fancytree-node ") >= 0 ){
+// 			// TODO: issue #93 (http://code.google.com/p/fancytree/issues/detail?id=93)
+// //			res.type = this._getTypeForOuterNodeEvent(event);
+// 			res.type = "title";
+// 		}
 		return res;
 	},
 	/** Return a FancytreeNode instance from element.
