@@ -46,7 +46,7 @@ $.ui.fancytree.registerExtension("awesome", {
 			loading: "icon-refresh icon-spin"
 			// loading: "icon-spinner icon-spin"
 		},
-		icon: null
+		icon: null // TODO: allow callback here
 	},
 	// Overide virtual methods for this extension.
 	// `this`       : is this extension object
@@ -56,13 +56,6 @@ $.ui.fancytree.registerExtension("awesome", {
 		this._super(ctx);
 		tree.$container.addClass("fancytree-ext-awesome");
 	},
-	// /* Override standard render. */
-	// nodeRenderTitle: function(ctx, title) {
-	// 	var node = ctx.node;
-	// 	this._super(ctx);
-	// 	// let user code write column content
-	// 	// ctx.tree._triggerNodeEvent("renderColumns", node);
-	// },
 	nodeRenderStatus: function(ctx) {
 		var icon, span,
 			node = ctx.node,

@@ -79,10 +79,10 @@ function isVersionAtLeast(dottedVersion, major, minor, patch){
 	return true;
 }
 
-/** Return a wrapper that calls sub.methodName() and exposes 
+/** Return a wrapper that calls sub.methodName() and exposes
  *  this        : tree
  *  this._local : tree.ext.EXTNAME
- *  this._super : base.methodName() 
+ *  this._super : base.methodName()
  */
 function _makeVirtualFunction(methodName, tree, base, extension, extName){
 	var _super = base[methodName],
@@ -958,10 +958,10 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 			}, true);
 		}
 
-    // A collaposed node won't re-render children, so we have to remove it manually
-    if( !targetParent.expanded){
-      prevParent.ul.removeChild(this.li);
-    }
+	// A collaposed node won't re-render children, so we have to remove it manually
+	if( !targetParent.expanded){
+	  prevParent.ul.removeChild(this.li);
+	}
 
 		// Update HTML markup
 		if( !prevParent.isDescendantOf(targetParent)) {
