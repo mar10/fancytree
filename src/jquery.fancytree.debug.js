@@ -40,6 +40,7 @@ for(i=0; i<EVENT_NAMES.length; i++){ EVENT_NAME_MAP[EVENT_NAMES[i]] = true; }
  * Extension code
  */
 $.ui.fancytree.registerExtension("tracecalls", {
+	version: "0.0.1",
 	// Default options for this extension.
 	options: {
 		logTarget: null,   // optional redirect logging to this <div> tag

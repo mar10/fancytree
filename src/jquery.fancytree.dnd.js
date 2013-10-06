@@ -59,7 +59,7 @@ function _initDragAndDrop(tree) {
 					// TODO: remove this hint, when we understand when it happens
 					return "<div>ERROR?: helper requested but sourceNode not found</div>";
 				}
-				return sourceNode.tree.dnd._onDragEvent("helper", sourceNode, null, event, null, null);
+				return sourceNode.tree.ext.dnd._onDragEvent("helper", sourceNode, null, event, null, null);
 			},
 			start: function(event, ui) {
 //              var sourceNode = $.ui.fancytree.getNode(event.target);
@@ -126,7 +126,7 @@ function _registerDnd() {
 //              logMsg("    draggable.offset.click FIXED: %s/%s", draggable.offset.click.left, draggable.offset.click.top);
 				// Trigger onDragStart event
 				// TODO: when called as connectTo..., the return value is ignored(?)
-				return sourceNode.tree.dnd._onDragEvent("start", sourceNode, null, event, ui, draggable);
+				return sourceNode.tree.ext.dnd._onDragEvent("start", sourceNode, null, event, ui, draggable);
 			}
 		},
 		drag: function(event, ui) {
@@ -154,17 +154,17 @@ function _registerDnd() {
 			ui.helper.data("ftTargetNode", targetNode);
 			// Leaving a tree node
 			if(prevTargetNode && prevTargetNode !== targetNode ) {
-				prevTargetNode.tree.dnd._onDragEvent("leave", prevTargetNode, sourceNode, event, ui, draggable);
+				prevTargetNode.tree.ext.dnd._onDragEvent("leave", prevTargetNode, sourceNode, event, ui, draggable);
 			}
 			if(targetNode){
 				if(!targetNode.tree.options.dnd.onDrop) {
 					// not enabled as drop target
 				} else if(targetNode === prevTargetNode) {
 					// Moving over same node
-					targetNode.tree.dnd._onDragEvent("over", targetNode, sourceNode, event, ui, draggable);
+					targetNode.tree.ext.dnd._onDragEvent("over", targetNode, sourceNode, event, ui, draggable);
 				}else{
 					// Entering this node first time
-					targetNode.tree.dnd._onDragEvent("enter", targetNode, sourceNode, event, ui, draggable);
+					targetNode.tree.ext.dnd._onDragEvent("enter", targetNode, sourceNode, event, ui, draggable);
 				}
 			}
 			// else go ahead with standard event handling
@@ -186,12 +186,12 @@ function _registerDnd() {
 			}
 			if(targetNode) {
 				if(dropped){
-					targetNode.tree.dnd._onDragEvent("drop", targetNode, sourceNode, event, ui, draggable);
+					targetNode.tree.ext.dnd._onDragEvent("drop", targetNode, sourceNode, event, ui, draggable);
 				}
-				targetNode.tree.dnd._onDragEvent("leave", targetNode, sourceNode, event, ui, draggable);
+				targetNode.tree.ext.dnd._onDragEvent("leave", targetNode, sourceNode, event, ui, draggable);
 			}
 			if(sourceNode){
-				sourceNode.tree.dnd._onDragEvent("stop", sourceNode, null, event, ui, draggable);
+				sourceNode.tree.ext.dnd._onDragEvent("stop", sourceNode, null, event, ui, draggable);
 			}
 		}
 	});
@@ -203,12 +203,13 @@ function _registerDnd() {
 /* *****************************************************************************
  *
  */
-/** @namespace $.ui.fancytree.dnd */
+/** @namespace $.ui.fancytree.ext.dnd */
 $.ui.fancytree.registerExtension("dnd",
 	/** @scope ui_fancytree
-	 * @lends $.ui.fancytree.dnd.prototype
+	 * @lends $.ui.fancytree.ext.dnd.prototype
 	 */
 	{
+	version: "0.0.1",
 	// Default options for this extension.
 	options: {
 		// Make tree nodes draggable:
@@ -236,7 +237,7 @@ $.ui.fancytree.registerExtension("dnd",
 	nodeKeydown: function(ctx) {
 		var event = ctx.originalEvent;
 		if( event.which === $.ui.keyCode.ESCAPE) {
-			this.dnd._cancelDrag();
+			this._local._cancelDrag();
 		}
 		this._super(ctx);
 	},
@@ -245,7 +246,7 @@ $.ui.fancytree.registerExtension("dnd",
 		var posOpts,
 			markerOffsetX = 0,
 			markerAt = "center",
-			instData = this.dnd,
+			instData = this._local,
 			$source = sourceNode ? $(sourceNode.span) : null,
 			$target = $(targetNode.span);
 
@@ -370,7 +371,7 @@ $.ui.fancytree.registerExtension("dnd",
 	 */
 	_onDragEvent: function(eventName, node, otherNode, event, ui, draggable) {
 		if(eventName !== "over"){
-			logMsg("tree.dnd._onDragEvent(%s, %o, %o) - %o", eventName, node, otherNode, this);
+			logMsg("tree.ext.dnd._onDragEvent(%s, %o, %o) - %o", eventName, node, otherNode, this);
 		}
 		var $helper, nodeOfs, relPos, relPos2,
 			enterResponse, hitMode, r,
@@ -495,7 +496,7 @@ $.ui.fancytree.registerExtension("dnd",
 			}
 			// issue 332
 //			this._setDndStatus(otherNode, node, ui.helper, hitMode, res!==false);
-			this.dnd._setDndStatus(otherNode, node, ui.helper, hitMode, res!==false && hitMode !== null);
+			this._local._setDndStatus(otherNode, node, ui.helper, hitMode, res!==false && hitMode !== null);
 			break;
 		case "drop":
 			hitMode = ui.helper.data("hitMode");
@@ -508,7 +509,7 @@ $.ui.fancytree.registerExtension("dnd",
 			node.scheduleAction("cancel");
 			ui.helper.data("enterResponse", null);
 			ui.helper.data("hitMode", null);
-			this.dnd._setDndStatus(otherNode, node, ui.helper, "out", undefined);
+			this._local._setDndStatus(otherNode, node, ui.helper, "out", undefined);
 			if(dnd.onDragLeave){
 				dnd.onDragLeave(node, otherNode, ui, draggable);
 			}

@@ -1,4 +1,4 @@
-// Extending Fanyctree
+// Extending Fancytree
 // ===================
 //
 // See also the [live demo](http://wwwendt.de/tech/fancytree/demo/sample-ext-childcounter.html) of this code.
@@ -105,23 +105,40 @@ $.ui.fancytree.registerExtension("childcounter", {
 		hideExpanded: false
 	},
 
-// Local functions are prefixed with an underscore '_'.
+// Attributes other than `options` (or functions) can be defined here, and 
+// will be added to the tree.ext.EXTNAME namespace, in this case `tree.ext.childcounter.foo`.
+// They can also be accessed as `this._local.foo` from within the extension
+// methods.
+	foo: 42,
 
-	_appendCounter: function(node){
+// Local functions are prefixed with an underscore '_'.
+// Callable as `this._local._appendCounter()`.
+
+	_appendCounter: function(bar){
+		var tree = this;
 	},
 
-// Override virtual methods for this extension.
-// `this`       : is this extension object
-// `this._base` : the Fancytree instance
-// `this._super`: the virtual function that was overridden (member of prev. extension or Fancytree)
+// **Override virtual methods for this extension.**
+//
+// Fancytree implements a number of 'hook methods', prefixed by 'node...' or 'tree...'.
+// with a `ctx` argument (see [EventData](http://www.wwwendt.de/tech/fancytree/doc/jsdoc/global.html#EventData) 
+// for details) and an extended calling context:<br>
+// `this`       : the Fancytree instance<br>
+// `this._local`: the namespace that contains extension attributes and private methods (same as this.ext.EXTNAME)<br>
+// `this._super`: the virtual function that was overridden (member of previous extension or Fancytree)
 
+	/* Init */
+// `treeInit` is triggered when a tree is initalized. We can set up classes or
+// bind event handlers here...
 	treeInit: function(ctx){
-		var tree = ctx.tree,
+		var tree = this, // same as ctx.tree,
 			opts = ctx.options,
-			self = this;
+			extOpts = ctx.options.childcounter;
 
 // Call the base implementation
 		this._super(ctx);
+// Add a class to the tree container
+		this.$container.addClass("fancytree-ext-childcounter");
 	},
 
 // Destroy this tree instance (we only call the default implementation, so
@@ -143,7 +160,7 @@ $.ui.fancytree.registerExtension("childcounter", {
 			$("span.fancytree-icon", node.span).append($("<span class='fancytree-childcounter'/>").text(count));
 		}
 	},
-// Overload the `setExpanded` hook, so the conters are updated
+// Overload the `setExpanded` hook, so the counters are updated
 	nodeSetExpanded: function(ctx, flag) {
 		var tree = ctx.tree,
 			node = ctx.node;
