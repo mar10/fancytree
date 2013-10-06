@@ -194,7 +194,8 @@ module.exports = (grunt) ->
             src: ["build/*.js"]
             overwrite : true
             replacements: [ {
-                from : /version:\s*\"[0-9\.\-]+\"/g
+                # from : /version:\s*\"[0-9\.\-]+\"/g
+                from : /version:\s*\"development\"/g
                 to : "version: \"<%= pkg.version %>\""
             },{
                 from : /@version\s*DEVELOPMENT/g

@@ -7,7 +7,12 @@
 	<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.1/themes/base/jquery-ui.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js" type="text/javascript"></script>
-
+<!--
+	<link rel="stylesheet" href="../../src/skin-awesome/css/fontello.css">
+	<link rel="stylesheet" href="../../src/skin-awesome/css/animation.css">
+	<link href="../../src/skin-awesome/ui-fancytree.css" rel="stylesheet" type="text/css">
+	<link href="../../src/skin-win8-less/ui-fancytree.css" rel="stylesheet" type="text/css">
+ -->
 	<link href="../../src/skin-win8-less/ui-fancytree.css" rel="stylesheet" type="text/css">
 	<script src="../../src/jquery.fancytree.js" type="text/javascript"></script>
 
@@ -26,7 +31,9 @@
 	$(function(){
 		// Adjust skinswitcher for current folder layout
 		$("select#skinswitcher").skinswitcher("option", "base", "../../src/");
-
+/* 		var choices = $("select#skinswitcher").skinswitcher("option", "choices");
+		choices.push();
+ */
 		// Initialize Fancytree
 		$("#tree").fancytree({
 			checkbox: true,

@@ -1977,16 +1977,16 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			if(source.url){
 				// `source` is an Ajax options object
 				ajax = $.extend({}, ctx.options.ajax, source);
-				if(ajax.debugLazyDelay){
+				if(ajax.debugDelay){
 					// simulate a slow server
-					delay = ajax.debugLazyDelay;
+					delay = ajax.debugDelay;
 					if($.isArray(delay)){ // random delay range [min..max]
 						delay = delay[0] + Math.random() * (delay[1] - delay[0]);
 					}
 					node.debug("nodeLoadChildren waiting debug delay " + Math.round(delay) + "ms");
 					dfd = $.Deferred();
 					setTimeout(function(){
-						ajax.debugLazyDelay = false;
+						ajax.debugDelay = false;
 						self.nodeLoadChildren(ctx, ajax).complete(function(){
 							dfd.resolve.apply(this, arguments);
 						});
