@@ -16,6 +16,8 @@ for improvements on the API or architecture.
 This implies, that the API is not finalized yet: events, functions, and parameters
 are still subject to change.  
 
+You may request and vote for new features on the experimental [Scrumboard](https://trello.com/b/0eSYdyQv).
+
 See the [change log](https://github.com/mar10/fancytree/blob/master/CHANGELOG.md) 
 for details (including **changes that break backwards compatibility**).
 
