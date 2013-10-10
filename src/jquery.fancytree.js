@@ -79,10 +79,10 @@ function isVersionAtLeast(dottedVersion, major, minor, patch){
 	return true;
 }
 
-/** Return a wrapper that calls sub.methodName() and exposes 
+/** Return a wrapper that calls sub.methodName() and exposes
  *  this        : tree
  *  this._local : tree.ext.EXTNAME
- *  this._super : base.methodName() 
+ *  this._super : base.methodName()
  */
 function _makeVirtualFunction(methodName, tree, base, extension, extName){
 	var _super = base[methodName],
@@ -958,10 +958,10 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 			}, true);
 		}
 
-    // A collaposed node won't re-render children, so we have to remove it manually
-    if( !targetParent.expanded){
-      prevParent.ul.removeChild(this.li);
-    }
+	// A collaposed node won't re-render children, so we have to remove it manually
+	if( !targetParent.expanded){
+	  prevParent.ul.removeChild(this.li);
+	}
 
 		// Update HTML markup
 		if( !prevParent.isDescendantOf(targetParent)) {
@@ -1055,7 +1055,7 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 	},
 	// TODO: resetLazy()
 	/** Schedule activity for delayed execution (cancel any pending request).
-	 *  scheduleAction('cancel') will cancel the request.
+	 *  scheduleAction('cancel') will only cancel a pending request (if any).
 	 */
 	scheduleAction: function(mode, ms) {
 		if( this.tree.timer ) {
@@ -1495,6 +1495,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		}
 	},
    */
+   /** Return the number of child nodes. */
 	count: function() {
 		return this.rootNode.countChildren();
 	},
@@ -1575,6 +1576,12 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		// TODO: implement ifTreeHasFocus
 		return this.focusNode;
 	},
+	/**
+	 * Return node with a given key.
+	 * @param {String} key
+	 * @param {FancytreeNode} [searchRoot] only search below this node
+	 * @returns {FancytreeNode | null}
+	 */
 	getNodeByKey: function(key, searchRoot) {
 		// Search the DOM by element ID (assuming this is faster than traversing all nodes).
 		// $("#...") has problems, if the key contains '.', so we use getElementById()
@@ -1701,6 +1708,14 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		return;
 	},
 
+	 */
+
+	/**
+	 * Expand all parents of one or more nodes.
+	 * Calls
+	 * @param {String | String[]} keyPathList one or more key paths (e.g. '/3/2_1/7')
+	 * @param {function} callback callbeck(mode) is called for every visited node ('loaded', 'ok', 'error')
+	 * @returns {$.Promise}
 	 */
 	loadKeyPath: function(keyPathList, callback, _rootNode) {
 		var deferredList, dfd, i, path, key, loadMap, node, segList,
@@ -3135,9 +3150,11 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		}
 		return res;
 	},
-	/**
+	/** Call fn(node) for all nodes.
 	 *
-	 * @param {function} fn
+	 * @param {function} fn the callback function.
+	 *     Return false to stop iteration, return "skip" to skip this node and children only.
+	 * @returns {Boolean} false, if the iterator was stopped.
 	 */
 	visit: function(fn) {
 		return this.rootNode.visit(fn, false);

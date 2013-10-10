@@ -105,7 +105,7 @@ $.ui.fancytree.registerExtension("childcounter", {
 		hideExpanded: false
 	},
 
-// Attributes other than `options` (or functions) can be defined here, and 
+// Attributes other than `options` (or functions) can be defined here, and
 // will be added to the tree.ext.EXTNAME namespace, in this case `tree.ext.childcounter.foo`.
 // They can also be accessed as `this._local.foo` from within the extension
 // methods.
@@ -121,7 +121,7 @@ $.ui.fancytree.registerExtension("childcounter", {
 // **Override virtual methods for this extension.**
 //
 // Fancytree implements a number of 'hook methods', prefixed by 'node...' or 'tree...'.
-// with a `ctx` argument (see [EventData](http://www.wwwendt.de/tech/fancytree/doc/jsdoc/global.html#EventData) 
+// with a `ctx` argument (see [EventData](http://www.wwwendt.de/tech/fancytree/doc/jsdoc/global.html#EventData)
 // for details) and an extended calling context:<br>
 // `this`       : the Fancytree instance<br>
 // `this._local`: the namespace that contains extension attributes and private methods (same as this.ext.EXTNAME)<br>

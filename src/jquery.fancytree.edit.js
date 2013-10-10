@@ -95,7 +95,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.endEdit = function(applyChanges){
 		.removeClass("fancytree-dirty")
 		.unbind();
 
-	if( applyChanges || dirty ){
+	if( applyChanges && dirty ){
 		node.setTitle( $input.val() );
 	}else{
 		node.renderTitle();
@@ -126,7 +126,7 @@ $.ui.fancytree._FancytreeClass.prototype.isEditing = function(){
  * @requires jquery.fancytree.edit.js
  */
 $.ui.fancytree._FancytreeNodeClass.prototype.isEditing = function(){
-	return this.tree.isEditing() === this;
+	return this.tree.ext.edit.currentNode === this;
 };
 
 
@@ -137,8 +137,9 @@ $.ui.fancytree.registerExtension("edit", {
 	version: "0.0.1",
 	// Default options for this extension.
 	options: {
-		beforeEdit: $.noop,
-		edit: $.noop // 
+		startKeys: [],
+		beforeEdit: $.noop, // 
+		edit: $.noop //
 	},
 	// Local attributes
 	currentNode: null,
