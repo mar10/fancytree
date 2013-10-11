@@ -30,7 +30,7 @@
   height: 100%;
 }
 /*------------------------------------------------------------------------------
- * UL/LI
+ * UL/LI 
  *----------------------------------------------------------------------------*/
 ul.fancytree-container ul {
   padding: 0 0 0 16px;
@@ -409,5 +409,5 @@ table.fancytree-ext-columnview span.fancytree-cv-right {
  * This section is automatically generated from the `ui-fancytree.less` template.
  ******************************************************************************/
 .fancytree-container {
-  border: 5px solid green;
+  border: 5px solid blue;
 }
