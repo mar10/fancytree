@@ -1055,7 +1055,7 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 	},
 	// TODO: resetLazy()
 	/** Schedule activity for delayed execution (cancel any pending request).
-	 *  scheduleAction('cancel') will cancel the request.
+	 *  scheduleAction('cancel') will only cancel a pending request (if any).
 	 */
 	scheduleAction: function(mode, ms) {
 		if( this.tree.timer ) {
@@ -1495,6 +1495,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		}
 	},
    */
+   /** Return the number of child nodes. */
 	count: function() {
 		return this.rootNode.countChildren();
 	},
@@ -1575,6 +1576,12 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		// TODO: implement ifTreeHasFocus
 		return this.focusNode;
 	},
+	/**
+	 * Return node with a given key.
+	 * @param {String} key
+	 * @param {FancytreeNode} [searchRoot] only search below this node
+	 * @returns {FancytreeNode | null}
+	 */
 	getNodeByKey: function(key, searchRoot) {
 		// Search the DOM by element ID (assuming this is faster than traversing all nodes).
 		// $("#...") has problems, if the key contains '.', so we use getElementById()
@@ -1701,6 +1708,14 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		return;
 	},
 
+	 */
+
+	/**
+	 * Expand all parents of one or more nodes.
+	 * Calls
+	 * @param {String | String[]} keyPathList one or more key paths (e.g. '/3/2_1/7')
+	 * @param {function} callback callbeck(mode) is called for every visited node ('loaded', 'ok', 'error')
+	 * @returns {$.Promise}
 	 */
 	loadKeyPath: function(keyPathList, callback, _rootNode) {
 		var deferredList, dfd, i, path, key, loadMap, node, segList,
@@ -1992,16 +2007,16 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			if(source.url){
 				// `source` is an Ajax options object
 				ajax = $.extend({}, ctx.options.ajax, source);
-				if(ajax.debugDelay){
+				if(ajax.debugLazyDelay){
 					// simulate a slow server
-					delay = ajax.debugDelay;
+					delay = ajax.debugLazyDelay;
 					if($.isArray(delay)){ // random delay range [min..max]
 						delay = delay[0] + Math.random() * (delay[1] - delay[0]);
 					}
 					node.debug("nodeLoadChildren waiting debug delay " + Math.round(delay) + "ms");
 					dfd = $.Deferred();
 					setTimeout(function(){
-						ajax.debugDelay = false;
+						ajax.debugLazyDelay = false;
 						self.nodeLoadChildren(ctx, ajax).complete(function(){
 							dfd.resolve.apply(this, arguments);
 						});
@@ -3135,9 +3150,11 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		}
 		return res;
 	},
-	/**
+	/** Call fn(node) for all nodes.
 	 *
-	 * @param {function} fn
+	 * @param {function} fn the callback function.
+	 *     Return false to stop iteration, return "skip" to skip this node and children only.
+	 * @returns {Boolean} false, if the iterator was stopped.
 	 */
 	visit: function(fn) {
 		return this.rootNode.visit(fn, false);
@@ -3488,38 +3505,24 @@ $.extend($.ui.fancytree,
 	 *     TYPE: 'title' | 'prefix' | 'expander' | 'checkbox' | 'icon' | undefined
 	 */
 	getEventTarget: function(event){
-		// var tcn = event && event.target ? " " + event.target.className + " " : "",
 		var tcn = event && event.target ? event.target.className : "",
 			res = {node: this.getNode(event.target), type: undefined};
-		// tcn may contains UI themeroller or Font Awesome classes, so we use
-		// a fast version of $(res.node).hasClass()
-		// See http://jsperf.com/test-for-classname/2
-		if( /\bfancytree-title\b/.test(tcn) ){
+		// TODO: use map for fast lookup
+		// FIXME: cannot work, when tcn also contains UI themeroller classes
+		//        Use $(res.node).hasClass() instead
+		if( tcn === "fancytree-title" ){
 			res.type = "title";
-		}else if( /\bfancytree-expander\b/.test(tcn) ){
+		}else if( tcn === "fancytree-expander" ){
 			res.type = (res.node.hasChildren() === false ? "prefix" : "expander");
-		}else if( /\bfancytree-checkbox\b/.test(tcn) ){
+		}else if( tcn === "fancytree-checkbox" ){
 			res.type = "checkbox";
-		}else if( /\bfancytree-icon\b/.test(tcn) ){
+		}else if( tcn === "fancytree-icon" ){
 			res.type = "icon";
-		}else if( /\bfancytree-node\b/.test(tcn) ){
+		}else if( tcn.indexOf("fancytree-node") >= 0 ){
 			// TODO: issue #93 (http://code.google.com/p/fancytree/issues/detail?id=93)
 //			res.type = this._getTypeForOuterNodeEvent(event);
 			res.type = "title";
 		}
-// 		if( tcn.indexOf(" fancytree-title ") >= 0 ){
-// 			res.type = "title";
-// 		}else if( tcn.indexOf(" fancytree-expander ") >= 0 ){
-// 			res.type = (res.node.hasChildren() === false ? "prefix" : "expander");
-// 		}else if( tcn.indexOf(" fancytree-checkbox ") >= 0 ){
-// 			res.type = "checkbox";
-// 		}else if( tcn.indexOf(" fancytree-icon ") >= 0 ){
-// 			res.type = "icon";
-// 		}else if( tcn.indexOf(" fancytree-node ") >= 0 ){
-// 			// TODO: issue #93 (http://code.google.com/p/fancytree/issues/detail?id=93)
-// //			res.type = this._getTypeForOuterNodeEvent(event);
-// 			res.type = "title";
-// 		}
 		return res;
 	},
 	/** Return a FancytreeNode instance from element.

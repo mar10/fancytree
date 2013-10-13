@@ -23,25 +23,32 @@
 	var PLUGIN_NAME = "skinswitcher",
 		defaultOptions = {
 			/**RegEx that returns prefix, tag, and suffix of the CSS href.*/
-			skinPattern: "^(\W/skin-)().css$",
-			mode: "combo", // {String} mode 'combo' or 'radio'
+			// skinPattern: "^(\W/skin-)().css$",
+			// mode: "combo", // {String} mode 'combo' or 'radio'
 			base: "",
 			choices: []
+			// extraChoices: []
 		},
 		methods = {
 			init: function(options) {
-				var opts = $.extend({}, defaultOptions, options),
+				var i,
+					opts = $.extend({}, defaultOptions, options),
 					hrefs = [],
 					$link = null,
 					initialChoice = undefined;
+				// $('').skinswitcher did not match a selector
+				if( !this.length ){
+					return this;
+				}
+				// Attach options to skinswitcher combobox for later access
 				this.data("options", opts);
-				// Find <link> tag, figure out current setting and mark for
-				// later access
+				// Find the <link> tag that is used to includes our skin CSS.
+				// Add a class for later access.
 				$.each(opts.choices, function(){
 					hrefs.push(this.href.toLowerCase());
 				});
 				$("head link").each(function(){
-					for(var i=0; i<hrefs.length; i++){
+					for(i=0; i<hrefs.length; i++){
 						if(this.href.toLowerCase().indexOf(hrefs[i]) >= 0){
 							$link = $(this);
 							$link.addClass(PLUGIN_NAME);
@@ -49,22 +56,24 @@
 						}
 					}
 				});
+				if( !$link ){
+					$link = $("link." + PLUGIN_NAME);
+				}
+				if( !$link.length ){
+					$.error("Unable to find <link> tag for skinswitcher. Either set `href` to a known skin url or add a `skinswitcher` class.");
+				}
+				//
 				return this.each(function() {
 					// Add options to dropdown list
 					var $combo = $(this);
-					$combo.empty();
-					$.each(opts.choices, function(i, choice){
-						var $opt = $("<option>", {
-								text: choice.name,
-								value: choice.value
-							}).data("choice", choice);
-						$combo.append($opt);
-					});
-					// Switch include
-					$combo.change(function(){
-						var choice = $(":selected", this).data("choice");
-						$("link.skinswitcher").attr("href", opts.base + choice.href);
-					});
+					$combo
+						.empty()
+					    .skinswitcher("addChoices", opts.choices)
+						.change(function(){
+							var choice = $(":selected", this).data("choice");
+							$("link." + PLUGIN_NAME).attr("href", opts.base + choice.href);
+						});
+					// Find out initial selection 
 					if(opts.init){
 						$combo.val(opts.init).change();
 					}else if (initialChoice){
@@ -80,15 +89,32 @@
 				var opts = this.data("options");
 				if(typeof value !== "undefined"){
 					opts[name] = value;
+					return this;
 				}else{
 					return opts[name];
 				}
 			},
-			change: function(href) {
-				this.val("");
+			addChoices: function(choices) {
+				var $combo = $(this);
+				if( $.isPlainObject(choices) ){
+					choices = [ choices ];
+				}
+				$.each(choices, function(i, choice){
+					var $opt = $("<option>", {
+							text: choice.name,
+							value: choice.value
+						}).data("choice", choice);
+					$combo.append($opt);
+				});
+				return this;
+			},
+			change: function(value) {
+				$(this).val(value).change();
+				return this;
 			},
 			reset: function() {
-				this.val("");
+				$(this).val("").change();
+				return this;
 			}
 		};
 
