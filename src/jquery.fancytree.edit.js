@@ -138,7 +138,7 @@ $.ui.fancytree.registerExtension("edit", {
 	// Default options for this extension.
 	options: {
 		startKeys: [],
-		beforeEdit: $.noop, // 
+		beforeEdit: $.noop, //
 		edit: $.noop //
 	},
 	// Local attributes

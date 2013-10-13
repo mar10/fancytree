@@ -85,33 +85,42 @@ function isVersionAtLeast(dottedVersion, major, minor, patch){
  *  this._super : base.methodName()
  */
 function _makeVirtualFunction(methodName, tree, base, extension, extName){
-	var _super = base[methodName],
-		func = extension[methodName];
+	// $.ui.fancytree.debug("_makeVirtualFunction", methodName, tree, base, extension, extName);
 	// if(rexTestSuper && !rexTestSuper.test(func)){
 	//     // extension.methodName() doesn't call _super(), so no wrapper required
 	//     return func;
 	// }
-	return function(){
-		var prevLocal = tree._local,
-			prevSuper = tree._super;
-		try{
-			tree._local = tree.ext[extName];
-			tree._super = function(){
-				return _super.apply(tree, arguments);
+	// Use an immediate function as closure
+	var proxy = (function(){
+		var prevFunc = tree[methodName],      // org. tree method or prev. proxy
+			baseFunc = extension[methodName], //
+			_local = tree.ext[extName],
+			_super = function(){
+				return prevFunc.apply(tree, arguments);
 			};
-			return  func.apply(tree, arguments);
-		}finally{
-			tree._local = prevLocal;
-			tree._super = prevSuper;
-		}
-	};
+
+		// Return the wrapper function
+		return function(){
+			var prevLocal = tree._local,
+				prevSuper = tree._super;
+			try{
+				tree._local = _local;
+				tree._super = _super;
+				return  baseFunc.apply(tree, arguments);
+			}finally{
+				tree._local = prevLocal;
+				tree._super = prevSuper;
+			}
+		};
+	})(); // end of Immediate Function
+	return proxy;
 }
 
 /**
  * Subclass `base` by creating proxy functions
  */
 function _subclassObject(tree, base, extension, extName){
-//	$.ui.fancytree.debug("_subclassObject", base, extension, extName);
+	// $.ui.fancytree.debug("_subclassObject", tree, base, extension, extName);
 	for(var attrName in extension){
 		if(typeof extension[attrName] === "function"){
 			if(typeof tree[attrName] === "function"){
@@ -119,7 +128,6 @@ function _subclassObject(tree, base, extension, extName){
 				tree[attrName] = _makeVirtualFunction(attrName, tree, base, extension, extName);
 			}else if(attrName.charAt(0) === "_"){
 				// Create private methods in tree.ext.EXTENSION namespace
-				// tree.ext[extName][attrName] = $.proxy(extension[attrName], tree);
 				tree.ext[extName][attrName] = _makeVirtualFunction(attrName, tree, base, extension, extName);
 			}else{
 				$.error("Could not override tree." + attrName + ". Use prefix '_' to create tree." + extName + "._" + attrName);
@@ -2948,6 +2956,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	 * @param {EventData} ctx
 	 */
 	treeInit: function(ctx) {
+		//this.debug("Fancytree.treeInit()");
 		this.treeLoad(ctx);
 	},
 	/** Parse Fancytree from source, as configured in the options.
@@ -3271,7 +3280,7 @@ $.widget("ui.fancytree",
 //			_assert(!this.tree.options[extName], "Extension name must not exist as option name: " + extName);
 			this.tree.options[extName] = $.extend(true, {}, extension.options, this.tree.options[extName]);
 			// Add a namespace tree.ext.EXTENSION, to hold instance data
-			_assert(!this.tree.ext[extName], "Extension name must not exist as Fancytree.ext attribute: " + extName);
+			_assert(this.tree.ext[extName] === undefined, "Extension name must not exist as Fancytree.ext attribute: '" + extName + "'");
 //			this.tree[extName] = extension;
 			this.tree.ext[extName] = {};
 			// Subclass Fancytree methods using proxies.

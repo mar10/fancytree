@@ -68,12 +68,12 @@
 					var $combo = $(this);
 					$combo
 						.empty()
-					    .skinswitcher("addChoices", opts.choices)
+						.skinswitcher("addChoices", opts.choices)
 						.change(function(){
 							var choice = $(":selected", this).data("choice");
 							$("link." + PLUGIN_NAME).attr("href", opts.base + choice.href);
 						});
-					// Find out initial selection 
+					// Find out initial selection
 					if(opts.init){
 						$combo.val(opts.init).change();
 					}else if (initialChoice){
