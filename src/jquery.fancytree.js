@@ -3251,7 +3251,7 @@ $.widget("ui.fancytree",
 			selected: "fancytree-selected",
 			expanded: "fancytree-expanded",
 			lazy: "fancytree-lazy",
-			focused: "fancytree-focused ui-state-focus",
+			focused: "fancytree-focused",
 			partsel: "fancytree-partsel",
 			lastsib: "fancytree-lastsib"
 		},

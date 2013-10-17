@@ -28,7 +28,7 @@ module.exports = (grunt) ->
         normalize: true
         updateProps: 
           pkg: "package.json"
-      files: ["package.json", "bower.json", "*.jquery.json"]
+      files: ["package.json", "bower.json", "facytree.jquery.json"]
 
     checkrepo:
       beforeBump:
