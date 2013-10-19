@@ -2015,16 +2015,16 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			if(source.url){
 				// `source` is an Ajax options object
 				ajax = $.extend({}, ctx.options.ajax, source);
-				if(ajax.debugLazyDelay){
+				if(ajax.debugDelay){
 					// simulate a slow server
-					delay = ajax.debugLazyDelay;
+					delay = ajax.debugDelay;
 					if($.isArray(delay)){ // random delay range [min..max]
 						delay = delay[0] + Math.random() * (delay[1] - delay[0]);
 					}
 					node.debug("nodeLoadChildren waiting debug delay " + Math.round(delay) + "ms");
 					dfd = $.Deferred();
 					setTimeout(function(){
-						ajax.debugLazyDelay = false;
+						ajax.debugDelay = false;
 						self.nodeLoadChildren(ctx, ajax).complete(function(){
 							dfd.resolve.apply(this, arguments);
 						});
@@ -3503,18 +3503,18 @@ $.extend($.ui.fancytree,
 	getEventTarget: function(event){
 		var tcn = event && event.target ? event.target.className : "",
 			res = {node: this.getNode(event.target), type: undefined};
-		// TODO: use map for fast lookup
-		// FIXME: cannot work, when tcn also contains UI themeroller classes
-		//        Use $(res.node).hasClass() instead
-		if( tcn === "fancytree-title" ){
+		// tcn may contains UI themeroller or Font Awesome classes, so we use
+		// a fast version of $(res.node).hasClass()
+		// See http://jsperf.com/test-for-classname/2
+		if( /\bfancytree-title\b/.test(tcn) ){
 			res.type = "title";
-		}else if( tcn === "fancytree-expander" ){
+		}else if( /\bfancytree-expander\b/.test(tcn) ){
 			res.type = (res.node.hasChildren() === false ? "prefix" : "expander");
-		}else if( tcn === "fancytree-checkbox" ){
+		}else if( /\bfancytree-checkbox\b/.test(tcn) ){
 			res.type = "checkbox";
-		}else if( tcn === "fancytree-icon" ){
+		}else if( /\bfancytree-icon\b/.test(tcn) ){
 			res.type = "icon";
-		}else if( tcn.indexOf("fancytree-node") >= 0 ){
+		}else if( /\bfancytree-node\b/.test(tcn) ){
 			// TODO: issue #93 (http://code.google.com/p/fancytree/issues/detail?id=93)
 //			res.type = this._getTypeForOuterNodeEvent(event);
 			res.type = "title";
