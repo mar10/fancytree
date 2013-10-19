@@ -59,7 +59,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.startEdit = function(){
 	$input
 		.focus()
 		.change(function(event){
-			$input.addClass("fancytree-dirty");
+			$input.addClass("fancytree-edit-dirty");
 		}).keydown(function(event){
 			switch( event.which ) {
 			case $.ui.keyCode.ESCAPE:
@@ -82,20 +82,19 @@ $.ui.fancytree._FancytreeNodeClass.prototype.startEdit = function(){
  * @requires jquery.fancytree.edit.js
  */
 $.ui.fancytree._FancytreeNodeClass.prototype.endEdit = function(applyChanges){
-	var // prevTitle = this.title,
-		node = this,
+	var node = this,
 		tree = this.tree,
 		local = tree.ext.edit,
 		$title = $(".fancytree-title", node.span),
 		$input = $title.find("input.fancytree-edit-input"),
-		dirty = $input.hasClass("fancytree-dirty");
+		dirty = $input.hasClass("fancytree-edit-dirty");
 
 	node.debug("endEdit");
 	$input
-		.removeClass("fancytree-dirty")
+		.removeClass("fancytree-edit-dirty")
 		.unbind();
 
-	if( applyChanges && dirty ){
+	if( applyChanges || (dirty && applyChanges !== false) ){
 		node.setTitle( $input.val() );
 	}else{
 		node.renderTitle();
@@ -165,7 +164,7 @@ $.ui.fancytree.registerExtension("edit", {
 	},
 	nodeKeydown: function(ctx) {
 		switch( ctx.originalEvent.which ) {
-		case $.ui.keyCode.F2:
+		case 113: // [F2]
 			ctx.node.startEdit();
 			return false;
 		case $.ui.keyCode.ENTER:
