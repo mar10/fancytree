@@ -125,6 +125,7 @@ $.ui.fancytree.registerExtension("table", {
 		// Make sure that status classes are set on the node's <tr> elements
 		tree.statusClassPropName = "tr";
 		tree.ariaPropName = "tr";
+		this.nodeContainerAttrName = "tr";
 	},
 	/* Called by nodeRender to sync node order with tag order.*/
 //    nodeFixOrder: function(ctx) {

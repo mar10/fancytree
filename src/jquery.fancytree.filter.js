@@ -56,6 +56,9 @@ $.ui.fancytree._FancytreeClass.prototype.applyFilter = function(filter){
 
 	this.enableFilter = true;
 	this.$div.addClass("fancytree-ext-filter");
+	if( this.options.filter.mode === "hide"){
+		this.$div.addClass("fancytree-ext-filter-hide");
+	}
 	this.visit(function(node){
 		if(filter(node)){
 			count++;
@@ -84,7 +87,7 @@ $.ui.fancytree._FancytreeClass.prototype.clearFilter = function(){
 
 	this.enableFilter = false;
 	this.render();
-	this.$div.removeClass("fancytree-ext-filter");
+	this.$div.removeClass("fancytree-ext-filter fancytree-ext-filter-hide");
 };
 
 

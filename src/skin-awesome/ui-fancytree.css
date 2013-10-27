@@ -391,15 +391,15 @@ table.fancytree-ext-columnview span.fancytree-cv-right {
 /*------------------------------------------------------------------------------
  * 'filter' extension
  *----------------------------------------------------------------------------*/
-.fancytree-ext-filter span.fancytree-node .fancytree-title {
+.fancytree-ext-filter .fancytree-node .fancytree-title {
   color: silver;
   font-weight: lighter;
 }
-.fancytree-ext-filter span.fancytree-node.fancytree-submatch .fancytree-title {
+.fancytree-ext-filter .fancytree-node.fancytree-submatch .fancytree-title {
   color: black;
   font-weight: normal;
 }
-.fancytree-ext-filter span.fancytree-node.fancytree-match .fancytree-title {
+.fancytree-ext-filter .fancytree-node.fancytree-match .fancytree-title {
   color: black;
   font-weight: bold;
 }
