@@ -151,7 +151,7 @@ $.ui.fancytree.registerExtension("table", {
 	},
 	/* Override standard render. */
 	nodeRender: function(ctx, force, deep, collapsed, _recursive) {
-		var $cb, children, firstTr, i, l, newRow, prevNode, prevTr, subCtx,
+		var children, firstTr, i, l, newRow, prevNode, prevTr, subCtx,
 			tree = ctx.tree,
 			node = ctx.node,
 			opts = ctx.options,
@@ -195,12 +195,6 @@ $.ui.fancytree.registerExtension("table", {
 				node.span = $("span.fancytree-node", node.tr).get(0);
 				// Set icon, link, and title (normally this is only required on initial render)
 				this.nodeRenderTitle(ctx);
-// 				// move checkbox to custom column
-// 				if(opts.checkbox && opts.table.checkboxColumnIdx != null){
-// //					$("span.fancytree-node", node.tr).get(0);
-// 					$cb = $("span.fancytree-checkbox", node.span).detach();
-// 					$(node.tr).find("td:first").append($cb);
-// 				}
 				// Allow tweaking, binding, after node was created for the first time
 				tree._triggerNodeEvent("createNode", ctx);
 			}
