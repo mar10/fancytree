@@ -339,7 +339,7 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 			// insert nodeList after children[pos]
 			this.children.splice.apply(this.children, [pos, 0].concat(nodeList));
 		}
-		if(!this.parent || this.parent.ul){
+		if( !this.parent || this.parent.ul || this.tr ){
 			// render if the parent was rendered (or this is a root node)
 			this.render();
 		}
