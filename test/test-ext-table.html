@@ -106,11 +106,21 @@
 
 		$("#btnRename").click(function(e){
 			var node = tree.getActiveNode();
-			node.setTitle(node.title + "-renamed")
+			node.setTitle(node.title + "-renamed");
 		});
 		$("#btnAddChild").click(function(e){
 			var node = tree.getActiveNode();
-			node.addChildren([{title: "sub 1"}])
+			node.addChildren([{title: "sub 1"}]);
+		});
+		$("#btnRemoveIcon").click(function(e){
+			var node = tree.getActiveNode();
+			node.data.icon = false;
+			// node.render();
+			node.renderTitle();
+		});
+		$("#btnToggleSelect").click(function(e){
+			var node = tree.getActiveNode();
+			node.toggleSelected();
 		});
 	});
 </script>
@@ -146,6 +156,8 @@
 	<p>
 		<button id="btnRename">Rename</button>
 		<button id="btnAddChild">Add Child</button>
+		<button id="btnRemoveIcon">Remove icon</button>
+		<button id="btnToggleSelect">select</button>
 	</p>
 	<!-- Add a <table> element where the tree should appear: -->
 	<table id="tree">
