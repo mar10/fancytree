@@ -12,11 +12,11 @@
 	font-size: 10pt; /* font size should not be too big */
 	white-space: nowrap;
 	padding: 3px;
-	margin: 0; /* issue 201 */
+	margin: 0; // issue 201
 	background-color: #FCFCFC;
 	border: 1px dotted gray;
 	overflow: auto;
-	height: 100%; /* issue 263 */
+	height: 100%; // issue 263
 }
 
 ul.fancytree-container ul
@@ -277,7 +277,7 @@ span.fancytree-active .fancytree-title
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fafafb', endColorstr='#e5e5e5',GradientType=0 ); /* IE6-9 */
 }
 
-.fancytree-focused span.fancytree-active .fancytree-title,
+.fancytree-treefocus span.fancytree-active .fancytree-title,
 span.fancytree-selected .fancytree-title
 {
 	border: 1px solid #99DEFD;

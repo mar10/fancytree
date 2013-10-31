@@ -234,7 +234,7 @@ span.fancytree-icon /* Default icon */
 }
 span.fancytree-focused .fancytree-title {
 	outline: 1px dotted black;
-	color: white;
+	/*color: white;*/
 }
 span.fancytree-selected .fancytree-title,
 span.fancytree-active .fancytree-title {
@@ -243,8 +243,8 @@ span.fancytree-active .fancytree-title {
 span.fancytree-selected .fancytree-title {
 	font-style: italic;
 }
-.fancytree-focused span.fancytree-selected .fancytree-title,
-.fancytree-focused span.fancytree-active .fancytree-title {
+.fancytree-treefocus span.fancytree-selected .fancytree-title,
+.fancytree-treefocus span.fancytree-active .fancytree-title {
 	color: white;
 	background-color: #3875D7; /*blue*/
 }

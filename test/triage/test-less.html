@@ -7,9 +7,14 @@
 	<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.1/themes/base/jquery-ui.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js" type="text/javascript"></script>
-
-	<link href="../../src/skin-win8-less/ui-fancytree.css" class="skinswitcher" rel="stylesheet" type="text/css">
+<!--
+	<link href="../../src/skin-awesome/ui-fancytree.css" rel="stylesheet" type="text/css" class="skinswitcher">
+-->
+	<link href="../../src/skin-win8/ui-fancytree.css" class="skinswitcher" rel="stylesheet" type="text/css">
 	<script src="../../src/jquery.fancytree.js" type="text/javascript"></script>
+	<script src="../../src/jquery.fancytree.dnd.js" type="text/javascript"></script>
+	<script src="../../src/jquery.fancytree.table.js" type="text/javascript"></script>
+	<script src="../../src/jquery.fancytree.columnview.js" type="text/javascript"></script>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
 	<link href="../../lib/prettify.css" rel="stylesheet">
@@ -23,71 +28,124 @@
 
 	<!-- Add code to initialize the tree when the document is loaded: -->
 <script type="text/javascript">
+var SOURCE = [
+	{title: "Item 1", key: "node1"},
+	{title: "Folder 2", folder: true, expanded: true, key: "node2",
+		children: [
+			{title: "Sub-item 2.1", key: "node2.1", selected: true},
+			{title: "Sub-item 2.2", key: "node2.2", selected: true}
+		]
+	},
+	{title: "Folder 3", folder: true, expanded: true, key: "node3",
+		children: [
+			{title: "Sub-item 2.1", key: "node2.1", selected: false,
+				children: [
+							{title: "Sub-item 2.1.1", key: "node2.1.1", selected: true},
+							{title: "Sub-item 2.1.2", key: "node2.1.2", selected: true}
+						]
+				},
+			{title: "Sub-item 2.2", key: "node2.2", selected: true}
+		]
+	},
+	{title: "Folder 4", folder: true, expanded: true, key: "node4",
+		children: [
+			{title: "Sub-item 2.1", key: "node2.1", selected: true},
+			{title: "Sub-item 2.2", key: "node2.2", selected: false},
+			{title: "Sub-item 2.3 (unselectable)", key: "node2.3", selected: false, unselectable: true}
+		]
+	},
+	{title: "Item 3", key: "node3", lazy: true}
+	];
+var SOURCE2 = [
+	{title: "Folder 3", folder: true, expanded: true, key: "node3",
+		children: [
+			{title: "Sub-item 2.1", key: "node2.1", selected: false,
+				children: [
+							{title: "Sub-item 2.1.1", key: "node2.1.1", selected: true},
+							{title: "Sub-item 2.1.2", key: "node2.1.2", selected: false}
+						]
+				},
+			{title: "Sub-item 2.2", key: "node2.2", selected: true}
+		]
+	}
+	];
+	
 	$(function(){
 		// Adjust skinswitcher for current folder layout
 		$("#skinswitcher")
 			.skinswitcher("option", "base", "../../src/")
 			.skinswitcher("addChoices", [
-				{name: "Win7-less", value: "win7-less", href: "skin-win7-less/ui-fancytree.css"},
-				{name: "Win8-less", value: "win8-less", href: "skin-win8-less/ui-fancytree.css"}
+				{name: "Vista-less", value: "vista-less", href: "skin-vista/ui-fancytree.css"},
+				{name: "Lion-less", value: "lion-less", href: "skin-lion/ui-fancytree.css"},
+				{name: "Awesome", value: "awesome", href: "skin-awesome/ui-fancytree.css"},
+				{name: "XP-less", value: "xp-less", href: "skin-xp/ui-fancytree.css"},
+				{name: "Win7-less", value: "win7-less", href: "skin-win7/ui-fancytree.css"},
+				{name: "Win8-less", value: "win8-less", href: "skin-win8/ui-fancytree.css"}
 				])
-			.skinswitcher("change", "win8-less");
+			.skinswitcher("change", "win7-less");
 
 		// Initialize Fancytree
 		$("#tree").fancytree({
+			extensions: ["dnd"],
 			checkbox: true,
 			selectMode: 3,
-			source: [
-				{title: "Item 1", key: "node1"},
-				{title: "Folder 2", folder: true, expanded: true, key: "node2",
-					children: [
-						{title: "Sub-item 2.1", key: "node2.1", selected: true},
-						{title: "Sub-item 2.2", key: "node2.2", selected: true}
-					]
-				},
-				{title: "Folder 3", folder: true, expanded: true, key: "node3",
-					children: [
-						{title: "Sub-item 2.1", key: "node2.1", selected: false,
-							children: [
-										{title: "Sub-item 2.1.1", key: "node2.1.1", selected: true},
-										{title: "Sub-item 2.1.2", key: "node2.1.2", selected: true}
-									]
-							},
-						{title: "Sub-item 2.2", key: "node2.2", selected: true}
-					]
-				},
-				{title: "Folder 4", folder: true, expanded: true, key: "node4",
-					children: [
-						{title: "Sub-item 2.1", key: "node2.1", selected: true},
-						{title: "Sub-item 2.2", key: "node2.2", selected: false},
-						{title: "Sub-item 2.3 (unselectable)", key: "node2.3", selected: false, unselectable: true}
-					]
-				},
-				{title: "Item 3", key: "node3", lazy: true}
-			],
+			source: SOURCE,
 			lazyload: function(event, ctx) {
-				ctx.result = [
-								{title: "Folder 3", folder: true, expanded: true, key: "node3",
-									children: [
-										{title: "Sub-item 2.1", key: "node2.1", selected: false,
-											children: [
-														{title: "Sub-item 2.1.1", key: "node2.1.1", selected: true},
-														{title: "Sub-item 2.1.2", key: "node2.1.2", selected: false}
-													]
-											},
-										{title: "Sub-item 2.2", key: "node2.2", selected: true}
-									]
-								},
-							  ];
+				ctx.result = SOURCE2;
 				ctx.tree.rootNode.fixSelection3FromEndNodes();
 			},
-//			init: function(event, ctx) {
-//				ctx.tree.debug("init");
-//				ctx.tree.rootNode.fixSelection3FromEndNodes();
-//			},
 			loadChildren: function(event, ctx) {
 				ctx.tree.debug("loadChildren");
 				ctx.node.fixSelection3FromEndNodes();
+			},
+			dnd: {
+				preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
+				preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
+				autoExpandMS: 400,
+				onDragStart: function(node) {
+					return true;
+				},
+				onDragEnter: function(node, sourceNode) {
+					return node.folder ? ["over"] : ["before", "after"];
+				},
+				onDrop: function(node, sourceNode, hitMode, ui, draggable) {
+					node.addNode({title: $(draggable.element).text()}, hitMode);
+					return false;
+				}
+			}
+		});
+		$("#treegrid").fancytree({
+			extensions: ["table"],
+			checkbox: true,
+			table: {
+				indentation: 20,      // indent 20px per node level
+				nodeColumnIdx: 2,     // render the node title into the 2nd column
+				checkboxColumnIdx: 0  // render the checkboxes into the 1st column
+			},
+			source: {
+				url: "../../demo/ajax-tree-plain.json"
+			},
+			lazyload: function(e, data) {
+				data.result = {url: "../../demo/ajax-sub2.json"}
+			},
+			renderColumns: function(e, data) {
+				var node = data.node,
+					$tdList = $(node.tr).find(">td");
+				// (index #0 is rendered by fancytree by adding the checkbox)
+				$tdList.eq(1).text(node.getIndexHier()).addClass("alignRight");
+				// (index #2 is rendered by fancytree)
+				$tdList.eq(3).text(node.key);
+				$tdList.eq(4).html("<input type='checkbox' name='like' value='" + node.key + "'>");
+			}
+		});
+		$("#columnview").fancytree({
+			extensions: ["columnview"],
+			checkbox: true,
+			source: {
+				url: "../../demo/ajax-tree-plain.json"
+			},
+			lazyload: function(e, data) {
+				data.result = {url: "../../demo/ajax-sub2.json"};
 			}
 		});
 	});
@@ -122,6 +180,39 @@ $(function(){
 	<hr>
 	<div id="tree">
 	</div>
+
+	<hr>
+
+	<table id="treegrid">
+		<colgroup>
+		<col width="30px"></col>
+		<col width="30px"></col>
+		<col width="*"></col>
+		<col width="50px"></col>
+		<col width="30px"></col>
+		</colgroup>
+		<thead>
+			<tr> <th></th> <th>#</th> <th></th> <th>Key</th> <th>Like</th> </tr>
+		</thead>
+		<tbody>
+		</tbody>
+	</table>
+
+	<hr>
+	
+	<table id="columnview">
+		<colgroup>
+		<col width="300px"></col>
+		<col width="300px"></col>
+		<col width="300px"></col>
+		</colgroup>
+		<thead>
+			<tr> <th>1</th> <th>2</th> <th>3</th> </tr>
+		</thead>
+		<tbody>
+			<tr> <td>?</td> <td>?</td> <td>?</td> </tr>
+		</tbody>
+	</table>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
 	<p id="sampleButtons">

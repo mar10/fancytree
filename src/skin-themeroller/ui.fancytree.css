@@ -303,35 +303,6 @@ span.fancytree-title
 	margin-left: 3px;
 	cursor: pointer;
 }
-/*
-span.fancytree-node:hover
-{
-	background-color: #E5F3FB;
-	border-color: #70C0E7;
-}
-.fancytree-container.fancytree-focused span.fancytree-node.fancytree-focused
-{
-	border-color: #3399FF;
-}
-span.fancytree-node.fancytree-active,
-span.fancytree-node.fancytree-selected
-{
-	background-color: #F7F7F7;
-	border-color: #DEDEDE;
-}
-.fancytree-container.fancytree-focused span.fancytree-node.fancytree-active,
-.fancytree-container.fancytree-focused span.fancytree-node.fancytree-selected,
-span.fancytree-node.fancytree-active:hover,
-span.fancytree-node.fancytree-selected:hover
-{
-	background-color: #CBE8F6;
-	border-color: #26A0DA;
-}
-span.fancytree-node.fancytree-selected
-{
-	font-style: italic;
-}
-*/
 
 /*******************************************************************************
  * 'table' extension
@@ -352,31 +323,7 @@ table.fancytree-ext-table tbody tr td {
 table.fancytree-ext-table {
 	border-collapse: collapse;
 }
-/*
-table.fancytree-ext-table tbody tr:hover {
-	background-color: #E5F3FB;
-	outline: 1px solid #70C0E7;
-}
-table.fancytree-ext-table.fancytree-container.fancytree-focused span.fancytree-node.fancytree-focused
-{
-	outline: 1px solid #3399FF;
-}
-table.fancytree-ext-table.fancytree-focused tbody tr.fancytree-focused {
-	outline: 1px solid #26A0DA;
-}
-table.fancytree-ext-table.fancytree-focused tbody tr.fancytree-active,
-table.fancytree-ext-table.fancytree-focused tbody tr.fancytree-selected
-{
-	background-color: #CBE8F6;
-	outline: 1px solid #26A0DA;
-}
-table.fancytree-ext-table tbody tr.fancytree-active,
-table.fancytree-ext-table tbody tr.fancytree-selected
-{
-	background-color: #F7F7F7;
-	outline: 1px solid #DEDEDE;
-}
-*/
+
 /*******************************************************************************
  * 'columnview' extension
  */
