@@ -1400,7 +1400,7 @@ function Fancytree(widget){
 	}
 	// Add container to the TAB chain
 	// See http://www.w3.org/TR/wai-aria-practices/#focus_activedescendant
-	if(this.options.tabbable){
+	if(this.options.tabbable && this.options.tabbable !== "nodes"){
 		this.$container.attr("tabindex", "0");
 	}
 	if(this.options.aria){
@@ -2304,6 +2304,9 @@ Fancytree.prototype = /**@lends Fancytree*/{
 				if( node.key && opts.generateIds ){
 					node.li.id = opts.idPrefix + node.key;
 				}
+				if( opts.tabbable === "nodes" ){
+					node.li.tabIndex = 0;
+				}
 				node.span = document.createElement("span");
 				node.span.className = "fancytree-node";
 				if(aria){
@@ -2794,6 +2797,9 @@ Fancytree.prototype = /**@lends Fancytree*/{
 				this._callHook("treeSetFocus", ctx, true, true);
 			}
 			this.nodeMakeVisible(ctx);
+			if(this.options.tabbable === "nodes" && !this._inFocusHandler){
+				$(node.li).focus();
+			}
 			tree.focusNode = node;
 //			node.debug("FOCUS...");
 //			$(node.span).find(".fancytree-title").focus();
@@ -3261,6 +3267,11 @@ $.widget("ui.fancytree",
 	},
 	/* Set up the widget, Called on first $().fancytree() */
 	_create: function() {
+		// NOTE: keyboard navigation should be disabled if a tree can't receive focus
+		if (!this.options.tabbable) {
+			this.options.keyboard = false;
+		}
+
 		this.tree = new Fancytree(this);
 
 		this.$source = this.source || this.element.data("type") === "json" ? this.element
@@ -3354,18 +3365,17 @@ $.widget("ui.fancytree",
 		var ns = this.tree._ns;
 		this.element.unbind(ns);
 		this.tree.$container.unbind(ns);
-		$(document).unbind(ns);
 	},
 	/* Add mouse and kyboard handlers to the container */
 	_bind: function() {
 		var that = this,
-			opts = this.options,
-			tree = this.tree,
+			opts = that.options,
+			tree = that.tree,
 			ns = tree._ns,
 			selstartEvent = ( $.support.selectstart ? "selectstart" : "mousedown" );
 
 		// Remove all previuous handlers for this tree
-		this._unbind();
+		that._unbind();
 
 		//alert("keydown" + ns + "foc=" + tree.hasFocus() + tree.$container);
 		tree.debug("bind events; container: ", tree.$container);
@@ -3379,12 +3389,13 @@ $.widget("ui.fancytree",
 		});
 		// keydown must be bound to document, because $container might not
 		// receive these events
-		$(document).bind("keydown" + ns, function(event){
+		tree.$container.bind("keydown" + ns, function(event){
 			// TODO: also bind keyup and keypress
 			tree.debug("doc got event " + event.type + ", hasFocus:" + tree.hasFocus());
-			if(opts.disabled || opts.keyboard === false || !tree.hasFocus()){
+			if(opts.disabled || opts.keyboard === false || $(event.target).is(":input:enabled")){
 				return true;
 			}
+
 			var node = tree.focusNode,
 				// node may be null
 				ctx = tree._makeHookContext(node || tree, event),
@@ -3400,7 +3411,7 @@ $.widget("ui.fancytree",
 				tree.phase = prevPhase;
 			}
 		});
-		this.element.bind("click" + ns + " dblclick" + ns, function(event){
+		that.element.bind("click" + ns + " dblclick" + ns, function(event){
 			if(opts.disabled){
 				return true;
 			}
