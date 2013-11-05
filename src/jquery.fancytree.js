@@ -766,8 +766,8 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 	/** @returns {boolean | undefined} Check if node has children (returns undefined, if not sure). */
 	hasChildren: function() {
 		if(this.lazy){
-			if(this.children === null || this.children === undefined){
-				// Not yet loaded
+			if(this.children == null ){
+				// null or undefined: Not yet loaded
 				return undefined;
 			}else if(this.children.length === 0){
 				// Loaded, but response was empty
@@ -2537,7 +2537,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		if( isLastSib ){
 			cnList.push(cn.lastsib);
 		}
-		if( node.lazy && node.children === null ){
+		if( node.lazy && node.children == null ){
 			cnList.push(cn.lazy);
 		}
 		if( node.partsel ){
@@ -2563,7 +2563,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		}else{
 			cnList.push(cn.combinedExpanderPrefix +
 					(node.expanded ? "e" : "c") +
-					(node.lazy && node.children === null ? "d" : "") +
+					(node.lazy && node.children == null ? "d" : "") +
 					(isLastSib ? "l" : "")
 					);
 		}

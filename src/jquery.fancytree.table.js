@@ -108,7 +108,13 @@ $.ui.fancytree.registerExtension("table", {
 		}
 		tree.rowFragment.appendChild($row.get(0));
 
+		// Make sure that status classes are set on the node's <tr> elements
+		tree.statusClassPropName = "tr";
+		tree.ariaPropName = "tr";
+		this.nodeContainerAttrName = "tr";
+
 		this._super(ctx);
+
 		// standard Fancytree created a root UL
 		$(tree.rootNode.ul).remove();
 		tree.rootNode.ul = null;
@@ -122,10 +128,6 @@ $.ui.fancytree.registerExtension("table", {
 				.attr("role", "treegrid")
 				.attr("aria-readonly", true);
 		}
-		// Make sure that status classes are set on the node's <tr> elements
-		tree.statusClassPropName = "tr";
-		tree.ariaPropName = "tr";
-		this.nodeContainerAttrName = "tr";
 	},
 	/* Called by nodeRender to sync node order with tag order.*/
 //    nodeFixOrder: function(ctx) {
