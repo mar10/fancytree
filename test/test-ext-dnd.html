@@ -170,13 +170,12 @@
 		$(".draggable").draggable({
 			revert: true, //"invalid",
 			cursorAt: { top: -5, left: -5 },
-//	        helper: "clone",
-			connectToFancytree: true,   // let Fancytree accept drag events
+			connectToFancytree: true   // let Fancytree accept drag events
 		});
 		$(".droppable").droppable({
-			// connectToFancytree: true,   // let Fancytree accept drag events
 			drop: function(event, ui){
-				console.log(ui);
+				var sourceNode = $(ui.helper).data("ftSourceNode");
+				alert("Dropped source node " + sourceNode);
 			}
 		});
 		// Adjust skinswitcher for current folder layout
@@ -238,7 +237,6 @@
 			<tr> <th></th> <th>Key</th> <th>Folder</th> </tr>
 		</thead>
 		<tbody>
-			<tr> <td></td> <td></td> <td></td> </tr>
 		</tbody>
 	</table>
 
