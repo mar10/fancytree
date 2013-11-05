@@ -3048,7 +3048,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 				if(FT.focusTree.focusNode){
 					FT.focusTree.focusNode.setFocus(false);
 				}
-				FT.focusTree.$container.removeClass("fancytree-focused");
+				FT.focusTree.$container.removeClass("fancytree-treefocus");
 				this._triggerTreeEvent("blurTree");
 				FT.focusTree = null;
 			}
@@ -3056,7 +3056,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		//
 		if( flag && FT.focusTree !== this ){
 			FT.focusTree = this;
-			this.$container.addClass("fancytree-focused");
+			this.$container.addClass("fancytree-treefocus");
 			// Make sure container gets `:focus` when we clicked inside
 			if( !this.systemFocusElement ){
 				this.debug("Set `:focus` to container");
