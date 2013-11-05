@@ -63,6 +63,12 @@ ul.fancytree-no-connector > li
 	background-color: silver;
 }
 
+span.fancytree-node {
+	display: inline-block;
+	/* uncomment to remove default focused frame */
+	/*outline: 0;*/
+}
+
 /*******************************************************************************
  * Common icon definitions
  */

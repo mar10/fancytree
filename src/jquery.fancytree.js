@@ -2304,13 +2304,13 @@ Fancytree.prototype = /**@lends Fancytree*/{
 				if( node.key && opts.generateIds ){
 					node.li.id = opts.idPrefix + node.key;
 				}
-				if( opts.tabbable === "nodes" ){
-					node.li.tabIndex = 0;
-				}
 				node.span = document.createElement("span");
 				node.span.className = "fancytree-node";
 				if(aria){
 					$(node.span).attr("aria-labelledby", "ftal_" + node.key);
+				}
+				if( opts.tabbable === "nodes" ){
+					node.span.tabIndex = 0;
 				}
 				node.li.appendChild(node.span);
 				// Note: we don't add the LI to the DOM know, but only after we
@@ -2798,7 +2798,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			}
 			this.nodeMakeVisible(ctx);
 			if(this.options.tabbable === "nodes" && !this._inFocusHandler){
-				$(node.li).focus();
+				$(node.span).focus();
 			}
 			tree.focusNode = node;
 //			node.debug("FOCUS...");
