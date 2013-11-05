@@ -192,16 +192,16 @@ span.fancytree-checkbox {
 span.fancytree-checkbox:hover {
   background-position: -16px -32px;
 }
-span.fancytree-partsel span.fancytree-checkbox {
+.fancytree-partsel span.fancytree-checkbox {
   background-position: -64px -32px;
 }
-span.fancytree-partsel span.fancytree-checkbox:hover {
+.fancytree-partsel span.fancytree-checkbox:hover {
   background-position: -80px -32px;
 }
-span.fancytree-selected span.fancytree-checkbox {
+.fancytree-selected span.fancytree-checkbox {
   background-position: -32px -32px;
 }
-span.fancytree-selected span.fancytree-checkbox:hover {
+.fancytree-selected span.fancytree-checkbox:hover {
   background-position: -48px -32px;
 }
 /*------------------------------------------------------------------------------
@@ -216,16 +216,16 @@ span.fancytree-selected span.fancytree-checkbox:hover {
 .fancytree-radio span.fancytree-checkbox:hover {
   background-position: -16px -48px;
 }
-.fancytree-radio span.fancytree-partsel span.fancytree-checkbox {
+.fancytree-radio .fancytree-partsel span.fancytree-checkbox {
   background-position: -64px -48px;
 }
-.fancytree-radio span.fancytree-partsel span.fancytree-checkbox:hover {
+.fancytree-radio .fancytree-partsel span.fancytree-checkbox:hover {
   background-position: -80px -48px;
 }
-.fancytree-radio span.fancytree-selected span.fancytree-checkbox {
+.fancytree-radio .fancytree-selected span.fancytree-checkbox {
   background-position: -32px -48px;
 }
-.fancytree-radio span.fancytree-selected span.fancytree-checkbox:hover {
+.fancytree-radio .fancytree-selected span.fancytree-checkbox:hover {
   background-position: -48px -48px;
 }
 /*------------------------------------------------------------------------------
@@ -385,15 +385,15 @@ table.fancytree-ext-columnview span.fancytree-cv-right {
 /*------------------------------------------------------------------------------
  * 'filter' extension
  *----------------------------------------------------------------------------*/
-.fancytree-ext-filter .fancytree-node span.fancytree-title {
+.fancytree-ext-filter span.fancytree-node span.fancytree-title {
   color: silver;
   font-weight: lighter;
 }
-.fancytree-ext-filter .fancytree-node.fancytree-submatch span.fancytree-title {
+.fancytree-ext-filter span.fancytree-node.fancytree-submatch span.fancytree-title {
   color: black;
   font-weight: normal;
 }
-.fancytree-ext-filter .fancytree-node.fancytree-match span.fancytree-title {
+.fancytree-ext-filter span.fancytree-node.fancytree-match span.fancytree-title {
   color: black;
   font-weight: bold;
 }
@@ -410,9 +410,7 @@ span.fancytree-title {
 }
 span.fancytree-title:hover {
   background-color: #F2F7FD;
-  /* light blue */
   border-color: #B8D6FB;
-  /* darker light blue */
 }
 span.fancytree-focused span.fancytree-title {
   background-color: #EFEBDE;

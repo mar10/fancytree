@@ -251,15 +251,15 @@ table.fancytree-ext-columnview span.fancytree-cv-right {
 /*------------------------------------------------------------------------------
  * 'filter' extension
  *----------------------------------------------------------------------------*/
-.fancytree-ext-filter .fancytree-node span.fancytree-title {
+.fancytree-ext-filter span.fancytree-node span.fancytree-title {
   color: silver;
   font-weight: lighter;
 }
-.fancytree-ext-filter .fancytree-node.fancytree-submatch span.fancytree-title {
+.fancytree-ext-filter span.fancytree-node.fancytree-submatch span.fancytree-title {
   color: black;
   font-weight: normal;
 }
-.fancytree-ext-filter .fancytree-node.fancytree-match span.fancytree-title {
+.fancytree-ext-filter span.fancytree-node.fancytree-match span.fancytree-title {
   color: black;
   font-weight: bold;
 }

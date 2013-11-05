@@ -280,53 +280,6 @@ span.fancytree-expander {
 }
 
 
-// span.fancytree-expander {
-// 	.useSprite(0, 5);
-// 	cursor: pointer;
-// }
-// span.fancytree-expander:hover {
-// 	.useSprite(1, 5);
-// }
-// .fancytree-exp-n span.fancytree-expander:hover // Collapsed, not delayed, not last sibling
-// {
-// 	.useSprite(1, 5);
-// }
-// .fancytree-exp-cl span.fancytree-expander // Collapsed, not delayed, last sibling
-// {
-// }
-// .fancytree-exp-cd span.fancytree-expander // Collapsed, delayed, not last sibling
-// {
-// }
-// .fancytree-exp-cdl span.fancytree-expander // Collapsed, delayed, last sibling
-// {
-// }
-// .fancytree-exp-e span.fancytree-expander,  // Expanded, not delayed, not last sibling
-// .fancytree-exp-ed span.fancytree-expander,  // Expanded, delayed, not last sibling
-// .fancytree-exp-el span.fancytree-expander,  // Expanded, not delayed, last sibling
-// .fancytree-exp-edl span.fancytree-expander  // Expanded, delayed, last sibling
-// {
-// 	.useSprite(2, 5);
-// }
-// .fancytree-exp-e span.fancytree-expander:hover,  // Expanded, not delayed, not last sibling
-// .fancytree-exp-ed span.fancytree-expander:hover,  // Expanded, delayed, not last sibling
-// .fancytree-exp-el span.fancytree-expander:hover,  // Expanded, not delayed, last sibling
-// .fancytree-exp-edl span.fancytree-expander:hover  // Expanded, delayed, last sibling
-// {
-// 	.useSprite(3, 5);
-// }
-// .fancytree-loading span.fancytree-expander  // 'Loading' status overrides all others
-// {
-// 	background-image: url("loading.gif");
-// 	.useSprite(0, 0);
-// }
-
-// .fancytree-exp-n span.fancytree-expander, // Connector instead of expander, if node has no children
-// .fancytree-exp-nl span.fancytree-expander {
-// 	background-image: none;
-// 	cursor: default;
-// }
-
-
 /*------------------------------------------------------------------------------
  * Checkbox icon
  *----------------------------------------------------------------------------*/
@@ -338,17 +291,17 @@ span.fancytree-checkbox {
 span.fancytree-checkbox:hover {
 	.useSprite(1, 2);
 }
-span.fancytree-partsel span.fancytree-checkbox {
+.fancytree-partsel span.fancytree-checkbox {
 	.useSprite(4, 2);
 }
-span.fancytree-partsel span.fancytree-checkbox:hover {
+.fancytree-partsel span.fancytree-checkbox:hover {
 	.useSprite(5, 2);
 }
 // Selected after partsel, so it takes precedence:
-span.fancytree-selected span.fancytree-checkbox {
+.fancytree-selected span.fancytree-checkbox {
 	.useSprite(2, 2);
 }
-span.fancytree-selected span.fancytree-checkbox:hover {
+.fancytree-selected span.fancytree-checkbox:hover {
 	.useSprite(3, 2);
 }
 
@@ -366,17 +319,17 @@ span.fancytree-selected span.fancytree-checkbox:hover {
 .fancytree-radio span.fancytree-checkbox:hover {
 	.useSprite(1, 3);
 }
-.fancytree-radio span.fancytree-partsel span.fancytree-checkbox {
+.fancytree-radio .fancytree-partsel span.fancytree-checkbox {
 	.useSprite(4, 3);
 }
-.fancytree-radio span.fancytree-partsel span.fancytree-checkbox:hover {
+.fancytree-radio .fancytree-partsel span.fancytree-checkbox:hover {
 	.useSprite(5, 3);
 }
 // Selected after partsel, so it takes precedence:
-.fancytree-radio span.fancytree-selected span.fancytree-checkbox {
+.fancytree-radio .fancytree-selected span.fancytree-checkbox {
 	.useSprite(2, 3);
 }
-.fancytree-radio span.fancytree-selected span.fancytree-checkbox:hover {
+.fancytree-radio .fancytree-selected span.fancytree-checkbox:hover {
 	.useSprite(3, 3);
 }
 
@@ -442,15 +395,13 @@ span.fancytree-icon // Default icon
  * Node titles and highlighting
  *----------------------------------------------------------------------------*/
 
-span.fancytree-node
-{
+span.fancytree-node {
 	display: inline-block;
 	width: 100%;
 	// border: @nodeBorderWidth solid transparent;  /* avoid jumping, when a border is added on hover */
 }
 
-span.fancytree-title
-{
+span.fancytree-title {
 	display: inline-block; // Better alignment, when title contains <br>
 	// vertical-align: top;
 	padding-left: 3px;
@@ -465,131 +416,84 @@ span.fancytree-title
 //	   (we can do this, because this theme doesn't use vertical lines)
 //	border: 1px solid white; // Note: 'transparent' would not work in IE6
 	cursor: pointer;
-	// .titlePlain();
 }
-
-// span.fancytree-node:hover
-// {
-// 	// background-color: #E5F3FB;
-// 	// border-color: #70C0E7;
-// 	// .nodePlainHovered();
-// }
-// .fancytree-container.fancytree-focused span.fancytree-node.fancytree-focused
-// {
-// 	border-color: #3399FF;
-// //	outline: 1px solid #3399FF;
-// }
-// span.fancytree-node.fancytree-active,
-// span.fancytree-node.fancytree-selected
-// { // active/selcted nodes inside inactive tree
-// 	background-color: #F7F7F7;
-// 	border-color: #DEDEDE;
-// }
-// .fancytree-container.fancytree-focused span.fancytree-node.fancytree-active,
-// .fancytree-container.fancytree-focused span.fancytree-node.fancytree-selected,
-// span.fancytree-node.fancytree-active:hover,
-// span.fancytree-node.fancytree-selected:hover
-// {
-// 	background-color: #CBE8F6;
-// 	border-color: #26A0DA;
-// }
-// span.fancytree-node.fancytree-selected
-// {
-// 	font-style: italic;
-// }
 
 
 /*------------------------------------------------------------------------------
  * Drag'n'drop support
  *----------------------------------------------------------------------------*/
-div.fancytree-drag-helper
-{
+div.fancytree-drag-helper {
 }
-div.fancytree-drag-helper a
-{
+div.fancytree-drag-helper a {
 	border: 1px solid gray;
 	background-color: white;
 	padding-left: 5px;
 	padding-right: 5px;
 	opacity: 0.8;
 }
-span.fancytree-drag-helper-img
-{
+span.fancytree-drag-helper-img {
 // position: relative;
 // left: -16px;
 }
-div.fancytree-drag-helper /*.fancytree-drop-accept*/
+div.fancytree-drag-helper // .fancytree-drop-accept
 {
 //  border-color: green;
 //  background-color: red;
 }
-div.fancytree-drop-accept span.fancytree-drag-helper-img
-{
+div.fancytree-drop-accept span.fancytree-drag-helper-img {
 	.useSprite(2, 7);
 }
-div.fancytree-drag-helper.fancytree-drop-reject
-{
+div.fancytree-drag-helper.fancytree-drop-reject {
 	border-color: red;
 }
-div.fancytree-drop-reject span.fancytree-drag-helper-img
-{
+div.fancytree-drop-reject span.fancytree-drag-helper-img {
 	.useSprite(1, 7);
 }
 
 /*** Drop marker icon *********************************************************/
 
-#fancytree-drop-marker
-{
+#fancytree-drop-marker {
 	width: 24px;
 	position: absolute;
 	.useSprite(0, 8);
 	margin: 0;
 }
 #fancytree-drop-marker.fancytree-drop-after,
-#fancytree-drop-marker.fancytree-drop-before
-{
+#fancytree-drop-marker.fancytree-drop-before {
 	width: 64px;
 	.useSprite(0, 9);
 }
-#fancytree-drop-marker.fancytree-drop-copy
-{
+#fancytree-drop-marker.fancytree-drop-copy {
 	.useSprite(4, 8);
 }
-#fancytree-drop-marker.fancytree-drop-move
-{
+#fancytree-drop-marker.fancytree-drop-move {
 	.useSprite(2, 8);
 }
 
 /*** Source node while dragging ***********************************************/
 
-span.fancytree-drag-source
-{
+span.fancytree-drag-source {
 //	border-color: gray; 
 	background-color: #e0e0e0;
 }
-span.fancytree-drag-source a
-{
+span.fancytree-drag-source a {
 	color: gray;
 }
 
 /*** Target node while dragging cursor is over it *****************************/
 
-span.fancytree-drop-target
-{
+span.fancytree-drop-target {
 }
-span.fancytree-drop-target.fancytree-drop-accept a
-{
+span.fancytree-drop-target.fancytree-drop-accept a {
 //	border-color: green;
 	background-color: #3169C6 !important;
 	color: white !important; /* @ IE6 */
 	text-decoration: none;
 }
-span.fancytree-drop-target.fancytree-drop-reject
-{
+span.fancytree-drop-target.fancytree-drop-reject {
 //	border-color: red;
 }
-span.fancytree-drop-target.fancytree-drop-after a
-{
+span.fancytree-drop-target.fancytree-drop-after a {
 }
 
 
@@ -597,16 +501,6 @@ span.fancytree-drop-target.fancytree-drop-after a
  * 'table' extension
  *----------------------------------------------------------------------------*/
 
-// table.fancytree-ext-table {
-// 	border-collapse: collapse;
-// 	width: 100%;
-// }
-// table.fancytree-ext-table tbody tr:nth-child(even){
-// 	background-color: #f4f4f8;
-// }
-// table.fancytree-ext-table tbody tr td {
-// 	border: 1px solid lightgray;
-// }
 table.fancytree-ext-table {
 	border-collapse: collapse;
 }
@@ -665,15 +559,15 @@ table.fancytree-ext-columnview {
  *----------------------------------------------------------------------------*/
 
 .fancytree-ext-filter {
-	.fancytree-node span.fancytree-title {
+	span.fancytree-node span.fancytree-title {
 		color: silver;
 		font-weight: lighter;
 	}
-	.fancytree-node.fancytree-submatch span.fancytree-title {
+	span.fancytree-node.fancytree-submatch span.fancytree-title {
 		color: black;
 		font-weight: normal;
 	}
-	.fancytree-node.fancytree-match span.fancytree-title {
+	span.fancytree-node.fancytree-match span.fancytree-title {
 		color: black;
 		font-weight: bold;
 	}

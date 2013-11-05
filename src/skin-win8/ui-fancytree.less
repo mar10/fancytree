@@ -42,47 +42,92 @@
 @lineHeight: 16px;
 @iconMarginLeft: 3px;
 
-// .fancytree-container
-// {
-// 	border: 1px solid blue;
-// }
-
 /*******************************************************************************
  * Node titles
  */
-// .nodePlainHovered(){
-// 	.spanStyleMixin(inherit, #f8fcfe, #D8F0FA, #f8fcfe, #eff9fe);
-// }
 
-span.fancytree-node
-{
+span.fancytree-node {
 	border: @nodeBorderWidth solid transparent;  // avoid jumping, when a border is added on hover
 }
-span.fancytree-node:hover
-{
+span.fancytree-node:hover {
 	background-color: #E5F3FB;
 	border-color: #70C0E7;
 }
-.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-focused
-{
+.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-focused {
 	border-color: #3399FF;
-/*	outline: 1px solid #3399FF; */
+//	outline: 1px solid #3399FF; 
 }
 span.fancytree-node.fancytree-active,
-span.fancytree-node.fancytree-selected
-{ /* active/selcted nodes inside inactive tree */
+span.fancytree-node.fancytree-selected { // active/selcted nodes inside inactive tree
 	background-color: #F7F7F7;
 	border-color: #DEDEDE;
 }
 .fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-active,
 .fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-selected,
 span.fancytree-node.fancytree-active:hover,
-span.fancytree-node.fancytree-selected:hover
-{
+span.fancytree-node.fancytree-selected:hover {
 	background-color: #CBE8F6;
 	border-color: #26A0DA;
 }
-span.fancytree-node.fancytree-selected
-{
+.fancytree-node.fancytree-selected {
 	font-style: italic;
+}
+
+/*******************************************************************************
+ * 'table' extension
+ */
+table.fancytree-ext-table tbody {
+	tr td {
+	  border: 1px solid #EDEDED;
+	}
+	span.fancytree-node,
+	span.fancytree-node:hover { // undo standard tree css
+		border: none;
+		background: none;
+	}
+	// Title get's a white background, when hovered. Undo standard node formatting
+	span.fancytree-title:hover {
+	  border: none; //1px solid transparent;
+	  background: inherit;
+	  background: transparent;
+	  background: none;
+	  filter: none;
+	}
+	tr:hover  {
+		background-color: #E5F3FB;
+	    outline: 1px solid #70C0E7;
+	}
+	// tr:hover td {
+	//   outline: 1px solid #D8F0FA;
+	// }
+	// tr.fancytree-focused {
+	// 	border-color: #3399FF;
+ //    	outline: 1px dotted black;
+	// }
+	tr.fancytree-focused span.fancytree-title {
+	  outline: 1px dotted black;
+	}
+
+	tr.fancytree-active:hover,
+	tr.fancytree-selected:hover {
+		background-color: #CBE8F6;
+	    outline: 1px solid #26A0DA;
+	}
+	tr.fancytree-active {  // dimmed, if inside inactive tree
+		background-color: #F7F7F7;
+	    outline: 1px solid #DEDEDE;
+	}
+	tr.fancytree-selected {  // dimmed, if inside inactive tree
+		background-color: #F7F7F7;
+	}
+}
+
+table.fancytree-ext-table.fancytree-treefocus tbody {
+	tr.fancytree-active {
+		background-color: #CBE8F6;
+	    outline: 1px solid #26A0DA;
+	}
+	tr.fancytree-selected {
+		background-color: #CBE8F6;
+	}
 }
