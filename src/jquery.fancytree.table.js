@@ -266,6 +266,7 @@ $.ui.fancytree.registerExtension("table", {
 			opts = ctx.options;
 
 		 this._super(ctx);
+		 $(node.tr).removeClass("fancytree-node");
 		 // indent
 		 indent = (node.getLevel() - 1) * opts.table.indentation;
 		 if(indent){
