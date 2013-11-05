@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
-	<title>Fancytree - Test: Table</title>
+	<title>Test Table - Fancytree</title>
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js" type="text/javascript"></script>
@@ -47,9 +47,10 @@
 				nodeColumnIdx: 2,     // render the node title into the 2nd column
 				checkboxColumnIdx: 0  // render the checkboxes into the 1st column
 			},
-			source: {
-				url: "../demo/ajax-tree-plain.json"
-			},
+			// source: {
+			// 	url: "../demo/ajax-tree-plain.json"
+			// },
+            source: [{title: "1", folder: true}],
 			lazyload: function(e, data) {
 				data.result = {url: "../demo/ajax-sub2.json"};
 			},
@@ -82,16 +83,16 @@
 		$("input[name=search]").keyup(function(e){
 			var match = $(this).val();
 			if(e && e.which === $.ui.keyCode.ESCAPE || $.trim(match) === ""){
-				$("button#btnResetSearch").click();
+				$("#btnResetSearch").click();
 				return;
 			}
 			// Pass text as filter string (will be matched as substring in the node title)
 			var n = tree.applyFilter(match);
-			$("button#btnResetSearch").attr("disabled", false);
+			$("#btnResetSearch").attr("disabled", false);
 			$("span#matches").text("(" + n + " matches)");
 		}).focus();
 
-		$("button#btnResetSearch").click(function(e){
+		$("#btnResetSearch").click(function(e){
 			$("input[name=search]").val("");
 			$("span#matches").text("");
 			tree.clearFilter();
@@ -122,6 +123,12 @@
 			var node = tree.getActiveNode();
 			node.toggleSelected();
 		});
+		$("#btnRemove").click(function(e){
+            var node = tree.getActiveNode();
+            node.remove();
+            // node.render();
+            //node.renderTitle();
+        });
 	});
 </script>
 </head>
@@ -157,7 +164,8 @@
 		<button id="btnRename">Rename</button>
 		<button id="btnAddChild">Add Child</button>
 		<button id="btnRemoveIcon">Remove icon</button>
-		<button id="btnToggleSelect">select</button>
+		<button id="btnToggleSelect">Select</button>
+		<button id="btnRemove">Remove</button>
 	</p>
 	<!-- Add a <table> element where the tree should appear: -->
 	<table id="tree">
@@ -172,7 +180,6 @@
 			<tr> <th></th> <th>#</th> <th></th> <th>Key</th> <th>Like</th> </tr>
 		</thead>
 		<tbody>
-			<tr> <td></td> <td></td> <td></td> <td></td> </tr>
 		</tbody>
 	</table>
 
