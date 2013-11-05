@@ -180,6 +180,17 @@ $(function(){
 		}
 	});
 	addSampleButton({
+		tooltip: "Use node.addChildren(data, beforeNode) and node .getNextSibling() to append a sibling",
+		label: "Apppend a sibling node",
+		newline: false,
+		code: function(){
+			var tree = $("#tree").fancytree("getTree"),
+				node = tree.getActiveNode(),
+				newData = {title: "New Node"},
+				newSibling = node.getParent().addChildren(newData, node.getNextSibling());
+		}
+	});
+	addSampleButton({
 		label: "ROOT.addChildren()",
 		tooltip: "Use node.addChildren() with recursive arrays",
 		code: function(){
