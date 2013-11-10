@@ -168,7 +168,7 @@ module.exports = (grunt) ->
               yuicompress: false
 #              optimization: 10
             files: [
-                {expand: true, cwd: "src/", src: "**/ui-fancytree.less", dest: "src/", ext: ".css"}
+                {expand: true, cwd: "src/", src: "**/ui.fancytree.less", dest: "src/", ext: ".fancytree.css"}
             ]
 
     qunit:

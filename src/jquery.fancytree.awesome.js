@@ -68,6 +68,9 @@ $.ui.fancytree.registerExtension("awesome", {
 
 		this._super(ctx);
 
+		if( node.isRoot() ){
+			return;
+		}
 		if( node.hasChildren() !== false ){
 			span = $("span.fancytree-expander", node.span).get(0);
 			if( span ){

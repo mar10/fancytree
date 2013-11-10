@@ -20,18 +20,6 @@ body {
 	background-image: url("nav_bg.png");
 	background-repeat: repeat-x;
 }
-.fancytree-title {
-	color: white;
-	text-decoration: none;
-}
-
-span.external span.fancytree-title:after
-{
-	content: "";
-	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAMAAAC67D+PAAAAFVBMVEVmmcwzmcyZzP8AZswAZv////////9E6giVAAAAB3RSTlP///////8AGksDRgAAADhJREFUGFcly0ESAEAEA0Ei6/9P3sEcVB8kmrwFyni0bOeyyDpy9JTLEaOhQq7Ongf5FeMhHS/4AVnsAZubxDVmAAAAAElFTkSuQmCC") 100% 50% no-repeat;
-	padding-right: 13px;
-}
-
 div#tree {
 	position: absolute;
 	height: 95%;
@@ -44,13 +32,23 @@ ul.fancytree-container {
 	width: 100%;
 	background-color: transparent;
 }
-span.fancytree-focused span.fancytree-title
-{
+span.fancytree-title {
+	color: white;
+	text-decoration: none;
+}
+span.fancytree-focused span.fancytree-title {
 	outline-color: white;
 }
-.fancytree-title:hover,
-span.fancytree-active .fancytree-title {
+span.fancytree-title:hover,
+span.fancytree-active span.fancytree-title,
+.fancytree-treefocus span.fancytree-title:hover,
+.fancytree-treefocus span.fancytree-active span.fancytree-title {
 	color: #39414A;
+}
+span.external span:.fancytree title :after; {
+	content: "";
+	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAMAAAC67D+PAAAAFVBMVEVmmcwzmcyZzP8AZswAZv////////9E6giVAAAAB3RSTlP///////8AGksDRgAAADhJREFUGFcly0ESAEAEA0Ei6/9P3sEcVB8kmrwFyni0bOeyyDpy9JTLEaOhQq7Ongf5FeMhHS/4AVnsAZubxDVmAAAAAElFTkSuQmCC") 100% 50% no-repeat;
+	padding-right: 13px;
 }
 </style>
 

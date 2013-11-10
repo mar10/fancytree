@@ -28,7 +28,6 @@ ul.fancytree-container {
   border: 1px dotted gray;
   overflow: auto;
   height: 100%;
-  /* Suppress lines for last child node */
 }
 ul.fancytree-container ul {
   padding: 0 0 0 16px;
@@ -73,18 +72,17 @@ span.fancytree-drag-helper-img,
   width: 1em;
   height: 1em;
   display: inline-block;
-  /* Required to make a span sizeable */
   vertical-align: top;
   background-repeat: no-repeat;
   background-position: left;
   background-image: url("icons.gif");
   background-position: 0em 0em;
 }
-/** Used by iconclass option */
+/* Used by iconclass option */
 span.fancytree-custom-icon {
   display: inline-block;
 }
-/** Used by 'icon' node option: */
+/* Used by 'icon' node option: */
 .fancytree-container img {
   width: 1em;
   height: 1em;
@@ -92,9 +90,6 @@ span.fancytree-custom-icon {
   vertical-align: top;
   border-style: none;
 }
-/*------------------------------------------------------------------------------
- * Lines and connectors
- *----------------------------------------------------------------------------*/
 /*------------------------------------------------------------------------------
  * Expander icon
  *
@@ -181,19 +176,19 @@ div.fancytree-drag-helper.fancytree-drop-reject {
 }
 /*** Drop marker icon *********************************************************/
 #fancytree-drop-marker {
-  width: 24px;
+  width: 2em;
   position: absolute;
   margin: 0;
 }
 #fancytree-drop-marker.fancytree-drop-after,
 #fancytree-drop-marker.fancytree-drop-before {
-  width: 64px;
+  width: 4em;
 }
 /*** Source node while dragging ***********************************************/
 span.fancytree-drag-source {
   background-color: #e0e0e0;
 }
-span.fancytree-drag-source a {
+span.fancytree-drag-source span.fancytree.title {
   color: gray;
 }
 /*** Target node while dragging cursor is over it *****************************/
@@ -244,7 +239,7 @@ table.fancytree-ext-columnview span.fancytree-node {
 table.fancytree-ext-columnview span.fancytree-node.fancytree-expanded {
   background-color: #CBE8F6;
 }
-table.fancytree-ext-columnview span.fancytree-cv-right {
+table.fancytree-ext-columnview .fancytree-has-children span.fancytree-cv-right {
   position: absolute;
   right: 3px;
 }

@@ -109,7 +109,7 @@ ul.fancytree-container {
 		margin: 0;
 		padding: 1px 0 0 0;
 	}
-	/* Suppress lines for last child node */
+	// Suppress lines for last child node
 	li.fancytree-lastsib {
 		background-image: none;
 	}
@@ -144,18 +144,18 @@ span.fancytree-drag-helper-img,
 	height: @iconHeight;
 //	display: -moz-inline-box; // @ FF 1+2 removed for issue 221
 //	-moz-box-align: start; /* issue 221 */
-	display: inline-block; /* Required to make a span sizeable */
+	display: inline-block; // Required to make a span sizeable
 	vertical-align: top;
 	background-repeat: no-repeat;
 	background-position: left;
 	background-image: url("icons.gif");
 	.setBgPos(0, 0);
 }
-/** Used by iconclass option */
+/* Used by iconclass option */
 span.fancytree-custom-icon {
 	display: inline-block;
 }
-/** Used by 'icon' node option: */
+/* Used by 'icon' node option: */
 .fancytree-container img
 {
 	width: @iconWidth;
@@ -164,15 +164,6 @@ span.fancytree-custom-icon {
 	vertical-align: top;
 	border-style: none;
 }
-
-/*------------------------------------------------------------------------------
- * Lines and connectors
- *----------------------------------------------------------------------------*/
-
-// span.fancytree-connector
-// {
-// 	background-image: none;
-// }
 
 
 /*------------------------------------------------------------------------------
@@ -350,34 +341,42 @@ span.fancytree-icon // Default icon
 }
 
 /* Documents */
-.fancytree-has-children span.fancytree-icon // Default icon
-{
-//    background-position: 0px -16px;
+.fancytree-ico-c span.fancytree-icon  { // Collapsed folder (empty)
+	// .useSprite(0, 0);
+}
+.fancytree-ico-c span.fancytree-icon:hover {
+	.useSprite(1, 0);
+}
+.fancytree-has-children.fancytree-ico-c span.fancytree-icon  { // Collapsed folder (not empty)
+	.useSprite(2, 0);
+}
+.fancytree-has-children.fancytree-ico-c span.fancytree-icon:hover {
+	.useSprite(3, 0);
+}
+.fancytree-ico-e span.fancytree-icon  { // Expanded folder
+	.useSprite(4, 0);
+}
+.fancytree-ico-e span.fancytree-icon:hover {
+	.useSprite(5, 0);
 }
 
 /* Folders */
-.fancytree-ico-cf span.fancytree-icon  // Collapsed Folder (no children)
-{
+.fancytree-ico-cf span.fancytree-icon  { // Collapsed folder (empty)
 	.useSprite(0, 1);
 }
-.fancytree-ico-cf span.fancytree-icon:hover  // Collapsed Folder (hovered, no children)
-{
+.fancytree-ico-cf span.fancytree-icon:hover {
 	.useSprite(1, 1);
 }
-.fancytree-has-children.fancytree-ico-cf span.fancytree-icon  // Expanded Folder
-{
+.fancytree-has-children.fancytree-ico-cf span.fancytree-icon  { // Collapsed folder (not empty)
 	.useSprite(2, 1);
 }
-.fancytree-has-children.fancytree-ico-cf span.fancytree-icon:hover  // Expanded Folder
-{
+.fancytree-has-children.fancytree-ico-cf span.fancytree-icon:hover {
 	.useSprite(3, 1);
 }
-.fancytree-ico-ef span.fancytree-icon  // Expanded Folder
-{
+.fancytree-ico-ef span.fancytree-icon  { // Expanded folder
 	.useSprite(4, 1);
 }
-.fancytree-ico-ef span.fancytree-icon:hover  // Expanded Folder
-{
+.fancytree-ico-ef span.fancytree-icon:hover {
 	.useSprite(5, 1);
 }
 
@@ -435,39 +434,33 @@ span.fancytree-drag-helper-img {
 // position: relative;
 // left: -16px;
 }
-div.fancytree-drag-helper // .fancytree-drop-accept
-{
-//  border-color: green;
-//  background-color: red;
+div.fancytree-drag-helper.fancytree-drop-reject {
+	border-color: red;
 }
 div.fancytree-drop-accept span.fancytree-drag-helper-img {
 	.useSprite(2, 7);
-}
-div.fancytree-drag-helper.fancytree-drop-reject {
-	border-color: red;
 }
 div.fancytree-drop-reject span.fancytree-drag-helper-img {
 	.useSprite(1, 7);
 }
 
 /*** Drop marker icon *********************************************************/
-
 #fancytree-drop-marker {
-	width: 24px;
+	width: 2 * @iconWidth; // was 24px, but 32 should be correct
 	position: absolute;
 	.useSprite(0, 8);
 	margin: 0;
-}
-#fancytree-drop-marker.fancytree-drop-after,
-#fancytree-drop-marker.fancytree-drop-before {
-	width: 64px;
-	.useSprite(0, 9);
-}
-#fancytree-drop-marker.fancytree-drop-copy {
-	.useSprite(4, 8);
-}
-#fancytree-drop-marker.fancytree-drop-move {
-	.useSprite(2, 8);
+	&.fancytree-drop-after,
+	&.fancytree-drop-before {
+		width: 4 * @iconWidth; // 64px;
+		.useSprite(0, 9);
+	}
+	&.fancytree-drop-copy {
+		.useSprite(4, 8);
+	}
+	&.fancytree-drop-move {
+		.useSprite(2, 8);
+	}
 }
 
 /*** Source node while dragging ***********************************************/
@@ -475,25 +468,25 @@ div.fancytree-drop-reject span.fancytree-drag-helper-img {
 span.fancytree-drag-source {
 //	border-color: gray; 
 	background-color: #e0e0e0;
-}
-span.fancytree-drag-source a {
-	color: gray;
+	span.fancytree.title {
+		color: gray;
+	}
 }
 
 /*** Target node while dragging cursor is over it *****************************/
 
 span.fancytree-drop-target {
-}
-span.fancytree-drop-target.fancytree-drop-accept a {
-//	border-color: green;
-	background-color: #3169C6 !important;
-	color: white !important; /* @ IE6 */
-	text-decoration: none;
-}
-span.fancytree-drop-target.fancytree-drop-reject {
-//	border-color: red;
-}
-span.fancytree-drop-target.fancytree-drop-after a {
+	&.fancytree-drop-accept a {
+	//	border-color: green;
+		background-color: #3169C6 !important;
+		color: white !important; /* @ IE6 */
+		text-decoration: none;
+	}
+	&.fancytree-drop-reject {
+	//	border-color: red;
+	}
+	&.fancytree-drop-after a {
+	}
 }
 
 
@@ -546,7 +539,7 @@ table.fancytree-ext-columnview {
 	// table.fancytree-ext-columnview span.fancytree-node.fancytree-active {
 	// 	background-color: royalblue;
 	// }
-	span.fancytree-cv-right {
+	.fancytree-has-children span.fancytree-cv-right {
 		.useSprite(0, 5);
 		position: absolute;
 		right: 3px;
