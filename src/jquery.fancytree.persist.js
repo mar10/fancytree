@@ -93,6 +93,7 @@ $.ui.fancytree.registerExtension("persist", {
 
 	/* Append `key` to a cookie. */
 	_setKey: function(type, key, flag){
+		key = "" + key; // #90
 		var instData = this._local,
 			instOpts = this.options.persist,
 			cookieName = instData.cookiePrefix + type,
@@ -199,7 +200,9 @@ $.ui.fancytree.registerExtension("persist", {
 	nodeSetActive: function(ctx, flag) {
 		var instData = this._local,
 			instOpts = this.options.persist;
+
 		this._super(ctx, flag);
+
 		if(instData.storeActive){
 			$.cookie(instData.cookiePrefix + ACTIVE,
 					 this.activeNode ? this.activeNode.key : null,
