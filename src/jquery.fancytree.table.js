@@ -267,24 +267,19 @@ $.ui.fancytree.registerExtension("table", {
 			node = ctx.node,
 			opts = ctx.options;
 
-		 this._super(ctx);
-		 $(node.tr).removeClass("fancytree-node");
-		 // indent
-		 indent = (node.getLevel() - 1) * opts.table.indentation;
-		 if(indent){
-			 $(node.span).css({marginLeft: indent + "px"});
-		 }
+		this._super(ctx);
+		$(node.tr).removeClass("fancytree-node");
+		// indent
+		indent = (node.getLevel() - 1) * opts.table.indentation;
+		if(indent){
+			$(node.span).css({marginLeft: indent + "px"});
+		}
 	 },
 	/* Expand node, return Deferred.promise. */
 	nodeSetExpanded: function(ctx, flag) {
-		var node = ctx.node,
-			dfd = new $.Deferred();
-		this._super(ctx, flag).done(function(){
-			flag = (flag !== false);
-			setChildRowVisibility(ctx.node, flag);
-			dfd.resolveWith(node);
+		return this._super(ctx, flag).always(function () {
+			setChildRowVisibility(ctx.node, !!flag);
 		});
-		return dfd;
 	},
 	nodeSetStatus: function(ctx, status, message, details) {
 		if(status === "ok"){

@@ -45,7 +45,7 @@
                                 { title: "Sub item 1" },
                                 { title: "Sub item 2" }
                             ]);
-                        }, 500);
+                        }, 1000);
                     });
                     break;
                 case "ajax-error":
@@ -55,7 +55,7 @@
                     data.result = $.Deferred(function (dfd) {
                         setTimeout(function () {
                             dfd.reject(new Error("TEST ERROR"));
-                        }, 500);
+                        }, 1000);
                     });
                     break;
                 default:
@@ -76,27 +76,27 @@
 
         $("#tree1").fancytree({
             source: source,
-            ajax: { debugLazyDelay: 500 },
+            ajax: { debugDelay: 1000 },
             lazyload: lazyload
         });
 
         $("#tree2").fancytree({
             source: source,
-            ajax: { debugLazyDelay: 500 },
+            ajax: { debugDelay: 1000 },
             lazyload: lazyload,
             loaderror: loaderror
         });
 
         $("#table1").fancytree({
             source: source,
-            ajax: { debugLazyDelay: 500 },
+            ajax: { debugDelay: 1000 },
             lazyload: lazyload,
             extensions: ["table"]
         });
 
         $("#table2").fancytree({
             source: source,
-            ajax: { debugLazyDelay: 500 },
+            ajax: { debugDelay: 1000 },
             lazyload: lazyload,
             loaderror: loaderror,
             extensions: ["table"]
