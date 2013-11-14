@@ -1,4 +1,15 @@
-# 2.0.0-3 / Unreleased
+# 2.0.0-5 / Unreleased
+
+  * [BREAKING CHANGE] Renamed `rencercolumns` event to `renderColumns`
+  * [BREAKING CHANGE] Renamed `fancytree-focused` class to `fancytree-treefocus` (container only)
+  * [FEATURE] Refectored CSS style to use a common LESS template
+  * [FEATURE] Edit extension
+
+# 2.0.0-4
+
+  * Fixes
+
+# 2.0.0-3
 
   * [BREAKING CHANGE] Changed extension syntax
   * [FEATURE] Edit extension
