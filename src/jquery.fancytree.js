@@ -13,9 +13,6 @@
 
 // Start of local namespace
 ;(function($, window, document, undefined) {
-// relax some jslint checks:
-/*globals alert */
-
 "use strict";
 
 // prevent duplicate loading
@@ -36,8 +33,8 @@ function _raiseNotImplemented(msg){
 
 function _assert(cond, msg){
 	// TODO: see qunit.js extractStacktrace()
-	msg = ": " + msg || "";
 	if(!cond){
+		msg = msg ? ": " + msg : "";
 		$.error("Assertion failed" + msg);
 	}
 }
@@ -1022,11 +1019,10 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 	 * @returns $.Promise
 	 */
 	lazyLoad: function(discard) {
-		if(discard){
+		if(discard || this.hasChildren() === undefined){
 			this.discard();
-		}else{
-			_assert(!$.isArray(this.children));
 		}
+		_assert(!$.isArray(this.children));
 		var source = this.tree._triggerNodeEvent("lazyload", this);
 		_assert(typeof source !== "boolean", "lazyload event must return source in data.result");
 		return this.tree._callHook("nodeLoadChildren", this, source);
@@ -1414,24 +1410,31 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	/** Return a context object that can be re-used for _callHook().
 	 * @param {Fancytree | FancytreeNode | EventData} obj
 	 * @param {Event} originalEvent
+	 * @param {Object} extra
 	 * @returns {EventData}
 	 */
-	_makeHookContext: function(obj, originalEvent) {
+	_makeHookContext: function(obj, originalEvent, extra) {
+		var ctx, tree;
 		if(obj.node !== undefined){
 			// obj is already a context object
 			if(originalEvent && obj.originalEvent !== originalEvent){
 				$.error("invalid args");
 			}
-			return obj;
+			ctx = obj;
 		}else if(obj.tree){
 			// obj is a FancytreeNode
-			var tree = obj.tree;
-			return { node: obj, tree: tree, widget: tree.widget, options: tree.widget.options, originalEvent: originalEvent };
+			tree = obj.tree;
+			ctx = { node: obj, tree: tree, widget: tree.widget, options: tree.widget.options, originalEvent: originalEvent };
 		}else if(obj.widget){
 			// obj is a Fancytree
-			return { node: null, tree: obj, widget: obj.widget, options: obj.widget.options, originalEvent: originalEvent };
+			ctx = { node: null, tree: obj, widget: obj.widget, options: obj.widget.options, originalEvent: originalEvent };
+		}else{
+			$.error("invalid args");
 		}
-		$.error("invalid args");
+		if(extra){
+			$.extend(ctx, extra);
+		}
+		return ctx;
 	},
 	/** Trigger a hook function: funcName(ctx, [...]).
 	 *
@@ -1996,50 +1999,46 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	 *    - an Ajax options object
 	 *    - an Ajax.promise
 	 *
-	 * @param {object} ctx
+	 * @param {EventData} ctx
 	 * @param {object[]|object|string|$.Promise|function} source
 	 * @returns {$.Promise} The deferred will be resolved as soon as the (ajax)
 	 *     data was rendered.
 	 */
 	nodeLoadChildren: function(ctx, source) {
-		var ajax, children, delay, dfd,
+		var ajax, delay,
 			tree = ctx.tree,
-			node = ctx.node,
-			self = this;
+			node = ctx.node;
 
 		if($.isFunction(source)){
 			source = source();
 		}
-		if(source.url || $.isFunction(source.done)){
-			tree.nodeSetStatus(ctx, "loading");
-			if(source.url){
-				// `source` is an Ajax options object
-				ajax = $.extend({}, ctx.options.ajax, source);
-				if(ajax.debugDelay){
-					// simulate a slow server
-					delay = ajax.debugDelay;
-					if($.isArray(delay)){ // random delay range [min..max]
-						delay = delay[0] + Math.random() * (delay[1] - delay[0]);
-					}
-					node.debug("nodeLoadChildren waiting debug delay " + Math.round(delay) + "ms");
-					dfd = $.Deferred();
-					setTimeout(function(){
-						ajax.debugDelay = false;
-						self.nodeLoadChildren(ctx, ajax).complete(function(){
-							dfd.resolve.apply(this, arguments);
-						});
-					}, delay);
-					return dfd;
-				}else{
-					dfd = $.ajax(ajax);
+		// TOTHINK: move to 'ajax' extension?
+		if(source.url){
+			// `source` is an Ajax options object
+			ajax = $.extend({}, ctx.options.ajax, source);
+			if(ajax.debugDelay){
+				// simulate a slow server
+				delay = ajax.debugDelay;
+				if($.isArray(delay)){ // random delay range [min..max]
+					delay = delay[0] + Math.random() * (delay[1] - delay[0]);
 				}
+
+				node.debug("nodeLoadChildren waiting debug delay " + Math.round(delay) + "ms");
+				ajax.debugDelay = false;
+				source = $.Deferred(function (dfd) {
+					setTimeout(function () {
+						$.ajax(ajax)
+							.done(function () {	dfd.resolveWith(this, arguments); })
+							.fail(function () {	dfd.rejectWith(this, arguments); });
+					}, delay);
+				});
 			}else{
-				// `source` is a promise, as returned by a $.ajax call
-				dfd = source;
+				source = $.ajax(ajax);
 			}
-			dfd.done(function(data, textStatus, jqXHR){
+
+			// TODO: change 'pipe' to 'then' for jQuery 1.8
+			source = source.pipe(function (data, textStatus, jqXHR) {
 				var res;
-				tree.nodeSetStatus(ctx, "ok");
 				if(typeof data === "string"){ $.error("Ajax request returned a string (did you get the JSON dataType wrong?)."); }
 				// postProcess is similar to the standard dataFilter hook,
 				// but it is also called for JSONP
@@ -2050,34 +2049,47 @@ Fancytree.prototype = /**@lends Fancytree*/{
 					// Process ASPX WebMethod JSON object inside "d" property
 					data = (typeof data.d === "string") ? $.parseJSON(data.d) : data.d;
 				}
-				children = data;
-
-			}).fail(function(jqXHR, textStatus, errorThrown){
-				tree.nodeSetStatus(ctx, "error", textStatus, jqXHR.status + ": " + errorThrown);
-				alert("error: " + textStatus + " (" + jqXHR.status + ": " + (errorThrown.message || errorThrown) + ")");
+				return data;
+			}, function (jqXHR, textStatus, errorThrown) {
+				return tree._makeHookContext(node, null, {
+					error: jqXHR,
+					args: Array.prototype.slice.call(arguments),
+					message: errorThrown,
+					details: jqXHR.status + ": " + errorThrown
+				});
 			});
-		}else{
-			// `source` is an array of child objects
-			dfd = $.Deferred();
-			children = source;
-			dfd.resolve();
 		}
-		dfd.done(function(){
+
+		if($.isFunction(source.promise)){
+			// `source` is a promise
+			tree.nodeSetStatus(ctx, "loading");
+			source.done(function () {
+				tree.nodeSetStatus(ctx, "ok");
+			}).fail(function(error){
+				var ctxErr;
+				if (error.node && error.error && error.message) {
+					// error is already a context object
+					ctxErr = error;
+				} else {
+					ctxErr = tree._makeHookContext(node, null, {
+						error: error, // it can be jqXHR or any custom error
+						args: Array.prototype.slice.call(arguments),
+						message: error ? (error.message || error.toString()) : ""
+					});
+				}
+				tree._triggerNodeEvent("loaderror", ctxErr, null);
+				tree.nodeSetStatus(ctx, "error", ctxErr.message, ctxErr.details);
+			});
+		}
+
+		return $.when(source).done(function(children){
 			_assert($.isArray(children), "expected array of children");
 			node._setChildren(children);
 			if(node.parent){
-				// if nodeLoadChildren was called for rootNode, the caller must
-				// use tree.render() instead
-				if(node.isVisible()){
-					tree.nodeRender(ctx);
-				}
 				// trigger fancytreeloadchildren (except for tree-reload)
 				tree._triggerNodeEvent("loadChildren", node);
 			}
-		}).fail(function(){
-			tree.nodeRender(ctx);
 		});
-		return dfd;
 	},
 	// isVisible: function() {
 	//     // Return true, if all parents are expanded.
@@ -2572,7 +2584,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 				(node.folder ? "f" : "")
 				);
 //        node.span.className = cnList.join(" ");
-		node[tree.statusClassPropName].className = cnList.join(" ");
+		statusElem.className = cnList.join(" ");
 
 		// TODO: we should not set this in the <span> tag also, if we set it here:
 		// Maybe most (all) of the classes should be set in LI instead of SPAN?
@@ -2687,7 +2699,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		});
 
 		// vvv Code below is executed after loading finished:
-		_afterLoad = function(){
+		_afterLoad = function(callback){
 			var duration, easing, isVisible, isExpanded;
 
 			node.expanded = flag;
@@ -2709,25 +2721,22 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			if( node.ul ) {
 				isVisible = (node.ul.style.display !== "none");
 				isExpanded = !!node.expanded;
-	//            _assert(isVisible !== isExpanded);
-				if( isVisible === isExpanded ) {
+				if ( isVisible === isExpanded ) {
 					node.warn("nodeSetExpanded: UL.style.display already set");
-					dfd.resolveWith(node);
-				} else if( opts.fx ) {
+				} else if ( !opts.fx ) {
+					node.ul.style.display = ( node.expanded || !parent ) ? "" : "none";
+				} else {
 					duration = opts.fx.duration || 200;
 					easing = opts.fx.easing;
 					node.debug("nodeSetExpanded: animate start...");
 					$(node.ul).animate(opts.fx, duration, easing, function(){
 						node.debug("nodeSetExpanded: animate done");
-						dfd.resolveWith(node);
+						callback();
 					});
-				} else {
-					node.ul.style.display = ( node.expanded || !parent ) ? "" : "none";
-					dfd.resolveWith(node);
+					return;
 				}
-			}else{
-				dfd.resolveWith(node);
 			}
+			callback();
 		};
 		// ^^^ Code above is executed after loading finshed.
 
@@ -2739,9 +2748,9 @@ Fancytree.prototype = /**@lends Fancytree*/{
 				if(dfd.notifyWith){ // requires jQuery 1.6+
 					dfd.notifyWith(node, ["loaded"]);
 				}
-				_afterLoad.call(tree);
+				_afterLoad(function () { dfd.resolveWith(node); });
 			}).fail(function(errMsg){
-				dfd.rejectWith(node, ["load failed (" + errMsg + ")"]);
+				_afterLoad(function () { dfd.rejectWith(node, ["load failed (" + errMsg + ")"]); });
 			});
 /*
 			var source = tree._triggerNodeEvent("lazyload", node, ctx.originalEvent);
@@ -2758,7 +2767,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			});
 */
 		}else{
-			_afterLoad();
+			_afterLoad(function () { dfd.resolveWith(node); });
 		}
 		node.debug("nodeSetExpanded: returns");
 		return dfd.promise();
@@ -2857,7 +2866,8 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	nodeSetStatus: function(ctx, status, message, details) {
 		var _clearStatusNode, _setStatusNode,
 			node = ctx.node,
-			tree = ctx.tree;
+			tree = ctx.tree,
+			cn = ctx.options._classNames;
 
 		_clearStatusNode = function() {
 			var firstChild = ( node.children ? node.children[0] : null );
@@ -2875,7 +2885,6 @@ Fancytree.prototype = /**@lends Fancytree*/{
 					node.children.shift();
 				}
 			}
-			return;
 		};
 		_setStatusNode = function(data) {
 			var firstChild = ( node.children ? node.children[0] : null );
@@ -2892,24 +2901,26 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		};
 		switch(status){
 		case "ok":
-		  _clearStatusNode();
-		  $(node.span).removeClass("fancytree-loading");
-		  break;
+			_clearStatusNode();
+			$(node.span).removeClass(cn.loading);
+			$(node.span).removeClass(cn.error);
+			break;
 		case "loading":
-			$(node.span).addClass("fancytree-loading");
+			$(node.span).removeClass(cn.error);
+			$(node.span).addClass(cn.loading);
 			if(!node.parent){
 				_setStatusNode({
-					title: tree.options.strings.loading +
-						(message ? " (" + message + ") " : ""),
+					title: tree.options.strings.loading + (message ? " (" + message + ") " : ""),
 					tooltip: details,
 					extraClasses: "fancytree-statusnode-wait"
 				});
 			}
 			break;
 		case "error":
-			$(node.span).addClass("fancytree-error");
+			$(node.span).removeClass(cn.loading);
+			$(node.span).addClass(cn.error);
 			_setStatusNode({
-				title: tree.options.strings.loadError + " (" + message + ")",
+				title: tree.options.strings.loadError + (message ? " (" + message + ") " : ""),
 				tooltip: details,
 				extraClasses: "fancytree-statusnode-error"
 			});
@@ -3136,13 +3147,8 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	 */
 	_triggerNodeEvent: function(type, node, originalEvent, extra) {
 //		this.debug("_trigger(" + type + "): '" + ctx.node.title + "'", ctx);
-		var res,
-			ctx = this._makeHookContext(node, originalEvent);
-		if( extra ) {
-			$.extend(ctx, extra);
-		}
-		res = this.widget._trigger(type, originalEvent, ctx);
-
+		var ctx = this._makeHookContext(node, originalEvent, extra),
+			res = this.widget._trigger(type, originalEvent, ctx);
 		if(res !== false && ctx.result !== undefined){
 			return ctx.result;
 		}
@@ -3240,7 +3246,9 @@ $.widget("ui.fancytree",
 			lazy: "fancytree-lazy",
 			focused: "fancytree-focused",
 			partsel: "fancytree-partsel",
-			lastsib: "fancytree-lastsib"
+			lastsib: "fancytree-lastsib",
+			loading: "fancytree-loading",
+			error: "fancytree-error"
 		},
 		// events
 		lazyload: null,
