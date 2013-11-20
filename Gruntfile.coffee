@@ -223,14 +223,14 @@ module.exports = (grunt) ->
             options:
                 banner: "<%= meta.banner %>"
                 report: "min"
-# //                  , expand: true
-# //                  , cwd: "build/"
+#                , expand: true
+#                , cwd: "build/"
                 sourceMap: 
                   (path) -> path.replace(/.js/, ".js.map")
                 sourceMappingURL: 
                   (path) -> path.replace(/^build\//, "") + ".map"
-# //                  , sourceMapIn: function(path) { return path.replace(/^build\//, "")}
-# //                    , sourceMapRoot: "/" //function(path) { return path.replace(/^build\//, "")}
+#                  , sourceMapIn: function(path) { return path.replace(/^build\//, "")}
+#                  , sourceMapRoot: "/" //function(path) { return path.replace(/^build\//, "")}
                 sourceMapPrefix: 1 # strip 'build/' from paths
 
             files:
