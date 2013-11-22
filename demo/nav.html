@@ -41,6 +41,7 @@ span.fancytree-focused span.fancytree-title {
 }
 span.fancytree-title:hover,
 span.fancytree-active span.fancytree-title,
+span.fancytree-active.fancytree-focused span.fancytree-title,
 .fancytree-treefocus span.fancytree-title:hover,
 .fancytree-treefocus span.fancytree-active span.fancytree-title {
 	color: #39414A;
@@ -49,6 +50,13 @@ span.external span.fancytree-title:after {
 	content: "";
 	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAMAAAC67D+PAAAAFVBMVEVmmcwzmcyZzP8AZswAZv////////9E6giVAAAAB3RSTlP///////8AGksDRgAAADhJREFUGFcly0ESAEAEA0Ei6/9P3sEcVB8kmrwFyni0bOeyyDpy9JTLEaOhQq7Ongf5FeMhHS/4AVnsAZubxDVmAAAAAElFTkSuQmCC") 100% 50% no-repeat;
 	padding-right: 13px;
+}
+/* Remove system outline for focused container */
+.ui-fancytree.fancytree-container:focus {
+	outline: none;
+}
+.ui-fancytree.fancytree-container {
+	border: none;
 }
 </style>
 
