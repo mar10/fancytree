@@ -1947,14 +1947,14 @@ Fancytree.prototype = /**@lends Fancytree*/{
 					tree.nodeSetExpanded(ctx, true);
 //					tree.nodeSetFocus(ctx);
 					_goto(node);
-				} else if( node.children ) {
+				} else if( node.children && node.children.length ) {
 //					node.children[0].setFocus();
 					_goto(node.children[0]);
 				}
 				break;
 			case KC.UP:
 				sib = node.getPrevSibling();
-				while( sib && sib.expanded && sib.children ){
+				while( sib && sib.expanded && sib.children && sib.children.length ){
 					sib = sib.children[sib.children.length - 1];
 				}
 				if( !sib && node.parent && node.parent.parent ){
@@ -1963,7 +1963,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 				_goto(sib);
 				break;
 			case KC.DOWN:
-				if( node.expanded && node.children ) {
+				if( node.expanded && node.children && node.children.length ) {
 					sib = node.children[0];
 				} else {
 					parents = node.getParentList(false, true);
