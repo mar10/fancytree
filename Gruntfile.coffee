@@ -13,7 +13,7 @@ module.exports = (grunt) ->
   grunt.initConfig
 
     pkg: 
-      grunt.file.readJSON("package.json")
+        grunt.file.readJSON("package.json")
 
     # Project metadata, used by the <banner> directive.
     meta:
@@ -23,37 +23,37 @@ module.exports = (grunt) ->
               "  * Copyright (c) <%= grunt.template.today('yyyy') %> <%= pkg.author.name %>;" +
               " Licensed <%= _.pluck(pkg.licenses, 'type').join(', ') %> */\n"
     bumpup:
-      options:
-        dateformat: "YYYY-MM-DD HH:mm"
-        normalize: true
-        updateProps: 
-          pkg: "package.json"
-      files: ["package.json", "bower.json", "fancytree.jquery.json"]
+        options:
+            dateformat: "YYYY-MM-DD HH:mm"
+            normalize: true
+            updateProps: 
+                pkg: "package.json"
+        files: ["package.json", "bower.json", "fancytree.jquery.json"]
 
     checkrepo:
       beforeBump:
-        tag:
-          eq: "<%= pkg.version %>" # Check if highest repo tag == pkg.version
-#        tagged: false # Require last commit (HEAD) to be tagged
-        clean: true # // Require repo to be clean (no unstaged changes)
+          tag:
+              eq: "<%= pkg.version %>" # Check if highest repo tag == pkg.version
+  #        tagged: false # Require last commit (HEAD) to be tagged
+          clean: true # // Require repo to be clean (no unstaged changes)
       beforeRelease:
-        tag:
-          lt: "<%= pkg.version %>" # Check if highest repo tag is lower than pkg.version
-#        tagged: false # Require last commit (HEAD) to be tagged
-        clean: true # // Require repo to be clean (no unstaged changes)
+          tag:
+            lt: "<%= pkg.version %>" # Check if highest repo tag is lower than pkg.version
+#          tagged: false # Require last commit (HEAD) to be tagged
+          clean: true # // Require repo to be clean (no unstaged changes)
 
     clean:
-      build:
-        noWrite: true
-        src: [ "build" ]
+        build:
+            noWrite: true
+            src: [ "build" ]
 
     compress:
-      build:
-        options:
-          archive: "dist/<%= pkg.name %>-<%= pkg.version %>.zip"
-        files: [
-          {expand: true, cwd: "build/", src: ["**/*"], dest: ""}
-          ]
+        build:
+            options:
+                archive: "dist/<%= pkg.name %>-<%= pkg.version %>.zip"
+            files: [
+                {expand: true, cwd: "build/", src: ["**/*"], dest: ""}
+                ]
 
     concat:
         core:
@@ -67,24 +67,29 @@ module.exports = (grunt) ->
             options:
                 stripBanners: true
             src: [
-              "<%= meta.banner %>"
-              "src/jquery.fancytree.js"
-              "src/jquery.fancytree.columnview.js"
-              "src/jquery.fancytree.dnd.js"
-              "src/jquery.fancytree.filter.js"
-              "src/jquery.fancytree.menu.js"
-              "src/jquery.fancytree.persist.js"
-              "src/jquery.fancytree.table.js"
-              "src/jquery.fancytree.themeroller.js"
-              ]
+                "<%= meta.banner %>"
+                "src/jquery.fancytree.js"
+                "src/jquery.fancytree.columnview.js"
+                "src/jquery.fancytree.dnd.js"
+                "src/jquery.fancytree.filter.js"
+                "src/jquery.fancytree.menu.js"
+                "src/jquery.fancytree.persist.js"
+                "src/jquery.fancytree.table.js"
+                "src/jquery.fancytree.themeroller.js"
+                ]
             dest: "build/<%= pkg.name %>-all.js"
 
     connect:
-        demo:
+        forever:
             options:
                 port: 8080
                 base: "./"
                 keepalive: true
+        dev: # pass on, so subsequent tastks (like watch) can start
+            options:
+                port: 8080
+                base: "./"
+                keepalive: false
 
     copy:
         build:
@@ -99,12 +104,12 @@ module.exports = (grunt) ->
                 }]
 
     csslint:
-#      options:
-#              csslintrc: ".csslintrc"
-      strict:
-        options:
-            import: 2
-        src: ["src/**/*.css"]
+  #      options:
+  #              csslintrc: ".csslintrc"
+        strict:
+            options:
+                import: 2
+            src: ["src/**/*.css"]
 
     cssmin:
         build:
@@ -136,37 +141,37 @@ module.exports = (grunt) ->
         all: ["demo/**/*.html", "doc/**/*.html", "test/**/*.html"]
 
     jsdoc:
-      build:
-        src: ["src/*.js", "doc/README.md"]
-        # http://usejsdoc.org/about-configuring-jsdoc.html#example
-        options:
-          destination: "doc/jsdoc_grunt"
-#                    template: "bin/jsdoc3-moogle",
-          verbose: true
+        build:
+            src: ["src/*.js", "doc/README.md"]
+            # http://usejsdoc.org/about-configuring-jsdoc.html#example
+            options:
+                destination: "doc/jsdoc_grunt"
+#                template: "bin/jsdoc3-moogle",
+                verbose: true
 
     jshint:
-      options:
-        # Linting according to http://contribute.jquery.org/style-guide/js/
-        jshintrc: ".jshintrc"
-      beforeConcat: [
-        "Gruntfile.js"
-        "src/*.js"
-        "3rd-party/**/jquery.fancytree.*.js"
-        "test/unit/*.js"
-        ]
-      afterConcat: [
-        "<%= concat.core.dest %>"
-        "<%= concat.all.dest %>"
-        ]
+        options:
+            # Linting according to http://contribute.jquery.org/style-guide/js/
+            jshintrc: ".jshintrc"
+        beforeConcat: [
+            "Gruntfile.js"
+            "src/*.js"
+            "3rd-party/**/jquery.fancytree.*.js"
+            "test/unit/*.js"
+            ]
+        afterConcat: [
+            "<%= concat.core.dest %>"
+            "<%= concat.all.dest %>"
+            ]
 
     less:
         development:
             options:
-#             paths: ["src/"]
-#             report: "min"
-              compress: false
-              yuicompress: false
-#              optimization: 10
+#               paths: ["src/"]
+#               report: "min"
+                compress: false
+                yuicompress: false
+#               optimization: 10
             files: [
                 {expand: true, cwd: "src/", src: "**/ui.fancytree.less", dest: "src/", ext: ".fancytree.css"}
             ]
@@ -226,9 +231,9 @@ module.exports = (grunt) ->
 #                , expand: true
 #                , cwd: "build/"
                 sourceMap: 
-                  (path) -> path.replace(/.js/, ".js.map")
+                    (path) -> path.replace(/.js/, ".js.map")
                 sourceMappingURL: 
-                  (path) -> path.replace(/^build\//, "") + ".map"
+                    (path) -> path.replace(/^build\//, "") + ".map"
 #                  , sourceMapIn: function(path) { return path.replace(/^build\//, "")}
 #                  , sourceMapRoot: "/" //function(path) { return path.replace(/^build\//, "")}
                 sourceMapPrefix: 1 # strip 'build/' from paths
@@ -262,56 +267,37 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks "grunt-tagrelease"
   grunt.loadNpmTasks "grunt-text-replace"
 
-  # from jquery:
-  #   grunt.loadNpmTasks( "grunt-compare-size" 
-  #   grunt.loadNpmTasks( "grunt-git-authors" 
-  #   grunt.loadNpmTasks( "grunt-contrib-watch" 
-  #   grunt.loadNpmTasks( "grunt-jsonlint" 
-  # from hammer.js
-  #   grunt.loadNpmTasks 'grunt-tagrelease'
-
-  # Task for updating the pkg config property. Needs to be run after
-  # bumpup so the next tasks in queue can work with updated values.
-  # grunt.registerTask "updatePkg", () -> 
-  #   grunt.config.set "pkg", grunt.file.readJSON("package.json")
-
-
-  grunt.registerTask "server", ["connect:demo"]
+  grunt.registerTask "server", ["connect:forever"]
+  grunt.registerTask "dev", ["connect:dev", "watch"]
   grunt.registerTask "test", [
-    "jshint:beforeConcat",
-    # "csslint",
-    "qunit:develop"
+      "jshint:beforeConcat",
+      # "csslint",
+      "qunit:develop"
   ]
   # grunt.registerTask("makejsdoc", ["jsdoc"]
   grunt.registerTask "travis", ["test"]
   grunt.registerTask "default", ["test"]
-  # grunt.registerTask "bump", [
-  #   "checkrepo:beforeBump"
-  #   "bumpup:build"
-  #   "updatePkg"
-  #   # "replace:bump"
-  #   ]
   grunt.registerTask "build", [
-    "exec:tabfix"
-    "test"
-    "clean:build"
-    "copy:build"
-    "concat"
-    # "cssmin:build"
-    "replace:build"
-    "jshint:afterConcat"
-    "uglify"
-    "qunit:build"
-    "compress:build"
-    # "clean:build"
-    ]
+      "exec:tabfix"
+      "test"
+      "clean:build"
+      "copy:build"
+      "concat"
+      # "cssmin:build"
+      "replace:build"
+      "jshint:afterConcat"
+      "uglify"
+      "qunit:build"
+      "compress:build"
+      # "clean:build"
+      ]
   grunt.registerTask "release", [
-    "checkrepo:beforeRelease"
-    "build"
-    "tagrelease"
-    "bumpup:prerelease"
-    ]
+      "checkrepo:beforeRelease"
+      "build"
+      "tagrelease"
+      "bumpup:prerelease"
+      ]
   grunt.registerTask "upload", [
-    "build"
-    "exec:upload"
-    ]
+      "build"
+      "exec:upload"
+      ]
