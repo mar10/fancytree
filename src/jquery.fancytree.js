@@ -1348,10 +1348,14 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
  * @property {FancytreeNode} focusNode
  * @property {jQueryObject} $div
  * @property {object} widget
+ * @property {object} ext
+ * @property {object} data
+ * @property {object} options
  * @property {String} _id
  * @property {String} statusClassPropName
  * @property {String} ariaPropName
  * @property {String} nodeContainerAttrName
+ * @property {String} $container
  * @property {FancytreeNode} lastSelectedNode
  */
 function Fancytree(widget){
@@ -1360,6 +1364,7 @@ function Fancytree(widget){
 	this.$div = widget.element;
 	this.options = widget.options;
 	this.ext = {}; // Active extension instances
+	this.data = {};
 	this._id = $.ui.fancytree._nextId++;
 	this._ns = ".fancytree-" + this._id; // append for namespaced events
 	this.activeNode = null;
@@ -2083,6 +2088,18 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		}
 
 		return $.when(source).done(function(children){
+			var metaData;
+
+			if( $.isPlainObject(children) ){
+				// We got {foo: 'abc', children: [...]}
+				// Copy extra properties to tree.data.
+				_assert($.isArray(children.children), "source must contain (or be) an array of children");
+				_assert(node.isRoot(), "source may only be an object for root nodes");
+				metaData = children;
+				children = children.children;
+				delete metaData.children;
+				$.extend(tree.data, metaData);
+			}
 			_assert($.isArray(children), "expected array of children");
 			node._setChildren(children);
 			if(node.parent){

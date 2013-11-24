@@ -3,7 +3,8 @@
   * [BREAKING CHANGE] Renamed `rencercolumns` event to `renderColumns`
   * [BREAKING CHANGE] Renamed `fancytree-focused` class to `fancytree-treefocus` (container only)
   * [FEATURE] Refectored CSS style to use a common LESS template
-  * [FEATURE] Edit extension
+  * [FEATURE] Allow to pass metadata with `source` on initialization
+  
 
 # 2.0.0-4
 

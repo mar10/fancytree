@@ -50,7 +50,11 @@
 			// source: {
 			// 	url: "../demo/ajax-tree-plain.json"
 			// },
-            source: [{title: "1", folder: true}],
+            // source: [{title: "1", folder: true}],
+            source: {foo: "bar", children: [{title: "1", folder: true}]},
+			init: function(e, data) {
+				alert("init: " + data.tree.data.foo);
+			},
 			lazyload: function(e, data) {
 				data.result = {url: "../demo/ajax-sub2.json"};
 			},
