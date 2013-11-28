@@ -38,7 +38,8 @@ function _escapeRegex(str){
  */
 $.ui.fancytree._FancytreeClass.prototype.applyFilter = function(filter){
 	var match, re,
-		count = 0;
+		count = 0,
+		leavesOnly = this.options.filter.leavesOnly;;
 	// Reset current filter
 	this.visit(function(node){
 		delete node.match;
@@ -53,8 +54,6 @@ $.ui.fancytree._FancytreeClass.prototype.applyFilter = function(filter){
 			return !!re.exec(node.title);
 		};
 	}
-	
-	var leavesOnly = this.options.filter.leavesOnly;
 
 	this.enableFilter = true;
 	this.$div.addClass("fancytree-ext-filter");
