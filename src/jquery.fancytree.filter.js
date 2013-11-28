@@ -39,7 +39,7 @@ function _escapeRegex(str){
 $.ui.fancytree._FancytreeClass.prototype.applyFilter = function(filter){
 	var match, re,
 		count = 0,
-		leavesOnly = this.options.filter.leavesOnly;;
+		leavesOnly = this.options.filter.leavesOnly;
 	// Reset current filter
 	this.visit(function(node){
 		delete node.match;
