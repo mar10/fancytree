@@ -53,6 +53,8 @@ $.ui.fancytree._FancytreeClass.prototype.applyFilter = function(filter){
 			return !!re.exec(node.title);
 		};
 	}
+	
+	var leavesOnly = this.options.filter.leavesOnly;
 
 	this.enableFilter = true;
 	this.$div.addClass("fancytree-ext-filter");
@@ -60,7 +62,7 @@ $.ui.fancytree._FancytreeClass.prototype.applyFilter = function(filter){
 		this.$div.addClass("fancytree-ext-filter-hide");
 	}
 	this.visit(function(node){
-		if(filter(node)){
+		if ((!leavesOnly || node.children == null) && filter(node)) {
 			count++;
 			node.match = true;
 			node.visitParents(function(p){
@@ -98,7 +100,8 @@ $.ui.fancytree.registerExtension("filter", {
 	version: "0.0.1",
 	// Default options for this extension.
 	options: {
-		mode: "dimm"
+		mode: "dimm",
+		leavesOnly: false
 	},
 	// Override virtual methods for this extension.
 	// `this`       : is this extension object
