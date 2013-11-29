@@ -1187,6 +1187,9 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 	setSelected: function(flag){
 		return this.tree._callHook("nodeSetSelected", this, flag);
 	},
+	/**Rename this node.
+	 * @param {string} title
+	 */
 	setTitle: function(title){
 		this.title = title;
 		this.renderTitle();
