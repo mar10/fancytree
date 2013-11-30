@@ -94,28 +94,28 @@
 					preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
 					preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
 					autoExpandMS: 400,
-					onDragStart: function(node) {
+					dragStart: function(node, data) {
 						// Only allow dragging items, but not folders
 						return !node.folder;
 					},
-					onDragEnter: function(node, sourceNode) {
+					dragEnter: function(node, data) {
 						// Dropping over a folder will always create children,
 						// but we never create children of items
 						return node.folder ? ["over"] : ["before", "after"];
 					},
-					onDrop: function(node, sourceNode, hitMode, ui, draggable) {
+					dragDrop: function(node, data) {
 						var newNode, srcNodes;
-						if(sourceNode){
-							srcNodes = getDropSourceList(sourceNode);
-							if( node.tree === sourceNode.tree ) {
+						if(data.otherNode){
+							srcNodes = getDropSourceList(data.otherNode);
+							if( node.tree === data.otherNode.tree ) {
 								// moving inside this tree -> sorting
 								for(i = 0; i < srcNodes.length; i++){
-									srcNodes[i].moveTo(node, hitMode);
+									srcNodes[i].moveTo(node, data.hitMode);
 								}
 							}else{
 								// inter-tree drag&drop
 								for(i = 0; i < srcNodes.length; i++){
-									newNode = srcNodes[i].copyTo(node, hitMode, function(n){
+									newNode = srcNodes[i].copyTo(node, data.hitMode, function(n){
 //                                      n.title = "Copy of " + n.title;
 										n.selected = false;
 										n.icon = false;
@@ -125,10 +125,10 @@
 						}else{
 							// dropped a standard draggable (not a tree node)
 							var title = ui.helper.html();
-							newNode = node.addNode({title: title}, hitMode);
+							newNode = node.addNode({title: title}, data.hitMode);
 						}
 						// If we dropped s.th. on a folder, expand it
-						if( newNode && hitMode === "over" ) {
+						if( newNode && data.hitMode === "over" ) {
 //							node.setExpanded();
 							newNode.setActive();
 						}
@@ -152,24 +152,24 @@
 //                source: "#sourceItems",
 				dnd: {
 					preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
-					onDragStart: function(node) {
+					dragStart: function(node, data) {
 						return true;
 					},
-					onDragEnter: function(node, sourceNode) {
-						if ( sourceNode /*&& sourceNode.tree === node.tree*/ ) {
+					dragEnter: function(node, data) {
+						if ( data.otherNode /*&& data.otherNode.tree === node.tree*/ ) {
 							return ["before", "after"];
 						} else{
 							return false;
 						}
 					},
-					onDrop: function(node, sourceNode, hitMode, ui, draggable) {
+					dragDrop: function(node, data) {
 						var srcNodes;
-						if(sourceNode){
-							srcNodes = getDropSourceList(sourceNode);
+						if(data.otherNode){
+							srcNodes = getDropSourceList(data.otherNode);
 							for(i = srcNodes.length - 1; i >= 0; i--){
-								srcNodes[i].moveTo(node, hitMode);
+								srcNodes[i].moveTo(node, data.hitMode);
 							}
-//							sourceNode.moveTo(node, hitMode);
+//							data.otherNode.moveTo(node, data.hitMode);
 						}
 					}
 				},

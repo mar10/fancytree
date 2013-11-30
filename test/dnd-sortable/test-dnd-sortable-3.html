@@ -39,15 +39,15 @@
 //					preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
 //					preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
 					autoExpandMS: 400,
-					onDragStart: function(node) {
+					dragStart: function(node, data) {
 						return false;
 					},
-					onDragEnter: function(node, sourceNode) {
+					dragEnter: function(node, data) {
 					   return true;
 					},
-					onDrop: function(node, sourceNode, hitMode, ui, draggable) {
+					dragDrop: function(node, data) {
 //						alert("drop");
-//						sourceNode.moveTo(node, hitMode);
+//						data.otherNode.moveTo(node, data.hitMode);
 						node.getParent().addChildren([{title: "new node dropped"}]);//, node.getNextSibling());
 					}
 				},

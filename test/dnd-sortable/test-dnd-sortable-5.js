@@ -33,34 +33,34 @@ $(document).ready(function(){
 			preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
 			preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
 			autoExpandMS: 400,
-			onDragStart: function(node) {
+			dragStart: function(node, data) {
 				// Only allow dragging items, but not folders
 //                return !node.folder;
 				return true;
 			},
-			onDragEnter: function(node, sourceNode) {
+			dragEnter: function(node, data) {
 				// Dropping over a folder will always create children,
 				// but we never create children of items
 //                return node.folder ? ["over"] : ["before", "after"];
 
 				// This version will only accept the same tree or another draggable,
 				// but not a foreign tree node
-				if(sourceNode){
+				if(data.otherNode){
 					// Extern node must be dropped *inside* a folder
-					return node.tree === sourceNode.tree ? true : ["over"];
+					return node.tree === data.otherNode.tree ? true : ["over"];
 				}else{
 					// Standard draggable must be dropped *inside* a folder
 					return ["over"];
 				}
 			},
-			onDrop: function(node, sourceNode, hitMode, ui, draggable) {
+			dragDrop: function(node, data) {
 
-				var srcNodes = getDropSourceList(sourceNode, hitMode);
+				var srcNodes = getDropSourceList(data.otherNode, data.hitMode);
 				// This version will only allow inter-tree d'n'd:
-				if ( sourceNode ) {
-					if ( node.tree === sourceNode.tree ) {
+				if ( data.otherNode ) {
+					if ( node.tree === data.otherNode.tree ) {
 						// reorder folders
-						sourceNode.moveTo(node, hitMode);
+						data.otherNode.moveTo(node, data.hitMode);
 					} else {
 						alert("TODO: update tree node counters by " + srcNodes.length  + " (if this is NOT the currently active folder)");
 					}
@@ -75,18 +75,18 @@ $(document).ready(function(){
 				var i, srcNodes,
 					newNode = null;
 
-				if(sourceNode){
-					srcNodes = getDropSourceList(sourceNode, hitMode);
-					if( node.tree === sourceNode.tree ) {
+				if(data.otherNode){
+					srcNodes = getDropSourceList(data.otherNode, data.hitMode);
+					if( node.tree === data.otherNode.tree ) {
 						// moving inside this tree -> sorting
-//								sourceNode.moveTo(node, hitMode);
+//								data.otherNode.moveTo(node, data.hitMode);
 						for(i = 0; i < srcNodes.length; i++){
-							srcNodes[i].moveTo(node, hitMode);
+							srcNodes[i].moveTo(node, data.hitMode);
 						}
 					}else{
 						// inter-tree drag&drop
 						for(i = 0; i < srcNodes.length; i++){
-							newNode = srcNodes[i].copyTo(node, hitMode, function(n){
+							newNode = srcNodes[i].copyTo(node, data.hitMode, function(n){
 //                                      n.title = "Copy of " + n.title;
 								n.selected = false;
 								n.icon = false;
@@ -96,10 +96,10 @@ $(document).ready(function(){
 				}else{
 					// dropped a standard draggable (not a tree node)
 					var title = ui.helper.html();
-					newNode = node.addNode({title: title}, hitMode);
+					newNode = node.addNode({title: title}, data.hitMode);
 				}
 				// If we dropped s.th. on a folder, expand it
-				if( newNode && hitMode === "over" ) {
+				if( newNode && data.hitMode === "over" ) {
 //							node.setExpanded();
 					newNode.setActive();
 				}
@@ -123,29 +123,29 @@ $(document).ready(function(){
 //                source: "#sourceItems",
 		dnd: {
 			preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
-			onDragStart: function(node) {
+			dragStart: function(node, data) {
 				return true;
 			},
-			onDragEnter: function(node, sourceNode) {
+			dragEnter: function(node, data) {
 				return ["before", "after"];
-//				if ( sourceNode /*&& sourceNode.tree === node.tree*/ ) {
+//				if ( data.otherNode /*&& data.otherNode.tree === node.tree*/ ) {
 //					return ["before", "after"];
 //				} else{
 //					return false;
 //				}
 			},
-			onDrop: function(node, sourceNode, hitMode, ui, draggable) {
+			dragDrop: function(node, data) {
 				var i, srcNodes;
-				if(sourceNode){
-					srcNodes = getDropSourceList(sourceNode, hitMode);
+				if(data.otherNode){
+					srcNodes = getDropSourceList(data.otherNode, data.hitMode);
 					for(i = srcNodes.length - 1; i >= 0; i--){
-						srcNodes[i].moveTo(node, hitMode);
+						srcNodes[i].moveTo(node, data.hitMode);
 					}
-//							sourceNode.moveTo(node, hitMode);
+//							data.otherNode.moveTo(node, data.hitMode);
 				}else{
 					// dropped a standard draggable (not a tree node)
 					var title = ui.helper.html();
-					newNode = node.addNode({title: title}, hitMode);
+					newNode = node.addNode({title: title}, data.hitMode);
 				}
 			}
 		},

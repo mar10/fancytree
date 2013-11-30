@@ -1,5 +1,7 @@
 # 2.0.0-5 / Unreleased
 
+  * [BREAKING CHANGE] Refactored drag'n'drop extension.  
+    `dnd.onDrop(node)` --> `dnd.dragDrop(node, data)`
   * [BREAKING CHANGE] Renamed `rencercolumns` event to `renderColumns`
   * [BREAKING CHANGE] Renamed `fancytree-focused` class to `fancytree-treefocus` (container only)
   * [FEATURE] Refectored CSS style to use a common LESS template

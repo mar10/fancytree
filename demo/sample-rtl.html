@@ -41,14 +41,14 @@
 			$("#tree").fancytree({
 				extensions: ["dnd"],
 				dnd: {
-					onDragStart: function(node) {
+					dragStart: function(node, data) {
 						return true;
 					},
-					onDragEnter: function(node, sourceNode) {
+					dragEnter: function(node, data) {
 						return true;
 					},
-					onDrop: function(node, sourceNode, hitMode, ui, draggable) {
-						sourceNode.moveTo(node, hitMode);
+					dragDrop: function(node, data) {
+						data.otherNode.moveTo(node, data.hitMode);
 					}
 				},
 				init: function(){

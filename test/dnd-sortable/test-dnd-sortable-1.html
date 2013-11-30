@@ -58,19 +58,19 @@
 				preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
 				preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
 				autoExpandMS: 400,
-				onDragStart: function(node) {
+				dragStart: function(node, data) {
 					return true;
 				},
-				onDragEnter: function(node, sourceNode) {
+				dragEnter: function(node, data) {
 					// Don't allow dropping *over* a node (would create a child)
 //					return ["before", "after"];
 					return node.folder ? ["over"] : ["before", "after"];
 //				    return true;
 				},
-				onDrop: function(node, sourceNode, hitMode, ui, draggable) {
-//					sourceNode.moveTo(node, hitMode);
+				dragDrop: function(node, data) {
+//					data.otherNode.moveTo(node, data.hitMode);
 					console.log("ui", ui, "draggable", draggable);
-					node.addNode({title: $(draggable.element).text()}, hitMode);
+					node.addNode({title: $(data.draggable.element).text()}, data.hitMode);
 					return false;
 				}
 			},

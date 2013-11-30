@@ -69,13 +69,17 @@
 				preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
 				preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
 				autoExpandMS: 400,
-				onDragStart: function(node) {
+				dragStart: function(node, data) {
+					if( data.originalEvent.shiftKey ){
+						console.log("dragSttart with SHIFT");
+					}
+					// allow dragging `node`:
 					return true;
 				},
-				onDragEnter: function(node, sourceNode) {
+				dragEnter: function(node, data) {
 					// Prevent dropping a parent below another parent (only sort
 					// nodes under the same parent)
-/* 					if(node.parent !== sourceNode.parent){
+/* 					if(node.parent !== data.otherNode.parent){
 						return false;
 					}
 					// Don't allow dropping *over* a node (would create a child)
@@ -83,13 +87,13 @@
 */
 				   return true;
 				},
-				onDrop: function(node, sourceNode, hitMode, ui, draggable) {
-					if( !sourceNode ){
+				dragDrop: function(node, data) {
+					if( !data.otherNode ){
 						// It's a non-tree draggable
-						alert("dropped " + $(draggable.element).text());
+						alert("dropped " + $(data.draggable.element).text());
 						return;
 					}
-					sourceNode.moveTo(node, hitMode);
+					data.otherNode.moveTo(node, data.hitMode);
 				}
 			}
 		});
@@ -114,13 +118,13 @@
 				preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
 				preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
 				autoExpandMS: 400,
-				onDragStart: function(node) {
+				dragStart: function(node, data) {
 					return true;
 				},
-				onDragEnter: function(node, sourceNode) {
+				dragEnter: function(node, data) {
 					// Prevent dropping a parent below another parent (only sort
 					// nodes under the same parent)
-/* 					if(node.parent !== sourceNode.parent){
+/* 					if(node.parent !== data.otherNode.parent){
 						return false;
 					}
 					// Don't allow dropping *over* a node (would create a child)
@@ -128,8 +132,8 @@
 */
 				   return true;
 				},
-				onDrop: function(node, sourceNode, hitMode, ui, draggable) {
-					sourceNode.moveTo(node, hitMode);
+				dragDrop: function(node, data) {
+					data.otherNode.moveTo(node, data.hitMode);
 				}
 			}
 		});
@@ -148,13 +152,13 @@
 				preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
 				preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
 				autoExpandMS: 400,
-				onDragStart: function(node) {
+				dragStart: function(node, data) {
 					return true;
 				},
-				onDragEnter: function(node, sourceNode) {
+				dragEnter: function(node, data) {
 					// Prevent dropping a parent below another parent (only sort
 					// nodes under the same parent)
-/* 					if(node.parent !== sourceNode.parent){
+/* 					if(node.parent !== data.otherNode.parent){
 						return false;
 					}
 					// Don't allow dropping *over* a node (would create a child)
@@ -162,8 +166,8 @@
 */
 				   return true;
 				},
-				onDrop: function(node, sourceNode, hitMode, ui, draggable) {
-					sourceNode.moveTo(node, hitMode);
+				dragDrop: function(node, data) {
+					data.otherNode.moveTo(node, data.hitMode);
 				}
 			}
 		});

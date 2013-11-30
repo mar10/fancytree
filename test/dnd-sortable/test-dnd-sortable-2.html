@@ -171,19 +171,19 @@
 				preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
 				preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
 				autoExpandMS: 400,
-				onDragStart: function(node) {
+				dragStart: function(node, data) {
 					return true;
 				},
-				onDragEnter: function(node, sourceNode) {
+				dragEnter: function(node, data) {
 					// Don't allow dropping *over* a node (would create a child)
 //					return ["before", "after"];
 					return true;
 				},
-				onDrop: function(node, sourceNode, hitMode, ui, draggable) {
+				dragDrop: function(node, data) {
 					/** This function MUST be defined to enable dropping of items on
 					 *  the tree.
 					 */
-//					sourceNode.moveTo(node, hitMode);
+//					data.otherNode.moveTo(node, data.hitMode);
 					node.addChildren({title: $(draggable).text()});
 					return false;
 				}
