@@ -243,8 +243,12 @@ module.exports = (grunt) ->
                 "build/<%= pkg.name %>-all.min.js": ["<%= concat.all.dest %>"]
 
     watch:
-        files: "src/**/*.less"
-        tasks: ["less:development"]
+        less:
+            files: "src/**/*.less"
+            tasks: ["less:development"]
+        jshint:
+            files: "src/*.js"
+            tasks: ["jshint:beforeConcat"]
 
   grunt.loadNpmTasks "grunt-contrib-clean"
   grunt.loadNpmTasks "grunt-contrib-compress"

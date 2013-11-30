@@ -142,6 +142,12 @@ $.ui.fancytree.registerExtension("filter", {
 			visible = !!(node.match || node.subMatch);
 			node.debug(node.title + ": visible=" + visible);
 			$(node.li).toggle(visible);
+			// TODO: handle ext-table.
+			// The following is too simple, since we have to hide all TRs that
+			// belong to that parent:
+			// if( node.tr ) {
+			// 	$(node.tr).toggle(visible);
+			// }
 		}
 	}
 });

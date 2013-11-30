@@ -120,9 +120,7 @@ $.ui.fancytree.registerExtension("table", {
 		tree.rootNode.ul = null;
 		tree.$container = $table;
 		// Add container to the TAB chain
-		if(this.options.tabbable){
-			tree.$container.attr("tabindex", "0");
-		}
+		this.$container.attr("tabindex", this.options.tabbable ? "0" : "-1");
 		if(this.options.aria){
 			tree.$container
 				.attr("role", "treegrid")
@@ -198,14 +196,20 @@ $.ui.fancytree.registerExtension("table", {
 				// Set icon, link, and title (normally this is only required on initial render)
 				this.nodeRenderTitle(ctx);
 				// Allow tweaking, binding, after node was created for the first time
-				tree._triggerNodeEvent("createNode", ctx);
+//				tree._triggerNodeEvent("createNode", ctx);
+				if ( opts.createNode ){
+					opts.createNode.call(tree, {type: "createNode"}, ctx);
+				}
 			} else {
 				// Set icon, link, and title (normally this is only required on initial render)
 				this.nodeRenderTitle(ctx);
 			}
 		}
 		 // Allow tweaking after node state was rendered
-		tree._triggerNodeEvent("renderNode", ctx);
+//		tree._triggerNodeEvent("renderNode", ctx);
+		if ( opts.renderNode ){
+			opts.renderNode.call(tree, {type: "renderNode"}, ctx);
+		}
 		// Visit child nodes
 		// Add child markup
 		children = node.children;
@@ -260,7 +264,10 @@ $.ui.fancytree.registerExtension("table", {
 			$(node.tr).find("td:first").html($cb);
 		}
 		// let user code write column content
-		ctx.tree._triggerNodeEvent("renderColumns", node);
+		// ctx.tree._triggerNodeEvent("renderColumns", node);
+		if ( opts.renderColumns ){
+			opts.renderColumns.call(ctx.tree, {type: "renderColumns"}, ctx);
+		}
 	},
 	nodeRenderStatus: function(ctx) {
 		var indent,

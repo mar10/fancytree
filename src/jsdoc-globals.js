@@ -138,7 +138,7 @@ var FancytreeOptions = {};
  * @property {function} focus `data.node` received keyboard focus
  * @property {function} focusTree `data.tree` received keyboard focus
  * @property {function} init Widget was (re-)initialized.
- * @property {function} keydown `data.node` received key. `event.which` contains the key. Return `false` to prevent default processing, i.e. navigation.
+ * @property {function} keydown `data.node` received key. `event.which` contains the key. Return `false` to prevent default processing, i.e. navigation. Return `result.preventNav` to prevent navigation but still allow default handling inside embedded input controls.
  * @property {function} keypress (currently unused)
  * @property {function} lazyload `data.node` is a lazy node that is expanded for the first time. The new child data must be returned in the `data.result` property (see `source` option for available formats).
  * @property {function} loadChildren Node data was loaded, i.e. `node.nodeLoadChildren()` finished

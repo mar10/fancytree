@@ -4,26 +4,38 @@
     `dnd.onDrop(node)` --> `dnd.dragDrop(node, data)`
   * [BREAKING CHANGE] Renamed `rencercolumns` event to `renderColumns`
   * [BREAKING CHANGE] Renamed `fancytree-focused` class to `fancytree-treefocus` (container only)
-  * [FEATURE] Refectored CSS style to use a common LESS template
+  * [FEATURE] Experimental `ext-gridnav` implents key navigation for tables.
+    Refactored keyboard handling. Keydown handlers are now bound to the container instead of document  
+    (Co-work with Koloto)
+  * [FEATURE] Allow to return 'preventNav' in keydown event to prevent withput blocking keys in embedded input controls.
+  * [FEATURE] new method `node.navigate()` to support custom keyboard handlers
+  * [FEATURE] Refactored CSS style to use a common LESS template
+  * [FEATURE] Improvement of lazy load errors handling (Koloto, issue #87)
+  * [BUG] Fixed BACKSPACE on top-level nodes
+  * [BUG] Fixed #71, #75, #90
+  * Improved table render speed by 15%
+  * `grunt dev` combines `grunt server` + `grunt watch` (trigger jshint and 
+    less on save)
   * [FEATURE] Allow to pass metadata with `source` on initialization
-  
+
 
 # 2.0.0-4
 
-  * Fixes
+  * Misc. fixes
+
 
 # 2.0.0-3
 
   * [BREAKING CHANGE] Changed extension syntax
-  * [FEATURE] Edit extension
+  * [FEATURE] Edit extension (alpha)
 
 
 # 2.0.0-2
 
-  * **2013-08-31** [BREAKING CHANGE] Renamed `onCustomRender` to `renderTitle`.  
+  * [BREAKING CHANGE] Renamed `onCustomRender` to `renderTitle`.  
     `renderTitle`, `renderNode` and `createNode` events are only triggered as options callback (not DOM events), for performance reasons.
-  * **2013-08-25** [BREAKING CHANGE] Renamed `data.orgEvent` to `data.originalEvent`
-  * **2013-08-17** [BREAKING CHANGE] Renamed events to camelCase as suggested by the jQuery style guide (`rendernnode` -> `renderNode`, ...)
+  * [BREAKING CHANGE] Renamed `data.orgEvent` to `data.originalEvent`
+  * [BREAKING CHANGE] Renamed events to camelCase as suggested by the jQuery style guide (`rendernnode` -> `renderNode`, ...)
   * See also [[WhatsNew]] since Dynatree 1.x in general.
 
 
