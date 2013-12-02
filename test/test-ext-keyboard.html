@@ -167,7 +167,7 @@ $(function(){
 	</div>
 	<div>
 		<label for="lb1">Fake listbox:</label>
-		(Note that we can TAB over it without selecting or TAB on it and then 
+		(Note that we can TAB over it without selecting or TAB on it and then
 		press DOWN to select. A selected item is dimmed on blur.)<br>
 		<select name="lb1" id="lb1" size="2" multiple="multiple">
 			<option value="a">a</option>
@@ -179,20 +179,20 @@ $(function(){
 	<h1>Table Tree</h1>
 	<ul>
 		<li>Try TAB and cursor keys to navigate the grid.</li>
-		<li>Node title is focusable, so we can TAB to a context where SPACE, 
+		<li>Node title is focusable, so we can TAB to a context where SPACE,
 			LEFT, BACK, '-', '+', ... work</li>
 		<li>Setting focus inside an input activates the node.</li>
-		<li>Note: tabbing from outside into the tree will now activate the 
+		<li>Note: tabbing from outside into the tree will now activate the
 			first node, (used to be the last active node).
-		    Setting 'tabbable' only to the active node wouldn't help, because 
-		    the first row contains a tabbable input element anyway.</li>
-		<li>TODO: focusout is not reliably detected for the container 
+			Setting 'tabbable' only to the active node wouldn't help, because
+			the first row contains a tabbable input element anyway.</li>
+		<li>TODO: focusout is not reliably detected for the container
 			(should dimm active node in Win8 skin)</li>
-		<li>TODO?: gridnav currently assumes that cells contain only one embedded 
+		<li>TODO?: gridnav currently assumes that cells contain only one embedded
 			:input</li>
-		<li>TODO: ext-gridnav could be dropped and merged into core and 
+		<li>TODO: ext-gridnav could be dropped and merged into core and
 			ext-table instead</li>
-		<li>TODO: css should be modified to remove the system focus border from 
+		<li>TODO: css should be modified to remove the system focus border from
 			node titles (currently theme dependant)</li>
 	</ul>
 
@@ -220,18 +220,18 @@ $(function(){
 	<h1>Tree with embedded controls</h1>
 	<ul>
 		<li>Typical use case is passing 'input' tags as part of the title.</li>
-		<li>There may be many different constructs (one or more embedded controls, 
+		<li>There may be many different constructs (one or more embedded controls,
 			inside of after title span, ...).
-			So we handle this with custom event handlers instead of built-in 
+			So we handle this with custom event handlers instead of built-in
 			magic.</li>
 		<li>The input controls can keep their own key handling because we return
 			`preventNav` in the `keydown` event.</li>
-		<li>Tree navigation is mapped to SHIFT + original_key by calling 
+		<li>Tree navigation is mapped to SHIFT + original_key by calling
 			`node.navigate()` in the `keydown` event.</li>
-		<li>We bind to `focusin` of embedded :input controls, so we can activate 
+		<li>We bind to `focusin` of embedded :input controls, so we can activate
 			the associated node. </li>
 		<li>on node `activate` we set focus to the embedded input.</li>
-		<li>TODO: css should be modified to remove the system focus border from 
+		<li>TODO: css should be modified to remove the system focus border from
 			node titles (currently theme dependant)</li>
 	</ul>
 	<div>

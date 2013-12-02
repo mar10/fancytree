@@ -1,7 +1,8 @@
 # 2.0.0-5 / Unreleased
 
   * [BREAKING CHANGE] Refactored drag'n'drop extension.  
-    `dnd.onDrop(node)` --> `dnd.dragDrop(node, data)`
+    For example `dnd.onDrop(node)` --> `dnd.dragDrop(node, data)`.  
+    See [[TutorialExtDnd]]
   * [BREAKING CHANGE] Renamed `rencercolumns` event to `renderColumns`
   * [BREAKING CHANGE] Renamed `fancytree-focused` class to `fancytree-treefocus` (container only)
   * [FEATURE] Experimental `ext-gridnav` implents key navigation for tables.
@@ -11,12 +12,12 @@
   * [FEATURE] new method `node.navigate()` to support custom keyboard handlers
   * [FEATURE] Refactored CSS style to use a common LESS template
   * [FEATURE] Improvement of lazy load errors handling (Koloto, issue #87)
+  * [FEATURE] Allow to pass metadata with `source` on initialization
   * [BUG] Fixed BACKSPACE on top-level nodes
   * [BUG] Fixed #71, #75, #90
   * Improved table render speed by 15%
   * `grunt dev` combines `grunt server` + `grunt watch` (trigger jshint and 
     less on save)
-  * [FEATURE] Allow to pass metadata with `source` on initialization
 
 
 # 2.0.0-4

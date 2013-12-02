@@ -25,7 +25,7 @@
 // Allow these navigation keys even when input controls are focused
 
 var	KC = $.ui.keyCode,
-	// which keys are *not* handled by embedded control, but passed to tree 
+	// which keys are *not* handled by embedded control, but passed to tree
 	// navigation handler:
 	NAV_KEYS = {
 		"text": [KC.UP, KC.DOWN],
@@ -96,7 +96,7 @@ $.ui.fancytree.registerExtension("gridnav", {
 
 	// 	this._super(ctx);
 
-	//	// Note: Setting 'tabbable' only to the active node wouldn't help, 
+	//	// Note: Setting 'tabbable' only to the active node wouldn't help,
 	//  // because the first row contains a tabbable input element anyway.
 	// 	if( opts.titlesTabbable === "active" ){
 	// 		if( node.isActive() ){

@@ -1015,11 +1015,11 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 	},
 	/** Set focus relative to this node and optionally activate.
 	 *
-	 * @param {number} where The keyCode that would normally trigger this move, 
+	 * @param {number} where The keyCode that would normally trigger this move,
 	 *		e.g. `$.ui.keyCode.LEFT` would collapse the node if it
 	 *      is expanded or move to the parent oterwise.
-	 * @param {boolean} [activate=true]  
-	 * @returns {$.Promise} 
+	 * @param {boolean} [activate=true]
+	 * @returns {$.Promise}
 	 */
 	navigate: function(where, activate) {
 		var i, parents,
@@ -3378,7 +3378,7 @@ $.widget("ui.fancytree",
 			try {
 				tree.phase = "userEvent";
 				// If a 'fancytreekeydown' handler returns false, skip the default
-				// handling (implemented by tree.nodeKeydown()). 
+				// handling (implemented by tree.nodeKeydown()).
 				if(node){
 					res = tree._triggerNodeEvent("keydown", node, event);
 				}else{
