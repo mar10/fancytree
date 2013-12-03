@@ -285,7 +285,8 @@ $.ui.fancytree.registerExtension("table", {
 	/* Expand node, return Deferred.promise. */
 	nodeSetExpanded: function(ctx, flag) {
 		return this._super(ctx, flag).always(function () {
-			setChildRowVisibility(ctx.node, !!flag);
+			flag = (flag !== false);
+			setChildRowVisibility(ctx.node, flag);
 		});
 	},
 	nodeSetStatus: function(ctx, status, message, details) {
