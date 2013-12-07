@@ -2321,6 +2321,10 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			children = node.children;
 //		FT.debug("nodeRender(" + !!force + ", " + !!deep + ")", node.toString());
 
+		if( ! isRootNode && ! parent.ul ) {
+			// issue #105: calling node.collapse on a deep, unrendered node
+			return;
+		}
 		_assert(isRootNode || parent.ul, "parent UL must exist");
 
 		// Render the node

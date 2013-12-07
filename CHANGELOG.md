@@ -14,7 +14,7 @@
   * [FEATURE] Improvement of lazy load errors handling (Koloto, issue #87)
   * [FEATURE] Allow to pass metadata with `source` on initialization
   * [BUG] Fixed BACKSPACE on top-level nodes
-  * [BUG] Fixed #71, #75, #90
+  * [BUG] Fixed #71, #75, #90, #104, #105
   * Improved table render speed by 15%
   * `grunt dev` combines `grunt server` + `grunt watch` (trigger jshint and 
     less on save)
