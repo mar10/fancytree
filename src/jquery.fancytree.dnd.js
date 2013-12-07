@@ -385,15 +385,14 @@ $.ui.fancytree.registerExtension("dnd",
 		case "helper":
 			// Only event and node argument is available
 			$helper = $("<div class='fancytree-drag-helper'><span class='fancytree-drag-helper-img' /></div>")
-//                .append($(event.target).closest("a").clone());
-				.append($(event.target).closest("span.fancytree-title").clone());
+				// .append($(event.target).closest("span.fancytree-node").find("span.fancytree-title").clone());
+				.append(nodeTag.find("span.fancytree-title").clone());
 			// issue 244: helper should be child of scrollParent
 			$("ul.fancytree-container", node.tree.$div).append($helper);
-//          $(node.tree.divTree).append($helper);
 			// Attach node reference to helper object
 			$helper.data("ftSourceNode", node);
-			logMsg("helper=%o", $helper);
-			logMsg("helper.sourceNode=%o", $helper.data("ftSourceNode"));
+			// logMsg("helper=%o", $helper);
+			// logMsg("helper.sourceNode=%o", $helper.data("ftSourceNode"));
 			res = $helper;
 			break;
 		case "start":
