@@ -44,7 +44,9 @@ var ACTIVE = "active",
  * @requires jquery.fancytree.persist.js
  */
 $.ui.fancytree._FancytreeClass.prototype.clearCookies = function(types){
-	var cookiePrefix = this._local.cookiePrefix;
+	var inst = this.ext.persist,
+		cookiePrefix = inst.cookiePrefix;
+
 	types = types || "active expanded focus selected";
 	// TODO: optimize
 	if(types.indexOf(ACTIVE) >= 0){
@@ -62,14 +64,27 @@ $.ui.fancytree._FancytreeClass.prototype.clearCookies = function(types){
 };
 
 
-/* TODO:
-DynaTreeStatus._getTreePersistData = function(cookieId, cookieOpts) {
-	// Static member: Return persistence information from cookies
-	var ts = new DynaTreeStatus(cookieId, cookieOpts);
-	ts.read();
-	return ts.toDict();
-};
+/**
+* Return persistence information from cookies
+*
+* Called like
+*     $("#tree").fancytree("getTree").getPersistData();
+*
+* @lends Fancytree.prototype
+* @requires jquery.fancytree.persist.js
 */
+$.ui.fancytree._FancytreeClass.prototype.getPersistData = function(){
+	var inst = this.ext.persist,
+		instOpts= this.options.persist,
+		delim = instOpts.cookieDelimiter,
+		res = {};
+
+	res[ACTIVE] = $.cookie(inst.cookiePrefix + ACTIVE);
+	res[EXPANDED] = ($.cookie(inst.cookiePrefix + EXPANDED) || "").split(delim);
+	res[SELECTED] = ($.cookie(inst.cookiePrefix + SELECTED) || "").split(delim);
+	res[FOCUS] = $.cookie(inst.cookiePrefix + FOCUS);
+};
+
 
 /* *****************************************************************************
  * Extension code
@@ -78,6 +93,7 @@ $.ui.fancytree.registerExtension("persist", {
 	version: "0.0.1",
 	// Default options for this extension.
 	options: {
+//		appendRequestInfo: false,
 		cookieDelimiter: "~",
 		cookiePrefix: undefined, // 'fancytree-<treeId>-' by default
 		cookie: {
@@ -121,7 +137,7 @@ $.ui.fancytree.registerExtension("persist", {
 
 		_assert($.cookie, "Missing required plugin for 'persist' extension: jquery.cookie.js");
 
-		instData.cookiePrefix = instOpts.cookiePrefix || "fancytree-" + tree._id + "-";
+		instData.cookiePrefix = instOpts.cookiePrefix || ("fancytree-" + tree._id + "-");
 		instData.storeActive = instOpts.types.indexOf(ACTIVE) >= 0;
 		instData.storeExpanded = instOpts.types.indexOf(EXPANDED) >= 0;
 		instData.storeSelected = instOpts.types.indexOf(SELECTED) >= 0;
