@@ -41,19 +41,28 @@ $.ui.fancytree._FancytreeNodeClass.prototype.startEdit = function(){
 		tree = this.tree,
 		local = tree.ext.edit,
 		prevTitle = node.title,
-		$title = $(".fancytree-title", node.span);
+		instOpts = tree.options.edit,
+//		triggerCancel = instOpts.triggerCancel,
+		$title = $(".fancytree-title", node.span),
+		eventData = {node: node, tree: tree, options: tree.options};
 
+	if( instOpts.beforeEdit.call(node, {type: "beforeEdit"}, eventData) === false){
+		return false;
+	}
+//	tree._triggerNodeEvent("beforeEdit", node, null, {});
 	node.debug("startEdit");
 	// if( tree._trigger)
 	// Disable standard Fancytree mouse- and key handling
 	tree.widget._unbind();
 
 	// Replace node with <input>
-	$input = $("<input>", {
+	$input = $("<input />", {
 		"class": "fancytree-edit-input",
 		value: prevTitle
-
 	}).width($title.width());
+
+	eventData.input = $input;
+
 	$title.html($input);
 
 	$.ui.fancytree.assert(!local.currentNode, "recursive edit");
@@ -66,15 +75,17 @@ $.ui.fancytree._FancytreeNodeClass.prototype.startEdit = function(){
 		}).keydown(function(event){
 			switch( event.which ) {
 			case $.ui.keyCode.ESCAPE:
-				node.endEdit(false);
+				node.endEdit(false, event);
 				break;
 			case $.ui.keyCode.ENTER:
-				node.endEdit(true);
+				node.endEdit(true, event);
 				return false; // so we don't start editmode on Mac
 			}
 		}).blur(function(event){
-			node.endEdit(true);
+			node.endEdit(true, event);
 		});
+
+	instOpts.edit.call(node, {type: "edit"}, eventData);
 };
 
 
@@ -84,28 +95,38 @@ $.ui.fancytree._FancytreeNodeClass.prototype.startEdit = function(){
  * @lends FancytreeNode.prototype
  * @requires jquery.fancytree.edit.js
  */
-$.ui.fancytree._FancytreeNodeClass.prototype.endEdit = function(applyChanges){
+$.ui.fancytree._FancytreeNodeClass.prototype.endEdit = function(applyChanges, _event){
 	var node = this,
 		tree = this.tree,
 		local = tree.ext.edit,
+		instOpts = tree.options.edit,
 		$title = $(".fancytree-title", node.span),
 		$input = $title.find("input.fancytree-edit-input"),
-		dirty = $input.hasClass("fancytree-edit-dirty");
+		dirty = $input.hasClass("fancytree-edit-dirty"),
+		doSave = applyChanges || (dirty && applyChanges !== false),
+		eventData = {node: node, tree: tree, options: tree.options, dirty: dirty, save: doSave, input: $input, originalEvent: _event};
 
-	node.debug("endEdit");
+	if( instOpts.beforeClose.call(node, {type: "beforeClose"}, eventData) === false){
+		return false;
+	}
+	if( doSave && instOpts.save.call(node, {type: "save"}, eventData) === false){
+		return false;
+	}
 	$input
 		.removeClass("fancytree-edit-dirty")
 		.unbind();
 
-	if( applyChanges || (dirty && applyChanges !== false) ){
+	if( doSave ) {
 		node.setTitle( $input.val() );
 	}else{
 		node.renderTitle();
 	}
-	// Re-enable mouse and keyboard handlling
+	// Re-enable mouse and keyboard handling
 	tree.widget._bind();
 	local.currentNode = null;
 	node.setFocus();
+	eventData.input = null;
+	instOpts.close.call(node, {type: "close"}, eventData);
 };
 
 
@@ -139,9 +160,14 @@ $.ui.fancytree.registerExtension("edit", {
 	version: "0.0.1",
 	// Default options for this extension.
 	options: {
-		startKeys: [],
-		beforeEdit: $.noop, //
-		edit: $.noop //
+		triggerCancel: ["esc", "tab", "click"],
+		triggerStart: ["f2", "dblclick", "shift+click", "mac+enter"],
+		beforeClose: $.noop, // Return false to prevent cancel/save (data.input is available)
+		beforeEdit: $.noop,  // Return false to prevent edit mode
+		close: $.noop,       // Editor was removed
+		edit: $.noop,        // Editor was opened (available as data.input)
+//		keypress: $.noop,    // Not yet implemented
+		save: $.noop         // Save data.input.val() or return false to keep editor open
 	},
 	// Local attributes
 	currentNode: null,
@@ -155,23 +181,30 @@ $.ui.fancytree.registerExtension("edit", {
 		this.$container.addClass("fancytree-ext-edit");
 	},
 	nodeClick: function(ctx) {
-		if( ctx.originalEvent.shiftKey ){
-			ctx.node.startEdit();
-			return false;
+		if( $.inArray("shift+click", ctx.options.edit.triggerStart) >= 0 ){
+			if( ctx.originalEvent.shiftKey ){
+				ctx.node.startEdit();
+				return false;
+			}
 		}
 		this._super(ctx);
 	},
 	nodeDblclick: function(ctx) {
-		ctx.node.startEdit();
+		if( $.inArray("dblclick", ctx.options.edit.triggerStart) >= 0 ){
+			ctx.node.startEdit();
+		}
 		return false;
 	},
 	nodeKeydown: function(ctx) {
 		switch( ctx.originalEvent.which ) {
 		case 113: // [F2]
-			ctx.node.startEdit();
-			return false;
+			if( $.inArray("f2", ctx.options.edit.triggerStart) >= 0 ){
+				ctx.node.startEdit();
+				return false;
+			}
+			break;
 		case $.ui.keyCode.ENTER:
-			if( isMac ){
+			if( $.inArray("mac+enter", ctx.options.edit.triggerStart) >= 0 && isMac ){
 				ctx.node.startEdit();
 				return false;
 			}
