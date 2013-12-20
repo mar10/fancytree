@@ -59,8 +59,13 @@ $.ui.fancytree._FancytreeNodeClass.prototype.startEdit = function(){
 	$input = $("<input />", {
 		"class": "fancytree-edit-input",
 		value: prevTitle
-	}).width($title.width());
-
+	});
+	if ( instOpts.adjustWidthOfs != null ) {
+		$input.width($title.width() + instOpts.adjustWidthOfs);
+	}
+	if ( instOpts.inputCss != null ) {
+		$input.css(instOpts.inputCss);
+	}
 	eventData.input = $input;
 
 	$title.html($input);
@@ -82,7 +87,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.startEdit = function(){
 				return false; // so we don't start editmode on Mac
 			}
 		}).blur(function(event){
-			node.endEdit(true, event);
+			return node.endEdit(true, event);
 		});
 
 	instOpts.edit.call(node, {type: "edit"}, eventData);
@@ -102,9 +107,16 @@ $.ui.fancytree._FancytreeNodeClass.prototype.endEdit = function(applyChanges, _e
 		instOpts = tree.options.edit,
 		$title = $(".fancytree-title", node.span),
 		$input = $title.find("input.fancytree-edit-input"),
+		newVal = $input.val(),
 		dirty = $input.hasClass("fancytree-edit-dirty"),
-		doSave = applyChanges || (dirty && applyChanges !== false),
-		eventData = {node: node, tree: tree, options: tree.options, dirty: dirty, save: doSave, input: $input, originalEvent: _event};
+		doSave = (applyChanges || (dirty && applyChanges !== false)) && (newVal !== node.title),
+		eventData = {
+			node: node, tree: tree, options: tree.options, originalEvent: _event,
+			dirty: dirty,
+			save: doSave,
+			input: $input,
+			value: newVal
+			};
 
 	if( instOpts.beforeClose.call(node, {type: "beforeClose"}, eventData) === false){
 		return false;
@@ -117,7 +129,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.endEdit = function(applyChanges, _e
 		.unbind();
 
 	if( doSave ) {
-		node.setTitle( $input.val() );
+		node.setTitle( newVal );
 	}else{
 		node.renderTitle();
 	}
@@ -127,6 +139,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.endEdit = function(applyChanges, _e
 	node.setFocus();
 	eventData.input = null;
 	instOpts.close.call(node, {type: "close"}, eventData);
+	return true;
 };
 
 
@@ -160,6 +173,8 @@ $.ui.fancytree.registerExtension("edit", {
 	version: "0.0.1",
 	// Default options for this extension.
 	options: {
+		adjustWidthOfs: 4,   // null: don't adjust input size to content
+		inputCss: {minWidth: "3em"},
 		triggerCancel: ["esc", "tab", "click"],
 		triggerStart: ["f2", "dblclick", "shift+click", "mac+enter"],
 		beforeClose: $.noop, // Return false to prevent cancel/save (data.input is available)
