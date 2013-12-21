@@ -684,7 +684,7 @@ test(".click() to select a node", function() {
  */
 module("lazy loading");
 
-test(".click() to expand a lazy folder (lazyload returns ajax options)", function() {
+test("Using ajax options for `source`; .click() expands a lazy folder", function() {
 	_setupAsync();
 	expect(11);
 	var sequence = 1;
@@ -705,6 +705,45 @@ test(".click() to expand a lazy folder (lazyload returns ajax options)", functio
 		lazyload: function(e, data){
 			equal(sequence++, 3, "receive `lazyload` callback");
 			data.result = {url: "ajax-sub2.json"};
+		},
+		loadChildren: function(e, data){
+			equal(sequence++, 4, "receive `loadChildren` callback");
+			equal(data.tree.count(), TESTDATA_NODES + 2, "lazy tree has 25 nodes");
+			equal($("#tree li").length, TESTDATA_VISIBLENODES, "lazy tree has not yet rendered new node elements");
+		},
+		expand: function(e, data){
+			equal(sequence++, 5, "receive `expand` callback");
+			equal(data.tree.count(), TESTDATA_NODES + 2, "lazy tree has 25 nodes");
+			equal($("#tree li").length, TESTDATA_VISIBLENODES + 2, "lazy tree has rendered 15 node elements");
+			start();
+		}
+	});
+});
+
+test("Using $.ajax promise for `source`; .click() expands a lazy folder", function() {
+	_setupAsync();
+	expect(11);
+	var sequence = 1;
+
+	$("#tree").fancytree({
+		source: $.ajax({
+			url: "ajax-tree.json",
+			dataType: "json"
+		}),
+		generateIds: true,
+		init: function(e, data){
+			equal(sequence++, 1, "receive `init` callback");
+			equal(data.tree.count(), TESTDATA_NODES, "lazy tree has 23 nodes");
+			equal($("#tree li").length, TESTDATA_VISIBLENODES, "lazy tree has rendered 13 node elements");
+			// now expand a lazy folder
+			$("#tree #ft_30 span.fancytree-expander").click();
+		},
+		beforeExpand: function(e, data){
+			equal(sequence++, 2, "receive `beforeExpand` callback");
+		},
+		lazyload: function(e, data){
+			equal(sequence++, 3, "receive `lazyload` callback");
+			data.result = $.getJSON("ajax-sub2.json");
 		},
 		loadChildren: function(e, data){
 			equal(sequence++, 4, "receive `loadChildren` callback");
