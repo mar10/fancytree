@@ -22,11 +22,6 @@
  * Private functions and variables
  */
 
-// function _escapeRegex(str){
-// 	/*jshint regexdash:true */
-// 	return (str + "").replace(/([.?*+\^\$\[\]\\(){}|-])/g, "\\$1");
-// }
-
 var isMac = /Mac/.test(navigator.platform);
 
 /**
@@ -49,9 +44,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.startEdit = function(){
 	if( instOpts.beforeEdit.call(node, {type: "beforeEdit"}, eventData) === false){
 		return false;
 	}
-//	tree._triggerNodeEvent("beforeEdit", node, null, {});
 	node.debug("startEdit");
-	// if( tree._trigger)
 	// Disable standard Fancytree mouse- and key handling
 	tree.widget._unbind();
 
