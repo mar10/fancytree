@@ -2398,9 +2398,9 @@ Fancytree.prototype = /**@lends Fancytree*/{
 						$(node.ul).attr("role", "group");
 					}
 					if ( node.li ) { // issue #67
-					    node.li.appendChild(node.ul);
+						node.li.appendChild(node.ul);
 					} else {
-					    node.tree.$div.append(node.ul);
+						node.tree.$div.append(node.ul);
 					}
 				}
 				// Add child markup
