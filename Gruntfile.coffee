@@ -250,26 +250,14 @@ module.exports = (grunt) ->
             files: "src/*.js"
             tasks: ["jshint:beforeConcat"]
 
-  grunt.loadNpmTasks "grunt-contrib-clean"
-  grunt.loadNpmTasks "grunt-contrib-compress"
-  grunt.loadNpmTasks "grunt-contrib-concat"
-  grunt.loadNpmTasks "grunt-contrib-connect"
-  grunt.loadNpmTasks "grunt-contrib-copy"
-  grunt.loadNpmTasks "grunt-contrib-csslint"
-  grunt.loadNpmTasks "grunt-contrib-cssmin"
-  grunt.loadNpmTasks "grunt-contrib-jshint"
-  grunt.loadNpmTasks "grunt-contrib-less"
-  grunt.loadNpmTasks "grunt-contrib-qunit"
-  grunt.loadNpmTasks "grunt-contrib-uglify"
-  grunt.loadNpmTasks "grunt-contrib-watch"
-  grunt.loadNpmTasks "grunt-bumpup"
-  grunt.loadNpmTasks "grunt-checkrepo"
-  grunt.loadNpmTasks "grunt-docco2"
-  grunt.loadNpmTasks "grunt-exec"
-  grunt.loadNpmTasks "grunt-html"
-  grunt.loadNpmTasks "grunt-jsdoc"
-  grunt.loadNpmTasks "grunt-tagrelease"
-  grunt.loadNpmTasks "grunt-text-replace"
+  # ----------------------------------------------------------------------------
+
+  # Load "grunt*" dependencies
+
+  for key of grunt.file.readJSON("package.json").devDependencies
+      grunt.loadNpmTasks key  if key isnt "grunt" and key.indexOf("grunt") is 0
+
+  # Register tasks
 
   grunt.registerTask "server", ["connect:forever"]
   grunt.registerTask "dev", ["connect:dev", "watch"]
