@@ -9,10 +9,11 @@
     Refactored keyboard handling. Keydown handlers are now bound to the container instead of document  
     (Co-work with Koloto)
   * [FEATURE] Allow to return 'preventNav' in keydown event to prevent withput blocking keys in embedded input controls.
-  * [FEATURE] new method `node.navigate()` to support custom keyboard handlers
+  * [FEATURE] New method `node.navigate()` to support custom keyboard handlers
   * [FEATURE] Refactored CSS style to use a common LESS template
   * [FEATURE] Improvement of lazy load errors handling (Koloto, issue #87)
   * [FEATURE] Allow to pass metadata with `source` on initialization
+  * [FEATURE] The edit extension is now beta
   * [BUG] Fixed BACKSPACE on top-level nodes
   * [BUG] Fixed #71, #75, #90, #104, #105
   * Improved table render speed by 15%
