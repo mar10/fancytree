@@ -2397,7 +2397,11 @@ Fancytree.prototype = /**@lends Fancytree*/{
 					if(aria){
 						$(node.ul).attr("role", "group");
 					}
-					node.li.appendChild(node.ul);
+					if ( node.li ) { // issue #67
+					    node.li.appendChild(node.ul);
+					} else {
+					    node.tree.$div.append(node.ul);
+					}
 				}
 				// Add child markup
 				for(i=0, l=children.length; i<l; i++) {
