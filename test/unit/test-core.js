@@ -246,7 +246,7 @@ test("Create fancytree", function() {
 
 //            var tree = data.tree;
 			equal($("li#ft_2 span.fancytree-title").attr("title"), "Look, a tool tip!", "tooltip set");
-			equal($("li#ft_3 span.fancytree-title").html(), "<span>item2 with <b>html</b> inside a span tag</span>", "raw html allowed");
+			equal($("li#ft_3 span.fancytree-title").html().toLowerCase(), "<span>item2 with <b>html</b> inside a span tag</span>", "raw html allowed");
 //			equal($("li#ft_4 a.fancytree-title").html(), null, "`nolink` suppresses <a> tag");
 //			equal($("li#ft_4 span.fancytree-title").length, 1, "`nolink` uses <span> tag");
 			equal($("li#ft_4 span.fancytree-title").length, 1, "using <span> tag");

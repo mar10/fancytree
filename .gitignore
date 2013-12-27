@@ -7,3 +7,5 @@ npm-debug.log
 /doc
 /dist
 /Gruntfile.js
+*.log
+sauce_connect.*

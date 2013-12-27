@@ -38,9 +38,18 @@ module.exports = (grunt) ->
           clean: true # // Require repo to be clean (no unstaged changes)
       beforeRelease:
           tag:
-            lt: "<%= pkg.version %>" # Check if highest repo tag is lower than pkg.version
+              lt: "<%= pkg.version %>" # Check if highest repo tag is lower than pkg.version
 #          tagged: false # Require last commit (HEAD) to be tagged
           clean: true # // Require repo to be clean (no unstaged changes)
+
+    # compare_size:
+    #     files:
+    #         "jquery.ui-contextmenu.min.js"
+    #         "jquery.ui-contextmenu.js"
+    #     options:
+    #         compress:
+    #             gz: function (fileContents)
+    #                 return require("gzip-js").zip(fileContents, {}).length;
 
     clean:
         build:
@@ -89,6 +98,12 @@ module.exports = (grunt) ->
             options:
                 port: 8080
                 base: "./"
+                keepalive: false
+        sauce:
+            options:
+                hostname: "localhost"
+                port: 9999
+                base: ""
                 keepalive: false
 
     copy:
@@ -216,6 +231,31 @@ module.exports = (grunt) ->
                 to : "debugLevel: 1"
             } ]
 
+    "saucelabs-qunit":
+      all:
+        options:
+          urls: ["http://localhost:9999/test/unit/test-core.html"]
+          
+          # username: process.env.SAUCE_USERNAME,
+          # key: process.env.SAUCE_ACCESS_KEY,
+          tunnelTimeout: 5
+          build: process.env.TRAVIS_JOB_ID
+          concurrency: 3
+          browsers: [
+            { browserName: "chrome", platform: "Windows 7" }
+            { browserName: "firefox", platform: "Windows 7" }
+            { browserName: "firefox", platform: "Windows XP" }
+            { browserName: "firefox", platform: "Linux" }
+            { browserName: "internet explorer", version: "6", platform: "Windows XP" }
+            { browserName: "internet explorer", version: "7", platform: "Windows XP" }
+            { browserName: "internet explorer", version: "8", platform: "Windows XP" }
+            { browserName: "internet explorer", version: "9", platform: "Windows 7" }
+            { browserName: "internet explorer", version: "10", platform: "Windows 8" }
+            { browserName: "internet explorer", version: "11", platform: "Windows 8.1" }
+            { browserName: "safari", platform: "OS X 10.8" }
+          ]
+          testname: "jquery.ui-contextmenu qunit tests"
+
     tagrelease:
         file: "package.json"
         commit:  true
@@ -267,7 +307,8 @@ module.exports = (grunt) ->
       "qunit:develop"
   ]
   # grunt.registerTask("makejsdoc", ["jsdoc"]
-  grunt.registerTask "travis", ["test"]
+  grunt.registerTask "sauce", ["connect:sauce", "saucelabs-qunit"]
+  grunt.registerTask "travis", ["test", "sauce"]
   grunt.registerTask "default", ["test"]
   grunt.registerTask "build", [
       "exec:tabfix"
@@ -281,6 +322,7 @@ module.exports = (grunt) ->
       "uglify"
       "qunit:build"
       "compress:build"
+      # "compare_size"
       # "clean:build"
       ]
   grunt.registerTask "release", [
