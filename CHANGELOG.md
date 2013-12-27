@@ -1,4 +1,9 @@
-# 2.0.0-5 / Unreleased
+# 2.0.0-6 / Unreleased
+
+  * Added browser test matrix (saucelabs)
+
+
+# 2.0.0-5 / 2013-12-23
 
   * [BREAKING CHANGE] Refactored drag'n'drop extension.  
     For example `dnd.onDrop(node)` --> `dnd.dragDrop(node, data)`.  
@@ -21,7 +26,7 @@
     less on save)
 
 
-# 2.0.0-4
+# 2.0.0-4 / 2013-10-14
 
   * Misc. fixes
 
@@ -32,7 +37,7 @@
   * [FEATURE] Edit extension (alpha)
 
 
-# 2.0.0-2
+# 2.0.0-2 / 2013-09-15
 
   * [BREAKING CHANGE] Renamed `onCustomRender` to `renderTitle`.  
     `renderTitle`, `renderNode` and `createNode` events are only triggered as options callback (not DOM events), for performance reasons.
