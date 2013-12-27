@@ -1,4 +1,4 @@
-# Fancytree [![Build Status](https://travis-ci.org/mar10/fancytree.png?branch=master)](https://travis-ci.org/mar10/fancytree)
+# Fancytree [![Build Status](https://travis-ci.org/mar10/fancytree.png?branch=master)](https://travis-ci.org/mar10/fancytree) [![Selenium Test Status](https://saucelabs.com/buildstatus/sauce-fancytree)](https://saucelabs.com/u/sauce-fancytree)
 
 Fancytree is a JavaScript dynamic tree view plugin for jQuery with support for 
 persistence, keyboard, checkboxes, tables, drag'n'drop, and lazy loading.
@@ -21,6 +21,11 @@ on the experimental [Scrumboard](https://trello.com/b/0eSYdyQv).
 
 See the [change log](https://github.com/mar10/fancytree/blob/master/CHANGELOG.md) 
 for details (including **changes that break backwards compatibility**).
+
+Browser status matrix:
+
+[![Selenium Test Status](https://saucelabs.com/browser-matrix/sauce-fancytree.svg)](https://saucelabs.com/u/sauce-fancytree)
+
 
 
 ## Get Started
