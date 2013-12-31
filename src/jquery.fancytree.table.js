@@ -72,7 +72,7 @@ function findPrevRowNode(node){
 
 
 $.ui.fancytree.registerExtension("table", {
-	version: "0.0.1",
+	version: "0.1.0",
 	// Default options for this extension.
 	options: {
 		indentation: 16,        // indent every node level by 16px
@@ -93,7 +93,7 @@ $.ui.fancytree.registerExtension("table", {
 		$(tree.tbody).empty();
 
 		tree.rowFragment = document.createDocumentFragment();
-		$row = $("<tr>");
+		$row = $("<tr/>");
 		tdRole = "";
 		if(ctx.options.aria){
 			$row.attr("role", "row");
@@ -101,9 +101,9 @@ $.ui.fancytree.registerExtension("table", {
 		}
 		for(i=0; i<tree.columnCount; i++) {
 			if(ctx.options.table.nodeColumnIdx === i){
-				$row.append("<td" + tdRole + "><span class='fancytree-node'></span></td>");
+				$row.append("<td" + tdRole + "><span class='fancytree-node' /></td>");
 			}else{
-				$row.append("<td" + tdRole + ">");
+				$row.append("<td" + tdRole + " />");
 			}
 		}
 		tree.rowFragment.appendChild($row.get(0));
