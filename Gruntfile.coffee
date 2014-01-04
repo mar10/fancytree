@@ -236,8 +236,6 @@ module.exports = (grunt) ->
         options:
           urls: ["http://localhost:9999/test/unit/test-core.html"]
           
-          # username: process.env.SAUCE_USERNAME,
-          # key: process.env.SAUCE_ACCESS_KEY,
           tunnelTimeout: 5
           build: process.env.TRAVIS_JOB_ID
           concurrency: 3
@@ -254,7 +252,7 @@ module.exports = (grunt) ->
             { browserName: "internet explorer", version: "11", platform: "Windows 8.1" }
             { browserName: "safari", platform: "OS X 10.8" }
           ]
-          testname: "jquery.ui-contextmenu qunit tests"
+          testname: "fancytree qunit tests"
 
     tagrelease:
         file: "package.json"
