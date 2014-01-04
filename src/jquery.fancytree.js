@@ -1536,6 +1536,41 @@ Fancytree.prototype = /**@lends Fancytree*/{
 //		this.debug("_hook", funcName, ctx.node && ctx.node.toString() || ctx.tree.toString(), args);
 		return fn.apply(this, args);
 	},
+	/** Check if current extensions dependencies are met and throw an error if not.
+	 * 
+	 * This method may be called inside the `treeInit` hook for custom extensions.
+	 * 
+	 * @param {String} extension name of the required extension
+	 * @param {Boolean} [required=true] pass `false` if the extension is optional, but we want to check for order if it is present 
+	 * @param {Boolean} [before] `true` if `name` must be included before this, `false` otherwise (use `null` if order doesn't matter)
+	 * @param {String} [message] optional error message (defaults to a descriptve error message)
+	 */
+	_requireExtension: function(name, required, before, message) {
+		console.log("_requireExtension", this);
+		var thisName = this._local.name,
+			extList = this.options.extensions,
+			isBefore = $.inArray(name, extList) < $.inArray(thisName, extList),
+			isMissing = required && this.ext[name] == null, 
+			badOrder = !isMissing && before != null && (!!before !== isBefore);    
+
+		_assert(thisName && thisName != name);
+		
+		if( isMissing || badOrder ){
+			if( !message ){
+				if( isMissing || required ){
+					message = "'" + thisName + "' extension requires '" + name + "'";
+					if( badOrder ){
+						message += " to be registered " + (before ? "before" : "after") + " itself";
+					}
+				}else{
+					message = "If used together, `" + name + "` must be registered " + (before ? "before" : "after") + " `" + thisName + "`";
+				}
+			}
+			$.error(message);
+			return false;
+		}
+		return true;
+	},
 	/** Activate node with a given key.
 	 *
 	 * A prevously activated node will be deactivated.
@@ -3681,8 +3716,10 @@ $.extend($.ui.fancytree,
 	 * @param name
 	 * @param definition
 	 */
-	registerExtension: function(name, definition){
-		$.ui.fancytree._extensions[name] = definition;
+	registerExtension: function(definition){
+		_assert(definition.name != null, "extensions must have a `name` property.");
+		_assert(definition.version != null, "extensions must have a `version` property.");
+		$.ui.fancytree._extensions[definition.name] = definition;
 	},
 	warn: function(msg){
 		consoleApply("warn", arguments);
