@@ -46,7 +46,8 @@
     "grunt-tagrelease": "~0.2.0",
     "grunt-text-replace": "~0.3.7",
     "qunitjs": "1.x",
-    "grunt-saucelabs": "~4.1.2"
+    "grunt-saucelabs": "~4.1.2",
+    "grunt-jsdoc": "~0.5.1"
   },
   "scripts": {
     "test": "grunt ci --verbose"
