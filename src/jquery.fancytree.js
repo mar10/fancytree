@@ -963,10 +963,10 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
 			}, true);
 		}
 
-	// A collaposed node won't re-render children, so we have to remove it manually
-	if( !targetParent.expanded){
-	  prevParent.ul.removeChild(this.li);
-	}
+		// A collaposed node won't re-render children, so we have to remove it manually
+		// if( !targetParent.expanded ){
+		//   prevParent.ul.removeChild(this.li);
+		// }
 
 		// Update HTML markup
 		if( !prevParent.isDescendantOf(targetParent)) {
@@ -1463,7 +1463,8 @@ function Fancytree(widget){
 	this.rootNode = new FancytreeNode(fakeParent, {
 		title: "root",
 		key: "root_" + this._id,
-		children: null
+		children: null,
+		expanded: true
 	});
 	this.rootNode.parent = null;
 

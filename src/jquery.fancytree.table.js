@@ -157,16 +157,16 @@ $.ui.fancytree.registerExtension({
 			node = ctx.node,
 			opts = ctx.options,
 			isRootNode = !node.parent;
-//			firstTime = false;
+
 		if( !_recursive ){
 			ctx.hasCollapsedParents = node.parent && !node.parent.expanded;
 		}
+		$.ui.fancytree.debug("*** nodeRender " + node + ", isRoot=" + isRootNode);
 		if( !isRootNode ){
 			if(!node.tr){
 				// Create new <tr> after previous row
 				newRow = tree.rowFragment.firstChild.cloneNode(true);
 				prevNode = findPrevRowNode(node);
-//				firstTime = true;
 //				$.ui.fancytree.debug("*** nodeRender " + node + ": prev: " + prevNode.key);
 				_assert(prevNode);
 				if(collapsed === true && _recursive){
@@ -228,10 +228,10 @@ $.ui.fancytree.registerExtension({
 			// Iterate over all descendants
 			node.visit(function(n){
 				if(n.tr){
-					if(!node.expanded && !isRootNode && n.tr.style.display !== "none"){
-						// fix after a node was dropped over a sibling.
-						// In this case it must be hidden
+					if(!n.parent.expanded && n.tr.style.display !== "none"){
+						// fix after a node was dropped over a collapsed
 						n.tr.style.display = "none";
+						setChildRowVisibility(n, false);
 					}
 					if(n.tr.previousSibling !== prevTr){
 						node.debug("_fixOrder: mismatch at node: " + n);
@@ -246,12 +246,6 @@ $.ui.fancytree.registerExtension({
 		if(!isRootNode){
 			this.nodeRenderStatus(ctx);
 		}
-		// Finally add the whole structure to the DOM, so the browser can render
-		// if(firstTime){
-		//     parent.ul.appendChild(node.li);
-		// }
-			// TODO: just for debugging
-	//            this._super(ctx);
 	},
 	nodeRenderTitle: function(ctx, title) {
 		var $cb,
