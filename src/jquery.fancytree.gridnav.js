@@ -54,7 +54,8 @@ function findNeighbourTd($target, keyCode){
 /*******************************************************************************
  * Extension code
  */
-$.ui.fancytree.registerExtension("gridnav", {
+$.ui.fancytree.registerExtension({
+	name: "gridnav", 
 	version: "0.0.1",
 	// Default options for this extension.
 	options: {
@@ -64,7 +65,8 @@ $.ui.fancytree.registerExtension("gridnav", {
 	},
 
 	treeInit: function(ctx){
-
+		// gridnav requires the table extension to be loaded before itself
+		this._requireExtension("table", true, true);
 		this._super(ctx);
 
 		this.$container.addClass("fancytree-ext-gridnav");
@@ -84,6 +86,7 @@ $.ui.fancytree.registerExtension("gridnav", {
 		});
 	},
 	nodeRender: function(ctx) {
+		this.info("nodeRender gridnav")
 		this._super(ctx);
 		// Add every node title to the tab sequence
 		if( ctx.options.gridnav.titlesTabbable === true ){
@@ -142,7 +145,7 @@ $.ui.fancytree.registerExtension("gridnav", {
 
 		// jQuery
 		inputType = $target.is(":input:enabled") ? $target.prop("type") : null;
-		ctx.node.debug("input", event, inputType);
+		ctx.tree.debug("ext-gridnav nodeKeydown", event, inputType);
 
 		if( inputType && opts.handleCursorKeys ){
 			handleKeys = NAV_KEYS[inputType];
@@ -157,7 +160,8 @@ $.ui.fancytree.registerExtension("gridnav", {
 			}
 			return true;
 		}
-		this._super(ctx);
+		ctx.tree.debug("ext-gridnav NOT HANDLED", event, inputType);
+		return this._super(ctx);
 	}
 });
 }(jQuery, window, document));

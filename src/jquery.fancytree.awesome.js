@@ -25,7 +25,9 @@ function _getIcon(opts, type){
 	return opts.map[type];
 }
 
-$.ui.fancytree.registerExtension("awesome", {
+$.ui.fancytree.registerExtension({
+	name: "awesome",
+	version: "0.0.1",
 	// Default options for this extension.
 	options: {
 		prefix: "icon-",

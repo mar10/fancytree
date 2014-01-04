@@ -22,7 +22,8 @@
 /*******************************************************************************
  * Extension code
  */
-$.ui.fancytree.registerExtension("themeroller", {
+$.ui.fancytree.registerExtension({
+	name: "themeroller", 
 	version: "0.0.1",
 	// Default options for this extension.
 	options: {

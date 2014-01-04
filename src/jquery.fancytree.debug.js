@@ -39,7 +39,8 @@ for(i=0; i<EVENT_NAMES.length; i++){ EVENT_NAME_MAP[EVENT_NAMES[i]] = true; }
 /* *****************************************************************************
  * Extension code
  */
-$.ui.fancytree.registerExtension("tracecalls", {
+$.ui.fancytree.registerExtension({
+	name: "tracecalls", 
 	version: "0.0.1",
 	// Default options for this extension.
 	options: {
@@ -123,7 +124,9 @@ $.ui.fancytree.registerExtension("tracecalls", {
  * Fancytree extension: profiler
  */
 ;(function($, window, document, undefined) {
-	$.ui.fancytree.registerExtension("profiler", {
+	$.ui.fancytree.registerExtension({
+		name: "profiler", 
+		version: "0.0.1",
 		// Default options for this extension
 		options: {
 			prefix: ""

@@ -25,7 +25,8 @@
 //     return;
 // }
 
-$.ui.fancytree.registerExtension("menu", {
+$.ui.fancytree.registerExtension({
+	name: "menu", 
 	version: "0.0.1",
 	// Default options for this extension.
 	options: {

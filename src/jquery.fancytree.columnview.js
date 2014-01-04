@@ -39,7 +39,8 @@ function _assert(cond, msg){
 /*******************************************************************************
  * Private functions and variables
  */
-$.ui.fancytree.registerExtension("columnview", {
+$.ui.fancytree.registerExtension({
+	name: "columnview", 
 	version: "0.0.1",
 	// Default options for this extension.
 	options: {
