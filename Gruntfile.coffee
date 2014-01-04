@@ -304,7 +304,7 @@ module.exports = (grunt) ->
       # "csslint",
       "qunit:develop"
   ]
-  # grunt.registerTask("makejsdoc", ["jsdoc"]
+  grunt.registerTask "makejsdoc", ["jsdoc"]
   grunt.registerTask "sauce", ["connect:sauce", "saucelabs-qunit"]
   grunt.registerTask "travis", ["test", "sauce"]
   grunt.registerTask "default", ["test"]

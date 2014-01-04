@@ -113,7 +113,7 @@ var FancytreeOptions = {};
  * where `event` is a {@link http://api.jquery.com/category/events/event-object/|jQuery Event} object and `data` is of type {@link EventData}
  * The `this` context is set to  tree's the HTMLDivElement
  *
- * @see <a href="http://api.jquery.com/category/events/event-object/">jQuery Event</a>
+ * @see {@link http://api.jquery.com/category/events/event-object/|jQuery Event}
  * @see EventData
  *
  * @example $("#tree").fancytree({

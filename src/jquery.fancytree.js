@@ -1523,7 +1523,7 @@ Fancytree.prototype = /**@lends Fancytree*/{
 	 *
 	 * @param {String} funcName
 	 * @param {Fancytree|FancytreeNode|EventData} contextObject
-	 * @param {any, ...}  [_extraArgs] optional additional arguments
+	 * @param {any}  [_extraArgs] optional additional arguments
 	 * @returns {any}
 	 */
 	_callHook: function(funcName, contextObject, _extraArgs) {
@@ -3228,7 +3228,6 @@ $.widget("ui.fancytree",
 	 */
 	options:
 	{
-		/** @type {Boolean}  Make sure, active nodes are visible (expanded). */
 		activeVisible: true,
 		ajax: {
 			type: "GET",
