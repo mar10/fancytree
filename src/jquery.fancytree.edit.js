@@ -30,7 +30,7 @@ var isMac = /Mac/.test(navigator.platform);
  * @lends FancytreeNode.prototype
  * @requires jquery.fancytree.edit.js
  */
-$.ui.fancytree._FancytreeNodeClass.prototype.startEdit = function(){
+$.ui.fancytree._FancytreeNodeClass.prototype.editStart = function(){
 	var $input,
 		node = this,
 		tree = this.tree,
@@ -44,7 +44,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.startEdit = function(){
 	if( instOpts.beforeEdit.call(node, {type: "beforeEdit"}, eventData) === false){
 		return false;
 	}
-	node.debug("startEdit");
+	node.debug("editStart");
 	// Disable standard Fancytree mouse- and key handling
 	tree.widget._unbind();
 
@@ -93,7 +93,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.startEdit = function(){
  * @lends FancytreeNode.prototype
  * @requires jquery.fancytree.edit.js
  */
-$.ui.fancytree._FancytreeNodeClass.prototype.endEdit = function(applyChanges, _event){
+$.ui.fancytree._FancytreeNodeClass.prototype.editEnd = function(applyChanges, _event){
 	var node = this,
 		tree = this.tree,
 		local = tree.ext.edit,
@@ -130,10 +130,60 @@ $.ui.fancytree._FancytreeNodeClass.prototype.endEdit = function(applyChanges, _e
 	tree.widget._bind();
 	local.currentNode = null;
 	node.setFocus();
+	// Set keyboard focus, even if setFocus() claims 'nothing to do'
+	$(tree.$container).focus(); 
 	eventData.input = null;
 	instOpts.close.call(node, {type: "close"}, eventData);
 	return true;
 };
+
+
+$.ui.fancytree._FancytreeNodeClass.prototype.startEdit = function(){
+	this.warn("FancytreeNode.startEdit() is deprecated. Use .editStart() instead.");
+	return this.editStart.apply(this, arguments);
+}
+
+$.ui.fancytree._FancytreeNodeClass.prototype.endEdit = function(){
+	this.warn("FancytreeNode.endEdit() is deprecated. Use .editEnd() instead.");
+	return this.editEnd.apply(this, arguments);
+}
+
+
+///**
+// * Create a new child or sibling node.
+// *
+// * @param {String} [mode] 'before', 'after', or 'child'
+// * @lends FancytreeNode.prototype
+// * @requires jquery.fancytree.edit.js
+// */
+//$.ui.fancytree._FancytreeNodeClass.prototype.editCreateNode = function(mode){
+//	var newNode,
+//		node = this,
+//		tree = this.tree,
+//		local = tree.ext.edit,
+//		instOpts = tree.options.edit,
+//		$title = $(".fancytree-title", node.span),
+//		$input = $title.find("input.fancytree-edit-input"),
+//		newVal = $input.val(),
+//		dirty = $input.hasClass("fancytree-edit-dirty"),
+//		doSave = (applyChanges || (dirty && applyChanges !== false)) && (newVal !== node.title),
+//		eventData = {
+//			node: node, tree: tree, options: tree.options, originalEvent: _event,
+//			dirty: dirty,
+//			save: doSave,
+//			input: $input,
+//			value: newVal
+//			};
+//
+//	node.debug("editCreate");
+//
+//	if( instOpts.beforeEdit.call(node, {type: "beforeCreateNode"}, eventData) === false){
+//		return false;
+//	}
+//	newNode = this.addNode({title: "Neuer Knoten"}, mode);
+//
+//	newNode.editStart();
+//};
 
 
 /**
@@ -162,8 +212,9 @@ $.ui.fancytree._FancytreeNodeClass.prototype.isEditing = function(){
 /*******************************************************************************
  * Extension code
  */
-$.ui.fancytree.registerExtension("edit", {
-	version: "0.0.1",
+$.ui.fancytree.registerExtension({
+	name: "edit", 
+	version: "0.1.0",
 	// Default options for this extension.
 	options: {
 		adjustWidthOfs: 4,   // null: don't adjust input size to content
@@ -218,7 +269,7 @@ $.ui.fancytree.registerExtension("edit", {
 			}
 			break;
 		}
-		this._super(ctx);
+		return this._super(ctx);
 	}
 });
 }(jQuery, window, document));
