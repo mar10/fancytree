@@ -90,7 +90,7 @@ $.ui.fancytree._FancytreeClass.prototype.getPersistData = function(){
  * Extension code
  */
 $.ui.fancytree.registerExtension({
-	name: "persist", 
+	name: "persist",
 	version: "0.0.1",
 	// Default options for this extension.
 	options: {

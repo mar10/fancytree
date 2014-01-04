@@ -72,8 +72,8 @@ function findPrevRowNode(node){
 
 
 $.ui.fancytree.registerExtension({
-	name: "table", 
-	version: "0.0.1",
+	name: "table",
+	version: "0.1.0",
 	// Default options for this extension.
 	options: {
 		indentation: 16,        // indent every node level by 16px
@@ -152,7 +152,6 @@ $.ui.fancytree.registerExtension({
 	},
 	/* Override standard render. */
 	nodeRender: function(ctx, force, deep, collapsed, _recursive) {
-		this.info("nodeRender table")
 		var children, firstTr, i, l, newRow, prevNode, prevTr, subCtx,
 			tree = ctx.tree,
 			node = ctx.node,

@@ -131,7 +131,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editEnd = function(applyChanges, _e
 	local.currentNode = null;
 	node.setFocus();
 	// Set keyboard focus, even if setFocus() claims 'nothing to do'
-	$(tree.$container).focus(); 
+	$(tree.$container).focus();
 	eventData.input = null;
 	instOpts.close.call(node, {type: "close"}, eventData);
 	return true;
@@ -141,12 +141,12 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editEnd = function(applyChanges, _e
 $.ui.fancytree._FancytreeNodeClass.prototype.startEdit = function(){
 	this.warn("FancytreeNode.startEdit() is deprecated. Use .editStart() instead.");
 	return this.editStart.apply(this, arguments);
-}
+};
 
 $.ui.fancytree._FancytreeNodeClass.prototype.endEdit = function(){
 	this.warn("FancytreeNode.endEdit() is deprecated. Use .editEnd() instead.");
 	return this.editEnd.apply(this, arguments);
-}
+};
 
 
 ///**
@@ -213,7 +213,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.isEditing = function(){
  * Extension code
  */
 $.ui.fancytree.registerExtension({
-	name: "edit", 
+	name: "edit",
 	version: "0.1.0",
 	// Default options for this extension.
 	options: {

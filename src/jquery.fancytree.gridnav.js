@@ -55,7 +55,7 @@ function findNeighbourTd($target, keyCode){
  * Extension code
  */
 $.ui.fancytree.registerExtension({
-	name: "gridnav", 
+	name: "gridnav",
 	version: "0.0.1",
 	// Default options for this extension.
 	options: {
@@ -86,7 +86,6 @@ $.ui.fancytree.registerExtension({
 		});
 	},
 	nodeRender: function(ctx) {
-		this.info("nodeRender gridnav")
 		this._super(ctx);
 		// Add every node title to the tab sequence
 		if( ctx.options.gridnav.titlesTabbable === true ){

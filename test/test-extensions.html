@@ -52,7 +52,8 @@ $(function(){
 	;(function($, undefined) {
 		"use strict";
 		var CNT = 0;
-		$.ui.fancytree.registerExtension("sampleExt1", {
+		$.ui.fancytree.registerExtension({
+			name: "sampleExt1",
 			version: "1.0.0",
 			options: {
 				opt1: true,
@@ -74,7 +75,8 @@ $(function(){
 
 	;(function($, undefined) {
 		"use strict";
-		$.ui.fancytree.registerExtension("sampleExt2", {
+		$.ui.fancytree.registerExtension({
+			name: "sampleExt2",
 			version: "1.0.0",
 			options: {
 				opt1: true,

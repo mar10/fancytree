@@ -1537,24 +1537,24 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		return fn.apply(this, args);
 	},
 	/** Check if current extensions dependencies are met and throw an error if not.
-	 * 
+	 *
 	 * This method may be called inside the `treeInit` hook for custom extensions.
-	 * 
+	 *
 	 * @param {String} extension name of the required extension
-	 * @param {Boolean} [required=true] pass `false` if the extension is optional, but we want to check for order if it is present 
+	 * @param {Boolean} [required=true] pass `false` if the extension is optional, but we want to check for order if it is present
 	 * @param {Boolean} [before] `true` if `name` must be included before this, `false` otherwise (use `null` if order doesn't matter)
 	 * @param {String} [message] optional error message (defaults to a descriptve error message)
 	 */
 	_requireExtension: function(name, required, before, message) {
-		console.log("_requireExtension", this);
+		before = !!before;
 		var thisName = this._local.name,
 			extList = this.options.extensions,
 			isBefore = $.inArray(name, extList) < $.inArray(thisName, extList),
-			isMissing = required && this.ext[name] == null, 
-			badOrder = !isMissing && before != null && (!!before !== isBefore);    
+			isMissing = required && this.ext[name] == null,
+			badOrder = !isMissing && before != null && (before !== isBefore);
 
-		_assert(thisName && thisName != name);
-		
+		_assert(thisName && thisName !== name);
+
 		if( isMissing || badOrder ){
 			if( !message ){
 				if( isMissing || required ){

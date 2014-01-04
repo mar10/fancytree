@@ -93,7 +93,7 @@ $.ui.fancytree.prototype.widgetMethod1 = function(arg1){
 /* 'childcounter' extension */
 $.ui.fancytree.registerExtension({
 // Every extension must be registered by a unique name.
-	name: "childcounter", 
+	name: "childcounter",
 // Version information should be compliant with [semver](http://semver.org)
 	version: "1.0.0",
 

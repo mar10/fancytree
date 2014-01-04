@@ -96,7 +96,7 @@ $.ui.fancytree._FancytreeClass.prototype.clearFilter = function(){
  * Extension code
  */
 $.ui.fancytree.registerExtension({
-	name: "filter", 
+	name: "filter",
 	version: "0.0.1",
 	// Default options for this extension.
 	options: {

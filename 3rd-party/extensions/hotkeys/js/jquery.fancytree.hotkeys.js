@@ -23,7 +23,8 @@
 		});
 	};
 
-	$.ui.fancytree.registerExtension("hotkeys", {
+	$.ui.fancytree.registerExtension({
+		name: "hotkeys",
 		version: "1.0",
                 hotkeys: { },
 		treeInit: function(ctx) {

@@ -50,7 +50,8 @@
 		});
 	};
 
-	$.ui.fancytree.registerExtension("contextMenu", {
+	$.ui.fancytree.registerExtension({
+		name: "contextMenu",
 		version: "1.0",
 		contextMenu: {
 			menu: {},
