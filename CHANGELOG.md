@@ -1,5 +1,11 @@
 # 2.0.0-6 / Unreleased
 
+  * [BREAKING CHANGE]  Removed 'name' argument from `$.ui.fancytree.registerExtension()`
+    (now the extension object requires a 'name' property)
+  * [DEPRECATION]  Deprecated startEdit/endEdit to use editStart/editEnd
+  * [BUGFIX] ext-edit: fixed loosing focus and made chainable
+  * [FEATURE] New method `tree._requireExtension()`
+  * [FEATURE] Fixed d'n'd for ext-table
   * Added browser test matrix (saucelabs)
 
 
@@ -19,8 +25,8 @@
   * [FEATURE] Improvement of lazy load errors handling (Koloto, issue #87)
   * [FEATURE] Allow to pass metadata with `source` on initialization
   * [FEATURE] The edit extension is now beta
-  * [BUG] Fixed BACKSPACE on top-level nodes
-  * [BUG] Fixed #71, #75, #90, #104, #105
+  * [BUGFIX] Fixed BACKSPACE on top-level nodes
+  * [BUGFIX] Fixed #71, #75, #90, #104, #105
   * Improved table render speed by 15%
   * `grunt dev` combines `grunt server` + `grunt watch` (trigger jshint and 
     less on save)
