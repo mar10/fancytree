@@ -158,10 +158,10 @@ module.exports = (grunt) ->
     jsdoc:
         build:
             src: ["src/*.js", "doc/README.md"]
-            # http://usejsdoc.org/about-configuring-jsdoc.html#example
             options:
-                destination: "doc/jsdoc_grunt"
+                destination: "doc/jsdoc3"
 #                template: "bin/jsdoc3-moogle",
+#                configure: "doc/jsdoc.conf"
                 verbose: true
 
     jshint:

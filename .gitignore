@@ -4,8 +4,8 @@
 /node_modules
 npm-debug.log
 /build
-/doc
 /dist
+/doc/jsdoc3
 /Gruntfile.js
 *.log
 sauce_connect.*

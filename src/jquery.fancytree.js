@@ -1917,6 +1917,112 @@ Fancytree.prototype = /**@lends Fancytree*/{
 		// Return a promise that is resovled, when ALL paths were loaded
 		return $.when.apply($, deferredList).promise();
 	},
+	/** Re-fire beforeActivate and activate events. */
+	reactivate: function(setFocus) {
+		var node = this.activeNode;
+		if( node ) {
+			this.activeNode = null; // Force re-activating
+			node.setActive();
+			if( setFocus ){
+				node.setFocus();
+			}
+		}
+	},
+	// TODO: redraw()
+	/** Reload tree from source and return a promise.
+	 * @param source
+	 * @returns {$.Promise}
+	 */
+	reload: function(source) {
+		this._callHook("treeClear", this);
+		return this._callHook("treeLoad", this, source);
+	},
+	/**Render tree (i.e. all top-level nodes).
+	 * @param {Boolean} [force=false]
+	 * @param {Boolean} [deep=false]
+	 */
+	render: function(force, deep) {
+		return this.rootNode.render(force, deep);
+	},
+	// TODO: selectKey: function(key, select)
+	// TODO: serializeArray: function(stopOnParents)
+	/**
+	 * @param {Boolean} [flag=true]
+	 */
+	setFocus: function(flag) {
+//        _assert(false, "Not implemented");
+		return this._callHook("treeSetFocus", this, flag);
+	},
+	/**
+	 * Return all nodes as nested list of {@link NodeData}.
+	 *
+	 * @param {Boolean} [includeRoot=false] Returns the hidden system root node (and it's children)
+	 * @param {function} [callback] Called for every node
+	 * @returns {Array | object}
+	 * @see FancytreeNode#toDict
+	 */
+	toDict: function(includeRoot, callback){
+		var res = this.rootNode.toDict(true, callback);
+		return includeRoot ? res : res.children;
+	},
+	/**Implicitly called for string conversions.
+	 * @returns {String}
+	 */
+	toString: function(){
+		return "<Fancytree(#" + this._id + ")>";
+	},
+	/** _trigger a widget event with additional node ctx.
+	 * @see EventData
+	 */
+	_triggerNodeEvent: function(type, node, originalEvent, extra) {
+//		this.debug("_trigger(" + type + "): '" + ctx.node.title + "'", ctx);
+		var ctx = this._makeHookContext(node, originalEvent, extra),
+			res = this.widget._trigger(type, originalEvent, ctx);
+		if(res !== false && ctx.result !== undefined){
+			return ctx.result;
+		}
+		return res;
+	},
+	/** _trigger a widget event with additional tree data. */
+	_triggerTreeEvent: function(type, originalEvent) {
+//		this.debug("_trigger(" + type + ")", ctx);
+		var ctx = this._makeHookContext(this, originalEvent),
+			res = this.widget._trigger(type, originalEvent, ctx);
+
+		if(res !== false && ctx.result !== undefined){
+			return ctx.result;
+		}
+		return res;
+	},
+	/** Call fn(node) for all nodes.
+	 *
+	 * @param {function} fn the callback function.
+	 *     Return false to stop iteration, return "skip" to skip this node and children only.
+	 * @returns {Boolean} false, if the iterator was stopped.
+	 */
+	visit: function(fn) {
+		return this.rootNode.visit(fn, false);
+	},
+	/** Write warning to browser console (prepending tree info)
+	 *
+	 * @param {*} msg string or object or array of such
+	 */
+	warn: function(msg){
+		Array.prototype.unshift.call(arguments, this.toString());
+		consoleApply("warn", arguments);
+	}
+};
+
+/**
+ * These additional methods of the Fancytree class are 'hook functions'
+ * that can be used and overloaded by extensions.
+ *
+ * @namespace Fancytree_Hooks
+ */
+$.extend(Fancytree.prototype,
+	/** @lends Fancytree_Hooks# */
+	{
+
 	/** _Default handling for mouse click events. */
 	nodeClick: function(ctx) {
 //      this.tree.logDebug("ftnode.onClick(" + event.type + "): ftnode:" + this + ", button:" + event.button + ", which: " + event.which);
@@ -3114,102 +3220,8 @@ Fancytree.prototype = /**@lends Fancytree*/{
 			this.$container.toggleClass("fancytree-treefocus", flag);
 			this._triggerTreeEvent(flag ? "focusTree" : "blurTree");
 		}
-	},
-	/** Re-fire beforeActivate and activate events. */
-	reactivate: function(setFocus) {
-		var node = this.activeNode;
-		if( node ) {
-			this.activeNode = null; // Force re-activating
-			node.setActive();
-			if( setFocus ){
-				node.setFocus();
-			}
-		}
-	},
-	// TODO: redraw()
-	/** Reload tree from source and return a promise.
-	 * @param source
-	 * @returns {$.Promise}
-	 */
-	reload: function(source) {
-		this._callHook("treeClear", this);
-		return this._callHook("treeLoad", this, source);
-	},
-	/**Render tree (i.e. all top-level nodes).
-	 * @param {Boolean} [force=false]
-	 * @param {Boolean} [deep=false]
-	 */
-	render: function(force, deep) {
-		return this.rootNode.render(force, deep);
-	},
-	// TODO: selectKey: function(key, select)
-	// TODO: serializeArray: function(stopOnParents)
-	/**
-	 * @param {Boolean} [flag=true]
-	 */
-	setFocus: function(flag) {
-//        _assert(false, "Not implemented");
-		return this._callHook("treeSetFocus", this, flag);
-	},
-	/**
-	 * Return all nodes as nested list of {@link NodeData}.
-	 *
-	 * @param {Boolean} [includeRoot=false] Returns the hidden system root node (and it's children)
-	 * @param {function} [callback] Called for every node
-	 * @returns {Array | object}
-	 * @see FancytreeNode#toDict
-	 */
-	toDict: function(includeRoot, callback){
-		var res = this.rootNode.toDict(true, callback);
-		return includeRoot ? res : res.children;
-	},
-	/**Implicitly called for string conversions.
-	 * @returns {String}
-	 */
-	toString: function(){
-		return "<Fancytree(#" + this._id + ")>";
-	},
-	/** _trigger a widget event with additional node ctx.
-	 * @see EventData
-	 */
-	_triggerNodeEvent: function(type, node, originalEvent, extra) {
-//		this.debug("_trigger(" + type + "): '" + ctx.node.title + "'", ctx);
-		var ctx = this._makeHookContext(node, originalEvent, extra),
-			res = this.widget._trigger(type, originalEvent, ctx);
-		if(res !== false && ctx.result !== undefined){
-			return ctx.result;
-		}
-		return res;
-	},
-	/** _trigger a widget event with additional tree data. */
-	_triggerTreeEvent: function(type, originalEvent) {
-//		this.debug("_trigger(" + type + ")", ctx);
-		var ctx = this._makeHookContext(this, originalEvent),
-			res = this.widget._trigger(type, originalEvent, ctx);
-
-		if(res !== false && ctx.result !== undefined){
-			return ctx.result;
-		}
-		return res;
-	},
-	/** Call fn(node) for all nodes.
-	 *
-	 * @param {function} fn the callback function.
-	 *     Return false to stop iteration, return "skip" to skip this node and children only.
-	 * @returns {Boolean} false, if the iterator was stopped.
-	 */
-	visit: function(fn) {
-		return this.rootNode.visit(fn, false);
-	},
-	/** Write warning to browser console (prepending tree info)
-	 *
-	 * @param {*} msg string or object or array of such
-	 */
-	warn: function(msg){
-		Array.prototype.unshift.call(arguments, this.toString());
-		consoleApply("warn", arguments);
 	}
-};
+});
 
 
 /* ******************************************************************************
