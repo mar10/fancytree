@@ -89,7 +89,8 @@ $.ui.fancytree._FancytreeClass.prototype.getPersistData = function(){
 /* *****************************************************************************
  * Extension code
  */
-$.ui.fancytree.registerExtension("persist", {
+$.ui.fancytree.registerExtension({
+	name: "persist", 
 	version: "0.0.1",
 	// Default options for this extension.
 	options: {
@@ -226,14 +227,16 @@ $.ui.fancytree.registerExtension("persist", {
 		}
 	},
 	nodeSetExpanded: function(ctx, flag) {
-		var node = ctx.node,
+		var res,
+			node = ctx.node,
 			instData = this._local;
 
-		this._super(ctx, flag);
+		res = this._super(ctx, flag);
 
 		if(instData.storeExpanded){
 			instData._setKey(EXPANDED, node.key, flag);
 		}
+		return res;
 	},
 	nodeSetFocus: function(ctx) {
 		var instData = this._local,
