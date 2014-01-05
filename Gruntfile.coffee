@@ -138,7 +138,10 @@ module.exports = (grunt) ->
 
     docco:
         docs:
+#            expand: true
+#            cwd: "src/"
             src: ["src/jquery.fancytree.childcounter.js"]
+#            dest: "doc/annotated-src/"
             options:
                 output: "doc/annotated-src"
 
@@ -159,9 +162,10 @@ module.exports = (grunt) ->
         build:
             src: ["src/*.js", "doc/README.md"]
             options:
-                destination: "doc/jsdoc3"
+                destination: "doc/jsdoc"
 #                template: "bin/jsdoc3-moogle",
-#                configure: "doc/jsdoc.conf"
+                template: "node_modules/ink-docstrap/template",
+                configure: "doc/jsdoc.conf.json"
                 verbose: true
 
     jshint:
@@ -304,13 +308,14 @@ module.exports = (grunt) ->
       # "csslint",
       "qunit:develop"
   ]
-  grunt.registerTask "makejsdoc", ["jsdoc"]
   grunt.registerTask "sauce", ["connect:sauce", "saucelabs-qunit"]
   grunt.registerTask "travis", ["test", "sauce"]
   grunt.registerTask "default", ["test"]
   grunt.registerTask "build", [
       "exec:tabfix"
       "test"
+      "jsdoc:build"
+      "docco:docs"
       "clean:build"
       "copy:build"
       "concat"

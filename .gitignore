@@ -1,11 +1,10 @@
 /.settings
 /.project
 /.pydevproject
-/node_modules
-npm-debug.log
 /build
 /dist
-/doc/jsdoc3
-/Gruntfile.js
+/doc/annotated-src
+/doc/jsdoc
+/node_modules
 *.log
 sauce_connect.*

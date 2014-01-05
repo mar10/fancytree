@@ -11,9 +11,9 @@
  * @name EventData
  *
  * @property {Fancytree} tree The tree instance
- * @property {object} widget The {@link http://api.jqueryui.com/jQuery.widget/|jQuery UI tree widget}
+ * @property {object} widget The [jQuery UI tree widget](http://api.jqueryui.com/jQuery.widget)
  * @property {FancytreeOptions} options Shortcut to tree.options
- * @property {Event} originalEvent The {@link http://api.jquery.com/category/events/event-object/|jQuery Event} that initially triggered this call
+ * @property {Event} originalEvent The [jQuery Event](http://api.jquery.com/category/events/event-object) that initially triggered this call
  * @property {FancytreeNode | null} node The node that this call applies to (`null` for tree events)
  * @property {any} result (output parameter) Event handlers can return values back to the caller. Used by `lazyload`, `postProcess`, ...
  * @property {String | undefined} targetType (only for click and dblclick events) 'title' | 'prefix' | 'expander' | 'checkbox' | 'icon'
@@ -110,10 +110,10 @@ var FancytreeOptions = {};
  * @description
  * Events are called like this:
  *    `CALLBACK_NAME(event, data)`
- * where `event` is a {@link http://api.jquery.com/category/events/event-object/|jQuery Event} object and `data` is of type {@link EventData}
+ * where `event` is a [jQuery Event](http://api.jquery.com/category/events/event-object) object and `data` is of type {@link EventData}
  * The `this` context is set to  tree's the HTMLDivElement
  *
- * @see {@link http://api.jquery.com/category/events/event-object/|jQuery Event}
+ * @see {@link http://api.jquery.com/category/events/event-object|jQuery Event}
  * @see EventData
  *
  * @example $("#tree").fancytree({
