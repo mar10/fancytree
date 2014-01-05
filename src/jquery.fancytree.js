@@ -11,6 +11,9 @@
  * @date DEVELOPMENT
  */
 
+/** Core Fancytree module.
+ * @module fancytree
+ */
 // Start of local namespace
 ;(function($, window, document, undefined) {
 "use strict";
@@ -193,12 +196,13 @@ for(i=0; i<NODE_ATTRS.length; i++){ NODE_ATTR_MAP[NODE_ATTRS[i]] = true; }
 
 
 /**
- * Creates a new node
- * @class Represents the hierarchical data model and operations.
- * @name FancytreeNode
- * @constructor
+ * Creates a new FancytreeNode
+ *
+ * @class FancytreeNode
+ * @classdesc A FancytreeNode represents the hierarchical data model and operations.
+ *
  * @param {FancytreeNode} parent
- * @param {NodeData} data
+ * @param {NodeData} obj
  *
  * @property {Fancytree} tree
  * @property {FancytreeNode} parent Parent node
@@ -212,7 +216,6 @@ for(i=0; i<NODE_ATTRS.length; i++){ NODE_ATTR_MAP[NODE_ATTRS[i]] = true; }
  * @property {Boolean} href
  * @property {String} extraClasses
  * @property {Boolean} lazy
- * @property {Boolean} nolink OBSOLETE
  * @property {Boolean} selected
  * @property {String} target
  * @property {String} tooltip
@@ -266,7 +269,7 @@ function FancytreeNode(parent, obj){
 }
 
 
-FancytreeNode.prototype = /**@lends FancytreeNode*/{
+FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	/* Return the direct child FancytreeNode with a given key, index. */
 	_findDirectChild: function(ptr){
 		var i, l,
@@ -1413,10 +1416,13 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
  * Fancytree
  */
 /**
- * Construct a new tree.
- * @class The controller behind a fancytree.
- * @name Fancytree
- * @constructor
+ * Construct a new tree object.
+ *
+ * @class Fancytree
+ * @classdesc A Fancytree is the controller behind a fancytree.
+ * represents the hierarchical data model and operations.
+ * This class also contains 'hook methods': see {@link Fancytree_Hooks}.
+ *
  * @param {Widget} widget
  *
  * @property {FancytreeOptions} options
@@ -1436,7 +1442,6 @@ FancytreeNode.prototype = /**@lends FancytreeNode*/{
  * @property {FancytreeNode} lastSelectedNode
  */
 function Fancytree(widget){
-	// TODO: rename widget to widget (it's not a jQuery object)
 	this.widget = widget;
 	this.$div = widget.element;
 	this.options = widget.options;
@@ -1489,7 +1494,7 @@ function Fancytree(widget){
 }
 
 
-Fancytree.prototype = /**@lends Fancytree*/{
+Fancytree.prototype = /** @lends Fancytree# */{
 	/** Return a context object that can be re-used for _callHook().
 	 * @param {Fancytree | FancytreeNode | EventData} obj
 	 * @param {Event} originalEvent
@@ -2014,10 +2019,10 @@ Fancytree.prototype = /**@lends Fancytree*/{
 };
 
 /**
- * These additional methods of the Fancytree class are 'hook functions'
+ * These additional methods of the {@link Fancytree} class are 'hook functions'
  * that can be used and overloaded by extensions.
  *
- * @namespace Fancytree_Hooks
+ * @mixin Fancytree_Hooks
  */
 $.extend(Fancytree.prototype,
 	/** @lends Fancytree_Hooks# */

@@ -12,6 +12,9 @@
  * @version DEVELOPMENT
  * @date DEVELOPMENT
  */
+/**
+ * @module fancytree/edit
+ */
 
 ;(function($, window, document, undefined) {
 
@@ -27,8 +30,8 @@ var isMac = /Mac/.test(navigator.platform);
 /**
  * Start inline editing of current node title.
  *
- * @lends FancytreeNode.prototype
- * @requires jquery.fancytree.edit.js
+ * @alias FancytreeNode#editStart
+ * @requires module:fancytree/edit
  */
 $.ui.fancytree._FancytreeNodeClass.prototype.editStart = function(){
 	var $input,
@@ -90,7 +93,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editStart = function(){
 /**
  * Stop inline editing.
  * @param {Boolean} [applyChanges=false]
- * @lends FancytreeNode.prototype
+ * @alias FancytreeNode#editEnd
  * @requires jquery.fancytree.edit.js
  */
 $.ui.fancytree._FancytreeNodeClass.prototype.editEnd = function(applyChanges, _event){
