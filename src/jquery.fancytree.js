@@ -12,8 +12,9 @@
  */
 
 /** Core Fancytree module.
- * @module fancytree
  */
+
+
 // Start of local namespace
 ;(function($, window, document, undefined) {
 "use strict";
@@ -1105,19 +1106,19 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		return this.tree._callHook("nodeLoadChildren", this, source);
 	},
 	/**
-	 * @see Fancytree#nodeRender
+	 * @see Fancytree_Hooks#nodeRender
 	 */
 	render: function(force, deep) {
 		return this.tree._callHook("nodeRender", this, force, deep);
 	},
 	/**
-	 * @see Fancytree#nodeRenderTitle
+	 * @see Fancytree_Hooks#nodeRenderTitle
 	 */
 	renderTitle: function() {
 		return this.tree._callHook("nodeRenderTitle", this);
 	},
 	/**
-	 * @see Fancytree#nodeRenderStatus
+	 * @see Fancytree_Hooks#nodeRenderStatus
 	 */
 	renderStatus: function() {
 		return this.tree._callHook("nodeRenderStatus", this);
@@ -1420,7 +1421,6 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
  *
  * @class Fancytree
  * @classdesc A Fancytree is the controller behind a fancytree.
- * represents the hierarchical data model and operations.
  * This class also contains 'hook methods': see {@link Fancytree_Hooks}.
  *
  * @param {Widget} widget
@@ -1441,7 +1441,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
  * @property {String} $container
  * @property {FancytreeNode} lastSelectedNode
  */
-function Fancytree(widget){
+function Fancytree(widget) {
 	this.widget = widget;
 	this.$div = widget.element;
 	this.options = widget.options;
@@ -3231,14 +3231,21 @@ $.extend(Fancytree.prototype,
 
 /* ******************************************************************************
  * jQuery UI widget boilerplate
- * @  name ui_fancytree
- * @  class The jQuery.ui.fancytree widget
  */
-/* * @namespace ui */
-/* * @namespace ui.fancytree */
-/** @namespace $.ui.fancytree */
+/**
+ * This constructor is not called directly. Use `$(selector).fancytre({})` 
+ * to initialize the plugin instead.
+ *
+ * @class ui.fancytree
+ * @classdesc The plugin (derrived from <a href=" http://api.jqueryui.com/jQuery.widget/">jQuery.Widget</a>).<br>
+ * <pre class="sh_javascript sunlight-highlight-javascript">// Access instance methods and members:
+ * var tree = $(selector).fancytree("getTree");
+ * // Access static members:
+ * alert($.moogle.myWidget.version);
+ * </pre>
+ */
 $.widget("ui.fancytree",
-	/** @lends $.ui.fancytree.prototype */
+	/** @lends ui.fancytree# */
 	{
 	/**These options will be used as defaults
 	 * @type {FancytreeOptions}
@@ -3510,15 +3517,15 @@ $.widget("ui.fancytree",
 // $.ui.fancytree was created by the widget factory. Create a local shortcut:
 FT = $.ui.fancytree;
 
-/**
+/*
  * Static members in the `$.ui.fancytree` namespace.
- * @  name $.ui.fancytree
+ *
  * @example:
  * alert(""version: " + $.ui.fancytree.version);
  * var node = $.ui.fancytree.()
  */
 $.extend($.ui.fancytree,
-	/** @lends $.ui.fancytree */
+	/** @lends ui.fancytree */
 	{
 	/** @type {String} */
 	version: "development",
@@ -3730,8 +3737,7 @@ $.extend($.ui.fancytree,
 	},
 	/** Add Fancytree extension definition to the list of globally available extensions.
 	 *
-	 * @param name
-	 * @param definition
+	 * @param {Object} definition
 	 */
 	registerExtension: function(definition){
 		_assert(definition.name != null, "extensions must have a `name` property.");

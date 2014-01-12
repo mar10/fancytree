@@ -15,8 +15,8 @@
 		"navType"         : "vertical",
 		"theme"           : "flatly",
 		"linenums"        : true,
-		"collapseSymbols" : false,
-		"inverseNav"      : false
+		"collapseSymbols" : true,
+		"inverseNav"      : true
 	},
 	"markdown"  : {
 		"parser"   : "gfm",

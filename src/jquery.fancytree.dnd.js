@@ -1,7 +1,7 @@
 /*!
  * jquery.fancytree.dnd.js
  *
- * Drag'N'drop support.
+ * Drag-and-drop support.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
  * Copyright (c) 2013, Martin Wendt (http://wwWendt.de)
@@ -203,11 +203,8 @@ function _registerDnd() {
 /* *****************************************************************************
  *
  */
-/** @namespace $.ui.fancytree.ext.dnd */
+
 $.ui.fancytree.registerExtension(
-	/** @scope ui_fancytree
-	 * @lends $.ui.fancytree.ext.dnd.prototype
-	 */
 	{
 	name: "dnd",
 	version: "0.0.1",

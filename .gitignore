@@ -5,6 +5,8 @@
 /dist
 /doc/annotated-src
 /doc/jsdoc
+/doc/jsdoc_new
+/doc/jsdoc_old
 /node_modules
 *.log
 sauce_connect.*

@@ -31,7 +31,7 @@ var isMac = /Mac/.test(navigator.platform);
  * Start inline editing of current node title.
  *
  * @alias FancytreeNode#editStart
- * @requires module:fancytree/edit
+ * @requires Fancytree
  */
 $.ui.fancytree._FancytreeNodeClass.prototype.editStart = function(){
 	var $input,

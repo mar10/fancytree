@@ -5,10 +5,37 @@
 // Allow unused variables for demonstration
 /*jshint unused:false */
 
+/**
+ * The jQuery namespace, also acessible by the alias `$`.
+ * @name jQuery
+ * @namespace
+ */
+
+/**
+ * The <a href="http://jqueryui.com">jQuery UI</a> namespace.
+ * @name ui
+ * @namespace
+ * @memberof jQuery
+ */
+
+/**
+ * Create stateful jQuery plugins using the same abstraction as all jQuery UI widgets.
+ * @name jQuery.Widget
+ * @class
+ * @classdesc Base class for <a href="http://api.jqueryui.com/jQuery.widget/">jQueryUI widgets</a>.
+ * @see http://api.jqueryui.com/jQuery.widget/
+ */
+
+/**
+ * (Upcoming) namespace for Fancytree.
+ * @name moogle
+ * @namespace
+ */
 
 /**
  * Context object passed to events and hook functions.
- * @name EventData
+ * @typedef EventData
+ * @type {Object}
  *
  * @property {Fancytree} tree The tree instance
  * @property {object} widget The [jQuery UI tree widget](http://api.jqueryui.com/jQuery.widget)
@@ -21,10 +48,10 @@
  */
 var EventData = {};
 
-
 /**
  * Data object passed to FancytreeNode() constructor.
- * @name NodeData
+ * @typedef NodeData
+ * @type {Object}
  *
  * @property {String} title node text (may contain HTML tags)
  * @property {String} key unique key for this node (auto-generated if omitted)
@@ -50,7 +77,8 @@ var NodeData = {};
  * Data object similar to {@link NodeData}, but with additional options.
  * May be passed to {@link FancytreeNode#applyPatch}
  * (Every property that is omitted (or set to undefined) will be ignored)
- * @name NodePatch
+ * @typedef NodePatch
+ * @type {Object}
  *
  * @property {any} any (see NodeData)
  * @property {NodeData} appendChildren (not yet implemented)
@@ -63,13 +91,16 @@ var NodePatch = {};
 /**
  * List of [key, {@link NodePatch}]  tuples.
  * May be passed to {@link Fancytree#applyPatch}.
- * @name TreePatch
+ *
+ * @typedef TreePatch
+ * @type {Object}
  *
  */
 var TreePatch = {};
 
 /**
- * @name FancytreeOptions
+ * @typedef FancytreeOptions
+ * @type {Object}
  *
  * @description
  * Fancytree options (see also example)
@@ -105,7 +136,8 @@ var TreePatch = {};
 var FancytreeOptions = {};
 
 /** Fancytree events
- * @name FancytreeEvents
+ * @typedef FancytreeEvents
+ * @type {Object}
  *
  * @description
  * Events are called like this:
