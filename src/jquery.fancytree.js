@@ -2670,7 +2670,8 @@ $.extend(Fancytree.prototype,
 		}
 		ares.push(nodeTitle);
 		// Note: this will trigger focusout, if node had the focus
-		node.span.innerHTML = ares.join("");
+		// Note: don't set node.span.innerHTML directly - it will not cleanup the jQuery data currently associated with SPAN (if any)
+		$(node.span).html(ares.join(""));
 	},
 	/** Update element classes according to node state.
 	 * @param {EventData} ctx
