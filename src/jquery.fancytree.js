@@ -214,12 +214,12 @@ for(i=0; i<NODE_ATTRS.length; i++){ NODE_ATTR_MAP[NODE_ATTRS[i]] = true; }
  * @property {Boolean} isStatusNode
  * @property {Boolean} expanded
  * @property {Boolean} folder
- * @property {Boolean} href
  * @property {String} extraClasses
  * @property {Boolean} lazy
  * @property {Boolean} selected
- * @property {String} target
  * @property {String} tooltip
+ * @property {String} data.href
+ * @property {String} data.target
  */
 function FancytreeNode(parent, obj){
 	var i, l, name, cl;
@@ -3233,7 +3233,7 @@ $.extend(Fancytree.prototype,
  * jQuery UI widget boilerplate
  */
 /**
- * This constructor is not called directly. Use `$(selector).fancytre({})` 
+ * This constructor is not called directly. Use `$(selector).fancytre({})`
  * to initialize the plugin instead.
  *
  * @class ui.fancytree

@@ -34,7 +34,7 @@
 
 /**
  * Context object passed to events and hook functions.
- * @typedef EventData
+ * @name EventData
  * @type {Object}
  *
  * @property {Fancytree} tree The tree instance
@@ -50,7 +50,7 @@ var EventData = {};
 
 /**
  * Data object passed to FancytreeNode() constructor.
- * @typedef NodeData
+ * @name NodeData
  * @type {Object}
  *
  * @property {String} title node text (may contain HTML tags)
@@ -77,7 +77,7 @@ var NodeData = {};
  * Data object similar to {@link NodeData}, but with additional options.
  * May be passed to {@link FancytreeNode#applyPatch}
  * (Every property that is omitted (or set to undefined) will be ignored)
- * @typedef NodePatch
+ * @name NodePatch
  * @type {Object}
  *
  * @property {any} any (see NodeData)
@@ -92,14 +92,14 @@ var NodePatch = {};
  * List of [key, {@link NodePatch}]  tuples.
  * May be passed to {@link Fancytree#applyPatch}.
  *
- * @typedef TreePatch
+ * @name TreePatch
  * @type {Object}
  *
  */
 var TreePatch = {};
 
 /**
- * @typedef FancytreeOptions
+ * @name FancytreeOptions
  * @type {Object}
  *
  * @description
@@ -136,7 +136,7 @@ var TreePatch = {};
 var FancytreeOptions = {};
 
 /** Fancytree events
- * @typedef FancytreeEvents
+ * @name FancytreeEvents
  * @type {Object}
  *
  * @description
