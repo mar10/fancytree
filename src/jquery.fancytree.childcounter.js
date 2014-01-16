@@ -136,7 +136,7 @@ $.ui.fancytree.registerExtension({
 			opts = ctx.options,
 			extOpts = ctx.options.childcounter;
 // Optionally check for dependencies with other extensions
-		this._requireExtension("awesome", false, false);
+		//this._requireExtension("awesome", false, false);
 // Call the base implementation
 		this._super(ctx);
 // Add a class to the tree container

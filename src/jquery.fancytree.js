@@ -1273,7 +1273,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		this.renderTitle();
 	},
 	/**Sort child list by title.
-	 * @param {function} [cmd] custom compare function.
+	 * @param {function} [cmp] custom compare function (defaults to sort by title).
 	 * @param {Boolean} [deep] pass true to sort all descendant nodes
 	 */
 	sortChildren: function(cmp, deep) {
