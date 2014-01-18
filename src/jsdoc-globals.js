@@ -107,7 +107,7 @@ var TreePatch = {};
  *
  * @example $("#tree").fancytree({source: "/myService"});
  *
- * @property {Boolean} activeVisible Make sure that the active node is always visible, i.e. it's parents are expanded (default: true).
+ * @property {Boolean} activeVisible Make sure that the active node is always visible, i.e. its parents are expanded (default: true).
  * @property {object} ajax Default options for ajax requests
  * @property {Boolean} aria (default: false) Add WAI-ARIA attributes to markup
  * @property {Boolean} autoActivate Activate a node when focused with the keyboard (default: true)
