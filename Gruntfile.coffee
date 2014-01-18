@@ -310,8 +310,15 @@ module.exports = (grunt) ->
       # "csslint",
       "qunit:develop"
   ]
+
   grunt.registerTask "sauce", ["connect:sauce", "saucelabs-qunit"]
-  grunt.registerTask "travis", ["test", "sauce"]
+  if parseInt(process.env.TRAVIS_PULL_REQUEST, 10) > 0
+      # saucelab keys do not work on forks
+      # http://support.saucelabs.com/entries/25614798
+      grunt.registerTask "travis", ["test"]
+  else
+      grunt.registerTask "travis", ["test", "sauce"]
+  
   grunt.registerTask "default", ["test"]
   grunt.registerTask "build", [
       "exec:tabfix"
