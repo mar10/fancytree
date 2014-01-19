@@ -50,6 +50,12 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editStart = function(){
 	node.debug("editStart");
 	// Disable standard Fancytree mouse- and key handling
 	tree.widget._unbind();
+	// #116: ext-dnd prevents the blur event, so we have to catch outer clicks
+	$(document).on("mousedown.fancytree-edit", function(event){
+		if( ! $(event.target).hasClass("fancytree-edit-input") ){
+			node.editEnd(true, event);
+		}
+	});
 
 	// Replace node with <input>
 	$input = $("<input />", {
@@ -123,6 +129,8 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editEnd = function(applyChanges, _e
 	$input
 		.removeClass("fancytree-edit-dirty")
 		.unbind();
+	// Unbind outer-click handler
+	$(document).off(".fancytree-edit");
 
 	if( doSave ) {
 		node.setTitle( newVal );
