@@ -6,6 +6,7 @@
   * [BUGFIX] ext-edit: fixed loosing focus and made chainable
   * [FEATURE] New method `tree._requireExtension()`
   * [FEATURE] Fixed d'n'd for ext-table
+  * [FEATURE] New option `titlesTabbable`
   * Added browser test matrix (saucelabs)
 
 

@@ -60,8 +60,7 @@ $.ui.fancytree.registerExtension({
 	// Default options for this extension.
 	options: {
 		autofocusInput:   false,  // Focus first embedded input if node gets activated
-		handleCursorKeys: true,   // Allow UP/DOWN in inputs to move to prev/next node
-		titlesTabbable:   true    // Add node title to TAB chain
+		handleCursorKeys: true   // Allow UP/DOWN in inputs to move to prev/next node
 	},
 
 	treeInit: function(ctx){
@@ -72,12 +71,10 @@ $.ui.fancytree.registerExtension({
 		this.$container.addClass("fancytree-ext-gridnav");
 
 		// Activate node if embedded input gets focus (due to a click)
-//		this.$container.on("focusin", "input", function(event){
 		this.$container.on("focusin", function(event){
 			var ctx2,
 				node = $.ui.fancytree.getNode(event.target);
 
-			// node.debug("INPUT focusin", event.target, event);
 			if( node && !node.isActive() ){
 				// Call node.setActive(), but also pass the event
 				ctx2 = ctx.tree._makeHookContext(node, event);
@@ -85,29 +82,6 @@ $.ui.fancytree.registerExtension({
 			}
 		});
 	},
-	nodeRender: function(ctx) {
-		this._super(ctx);
-		// Add every node title to the tab sequence
-		if( ctx.options.gridnav.titlesTabbable === true ){
-			$(ctx.node.span).find("span.fancytree-title").attr("tabindex", "0");
-		}
-	},
-	// nodeRenderStatus: function(ctx) {
-	// 	var opts = ctx.options.gridnav,
-	// 		node = ctx.node;
-
-	// 	this._super(ctx);
-
-	//	// Note: Setting 'tabbable' only to the active node wouldn't help,
-	//  // because the first row contains a tabbable input element anyway.
-	// 	if( opts.titlesTabbable === "active" ){
-	// 		if( node.isActive() ){
-	// 			$(node.span) .find("span.fancytree-title") .attr("tabindex", "0");
-	// 		}else{
-	// 			$(node.span) .find("span.fancytree-title") .removeAttr("tabindex");
-	// 		}
-	// 	}
-	// },
 	nodeSetActive: function(ctx, flag) {
 		var $outer,
 			opts = ctx.options.gridnav,
@@ -120,7 +94,7 @@ $.ui.fancytree.registerExtension({
 		this._super(ctx, flag);
 
 		if( flag ){
-			if( opts.titlesTabbable ){
+			if( ctx.options.titlesTabbable ){
 				if( !triggeredByInput ) {
 					$(node.span).find("span.fancytree-title").focus();
 					node.setFocus();

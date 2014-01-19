@@ -130,6 +130,7 @@ var TreePatch = {};
  * @property {any} source Used to Initialize the tree.
  * @property {object} strings Translation table
  * @property {Boolean} tabbable Add tabindex='0' to container, so tree can be reached using TAB
+ * @property {Boolean} titlesTabbable Add tabindex='0' to node title span, so it can receive keyboard focus
  * @property {function} EVENT
  *
  */

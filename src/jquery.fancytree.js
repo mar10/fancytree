@@ -2597,7 +2597,7 @@ $.extend(Fancytree.prototype,
 	 */
 	nodeRenderTitle: function(ctx, title) {
 		// set node connector images, links and text
-		var id, imageSrc, nodeTitle, role, tooltip,
+		var id, imageSrc, nodeTitle, role, tabindex, tooltip,
 			node = ctx.node,
 			tree = ctx.tree,
 			opts = ctx.options,
@@ -2664,13 +2664,9 @@ $.extend(Fancytree.prototype,
 			tooltip = node.tooltip ? " title='" + node.tooltip.replace(/\"/g, "&quot;") + "'" : "";
 			id = aria ? " id='ftal_" + node.key + "'" : "";
 			role = aria ? " role='treeitem'" : "";
-//				href = node.data.href || "#";
-//			if( opts.nolink || node.nolink ) {
-//            nodeTitle = "<span role='treeitem' tabindex='-1' class='fancytree-title'" + id + tooltip + ">" + node.title + "</span>";
-			nodeTitle = "<span " + role + " class='fancytree-title'" + id + tooltip + ">" + node.title + "</span>";
-//			} else {
-//				nodeTitle = "<a href='" + href + "' tabindex='-1' class='fancytree-title'" + tooltip + ">" + node.title + "</a>";
-//			}
+			tabindex = opts.titlesTabbable ? " tabindex='0'" : "";
+
+			nodeTitle = "<span " + role + " class='fancytree-title'" + id + tooltip + tabindex + ">" + node.title + "</span>";
 		}
 		ares.push(nodeTitle);
 		// Note: this will trigger focusout, if node had the focus
@@ -3245,7 +3241,7 @@ $.extend(Fancytree.prototype,
  * <pre class="sh_javascript sunlight-highlight-javascript">// Access instance methods and members:
  * var tree = $(selector).fancytree("getTree");
  * // Access static members:
- * alert($.moogle.myWidget.version);
+ * alert($.ui.fancytree.version);
  * </pre>
  */
 $.widget("ui.fancytree",
@@ -3288,6 +3284,7 @@ $.widget("ui.fancytree",
 			loadError: "Load error!"
 		},
 		tabbable: true,
+		titlesTabbable: false,
 		_classNames: {
 			node: "fancytree-node",
 			folder: "fancytree-folder",
@@ -3526,7 +3523,7 @@ FT = $.ui.fancytree;
  *
  * @example:
  * alert(""version: " + $.ui.fancytree.version);
- * var node = $.ui.fancytree.()
+ * var node = $.ui.fancytree.getNode(element);
  */
 $.extend($.ui.fancytree,
 	/** @lends ui.fancytree */

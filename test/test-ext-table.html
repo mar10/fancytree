@@ -65,7 +65,6 @@ SORUCE = [
 			gridnav: {
 				// autofocusInput: true, // focus first embedded input if node gets activated
 				// handleCursorKeys: true,   // Allow UP/DOWN in inputs to move to prev/next node
-				// titlesTabbable: true    // Add all node titles to TAB chain
 			},
 			table: {
 				indentation: 20,      // indent 20px per node level
@@ -77,6 +76,7 @@ SORUCE = [
 			// },
 			// source: [{title: "1", folder: true}],
 			source: {foo: "bar", children: [{title: "1", folder: true}]},
+			titlesTabbable: true     // Add all node titles to TAB chain
 			init: function(e, data) {
 				alert("init: " + data.tree.data.foo);
 			},
