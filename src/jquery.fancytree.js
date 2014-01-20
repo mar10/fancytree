@@ -897,7 +897,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		}else if( !this.parent  ){
 			throw "Cannot move system root";
 		}else if( targetParent.isDescendantOf(this) ){
-			throw "Cannot move a node to it's own descendant";
+			throw "Cannot move a node to its own descendant";
 		}
 		// Unlink this node from current parent
 		if( this.parent.children.length === 1 ) {
@@ -1273,8 +1273,8 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		this.renderTitle();
 	},
 	/**Sort child list by title.
-	 * @param {function} [cmp] custom compare function (defaults to sort by title).
-	 * @param {Boolean} [deep] pass true to sort all descendant nodes
+	 * @param {function} [cmp] custom compare function(a, b) that returns -1, 0, or 1 (defaults to sort by title).
+	 * @param {Boolean} [deep=false] pass true to sort all descendant nodes
 	 */
 	sortChildren: function(cmp, deep) {
 		var i,l,
@@ -1961,7 +1961,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	/**
 	 * Return all nodes as nested list of {@link NodeData}.
 	 *
-	 * @param {Boolean} [includeRoot=false] Returns the hidden system root node (and it's children)
+	 * @param {Boolean} [includeRoot=false] Returns the hidden system root node (and its children)
 	 * @param {function} [callback] Called for every node
 	 * @returns {Array | object}
 	 * @see FancytreeNode#toDict
@@ -2313,7 +2313,7 @@ $.extend(Fancytree.prototype,
 	},
 	/**
 	 * Remove a single direct child of ctx.node.
-	 * @param ctx
+	 * @param {EventData} ctx
 	 * @param {FancytreeNode} childNode dircect child of ctx.node
 	 */
 	nodeRemoveChild: function(ctx, childNode) {
