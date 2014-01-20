@@ -3,6 +3,7 @@
 /.pydevproject
 /build
 /dist
+/test/triage
 /doc/annotated-src
 /doc/jsdoc
 /doc/jsdoc_new
