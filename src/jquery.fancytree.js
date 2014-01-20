@@ -2359,11 +2359,15 @@ $.extend(Fancytree.prototype,
 		FT.debug("nodeRemoveChildMarkup()", node.toString());
 		// TODO: Unlink attr.ftnode to support GC
 		if(node.ul){
-			$(node.ul).remove();
+			if( node.isRoot() ) {
+				$(node.ul).empty();
+			} else {
+				$(node.ul).remove();
+				node.ul = null;
+			}
 			node.visit(function(n){
 				n.li = n.ul = null;
 			});
-			node.ul = null;
 		}
 	},
 	/**Remove all descendants of ctx.node.
