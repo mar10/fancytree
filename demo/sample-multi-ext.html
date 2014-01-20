@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+	<title>Test Editable Grid - Fancytree</title>
+
+	<link type="text/css" rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/start/jquery-ui.css" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js" type="text/javascript"></script>
+
+<style type="text/css">
+	/* custom alignment (set by 'renderColumns'' event) */
+	td.alignRight {
+	   text-align: right;
+	}
+	td input[type=input] {
+		width: 40px;
+	}
+</style>
+	<!-- jquery-contextmenu (https://github.com/mar10/jquery-ui-contextmenu/) -->
+	<script src="../lib/jquery-ui-contextmenu/jquery.ui-contextmenu.js" type="text/javascript"></script>
+
+	<link href="../src/skin-win7/ui.fancytree.css" rel="stylesheet" type="text/css">
+	<script src="../src/jquery.fancytree.js" type="text/javascript"></script>
+	<script src="../src/jquery.fancytree.dnd.js" type="text/javascript"></script>
+	<script src="../src/jquery.fancytree.edit.js" type="text/javascript"></script>
+	<script src="../src/jquery.fancytree.gridnav.js" type="text/javascript"></script>
+	<script src="../src/jquery.fancytree.table.js" type="text/javascript"></script>
+
+	<!-- Start_Exclude: This block is not part of the sample code -->
+	<link href="../lib/prettify.css" rel="stylesheet">
+	<script src="../lib/prettify.js" type="text/javascript"></script>
+	<link href="../demo/sample.css" rel="stylesheet" type="text/css">
+	<script src="../demo/sample.js" type="text/javascript"></script>
+	<!-- End_Exclude -->
+
+<style type="text/css">
+	.ui-menu {
+		width: 150px;
+		font-size: 63%;
+	}
+</style>
+
+<script type="text/javascript">
+SORUCE = [
+	{title: "node 1", folder: true, expanded: true, children: [
+		{title: "node 1.1"},
+		{title: "node 1.2"}
+	 ]},
+	{title: "node 2", folder: true, expanded: false, children: [
+		{title: "node 2.1"},
+		{title: "node 2.2"}
+	 ]}
+];
+$(function(){
+
+	$("#tree").fancytree({
+		checkbox: true,
+		titlesTabbable: true,     // Add all node titles to TAB chain
+		source: SORUCE,
+
+		// extensions: ["edit", "table", "gridnav"],
+		extensions: ["edit", "dnd", "table", "gridnav"],
+
+		dnd: {
+			preventVoidMoves: true,
+			preventRecursiveMoves: true,
+			autoExpandMS: 400,
+			dragStart: function(node, data) {
+				return true;
+			},
+			dragEnter: function(node, data) {
+				// return ["before", "after"];
+			   return true;
+			},
+			dragDrop: function(node, data) {
+				data.otherNode.moveTo(node, data.hitMode);
+			}
+		},
+		edit: {
+		},
+		table: {
+			indentation: 20,
+			nodeColumnIdx: 2,
+			checkboxColumnIdx: 0
+		},
+		gridnav: {
+			autofocusInput: false,
+			handleCursorKeys: true
+		},
+
+
+		lazyload: function(e, data) {
+			data.result = {url: "../demo/ajax-sub2.json"};
+		},
+		renderColumns: function(e, data) {
+			var node = data.node,
+				$select = $("<select />"),
+				$tdList = $(node.tr).find(">td");
+			// (index #0 is rendered by fancytree by adding the checkbox)
+			$tdList.eq(1).text(node.getIndexHier()).addClass("alignRight");
+			// (index #2 is rendered by fancytree)
+			// $tdList.eq(3).text(node.key);
+			$tdList.eq(3).html("<input type='input' value='" + node.key + "'>");
+			$tdList.eq(4).html("<input type='input' value='" + node.key + "'>");
+			$tdList.eq(5).html("<input type='checkbox' value='" + node.key + "'>");
+			$tdList.eq(6).html("<input type='checkbox' value='" + node.key + "'>");
+			$("<option />", {text: "a", value: "a"}).appendTo($select);
+			$("<option />", {text: "b"}).appendTo($select);
+			$tdList.eq(7).html($select);
+		}
+	}).on("nodeCommand", function(event, data){
+		// Custom event handler that is triggered by keydown-handler and
+		// context menu:
+		var refNode, moveMode,
+			tree = $(this).fancytree("getTree"),
+			node = tree.getActiveNode();
+
+		switch( data.cmd ) {
+		case "delete":
+			node.remove();
+			break;
+		case "indent":
+			refNode = node.getPrevSibling();
+			node.moveTo(refNode, "child");
+			refNode.setExpanded();
+			break;
+		case "outdent":
+			node.moveTo(node.getParent(), "after");
+			break;
+		case "moveUp":
+			node.moveTo(node.getPrevSibling(), "before");
+			break;
+		case "moveDown":
+			node.moveTo(node.getNextSibling(), "after");
+			break;
+		case "addChild":
+			refNode = node.addChildren({title: "New node", isNew: true});
+			node.setExpanded();
+			refNode.editStart();
+			return; // exit: don't activate the node
+		case "addSibling":
+			refNode = node.getParent().addChildren({title: "New node", isNew: true}, node.getNextSibling());
+			refNode.editStart();
+			return; // exit: don't activate the node
+		case "rename":
+			node.editStart();
+			return; // exit: don't activate the node
+		default:
+			alert("Unhandled command: " + data.cmd);
+			return;
+		}
+		node.setActive();
+	}).on("keydown", function(e){
+		var c = String.fromCharCode(e.which),
+			cmd = null;
+
+		if( c === "N" && e.ctrlKey && e.shiftKey) {
+			cmd = "addChild";
+		} else if( c === "C" && e.ctrlKey ) {
+			cmd = "copy";
+		} else if( c === "V" && e.ctrlKey ) {
+			cmd = "paste";
+		} else if( c === "X" && e.ctrlKey ) {
+			cmd = "cut";
+		} else if( c === "N" && e.ctrlKey ) {
+			cmd = "addSibling";
+		} else if( e.which === $.ui.keyCode.DELETE ) {
+			cmd = "delete";
+		} else if( e.which === $.ui.keyCode.F2 ) {
+			cmd = "rename";
+		} else if( e.which === $.ui.keyCode.UP && e.ctrlKey ) {
+			cmd = "moveUp";
+		} else if( e.which === $.ui.keyCode.DOWN && e.ctrlKey ) {
+			cmd = "moveDown";
+		} else if( e.which === $.ui.keyCode.RIGHT && e.ctrlKey ) {
+			cmd = "indent";
+		} else if( e.which === $.ui.keyCode.LEFT && e.ctrlKey ) {
+			cmd = "outdent";
+		}
+		if( cmd ){
+			$(this).trigger("nodeCommand", {cmd: cmd});
+			return false;
+		}
+	});
+
+	/*
+	 * Context menu (https://github.com/mar10/jquery-ui-contextmenu)
+	 */
+	$("#tree").contextmenu({
+		delegate: "span.fancytree-title",
+		menu: [
+			{title: "Edit", cmd: "rename", uiIcon: "ui-icon-pencil" },
+			{title: "Delete", cmd: "delete", uiIcon: "ui-icon-trash" },
+			{title: "----"},
+			{title: "New node", cmd: "addChild", uiIcon: "ui-icon-plus" },
+			{title: "New child node", cmd: "addChild", uiIcon: "ui-icon-arrowreturn-1-e" },
+			{title: "----"},
+			{title: "Cut", cmd: "cut", uiIcon: "ui-icon-scissors"},
+			{title: "Copy", cmd: "copy", uiIcon: "ui-icon-copy"},
+			{title: "Paste", cmd: "paste", uiIcon: "ui-icon-clipboard", disabled: true }
+			],
+		beforeOpen: function(event, ui) {
+			var node = $.ui.fancytree.getNode(ui.target);
+			node.setActive();
+		},
+		select: function(event, ui) {
+			var that = this;
+			// delay the event, so the menu can close and the click event does
+			// not interfere with the edit control
+			setTimeout(function(){
+				$(that).trigger("nodeCommand", {cmd: ui.cmd});
+			}, 100);
+		}
+	});
+});
+</script>
+</head>
+
+<body class="example">
+	<h1>Example: treegrid with keyboard navigation, DnD, and editing capabilites </h1>
+	<div class="description">
+		Bringing it all together: this sample uses different plugins and custom
+		events to implement an editable tree:
+		<ul>
+			<li>'ext-dnd' to re-order nodes using drag-and-drop.</li>
+			<li>'ext-table' to implement a treegrid.<br>
+			Try <kbd>UP / DOWN / LEFT / RIGHT</kbd>, <kbd>TAB</kbd>, <kbd>Shift+TAB</kbd>.
+			</li>
+			<li>'ext-edit': inline editing.<br>
+			Try <kbd>F2</kbd>,
+			<kbd>Ctrl+N</kbd>, <kbd>Ctrl+Shift+N</kbd>,
+			<kbd>Ctrl+UP</kbd>, <kbd>Ctrl+DOWN</kbd>, <kbd>Ctrl+LEFT</kbd>, <kbd>Ctrl+RIGHT</kbd>.
+			</li>
+			<li>3rd-party <a href="https://github.com/mar10/jquery-ui-contextmenu">contextmenu</a> for additional edit commands</li>
+		</ul>
+	</div>
+	<div>
+		<label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
+	</div>
+
+	<h1>Table Tree</h1>
+	<div>
+		<label>Fake input:<input id="input1"/></label>
+	</div>
+	<table id="tree">
+		<colgroup>
+		<col width="30px"></col>
+		<col width="50px"></col>
+		<col width="250px"></col>
+		<col width="50px"></col>
+		<col width="50px"></col>
+		<col width="30px"></col>
+		<col width="30px"></col>
+		<col width="50px"></col>
+		</colgroup>
+		<thead>
+			<tr> <th></th> <th>#</th> <th></th> <th>Ed1</th> <th>Ed2</th> <th>Rb1</th> <th>Rb2</th> <th>Cb</th></tr>
+		</thead>
+		<tbody>
+		</tbody>
+	</table>
+
+	<!-- Start_Exclude: This block is not part of the sample code -->
+	<hr>
+	<p class="sample-links  no_code">
+		<a class="hideInsideFS" href="https://github.com/mar10/fancytree">jquery.fancytree.js project home</a>
+		<a class="hideOutsideFS" href="#">Link to this page</a>
+		<a class="hideInsideFS" href="index.html">Example Browser</a>
+		<a href="#" id="codeExample">View source code</a>
+	</p>
+	<pre id="sourceCode" class="prettyprint" style="display:none"></pre>
+	<!-- End_Exclude -->
+</body>
+</html>
