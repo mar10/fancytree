@@ -36,7 +36,8 @@
 			extensions: ["awesome"],
 			checkbox: true,
 			selectMode: 3,
-			source: {url: "ajax-tree-plain.json", debugDelay: 1000},
+//			source: {url: "ajax-tree-plain.json", debugDelay: 1000},
+			source: {url: "ajax-tree-taxonomy.json", debugDelay: 1000},
 			lazyload: function(event, ctx) {
 				ctx.result = {url: "ajax-sub2.json", debugDelay: 1000};
 			}
