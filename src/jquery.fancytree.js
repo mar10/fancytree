@@ -2590,7 +2590,6 @@ $.extend(Fancytree.prototype,
 				parent.ul.appendChild(node.li);
 			}
 		}
-		return;
 	},
 	/** Create HTML for the node's outer <span> (expander, checkbox, icon, and title).
 	 * @param {EventData} ctx
@@ -2670,8 +2669,8 @@ $.extend(Fancytree.prototype,
 		}
 		ares.push(nodeTitle);
 		// Note: this will trigger focusout, if node had the focus
-		// Note: don't set node.span.innerHTML directly - it will not cleanup the jQuery data currently associated with SPAN (if any)
-		$(node.span).html(ares.join(""));
+		//$(node.span).html(ares.join("")); // it will cleanup the jQuery data currently associated with SPAN (if any), but it executes more slowly
+		node.span.innerHTML = ares.join("");
 	},
 	/** Update element classes according to node state.
 	 * @param {EventData} ctx
