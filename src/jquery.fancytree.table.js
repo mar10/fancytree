@@ -203,7 +203,7 @@ $.ui.fancytree.registerExtension({
 				}
 			} else {
 				// Set icon, link, and title (normally this is only required on initial render)
-				this.nodeRenderTitle(ctx);
+				//this.nodeRenderTitle(ctx);
 			}
 		}
 		 // Allow tweaking after node state was rendered
