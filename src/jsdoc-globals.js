@@ -34,7 +34,7 @@
 
 /**
  * Context object passed to events and hook functions.
- * @typedef EventData
+ * @name EventData
  * @type {Object}
  *
  * @property {Fancytree} tree The tree instance
@@ -50,7 +50,7 @@ var EventData = {};
 
 /**
  * Data object passed to FancytreeNode() constructor.
- * @typedef NodeData
+ * @name NodeData
  * @type {Object}
  *
  * @property {String} title node text (may contain HTML tags)
@@ -77,7 +77,7 @@ var NodeData = {};
  * Data object similar to {@link NodeData}, but with additional options.
  * May be passed to {@link FancytreeNode#applyPatch}
  * (Every property that is omitted (or set to undefined) will be ignored)
- * @typedef NodePatch
+ * @name NodePatch
  * @type {Object}
  *
  * @property {any} any (see NodeData)
@@ -92,14 +92,14 @@ var NodePatch = {};
  * List of [key, {@link NodePatch}]  tuples.
  * May be passed to {@link Fancytree#applyPatch}.
  *
- * @typedef TreePatch
+ * @name TreePatch
  * @type {Object}
  *
  */
 var TreePatch = {};
 
 /**
- * @typedef FancytreeOptions
+ * @name FancytreeOptions
  * @type {Object}
  *
  * @description
@@ -107,7 +107,7 @@ var TreePatch = {};
  *
  * @example $("#tree").fancytree({source: "/myService"});
  *
- * @property {Boolean} activeVisible Make sure that the active node is always visible, i.e. it's parents are expanded (default: true).
+ * @property {Boolean} activeVisible Make sure that the active node is always visible, i.e. its parents are expanded (default: true).
  * @property {object} ajax Default options for ajax requests
  * @property {Boolean} aria (default: false) Add WAI-ARIA attributes to markup
  * @property {Boolean} autoActivate Activate a node when focused with the keyboard (default: true)
@@ -130,13 +130,14 @@ var TreePatch = {};
  * @property {any} source Used to Initialize the tree.
  * @property {object} strings Translation table
  * @property {Boolean} tabbable Add tabindex='0' to container, so tree can be reached using TAB
+ * @property {Boolean} titlesTabbable Add tabindex='0' to node title span, so it can receive keyboard focus
  * @property {function} EVENT
  *
  */
 var FancytreeOptions = {};
 
 /** Fancytree events
- * @typedef FancytreeEvents
+ * @name FancytreeEvents
  * @type {Object}
  *
  * @description

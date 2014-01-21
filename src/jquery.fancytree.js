@@ -3,7 +3,7 @@
  * Dynamic tree view control, with support for lazy loading of branches.
  * https://github.com/mar10/fancytree/
  *
- * Copyright (c) 2006-2013, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2006-2014, Martin Wendt (http://wwWendt.de)
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
@@ -214,12 +214,12 @@ for(i=0; i<NODE_ATTRS.length; i++){ NODE_ATTR_MAP[NODE_ATTRS[i]] = true; }
  * @property {Boolean} isStatusNode
  * @property {Boolean} expanded
  * @property {Boolean} folder
- * @property {Boolean} href
  * @property {String} extraClasses
  * @property {Boolean} lazy
  * @property {Boolean} selected
- * @property {String} target
  * @property {String} tooltip
+ * @property {String} data.href
+ * @property {String} data.target
  */
 function FancytreeNode(parent, obj){
 	var i, l, name, cl;
@@ -897,7 +897,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		}else if( !this.parent  ){
 			throw "Cannot move system root";
 		}else if( targetParent.isDescendantOf(this) ){
-			throw "Cannot move a node to it's own descendant";
+			throw "Cannot move a node to its own descendant";
 		}
 		// Unlink this node from current parent
 		if( this.parent.children.length === 1 ) {
@@ -1273,8 +1273,8 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		this.renderTitle();
 	},
 	/**Sort child list by title.
-	 * @param {function} [cmd] custom compare function.
-	 * @param {Boolean} [deep] pass true to sort all descendant nodes
+	 * @param {function} [cmp] custom compare function(a, b) that returns -1, 0, or 1 (defaults to sort by title).
+	 * @param {Boolean} [deep=false] pass true to sort all descendant nodes
 	 */
 	sortChildren: function(cmp, deep) {
 		var i,l,
@@ -1961,7 +1961,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	/**
 	 * Return all nodes as nested list of {@link NodeData}.
 	 *
-	 * @param {Boolean} [includeRoot=false] Returns the hidden system root node (and it's children)
+	 * @param {Boolean} [includeRoot=false] Returns the hidden system root node (and its children)
 	 * @param {function} [callback] Called for every node
 	 * @returns {Array | object}
 	 * @see FancytreeNode#toDict
@@ -2313,7 +2313,7 @@ $.extend(Fancytree.prototype,
 	},
 	/**
 	 * Remove a single direct child of ctx.node.
-	 * @param ctx
+	 * @param {EventData} ctx
 	 * @param {FancytreeNode} childNode dircect child of ctx.node
 	 */
 	nodeRemoveChild: function(ctx, childNode) {
@@ -2359,11 +2359,15 @@ $.extend(Fancytree.prototype,
 		FT.debug("nodeRemoveChildMarkup()", node.toString());
 		// TODO: Unlink attr.ftnode to support GC
 		if(node.ul){
-			$(node.ul).remove();
+			if( node.isRoot() ) {
+				$(node.ul).empty();
+			} else {
+				$(node.ul).remove();
+				node.ul = null;
+			}
 			node.visit(function(n){
 				n.li = n.ul = null;
 			});
-			node.ul = null;
 		}
 	},
 	/**Remove all descendants of ctx.node.
@@ -2593,7 +2597,7 @@ $.extend(Fancytree.prototype,
 	 */
 	nodeRenderTitle: function(ctx, title) {
 		// set node connector images, links and text
-		var id, imageSrc, nodeTitle, role, tooltip,
+		var id, imageSrc, nodeTitle, role, tabindex, tooltip,
 			node = ctx.node,
 			tree = ctx.tree,
 			opts = ctx.options,
@@ -2660,13 +2664,9 @@ $.extend(Fancytree.prototype,
 			tooltip = node.tooltip ? " title='" + node.tooltip.replace(/\"/g, "&quot;") + "'" : "";
 			id = aria ? " id='ftal_" + node.key + "'" : "";
 			role = aria ? " role='treeitem'" : "";
-//				href = node.data.href || "#";
-//			if( opts.nolink || node.nolink ) {
-//            nodeTitle = "<span role='treeitem' tabindex='-1' class='fancytree-title'" + id + tooltip + ">" + node.title + "</span>";
-			nodeTitle = "<span " + role + " class='fancytree-title'" + id + tooltip + ">" + node.title + "</span>";
-//			} else {
-//				nodeTitle = "<a href='" + href + "' tabindex='-1' class='fancytree-title'" + tooltip + ">" + node.title + "</a>";
-//			}
+			tabindex = opts.titlesTabbable ? " tabindex='0'" : "";
+
+			nodeTitle = "<span " + role + " class='fancytree-title'" + id + tooltip + tabindex + ">" + node.title + "</span>";
 		}
 		ares.push(nodeTitle);
 		// Note: this will trigger focusout, if node had the focus
@@ -3234,7 +3234,7 @@ $.extend(Fancytree.prototype,
  * jQuery UI widget boilerplate
  */
 /**
- * This constructor is not called directly. Use `$(selector).fancytre({})` 
+ * This constructor is not called directly. Use `$(selector).fancytre({})`
  * to initialize the plugin instead.
  *
  * @class ui.fancytree
@@ -3242,7 +3242,7 @@ $.extend(Fancytree.prototype,
  * <pre class="sh_javascript sunlight-highlight-javascript">// Access instance methods and members:
  * var tree = $(selector).fancytree("getTree");
  * // Access static members:
- * alert($.moogle.myWidget.version);
+ * alert($.ui.fancytree.version);
  * </pre>
  */
 $.widget("ui.fancytree",
@@ -3285,6 +3285,7 @@ $.widget("ui.fancytree",
 			loadError: "Load error!"
 		},
 		tabbable: true,
+		titlesTabbable: false,
 		_classNames: {
 			node: "fancytree-node",
 			folder: "fancytree-folder",
@@ -3523,7 +3524,7 @@ FT = $.ui.fancytree;
  *
  * @example:
  * alert(""version: " + $.ui.fancytree.version);
- * var node = $.ui.fancytree.()
+ * var node = $.ui.fancytree.getNode(element);
  */
 $.extend($.ui.fancytree,
 	/** @lends ui.fancytree */

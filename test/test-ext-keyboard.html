@@ -63,9 +63,10 @@ $(function(){
 		gridnav: {
 			autofocusInput: false,   // focus first embedded input if node gets activated
 			handleCursorKeys: true,  // Allow UP/DOWN in inputs to move to prev/next node
-			titlesTabbable: true     // Add all node titles to TAB chain
+			// titlesTabbable: true     // Add all node titles to TAB chain
 		},
 		source: SORUCE,
+		titlesTabbable: true     // Add all node titles to TAB chain
 		lazyload: function(e, data) {
 			data.result = {url: "../demo/ajax-sub2.json"};
 		},

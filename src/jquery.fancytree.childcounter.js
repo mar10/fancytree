@@ -14,7 +14,7 @@
  * Add a child counter bubble to tree nodes.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2013, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2014, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -136,7 +136,7 @@ $.ui.fancytree.registerExtension({
 			opts = ctx.options,
 			extOpts = ctx.options.childcounter;
 // Optionally check for dependencies with other extensions
-		this._requireExtension("awesome", false, false);
+		//this._requireExtension("awesome", false, false);
 // Call the base implementation
 		this._super(ctx);
 // Add a class to the tree container

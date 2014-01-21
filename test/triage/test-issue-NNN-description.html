@@ -25,7 +25,7 @@ ul.fancytree-container{
 }
 </style>
 
-	<!-- Add code to initialize the tree when the document is loaded: -->
+
 <script type="text/javascript">
 
 var SOURCE = [
@@ -129,21 +129,27 @@ $(function(){
 });
 </script>
 
-<!-- Start_Exclude: This block is not part of the sample code -->
 <script>
 $(function(){
-/*
 	addSampleButton({
-		label: "Generate <input> elements",
+		label: "Action 1",
 		code: function(){
-			$("#tree").fancytree("getTree").generateInput();
-			$("#tree2").fancytree("getTree").generateInput();
+			var tree = $("#tree").fancytree("getTree"),
+				node = tree.getActiveNode();
+			// node = tree.getNodeByKey("node1");
+			node.remove();
 		}
 	});
-*/
+	addSampleButton({
+		label: "Action 2",
+		code: function(){
+			var node,
+				tree = $("#tree").fancytree("getTree");
+			tree.rootNode.addChildren({title: "new node" + new Date()});
+		}
+	});
 });
 </script>
-<!-- End_Exclude -->
 
 </head>
 

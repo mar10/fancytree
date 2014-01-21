@@ -4,7 +4,7 @@
  * Make node titles editable.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2013, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2014, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -25,7 +25,35 @@
  * Private functions and variables
  */
 
-var isMac = /Mac/.test(navigator.platform);
+var isMac = /Mac/.test(navigator.platform)
+	// modifiers = {shift: "shiftKey", ctrl: "ctrlKey", alt: "altKey", meta: "metaKey"},
+	// specialKeys = {
+	// 	8: "backspace", 9: "tab", 10: "return", 13: "return", 16: "shift", 17: "ctrl", 18: "alt", 19: "pause",
+	// 	20: "capslock", 27: "esc", 32: "space", 33: "pageup", 34: "pagedown", 35: "end", 36: "home",
+	// 	37: "left", 38: "up", 39: "right", 40: "down", 45: "insert", 46: "del",
+	// 	96: "0", 97: "1", 98: "2", 99: "3", 100: "4", 101: "5", 102: "6", 103: "7",
+	// 	104: "8", 105: "9", 106: "*", 107: "+", 109: "-", 110: ".", 111 : "/",
+	// 	112: "f1", 113: "f2", 114: "f3", 115: "f4", 116: "f5", 117: "f6", 118: "f7", 119: "f8",
+	// 	120: "f9", 121: "f10", 122: "f11", 123: "f12", 144: "numlock", 145: "scroll", 186: ";", 191: "/",
+	// 	220: "\\", 222: "'", 224: "meta"
+	// },
+	// shiftNums = {
+	// 	"`": "~", "1": "!", "2": "@", "3": "#", "4": "$", "5": "%", "6": "^", "7": "&",
+	// 	"8": "*", "9": "(", "0": ")", "-": "_", "=": "+", ";": ": ", "'": "\"", ",": "<",
+	// 	".": ">",  "/": "?",  "\\": "|"
+	// }
+	;
+
+// $.ui.fancytree.isKeydownEvent = function(e, code){
+// 	var i, part, partmap, partlist = code.split("+"), len = parts.length;
+// 	var c = String.fromCharCode(e.which).toLowerCase();
+// 	for( i = 0; i < len; i++ ) {
+// 	}
+// 	alert (parts.unshift());
+// 	alert (parts.unshift());
+// 	alert (parts.unshift());
+// };
+
 
 /**
  * Start inline editing of current node title.
@@ -40,7 +68,6 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editStart = function(){
 		local = tree.ext.edit,
 		prevTitle = node.title,
 		instOpts = tree.options.edit,
-//		triggerCancel = instOpts.triggerCancel,
 		$title = $(".fancytree-title", node.span),
 		eventData = {node: node, tree: tree, options: tree.options};
 
@@ -50,6 +77,12 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editStart = function(){
 	node.debug("editStart");
 	// Disable standard Fancytree mouse- and key handling
 	tree.widget._unbind();
+	// #116: ext-dnd prevents the blur event, so we have to catch outer clicks
+	$(document).on("mousedown.fancytree-edit", function(event){
+		if( ! $(event.target).hasClass("fancytree-edit-input") ){
+			node.editEnd(true, event);
+		}
+	});
 
 	// Replace node with <input>
 	$input = $("<input />", {
@@ -76,14 +109,14 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editStart = function(){
 		}).keydown(function(event){
 			switch( event.which ) {
 			case $.ui.keyCode.ESCAPE:
-				node.endEdit(false, event);
+				node.editEnd(false, event);
 				break;
 			case $.ui.keyCode.ENTER:
-				node.endEdit(true, event);
+				node.editEnd(true, event);
 				return false; // so we don't start editmode on Mac
 			}
 		}).blur(function(event){
-			return node.endEdit(true, event);
+			return node.editEnd(true, event);
 		});
 
 	instOpts.edit.call(node, {type: "edit"}, eventData);
@@ -123,6 +156,8 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editEnd = function(applyChanges, _e
 	$input
 		.removeClass("fancytree-edit-dirty")
 		.unbind();
+	// Unbind outer-click handler
+	$(document).off(".fancytree-edit");
 
 	if( doSave ) {
 		node.setTitle( newVal );
@@ -145,6 +180,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.startEdit = function(){
 	this.warn("FancytreeNode.startEdit() is deprecated. Use .editStart() instead.");
 	return this.editStart.apply(this, arguments);
 };
+
 
 $.ui.fancytree._FancytreeNodeClass.prototype.endEdit = function(){
 	this.warn("FancytreeNode.endEdit() is deprecated. Use .editEnd() instead.");
@@ -223,7 +259,8 @@ $.ui.fancytree.registerExtension({
 		adjustWidthOfs: 4,   // null: don't adjust input size to content
 		inputCss: {minWidth: "3em"},
 		triggerCancel: ["esc", "tab", "click"],
-		triggerStart: ["f2", "dblclick", "shift+click", "mac+enter"],
+		// triggerStart: ["f2", "dblclick", "shift+click", "mac+enter"],
+		triggerStart: ["f2", "shift+click", "mac+enter"],
 		beforeClose: $.noop, // Return false to prevent cancel/save (data.input is available)
 		beforeEdit: $.noop,  // Return false to prevent edit mode
 		close: $.noop,       // Editor was removed
@@ -245,7 +282,7 @@ $.ui.fancytree.registerExtension({
 	nodeClick: function(ctx) {
 		if( $.inArray("shift+click", ctx.options.edit.triggerStart) >= 0 ){
 			if( ctx.originalEvent.shiftKey ){
-				ctx.node.startEdit();
+				ctx.node.editStart();
 				return false;
 			}
 		}
@@ -253,7 +290,7 @@ $.ui.fancytree.registerExtension({
 	},
 	nodeDblclick: function(ctx) {
 		if( $.inArray("dblclick", ctx.options.edit.triggerStart) >= 0 ){
-			ctx.node.startEdit();
+			ctx.node.editStart();
 		}
 		return false;
 	},
@@ -261,13 +298,13 @@ $.ui.fancytree.registerExtension({
 		switch( ctx.originalEvent.which ) {
 		case 113: // [F2]
 			if( $.inArray("f2", ctx.options.edit.triggerStart) >= 0 ){
-				ctx.node.startEdit();
+				ctx.node.editStart();
 				return false;
 			}
 			break;
 		case $.ui.keyCode.ENTER:
 			if( $.inArray("mac+enter", ctx.options.edit.triggerStart) >= 0 && isMac ){
-				ctx.node.startEdit();
+				ctx.node.editStart();
 				return false;
 			}
 			break;

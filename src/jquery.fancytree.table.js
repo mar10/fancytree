@@ -4,7 +4,7 @@
  * Render tree as table (aka 'treegrid', 'tabletree').
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2013, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2014, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -253,12 +253,12 @@ $.ui.fancytree.registerExtension({
 			opts = ctx.options;
 
 		this._super(ctx);
-				// move checkbox to custom column
+		// Move checkbox to custom column
 		if(opts.checkbox && opts.table.checkboxColumnIdx != null){
 			$cb = $("span.fancytree-checkbox", node.span).detach();
 			$(node.tr).find("td:first").html($cb);
 		}
-		// let user code write column content
+		// Let user code write column content
 		// ctx.tree._triggerNodeEvent("renderColumns", node);
 		if ( opts.renderColumns ){
 			opts.renderColumns.call(ctx.tree, {type: "renderColumns"}, ctx);
@@ -270,12 +270,11 @@ $.ui.fancytree.registerExtension({
 			opts = ctx.options;
 
 		this._super(ctx);
+
 		$(node.tr).removeClass("fancytree-node");
 		// indent
 		indent = (node.getLevel() - 1) * opts.table.indentation;
-		if(indent){
-			$(node.span).css({marginLeft: indent + "px"});
-		}
+		$(node.span).css({marginLeft: indent + "px"});
 	 },
 	/* Expand node, return Deferred.promise. */
 	nodeSetExpanded: function(ctx, flag) {
