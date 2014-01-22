@@ -4,16 +4,17 @@
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 	<title>Dynatree - Example</title>
 
-	<script src="../jquery/jquery.js" type="text/javascript"></script>
-	<script src="../jquery/jquery-ui.custom.js" type="text/javascript"></script>
-	<script src="../jquery/jquery.cookie.js" type="text/javascript"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js" type="text/javascript"></script>
+	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet" type="text/css">
 
-	<link href="../src/skin/ui.dynatree.css" rel="stylesheet" type="text/css">
-	<script src="../src/jquery.dynatree.js" type="text/javascript"></script>
+	<script src="../src/jquery.fancytree.js" type="text/javascript"></script>
+	<script src="../src/jquery.fancytree.dnd.js" type="text/javascript"></script>
+	<script src="../src/jquery.fancytree.table.js" type="text/javascript"></script>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
-	<link href="prettify.css" rel="stylesheet">
-	<script src="prettify.js" type="text/javascript"></script>
+	<link href="../lib/prettify.css" rel="stylesheet">
+	<script src="../lib/prettify.js" type="text/javascript"></script>
 	<link href="sample.css" rel="stylesheet" type="text/css">
 	<script src="sample.js" type="text/javascript"></script>
 	<!-- End_Exclude -->
@@ -43,19 +44,20 @@
 	$(function(){
 		// Initialize the tree inside the <div>element.
 		// The tree structure is read from the contained <ul> tag.
-		$("#tree").dynatree({
-			onActivate: function(node) {
-				$("#echoActive").text(node.data.title);
-				if(node.data.key == "canvasNode1")
+		$("#tree").fancytree({
+			activate: function(node) {
+				$("#echoActive").text(node.title);
+				if(node.key === "canvasNode1") {
 					drawCanvas();
+				}
 			},
-			onDeactivate: function(node) {
+			deactivate: function(node) {
 				$("#echoSelected").text("-");
 			}
 		});
 		// Dynatree renders nodes 'lazily', i.e. when they are first expanded.
 		// So we to use live event binding for embedded elements.
-		$("#btn1").live("click", function(){
+		$("#tree").on("click", "#btn1", function(){
 			alert("Thank you for clicking.");
 			return false;
 		});
