@@ -56,12 +56,16 @@
 		name: "contextMenu",
 		version: "1.0",
 		contextMenu: {
+      selector: 'fancytree-title',
 			menu: {},
 			actions: {}
 		},
 		treeInit: function(ctx) {
 			this._super(ctx);
-			initContextMenu(ctx.tree, "fancytree-title", ctx.options.contextMenu.menu, ctx.options.contextMenu.actions);
+			initContextMenu(ctx.tree,
+                      ctx.options.contextMenu.selector || "fancytree-title",
+                      ctx.options.contextMenu.menu,
+                      ctx.options.contextMenu.actions);
 		}
 	});
 }(jQuery, document));
