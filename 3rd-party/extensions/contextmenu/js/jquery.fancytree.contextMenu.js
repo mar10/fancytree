@@ -17,6 +17,8 @@
 			var node = $.ui.fancytree.getNode(event);
 
 			if(node) {
+        $.contextMenu('destroy', "." + selector);
+
 				node.setFocus(true);
 				node.setActive(true);
 
