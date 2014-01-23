@@ -73,7 +73,7 @@ $(function(){
 			},
 			dragEnter: function(node, data) {
 				// return ["before", "after"];
-			    return true;
+				return true;
 			},
 			dragDrop: function(node, data) {
 				data.otherNode.moveTo(node, data.hitMode);
@@ -145,7 +145,7 @@ $(function(){
 			break;
 		case "addChild":
 			refNode = node.addChildren({
-				title: "New node", 
+				title: "New node",
 				isNew: true
 			});
 			node.setExpanded();
@@ -153,7 +153,7 @@ $(function(){
 			break;
 		case "addSibling":
 			refNode = node.getParent().addChildren({
-				title: "New node", 
+				title: "New node",
 				isNew: true
 			}, node.getNextSibling());
 			refNode.editStart();
@@ -163,7 +163,7 @@ $(function(){
 			break;
 		case "copy":
 			CLIPBOARD = {
-				mode: data.cmd, 
+				mode: data.cmd,
 				data: node.toDict(function(n){
 					delete n.key;
 				})
@@ -256,13 +256,13 @@ $(function(){
 <body class="example">
 	<h1>Example: treegrid with keyboard navigation, DnD, and editing capabilites </h1>
 	<div class="description">
-		Bringing it all together: this sample uses different plugins and custom
-		events to implement an editable tree:
+		Bringing it all together: this sample combines different extensions and
+		custom events to implement an editable tree:
 		<ul>
 			<li>'ext-dnd' to re-order nodes using drag-and-drop.</li>
-			<li>'ext-table' to implement a treegrid.<br>
+			<li>'ext-table' + 'ext-gridnav' to implement a treegrid.<br>
 			Try <kbd>UP / DOWN / LEFT / RIGHT</kbd>, <kbd>TAB</kbd>, <kbd>Shift+TAB</kbd>
-			to navigate between grid cells. Note that embedded input controls 
+			to navigate between grid cells. Note that embedded input controls
 			remain functional.
 			</li>
 			<li>'ext-edit': inline editing.<br>

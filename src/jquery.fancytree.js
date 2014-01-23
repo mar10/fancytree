@@ -2461,7 +2461,7 @@ $.extend(Fancytree.prototype,
 		 * - children have been added
 		 * - childern have been removed
 		 */
-		var childLI, childNode1, childNode2, i, l, subCtx,
+		var childLI, childNode1, childNode2, i, l, next, subCtx,
 			node = ctx.node,
 			tree = ctx.tree,
 			opts = ctx.options,
@@ -2470,7 +2470,7 @@ $.extend(Fancytree.prototype,
 			parent = node.parent,
 			isRootNode = !parent,
 			children = node.children;
-//		FT.debug("nodeRender(" + !!force + ", " + !!deep + ")", node.toString());
+		FT.debug("nodeRender(" + !!force + ", " + !!deep + ")", node.toString());
 
 		if( ! isRootNode && ! parent.ul ) {
 			// issue #105: calling node.collapse on a deep, unrendered node
@@ -2478,6 +2478,14 @@ $.extend(Fancytree.prototype,
 		}
 		_assert(isRootNode || parent.ul, "parent UL must exist");
 
+// 		if(node.li && (force || (node.li.parentNode !== node.parent.ul) ) ){
+// 			if(node.li.parentNode !== node.parent.ul){
+// //					alert("unlink " + node + " (must be child of " + node.parent + ")");
+// 				this.warn("unlink " + node + " (must be child of " + node.parent + ")");
+// 			}
+// //	            this.debug("nodeRemoveMarkup...");
+// 			this.nodeRemoveMarkup(ctx);
+// 		}
 		// Render the node
 		if( !isRootNode ){
 			// Discard markup on force-mode, or if it is not linked to parent <ul>
@@ -2511,17 +2519,11 @@ $.extend(Fancytree.prototype,
 					$(node.span).attr("aria-labelledby", "ftal_" + node.key);
 				}
 				node.li.appendChild(node.span);
-				// Note: we don't add the LI to the DOM know, but only after we
-				// added all sub elements (hoping that this performs better since
-				// the browser only have to render once)
-				// TODO: benchmarks to prove this
-//                parent.ul.appendChild(node.li);
 
 				// Create inner HTML for the <span> (expander, checkbox, icon, and title)
 				this.nodeRenderTitle(ctx);
 
 				// Allow tweaking and binding, after node was created for the first time
-//				tree._triggerNodeEvent("createNode", ctx);
 				if ( opts.createNode ){
 					opts.createNode.call(tree, {type: "createNode"}, ctx);
 				}
@@ -2529,7 +2531,6 @@ $.extend(Fancytree.prototype,
 //				this.nodeRenderTitle(ctx);
 			}
 			// Allow tweaking after node state was rendered
-//			tree._triggerNodeEvent("renderNode", ctx);
 			if ( opts.renderNode ){
 				opts.renderNode.call(tree, {type: "renderNode"}, ctx);
 			}
@@ -2559,8 +2560,20 @@ $.extend(Fancytree.prototype,
 					subCtx = $.extend({}, ctx, {node: children[i]});
 					this.nodeRender(subCtx, force, deep, false, true);
 				}
+				// Remove <li> if nodes have moved to another parent
+				childLI = node.ul.firstChild;
+				while( childLI ){
+					childNode2 = childLI.ftnode;
+					if( childNode2 && childNode2.parent !== node ) {
+						node.debug("_fixParent: remove missing " + childNode2, childLI);
+						next = childLI.nextSibling;
+						childLI.parentNode.removeChild(childLI);
+						childLI = next;
+					}else{
+						childLI = childLI.nextSibling;
+					}
+				}
 				// Make sure, that <li> order matches node.children order.
-//                this.nodeFixOrder(ctx);
 				childLI = node.ul.firstChild;
 				for(i=0, l=children.length-1; i<l; i++) {
 					childNode1 = children[i];
@@ -2572,7 +2585,6 @@ $.extend(Fancytree.prototype,
 						childLI = childLI.nextSibling;
 					}
 				}
-				// TODO: need to check, if node.ul has <li>s, that are not in node.children[] ?
 			}
 		}else{
 			// No children: remove markup if any
