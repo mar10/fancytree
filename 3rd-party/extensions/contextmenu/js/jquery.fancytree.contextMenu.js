@@ -12,8 +12,8 @@
 (function($, document) {
 	"use strict";
 
-	var initContextMenu = function(selector, menu, actions) {
-		$(document).on("mousedown.contextMenu", function(event) {
+	var initContextMenu = function(tree, selector, menu, actions) {
+		tree.$container.on("mousedown.contextMenu", function(event) {
 			var node = $.ui.fancytree.getNode(event);
 
 			if(node) {
@@ -59,7 +59,7 @@
 		},
 		treeInit: function(ctx) {
 			this._super(ctx);
-			initContextMenu("fancytree-title", ctx.options.contextMenu.menu, ctx.options.contextMenu.actions);
+			initContextMenu(ctx.tree, "fancytree-title", ctx.options.contextMenu.menu, ctx.options.contextMenu.actions);
 		}
 	});
 }(jQuery, document));
