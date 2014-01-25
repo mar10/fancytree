@@ -120,23 +120,22 @@ module.exports = (grunt) ->
                     dest: "build/"
                 }]
 
-    csslint:
-  #      options:
-  #              csslintrc: ".csslintrc"
-        strict:
-            options:
-                import: 2
-            src: ["src/**/*.css"]
+  #   csslint:
+  # #      options:
+  # #              csslintrc: ".csslintrc"
+  #       strict:
+  #           options:
+  #               import: 2
+  #           src: ["src/**/*.css"]
 
     cssmin:
         build:
-            report: true
-            minify:
-                expand: true
-                cwd: "src/skin-win8/"
-                src: ["*.css", "!*.min.css"]
-                dest: "build/"
-                ext: ".min.css"
+            report: "min"
+            expand: true
+            cwd: "build/"
+            src: ["**/*.fancytree.css", "!*.min.css"]
+            dest: "build/"
+            ext: ".fancytree.min.css"
 
     docco:
         docs:
@@ -333,7 +332,7 @@ module.exports = (grunt) ->
       "clean:build"
       "copy:build"
       "concat"
-      # "cssmin:build"
+      "cssmin:build"
       "replace:build"
       "jshint:afterConcat"
       "uglify"
