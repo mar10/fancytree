@@ -289,12 +289,13 @@ module.exports = (grunt) ->
                 "build/<%= pkg.name %>-all.min.js": ["<%= concat.all.dest %>"]
 
     watch:
-        options:
-            atBegin: true
+        # options:
+        #     atBegin: true
         less:
             files: "src/**/*.less"
             tasks: ["less:development"]
         jshint:
+            atBegin: true
             files: "src/*.js"
             tasks: ["jshint:beforeConcat"]
 

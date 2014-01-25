@@ -24,7 +24,6 @@
   "dependencies": {},
   "keywords": [],
   "devDependencies": {
-    "docco": "~0.6.2",
     "grunt": "~0.4.1",
     "grunt-bumpup": "~0.3.1",
     "grunt-checkrepo": "~0.1.0",
@@ -41,7 +40,6 @@
     "grunt-contrib-qunit": "~0.2.0",
     "grunt-contrib-uglify": "~0.2.4",
     "grunt-contrib-watch": "~0.5.3",
-    "grunt-docco2": "~0.1.5",
     "grunt-exec": "~0.4.0",
     "grunt-html": "~0.3.3",
     "grunt-tagrelease": "~0.2.0",
@@ -49,7 +47,8 @@
     "qunitjs": "1.x",
     "grunt-saucelabs": "~4.1.2",
     "grunt-jsdoc": "~0.5.1",
-    "ink-docstrap": "git://github.com/terryweiss/docstrap"
+    "ink-docstrap": "git://github.com/terryweiss/docstrap",
+    "grunt-docco": "~0.3.2"
   },
   "scripts": {
     "test": "grunt ci --verbose"
