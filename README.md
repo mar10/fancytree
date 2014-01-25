@@ -4,7 +4,7 @@ Fancytree (sequel of [DynaTree 1.x](https://code.google.com/p/dynatree/)) is a
 JavaScript dynamic tree view plugin for jQuery with support for 
 persistence, keyboard, checkboxes, tables, drag'n'drop, and lazy loading.
 
-![sample](teaser1.png?raw=true)
+![sample](doc/teaser2.png?raw=true)
 
 
 ### Status
