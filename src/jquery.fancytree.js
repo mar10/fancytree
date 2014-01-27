@@ -2851,7 +2851,9 @@ $.extend(Fancytree.prototype,
 		var _afterLoad, dfd, i, l, parents, prevAC,
 			node = ctx.node,
 			tree = ctx.tree,
-			opts = ctx.options;
+			opts = ctx.options,
+			// Allow opts.autoScroll to be saved/restored with deferred expansion
+			optsAutoScroll = opts.autoScroll;
 		// flag defaults to true
 		flag = (flag !== false);
 
@@ -2893,7 +2895,7 @@ $.extend(Fancytree.prototype,
 		// Trigger expand/collapse after expanding
 		dfd.done(function(){
 			ctx.tree._triggerNodeEvent(flag ? "expand" : "collapse", ctx);
-			if(opts.autoScroll){
+			if(optsAutoScroll){
 				// Scroll down to last child, but keep current node visible
 				node.getLastChild().scrollIntoView(true, node);
 			}
