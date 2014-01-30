@@ -1203,7 +1203,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			if(topNode){
 				topNodeY = topNode ? $(topNode.span).position().top : 0;
 				if((nodeY - topNodeY) > containerHeight){
-					newScrollTop = scrollTop + nodeY;
+					newScrollTop = scrollTop + topNodeY;
 				}
 			}
 		}
