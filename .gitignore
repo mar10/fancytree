@@ -1,6 +1,4 @@
 /.settings
-/.project
-/.pydevproject
 /build
 /dist
 /test/triage
@@ -11,3 +9,4 @@
 /node_modules
 *.log
 sauce_connect.*
+/doc/screenshots
