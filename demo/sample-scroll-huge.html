@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+    <title>Fancytree - Example: Scrolling</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js" type="text/javascript"></script>
+    <link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet" type="text/css">
+
+    <script src="../src/jquery.fancytree.js" type="text/javascript"></script>
+    <script src="../src/jquery.fancytree.columnview.js" type="text/javascript"></script>
+    <script src="../src/jquery.fancytree.dnd.js" type="text/javascript"></script>
+    <script src="../src/jquery.fancytree.table.js" type="text/javascript"></script>
+
+    <!-- Start_Exclude: This block is not part of the sample code -->
+    <link href="../lib/prettify.css" rel="stylesheet">
+    <script src="../lib/prettify.js" type="text/javascript"></script>
+    <link href="sample.css" rel="stylesheet" type="text/css">
+    <script src="sample.js" type="text/javascript"></script>
+    <!-- End_Exclude -->
+<style type="text/css">
+ul.fancytree-container {
+    width: 600px;
+    height: 320px;
+    overflow: auto;
+    position: relative;
+}
+
+.stats-table {
+    height: 320px;
+    overflow: auto;
+    position: relative;
+}
+
+#stats {
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-collapse: collapse;
+    margin: 0px 20px 0px 5px;
+}
+
+#stats td, #stats th {
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    padding: 1px 2px;
+}
+
+#stats tbody, #stats tfoot {
+    font-size: 1ex;
+    text-align: right;
+    vertical-align: bottom;
+}
+
+#stats thead {
+    font-size: 1ex;
+    background-color: #D0D0F0;
+}
+
+#stats td.left, #stats td.left + td + td, #stats th.left + td + td,
+#stats th.left, #stats th.left + th + th, #stats th.left + th + th {
+    border-left: 2px solid;
+}
+
+#stats td.left, #stats td.left + td + td, #stats th.left + td + td {
+    font-weight: bold;
+    font-size: 110%;
+}
+
+#stats td.right, #stats th.right {
+    border-right: 2px solid;
+}
+
+#stats tr.first td, #stats tr.first th {
+    border-top: 2px solid;
+}
+
+#stats tr.last td, #stats tr.last th {
+    border-bottom: 2px solid;
+}
+
+</style>
+    <!-- Add code to initialize the tree when the document is loaded: -->
+<script type="text/javascript">
+// http://lions-mark.com/jquery/scrollTo/
+
+/*
+$.fn.scrollTo = function( target, options, callback ){
+    if(typeof options == 'function' && arguments.length == 2){ callback = options; options = target; }
+    var settings = $.extend({
+        scrollTarget: target,
+        offsetTop: 0, //50,
+        duration: 500,
+        easing: "swing"
+    }, options);
+    return this.each(function(){
+      var scrollPane = $(this);
+      var scrollTarget = (typeof settings.scrollTarget == "number") ? settings.scrollTarget : $(settings.scrollTarget);
+      var scrollY = (typeof scrollTarget == "number") ? scrollTarget : scrollTarget.offset().top + scrollPane.scrollTop() - parseInt(settings.offsetTop);
+      scrollPane.animate({scrollTop : scrollY }, parseInt(settings.duration), settings.easing, function(){
+          if (typeof callback == 'function') { callback.call(this); }
+      });
+    });
+  }
+  */
+
+    var disableAutoScroll = false;
+
+    var promised = null;
+
+    function get_opts(opts) {
+        if (!opts) {
+              opts = $('#tree').fancytree('getRootNode').tree.options;
+              }
+        return opts;
+    }
+
+    function get_stats(opts) {
+        opts = get_opts(opts);
+        if (!opts.stats) {
+              return clear_stats(opts);
+        }
+        return opts.stats;
+    }
+
+    function clear_stats(opts) {
+        opts = get_opts(opts);
+        opts.stats = {
+              start: $.now(),
+              deferredCalls: 0,
+              scrollIntoViewCalls: 0,
+              scrollEffectsLast: false,
+              scrollTimeLast: 0,
+              promisesMade: 0,
+              promisesFailImmediate: 0,
+              promisesDone: 0,
+              promisesFail: 0
+             };
+        return opts.stats;
+    }
+
+    function safeSetExpanded(node, expand, promises) {
+        var isExpanded = node.isExpanded();
+        if ((expand && !isExpanded) || (!expand && isExpanded)) {
+            // avoid warnings, which distort benchmark
+            var promise = node.setExpanded(expand);
+            if (promise) {
+              // |:debug:|
+              if (promise.state() != 'rejected') {
+                  promises.push(promise);
+                  node.tree.options.stats.promisesMade++;
+                  promise.done(function(){node.tree.options.stats.promisesDone++;});
+                  promise.fail(function(){node.tree.options.stats.promisesFail++;});
+              } else {
+                  node.tree.options.stats.promisesFailImmediate++;
+              }
+            }
+            return promise;
+        }
+    }
+
+    function get_node_params(node) {
+        var node_params = {
+            nodeY: $(node.span).position().top,
+            nodeHeight: $(node.span).height(),
+            $container: node.tree.$container,
+            scrollTop: node.tree.$container[0].scrollTop,
+            horzScrollHeight: Math.max(0, (node.tree.$container.innerHeight() - node.tree.$container[0].clientHeight))
+        };
+        node_params.containerHeight = node_params.$container.height() - node_params.horzScrollHeight;
+        return node_params;
+    }
+
+    // showNode(node[, options], complete)
+    function showNode(node, options, complete) {
+        var opts = node.tree.options;
+        var _options = {
+              makeVisible: true,
+              centered: false,
+              complete: null
+        };
+        if (options && typeof(options) == 'function') {
+              complete = options;
+              options = false;
+        }
+        options = options ? options : $.extend(_options, options);
+        complete = complete ? complete : _options['complete'];
+        if (_options.makeVisible) {
+            node.makeVisible();
+        }
+        var activeSpan = node.span;
+        if (activeSpan) {
+            var container = opts.scrollContainer ? opts.scrollContainer : node.tree.$container;
+            // console.log('container:', container);
+            //console.log('container.length:', container.length);
+            if (container.length) {
+                var cheight = container.height();
+                var parent = node.parent.span;
+                var ptop = parent && $(parent).offset().top;
+                var atop = $(activeSpan).offset().top;
+
+                var peligible = false;
+                var scrollSpan;
+                var context = 0;
+                if (!_options.centered && parent && node.parent.parent && (atop - ptop) < cheight) {
+                    scrollSpan = parent;
+                    peligible = true;
+                } else {
+                    scrollSpan = activeSpan;
+                    context = -(cheight/2);
+                }
+                var scrollTop = $(scrollSpan).offset().top - container.offset().top + container.scrollTop() + context
+                false && console.log('scrollSpan:', {
+                    cheight: cheight,
+                    cpadist: parent && (atop - ptop),
+                    parent: parent,
+                    ptop: ptop,
+                    activeSpan: activeSpan,
+                    atop: atop,
+                    peligible: peligible,
+                    scrollSpan: scrollSpan,
+                    scrollTop: scrollTop,
+                    noscroll: noscroll
+                });
+                container.animate({
+                    scrollTop: scrollTop
+                }, 'fast', complete);
+            }
+        }
+    }
+
+    var stats_disabled = false;
+    var stats_totals = [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]];
+
+    function expand_collapse_tree(node, expand, disable_auto_scroll) {
+        var opts = node.tree.options;
+        var optsAutoScroll = opts.autoScroll;
+        var optsFx = opts.fx;
+        var type = (expand ? 'expansion' : 'collapse');
+        var last_node = node;
+        var promises = [];
+
+        var stats_table_opts = {
+              classVariant: (disable_auto_scroll ? 'next-perm' : 'next-temp'),
+              colOfsVariant: (disable_auto_scroll ? 4 : 0),
+              classType: (expand ? 'expand' : 'collapse'),
+              colOfsType: (expand ? 0 : 2),
+              };
+        stats_table_opts.class = stats_table_opts.classVariant + '-' + stats_table_opts.classType;
+        stats_table_opts.colOfs = stats_table_opts.colOfsVariant + stats_table_opts.colOfsType;
+
+        console.log('-----');
+        // console.log('node ' + type + ':', node);
+
+        clear_stats(opts);
+        start = opts.stats.start;
+
+                // since nodeSetExpanded also uses animation, scrollTimeLast
+                // will not be updated soon enough, if makeVisible actually
+                // expands nodes. Therefore, opts.fx should generally be disabled!
+        opts.fx = false;
+
+        if (disable_auto_scroll) {
+            console.log('elaborate ' + type + ' with autoScroll temporarily disabled (autoScroll:' + optsAutoScroll + ')');
+
+            opts.autoScroll = false;
+            var top_nodes = [node];
+            if (!node.parent) {
+                top_nodes = node.children;
+            }
+
+            // always collapse top node(s) without autoScroll
+            // visit children without autoScroll
+            $.each(top_nodes, function(i, n){
+                safeSetExpanded(n, false, promises);
+                n.visit(function(node){
+                    safeSetExpanded(node, expand, promises);
+                    if (node.ul
+                        // && $(node.ul).queue().length
+                       ) {
+                        last_node = node;
+                    }
+                });
+                safeSetExpanded(n, expand, promises);
+            });
+            opts.autoScroll = optsAutoScroll;
+        } else {
+            console.log('simple ' + type + ' with autoScroll always enabled (autoScroll:' + optsAutoScroll + ')');
+            node.visit(function(node){
+                safeSetExpanded(node, expand, promises);
+                if (node.ul
+                    // && $(node.ul).queue().length
+                   ) {
+                    last_node = node;
+                }
+            });
+        }
+
+        var end = $.now();
+        get_stats().endInternal = end - start;
+        console.log('internal ' + type + ' time:', end - start);
+
+        // |:here:|
+        function finalize () {
+            var $container = node.tree.$container;
+            var queue = $container.queue()
+            node.tree.options.stats.container_animations = queue.length;
+            // console.log('queue:', queue);
+
+                        // Determine active node
+            var anode = node.tree.getActiveNode();
+            if (!anode) {
+                console.log('> no active node, try focus node');
+                anode = node.tree.getFocusNode();
+            } else {
+                console.log('> use active node');
+            }
+            if (!anode) {
+                if (!node.parent) {
+                    console.log('> no focus node, use first child for root');
+                    anode = node.getFirstChild();
+                } else {
+                    console.log('> no focus node, use node');
+                    anode = node;
+                }
+            }
+
+            var stats = get_stats();
+            if (anode) {
+                // do this early to catch scrollIntoView calls
+                anode.makeVisible();
+                // console.log('anode_params after promises:', get_node_params(anode));
+
+                var action = function() {
+                                stats.endAction = $.now() - stats.start;
+                    // console.log('anode_params before final scroll:', get_node_params(anode));
+                    showNode(anode, { makeVisible: true, centered: true }, function() {
+                                    stats.endShow = $.now() - stats.start;
+                        // console.log('anode_params after scroll:', get_node_params(anode));
+                    });
+                }
+
+                var timeout = 0;
+                if (stats.scrollTimeLast) {
+                  if (stats.scrollEffectsLast && stats.scrollEffectsLast && stats.scrollEffectsLast.duration) {
+                    timeout = stats.scrollEffectsLast.duration
+                  } else {
+                    timeout = 200;
+                  }
+                  timeout -= $.now() - stats.scrollTimeLast;
+                }
+                stats.showTimeout = timeout;
+                // timeout = 200; // |:debug:|
+                if (timeout > 0) {
+                  setTimeout(action, timeout);
+                } else {
+                  action();
+                }
+                // console.log('anode:', anode);
+            }
+
+                        // restore expansion animation
+            opts.fx = optsFx;
+
+            stats.endFinalize = $.now() - start;
+            stats.scrollTimeLast = stats.scrollTimeLast ? stats.scrollTimeLast-= start : stats.scrollTimeLast;
+
+            var stats_row_class = stats_table_opts.class
+            var stats_cols = $('#stats tr.' + stats_row_class  +  ' > td');
+            if (stats_cols.length && !stats_disabled) {
+			  var stats_col_ofs = stats_table_opts.colOfs;
+			  stats_totals[stats_col_ofs + 0][0] += stats.endFinalize;
+			  stats_totals[stats_col_ofs + 0][1]++;
+			  stats_totals[stats_col_ofs + 1][0] += stats.endInternal;
+			  stats_totals[stats_col_ofs + 1][1]++;
+
+			  $(stats_cols[stats_col_ofs + 0]).text(stats.endFinalize);
+			  $(stats_cols[stats_col_ofs + 1]).text(stats.endInternal);
+
+			  var stats_row = stats_cols.first().parent();
+			  var stats_row_next = $('#stats tr.' + stats_row_class  +  ' + tr');
+			  if (!stats_row_next.length) {
+			      stats_row_next = $('<tr><td class="left">&nbsp;</td><td class=""></td><td class=""></td><td class="right"></td><td class="left"></td><td class=""></td><td class=""></td><td class="right"></td></tr>');
+			      $('#stats tbody').append(stats_row_next);
+			      stats_row_next.hide();
+			      stats_row.show();
+			  // |:todo:|
+			  }
+			  stats_row.removeClass(stats_row_class);
+			  stats_row_next.addClass(stats_row_class);
+
+			  var stats_totals_cols = $('#stats tfoot tr > td');
+			  $.each(stats_totals, function(col, totals){
+			      var total = totals[0];
+			      var count = totals[1] ? totals[1]: 1;
+			      $(stats_totals_cols[col]).text(Math.floor(total / count));
+			  });
+
+			  // scroll up table bottom
+			  var stats_totals_row = stats_totals_cols.first().parent();
+			  var stats_container = $('#stats').parent();
+			  var stats_container_y = stats_container[0].scrollTop;
+			  var stats_container_height = stats_container.height();
+			  var stats_totals_y = stats_totals_row.position().top + stats_totals_row.height();
+			  var stats_scroll_top = stats_container_y + (stats_totals_y + 2 - stats_container_height);
+			  if (stats_scroll_top > 0) {
+			      stats_container.animate({scrollTop: stats_scroll_top}, {duration: 200, queue: false})
+			  }
+            }
+
+            // console.log('stats_table_opts:', stats_table_opts);
+            // console.log(stats_cols);
+            // console.log(stats_row_next);
+
+            console.log('stats:', stats);
+
+            console.log('deferred ' + type + ' time:', end - start);
+        }
+
+        promised = $.when.apply(null, promises).then(finalize, finalize);
+    }
+
+    $(function(){
+        <!-- Start_Exclude: This block is not part of the sample code -->
+        $.ui.fancytree.debugLevel = 0;
+        console.log('$.ui.fancytree.debugLevel:', $.ui.fancytree.debugLevel);
+        <!-- End_Exclude -->
+
+        // Attach the fancytree widget to an existing <div id="tree"> element
+        // and pass the tree options as an argument to the fancytree() function:
+        $("#tree").fancytree({
+            extensions: [],
+            checkbox: true,
+            autoScroll: true,
+            debugLevel: 0,
+            tabbable: true,
+            source: {
+                url: "../test/unit/ajax-tree-huge-scroll.json"
+            },
+            lazyload: function(event, data) {
+                data.result = {url: "../test/unit/ajax-sub2.json"}
+            },
+            // postProcess: function(event, data) {
+            //  console.log('postProcess:', event, data);
+            //  data.tree.getFirstChild().setFocus();
+            // },
+            init: function(event, data) {
+                data.tree.getFirstChild().setFocus();
+                data.tree.activateKey('10.3.3');
+				// cycle once to build tree, which would bias statistics
+				var sv_stats_disabled = stats_disabled;
+				stats_disabled = true;
+				expand_collapse_tree(data.tree.rootNode, true, true);
+				expand_collapse_tree(data.tree.rootNode, false, true);
+				stats_disabled = sv_stats_disabled;
+            },
+            // focus: function(event, data){
+            //    data.node.scrollIntoView(true);
+            // },
+        });
+
+        <!-- Start_Exclude: This block is not part of the sample code -->
+        <!-- End_Exclude -->
+    });
+
+</script>
+
+<!-- Start_Exclude: This block is not part of the sample code -->
+<script>
+$(function(){
+    addSampleButton({
+        id: "btnDisable",
+        label: "Disable autoScroll temporarily",
+        // newline: false,
+        code: function() {
+            disableAutoScroll = !disableAutoScroll;
+            if( disableAutoScroll ){
+                $("#btnDisable").text('Enable autoScroll permanently');
+            }else{
+                $("#btnDisable").text('Disable autoScroll temporarily');
+            }
+        }
+    });
+    addSampleButton({
+        label: "Expand all",
+        newline: false,
+        code: function(){
+            expand_collapse_tree($('#tree').fancytree('getRootNode'), true, disableAutoScroll);
+        }
+    });
+    addSampleButton({
+    label: "Collapse all",
+        newline: false,
+        code: function(){
+            expand_collapse_tree($('#tree').fancytree('getRootNode'), false, disableAutoScroll);
+        }
+    });
+    addSampleButton({
+        label: "Cycle",
+        newline: false,
+        code: function(){
+            expand_collapse_tree($('#tree').fancytree('getRootNode'), true, disableAutoScroll);
+            expand_collapse_tree($('#tree').fancytree('getRootNode'), false, disableAutoScroll);
+        }
+    });
+});
+</script>
+<!-- End_Exclude -->
+
+</head>
+<body class="example">
+    <h1>Example: scrolling</h1>
+    <p class="description">
+    </p>
+    <div>
+        <label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
+    </div>
+    <!-- Add a <table> element where the tree should appear: -->
+    <p class="description">
+        Standard tree:
+    </p>
+
+    <table>
+      <tr>
+        <td><div id="tree"></div></td>
+        <td>
+          <div class="stats-table">
+          <table id="stats">
+            <thead>
+            <tr class="first">
+              <th class="left right" colspan="4">autoScroll Permanently On</th>
+              <th class="left right" colspan="4">autoScroll Temporarily Off</th>
+            </tr>
+            <tr>
+              <th class="left" colspan="2">Expand</th>
+              <th class="right" colspan="2" style="border-left: 2px solid;">Collapse</th>
+              <th class="left" colspan="2">Expand</th>
+              <th class="right" colspan="2" style="border-left: 2px solid;">Collapse</th>
+            </tr>
+            <tr>
+              <th class="left">deferred</th>
+              <th class="">internal</th>
+              <th class="">deferred</th>
+              <th class="right">internal</th>
+              <th class="left">deferred</th>
+              <th class="">internal</th>
+              <th class="">deferred</th>
+              <th class="right">internal</th>
+            </tr>
+            </thead>
+            <tfoot>
+            <tr class="first last">
+              <td class="left">&nbsp;</td>
+              <td class=""></td>
+              <td class=""></td>
+              <td class="right"></td>
+              <td class="left"></td>
+              <td class=""></td>
+              <td class=""></td>
+              <td class="right"></td>
+            </tr>
+            </tfoot>
+            <tbody>
+            <tr class="first next-perm-expand next-perm-collapse next-temp-expand next-temp-collapse">
+              <td class="left">&nbsp;</td>
+              <td class=""></td>
+              <td class=""></td>
+              <td class="right"></td>
+              <td class="left"></td>
+              <td class=""></td>
+              <td class=""></td>
+              <td class="right"></td>
+            </tr>
+				<!-- 
+            <tr><td class="left">&nbsp;</td><td class=""></td><td class=""></td><td class="right"></td><td class="left"></td><td class=""></td><td class=""></td><td class="right"></td></tr>
+				-->
+            </tbody>
+          </table>
+          </div>
+        </td>
+      </tr>
+    </table>
+    <!-- Add a <table> element where the tree should appear: -->
+    <p class="description">
+        Table tree:
+    </p>
+    <!-- Start_Exclude: This block is not part of the sample code -->
+    <p id="sampleButtons">
+    </p>
+    <hr>
+    <p class="sample-links  no_code">
+        <a class="hideInsideFS" href="https://github.com/mar10/fancytree">jquery.fancytree.js project home</a>
+        <a class="hideOutsideFS" href="#">Link to this page</a>
+        <a class="hideInsideFS" href="index.html">Example Browser</a>
+        <a href="#" id="codeExample">View source code</a>
+    </p>
+    <pre id="sourceCode" class="prettyprint" style="display:none"></pre>
+    <!-- End_Exclude -->
+</body>
+</html>
