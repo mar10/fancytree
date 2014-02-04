@@ -60,6 +60,7 @@ $.fn.scrollTo = function( target, options, callback ){
 		$("#tree").fancytree({
 			extensions: [],
 			checkbox: true,
+			autoScroll: true,
 			source: {
 				url: "../test/unit/ajax-tree-plain.json"
 			},
@@ -72,10 +73,10 @@ $.fn.scrollTo = function( target, options, callback ){
 			focus: function(event, data){
 				data.node.scrollIntoView(true);
 			},
-			expand: function(event, data){
-				// scroll down to last node, but keep current node visible
-				data.node.getLastChild().scrollIntoView(true, data.node);
-			}
+			// expand: function(event, data){
+			// 	// scroll down to last node, but keep current node visible
+			// 	data.node.getLastChild().scrollIntoView(true, data.node);
+			// }
 		});
 	});
 		</script>
