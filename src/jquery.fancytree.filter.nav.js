@@ -47,7 +47,6 @@ $.ui.fancytree.registerExtension({
 			KC = $.ui.keyCode,
 			activate = !(event.ctrlKey || !opts.autoActivate ),
 			handled = false,
-			replaced = null,
 			parents, sib, visible, i;
 
 		// replicated from FancytreeNode.navigate
@@ -136,11 +135,6 @@ $.ui.fancytree.registerExtension({
 			event.preventDefault();
 		} else {
 			res = this._super(ctx);
-		}
-		// currently inactive
-		if (replaced !== null) {
-			// console.log('replaced:', replaced, 'with', event.which);
-			event.which = replaced;
 		}
 		return res;
 	}
