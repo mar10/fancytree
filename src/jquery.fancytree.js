@@ -1035,6 +1035,12 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		function _goto(n){
 			if( n ){
 				n.makeVisible();
+				// Node may still be hidden by a filter
+				if( ! $(n.span).is(":visible") ) {
+					n.debug("Navigate: skipping hidden node");
+					n.navigate(where, activate);
+					return;
+				}
 				return activate === false ? n.setFocus() : n.setActive();
 			}
 		}

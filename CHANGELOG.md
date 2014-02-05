@@ -3,10 +3,11 @@
   * [BREAKING CHANGE]  Removed 'name' argument from `$.ui.fancytree.registerExtension()`
     (now the extension object requires a 'name' property)
   * [DEPRECATION]  Deprecated startEdit/endEdit to use editStart/editEnd
-  * [BUGFIX] ext-edit: fixed loosing focus and made chainable
   * [FEATURE] New method `tree._requireExtension()`
   * [FEATURE] Fixed d'n'd for ext-table
   * [FEATURE] New option `titlesTabbable`
+  * [BUGFIX] ext-edit: fixed loosing focus and made chainable
+  * [BUGFIX] ext-filter: fixed navigation for hidden nodes
   * Added browser test matrix (saucelabs)
 
 
