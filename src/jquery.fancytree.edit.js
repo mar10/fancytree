@@ -291,8 +291,9 @@ $.ui.fancytree.registerExtension({
 	nodeDblclick: function(ctx) {
 		if( $.inArray("dblclick", ctx.options.edit.triggerStart) >= 0 ){
 			ctx.node.editStart();
+			return false;
 		}
-		return false;
+		return this._super(ctx);
 	},
 	nodeKeydown: function(ctx) {
 		switch( ctx.originalEvent.which ) {
