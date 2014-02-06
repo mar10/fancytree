@@ -12,11 +12,13 @@
 (function($, document) {
 	"use strict";
 
-	var initContextMenu = function(selector, menu, actions) {
-		$(document).on("mousedown.contextMenu", function(event) {
+	var initContextMenu = function(tree, selector, menu, actions) {
+		tree.$container.on("mousedown.contextMenu", function(event) {
 			var node = $.ui.fancytree.getNode(event);
 
 			if(node) {
+        $.contextMenu("destroy", "." + selector);
+
 				node.setFocus(true);
 				node.setActive(true);
 
@@ -54,12 +56,16 @@
 		name: "contextMenu",
 		version: "1.0",
 		contextMenu: {
+      selector: "fancytree-title",
 			menu: {},
 			actions: {}
 		},
 		treeInit: function(ctx) {
 			this._super(ctx);
-			initContextMenu("fancytree-title", ctx.options.contextMenu.menu, ctx.options.contextMenu.actions);
+			initContextMenu(ctx.tree,
+                      ctx.options.contextMenu.selector || "fancytree-title",
+                      ctx.options.contextMenu.menu,
+                      ctx.options.contextMenu.actions);
 		}
 	});
 }(jQuery, document));

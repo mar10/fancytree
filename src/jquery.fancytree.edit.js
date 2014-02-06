@@ -74,6 +74,9 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editStart = function(){
 	if( instOpts.beforeEdit.call(node, {type: "beforeEdit"}, eventData) === false){
 		return false;
 	}
+	// beforeEdit may want to modify the title before editing
+	prevTitle = node.title;
+
 	node.debug("editStart");
 	// Disable standard Fancytree mouse- and key handling
 	tree.widget._unbind();
@@ -291,8 +294,9 @@ $.ui.fancytree.registerExtension({
 	nodeDblclick: function(ctx) {
 		if( $.inArray("dblclick", ctx.options.edit.triggerStart) >= 0 ){
 			ctx.node.editStart();
+			return false;
 		}
-		return false;
+		return this._super(ctx);
 	},
 	nodeKeydown: function(ctx) {
 		switch( ctx.originalEvent.which ) {

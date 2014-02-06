@@ -1854,7 +1854,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	 * Expand all parents of one or more nodes.
 	 * Calls
 	 * @param {String | String[]} keyPathList one or more key paths (e.g. '/3/2_1/7')
-	 * @param {function} callback callbeck(mode) is called for every visited node ('loaded', 'ok', 'error')
+	 * @param {function} callback callback(node, mode) is called for every visited node ('loading', 'loaded', 'ok', 'error')
 	 * @returns {$.Promise}
 	 */
 	loadKeyPath: function(keyPathList, callback, _rootNode) {
