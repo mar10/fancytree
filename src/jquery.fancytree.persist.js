@@ -214,11 +214,11 @@ $.ui.fancytree.registerExtension({
 //	treeDestroy: function(ctx){
 //		this._super(ctx);
 //	},
-	nodeSetActive: function(ctx, flag) {
+	nodeSetActive: function(ctx, flag, opts) {
 		var instData = this._local,
 			instOpts = this.options.persist;
 
-		this._super(ctx, flag);
+		this._super(ctx, flag, opts);
 
 		if(instData.storeActive){
 			$.cookie(instData.cookiePrefix + ACTIVE,
@@ -226,12 +226,12 @@ $.ui.fancytree.registerExtension({
 					 instOpts.cookie);
 		}
 	},
-	nodeSetExpanded: function(ctx, flag) {
+	nodeSetExpanded: function(ctx, flag, opts) {
 		var res,
 			node = ctx.node,
 			instData = this._local;
 
-		res = this._super(ctx, flag);
+		res = this._super(ctx, flag, opts);
 
 		if(instData.storeExpanded){
 			instData._setKey(EXPANDED, node.key, flag);

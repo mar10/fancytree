@@ -277,8 +277,8 @@ $.ui.fancytree.registerExtension({
 		$(node.span).css({marginLeft: indent + "px"});
 	 },
 	/* Expand node, return Deferred.promise. */
-	nodeSetExpanded: function(ctx, flag) {
-		return this._super(ctx, flag).always(function () {
+	nodeSetExpanded: function(ctx, flag, opts) {
+		return this._super(ctx, flag, opts).always(function () {
 			flag = (flag !== false);
 			setChildRowVisibility(ctx.node, flag);
 		});

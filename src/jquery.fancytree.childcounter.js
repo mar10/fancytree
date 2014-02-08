@@ -163,12 +163,12 @@ $.ui.fancytree.registerExtension({
 		}
 	},
 // Overload the `setExpanded` hook, so the counters are updated
-	nodeSetExpanded: function(ctx, flag) {
+	nodeSetExpanded: function(ctx, flag, opts) {
 		var tree = ctx.tree,
 			node = ctx.node;
 // Let the base implementation expand/collapse the node, then redraw the title
 // after the animation has finished
-		return this._super(ctx, flag).done(function(){
+		return this._super(ctx, flag, opts).always(function(){
 			tree.nodeRenderTitle(ctx);
 		});
 	}

@@ -1240,16 +1240,18 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 
 	/**Activate this node.
 	 * @param {boolean} [flag=true] pass false to deactivate
+	 * @param {object} [opts] additional options. Defaults to {noEvents: false}
 	 */
-	setActive: function(flag){
-		return this.tree._callHook("nodeSetActive", this, flag);
+	setActive: function(flag, opts){
+		return this.tree._callHook("nodeSetActive", this, flag, opts);
 	},
 	/**Expand or collapse this node.
 	 * @param {boolean} [flag=true] pass false to collapse
+	 * @param {object} [opts] additional options. Defaults to {noAnimation: false, noEvents: false}
 	 * @returns {$.Promise} resolved, when lazy loading and animations are done
 	 */
-	setExpanded: function(flag){
-		return this.tree._callHook("nodeSetExpanded", this, flag);
+	setExpanded: function(flag, opts){
+		return this.tree._callHook("nodeSetExpanded", this, flag, opts);
 	},
 	/**Set keyboard focus to this node.
 	 * @param {boolean} [flag=true] pass false to blur
@@ -2035,7 +2037,7 @@ $.extend(Fancytree.prototype,
 		}
 		// TODO: return promise?
 	},
-	nodeCollapseSiblings: function(ctx) {
+	nodeCollapseSiblings: function(ctx, callOpts) {
 		// TODO: return promise?
 		var ac, i, l,
 			node = ctx.node;
@@ -2044,7 +2046,7 @@ $.extend(Fancytree.prototype,
 			ac = node.parent.children;
 			for (i=0, l=ac.length; i<l; i++) {
 				if ( ac[i] !== node && ac[i].expanded ){
-					this._callHook("nodeSetExpanded", ac[i], false);
+					this._callHook("nodeSetExpanded", ac[i], false, callOpts);
 				}
 			}
 		}
@@ -2753,15 +2755,18 @@ $.extend(Fancytree.prototype,
 	 * If flag is false, the node is deactivated (must be a synchronous operation)
 	 * @param {EventData} ctx
 	 * @param {boolean} [flag=true]
+	 * @param {object} [opts] additional options. Defaults to {}
 	 */
-	nodeSetActive: function(ctx, flag) {
+	nodeSetActive: function(ctx, flag, callOpts) {
 		// Handle user click / [space] / [enter], according to clickFolderMode.
+		callOpts = callOpts || {};
 		var subCtx,
 			node = ctx.node,
 			tree = ctx.tree,
 			opts = ctx.options,
 //			userEvent = !!ctx.originalEvent,
 			isActive = (node === tree.activeNode);
+
 		// flag defaults to true
 		flag = (flag !== false);
 		node.debug("nodeSetActive", flag);
@@ -2798,21 +2803,23 @@ $.extend(Fancytree.prototype,
 	 *
 	 * @param {EventData} ctx
 	 * @param {boolean} [flag=true]
+	 * @param {object} [opts] additional options. Defaults to {noAnimation: false}
 	 * @returns {$.Promise} The deferred will be resolved as soon as the (lazy)
 	 *     data was retrieved, rendered, and the expand animation finshed.
 	 */
-	nodeSetExpanded: function(ctx, flag) {
+	nodeSetExpanded: function(ctx, flag, callOpts) {
+		callOpts = callOpts || {};
 		var _afterLoad, dfd, i, l, parents, prevAC,
 			node = ctx.node,
 			tree = ctx.tree,
-			opts = ctx.options;
+			opts = ctx.options,
+			noAnimation = callOpts.noAnimation === true;
+
 		// flag defaults to true
 		flag = (flag !== false);
 
 		node.debug("nodeSetExpanded(" + flag + ")");
-		// TODO: !!node.expanded is nicer, but doesn't pass jshint
-		// https://github.com/jshint/jshint/issues/455
-//        if( !!node.expanded === !!flag){
+
 		if((node.expanded && flag) || (!node.expanded && !flag)){
 			// Nothing to do
 			node.debug("nodeSetExpanded(" + flag + "): nothing to do");
@@ -2827,7 +2834,11 @@ $.extend(Fancytree.prototype,
 			// Callback returned false
 			return _getRejectedPromise(node, ["rejected"]);
 		}
-		//
+		// If this node inside a collpased node, no animation and scrolling is needed
+		if( !noAnimation && !node.isVisible() ) {
+			noAnimation = callOpts.noAnimation = true;
+		}
+
 		dfd = new $.Deferred();
 
 		// Auto-collapse mode: collapse all siblings
@@ -2838,7 +2849,7 @@ $.extend(Fancytree.prototype,
 				opts.autoCollapse = false;
 				for(i=0, l=parents.length; i<l; i++){
 					// TODO: should return promise?
-					this._callHook("nodeCollapseSiblings", parents[i]);
+					this._callHook("nodeCollapseSiblings", parents[i], callOpts);
 				}
 			}finally{
 				opts.autoCollapse = prevAC;
@@ -2847,7 +2858,7 @@ $.extend(Fancytree.prototype,
 		// Trigger expand/collapse after expanding
 		dfd.done(function(){
 			ctx.tree._triggerNodeEvent(flag ? "expand" : "collapse", ctx);
-			if(opts.autoScroll){
+			if( opts.autoScroll && !noAnimation ) {
 				// Scroll down to last child, but keep current node visible
 				node.getLastChild().scrollIntoView(true, node);
 			}
@@ -2878,8 +2889,10 @@ $.extend(Fancytree.prototype,
 				isExpanded = !!node.expanded;
 				if ( isVisible === isExpanded ) {
 					node.warn("nodeSetExpanded: UL.style.display already set");
-				} else if ( !opts.fx ) {
+
+				} else if ( !opts.fx || noAnimation ) {
 					node.ul.style.display = ( node.expanded || !parent ) ? "" : "none";
+
 				} else {
 					duration = opts.fx.duration || 200;
 					easing = opts.fx.easing;
