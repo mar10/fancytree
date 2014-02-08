@@ -1186,6 +1186,10 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			containerHeight = $container.height() - horzScrollHeight,
 			newScrollTop = null;
 
+		if (this.tree.options.stats) {
+			this.tree.options.stats.scrollIntoViewCalls++;
+		}
+
 //		console.log("horzScrollHeight: " + horzScrollHeight);
 //		console.log("$container[0].scrollTop: " + $container[0].scrollTop);
 //		console.log("$container[0].scrollHeight: " + $container[0].scrollHeight);
@@ -1210,7 +1214,14 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			if(effects){
 				// TODO: resolve dfd after animation
 //				var that = this;
+				if (this.tree.options.stats) {
+					this.tree.options.stats.scrollEffectsLast = effects;
+					this.tree.options.stats.scrollTimeLast = $.now();
+				}
 				$container.animate({scrollTop: newScrollTop}, effects);
+				//$container.animate({scrollTop: newScrollTop}, effects, function () {
+				//        dfd.resolveWith(that);
+				//    });
 			}else{
 				$container[0].scrollTop = newScrollTop;
 				dfd.resolveWith(this);
@@ -2805,7 +2816,9 @@ $.extend(Fancytree.prototype,
 		var _afterLoad, dfd, i, l, parents, prevAC,
 			node = ctx.node,
 			tree = ctx.tree,
-			opts = ctx.options;
+			opts = ctx.options,
+			// Allow opts.autoScroll to be saved/restored with deferred expansion
+			optsAutoScroll = opts.autoScroll;
 		// flag defaults to true
 		flag = (flag !== false);
 
@@ -2847,7 +2860,10 @@ $.extend(Fancytree.prototype,
 		// Trigger expand/collapse after expanding
 		dfd.done(function(){
 			ctx.tree._triggerNodeEvent(flag ? "expand" : "collapse", ctx);
-			if(opts.autoScroll){
+			if (opts.stats) {
+				opts.stats.deferredCalls++;
+			}
+			if(optsAutoScroll){
 				// Scroll down to last child, but keep current node visible
 				node.getLastChild().scrollIntoView(true, node);
 			}
