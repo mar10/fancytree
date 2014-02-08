@@ -347,7 +347,8 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	/**
 	 * Append or prepend a node, or append a child node.
 	 *
-	 * This a convenience function that calls 
+	 * This a convenience function that calls addChildren()
+	 *
 	 * @param {NodeData} node node definition
 	 * @param {string} [mode=child] 'before', 'after', or 'child' ('over' is a synonym for 'child')
 	 * @returns {FancytreeNode} new node
@@ -1629,8 +1630,8 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	},
    */
    /** Return the number of nodes.
-    * @returns {integer}
-    */
+	* @returns {integer}
+	*/
 	count: function() {
 		return this.rootNode.countChildren();
 	},
@@ -1763,7 +1764,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 		return nodeList;
 	},
 	/** Return true if the tree control has keyboard focus
-	 * @returns {boolean} 
+	 * @returns {boolean}
 	 */
 	hasFocus: function(){
 		return !!this._hasFocus;
@@ -1790,12 +1791,12 @@ Fancytree.prototype = /** @lends Fancytree# */{
 */
 
 	/**
-	 * Make sure that a node with a given ID is loaded, by traversing - and 
+	 * Make sure that a node with a given ID is loaded, by traversing - and
 	 * loading - its parents. This method is ment for lazy hierarchies.
 	 * A callback is executed for every node as we go.
 	 * @example
 	 * tree.loadKeyPath("/_3/_23/_26/_27", function(node, status){
-     *   if(status === "loaded") {
+	 *   if(status === "loaded") {
 	 *     console.log("loaded intermiediate node " + node);
 	 *   }else if(status === "ok") {
 	 *     node.activate();
@@ -1898,7 +1899,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	},
 	/**Render tree (i.e. create DOM elements for all top-level nodes).
 	 * @param {boolean} [force=false] create DOM elemnts, even is parent is collapsed
-	 * @param {boolean} [deep=false] 
+	 * @param {boolean} [deep=false]
 	 */
 	render: function(force, deep) {
 		return this.rootNode.render(force, deep);
@@ -1974,7 +1975,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 /**
  * These additional methods of the {@link Fancytree} class are 'hook functions'
  * that can be used and overloaded by extensions.
- * (See <a href="https://github.com/mar10/fancytree/wiki/TutorialExtensions">writing extensions</a>.) 
+ * (See <a href="https://github.com/mar10/fancytree/wiki/TutorialExtensions">writing extensions</a>.)
  * @mixin Fancytree_Hooks
  */
 $.extend(Fancytree.prototype,

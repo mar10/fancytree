@@ -10,7 +10,7 @@
 						{"title": "Premature power_good signal. Try different power supply.", "extraClasses": "answer"}
 					]},
 					{"title": "Does <strong>not</strong> need two tries to boot", "extraClasses": "no", "children": [
-						
+
 					]}
 				]}
 			]},
