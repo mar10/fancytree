@@ -132,7 +132,8 @@ $(function(){
 <script>
 $(function(){
 	addSampleButton({
-		label: "Action 1",
+		label: "Remove",
+		newline: false,
 		code: function(){
 			var tree = $("#tree").fancytree("getTree"),
 				node = tree.getActiveNode();
@@ -141,11 +142,12 @@ $(function(){
 		}
 	});
 	addSampleButton({
-		label: "Action 2",
+		label: "Add Child",
+		newline: false,
 		code: function(){
 			var node,
 				tree = $("#tree").fancytree("getTree");
-			tree.rootNode.addChildren({title: "new node" + new Date()});
+			tree.getActiveNode().addChildren({title: "new node" + new Date()});
 		}
 	});
 });
@@ -162,12 +164,13 @@ $(function(){
 		<label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
 	</div>
 	<hr>
+	<p id="sampleButtons">
+	</p>
+	<hr>
 	<div id="tree">
 	</div>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
-	<p id="sampleButtons">
-	</p>
 	<hr>
 	<p class="sample-links  no_code">
 		<a class="hideInsideFS" href="https://github.com/mar10/fancytree/">Fancytree project home</a>

@@ -17,7 +17,7 @@ for details (including **changes that break backwards compatibility**).
 
 ### Get Started
 
-  * Take a look at [the preview demo](http://wwwendt.de/tech/fancytree/demo).
+  * [Try the live demo](http://wwwendt.de/tech/fancytree/demo).
   * [Read the documentation](https://github.com/mar10/fancytree/wiki).
 
 

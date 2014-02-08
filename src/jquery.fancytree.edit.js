@@ -56,7 +56,7 @@ var isMac = /Mac/.test(navigator.platform)
 
 
 /**
- * Start inline editing of current node title.
+ * [ext-edit] Start inline editing of current node title.
  *
  * @alias FancytreeNode#editStart
  * @requires Fancytree
@@ -127,7 +127,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editStart = function(){
 
 
 /**
- * Stop inline editing.
+ * [ext-edit] Stop inline editing.
  * @param {Boolean} [applyChanges=false]
  * @alias FancytreeNode#editEnd
  * @requires jquery.fancytree.edit.js
@@ -229,7 +229,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.endEdit = function(){
 
 
 /**
- * Check if any node in this tree  in edit mode.
+ * [ext-edit] Check if any node in this tree  in edit mode.
  *
  * @returns {FancytreeNode | null}
  * @lends Fancytree.prototype
@@ -241,7 +241,7 @@ $.ui.fancytree._FancytreeClass.prototype.isEditing = function(){
 
 
 /**
- * Check if this node is in edit mode.
+ * [ext-edit] Check if this node is in edit mode.
  * @returns {Boolean} true if node is currently beeing edited
  * @lends FancytreeNode.prototype
  * @requires jquery.fancytree.edit.js

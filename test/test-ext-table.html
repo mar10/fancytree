@@ -36,7 +36,7 @@
 	<!-- End_Exclude -->
 
 <script type="text/javascript">
-SORUCE = [
+SOURCE = [
 	{title: "node 1", folder: true, expanded: true, children: [
 		{title: "node 1.1"},
 		{title: "node 1.2"},
@@ -75,7 +75,7 @@ SORUCE = [
 			// 	url: "../demo/ajax-tree-plain.json"
 			// },
 			// source: [{title: "1", folder: true}],
-			source: {foo: "bar", children: [{title: "1", folder: true}]},
+			source: {foo: "bar", children: SOURCE},
 			titlesTabbable: true,     // Add all node titles to TAB chain
 			init: function(e, data) {
 				alert("init: " + data.tree.data.foo);

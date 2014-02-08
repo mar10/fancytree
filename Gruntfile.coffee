@@ -129,8 +129,9 @@ module.exports = (grunt) ->
   #           src: ["src/**/*.css"]
 
     cssmin:
+        options:
+          report: "min"
         build:
-            report: "min"
             expand: true
             cwd: "build/"
             src: ["**/*.fancytree.css", "!*.min.css"]
