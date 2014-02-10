@@ -859,16 +859,16 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		return true;
 	},
 	/** Expand all parents and optionally scroll into visible area as neccessary (async).
-	 *
+	 * @param {object} [opts] passed to `setExpanded()`
 	 */
-	makeVisible: function() {
+	makeVisible: function(opts) {
 		// TODO: implement scolling (http://www.w3.org/TR/wai-aria-practices/#visualfocus)
 		// TODO: return $.promise
 		var i, l,
 			parents = this.getParentList(false, false);
 
 		for(i=0, l=parents.length; i<l; i++){
-			parents[i].setExpanded(true);
+			parents[i].setExpanded(true, opts);
 		}
 	},
 	/** Move this node to targetNode.
@@ -879,7 +879,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	 *               hitMode, we also accept 'over'.
 	 *      'before': add this node as sibling before targetNode.
 	 *      'after': add this node as sibling after targetNode.
-	 *  @param	[map] optional callback(FancytreeNode) to allow modifcations
+	 *  @param {function} [map] optional callback(FancytreeNode) to allow modifcations
 	 */
 	moveTo: function(targetNode, mode, map) {
 		if(mode === undefined || mode === "over"){
