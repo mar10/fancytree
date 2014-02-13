@@ -179,7 +179,7 @@ function _makeNodeTitleMatcher(s){
 var i,
 	FT = null, // initialized below
 	//boolean attributes that can be set with equivalent class names in the LI tags
-	CLASS_ATTRS = "active expanded focus folder lazy selected unselectable".split(" "),
+	CLASS_ATTRS = "active expanded focus folder hideCheckbox lazy selected unselectable".split(" "),
 	CLASS_ATTR_MAP = {},
 	//	Top-level Fancytree node attributes, that can be set by dict
 	NODE_ATTRS = "expanded extraClasses folder hideCheckbox key lazy selected title tooltip unselectable".split(" "),
