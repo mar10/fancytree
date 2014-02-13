@@ -3563,7 +3563,7 @@ $.extend($.ui.fancytree,
 			res.type = "title";
 		}else if( /\bfancytree-expander\b/.test(tcn) ){
 			res.type = (res.node.hasChildren() === false ? "prefix" : "expander");
-		}else if( /\bfancytree-checkbox\b/.test(tcn) ){
+		}else if( /\bfancytree-checkbox\b/.test(tcn) || /\bfancytree-radio\b/.test(tcn) ){
 			res.type = "checkbox";
 		}else if( /\bfancytree-icon\b/.test(tcn) ){
 			res.type = "icon";
