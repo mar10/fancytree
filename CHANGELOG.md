@@ -1,5 +1,6 @@
 # 2.0.0-7 / Unreleased
   * Removing the last node collapses; lazy nodes become empty (not undefined).
+  * Sample xxl and bootstrap themes.
 
 
 # 2.0.0-6 / 2014-02-08
