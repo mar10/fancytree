@@ -1,4 +1,8 @@
-# 2.0.0-6 / Unreleased
+# 2.0.0-7 / Unreleased
+  * Removing the last node collapses; lazy nodes become empty (not undefined).
+
+
+# 2.0.0-6 / 2014-02-08
 
   * [BREAKING CHANGE]  Removed 'name' argument from `$.ui.fancytree.registerExtension()`
     (now the extension object requires a 'name' property)

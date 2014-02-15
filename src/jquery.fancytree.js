@@ -2345,6 +2345,7 @@ $.extend(Fancytree.prototype,
 		if( this.focusNode && this.focusNode.isDescendantOf(node)){
 			this.focusNode = null;
 		}
+		node.expanded = false;
 		// TODO: persist must take care to clear select and expand cookies
 		this.nodeRemoveChildMarkup(ctx);
 		// Unlink children to support GC
@@ -2358,7 +2359,8 @@ $.extend(Fancytree.prototype,
 			}
 		});
 		// Set to 'undefined' which is interpreted as 'not yet loaded' for lazy nodes
-		node.children = undefined;
+		// node.children = undefined;
+		node.children = [];
 		// TODO: ? this._isLoading = false;
 		this.nodeRenderStatus(ctx);
 	},
