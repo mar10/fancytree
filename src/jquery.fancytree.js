@@ -1204,7 +1204,15 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	removeChildren: function() {
 		return this.tree._callHook("nodeRemoveChildren", this);
 	},
-	// TODO: resetLazy()
+	/**
+	 * Remove all children, collapse, and set the lazy-flag, so that the lazyload 
+	 * event is triggered on next expand.
+	 */
+	resetLazy: function() {
+		this.removeChildren();
+		this.lazy = true;
+		this.children = undefined;
+	},
 	/** Schedule activity for delayed execution (cancel any pending request).
 	 *  scheduleAction('cancel') will only cancel a pending request (if any).
 	 * @param: {string} mode
