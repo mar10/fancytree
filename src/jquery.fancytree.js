@@ -882,6 +882,12 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	isSelected: function() {
 		return !!this.selected;
 	},
+	/** Return true if node is lazy and not yet loaded.
+	 * @returns {boolean}
+	 */
+	isUndefined: function() {
+		return this.lazy && this.children === undefined;
+	},
 	// TODO: use _isStatusNode as class attribute name
 //  isStatusNode: function() {
 //      return (this.data.isStatusNode === true);
