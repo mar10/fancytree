@@ -864,6 +864,12 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	isLazy: function() {
 		return !!this.lazy;
 	},
+	/** Return true if node is lazy and loaded. For non-lazy nodes always return true.
+	 * @returns {boolean}
+	 */
+	isLoaded: function() {
+		return !this.lazy || this.children !== undefined;
+	},
 	/** [Not yet implemented] Return true if children are currently beeing loaded, i.e. a Ajax request is pending.
 	 * @returns {boolean}
 	 */
@@ -882,7 +888,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	isSelected: function() {
 		return !!this.selected;
 	},
-	/** Return true if node is lazy and not yet loaded.
+	/** Return true if node is lazy and not yet loaded. For non-lazy nodes always return false.
 	 * @returns {boolean}
 	 */
 	isUndefined: function() {
