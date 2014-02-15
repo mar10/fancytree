@@ -1,5 +1,6 @@
 # 2.0.0-7 / Unreleased
-  * Removing the last node collapses; lazy nodes become empty (not undefined).
+  * Renamed ext-awesome to ext-glyph
+  * Removing the last node collapses it; lazy nodes become empty (not undefined).
   * Sample xxl and bootstrap themes.
 
 
