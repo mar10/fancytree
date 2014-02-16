@@ -1,4 +1,12 @@
-# 2.0.0-6 / Unreleased
+# 2.0.0-7 / Unreleased
+  * Added node.isUndefined(), isLoaded(), resetLazy(), load(), resetLazy()
+  * Deprecated node.lazyLoad() and .discard(). use load() and resetLazy() instead.
+  * Renamed ext-awesome to ext-glyph
+  * Removing the last node collapses it; lazy nodes become empty (not undefined).
+  * Sample xxl and bootstrap themes.
+
+
+# 2.0.0-6 / 2014-02-08
 
   * [BREAKING CHANGE]  Removed 'name' argument from `$.ui.fancytree.registerExtension()`
     (now the extension object requires a 'name' property)

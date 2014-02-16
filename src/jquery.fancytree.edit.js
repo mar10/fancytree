@@ -180,13 +180,13 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editEnd = function(applyChanges, _e
 
 
 $.ui.fancytree._FancytreeNodeClass.prototype.startEdit = function(){
-	this.warn("FancytreeNode.startEdit() is deprecated. Use .editStart() instead.");
+	this.warn("FancytreeNode.startEdit() is deprecated since 2014-01-04. Use .editStart() instead.");
 	return this.editStart.apply(this, arguments);
 };
 
 
 $.ui.fancytree._FancytreeNodeClass.prototype.endEdit = function(){
-	this.warn("FancytreeNode.endEdit() is deprecated. Use .editEnd() instead.");
+	this.warn("FancytreeNode.endEdit() is deprecated since 2014-01-04. Use .editEnd() instead.");
 	return this.editEnd.apply(this, arguments);
 };
 

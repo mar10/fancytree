@@ -1,0 +1,149 @@
+/*!
+ * Fancytree "bootstrap" skin.
+ *
+ * DON'T EDIT THE CSS FILE DIRECTLY, since it is automatically generated from
+ * the LESS templates.
+ */
+
+// Import common styles
+@import "../skin-common.less";
+
+
+/*******************************************************************************
+ * Styles specific to this skin.
+ *
+ * This section is automatically generated from the `ui-fancytree.less` template.
+ ******************************************************************************/
+
+
+// local vars
+@myIconSize: 16px;
+
+// Override the variable after the import. 
+// NOTE: Variables are always resolved as the last definition, even if it is 
+// after where it is used.
+@useSprites: false;
+@hideConnectors: true;
+@iconWidth: 1em;
+@iconHeight: 1em;
+@lineHeight: 1em;
+@iconMarginLeft: 0.5em;
+
+ul.fancytree-container ul {
+	padding: 0.3em 0 0 1em;
+	margin: 0;
+}
+/* Prevent focus frame */
+.fancytree-container:focus {
+	outline: none; 
+}
+ 
+/////
+// Original bootstrap colors (http://getbootstrap.com/css/#responsive-utilities)
+@gray-darker:  lighten(#000, 13.5%); // #222
+@gray-dark:    lighten(#000, 20%);   // #333
+@gray:         lighten(#000, 33.5%); // #555
+@gray-light:   lighten(#000, 60%);   // #999
+@gray-lighter: lighten(#000, 93.5%); // #eee
+
+@brand-primary: #428bca;
+@brand-success: #5cb85c;
+@brand-info:    #5bc0de;
+@brand-warning: #f0ad4e;
+@brand-danger:  #d9534f;
+
+@border-radius-base:  4px;
+@border-radius-large: 6px;
+@border-radius-small: 3px;
+/////////////
+
+span.fancytree-node {
+	border: @nodeBorderWidth solid transparent;  // avoid jumping, when a border is added on hover
+	border-radius: @border-radius-small;
+	padding-left: 8px;
+}
+span.fancytree-node:hover {
+//	background-color: lighten(@brand-primary, 25%);
+	border-color: @gray-light;
+}
+.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-focused {
+//	border-color: @gray-light;
+//	outline: 1px solid #3399FF; 
+}
+span.fancytree-node.fancytree-active { // active/selcted nodes inside inactive tree
+	background-color: lighten(@brand-primary, 0%);
+	border-color: @gray;
+}
+span.fancytree-node.fancytree-selected { // active/selcted nodes inside inactive tree
+	background-color: lighten(@brand-success, 0%);
+//	background-color: @gray-light;
+//	border-color: @gray;
+}
+.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-active,
+span.fancytree-node.fancytree-active:hover {
+	background-color: @brand-primary;
+//	border-color: darken(@brand-info, 50%);
+}
+.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-selected,
+span.fancytree-node.fancytree-selected:hover {
+	background-color: @brand-success;
+}
+
+/*******************************************************************************
+ * 'table' extension
+ */
+table.fancytree-ext-table tbody {
+	tr td {
+	  border: 1px solid #EDEDED;
+	}
+	span.fancytree-node,
+	span.fancytree-node:hover { // undo standard tree css
+		border: none;
+		background: none;
+	}
+	// Title get's a white background, when hovered. Undo standard node formatting
+	span.fancytree-title:hover {
+	  border: none; //1px solid transparent;
+	  background: inherit;
+	  background: transparent;
+	  background: none;
+	  filter: none;
+	}
+	tr:hover  {
+		background-color: #E5F3FB;
+	    outline: 1px solid #70C0E7;
+	}
+	// tr:hover td {
+	//   outline: 1px solid #D8F0FA;
+	// }
+	// tr.fancytree-focused {
+	// 	border-color: #3399FF;
+ //    	outline: 1px dotted black;
+	// }
+	tr.fancytree-focused span.fancytree-title {
+	  outline: 1px dotted black;
+	}
+
+	tr.fancytree-active:hover,
+	tr.fancytree-selected:hover {
+		background-color: #CBE8F6;
+	    outline: 1px solid #26A0DA;
+	}
+	tr.fancytree-active {  // dimmed, if inside inactive tree
+		background-color: #F7F7F7;
+	    outline: 1px solid #DEDEDE;
+	}
+	tr.fancytree-selected {  // dimmed, if inside inactive tree
+		background-color: #F7F7F7;
+	}
+}
+
+table.fancytree-ext-table.fancytree-treefocus tbody {
+	tr.fancytree-active {
+		background-color: #CBE8F6;
+	    outline: 1px solid #26A0DA;
+	}
+	tr.fancytree-selected {
+		background-color: #CBE8F6;
+	}
+}

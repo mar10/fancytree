@@ -1,5 +1,5 @@
 /*!
- * jquery.fancytree.awesome.js
+ * jquery.fancytree.glyph.js
  *
  * Use glyph fonts as instead of icon sprites.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
@@ -26,7 +26,7 @@ function _getIcon(opts, type){
 }
 
 $.ui.fancytree.registerExtension({
-	name: "awesome",
+	name: "glyph",
 	version: "0.0.1",
 	// Default options for this extension.
 	options: {
@@ -56,12 +56,12 @@ $.ui.fancytree.registerExtension({
 	treeInit: function(ctx){
 		var tree = ctx.tree;
 		this._super(ctx);
-		tree.$container.addClass("fancytree-ext-awesome");
+		tree.$container.addClass("fancytree-ext-glyph");
 	},
 	nodeRenderStatus: function(ctx) {
 		var icon, span,
 			node = ctx.node,
-			opts = ctx.options.awesome,
+			opts = ctx.options.glyph,
 			// callback = opts.icon,
 			map = opts.map
 			// prefix = opts.prefix
@@ -107,7 +107,7 @@ $.ui.fancytree.registerExtension({
 	},
 	nodeSetStatus: function(ctx, status, message, details) {
 		var span,
-			opts = ctx.options.awesome,
+			opts = ctx.options.glyph,
 			node = ctx.node;
 
 		this._super(ctx, status, message, details);
