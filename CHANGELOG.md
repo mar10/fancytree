@@ -1,6 +1,7 @@
 # 2.0.0-7 / Unreleased
-  * Added node.isUndefined(), isLoaded(), resetLazy(), load(), resetLazy()
-  * Deprecated node.lazyLoad() and .discard(). use load() and resetLazy() instead.
+  * [DEPRECATION] Deprecated node.lazyLoad() and .discard(). use load() and resetLazy() instead.
+  * [FEATURE] Added node.isUndefined(), isLoaded(), resetLazy(), load(), resetLazy()
+  * Calling setExpanded() on a leaf fires .done() (not .fail())
   * Renamed ext-awesome to ext-glyph
   * Removing the last node collapses it; lazy nodes become empty (not undefined).
   * Sample xxl and bootstrap themes.

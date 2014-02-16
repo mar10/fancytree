@@ -2941,7 +2941,8 @@ $.extend(Fancytree.prototype,
 			return _getResolvedPromise(node);
 		}else if(flag && !node.lazy && !node.hasChildren() ){
 			// Prevent expanding of empty nodes
-			return _getRejectedPromise(node, ["empty"]);
+			// return _getRejectedPromise(node, ["empty"]);
+			return _getResolvedPromise(node);
 		}else if( !flag && node.getLevel() < opts.minExpandLevel ) {
 			// Prevent collapsing locked levels
 			return _getRejectedPromise(node, ["locked"]);
