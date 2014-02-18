@@ -1,6 +1,7 @@
 # 2.0.0-7 / Unreleased
   * [DEPRECATION] Deprecated node.lazyLoad() and .discard(). use load() and resetLazy() instead.
   * [FEATURE] Added node.isUndefined(), isLoaded(), resetLazy(), load(), resetLazy()
+  * node.makeVisible() accepts options, scrolls into view, and returns a promise.
   * Calling setExpanded() on a leaf fires .done() (not .fail())
   * Renamed ext-awesome to ext-glyph
   * Removing the last node collapses it; lazy nodes become empty (not undefined).

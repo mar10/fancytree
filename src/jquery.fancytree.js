@@ -942,27 +942,49 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		res = this.tree._callHook("nodeLoadChildren", this, source);
 		return res;
 	},
-	/** Expand all parents and optionally scroll into visible area as neccessary (async).
-	 * @param {object} [opts] passed to `setExpanded()`
+	/** Expand all parents and optionally scroll into visible area as neccessary.
+	 * Promise is resolved, when lazy loading and animations are done.
+	 * @param {object} [opts] passed to `setExpanded()`.
+	 *     Defaults to {noAnimation: false, noEvents: false, scrollIntoView: true}
+	 * @returns {$.Promise}
 	 */
 	makeVisible: function(opts) {
-		// TODO: implement scolling (http://www.w3.org/TR/wai-aria-practices/#visualfocus)
-		// TODO: return $.promise
-		var i, l,
-			parents = this.getParentList(false, false);
+		var i,
+			that = this,
+			deferreds = [],
+			dfd = new $.Deferred(),
+			parents = this.getParentList(false, false),
+			len = parents.length,
+			effects = !(opts && opts.noAnimation === true),
+			scroll = !(opts && opts.scrollIntoView === false);
 
-		for(i=0, l=parents.length; i<l; i++){
-			parents[i].setExpanded(true, opts);
+		// Expand bottom-up, so only the top node is animated
+		for(i = len - 1; i >= 0; i--){
+			// that.debug("pushexpand" + parents[i]);
+			deferreds.push(parents[i].setExpanded(true, opts));
 		}
+		$.when.apply($, deferreds).done(function(){
+			// All expands have finished
+			// that.debug("expand DONE", scroll);
+			if( scroll ){
+				that.scrollIntoView(effects).done(function(){
+					// that.debug("scroll DONE");
+					dfd.resolve();
+				});
+			} else {
+				dfd.resolve();
+			}
+		});
+		return dfd.promise();
 	},
 	/** Move this node to targetNode.
 	 *  @param {FancytreeNode} targetNode
-	 *  @param {string} mode
+	 *  @param {string} mode <pre>
 	 *      'child': append this node as last child of targetNode.
 	 *               This is the default. To be compatble with the D'n'd
 	 *               hitMode, we also accept 'over'.
 	 *      'before': add this node as sibling before targetNode.
-	 *      'after': add this node as sibling after targetNode.
+	 *      'after': add this node as sibling after targetNode.</pre>
 	 *  @param {function} [map] optional callback(FancytreeNode) to allow modifcations
 	 */
 	moveTo: function(targetNode, mode, map) {
@@ -1196,19 +1218,19 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		return this.tree._callHook("nodeRemoveChildren", this);
 	},
 	/**
-	 * This method takes care that all HTML markup is created that is required
-	 * to display this node in it's current state.
-	 * <br>
-	 * Call this method to create new nodes, or after the strucuture
-	 * was changed (e.g. after moving this node or adding/removing children).<br>
-	 * {@link FancytreeNode#renderTitle} and {@link FancytreeNode#renderStatus}
-	 * are implied.
-	 * <br>
-	 * Note: if a node was created/removed, nodeRender() must be called for the
-	 * parent.
-	 * <br>
-	 * If changes are more local, {@link FancytreeNode#renderTitle} or
-	 * {@link FancytreeNode#renderStatus} may be sufficient and faster.
+	 * This method renders and updates all HTML markup that is required
+	 * to display this node in its current state.<br>
+	 * Note:
+	 * <ul>
+	 * <li>It should only be neccessary to call this method after the node object
+	 *     was modified by direct access to its properties, because the common
+	 *     API methods (node.setTitle(), moveTo(), addChildren(), remove(), ...)
+	 *     already handle this.
+	 * <li> {@link FancytreeNode#renderTitle} and {@link FancytreeNode#renderStatus}
+	 *     are implied. If changes are more local, calling only renderTitle() or
+	 *     renderStatus() may be sufficient and faster.
+	 * <li>If a node was created/removed, node.render() must be called <i>on the parent</i>.
+	 * </ul>
 	 *
 	 * @param {boolean} [force=false] re-render, even if html markup was already created
 	 * @param {boolean} [deep=false] also render all descendants, even if parent is collapsed
@@ -1282,6 +1304,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		effects = (effects === true) ? {duration: 200, queue: false} : effects;
 		var topNodeY,
 			dfd = new $.Deferred(),
+			that = this,
 			nodeY = $(this.span).position().top,
 			nodeHeight = $(this.span).height(),
 			$container = this.tree.$container,
@@ -1315,7 +1338,12 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			if(effects){
 				// TODO: resolve dfd after animation
 //				var that = this;
-				$container.animate({scrollTop: newScrollTop}, effects);
+				effects.complete = function(){
+					dfd.resolveWith(that);
+				};
+				$container.animate({
+					scrollTop: newScrollTop
+				}, effects);
 			}else{
 				$container[0].scrollTop = newScrollTop;
 				dfd.resolveWith(this);
@@ -1350,10 +1378,10 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	setActive: function(flag, opts){
 		return this.tree._callHook("nodeSetActive", this, flag, opts);
 	},
-	/**Expand or collapse this node.
+	/**Expand or collapse this node. Promise is resolved, when lazy loading and animations are done.
 	 * @param {boolean} [flag=true] pass false to collapse
 	 * @param {object} [opts] additional options. Defaults to {noAnimation: false, noEvents: false}
-	 * @returns {$.Promise} resolved, when lazy loading and animations are done
+	 * @returns {$.Promise}
 	 */
 	setExpanded: function(flag, opts){
 		return this.tree._callHook("nodeSetExpanded", this, flag, opts);
@@ -2354,28 +2382,10 @@ $.extend(Fancytree.prototype,
 			}
 		});
 	},
-	// isVisible: function() {
-	//     // Return true, if all parents are expanded.
-	//     var parents = ctx.node.getParentList(false, false);
-	//     for(var i=0, l=parents.length; i<l; i++){
-	//         if( ! parents[i].expanded ){ return false; }
-	//     }
-	//     return true;
-	// },
-	/** Expand all keys that */
+	/** [Not Implemented]  */
 	nodeLoadKeyPath: function(ctx, keyPathList) {
 		// TODO: implement and improve
 		// http://code.google.com/p/fancytree/issues/detail?id=222
-	},
-	/** Expand all parents.*/
-	nodeMakeVisible: function(ctx) {
-		// TODO: also scroll as neccessary: http://stackoverflow.com/questions/8938352/fancytree-how-to-scroll-to-active-node
-		// Do we need an extra parameter?
-		var i, l,
-			parents = ctx.node.getParentList(false, false);
-		for(i=0, l=parents.length; i<l; i++){
-			parents[i].setExpanded(true);
-		}
 	},
 	/**
 	 * Remove a single direct child of ctx.node.
@@ -2901,7 +2911,8 @@ $.extend(Fancytree.prototype,
 				_assert(tree.activeNode === null, "deactivate was out of sync?");
 			}
 			if(opts.activeVisible){
-				tree.nodeMakeVisible(ctx);
+				// tree.nodeMakeVisible(ctx);
+				node.makeVisible();
 			}
 			tree.activeNode = node;
 			tree.nodeRenderStatus(ctx);
@@ -3086,7 +3097,8 @@ $.extend(Fancytree.prototype,
 				// Note: we pass _calledByNodeSetFocus=true
 				this._callHook("treeSetFocus", ctx, true, true);
 			}
-			this.nodeMakeVisible(ctx);
+			// this.nodeMakeVisible(ctx);
+			node.makeVisible();
 			tree.focusNode = node;
 //			node.debug("FOCUS...");
 //			$(node.span).find(".fancytree-title").focus();

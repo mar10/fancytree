@@ -74,8 +74,6 @@ $.ui.fancytree.registerExtension({
 	},
 	nodeLoadChildren: function(ctx, source) {
 	},
-	nodeMakeVisible: function(ctx) {
-	},
 	nodeOnFocusInOut: function(ctx) {
 	},
 	nodeRemoveChildMarkup: function(ctx) {

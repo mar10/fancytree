@@ -38,35 +38,35 @@ var SOURCE = [
 	},
 	{title: "Folder 3", folder: true, expanded: true, key: "node3",
 		children: [
-			{title: "Sub-item 2.1", key: "node2.1", selected: false,
+			{title: "Sub-item 3.1", key: "node3.1", selected: false,
 				children: [
-							{title: "Sub-item 2.1.1", key: "node2.1.1", selected: true},
-							{title: "Sub-item 2.1.2", key: "node2.1.2", selected: true}
+							{title: "Sub-item 3.1.1", key: "node3.1.1", selected: true},
+							{title: "Sub-item 3.1.2", key: "node3.1.2", selected: true}
 						]
 				},
-			{title: "Sub-item 2.2", key: "node2.2", selected: true}
+			{title: "Sub-item 3.2", key: "node3.2", selected: true}
 		]
 	},
 	{title: "Folder 4", folder: true, expanded: true, key: "node4",
 		children: [
-			{title: "Sub-item 2.1", key: "node2.1", selected: true},
-			{title: "Sub-item 2.2", key: "node2.2", selected: false},
-			{title: "Sub-item 2.3 (unselectable)", key: "node2.3", selected: false, unselectable: true}
+			{title: "Sub-item 4.1", key: "node4.1", selected: true},
+			{title: "Sub-item 4.2", key: "node4.2", selected: false},
+			{title: "Sub-item 4.3 (unselectable)", key: "node4.3", selected: false, unselectable: true}
 		]
 	},
-	{title: "Item 3", key: "node3", lazy: true}
+	{title: "Lazy", key: "node5", lazy: true}
 ];
 // Lazy sub nodes
 var SOURCE_2 = [
-	{title: "Folder 3", folder: true, expanded: true,
+	{title: "LazyLoad result", folder: true, expanded: true,
 		children: [
-			{title: "Sub-item 2.1", selected: false,
+			{title: "Lazy Sub-item 2.1", selected: false,
 				children: [
-							{title: "Sub-item 2.1.1", selected: true},
-							{title: "Sub-item 2.1.2", selected: false}
+							{title: "Lazy Sub-item 2.1.1", selected: true},
+							{title: "Lazy Sub-item 2.1.2", selected: false}
 						]
 				},
-			{title: "Sub-item 2.2", selected: true}
+			{title: "Lazy Sub-item 2.2", selected: true}
 		]
 	}
 ];
