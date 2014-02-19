@@ -292,7 +292,12 @@ $.ui.fancytree.registerExtension({
 			}
 		}
 		this._super(ctx, status, message, details);
-	}/*,
+	},
+	treeClear: function(ctx) {
+		this.nodeRemoveChildMarkup(this._makeHookContext(this.rootNode));
+		return this._super(ctx);
+	}
+	/*,
 	treeSetFocus: function(ctx, flag) {
 //	        alert("treeSetFocus" + ctx.tree.$container);
 		ctx.tree.$container.focus();
