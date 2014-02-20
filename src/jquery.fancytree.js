@@ -254,6 +254,7 @@ function FancytreeNode(parent, obj){
 	if( this.key == null ){ // test for null OR undefined
 		this.key = "_" + (FT._nextNodeKey++);
 	}
+
 	// Fix tree.activeNode
 	// TODO: not elegant: we use obj.active as marker to set tree.activeNode
 	// when loading from a dictionary.
@@ -268,6 +269,10 @@ function FancytreeNode(parent, obj){
 	if(cl && cl.length){
 		this._setChildren(cl);
 	}
+	// Add to key/ref map (except for root node)
+//	if( parent ) {
+	this.tree._callHook("treeRegisterNode", this.tree, true, this);
+//	}
 }
 
 
@@ -2420,6 +2425,7 @@ $.extend(Fancytree.prototype,
 		childNode.visit(function(n){
 			n.parent = null;
 		}, true);
+		this._callHook("treeRegisterNode", this, false, node);
 		if ( opts.removeNode ){
 			opts.removeNode.call(ctx.tree, {type: "removeNode"}, subCtx);
 		}
@@ -2472,6 +2478,7 @@ $.extend(Fancytree.prototype,
 		subCtx = $.extend({}, ctx);
 		node.visit(function(n){
 			n.parent = null;
+			this._callHook("treeRegisterNode", this, false, node);
 			if ( opts.removeNode ){
 				subCtx.node = n;
 				opts.removeNode.call(ctx.tree, {type: "removeNode"}, subCtx);
@@ -3320,6 +3327,8 @@ $.extend(Fancytree.prototype,
 			tree._triggerTreeEvent("init", false);
 		});
 		return dfd;
+	},
+	treeRegisterNode: function(ctx, add, node) {
 	},
 	treeSetFocus: function(ctx, flag, _calledByNodeSetFocus) {
 		flag = (flag !== false);
