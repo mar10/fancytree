@@ -73,12 +73,14 @@ $.ui.fancytree.registerExtension({
 		if( node.isRoot() ){
 			return;
 		}
-		if( node.hasChildren() !== false ){
+		//if( node.hasChildren() !== false ){
 			span = $("span.fancytree-expander", node.span).get(0);
 			if( span ){
 				/*if( node.isLoading ){
-					icon = "loading";
-				}else*/ if( node.expanded ){
+				 	icon = "loading";
+				}else*/ if( node.hasChildren() == false ){
+					span.className = "fancytree-expander";
+				}else if( node.expanded ){
 					icon = "expanderOpen";
 				}else if( node.lazy && node.children == null ){
 					icon = "expanderLazy";
@@ -88,7 +90,7 @@ $.ui.fancytree.registerExtension({
 				// icon = node.expanded ? "expanderOpen" : (node.lazy && node.children == null) ? "expanderLazy" : "expanderClosed";
 				span.className = "fancytree-expander " + map[icon];
 			}
-		}
+		//}
 		span = $("span.fancytree-checkbox", node.span).get(0);
 		if( span ){
 			icon = node.selected ? "checkboxSelected" : (node.partsel ? "checkboxUnknown" : "checkbox");
