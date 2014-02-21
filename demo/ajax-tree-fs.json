@@ -9,7 +9,7 @@
 		{"title": "sbin", "folder": true},
 		{"title": "tmp", "folder": true},
 		{"title": "Users", "expanded": true, "folder": true, "children": [
-			{"title": "jmiller", "folder": true},
+			{"title": "jdoe", "folder": true},
 			{"title": "jmiller", "folder": true},
 			{"title": "mysql", "folder": true}
 		]},
