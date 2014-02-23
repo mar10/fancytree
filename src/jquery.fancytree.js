@@ -230,6 +230,7 @@ function FancytreeNode(parent, obj){
 	this.ul = null;
 	this.li = null;  // <li id='key' ftnode=this> tag
 	this.isStatusNode = false;
+	this._isLoading = false;
 	this.data = {};
 
 	// TODO: merge this code with node.toDict()
@@ -877,7 +878,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	 * @returns {boolean}
 	 */
 	isLoading: function() {
-		_raiseNotImplemented(); // TODO: implement
+		return !!this._isLoading;
 	},
 	/** Return true if this is the (invisible) system root node.
 	 * @returns {boolean}
@@ -2341,6 +2342,8 @@ $.extend(Fancytree.prototype,
 
 		if($.isFunction(source.promise)){
 			// `source` is a promise
+			_assert(!node.isLoading());
+			node._isLoading = true;
 			tree.nodeSetStatus(ctx, "loading");
 			source.done(function () {
 				tree.nodeSetStatus(ctx, "ok");
@@ -2376,6 +2379,7 @@ $.extend(Fancytree.prototype,
 			}
 			_assert($.isArray(children), "expected array of children");
 			node._setChildren(children);
+			node._isLoading = false;
 			if(node.parent){
 				// trigger fancytreeloadchildren (except for tree-reload)
 				tree._triggerNodeEvent("loadChildren", node);
