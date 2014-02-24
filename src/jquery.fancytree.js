@@ -217,7 +217,7 @@ for(i=0; i<NODE_ATTRS.length; i++){ NODE_ATTR_MAP[NODE_ATTRS[i]] = true; }
  * @property {string} extraClasses Addtional CSS classes, added to the node's `&lt;span>`
  * @property {boolean} folder Folder nodes have different default icons and click behavior.<br>
  *     Note: Also non-folders may have children.
- * @property {boolean} isStatusNode True if this node is a temporarily generated system node like 'loading', or 'error'.
+ * @property {string} statusNodeType null or type of temporarily generated system node like 'loading', or 'error'.
  * @property {boolean} lazy True if this node is loaded on demand, i.e. on first expansion.
  * @property {boolean} selected Use isSelected(), setSelected() to access this property.
  * @property {string} tooltip Alternative description used as hover banner
@@ -229,7 +229,8 @@ function FancytreeNode(parent, obj){
 	this.tree = parent.tree;
 	this.ul = null;
 	this.li = null;  // <li id='key' ftnode=this> tag
-	this.isStatusNode = false;
+	// this.isStatusNode = false;
+	this.statusNodeType = null;
 	this._isLoading = false;
 	this.data = {};
 
@@ -792,7 +793,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			}else if(this.children.length === 0){
 				// Loaded, but response was empty
 				return false;
-			}else if(this.children.length === 1 && this.children[0].isStatusNode ){
+			}else if(this.children.length === 1 && this.children[0].isStatusNode() ){
 				// Currently loading or load error
 				return undefined;
 			}
@@ -874,7 +875,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	isLoaded: function() {
 		return !this.lazy || this.children != null; // null or undefined: not yet loaded
 	},
-	/** [Not yet implemented] Return true if children are currently beeing loaded, i.e. a Ajax request is pending.
+	/** Return true if children are currently beeing loaded, i.e. a Ajax request is pending.
 	 * @returns {boolean}
 	 */
 	isLoading: function() {
@@ -892,16 +893,19 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	isSelected: function() {
 		return !!this.selected;
 	},
+	/** Return true if this node is a temporarily generated system node like
+	 * 'loading', or 'error' (node.statusNodeType contains the type).
+	 * @returns {boolean}
+	 */
+	isStatusNode: function() {
+		return !!this.statusNodeType;
+	},
 	/** Return true if node is lazy and not yet loaded. For non-lazy nodes always return false.
 	 * @returns {boolean}
 	 */
 	isUndefined: function() {
 		return this.lazy && this.children == null; // null or undefined: not yet loaded
 	},
-	// TODO: use _isStatusNode as class attribute name
-//  isStatusNode: function() {
-//      return (this.data.isStatusNode === true);
-//  },
 	/** Return true if all parent nodes are expanded. Note: this does not check
 	 * whether the node is scrolled into the visible part of the screen.
 	 * @returns {boolean}
@@ -1101,7 +1105,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 
 		// In multi-hier mode, update the parents selection state
 		// issue #82: only if not initializing, because the children may not exist yet
-//		if( !ftnode.data.isStatusNode && opts.selectMode==3 && !isInitializing )
+//		if( !ftnode.data.isStatusNode() && opts.selectMode==3 && !isInitializing )
 //			ftnode._fixSelectionState();
 
 		// In multi-hier mode, update the parents selection state
@@ -1468,7 +1472,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 				dict.children = [];
 				for(i=0, l=this.children.length; i<l; i++ ){
 					node = this.children[i];
-					if( !node.isStatusNode ){
+					if( !node.isStatusNode() ){
 						dict.children.push(node.toDict(true, callback));
 					}
 				}
@@ -2729,7 +2733,7 @@ $.extend(Fancytree.prototype,
 			}
 		}
 		// Checkbox mode
-		if( opts.checkbox && node.hideCheckbox !== true && !node.isStatusNode ) {
+		if( opts.checkbox && node.hideCheckbox !== true && !node.isStatusNode() ) {
 			if(aria){
 				ares.push("<span role='checkbox' class='fancytree-checkbox'></span>");
 			}else{
@@ -3164,14 +3168,13 @@ $.extend(Fancytree.prototype,
 	 * @param details
 	 */
 	nodeSetStatus: function(ctx, status, message, details) {
-		var _clearStatusNode, _setStatusNode,
-			node = ctx.node,
+		var node = ctx.node,
 			tree = ctx.tree,
 			cn = ctx.options._classNames;
 
-		_clearStatusNode = function() {
+		function _clearStatusNode() {
 			var firstChild = ( node.children ? node.children[0] : null );
-			if ( firstChild && firstChild.isStatusNode ) {
+			if ( firstChild && firstChild.isStatusNode() ) {
 				try{
 					// I've seen exceptions here with loadKeyPath...
 					if(node.ul){
@@ -3185,20 +3188,22 @@ $.extend(Fancytree.prototype,
 					node.children.shift();
 				}
 			}
-		};
-		_setStatusNode = function(data) {
+		}
+		function _setStatusNode(data, type) {
 			var firstChild = ( node.children ? node.children[0] : null );
-			if ( firstChild && firstChild.isStatusNode ) {
+			if ( firstChild && firstChild.isStatusNode() ) {
 				$.extend(firstChild, data);
 				tree._callHook("nodeRender", firstChild);
 			} else {
 				data.key = "_statusNode";
 				node._setChildren([data]);
-				node.children[0].isStatusNode = true;
+				// node.children[0].isStatusNode = true;
+				node.children[0].statusNodeType = type;
 				tree.render();
 			}
 			return node.children[0];
-		};
+		}
+
 		switch(status){
 		case "ok":
 			_clearStatusNode();
@@ -3213,7 +3218,7 @@ $.extend(Fancytree.prototype,
 					title: tree.options.strings.loading + (message ? " (" + message + ") " : ""),
 					tooltip: details,
 					extraClasses: "fancytree-statusnode-wait"
-				});
+				}, status);
 			}
 			break;
 		case "error":
@@ -3223,7 +3228,7 @@ $.extend(Fancytree.prototype,
 				title: tree.options.strings.loadError + (message ? " (" + message + ") " : ""),
 				tooltip: details,
 				extraClasses: "fancytree-statusnode-error"
-			});
+			}, status);
 			break;
 		default:
 			$.error("invalid status " + status);

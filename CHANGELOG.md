@@ -1,4 +1,6 @@
 # 2.0.0-7 / Unreleased
+  * [BREAKING CHANGE] node.isStatusNode() is now a function (was a property before).
+    Added new property node.statusNodeType.
   * [DEPRECATION] Deprecated node.lazyLoad() and .discard(). use load() and resetLazy() instead.
   * [FEATURE] Added node.isUndefined(), isLoaded(), resetLazy(), load(), resetLazy()
   * node.makeVisible() accepts options, scrolls into view, and returns a promise.
@@ -10,7 +12,7 @@
 
 # 2.0.0-6 / 2014-02-08
 
-  * [BREAKING CHANGE]  Removed 'name' argument from `$.ui.fancytree.registerExtension()`
+  * [BREAKING CHANGE] Removed 'name' argument from `$.ui.fancytree.registerExtension()`
     (now the extension object requires a 'name' property)
   * [DEPRECATION]  Deprecated startEdit/endEdit to use editStart/editEnd
   * [FEATURE] New method `tree._requireExtension()`

@@ -348,7 +348,7 @@ test("FancytreeNode class", function() {
 	equal(node.parent, _getNode("10_1"), "node.parent");
 	equal(node.key, "10_1_2", "node.key");
 	equal(node.children, null, "node.children");
-	equal(node.isStatusNode, false, "node.isStatusNode");
+	equal(node.isStatusNode(), false, "node.isStatusNode()");
 //    this.ul = null;
 //    this.li = null;  // <li id='key' ftnode=this> tag
 //    this.data = {};
@@ -686,33 +686,48 @@ module("lazy loading");
 
 test("Using ajax options for `source`; .click() expands a lazy folder", function() {
 	_setupAsync();
-	expect(11);
-	var sequence = 1;
+	expect(18);
+	var sequence = 1,
+		isClicked = false;
 
 	$("#tree").fancytree({
 		source: {url: "ajax-tree.json"},
 		generateIds: true,
 		init: function(e, data){
-			equal(sequence++, 1, "receive `init` callback");
+			equal(sequence++, 2, "receive `init` callback");
 			equal(data.tree.count(), TESTDATA_NODES, "lazy tree has 23 nodes");
 			equal($("#tree li").length, TESTDATA_VISIBLENODES, "lazy tree has rendered 13 node elements");
 			// now expand a lazy folder
+			isClicked = true;
 			$("#tree #ft_30 span.fancytree-expander").click();
 		},
 		beforeExpand: function(e, data){
-			equal(sequence++, 2, "receive `beforeExpand` callback");
+			equal(sequence++, 3, "receive `beforeExpand` callback");
 		},
 		lazyload: function(e, data){
-			equal(sequence++, 3, "receive `lazyload` callback");
+			equal(sequence++, 4, "receive `lazyload` callback");
+			equal(data.node.isLoading(), false, "node.isLoading()");
+
 			data.result = {url: "ajax-sub2.json"};
 		},
+		postProcess: function(e, data){
+			if( !isClicked ) {
+				equal(sequence++, 1, "receive `postProcess` callback for root");
+				equal(data.node.isLoading(), true, "node.isLoading()");
+				equal(data.node.children.length, 1, "Dummy status node exists");
+				equal(data.node.children[0].statusNodeType, "loading", "node.statusNodeType === 'loading'");
+			} else {
+				equal(sequence++, 5, "receive `postProcess` callback for node");
+				equal(data.node.isLoading(), true, "node.isLoading()");
+			}
+		},
 		loadChildren: function(e, data){
-			equal(sequence++, 4, "receive `loadChildren` callback");
+			equal(sequence++, 6, "receive `loadChildren` callback");
 			equal(data.tree.count(), TESTDATA_NODES + 2, "lazy tree has 25 nodes");
 			equal($("#tree li").length, TESTDATA_VISIBLENODES, "lazy tree has not yet rendered new node elements");
 		},
 		expand: function(e, data){
-			equal(sequence++, 5, "receive `expand` callback");
+			equal(sequence++, 7, "receive `expand` callback");
 			equal(data.tree.count(), TESTDATA_NODES + 2, "lazy tree has 25 nodes");
 			equal($("#tree li").length, TESTDATA_VISIBLENODES + 2, "lazy tree has rendered 15 node elements");
 			start();

@@ -287,7 +287,7 @@ $.ui.fancytree.registerExtension({
 		if(status === "ok"){
 			var node = ctx.node,
 				firstChild = ( node.children ? node.children[0] : null );
-			if ( firstChild && firstChild.isStatusNode ) {
+			if ( firstChild && firstChild.isStatusNode() ) {
 				$(firstChild.tr).remove();
 			}
 		}
