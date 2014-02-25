@@ -42,7 +42,7 @@
  * @property {FancytreeOptions} options Shortcut to tree.options
  * @property {Event} originalEvent The [jQuery Event](http://api.jquery.com/category/events/event-object) that initially triggered this call
  * @property {FancytreeNode | null} node The node that this call applies to (`null` for tree events)
- * @property {any} result (output parameter) Event handlers can return values back to the caller. Used by `lazyload`, `postProcess`, ...
+ * @property {any} result (output parameter) Event handlers can return values back to the caller. Used by `lazyLoad`, `postProcess`, ...
  * @property {String | undefined} targetType (only for click and dblclick events) 'title' | 'prefix' | 'expander' | 'checkbox' | 'icon'
  * @property {any} response (only for postProcess event) Original ajax response
  */
@@ -173,7 +173,7 @@ var FancytreeOptions = {};
  * @property {function} init Widget was (re-)initialized.
  * @property {function} keydown `data.node` received key. `event.which` contains the key. Return `false` to prevent default processing, i.e. navigation. Return `result.preventNav` to prevent navigation but still allow default handling inside embedded input controls.
  * @property {function} keypress (currently unused)
- * @property {function} lazyload `data.node` is a lazy node that is expanded for the first time. The new child data must be returned in the `data.result` property (see `source` option for available formats).
+ * @property {function} lazyLoad `data.node` is a lazy node that is expanded for the first time. The new child data must be returned in the `data.result` property (see `source` option for available formats).
  * @property {function} loadChildren Node data was loaded, i.e. `node.nodeLoadChildren()` finished
  * @property {function} postProcess Allows to modify the ajax response
  * @property {function} removeNode `data.node` was removed (NOTE: this event is only available as callback, but not for bind())

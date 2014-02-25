@@ -1,7 +1,8 @@
 # 2.0.0-7 / Unreleased
   * [BREAKING CHANGE] node.isStatusNode() is now a function (was a property before).
     Added new property node.statusNodeType.
-  * [DEPRECATION] Deprecated node.lazyLoad() and .discard(). use load() and resetLazy() instead.
+  * [DEPRECATION] Deprecated event `lazyLoad`, use `lazyLoad` (upper case L) instead.
+  * [DEPRECATION] Deprecated methods node.lazyLoad() and node.discard(). use load() and resetLazy() instead.
   * [FEATURE] Added node.isUndefined(), isLoaded(), resetLazy(), load(), resetLazy()
   * node.makeVisible() accepts options, scrolls into view, and returns a promise.
   * Calling setExpanded() on a leaf fires .done() (not .fail())

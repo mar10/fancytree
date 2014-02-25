@@ -942,8 +942,8 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		}
 		// This method is also called by setExpanded() and loadKeyPath(), so we
 		// have to avoid recursion.
-		source = this.tree._triggerNodeEvent("lazyload", this);
-		_assert(typeof source !== "boolean", "lazyload event must return source in data.result");
+		source = this.tree._triggerNodeEvent("lazyLoad", this);
+		_assert(typeof source !== "boolean", "lazyLoad event must return source in data.result");
 		res = this.tree._callHook("nodeLoadChildren", this, source);
 		return res;
 	},
@@ -1217,7 +1217,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	/**
 	 * Remove all child nodes and descendents. This converts the node into a leaf.<br>
 	 * If this was a lazy node, it is still considered 'loaded'; call node.resetLazy()
-	 * in order to trigger lazyload on next expand.
+	 * in order to trigger lazyLoad on next expand.
 	 */
 	removeChildren: function() {
 		return this.tree._callHook("nodeRemoveChildren", this);
@@ -1256,7 +1256,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		return this.tree._callHook("nodeRenderStatus", this);
 	},
 	/**
-	 * Remove all children, collapse, and set the lazy-flag, so that the lazyload
+	 * Remove all children, collapse, and set the lazy-flag, so that the lazyLoad
 	 * event is triggered on next expand.
 	 */
 	resetLazy: function() {
@@ -1589,6 +1589,12 @@ function Fancytree(widget) {
 	this.widget = widget;
 	this.$div = widget.element;
 	this.options = widget.options;
+	if( this.options && $.isFunction(this.options.lazyload) ) {
+		FT.warn("The 'lazyload' event is deprecated since 2014-02-25. Use 'lazyLoad' (with uppercase L) instead.");
+		if( ! $.isFunction(this.options.lazyLoad) ) {
+			this.options.lazyLoad = this.options.lazyload;
+		}
+	}
 	this.ext = {}; // Active extension instances
 	this.data = {};
 	this._id = $.ui.fancytree._nextId++;
@@ -2271,7 +2277,7 @@ $.extend(Fancytree.prototype,
 	//     var event = ctx.originalEvent;
 	// },
 
-	// /** Trigger lazyload event (async). */
+	// /** Trigger lazyLoad event (async). */
 	// nodeLazyLoad: function(ctx) {
 	//     var node = ctx.node;
 	//     if(this._triggerNodeEvent())
@@ -3056,8 +3062,8 @@ $.extend(Fancytree.prototype,
 				_afterLoad(function () { dfd.rejectWith(node, ["load failed (" + errMsg + ")"]); });
 			});
 /*
-			var source = tree._triggerNodeEvent("lazyload", node, ctx.originalEvent);
-			_assert(typeof source !== "boolean", "lazyload event must return source in data.result");
+			var source = tree._triggerNodeEvent("lazyLoad", node, ctx.originalEvent);
+			_assert(typeof source !== "boolean", "lazyLoad event must return source in data.result");
 			node.debug("nodeSetExpanded: load start...");
 			this._callHook("nodeLoadChildren", ctx, source).done(function(){
 				node.debug("nodeSetExpanded: load done");
@@ -3418,7 +3424,7 @@ $.widget("ui.fancytree",
 			error: "fancytree-error"
 		},
 		// events
-		lazyload: null,
+		lazyLoad: null,
 		postProcess: null
 	},
 	/* Set up the widget, Called on first $().fancytree() */

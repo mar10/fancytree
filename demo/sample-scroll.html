@@ -64,7 +64,7 @@ $.fn.scrollTo = function( target, options, callback ){
 			source: {
 				url: "../test/unit/ajax-tree-plain.json"
 			},
-			lazyload: function(event, data) {
+			lazyLoad: function(event, data) {
 				data.result = {url: "../test/unit/ajax-sub2.json"}
 			},
 			init: function(event, data) {

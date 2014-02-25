@@ -709,8 +709,8 @@ test("Using ajax options for `source`; .click() expands a lazy folder", function
 		beforeExpand: function(e, data){
 			equal(sequence++, 3, "receive `beforeExpand` callback");
 		},
-		lazyload: function(e, data){
-			equal(sequence++, 4, "receive `lazyload` callback");
+		lazyLoad: function(e, data){
+			equal(sequence++, 4, "receive `lazyLoad` callback");
 			equal(data.node.isLoading(), false, "node.isLoading()");
 
 			data.result = {url: "ajax-sub2.json"};
@@ -761,8 +761,8 @@ test("Using $.ajax promise for `source`; .click() expands a lazy folder", functi
 		beforeExpand: function(e, data){
 			equal(sequence++, 2, "receive `beforeExpand` callback");
 		},
-		lazyload: function(e, data){
-			equal(sequence++, 3, "receive `lazyload` callback");
+		lazyLoad: function(e, data){
+			equal(sequence++, 3, "receive `lazyLoad` callback");
 			data.result = $.getJSON("ajax-sub2.json");
 		},
 		loadChildren: function(e, data){
@@ -803,7 +803,7 @@ test("add children", function() {
 
 	$("#tree").fancytree({
 		source: TEST_DATA,
-		lazyload: function(e, data){
+		lazyLoad: function(e, data){
 			data.result = {url: "ajax-sub2.json"};
 		},
 		init: function(e, data){
@@ -858,7 +858,7 @@ test("apply patch", function() {
 
 	$("#tree").fancytree({
 		source: TEST_DATA,
-		lazyload: function(e, data){
+		lazyLoad: function(e, data){
 			data.result = {url: "ajax-sub2.json"};
 		},
 		init: function(e, data){
@@ -939,7 +939,7 @@ test("loadKeyPath (lazy nodes)", function() {
 
 	$("#tree").fancytree({
 		source: TEST_DATA,
-		lazyload: function(e, data){
+		lazyLoad: function(e, data){
 			// fake an async, deleayed Ajax request that generates 5 lazy nodes
 			data.result = _fakeAjaxLoad(data.node, 5, 10);
 		}
@@ -968,7 +968,7 @@ test("loadKeyPath (multiple lazy nodes with expand)", function() {
 
 	$("#tree").fancytree({
 		source: TEST_DATA,
-		lazyload: function(e, data){
+		lazyLoad: function(e, data){
 			data.result = _fakeAjaxLoad(data.node, 5, [0, 30]);
 		}
 	});

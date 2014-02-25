@@ -33,7 +33,7 @@
 			{ key: "custom-error", title: "Custom error while lazy loading", lazy: true }
 		];
 
-		function lazyload(e, data) {
+		function lazyLoad(e, data) {
 			switch (data.node.key) {
 				case "ajax":
 					data.result = { url: "ajax-sub2.json" };
@@ -77,27 +77,27 @@
 		$("#tree1").fancytree({
 			source: source,
 			ajax: { debugDelay: 1000 },
-			lazyload: lazyload
+			lazyLoad: lazyLoad
 		});
 
 		$("#tree2").fancytree({
 			source: source,
 			ajax: { debugDelay: 1000 },
-			lazyload: lazyload,
+			lazyLoad: lazyLoad,
 			loaderror: loaderror
 		});
 
 		$("#table1").fancytree({
 			source: source,
 			ajax: { debugDelay: 1000 },
-			lazyload: lazyload,
+			lazyLoad: lazyLoad,
 			extensions: ["table"]
 		});
 
 		$("#table2").fancytree({
 			source: source,
 			ajax: { debugDelay: 1000 },
-			lazyload: lazyload,
+			lazyLoad: lazyLoad,
 			loaderror: loaderror,
 			extensions: ["table"]
 		});
