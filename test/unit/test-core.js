@@ -426,7 +426,11 @@ test("FancytreeNode class", function() {
 //  isFirstSibling: function() {
 //  isLastSibling: function() {
 //  isLazy: function() {
+//  isLoaded()
 //  isLoading: function() {
+//  isStatusNode()
+//  isUndefined()
+//  load()
 ////isStatusNode: function() {
 //  isRoot: function() {
 //  isSelected: function() {
@@ -440,6 +444,7 @@ test("FancytreeNode class", function() {
 //  remove: function() {
 //  removeChild: function(childNode) {
 //  removeChildren: function() {
+//  resetLazy()
 //  scheduleAction: function(mode, ms) {
 //  scrollIntoView
 //  setActive: function(flag){
