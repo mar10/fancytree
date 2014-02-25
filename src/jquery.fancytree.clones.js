@@ -45,22 +45,20 @@ function _removeArrayMember(arr, elem) {
 
 /**
  * [ext-clones] Return a list of clone-nodes or null.
- * @param {Boolean} [includeSelf=false]
+ * @param {boolean} [includeSelf=false]
  * @requires jquery.fancytree.clones.js
  * @returns {FancytreeNode[] | null}
  */
-$.ui.fancytree._FancytreeNodeClass.prototype.clonesFind = function(includeSelf){
+$.ui.fancytree._FancytreeNodeClass.prototype.getCloneList = function(includeSelf){
 	var key,
-		node = this,
 		tree = this.tree,
-		refList = tree.refMap[node.data.refKey] || null,
+		refList = tree.refMap[this.data.refKey] || null,
 		keyMap = tree.keyMap;
 
 	if( refList ) {
-		// always return a copy!
-		key = node.key;
+		key = this.key;
+		// Convert key list to node list
 		if( includeSelf ) {
-//			refList = refList.slice(0);
 			refList = $.map(refList, function(val){ return keyMap[val]; });
 		} else {
 			refList = $.map(refList, function(val){ return val === key ? null : keyMap[val]; });
@@ -72,21 +70,25 @@ $.ui.fancytree._FancytreeNodeClass.prototype.clonesFind = function(includeSelf){
 
 /**
  * [ext-clones] .
- * @param {Boolean} [includeSelf=false]
+ * @param {string} refKey 
+ * @param {FancytreeNode} [rootNode] optionally restrict results to descendants of this node
  * @requires jquery.fancytree.clones.js
  * @returns {FancytreeNode[] | null}
  */
-$.ui.fancytree._FancytreeClass.prototype.findNodesByRef = function(includeSelf, rootNode){
-	var key,
-		node = this,
-		tree = this.tree,
-		refList = tree.refMap[node.data.refKey] || null;
+$.ui.fancytree._FancytreeClass.prototype.getNodesByRef = function(refKey, rootNode){
+	var keyMap = this.keyMap,
+		refList = this.refMap[refKey] || null;
 
 	if( refList ) {
-		// always return a copy!
-		key = node.key;
-		refList = includeSelf ? refList.slice(0) : $.map(refList, function(val){ return val === key ? null : val;	});
-			//_removeArrayMember(refList, node.key);
+		// Convert key list to node list
+		if( rootNode ) {
+			refList = $.map(refList, function(val){
+				var node = keyMap[val];
+				return node.isDescendantOf(rootNode) ? node : null;
+			});
+		}else{
+			refList = $.map(refList, function(val){ return keyMap[val]; });
+		}
 	}
 	return refList;
 };

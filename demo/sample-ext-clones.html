@@ -58,9 +58,9 @@ var SOURCE = [
 		  ];
 		  // Lazy sub nodes
 		  var SOURCE_2 = [
-			  {title: "Folder 3", folder: true, expanded: true,
+			  {title: "Lazy Folder 1", folder: true, expanded: true,
 				  children: [
-					  {title: "Sub-item 2.1", selected: false,
+					  {title: "Lazy Sub-item 1.1", selected: false,
 						  children: [
 									  {title: "Sub-item 2.1.1"},
 									  {title: "Sub-item 2.1.2", selected: false}
@@ -82,7 +82,7 @@ var SOURCE = [
 				data.result = {url: "ajax-sub2.json"}
 			},
 			activate: function(e, data){
-				var clones = data.node.clonesFind();
+				var clones = data.node.getCloneList();
 				if( clones ) {
 					alert("Clones: "+ $.map(clones, function(n){ return "" + n;}).join(", "));
 				}
@@ -93,9 +93,10 @@ var SOURCE = [
 			label: "find clones",
 			newline: false,
 			code: function(){
-				$("#tree").fancytree("getTree").visit(function(node){
-					node.setExpanded(true);
-				});
+				var tree = $("#tree").fancytree("getTree"),
+			        node3 = tree.getNodeByKey("node3");
+                alert("refKey '2' = " + tree.getNodesByRef("2"));
+                alert("refKey '2' below 'node3'' = " + tree.getNodesByRef("2", node3));
 			}
 		});
 	});
