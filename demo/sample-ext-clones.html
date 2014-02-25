@@ -84,7 +84,7 @@ var SOURCE = [
 			activate: function(e, data){
 				var clones = data.node.clonesFind();
 				if( clones ) {
-					alert("Clones: "+ JSON.stringify(clones));
+					alert("Clones: "+ $.map(clones, function(n){ return "" + n;}).join(", "));
 				}
 			}
 		});

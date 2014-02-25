@@ -17,7 +17,6 @@
 
 "use strict";
 
-
 /*******************************************************************************
  * Private functions and variables
  */
@@ -51,6 +50,33 @@ function _removeArrayMember(arr, elem) {
  * @returns {FancytreeNode[] | null}
  */
 $.ui.fancytree._FancytreeNodeClass.prototype.clonesFind = function(includeSelf){
+	var key,
+		node = this,
+		tree = this.tree,
+		refList = tree.refMap[node.data.refKey] || null,
+		keyMap = tree.keyMap;
+
+	if( refList ) {
+		// always return a copy!
+		key = node.key;
+		if( includeSelf ) {
+//			refList = refList.slice(0);
+			refList = $.map(refList, function(val){ return keyMap[val]; });
+		} else {
+			refList = $.map(refList, function(val){ return val === key ? null : keyMap[val]; });
+		}
+	}
+	return refList;
+};
+
+
+/**
+ * [ext-clones] .
+ * @param {Boolean} [includeSelf=false]
+ * @requires jquery.fancytree.clones.js
+ * @returns {FancytreeNode[] | null}
+ */
+$.ui.fancytree._FancytreeClass.prototype.findNodesByRef = function(includeSelf, rootNode){
 	var key,
 		node = this,
 		tree = this.tree,
