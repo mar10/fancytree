@@ -62,9 +62,9 @@ $.ui.fancytree._FancytreeNodeClass.prototype.getCloneList = function(includeSelf
 			refList = $.map(refList, function(val){ return keyMap[val]; });
 		} else {
 			refList = $.map(refList, function(val){ return val === key ? null : keyMap[val]; });
-		}
-		if( refList.length <= 1 ) {
-			refList = null;
+			if( refList.length < 1 ) {
+				refList = null;
+			}
 		}
 	}
 	return refList;
@@ -104,7 +104,7 @@ $.ui.fancytree._FancytreeClass.prototype.getNodesByRef = function(refKey, rootNo
 		}else{
 			refList = $.map(refList, function(val){ return keyMap[val]; });
 		}
-		if( refList.length <= 1 ) {
+		if( refList.length < 1 ) {
 			refList = null;
 		}
 	}
