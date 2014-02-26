@@ -2425,7 +2425,7 @@ $.extend(Fancytree.prototype,
 		childNode.visit(function(n){
 			n.parent = null;
 		}, true);
-		this._callHook("treeRegisterNode", this, false, node);
+		this._callHook("treeRegisterNode", this, false, childNode);
 		if ( opts.removeNode ){
 			opts.removeNode.call(ctx.tree, {type: "removeNode"}, subCtx);
 		}
@@ -2457,6 +2457,7 @@ $.extend(Fancytree.prototype,
 	*/
 	nodeRemoveChildren: function(ctx) {
 		var subCtx,
+			tree = ctx.tree,
 			node = ctx.node,
 			children = node.children,
 			opts = ctx.options;
@@ -2478,7 +2479,7 @@ $.extend(Fancytree.prototype,
 		subCtx = $.extend({}, ctx);
 		node.visit(function(n){
 			n.parent = null;
-			this._callHook("treeRegisterNode", this, false, node);
+			tree._callHook("treeRegisterNode", tree, false, n);
 			if ( opts.removeNode ){
 				subCtx.node = n;
 				opts.removeNode.call(ctx.tree, {type: "removeNode"}, subCtx);

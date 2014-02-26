@@ -63,13 +63,28 @@ $.ui.fancytree._FancytreeNodeClass.prototype.getCloneList = function(includeSelf
 		} else {
 			refList = $.map(refList, function(val){ return val === key ? null : keyMap[val]; });
 		}
+		if( refList.length <= 1 ) {
+			refList = null;
+		}
 	}
 	return refList;
 };
 
 
 /**
- * [ext-clones] .
+ * [ext-clones] Return true if this node has at least another clone with same refKey.
+ * @requires jquery.fancytree.clones.js
+ * @returns {boolean}
+ */
+$.ui.fancytree._FancytreeNodeClass.prototype.isClone = function(){
+	var refKey = this.data.refKey || null,
+		refList = refKey && this.tree.refMap[refKey] || null;
+	return refList && refList.length > 1;
+};
+
+
+/**
+ * [ext-clones] Return all nodes with a given refKey (null if not found).
  * @param {string} refKey 
  * @param {FancytreeNode} [rootNode] optionally restrict results to descendants of this node
  * @requires jquery.fancytree.clones.js
@@ -88,6 +103,9 @@ $.ui.fancytree._FancytreeClass.prototype.getNodesByRef = function(refKey, rootNo
 			});
 		}else{
 			refList = $.map(refList, function(val){ return keyMap[val]; });
+		}
+		if( refList.length <= 1 ) {
+			refList = null;
 		}
 	}
 	return refList;
@@ -146,14 +164,15 @@ $.ui.fancytree.registerExtension({
 			delete keyMap[key];
 			if( refKey ) {
 				refList = refMap[refKey];
+				node.debug("treeRegisterNode: remove clone BEFORE =>", refMap[refKey]);
 				if( refList ) {
 					len = refList.length;
-					if( len <= 2 ){
-						_assert(len === 2);
-						_assert(refList[0] === key || refList[1] === key);
+					if( len <= 1 ){
+						_assert(len === 1);
+						_assert(refList[0] === key); // || refList[1] === key);
 						delete refMap[refKey];
 					}else{
-						_removeArrayMember(refList, refKey);
+						_removeArrayMember(refList, key);
 					}
 					node.debug("treeRegisterNode: remove clone =>", refMap[refKey]);
 				}

@@ -32,7 +32,7 @@ var SOURCE = [
 			  {title: "Item 1", key: "node1"},
 			  {title: "Folder 2", folder: true, expanded: true, key: "node2",
 				  children: [
-					  {title: "Sub-item 2.1", key: "node2.1"},
+					  {title: "Sub-item 2.1, refKey=3", key: "node2.1", refKey: "3"},
 					  {title: "Sub-item 2.2", key: "node2.2", refKey: "2"}
 				  ]
 			  },
@@ -49,8 +49,8 @@ var SOURCE = [
 			  },
 			  {title: "Folder 4", folder: true, expanded: true, key: "node4",
 				  children: [
-					  {title: "Sub-item 2.1", key: "node4.1"},
-					  {title: "Sub-item 2.2", key: "node4.2", selected: false},
+					  {title: "Sub-item 2.1", key: "node4.1", refKey: "1"},
+					  {title: "Sub-item 2.2", key: "node4.2", refKey: "1", selected: false},
 					  {title: "Sub-item 2.3 (unselectable)", key: "node4.3", selected: false, unselectable: true}
 				  ]
 			  },
@@ -89,16 +89,25 @@ var SOURCE = [
 			}
 		});
 
-		addSampleButton({
-			label: "find clones",
-			newline: false,
-			code: function(){
-				var tree = $("#tree").fancytree("getTree"),
-			        node3 = tree.getNodeByKey("node3");
+        addSampleButton({
+            label: "find clones",
+            newline: false,
+            code: function(){
+                var tree = $("#tree").fancytree("getTree"),
+                    node3 = tree.getNodeByKey("node3");
                 alert("refKey '2' = " + tree.getNodesByRef("2"));
                 alert("refKey '2' below 'node3'' = " + tree.getNodesByRef("2", node3));
-			}
-		});
+            }
+        });
+        addSampleButton({
+            label: "remove",
+            newline: false,
+            code: function(){
+                var tree = $("#tree").fancytree("getTree"),
+                    node = tree.getActiveNode();
+                node.remove();
+            }
+        });
 	});
 </script>
 </head>
