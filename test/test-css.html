@@ -125,10 +125,10 @@ var SOURCE2 = [
 			source: {
 				url: "../demo/ajax-tree-plain.json"
 			},
-			lazyLoad: function(e, data) {
+			lazyLoad: function(event, data) {
 				data.result = {url: "../demo/ajax-sub2.json"}
 			},
-			renderColumns: function(e, data) {
+			renderColumns: function(event, data) {
 				var node = data.node,
 					$tdList = $(node.tr).find(">td");
 				// (index #0 is rendered by fancytree by adding the checkbox)
@@ -144,7 +144,7 @@ var SOURCE2 = [
 			source: {
 				url: "../demo/ajax-tree-plain.json"
 			},
-			lazyLoad: function(e, data) {
+			lazyLoad: function(event, data) {
 				data.result = {url: "../demo/ajax-sub2.json"};
 			}
 		});

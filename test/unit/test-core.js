@@ -36,10 +36,10 @@ $.ui.fancytree.debugLevel = 1;
  * Tool functions
  */
 //function simulateClick(selector) {
-//	var e = document.createEvent("MouseEvents");
-//	e.initEvent("click", true, true);
+//	var event = document.createEvent("MouseEvents");
+//	event.initEvent("click", true, true);
 //	$(selector).each(function(){
-//		this.dispatchEvent(e);
+//		this.dispatchEvent(event);
 //	});
 //}
 
@@ -221,10 +221,10 @@ test("Create fancytree", function() {
 	$("#tree").fancytree({
 		source: TEST_DATA,
 		generateIds: true, // for testing
-		create: function(e, data){
+		create: function(event, data){
 			var tree, widget;
 
-			equal(e.type, "fancytreecreate", "receive `create` callback");
+			equal(event.type, "fancytreecreate", "receive `create` callback");
 			ok(insideConstructor, "running synchronously");
 			ok(!!data, "event data is empty");
 			equal(this.nodeName, "DIV", "`this` is div#tree");
@@ -235,8 +235,8 @@ test("Create fancytree", function() {
 			equal(tree.rootNode.children, null, "`tree.rootNode` is empty");
 			equal($("div#tree").hasClass("ui-widget"), false, "div#tree has no widget style yet");
 		},
-		init: function(e, data){
-			equal(e.type, "fancytreeinit", "receive `init` callback");
+		init: function(event, data){
+			equal(event.type, "fancytreeinit", "receive `init` callback");
 			ok(insideConstructor, "running synchronously");
 			ok(!!data.tree.rootNode, "`data.tree` is the tree object");
 			equal(data.options.source.length, TESTDATA_TOPNODES, "data.options.contains widget options");
@@ -255,12 +255,12 @@ test("Create fancytree", function() {
 
 			start();
 		}
-	}).bind("fancytreecreate", function(e, ctx){
+	}).bind("fancytreecreate", function(event, data){
 		// TODO: event is triggered, but only if we called start() before
 		// but then, the equal() call is added to the following test
-//        equal(e.type, "fancytreecreate", "receive `dynatreecreate` bound event");
-	}).bind("fancytreeinit", function(e, ctx){
-//        equal(e.type, "fancytreeinit", "receive `init` bound event");
+//        equal(event.type, "fancytreecreate", "receive `dynatreecreate` bound event");
+	}).bind("fancytreeinit", function(event, data){
+//        equal(event.type, "fancytreeinit", "receive `init` bound event");
 //        start();
 	});
 	insideConstructor = false;
@@ -290,7 +290,7 @@ test("Init node status from source", function() {
 	children[6].children[0].children[0].selected = true;
 	$("#tree").fancytree({
 		source: children,
-		init: function(e, data){
+		init: function(event, data){
 			var tree = data.tree,
 				node = tree.getNodeByKey("10_1_2");
 			ok(tree.activeNode === node, "node was activated");
@@ -314,7 +314,7 @@ test("Init node with custom data", function() {
 	children[6].children[0].children[1].bar = false;
 	$("#tree").fancytree({
 		source: children,
-		init: function(e, data){
+		init: function(event, data){
 			equal(_getNode("10_1_1").data.foo, "phew", "add custom string data");
 			equal(_getNode("10_1_2").data.bar, false, "add custom bool data");
 			start();
@@ -590,13 +590,13 @@ test(".click() to expand a folder", function() {
 	$("#tree").fancytree({
 		source: TEST_DATA,
 		generateIds: true,
-		beforeExpand: function(e, data){
-			equal(e.type, "fancytreebeforeexpand", "receive `beforeExpand` callback");
+		beforeExpand: function(event, data){
+			equal(event.type, "fancytreebeforeexpand", "receive `beforeExpand` callback");
 			ok($(data.node.span).hasClass("fancytree-node"), "data.node.span has class fancytree-node");
 			ok(!$(data.node.span).hasClass("fancytree-expanded"), "data.node.span has NOT class fancytree-expanded");
 		},
-		expand: function(e, data){
-			equal(e.type, "fancytreeexpand", "receive `expand` callback");
+		expand: function(event, data){
+			equal(event.type, "fancytreeexpand", "receive `expand` callback");
 			equal($(this).attr("id"), "tree", "`this` is div#tree");
 			ok(!!data.tree.rootNode, "`data.tree` is the tree object");
 			ok($(data.node.span).hasClass("fancytree-node"), "data.node.span has class fancytree-node");
@@ -615,13 +615,13 @@ test(".click() to activate a node", function() {
 	$("#tree").fancytree({
 		source: TEST_DATA,
 		generateIds: true, // for testing
-		beforeActivate: function(e, data){
-			equal(e.type, "fancytreebeforeactivate", "receive `beforeActivate` callback");
+		beforeActivate: function(event, data){
+			equal(event.type, "fancytreebeforeactivate", "receive `beforeActivate` callback");
 			ok($(data.node.span).hasClass("fancytree-node"), "data.node.span has class fancytree-node");
 			ok(!$(data.node.span).hasClass("fancytree-active"), "data.node.span has NOT class fancytree-active");
 		},
-		activate: function(e, data){
-			equal(e.type, "fancytreeactivate", "receive `activate` callback");
+		activate: function(event, data){
+			equal(event.type, "fancytreeactivate", "receive `activate` callback");
 			ok(!!data.tree.rootNode, "`data.tree` is the tree object");
 			equal($(this).attr("id"), "tree", "`this` is div#tree");
 			ok($(data.node.span).hasClass("fancytree-node"), "data.node.span has class fancytree-node");
@@ -641,16 +641,16 @@ test(".click() to activate a folder (clickFolderMode 3 triggers expand)", functi
 		source: TEST_DATA,
 		clickFolderMode: 3,
 		generateIds: true, // for testing
-		beforeActivate: function(e, data){
+		beforeActivate: function(event, data){
 			equal(sequence++, 1, "receive `beforeActivate` callback");
 		},
-		activate: function(e, data){
+		activate: function(event, data){
 			equal(sequence++, 2, "receive `activate` callback");
 		},
-		beforeExpand: function(e, data){
+		beforeExpand: function(event, data){
 			equal(sequence++, 3, "receive `beforeExpand` callback");
 		},
-		expand: function(e, data){
+		expand: function(event, data){
 			equal(sequence++, 4, "receive `expand` callback");
 			start();
 		}
@@ -667,13 +667,13 @@ test(".click() to select a node", function() {
 		source: TEST_DATA,
 		checkbox: true,
 		generateIds: true, // for testing
-		beforeSelect: function(e, data){
-			equal(e.type, "fancytreebeforeselect", "receive `beforeSelect` callback");
+		beforeSelect: function(event, data){
+			equal(event.type, "fancytreebeforeselect", "receive `beforeSelect` callback");
 			ok($(data.node.span).hasClass("fancytree-node"), "data.node.span has class fancytree-node");
 			ok(!$(data.node.span).hasClass("fancytree-selected"), "data.node.span has NOT class fancytree-selected");
 		},
-		select: function(e, data){
-			equal(e.type, "fancytreeselect", "receive `select` callback");
+		select: function(event, data){
+			equal(event.type, "fancytreeselect", "receive `select` callback");
 			ok(!!data.tree.rootNode, "`data.tree` is the tree object");
 			equal($(this).attr("id"), "tree", "`this` is div#tree");
 			ok($(data.node.span).hasClass("fancytree-node"), "data.node.span has class fancytree-node");
@@ -698,7 +698,7 @@ test("Using ajax options for `source`; .click() expands a lazy folder", function
 	$("#tree").fancytree({
 		source: {url: "ajax-tree.json"},
 		generateIds: true,
-		init: function(e, data){
+		init: function(event, data){
 			equal(sequence++, 2, "receive `init` callback");
 			equal(data.tree.count(), TESTDATA_NODES, "lazy tree has 23 nodes");
 			equal($("#tree li").length, TESTDATA_VISIBLENODES, "lazy tree has rendered 13 node elements");
@@ -706,16 +706,16 @@ test("Using ajax options for `source`; .click() expands a lazy folder", function
 			isClicked = true;
 			$("#tree #ft_30 span.fancytree-expander").click();
 		},
-		beforeExpand: function(e, data){
+		beforeExpand: function(event, data){
 			equal(sequence++, 3, "receive `beforeExpand` callback");
 		},
-		lazyLoad: function(e, data){
+		lazyLoad: function(event, data){
 			equal(sequence++, 4, "receive `lazyLoad` callback");
 			equal(data.node.isLoading(), false, "node.isLoading()");
 
 			data.result = {url: "ajax-sub2.json"};
 		},
-		postProcess: function(e, data){
+		postProcess: function(event, data){
 			if( !isClicked ) {
 				equal(sequence++, 1, "receive `postProcess` callback for root");
 				equal(data.node.isLoading(), true, "node.isLoading()");
@@ -726,12 +726,12 @@ test("Using ajax options for `source`; .click() expands a lazy folder", function
 				equal(data.node.isLoading(), true, "node.isLoading()");
 			}
 		},
-		loadChildren: function(e, data){
+		loadChildren: function(event, data){
 			equal(sequence++, 6, "receive `loadChildren` callback");
 			equal(data.tree.count(), TESTDATA_NODES + 2, "lazy tree has 25 nodes");
 			equal($("#tree li").length, TESTDATA_VISIBLENODES, "lazy tree has not yet rendered new node elements");
 		},
-		expand: function(e, data){
+		expand: function(event, data){
 			equal(sequence++, 7, "receive `expand` callback");
 			equal(data.tree.count(), TESTDATA_NODES + 2, "lazy tree has 25 nodes");
 			equal($("#tree li").length, TESTDATA_VISIBLENODES + 2, "lazy tree has rendered 15 node elements");
@@ -751,26 +751,26 @@ test("Using $.ajax promise for `source`; .click() expands a lazy folder", functi
 			dataType: "json"
 		}),
 		generateIds: true,
-		init: function(e, data){
+		init: function(event, data){
 			equal(sequence++, 1, "receive `init` callback");
 			equal(data.tree.count(), TESTDATA_NODES, "lazy tree has 23 nodes");
 			equal($("#tree li").length, TESTDATA_VISIBLENODES, "lazy tree has rendered 13 node elements");
 			// now expand a lazy folder
 			$("#tree #ft_30 span.fancytree-expander").click();
 		},
-		beforeExpand: function(e, data){
+		beforeExpand: function(event, data){
 			equal(sequence++, 2, "receive `beforeExpand` callback");
 		},
-		lazyLoad: function(e, data){
+		lazyLoad: function(event, data){
 			equal(sequence++, 3, "receive `lazyLoad` callback");
 			data.result = $.getJSON("ajax-sub2.json");
 		},
-		loadChildren: function(e, data){
+		loadChildren: function(event, data){
 			equal(sequence++, 4, "receive `loadChildren` callback");
 			equal(data.tree.count(), TESTDATA_NODES + 2, "lazy tree has 25 nodes");
 			equal($("#tree li").length, TESTDATA_VISIBLENODES, "lazy tree has not yet rendered new node elements");
 		},
-		expand: function(e, data){
+		expand: function(event, data){
 			equal(sequence++, 5, "receive `expand` callback");
 			equal(data.tree.count(), TESTDATA_NODES + 2, "lazy tree has 25 nodes");
 			equal($("#tree li").length, TESTDATA_VISIBLENODES + 2, "lazy tree has rendered 15 node elements");
@@ -803,10 +803,10 @@ test("add children", function() {
 
 	$("#tree").fancytree({
 		source: TEST_DATA,
-		lazyLoad: function(e, data){
+		lazyLoad: function(event, data){
 			data.result = {url: "ajax-sub2.json"};
 		},
-		init: function(e, data){
+		init: function(event, data){
 			data.tree.rootNode.addChildren(childList);
 
 			equal(_getNodeTitle("test1"), "New 1", "simple node");
@@ -858,10 +858,10 @@ test("apply patch", function() {
 
 	$("#tree").fancytree({
 		source: TEST_DATA,
-		lazyLoad: function(e, data){
+		lazyLoad: function(event, data){
 			data.result = {url: "ajax-sub2.json"};
 		},
-		init: function(e, data){
+		init: function(event, data){
 			data.tree.applyPatch(patchList).done(function(){
 				_appendEvent("done");
 				ok(true, "called done()");
@@ -939,7 +939,7 @@ test("loadKeyPath (lazy nodes)", function() {
 
 	$("#tree").fancytree({
 		source: TEST_DATA,
-		lazyLoad: function(e, data){
+		lazyLoad: function(event, data){
 			// fake an async, deleayed Ajax request that generates 5 lazy nodes
 			data.result = _fakeAjaxLoad(data.node, 5, 10);
 		}
@@ -968,7 +968,7 @@ test("loadKeyPath (multiple lazy nodes with expand)", function() {
 
 	$("#tree").fancytree({
 		source: TEST_DATA,
-		lazyLoad: function(e, data){
+		lazyLoad: function(event, data){
 			data.result = _fakeAjaxLoad(data.node, 5, [0, 30]);
 		}
 	});

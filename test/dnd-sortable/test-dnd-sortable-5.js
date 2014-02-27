@@ -106,10 +106,10 @@ $(document).ready(function(){
 */
 			}
 		},
-		activate: function(e, data) {
+		activate: function(event, data) {
 //				alert("activate " + data.node);
 		},
-		lazyLoad: function(e, data) {
+		lazyLoad: function(event, data) {
 			data.result = {url: "test-dnd-sortabble-subfolders.json", debugDelay: 1000};
 		}
 	});

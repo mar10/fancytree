@@ -67,19 +67,19 @@
 			checkbox: true,
 			selectMode: 1,
 			source: treeData,
-			activate: function(e, data) {
+			activate: function(event, data) {
 				$("#echoActive1").text(data.node.title);
 			},
-			select: function(e, data) {
+			select: function(event, data) {
 				// Display list of selected nodes
 				var s = data.tree.getSelectedNodes().join(", ");
 				$("#echoSelection1").text(s);
 			},
-			dblclick: function(e, data) {
+			dblclick: function(event, data) {
 				data.node.toggleSelected();
 			},
-			keydown: function(e, data) {
-				if( e.which === 32 ) {
+			keydown: function(event, data) {
+				if( event.which === 32 ) {
 					data.node.toggleSelected();
 					return false;
 				}
@@ -91,7 +91,7 @@
 			checkbox: true,
 			selectMode: 2,
 			source: treeData,
-			select: function(e, data) {
+			select: function(event, data) {
 				// Display list of selected nodes
 				var selNodes = data.tree.getSelectedNodes();
 				// convert to title/key array
@@ -100,15 +100,15 @@
 					});
 				$("#echoSelection2").text(selKeys.join(", "));
 			},
-			click: function(e, data) {
+			click: function(event, data) {
 				// We should not toggle, if target was "checkbox", because this
 				// would result in double-toggle (i.e. no toggle)
 				if( $.ui.fancytree.getEventTargetType(e) == "title" ){
 					data.node.toggleSelected();
 				}
 			},
-			keydown: function(e, data) {
-				if( e.which === 32 ) {
+			keydown: function(event, data) {
+				if( event.which === 32 ) {
 					data.node.toggleSelected();
 					return false;
 				}
@@ -123,7 +123,7 @@
 			checkbox: true,
 			selectMode: 3,
 			source: treeData,
-			select: function(e, data) {
+			select: function(event, data) {
 				// Get a list of all selected nodes, and convert to a key array:
 				var selKeys = $.map(data.tree.getSelectedNodes(), function(node){
 					return node.key;
@@ -139,11 +139,11 @@
 				$("#echoSelectionRootKeys3").text(selRootKeys.join(", "));
 				$("#echoSelectionRoots3").text(selRootNodes.join(", "));
 			},
-			dblclick: function(e, data) {
+			dblclick: function(event, data) {
 				data.node.toggleSelected();
 			},
-			keydown: function(e, data) {
-				if( e.which === 32 ) {
+			keydown: function(event, data) {
+				if( event.which === 32 ) {
 					data.node.toggleSelected();
 					return false;
 				}
@@ -159,12 +159,12 @@
 			checkbox: false,
 			selectMode: 2,
 			source: treeData,
-			beforeSelect: function(e, data) {
+			beforeSelect: function(event, data) {
 				if( data.node.folder ){
 					return false;
 				}
 			},
-			select: function(e, data) {
+			select: function(event, data) {
 				// Display list of selected nodes
 				var selNodes = data.tree.getSelectedNodes();
 				// convert to title/key array
@@ -173,16 +173,16 @@
 					});
 				$("#echoSelection4").text(selKeys.join(", "));
 			},
-			click: function(e, data) {
+			click: function(event, data) {
 				if( ! data.node.folder ){
 					data.node.toggleSelected();
 				}
 			},
-			dblclick: function(e, data) {
+			dblclick: function(event, data) {
 				data.node.toggleExpanded();
 			},
-			keydown: function(e, data) {
-				if( e.which === 32 ) {
+			keydown: function(event, data) {
+				if( event.which === 32 ) {
 					data.node.toggleSelected();
 					return false;
 				}

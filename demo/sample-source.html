@@ -25,18 +25,18 @@
 		$("#tree, #tree3").fancytree({
 			checkbox: true,
 			selectMode: 1,
-			activate: function(e, data){
+			activate: function(event, data){
 				var node = data.node;
-				$.ui.fancytree.debug("activate: e=", e, ", data=", data);
+				$.ui.fancytree.debug("activate: event=", event, ", data=", data);
 				if(!$.isEmptyObject(node.data)){
 					alert("custom node data: " + JSON.stringify(node.data));
 				}
 			},
-			lazyLoad: function(e, data){
+			lazyLoad: function(event, data){
 				data.result = {url: "unit/ajax-sub2.json"};
 			}
-		}).bind("fancytreeactivate", function(e, data){
-			$.ui.fancytree.debug("fancytreeactivate: e=", e, ", data=", data);
+		}).bind("fancytreeactivate", function(event, data){
+			$.ui.fancytree.debug("fancytreeactivate: event=", event, ", data=", data);
 			return false;
 //          $(this).fancytree("debug", "fancytreeactivate");
 		});
@@ -49,7 +49,7 @@
 			source: {
 				url: "ajax-tree-plain.json"
 			},
-			lazyLoad: function(e, data){
+			lazyLoad: function(event, data){
 				// we can't return values from an event handler, so we
 				// pass the result as `data`attribute.
 //              data.result = {url: "unit/ajax-sub2.json"};
@@ -63,13 +63,13 @@
 		$("div:ui-fancytree").fancytree("foo", "after init");
 		//
 		$("button").button();
-		$("button#destroy").click(function(e){
+		$("button#destroy").click(function(event){
 			$(":ui-fancytree").fancytree("destroy");
 		});
-		$("button#init").click(function(e){
+		$("button#init").click(function(event){
 			$(".sampletree").fancytree();
 		});
-		$("button#reload").click(function(e){
+		$("button#reload").click(function(event){
 			tree.reload([
 				{title: "node1"},
 				{title: "node2"}
@@ -77,14 +77,14 @@
 					alert("reloaded");
 				});
 		});
-		$("button#expand").click(function(e){
+		$("button#expand").click(function(event){
 			tree.getNodeByKey("id3").toggleExpand().done(function(){
 				alert("expanded " + this);
 			}).fail(function(errMsg){
 				alert("failed to expand " + this + ": " + errMsg);
 			});
 		});
-		$("button#setSource").click(function(e){
+		$("button#setSource").click(function(event){
 			$(".sampletree").fancytree("option", "source", [
 				{title: "node1"}
 			]);

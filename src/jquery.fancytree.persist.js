@@ -145,7 +145,7 @@ $.ui.fancytree.registerExtension({
 		instData.storeFocus = instOpts.types.indexOf(FOCUS) >= 0;
 
 		// Bind init-handler to apply cookie state
-		tree.$div.bind("fancytreeinit", function(e){
+		tree.$div.bind("fancytreeinit", function(event){
 			var cookie,
 				keyList,
 				i,

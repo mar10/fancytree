@@ -33,7 +33,7 @@
 			{ key: "custom-error", title: "Custom error while lazy loading", lazy: true }
 		];
 
-		function lazyLoad(e, data) {
+		function lazyLoad(event, data) {
 			switch (data.node.key) {
 				case "ajax":
 					data.result = { url: "ajax-sub2.json" };

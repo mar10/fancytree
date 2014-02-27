@@ -41,10 +41,10 @@
 			ajax: {
 				debugDelay: [200, 1000]
 			},
-			activate: function(e, data) {
+			activate: function(event, data) {
 //				alert("activate " + data.node);
 			},
-			lazyLoad: function(e, data) {
+			lazyLoad: function(event, data) {
 				data.result = {url: "ajax-sub2.json"}
 			}
 		});

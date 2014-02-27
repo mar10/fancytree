@@ -92,10 +92,10 @@ $(function(){
 		},
 
 
-		lazyLoad: function(e, data) {
+		lazyLoad: function(event, data) {
 			data.result = {url: "../demo/ajax-sub2.json"};
 		},
-		renderColumns: function(e, data) {
+		renderColumns: function(event, data) {
 			var node = data.node,
 				$select = $("<select />"),
 				$tdList = $(node.tr).find(">td");
