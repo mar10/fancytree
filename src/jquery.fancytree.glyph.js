@@ -95,7 +95,6 @@ $.ui.fancytree.registerExtension({
 		}
 
 		span = $("span.fancytree-icon", node.span).get(0);
-		// if( callback && callback(node))
 		if( span ){
 			if( node.folder ){
 				icon = node.expanded ? _getIcon(opts, "folderOpen") : _getIcon(opts, "folder");

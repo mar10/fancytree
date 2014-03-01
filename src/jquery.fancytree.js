@@ -2631,6 +2631,7 @@ $.extend(Fancytree.prototype,
 				}
 			}else{
 //				this.nodeRenderTitle(ctx);
+				this.nodeRenderStatus(ctx);
 			}
 			// Allow tweaking after node state was rendered
 			if ( opts.renderNode ){
@@ -2698,7 +2699,7 @@ $.extend(Fancytree.prototype,
 		}
 		if( !isRootNode ){
 			// Update element classes according to node state
-			this.nodeRenderStatus(ctx);
+			// this.nodeRenderStatus(ctx);
 			// Finally add the whole structure to the DOM, so the browser can render
 			if(firstTime){
 				parent.ul.appendChild(node.li);
@@ -2706,6 +2707,8 @@ $.extend(Fancytree.prototype,
 		}
 	},
 	/** Create HTML for the node's outer <span> (expander, checkbox, icon, and title).
+	 *
+	 * nodeRenderStatus() is implied.
 	 * @param {EventData} ctx
 	 */
 	nodeRenderTitle: function(ctx, title) {
@@ -2785,6 +2788,8 @@ $.extend(Fancytree.prototype,
 		// Note: this will trigger focusout, if node had the focus
 		//$(node.span).html(ares.join("")); // it will cleanup the jQuery data currently associated with SPAN (if any), but it executes more slowly
 		node.span.innerHTML = ares.join("");
+		// Update CSS classes
+		this.nodeRenderStatus(ctx);
 	},
 	/** Update element classes according to node state.
 	 * @param {EventData} ctx

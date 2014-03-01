@@ -204,6 +204,8 @@ $.ui.fancytree.registerExtension({
 			} else {
 				// Set icon, link, and title (normally this is only required on initial render)
 				//this.nodeRenderTitle(ctx);
+				// Update element classes according to node state
+				this.nodeRenderStatus(ctx);
 			}
 		}
 		 // Allow tweaking after node state was rendered
@@ -243,9 +245,9 @@ $.ui.fancytree.registerExtension({
 			});
 		}
 		// Update element classes according to node state
-		if(!isRootNode){
-			this.nodeRenderStatus(ctx);
-		}
+		// if(!isRootNode){
+		// 	this.nodeRenderStatus(ctx);
+		// }
 	},
 	nodeRenderTitle: function(ctx, title) {
 		var $cb,
@@ -260,6 +262,10 @@ $.ui.fancytree.registerExtension({
 		}
 		// Let user code write column content
 		// ctx.tree._triggerNodeEvent("renderColumns", node);
+		// Update element classes according to node state
+		if( ! node.isRoot() ){
+			this.nodeRenderStatus(ctx);
+		}
 		if ( opts.renderColumns ){
 			opts.renderColumns.call(ctx.tree, {type: "renderColumns"}, ctx);
 		}

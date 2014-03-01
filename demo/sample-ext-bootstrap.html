@@ -19,6 +19,7 @@
 		class="skinswitcher">
 
 	<script src="../src/jquery.fancytree.js" type="text/javascript"></script>
+	<script src="../src/jquery.fancytree.edit.js" type="text/javascript"></script>
 	<script src="../src/jquery.fancytree.glyph.js" type="text/javascript"></script>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
@@ -46,7 +47,7 @@ body {
 	$(function(){
 		// Initialize Fancytree
 		$("#tree").fancytree({
-			extensions: ["glyph"],
+			extensions: ["glyph", "edit"],
 			checkbox: true,
 			selectMode: 2,
 			glyph: {

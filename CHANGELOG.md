@@ -1,11 +1,12 @@
 # 2.0.0-7 / Unreleased
   * [BREAKING CHANGE] node.isStatusNode() is now a function (was a property before).
     Added new property node.statusNodeType.
+  * [CHANGE] nodeRenderStatus() is now implicitly called by nodeRenderTitle().
   * [DEPRECATION] Deprecated event `lazyLoad`, use `lazyLoad` (upper case L) instead.
   * [DEPRECATION] Deprecated methods node.lazyLoad() and node.discard(). use load() and resetLazy() instead.
   * [FEATURE] Added node.isUndefined(), isLoaded(), resetLazy(), load(), resetLazy()
   * node.makeVisible() accepts options, scrolls into view, and returns a promise.
-  * Calling setExpanded() on a leaf fires .done() (not .fail())
+  * Calling setExpanded() on a leaf node fires .done() (not .fail())
   * Renamed ext-awesome to ext-glyph
   * Removing the last node collapses it; lazy nodes become empty (not undefined).
   * Sample xxl and bootstrap themes.
