@@ -1590,9 +1590,11 @@ function Fancytree(widget) {
 	this.$div = widget.element;
 	this.options = widget.options;
 	if( this.options && $.isFunction(this.options.lazyload) ) {
-		FT.warn("The 'lazyload' event is deprecated since 2014-02-25. Use 'lazyLoad' (with uppercase L) instead.");
-		if( ! $.isFunction(this.options.lazyLoad) ) {
-			this.options.lazyLoad = this.options.lazyload;
+		if( ! $.isFunction(this.options.lazyLoad ) ) {
+			this.options.lazyLoad = function() {
+				FT.warn("The 'lazyload' event is deprecated since 2014-02-25. Use 'lazyLoad' (with uppercase L) instead.");
+				widget.options.lazyload.apply(this, arguments);
+			};
 		}
 	}
 	this.ext = {}; // Active extension instances
