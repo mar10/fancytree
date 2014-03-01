@@ -873,7 +873,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	 * @returns {boolean}
 	 */
 	isLoaded: function() {
-		return !this.lazy || this.children != null; // null or undefined: not yet loaded
+		return !this.lazy || this.hasChildren() !== undefined; // Also checks if the only child is a status node
 	},
 	/** Return true if children are currently beeing loaded, i.e. a Ajax request is pending.
 	 * @returns {boolean}
@@ -904,7 +904,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	 * @returns {boolean}
 	 */
 	isUndefined: function() {
-		return this.lazy && this.children == null; // null or undefined: not yet loaded
+		return this.hasChildren() === undefined; // also checks if the only child is a status node
 	},
 	/** Return true if all parent nodes are expanded. Note: this does not check
 	 * whether the node is scrolled into the visible part of the screen.
@@ -2329,9 +2329,12 @@ $.extend(Fancytree.prototype,
 			}
 
 			// TODO: change 'pipe' to 'then' for jQuery 1.8
+			// $.pipe returns a new Promise with filtered  results
 			source = source.pipe(function (data, textStatus, jqXHR) {
 				var res;
-				if(typeof data === "string"){ $.error("Ajax request returned a string (did you get the JSON dataType wrong?)."); }
+				if(typeof data === "string"){
+					$.error("Ajax request returned a string (did you get the JSON dataType wrong?).");
+				}
 				// postProcess is similar to the standard dataFilter hook,
 				// but it is also called for JSONP
 				if( ctx.options.postProcess ){
@@ -2353,10 +2356,11 @@ $.extend(Fancytree.prototype,
 		}
 
 		if($.isFunction(source.promise)){
-			// `source` is a promise
+			// `source` is a deferred, i.e. ajax request
 			_assert(!node.isLoading());
 			node._isLoading = true;
 			tree.nodeSetStatus(ctx, "loading");
+
 			source.done(function () {
 				tree.nodeSetStatus(ctx, "ok");
 			}).fail(function(error){
@@ -2375,7 +2379,7 @@ $.extend(Fancytree.prototype,
 				tree.nodeSetStatus(ctx, "error", ctxErr.message, ctxErr.details);
 			});
 		}
-
+		// $.when(source) resolves also for non-deferreds
 		return $.when(source).done(function(children){
 			var metaData;
 
@@ -2391,11 +2395,12 @@ $.extend(Fancytree.prototype,
 			}
 			_assert($.isArray(children), "expected array of children");
 			node._setChildren(children);
-			node._isLoading = false;
 			if(node.parent){
 				// trigger fancytreeloadchildren (except for tree-reload)
 				tree._triggerNodeEvent("loadChildren", node);
 			}
+		}).always(function(){
+			node._isLoading = false;
 		});
 	},
 	/** [Not Implemented]  */
