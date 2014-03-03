@@ -58,13 +58,13 @@
 			source: {
 				url: "ajax-tree-plain.json"
 			},
-			lazyload: function(e, data) {
+			lazyLoad: function(event, data) {
 				data.result = {url: "ajax-sub2.json"};
 			},
-			activate: function(e, data) {
+			activate: function(event, data) {
 				$("td#preview").text("activate " + data.node);
 			},
-			select: function(e, data) {
+			select: function(event, data) {
 				// create a tag, when node is selected
 				var node = data.node;
 				$("span#tag-" + node.key).remove();

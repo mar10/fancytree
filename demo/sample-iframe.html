@@ -41,7 +41,7 @@
 				// Auto-activate focused node after 2 seconds
 				data.node.scheduleAction("activate", 2000);
 			},
-			activate: function(e, data) {
+			activate: function(event, data) {
 				var node = data.node;
 				// Use <a> href and target attributes to load the content:
 				if( node.data.href ){

@@ -32,19 +32,19 @@
 			extensions: ["persist"],
 			checkbox: true,
 			source: {
-				url: "ajax-tree-local.json"
+				url: "ajax-tree-plain.json"
 			},
 			persist: {
-//				mode: "hide"
+				// expandLazy: true
 			},
 			// don't use this in production code:
 			ajax: {
 				debugDelay: [200, 1000]
 			},
-			activate: function(e, data) {
+			activate: function(event, data) {
 //				alert("activate " + data.node);
 			},
-			lazyload: function(e, data) {
+			lazyLoad: function(event, data) {
 				data.result = {url: "ajax-sub2.json"}
 			}
 		});

@@ -56,7 +56,7 @@ ul.fancytree-container {
 			},
 //			source: {url: "ajax-tree-plain.json", debugDelay: 1000},
 			source: {url: "ajax-tree-taxonomy.json", debugDelay: 1000},
-			lazyload: function(event, ctx) {
+			lazyLoad: function(event, ctx) {
 				ctx.result = {url: "ajax-sub2.json", debugDelay: 1000};
 			}
 		});

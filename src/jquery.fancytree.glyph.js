@@ -73,29 +73,28 @@ $.ui.fancytree.registerExtension({
 		if( node.isRoot() ){
 			return;
 		}
-		if( node.hasChildren() !== false ){
-			span = $("span.fancytree-expander", node.span).get(0);
-			if( span ){
-				/*if( node.isLoading ){
-					icon = "loading";
-				}else*/ if( node.expanded ){
-					icon = "expanderOpen";
-				}else if( node.lazy && node.children == null ){
-					icon = "expanderLazy";
-				}else{
-					icon = "expanderClosed";
-				}
-				// icon = node.expanded ? "expanderOpen" : (node.lazy && node.children == null) ? "expanderLazy" : "expanderClosed";
-				span.className = "fancytree-expander " + map[icon];
+
+		span = $("span.fancytree-expander", node.span).get(0);
+		if( span ){
+			if( node.isLoading() ){
+				icon = "loading";
+			}else if( node.expanded ){
+				icon = "expanderOpen";
+			}else if( node.isUndefined() ){
+				icon = "expanderLazy";
+			}else{
+				icon = "expanderClosed";
 			}
+			span.className = "fancytree-expander " + map[icon];
 		}
+
 		span = $("span.fancytree-checkbox", node.span).get(0);
 		if( span ){
 			icon = node.selected ? "checkboxSelected" : (node.partsel ? "checkboxUnknown" : "checkbox");
 			span.className = "fancytree-checkbox " + map[icon];
 		}
+
 		span = $("span.fancytree-icon", node.span).get(0);
-		// if( callback && callback(node))
 		if( span ){
 			if( node.folder ){
 				icon = node.expanded ? _getIcon(opts, "folderOpen") : _getIcon(opts, "folder");

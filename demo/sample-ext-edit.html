@@ -27,11 +27,21 @@ $(function(){
 		extensions: ["edit"],
 		source: {url: "ajax-tree-plain.json"},
 		edit: {
+			beforeClose: function(event, data){
+				// Return false to prevent cancel/save (data.input is available)
+			},
 			beforeEdit: function(event, data){
-
+				// Return false to prevent edit mode
+			},
+			close: function(event, data){
+				// Editor was removed
 			},
 			edit: function(event, data){
-
+				// Editor was opened (available as data.input)
+			},
+			save: function(event, data){
+				// Save data.input.val() or return false to keep editor open
+				alert("save " + data.input.val());
 			}
 		}
 	});

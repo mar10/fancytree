@@ -22,22 +22,22 @@ $(function(){
 	// Initialize the tree inside the <div>element.
 	// The tree structure is read from the contained <ul> tag.
 	$("#tree").fancytree({
-		activate: function(e, data) {
+		activate: function(event, data) {
 			$("#echoActive").text(data.node.title);
 //              alert(node.getKeyPath());
 			if( data.node.url )
 				window.open(data.node.url, data.node.target);
 		},
-		deactivate: function(e, data) {
+		deactivate: function(event, data) {
 			$("#echoSelected").text("-");
 		},
-		focus: function(e, data) {
+		focus: function(event, data) {
 			$("#echoFocused").text(data.node.title);
 		},
-		blur: function(e, data) {
+		blur: function(event, data) {
 			$("#echoFocused").text("-");
 		},
-		lazyread: function(e, data){
+		lazyread: function(event, data){
 			var fakeJsonResult = [
 				{ title: 'Lazy node 1', lazy: true },
 				{ title: 'Simple node 2', select: true }

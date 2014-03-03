@@ -51,10 +51,10 @@
 						node.getParent().addChildren([{title: "new node dropped"}]);//, node.getNextSibling());
 					}
 				},
-				activate: function(e, data) {
+				activate: function(event, data) {
 	//				alert("activate " + data.node);
 				},
-				lazyload: function(e, data) {
+				lazyLoad: function(event, data) {
 //                    data.result = {url: "fancytree-master/demo/ajax-sub2.json"}
 					data.result = {url: "unit/ajax-sub2.json"}
 				}

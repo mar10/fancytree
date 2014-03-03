@@ -44,12 +44,12 @@
 				checkboxColumnIdx: 0  // render the checkboxes into the 1st column
 			},
 			source: {
-				url: "ajax-tree-plain.json"
+				url: "ajax-tree-products.json"
 			},
-			lazyload: function(e, data) {
+			lazyLoad: function(event, data) {
 				data.result = {url: "ajax-sub2.json"}
 			},
-			renderColumns: function(e, data) {
+			renderColumns: function(event, data) {
 				var node = data.node,
 					$tdList = $(node.tr).find(">td");
 				// (index #0 is rendered by fancytree by adding the checkbox)

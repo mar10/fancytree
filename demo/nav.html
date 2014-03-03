@@ -39,7 +39,7 @@ span.fancytree-title {
 span.fancytree-focused span.fancytree-title {
 	outline-color: white;
 }
-span.fancytree-title:hover,
+span.fancytree-node:hover span.fancytree-title,
 span.fancytree-active span.fancytree-title,
 span.fancytree-active.fancytree-focused span.fancytree-title,
 .fancytree-treefocus span.fancytree-title:hover,
@@ -71,23 +71,23 @@ span.external span.fancytree-title:after {
 			autoCollapse: true,
 			autoScroll: true,
 			tabbable: false, // we don't want the focus frame
-			focus: function(e, data) {
+			focus: function(event, data) {
 				var node = data.node;
 				// Auto-activate focused node after 1 second
 				if(node.data.href){
 					node.scheduleAction("activate", 1000);
 				}
 			},
-			blur: function(e, data) {
+			blur: function(event, data) {
 				data.node.scheduleAction("cancel");
 			},
-			activate: function(e, data){
+			activate: function(event, data){
 				var node = data.node;
 				if(node.data.href){
 					window.open(node.data.href, node.data.target);
 				}
 			},
-			click: function(e, data){ // allow re-loads
+			click: function(event, data){ // allow re-loads
 				var node = data.node;
 				if(node.isActive() && node.data.href){
 					data.tree.reactivate();

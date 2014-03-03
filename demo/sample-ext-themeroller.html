@@ -86,12 +86,12 @@
 			source: {
 				url: "ajax-tree-plain.json"
 			},
-			activate: function(e, data) {
+			activate: function(event, data) {
 			},
-			lazyload: function(e, data) {
+			lazyLoad: function(event, data) {
 				data.result = {url: "ajax-sub2.json"}
 			},
-			renderColumns: function(e, data) {
+			renderColumns: function(event, data) {
 				var node = data.node,
 					$tdList = $(node.tr).find(">td");
 				$tdList.eq(1).text(node.key);
@@ -104,9 +104,9 @@
 			source: {
 				url: "ajax-tree-plain.json"
 			},
-			activate: function(e, data) {
+			activate: function(event, data) {
 			},
-			lazyload: function(e, data) {
+			lazyLoad: function(event, data) {
 				data.result = {url: "ajax-sub2.json"}
 			}
 		});

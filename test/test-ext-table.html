@@ -77,13 +77,13 @@ SOURCE = [
 			// source: [{title: "1", folder: true}],
 			source: {foo: "bar", children: SOURCE},
 			titlesTabbable: true,     // Add all node titles to TAB chain
-			init: function(e, data) {
+			init: function(event, data) {
 				alert("init: " + data.tree.data.foo);
 			},
-			lazyload: function(e, data) {
+			lazyLoad: function(event, data) {
 				data.result = {url: "../demo/ajax-sub2.json"};
 			},
-			renderColumns: function(e, data) {
+			renderColumns: function(event, data) {
 				var node = data.node,
 					$tdList = $(node.tr).find(">td");
 				// (index #0 is rendered by fancytree by adding the checkbox)

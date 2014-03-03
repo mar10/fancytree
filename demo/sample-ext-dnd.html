@@ -56,7 +56,7 @@
 		$("#tree").fancytree({
 			extensions: ["dnd"],
 			source: {
-				url: "ajax-tree-plain.json"
+				url: "ajax-tree-fs.json"
 			},
 			dnd: {
 				preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
@@ -93,10 +93,10 @@
 					data.otherNode.moveTo(node, data.hitMode);
 				}
 			},
-			activate: function(e, data) {
+			activate: function(event, data) {
 //				alert("activate " + data.node);
 			},
-			lazyload: function(e, data) {
+			lazyLoad: function(event, data) {
 				data.result = {url: "ajax-sub2.json"}
 			}
 		});

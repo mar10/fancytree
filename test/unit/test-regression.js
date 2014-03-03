@@ -99,8 +99,8 @@ test("issue310: Loading animation never ends using lazy read on empty folder", f
 
 	$("#tree").fancytree({
 		source: [{title: "lazy folder", key: "1", folder: true, lazy: true}],
-		lazyload: function(e, data){
-			ok(true, "got `lazyload` event");
+		lazyLoad: function(event, data){
+			ok(true, "got `lazyLoad` event");
 			start();
 		}
 	});
@@ -114,8 +114,8 @@ test("Issue 309: appendAjax race condition", function() {
 
 	$("#tree").fancytree({
 		source: [{title: "lazy folder", key: "1", folder: true, lazy: true}],
-		lazyload: function(e, data){
-			ok(true, "got `lazyload` event");
+		lazyLoad: function(event, data){
+			ok(true, "got `lazyLoad` event");
 			start();
 		}
 	});

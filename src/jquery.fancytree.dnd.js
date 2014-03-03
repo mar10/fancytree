@@ -394,7 +394,7 @@ $.ui.fancytree.registerExtension(
 			res = $helper;
 			break;
 		case "start":
-			if( node.isStatusNode ) {
+			if( node.isStatusNode() ) {
 				res = false;
 			} else if(dnd.dragStart) {
 				res = dnd.dragStart(node, ctx);
