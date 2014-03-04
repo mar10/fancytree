@@ -100,7 +100,7 @@ function _loadLazyNodes(tree, instData, keyList, mode, dfd) {
  * Called like
  *     $("#tree").fancytree("getTree").clearCookies("active expanded focus selected");
  *
- * @lends Fancytree.prototype
+ * @alias Fancytree#clearCookies
  * @requires jquery.fancytree.persist.js
  */
 $.ui.fancytree._FancytreeClass.prototype.clearCookies = function(types){
@@ -134,7 +134,7 @@ $.ui.fancytree._FancytreeClass.prototype.clearCookies = function(types){
  * Called like
  *     $("#tree").fancytree("getTree").getPersistData();
  *
- * @lends Fancytree.prototype
+ * @alias Fancytree#getPersistData
  * @requires jquery.fancytree.persist.js
  */
 $.ui.fancytree._FancytreeClass.prototype.getPersistData = function(){

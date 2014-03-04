@@ -29,11 +29,11 @@ function _escapeRegex(str){
 
 
 /**
- * Dimm or hide nodes.
+ * [ext-filter] Dimm or hide nodes.
  *
  * @param {function | string} filter
  * @returns {integer} count
- * @lends Fancytree.prototype
+ * @alias Fancytree#applyFilter
  * @requires jquery.fancytree.filter.js
  */
 $.ui.fancytree._FancytreeClass.prototype.applyFilter = function(filter){
@@ -74,9 +74,9 @@ $.ui.fancytree._FancytreeClass.prototype.applyFilter = function(filter){
 };
 
 /**
- * Reset the filter.
+ * [ext-filter] Reset the filter.
  *
- * @lends Fancytree.prototype
+ * @alias Fancytree#applyFilter
  * @requires jquery.fancytree.filter.js
  */
 $.ui.fancytree._FancytreeClass.prototype.clearFilter = function(){
