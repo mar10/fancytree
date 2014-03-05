@@ -1,6 +1,6 @@
 /*!
- * jquery.fancytree.clones.js
  *
+ * jquery.fancytree.clones.js
  * Support faster lookup of nodes by key and shared ref-ids.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
@@ -120,7 +120,7 @@ $.ui.fancytree.registerExtension({
 	version: "0.0.1",
 	// Default options for this extension.
 	options: {
-		highlightClones: false   //
+		highlightClones: false   // set 'fancytree-clone class if node has at least one clone
 	},
 
 	treeCreate: function(ctx){
@@ -169,16 +169,37 @@ $.ui.fancytree.registerExtension({
 					len = refList.length;
 					if( len <= 1 ){
 						_assert(len === 1);
-						_assert(refList[0] === key); // || refList[1] === key);
+						_assert(refList[0] === key);						
 						delete refMap[refKey];
 					}else{
 						_removeArrayMember(refList, key);
+						// Unmark peer node, if this was the only clone
+						if( len === 2 && ctx.options.clones.highlightClones ) {
+//							node.debug("treeRegisterNode: last =>", node.getCloneList());
+							node.getCloneList()[0].renderStatus();
+						}
 					}
 					node.debug("treeRegisterNode: remove clone =>", refMap[refKey]);
 				}
 			}
 		}
 		return this._super(ctx, add, node);
+	},
+	nodeRenderStatus: function(ctx) {
+		var $span, res,
+			node = ctx.node;
+
+		res = this._super(ctx);
+
+		if( ctx.options.clones.highlightClones ) {
+			$span = $(node[ctx.tree.statusClassPropName]);
+			// Only if span already exists
+			if( $span.length && node.isClone() ){
+//				node.debug("nodeRenderStatus: ", ctx.options.clones.highlightClones);
+				$span.addClass("fancytree-clone");
+			}
+		}
+		return res;
 	}
 });
 }(jQuery, window, document));

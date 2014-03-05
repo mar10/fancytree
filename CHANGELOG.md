@@ -8,6 +8,10 @@
   * [DEPRECATION] Deprecated methods node.lazyLoad() and node.discard(). use load() and resetLazy() instead.
   * [FEATURE] Added node.isUndefined(), isLoaded(), resetLazy(), load(), resetLazy()
   * [FEATURE] [ext-persist] Added option ``
+  * [FEATURE] [ext-clones] new extension that introduces `refKey`, which may occur
+    multiple times in one tree (as opposed to `key`, which must be unique).  
+    New methods `node.isClone()`, `node.getCloneList()` and `tree.getNodesByRef()`.
+    Optionally, clones are tagged wit the `fancytree-clone` class.
   * node.makeVisible() accepts options, scrolls into view, and returns a promise.
   * Calling setExpanded() on a leaf node fires .done() (not .fail())
   * Renamed ext-awesome to ext-glyph
