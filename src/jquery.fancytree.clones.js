@@ -120,18 +120,20 @@ $.ui.fancytree.registerExtension({
 	version: "0.0.1",
 	// Default options for this extension.
 	options: {
-		highlightClones: false   // set 'fancytree-clone class if node has at least one clone
+		highlightClones: false   // set 'fancytree-clone' class if node has at least one clone
 	},
 
 	treeCreate: function(ctx){
 		this._super(ctx);
-//		this.$container.addClass("fancytree-ext-clones");
 		ctx.tree.refMap = {};
 		ctx.tree.keyMap = {};
 	},
+	treeInit: function(ctx){
+		this._super(ctx);
+		this.$container.addClass("fancytree-ext-clones");
+	},
 	treeRegisterNode: function(ctx, add, node) {
 		var refList, len,
-//			opts = ctx.options.clones,
 			tree = ctx.tree,
 			keyMap = tree.keyMap,
 			refMap = tree.refMap,
@@ -150,8 +152,14 @@ $.ui.fancytree.registerExtension({
 			}
 			keyMap[key] = node;
 			if( refKey ) {
-				if( refMap[refKey] ) {
-					refMap[refKey].push(key);
+				refList = refMap[refKey];
+				if( refList ) {
+					refList.push(key);
+					if( refList.length === 2 && ctx.options.clones.highlightClones ) {
+						// Mark peer node, if it just became a clone (no need to 
+						// mark current node, since it will be rendered later anyway)
+						keyMap[refList[0]].renderStatus();
+					}
 				} else {
 					refMap[refKey] = [key];
 				}
@@ -176,7 +184,7 @@ $.ui.fancytree.registerExtension({
 						// Unmark peer node, if this was the only clone
 						if( len === 2 && ctx.options.clones.highlightClones ) {
 //							node.debug("treeRegisterNode: last =>", node.getCloneList());
-							node.getCloneList()[0].renderStatus();
+							keyMap[refList[0]].renderStatus();
 						}
 					}
 					node.debug("treeRegisterNode: remove clone =>", refMap[refKey]);
