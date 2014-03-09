@@ -1523,7 +1523,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		}
 		return res;
 	},
-	/** Call fn(node) for all parent nodes.<br>
+	/** Call fn(node) for all parent nodes, bottom-up, including invisible system root.<br>
 	 * Stop iteration, if fn() returns false.<br>
 	 * Return false if iteration was stopped.
 	 *

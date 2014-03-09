@@ -78,7 +78,7 @@ SOURCE = [
 			source: {foo: "bar", children: SOURCE},
 			titlesTabbable: true,     // Add all node titles to TAB chain
 			init: function(event, data) {
-				alert("init: " + data.tree.data.foo);
+				// alert("init: " + data.tree.data.foo);
 			},
 			lazyLoad: function(event, data) {
 				data.result = {url: "../demo/ajax-sub2.json"};

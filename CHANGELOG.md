@@ -1,18 +1,19 @@
 # 2.0.0-7 / Unreleased
   * [BREAKING CHANGE] node.isStatusNode() is now a function (was a property before).
     Added new property `node.statusNodeType`.
-  * [CHANGE] nodeRenderStatus() is now implicitly called by nodeRenderTitle().  
-    This also means that now all markup and css classes are finshed, when `renderNode` 
-    is fired.
+  * [BREAKING CHANGE] Renamed ext-awesome to ext-glyph
   * [DEPRECATION] Deprecated event `lazyLoad`, use `lazyLoad` (upper case L) instead.
   * [DEPRECATION] Deprecated methods node.lazyLoad() and node.discard(). use load() and resetLazy() instead.
   * [FEATURE] Added node.isUndefined(), isLoaded(), resetLazy(), load(), resetLazy()
-  * [FEATURE] [ext-persist] Added option ``
-  * node.makeVisible() accepts options, scrolls into view, and returns a promise.
-  * Calling setExpanded() on a leaf node fires .done() (not .fail())
-  * Renamed ext-awesome to ext-glyph
-  * Removing the last node collapses it; lazy nodes become empty (not undefined).
-  * Sample xxl and bootstrap themes.
+  * [FEATURE] [ext-persist] Added option `expandLazy` for recursive loading (still experimental).
+  * [FEATURE] [ext-filter] 'mode: hide' now works with ext-table (still experimental).
+  * [FEATURE] node.makeVisible() accepts options, scrolls into view, and returns a promise.
+  * [FEATURE] Sample xxl and bootstrap themes.
+  * [CHANGE] nodeRenderStatus() is now implicitly called by nodeRenderTitle().  
+    This also means that now all markup and css classes are finshed, when `renderNode` 
+    is fired.
+  * [CHANGE] Calling setExpanded() on a leaf node fires .done() (not .fail())
+  * [CHANGE] Removing the last child node collapses the parent; lazy nodes become empty (not undefined).
 
 
 # 2.0.0-6 / 2014-02-08

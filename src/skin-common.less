@@ -551,17 +551,35 @@ table.fancytree-ext-columnview {
  * 'filter' extension
  *----------------------------------------------------------------------------*/
 
-.fancytree-ext-filter {
+.fancytree-ext-filter-dimm {
 	span.fancytree-node span.fancytree-title {
 		color: silver;
 		font-weight: lighter;
 	}
+	tr.fancytree-submatch span.fancytree-title,
 	span.fancytree-node.fancytree-submatch span.fancytree-title {
 		color: black;
 		font-weight: normal;
 	}
+	tr.fancytree-match span.fancytree-title,
 	span.fancytree-node.fancytree-match span.fancytree-title {
 		color: black;
 		font-weight: bold;
+	}
+}
+.fancytree-ext-filter-hide {
+	tr.fancytree-hide,
+	span.fancytree-node.fancytree-hide {
+		display: none;
+	}
+	tr.fancytree-submatch span.fancytree-title,
+	span.fancytree-node.fancytree-submatch span.fancytree-title {
+		color: silver;
+		font-weight: lighter;
+	}
+	tr.fancytree-match span.fancytree-title,
+	span.fancytree-node.fancytree-match span.fancytree-title {
+		color: black;
+		font-weight: normal;
 	}
 }

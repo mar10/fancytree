@@ -379,17 +379,33 @@ table.fancytree-ext-columnview .fancytree-has-children span.fancytree-cv-right {
 /*------------------------------------------------------------------------------
  * 'filter' extension
  *----------------------------------------------------------------------------*/
-.fancytree-ext-filter span.fancytree-node span.fancytree-title {
+.fancytree-ext-filter-dimm span.fancytree-node span.fancytree-title {
   color: silver;
   font-weight: lighter;
 }
-.fancytree-ext-filter span.fancytree-node.fancytree-submatch span.fancytree-title {
+.fancytree-ext-filter-dimm tr.fancytree-submatch span.fancytree-title,
+.fancytree-ext-filter-dimm span.fancytree-node.fancytree-submatch span.fancytree-title {
   color: black;
   font-weight: normal;
 }
-.fancytree-ext-filter span.fancytree-node.fancytree-match span.fancytree-title {
+.fancytree-ext-filter-dimm tr.fancytree-match span.fancytree-title,
+.fancytree-ext-filter-dimm span.fancytree-node.fancytree-match span.fancytree-title {
   color: black;
   font-weight: bold;
+}
+.fancytree-ext-filter-hide tr.fancytree-hide,
+.fancytree-ext-filter-hide span.fancytree-node.fancytree-hide {
+  display: none;
+}
+.fancytree-ext-filter-hide tr.fancytree-submatch span.fancytree-title,
+.fancytree-ext-filter-hide span.fancytree-node.fancytree-submatch span.fancytree-title {
+  color: silver;
+  font-weight: lighter;
+}
+.fancytree-ext-filter-hide tr.fancytree-match span.fancytree-title,
+.fancytree-ext-filter-hide span.fancytree-node.fancytree-match span.fancytree-title {
+  color: black;
+  font-weight: normal;
 }
 /*******************************************************************************
  * Styles specific to this skin.
