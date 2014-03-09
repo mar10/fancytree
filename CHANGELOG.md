@@ -2,7 +2,7 @@
   * [BREAKING CHANGE] node.isStatusNode() is now a function (was a property before).
     Added new property `node.statusNodeType`.
   * [BREAKING CHANGE] Renamed ext-awesome to ext-glyph
-  * [DEPRECATION] Deprecated event `lazyLoad`, use `lazyLoad` (upper case L) instead.
+  * [DEPRECATION] Deprecated event `lazyload`, use `lazyLoad` (upper case L) instead.
   * [DEPRECATION] Deprecated methods node.lazyLoad() and node.discard(). use load() and resetLazy() instead.
   * [FEATURE] Added node.isUndefined(), isLoaded(), resetLazy(), load(), resetLazy()
   * [FEATURE] [ext-persist] Added option `expandLazy` for recursive loading (still experimental).
