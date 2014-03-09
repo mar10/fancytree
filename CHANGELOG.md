@@ -1,22 +1,26 @@
-# 2.0.0-7 / Unreleased
-  * [BREAKING CHANGE] node.isStatusNode() is now a function (was a property before).
-    Added new property `node.statusNodeType`.
-  * [CHANGE] nodeRenderStatus() is now implicitly called by nodeRenderTitle().  
-    This also means that now all markup and css classes are finshed, when `renderNode` 
-    is fired.
-  * [DEPRECATION] Deprecated event `lazyLoad`, use `lazyLoad` (upper case L) instead.
-  * [DEPRECATION] Deprecated methods node.lazyLoad() and node.discard(). use load() and resetLazy() instead.
-  * [FEATURE] Added node.isUndefined(), isLoaded(), resetLazy(), load(), resetLazy()
-  * [FEATURE] [ext-persist] Added option ``
+# 2.0.0-8 / Unreleased
   * [FEATURE] [ext-clones] new extension that introduces `refKey`, which may occur
     multiple times in one tree (as opposed to `key`, which must be unique).  
     New methods `node.isClone()`, `node.getCloneList()` and `tree.getNodesByRef()`.
     Optionally, clones are tagged wit the `fancytree-clone` class.
-  * node.makeVisible() accepts options, scrolls into view, and returns a promise.
-  * Calling setExpanded() on a leaf node fires .done() (not .fail())
-  * Renamed ext-awesome to ext-glyph
-  * Removing the last node collapses it; lazy nodes become empty (not undefined).
-  * Sample xxl and bootstrap themes.
+
+
+# 2.0.0-7 / 2014-03-09
+  * [BREAKING CHANGE] node.isStatusNode() is now a function (was a property before).
+    Added new property `node.statusNodeType`.
+  * [BREAKING CHANGE] Renamed ext-awesome to ext-glyph
+  * [DEPRECATION] Deprecated event `lazyload`, use `lazyLoad` (upper case L) instead.
+  * [DEPRECATION] Deprecated methods node.lazyLoad() and node.discard(). use load() and resetLazy() instead.
+  * [FEATURE] Added node.isUndefined(), isLoaded(), resetLazy(), load(), resetLazy()
+  * [FEATURE] [ext-persist] Added option `expandLazy` for recursive loading (still experimental).
+  * [FEATURE] [ext-filter] 'mode: hide' now works with ext-table (still experimental).
+  * [FEATURE] node.makeVisible() accepts options, scrolls into view, and returns a promise.
+  * [FEATURE] Sample xxl and bootstrap themes.
+  * [CHANGE] nodeRenderStatus() is now implicitly called by nodeRenderTitle().  
+    This also means that now all markup and css classes are finshed, when `renderNode` 
+    is fired.
+  * [CHANGE] Calling setExpanded() on a leaf node fires .done() (not .fail())
+  * [CHANGE] Removing the last child node collapses the parent; lazy nodes become empty (not undefined).
 
 
 # 2.0.0-6 / 2014-02-08

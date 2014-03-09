@@ -35,7 +35,7 @@
 				url: "ajax-tree-plain.json"
 			},
 			persist: {
-				// expandLazy: true
+				expandLazy: true
 			},
 			// don't use this in production code:
 			ajax: {
@@ -44,8 +44,24 @@
 			activate: function(event, data) {
 //				alert("activate " + data.node);
 			},
+			// loadChildren: function(event, data) {
+			// 	data.node.debug("loadChildren", data);
+			// },
+			postProcess: function(event, data) {
+				// Create predictable, **unique** keys, which we need for our lazy
+				// persistence example. This is only required for this demo,
+				// because our lazyLoad handler will allways return the same
+				// fake data.
+				var prefix = data.node.getIndexHier() + ".";
+				$.each(data.response, function(idx, childEntry){
+					if( childEntry.key == null ) {
+						 childEntry.key = prefix + (idx + 1);
+						 childEntry.title += " (" + childEntry.key + ")";
+					}
+				})
+			},
 			lazyLoad: function(event, data) {
-				data.result = {url: "ajax-sub2.json"}
+				data.result = {url: "ajax-sub2.json"};
 			}
 		});
 		var tree = $("#tree").fancytree("getTree");

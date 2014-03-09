@@ -35,6 +35,7 @@ function insertSiblingAfter(referenceNode, newNode) {
 function setChildRowVisibility(parent, flag) {
 	parent.visit(function(node){
 		var tr = node.tr;
+		flag = node.hide ? false : flag; // fix for ext-filter
 		if(tr){
 			tr.style.display = flag ? "" : "none";
 		}
@@ -94,7 +95,7 @@ $.ui.fancytree.registerExtension({
 		$(tree.tbody).empty();
 
 		tree.rowFragment = document.createDocumentFragment();
-		$row = $("<tr>");
+		$row = $("<tr />");
 		tdRole = "";
 		if(ctx.options.aria){
 			$row.attr("role", "row");
@@ -161,7 +162,7 @@ $.ui.fancytree.registerExtension({
 		if( !_recursive ){
 			ctx.hasCollapsedParents = node.parent && !node.parent.expanded;
 		}
-		$.ui.fancytree.debug("*** nodeRender " + node + ", isRoot=" + isRootNode);
+		// $.ui.fancytree.debug("*** nodeRender " + node + ", isRoot=" + isRootNode);
 		if( !isRootNode ){
 			if(!node.tr){
 				// Create new <tr> after previous row

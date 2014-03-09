@@ -27,24 +27,32 @@ function _escapeRegex(str){
 	return (str + "").replace(/([.?*+\^\$\[\]\\(){}|-])/g, "\\$1");
 }
 
+/* EXT-TABLE: Show/hide all rows that are structural descendants of `parent`. */
+// function setChildRowVisibility(parent, flag) {
+// 	parent.visit(function(node){
+// 		var tr = node.tr;
+// 		if(tr){
+// 			tr.style.display = flag ? "" : "none";
+// 		}
+// 		node.debug(flag ? "SHOW" : "HIDE");
+// 		if(!node.expanded){
+// 			return "skip";
+// 		}
+// 	});
+// }
 
 /**
- * Dimm or hide nodes.
+ * [ext-filter] Dimm or hide nodes.
  *
  * @param {function | string} filter
  * @returns {integer} count
- * @lends Fancytree.prototype
+ * @alias Fancytree#applyFilter
  * @requires jquery.fancytree.filter.js
  */
 $.ui.fancytree._FancytreeClass.prototype.applyFilter = function(filter){
 	var match, re,
 		count = 0,
 		leavesOnly = this.options.filter.leavesOnly;
-	// Reset current filter
-	this.visit(function(node){
-		delete node.match;
-		delete node.subMatch;
-	});
 
 	// Default to 'match title substring (not case sensitive)'
 	if(typeof filter === "string"){
@@ -59,36 +67,47 @@ $.ui.fancytree._FancytreeClass.prototype.applyFilter = function(filter){
 	this.$div.addClass("fancytree-ext-filter");
 	if( this.options.filter.mode === "hide"){
 		this.$div.addClass("fancytree-ext-filter-hide");
+	} else {
+		this.$div.addClass("fancytree-ext-filter-dimm");
 	}
+	// Reset current filter
+	this.visit(function(node){
+		node.hide = true;
+		delete node.match;
+		delete node.subMatch;
+	});
+	// Adjust node.hide, .match, .subMatch flags
 	this.visit(function(node){
 		if ((!leavesOnly || node.children == null) && filter(node)) {
 			count++;
+			node.hide = false;
 			node.match = true;
 			node.visitParents(function(p){
+				p.hide = false;
 				p.subMatch = true;
 			});
 		}
 	});
+	// Redraw
 	this.render();
 	return count;
 };
 
 /**
- * Reset the filter.
+ * [ext-filter] Reset the filter.
  *
- * @lends Fancytree.prototype
+ * @alias Fancytree#applyFilter
  * @requires jquery.fancytree.filter.js
  */
 $.ui.fancytree._FancytreeClass.prototype.clearFilter = function(){
 	this.visit(function(node){
+		delete node.hide;
 		delete node.match;
 		delete node.subMatch;
-		$(node.li).show();
 	});
-
 	this.enableFilter = false;
+	this.$div.removeClass("fancytree-ext-filter fancytree-ext-filter-dimm fancytree-ext-filter-hide");
 	this.render();
-	this.$div.removeClass("fancytree-ext-filter fancytree-ext-filter-hide");
 };
 
 
@@ -97,7 +116,7 @@ $.ui.fancytree._FancytreeClass.prototype.clearFilter = function(){
  */
 $.ui.fancytree.registerExtension({
 	name: "filter",
-	version: "0.0.1",
+	version: "0.0.2",
 	// Default options for this extension.
 	options: {
 		mode: "dimm",
@@ -116,40 +135,38 @@ $.ui.fancytree.registerExtension({
 	},
 	nodeRenderStatus: function(ctx) {
 		// Set classes for current status
-		var visible,
+		var res,
 			node = ctx.node,
-			opts = ctx.options,
 			tree = ctx.tree,
 			$span = $(node[tree.statusClassPropName]);
 
+		res = this._super(ctx);
+
 		if(!$span.length){
-			return; // nothing to do, if node was not yet rendered
+			return res; // nothing to do, if node was not yet rendered
 		}
-		this._super(ctx);
 		if(!tree.enableFilter){
-			return;
+			return res;
 		}
-		if( node.match ){
-			$span.addClass("fancytree-match");
-		}else{
-			$span.removeClass("fancytree-match");
-		}
-		if( node.subMatch ){
-			$span.addClass("fancytree-submatch");
-		}else{
-			$span.removeClass("fancytree-submatch");
-		}
-		if(opts.filter.mode === "hide"){
-			visible = !!(node.match || node.subMatch);
-			node.debug(node.title + ": visible=" + visible);
-			$(node.li).toggle(visible);
-			// TODO: handle ext-table.
-			// The following is too simple, since we have to hide all TRs that
-			// belong to that parent:
-			// if( node.tr ) {
-			// 	$(node.tr).toggle(visible);
-			// }
-		}
+		$span.toggleClass("fancytree-match", !!node.match);
+		$span.toggleClass("fancytree-submatch", !!node.subMatch);
+		$span.toggleClass("fancytree-hide", !!node.hide);
+
+		// if(opts.filter.mode === "hide"){
+		// 	// visible = !!(node.match || node.subMatch);
+		// 	visible = !node.hide;
+		// 	node.debug(node.title + ": visible=" + visible);
+		// 	if( node.li ) {
+		// 		$(node.li).toggle(visible);
+		// 	} else if( node.tr ) {
+		// 		// Show/hide all rows that are structural descendants of `parent`
+		// 		$(node.tr).toggle(visible);
+		// 		// if( !visible ) {
+		// 		// 	setChildRowVisibility(node, visible);
+		// 		// }
+		// 	}
+		// }
+		return res;
 	}
 });
 }(jQuery, window, document));
