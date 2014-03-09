@@ -1,4 +1,7 @@
-# 2.0.0-7 / Unreleased
+# 2.0.0-8 / Unreleased
+  *
+
+# 2.0.0-7 / 2014-03-09
   * [BREAKING CHANGE] node.isStatusNode() is now a function (was a property before).
     Added new property `node.statusNodeType`.
   * [BREAKING CHANGE] Renamed ext-awesome to ext-glyph
