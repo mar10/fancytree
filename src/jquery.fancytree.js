@@ -2970,11 +2970,11 @@ $.extend(Fancytree.prototype,
 		// flag defaults to true
 		flag = (flag !== false);
 
-		node.debug("nodeSetExpanded(" + flag + ")");
+		// node.debug("nodeSetExpanded(" + flag + ")");
 
 		if((node.expanded && flag) || (!node.expanded && !flag)){
 			// Nothing to do
-			node.debug("nodeSetExpanded(" + flag + "): nothing to do");
+			// node.debug("nodeSetExpanded(" + flag + "): nothing to do");
 			return _getResolvedPromise(node);
 		}else if(flag && !node.lazy && !node.hasChildren() ){
 			// Prevent expanding of empty nodes
@@ -3049,9 +3049,9 @@ $.extend(Fancytree.prototype,
 				} else {
 					duration = opts.fx.duration || 200;
 					easing = opts.fx.easing;
-					node.debug("nodeSetExpanded: animate start...");
+					// node.debug("nodeSetExpanded: animate start...");
 					$(node.ul).animate(opts.fx, duration, easing, function(){
-						node.debug("nodeSetExpanded: animate done");
+						// node.debug("nodeSetExpanded: animate done");
 						callback();
 					});
 					return;
@@ -3063,9 +3063,9 @@ $.extend(Fancytree.prototype,
 
 		// Load lazy nodes, if any. Then continue with _afterLoad()
 		if(flag && node.lazy && node.hasChildren() === undefined){
-			node.debug("nodeSetExpanded: load start...");
+			// node.debug("nodeSetExpanded: load start...");
 			node.load().done(function(){
-				node.debug("nodeSetExpanded: load done");
+				// node.debug("nodeSetExpanded: load done");
 				if(dfd.notifyWith){ // requires jQuery 1.6+
 					dfd.notifyWith(node, ["loaded"]);
 				}
@@ -3090,7 +3090,7 @@ $.extend(Fancytree.prototype,
 		}else{
 			_afterLoad(function () { dfd.resolveWith(node); });
 		}
-		node.debug("nodeSetExpanded: returns");
+		// node.debug("nodeSetExpanded: returns");
 		return dfd.promise();
 	},
 	/**
