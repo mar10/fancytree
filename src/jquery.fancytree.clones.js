@@ -117,10 +117,11 @@ $.ui.fancytree._FancytreeClass.prototype.getNodesByRef = function(refKey, rootNo
  */
 $.ui.fancytree.registerExtension({
 	name: "clones",
-	version: "0.0.1",
+	version: "0.0.2",
 	// Default options for this extension.
 	options: {
-		highlightClones: false   // set 'fancytree-clone' class if node has at least one clone
+		highlightActiveClones: true, // set 'fancytree-active-clone' on active clones and all peers
+		highlightClones: false       // set 'fancytree-clone' class on any node that has at least one clone
 	},
 
 	treeCreate: function(ctx){
@@ -140,7 +141,7 @@ $.ui.fancytree.registerExtension({
 			key = node.key,
 			refKey = (node && node.data.refKey != null) ? "" + node.data.refKey : null;
 
-//		ctx.tree.debug("treeRegisterNode", add, node);
+//		ctx.tree.debug("clones.treeRegisterNode", add, node);
 
 		if( key === "_statusNode" ){
 			return this._super(ctx, add, node);
@@ -148,7 +149,7 @@ $.ui.fancytree.registerExtension({
 
 		if( add ) {
 			if( keyMap[node.key] != null ) {
-				$.error("treeRegisterNode: node.key already exists: " + node.key);
+				$.error("clones.treeRegisterNode: node.key already exists: " + node.key);
 			}
 			keyMap[key] = node;
 			if( refKey ) {
@@ -163,31 +164,31 @@ $.ui.fancytree.registerExtension({
 				} else {
 					refMap[refKey] = [key];
 				}
-				node.debug("treeRegisterNode: add clone =>", refMap[refKey]);
+				node.debug("clones.treeRegisterNode: add clone =>", refMap[refKey]);
 			}
 		}else {
 			if( keyMap[key] == null ) {
-				$.error("treeRegisterNode: node.key not registered: " + node.key);
+				$.error("clones.treeRegisterNode: node.key not registered: " + node.key);
 			}
 			delete keyMap[key];
 			if( refKey ) {
 				refList = refMap[refKey];
-				node.debug("treeRegisterNode: remove clone BEFORE =>", refMap[refKey]);
+				node.debug("clones.treeRegisterNode: remove clone BEFORE =>", refMap[refKey]);
 				if( refList ) {
 					len = refList.length;
 					if( len <= 1 ){
 						_assert(len === 1);
-						_assert(refList[0] === key);						
+						_assert(refList[0] === key);
 						delete refMap[refKey];
 					}else{
 						_removeArrayMember(refList, key);
 						// Unmark peer node, if this was the only clone
 						if( len === 2 && ctx.options.clones.highlightClones ) {
-//							node.debug("treeRegisterNode: last =>", node.getCloneList());
+//							node.debug("clones.treeRegisterNode: last =>", node.getCloneList());
 							keyMap[refList[0]].renderStatus();
 						}
 					}
-					node.debug("treeRegisterNode: remove clone =>", refMap[refKey]);
+					node.debug("clones.treeRegisterNode: remove clone =>", refMap[refKey]);
 				}
 			}
 		}
@@ -203,9 +204,24 @@ $.ui.fancytree.registerExtension({
 			$span = $(node[ctx.tree.statusClassPropName]);
 			// Only if span already exists
 			if( $span.length && node.isClone() ){
-//				node.debug("nodeRenderStatus: ", ctx.options.clones.highlightClones);
+//				node.debug("clones.nodeRenderStatus: ", ctx.options.clones.highlightClones);
 				$span.addClass("fancytree-clone");
 			}
+		}
+		return res;
+	},
+	nodeSetActive: function(ctx, flag) {
+		var res,
+			scpn = ctx.tree.statusClassPropName,
+			node = ctx.node;
+
+		res = this._super(ctx, flag);
+
+		if( ctx.options.clones.highlightActiveClones && node.isClone() ) {
+			$.each(node.getCloneList(true), function(idx, n){
+				n.debug("clones.nodeSetActive: ", flag !== false);
+				$(n[scpn]).toggleClass("fancytree-active-clone", flag !== false);
+			});
 		}
 		return res;
 	}
