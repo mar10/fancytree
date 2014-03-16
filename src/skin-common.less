@@ -395,7 +395,9 @@ span.fancytree-icon // Default icon
  *----------------------------------------------------------------------------*/
 
 span.fancytree-node {
-	display: inline-block;
+	/* #117 */
+//	display: inline-block;
+	display: inherit;
 	width: 100%;
 	// border: @nodeBorderWidth solid transparent;  /* avoid jumping, when a border is added on hover */
 }
