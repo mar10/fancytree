@@ -15,6 +15,8 @@
 @nodeBorderWidth: 1px;
 @nodeOutlineWidth: 1px;
 
+@fancy-image-dir: ".";
+
 
 //------------------------------------------------------------------------------
 // Mixins
@@ -148,7 +150,7 @@ span.fancytree-drag-helper-img,
 	vertical-align: top;
 	background-repeat: no-repeat;
 	background-position: left;
-	background-image: url("icons.gif");
+	background-image: url("@{fancy-image-dir}/icons.gif");
 	.setBgPos(0, 0);
 }
 /* Used by iconclass option */
@@ -266,7 +268,7 @@ span.fancytree-expander {
 // 'Loading' status overrides all others
 .fancytree-loading span.fancytree-expander  
 {
-	background-image: url("loading.gif");
+	background-image: url("@{fancy-image-dir}/loading.gif");
 	.useSprite(0, 0);
 }
 
@@ -383,7 +385,7 @@ span.fancytree-icon // Default icon
 /* Status node icons */
 
 .fancytree-statusnode-wait span.fancytree-icon {
-	background-image: url("loading.gif");
+	background-image: url("@{fancy-image-dir}/loading.gif");
 }
 .fancytree-statusnode-error span.fancytree-icon {
 	.useSprite(0, 7);
