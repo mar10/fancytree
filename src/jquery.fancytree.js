@@ -2504,7 +2504,6 @@ $.extend(Fancytree.prototype,
 		} else{
 			node.children = null;
 		}
-		node.expanded = false;
 		// TODO: ? this._isLoading = false;
 		this.nodeRenderStatus(ctx);
 	},
