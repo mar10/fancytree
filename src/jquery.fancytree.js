@@ -1260,7 +1260,8 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	 * event is triggered on next expand.
 	 */
 	resetLazy: function() {
-		this.removeChildren(); // also collapses
+		this.removeChildren();
+		this.expanded = false;
 		this.lazy = true;
 		this.children = undefined;
 		this.renderStatus();
