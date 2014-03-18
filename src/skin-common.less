@@ -5,15 +5,15 @@
  ******************************************************************************/
 
 // Variables (defaults, may be overwritten by the including .less files)
-@useSprites: true;  // false: suppress all background positions
-@hideConnectors: true; // false: show vertical connector lines
+@fancy-use-sprites: true;  // false: suppress all background positions
+@fancy-hide-connectors: true; // false: show vertical connector lines
 
-@iconWidth: 16px;
-@iconHeight: 16px;
-@iconMarginLeft: 3px;
-@lineHeight: 16px;
-@nodeBorderWidth: 1px;
-@nodeOutlineWidth: 1px;
+@fancy-icon-width: 16px;
+@fancy-icon-height: 16px;
+@fancy-icon-margin-left: 3px;
+@fancy-line-height: 16px;
+@fancy-node-border-width: 1px;
+@fancy-node-outline-width: 1px;
 
 @fancy-image-dir: ".";
 
@@ -24,7 +24,7 @@
 
 // background-position mixin for CSS sprites
 .setBgPos(@x, @y, @cond:true) when (@cond){
-	background-position: (@x * -@iconWidth) (@y * -@iconHeight);
+	background-position: (@x * -@fancy-icon-width) (@y * -@fancy-icon-height);
 }
 .clearBgImage(@cond:true) when (@cond){
 	background-image: none;
@@ -34,7 +34,7 @@
 }
 
 // background-position mixin for CSS sprites
-.useSprite(@x, @y) when (@useSprites){
+.useSprite(@x, @y) when (@fancy-use-sprites){
 	.setBgPos(@x, @y);
 }
 
@@ -142,8 +142,8 @@ span.fancytree-radio,
 span.fancytree-drag-helper-img,
 #fancytree-drop-marker
 {
-	width: @iconWidth;
-	height: @iconHeight;
+	width: @fancy-icon-width;
+	height: @fancy-icon-height;
 //	display: -moz-inline-box; // @ FF 1+2 removed for issue 221
 //	-moz-box-align: start; /* issue 221 */
 	display: inline-block; // Required to make a span sizeable
@@ -160,9 +160,9 @@ span.fancytree-custom-icon {
 /* Used by 'icon' node option: */
 .fancytree-container img
 {
-	width: @iconWidth;
-	height: @iconHeight;
-	margin-left: @iconMarginLeft;
+	width: @fancy-icon-width;
+	height: @fancy-icon-height;
+	margin-left: @fancy-icon-margin-left;
 	vertical-align: top;
 	border-style: none;
 }
@@ -193,7 +193,7 @@ span.fancytree-expander {
 .fancytree-exp-n span.fancytree-expander, 
 .fancytree-exp-nl span.fancytree-expander {
 	// background-image: none;
-	.clearBgImage( @hideConnectors );
+	.clearBgImage( @fancy-hide-connectors );
 	cursor: default;
 }
 .fancytree-exp-n span.fancytree-expander,       // End-node, not last sibling
@@ -278,7 +278,7 @@ span.fancytree-expander {
  *----------------------------------------------------------------------------*/
 
 span.fancytree-checkbox {
-	margin-left: @iconMarginLeft;
+	margin-left: @fancy-icon-margin-left;
 	.useSprite(0, 2);
 }
 span.fancytree-checkbox:hover {
@@ -306,7 +306,7 @@ span.fancytree-checkbox:hover {
  *----------------------------------------------------------------------------*/
 
 .fancytree-radio span.fancytree-checkbox {
-	margin-left: @iconMarginLeft;
+	margin-left: @fancy-icon-margin-left;
 	.useSprite(0, 3);
 }
 .fancytree-radio span.fancytree-checkbox:hover {
@@ -338,7 +338,7 @@ span.fancytree-checkbox:hover {
 
 span.fancytree-icon // Default icon
 {
-	margin-left: @iconMarginLeft;
+	margin-left: @fancy-icon-margin-left;
 	.useSprite(0, 0);
 }
 
@@ -401,7 +401,7 @@ span.fancytree-node {
 //	display: inline-block;
 	display: inherit;
 	width: 100%;
-	// border: @nodeBorderWidth solid transparent;  /* avoid jumping, when a border is added on hover */
+	// border: @fancy-node-border-width solid transparent;  /* avoid jumping, when a border is added on hover */
 }
 
 span.fancytree-title {
@@ -450,13 +450,13 @@ div.fancytree-drop-reject span.fancytree-drag-helper-img {
 
 /*** Drop marker icon *********************************************************/
 #fancytree-drop-marker {
-	width: 2 * @iconWidth; // was 24px, but 32 should be correct
+	width: 2 * @fancy-icon-width; // was 24px, but 32 should be correct
 	position: absolute;
 	.useSprite(0, 8);
 	margin: 0;
 	&.fancytree-drop-after,
 	&.fancytree-drop-before {
-		width: 4 * @iconWidth; // 64px;
+		width: 4 * @fancy-icon-width; // 64px;
 		.useSprite(0, 9);
 	}
 	&.fancytree-drop-copy {
