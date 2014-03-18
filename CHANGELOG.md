@@ -3,7 +3,7 @@
     multiple times in one tree (as opposed to `key`, which must be unique).  
     New methods `node.isClone()`, `node.getCloneList()` and `tree.getNodesByRef()`.
     Optionally, clones are tagged wit the `fancytree-clone` class.
-
+  * [BUGFIX] #117: line height too large when using doctype xhtml
 
 # 2.0.0-7 / 2014-03-09
   * [BREAKING CHANGE] node.isStatusNode() is now a function (was a property before).

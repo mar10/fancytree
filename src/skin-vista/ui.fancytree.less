@@ -36,18 +36,18 @@ List view:
 // Override the variable after the import. 
 // NOTE: Variables are always resolved as the last definition, even if it is 
 // after where it is used.
-@useSprites: true;  
-@hideConnectors: true;
-@iconWidth: 16px;
-@iconHeight: 16px;
-@lineHeight: 16px;
-@iconMarginLeft: 3px;
+@fancy-use-sprites: true;  
+@fancy-hide-connectors: true;
+@fancy-icon-width: 16px;
+@fancy-icon-height: 16px;
+@fancy-line-height: 16px;
+@fancy-icon-margin-left: 3px;
 
 /*******************************************************************************
  * Node titles
  */
 span.fancytree-title {
-  border: @nodeBorderWidth solid transparent;  // avoid jumping, when a border is added on hover
+  border: @fancy-node-border-width solid transparent;  // avoid jumping, when a border is added on hover
 }
 span.fancytree-title:hover {
    background-color: #F2F7FD; // light blue
