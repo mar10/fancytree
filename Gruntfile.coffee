@@ -69,7 +69,9 @@ module.exports = (grunt) ->
             options:
                 stripBanners: true
             src: ["<banner:meta.banner>"
+                  "lib/intro.js"
                   "src/<%= pkg.name %>.js"
+                  "lib/outro.js"
                   ]
             dest: "build/<%= pkg.name %>.js"
         all:
@@ -77,16 +79,20 @@ module.exports = (grunt) ->
                 stripBanners: true
             src: [
                 "<%= meta.banner %>"
+                "lib/intro.js"
                 "src/jquery.fancytree.js"
+                "src/jquery.fancytree.childcounter.js"
 #                "src/jquery.fancytree.columnview.js"
                 "src/jquery.fancytree.dnd.js"
                 "src/jquery.fancytree.edit.js"
                 "src/jquery.fancytree.filter.js"
+                "src/jquery.fancytree.glyph.js"
                 "src/jquery.fancytree.gridnav.js"
 #                "src/jquery.fancytree.menu.js"
                 "src/jquery.fancytree.persist.js"
                 "src/jquery.fancytree.table.js"
                 "src/jquery.fancytree.themeroller.js"
+                "lib/outro.js"
                 ]
             dest: "build/<%= pkg.name %>-all.js"
 
@@ -274,14 +280,14 @@ module.exports = (grunt) ->
             options:
                 banner: "<%= meta.banner %>"
                 report: "min"
-#                , expand: true
-#                , cwd: "build/"
+#                  expand: true
+#                  cwd: "build/"
                 sourceMap: 
                     (path) -> path.replace(/.js/, ".js.map")
                 sourceMappingURL: 
                     (path) -> path.replace(/^build\//, "") + ".map"
-#                  , sourceMapIn: function(path) { return path.replace(/^build\//, "")}
-#                  , sourceMapRoot: "/" //function(path) { return path.replace(/^build\//, "")}
+#                    sourceMapIn: function(path) { return path.replace(/^build\//, "")}
+#                    sourceMapRoot: "/" //function(path) { return path.replace(/^build\//, "")}
                 sourceMapPrefix: 1 # strip 'build/' from paths
 
             files:
@@ -289,8 +295,6 @@ module.exports = (grunt) ->
                 "build/<%= pkg.name %>-all.min.js": ["<%= concat.all.dest %>"]
 
     watch:
-        # options:
-        #     atBegin: true
         less:
             files: "src/**/*.less"
             tasks: ["less:development"]

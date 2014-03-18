@@ -1,8 +1,19 @@
 {
-  "name": "jquery.fancytree",
-  "version": "2.0.0-8",
-  "dependencies": {
-    "jquery": ">=1.5",
-    "jquery-ui": ">=1.8.6"
-  }
+    "name": "jquery.fancytree",
+    "version": "2.0.0-8",
+    "ignore": [
+        "**/.*",
+        "bin",
+        "build",
+        "demo",
+        "doc",
+        "external",
+        "test"
+    ],
+    "dependencies": {
+        "jquery": ">=1.5 <1.11"
+        "jquery-ui": ">=1.8.6"
+    },
+    "devDependencies": {
+    }
 }
