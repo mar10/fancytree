@@ -3011,7 +3011,7 @@ $.extend(Fancytree.prototype,
 		// Trigger expand/collapse after expanding
 		dfd.done(function(){
 			ctx.tree._triggerNodeEvent(flag ? "expand" : "collapse", ctx);
-			if( opts.autoScroll && !noAnimation ) {
+			if( opts.autoScroll && !noAnimation && node.hasChildren() ) {
 				// Scroll down to last child, but keep current node visible
 				node.getLastChild().scrollIntoView(true, node);
 			}
