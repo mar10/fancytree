@@ -146,10 +146,17 @@ function hashMurmur3(key, asString, seed) {
 // console.info(hashMurmur3("liquid"));
 // console.info(hashMurmur3("liquid", true));
 
+
+/*
+ * Return a unique key for node by calculationg the hash of the parents refKey-list
+ */
 function calcUniqueKey(node) {
-	var path = $.map(node.getParentList(false, true), function(e){ return e.refKey || e.key; });
+	var key,
+		path = $.map(node.getParentList(false, true), function(e){ return e.data.refKey || e.key; });
 	path = path.join("/");
-	node.debug(path, hashMurmur3(path, true));
+	key = "id_" + hashMurmur3(path, true);
+	node.debug(path + " -> " + key);
+	return key;
 }
 
 
@@ -242,6 +249,11 @@ $.ui.fancytree.registerExtension({
 	treeInit: function(ctx){
 		this._super(ctx);
 		this.$container.addClass("fancytree-ext-clones");
+		_assert(ctx.options.defaultKey == null);
+		// Generate unique / reproducible default keys
+		ctx.options.defaultKey = function(node){
+			return calcUniqueKey(node);
+		};
 	},
 	treeRegisterNode: function(ctx, add, node) {
 		var refList, len,
@@ -256,8 +268,9 @@ $.ui.fancytree.registerExtension({
 		if( key === "_statusNode" ){
 			return this._super(ctx, add, node);
 		}
-
-		calcUniqueKey(node);
+//		if ( true || key == null ) {
+//			node.key = calcUniqueKey(node);
+//		}
 
 		if( add ) {
 			if( keyMap[node.key] != null ) {

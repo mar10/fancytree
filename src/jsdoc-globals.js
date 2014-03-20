@@ -116,6 +116,7 @@ var TreePatch = {};
  * @property {Boolean} checkbox Display checkboxes to allow selection (default: false)
  * @property {Integer} clickFolderMode Defines what happens, when the user click a folder node.<br>1:activate, 2:expand, 3:activate and expand, 4:activate/dblclick expands  (default: 4)
  * @property {Integer} debugLevel  0..2 (null: use global setting $.ui.fancytree.debugInfo)
+ * @property {function} defaultKey callback(node) is called for ner nodes without a key. Must return a new unique key. (default null: generates default keys like that: "_" + counter) 
  * @property {Boolean} enableAspx Accept passing ajax data in a property named `d` (default: true).
  * @property {String[]} extensions List of active extensions (default: [])
  * @property {object} fx Animation options, null:off (default: { height: "toggle", duration: 200 })
