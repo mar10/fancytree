@@ -2682,7 +2682,7 @@ $.extend(Fancytree.prototype,
 					childNode1 = children[i];
 					childNode2 = childLI.ftnode;
 					if( childNode1 !== childNode2 ) {
-						node.debug("_fixOrder: mismatch at index " + i + ": " + childNode1 + " != " + childNode2);
+						// node.debug("_fixOrder: mismatch at index " + i + ": " + childNode1 + " != " + childNode2);
 						node.ul.insertBefore(childNode1.li, childNode2.li);
 					} else {
 						childLI = childLI.nextSibling;
