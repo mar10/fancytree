@@ -932,19 +932,25 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	 * @returns {$.Promise}
 	 */
 	load: function(forceReload) {
-		var res, source;
+		var res, source,
+			that = this;
 
 		_assert( this.isLazy(), "load() requires a lazy node" );
 		_assert( forceReload || this.isUndefined(), "Pass forceReload=true to re-load a lazy node" );
 
-		if( forceReload && this.isLoaded() ){
-			this.resetLazy();
+		if( this.isLoaded() ){
+			this.resetLazy(); // also collapses
 		}
 		// This method is also called by setExpanded() and loadKeyPath(), so we
 		// have to avoid recursion.
 		source = this.tree._triggerNodeEvent("lazyLoad", this);
 		_assert(typeof source !== "boolean", "lazyLoad event must return source in data.result");
 		res = this.tree._callHook("nodeLoadChildren", this, source);
+		if( this.expanded ) {
+			res.always(function(){
+				that.render();
+			});
+		}
 		return res;
 	},
 	/** Expand all parents and optionally scroll into visible area as neccessary.
@@ -2396,10 +2402,10 @@ $.extend(Fancytree.prototype,
 			}
 			_assert($.isArray(children), "expected array of children");
 			node._setChildren(children);
-			if(node.parent){
-				// trigger fancytreeloadchildren (except for tree-reload)
-				tree._triggerNodeEvent("loadChildren", node);
-			}
+			// trigger fancytreeloadchildren
+			// if( node.parent ) {
+			tree._triggerNodeEvent("loadChildren", node);
+			// }
 		}).always(function(){
 			node._isLoading = false;
 		});
