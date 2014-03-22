@@ -423,7 +423,7 @@
 		var files = find({kind: 'file'}),
 			packages = find({kind: 'package'});
 
-		generate('Index',
+		generate('Fancytree API Reference', // used as page tile and header. was 'Index'
 			packages.concat(
 				[{kind: 'mainpage', readme: opts.readme, longname: (opts.mainpagetitle) ? opts.mainpagetitle : 'Main Page'}]
 			).concat(files)

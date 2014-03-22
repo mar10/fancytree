@@ -100,13 +100,13 @@ $(function(){
 				data.otherNode.moveTo(node, data.hitMode);
 			}
 		},
-		lazyLoad: function(event, ctx) {
-			ctx.result = SOURCE_2;
-			ctx.tree.rootNode.fixSelection3FromEndNodes();
+		lazyLoad: function(event, data) {
+			data.result = SOURCE_2;
+			data.tree.rootNode.fixSelection3FromEndNodes();
 		},
-		loadChildren: function(event, ctx) {
-			ctx.tree.debug("loadChildren");
-			ctx.node.fixSelection3FromEndNodes();
+		loadChildren: function(event, data) {
+			data.tree.debug("loadChildren");
+			data.node.fixSelection3FromEndNodes();
 		}
 	});
 });
