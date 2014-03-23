@@ -1,9 +1,16 @@
 # 2.0.0-8 / Unreleased
+  * [BUGFIX] #117: line height too large when using doctype xhtml
+
+
+# BRANCH 'clones'
   * [FEATURE] [ext-clones] new extension that introduces `refKey`, which may occur
     multiple times in one tree (as opposed to `key`, which must be unique).  
     New methods `node.isClone()`, `node.getCloneList()` and `tree.getNodesByRef()`.
-    Optionally, clones are tagged wit the `fancytree-clone` class.
-  * [BUGFIX] #117: line height too large when using doctype xhtml
+    Optionally, clones are tagged wit the `fancytree-clone` class.  
+    In order to support persistence, there is also support to generate unique,
+    reproducible (sort of) default keys.
+  * [FEATURE] New option 'defaultKey'. This calback allows to generate key while loading.
+
 
 # 2.0.0-7 / 2014-03-09
   * [BREAKING CHANGE] node.isStatusNode() is now a function (was a property before).
