@@ -1,4 +1,5 @@
 /.settings
+/archive
 /build
 /dist
 /test/triage

@@ -273,7 +273,6 @@ span.fancytree-icon {
  *----------------------------------------------------------------------------*/
 span.fancytree-node {
   /* #117 */
-  display: inherit;
   width: 100%;
 }
 span.fancytree-title {
