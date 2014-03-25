@@ -969,8 +969,8 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			effects = !(opts && opts.noAnimation === true),
 			scroll = !(opts && opts.scrollIntoView === false);
 
-		// parent nodes should be rendered before children, so expand from up to bottom
-		for(i = 0; i < len; i++){
+		// Expand bottom-up, so only the top node is animated
+		for(i = len - 1; i >= 0; i--){
 			// that.debug("pushexpand" + parents[i]);
 			deferreds.push(parents[i].setExpanded(true, opts));
 		}
