@@ -5,6 +5,8 @@ jQuery(document).ready(function(){
 
 /*globals deepEqual,equal,expect,module,ok,QUnit,start,stop,test */
 
+var $ = jQuery;
+
 /*******************************************************************************
  * QUnit setup
  */
@@ -26,15 +28,12 @@ function _setupAsync(){
 	if( $("#tree").is(":ui-fancytree") ){
 		$("#tree").fancytree("destroy");
 	}
-	EVENT_SEQUENCE = [];
 	stop();
 }
 
 /** Get FancytreeNode from current tree. */
 function _getNode(key){
-	var tree = $("#tree").fancytree("getTree"),
-		node = tree.getNodeByKey(key);
-	return node;
+	return $("#tree").fancytree("getTree").getNodeByKey(key);
 }
 
 
