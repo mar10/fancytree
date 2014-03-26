@@ -577,6 +577,27 @@ test("trigger async expand", function() {
 	});
 });
 
+test("makeVisible not rendered deep node", function () {
+	_setupAsync();
+	expect(5);
+
+	$("#tree").fancytree({
+		source: TEST_DATA
+	});
+
+	var node = _getNode("10_2_2");
+	ok(node);
+	ok(!node.parent.isExpanded());
+	ok(!node.li); // not rendered yet
+
+	node.makeVisible().done(function () {
+		ok(node.parent.isExpanded());
+		ok(node.li); // rendered
+
+		start();
+	});
+});
+
 
 /*******************************************************************************
  * Simulated click events
