@@ -201,7 +201,7 @@ module.exports = (grunt) ->
 
     qunit:
         build: [ "test/unit/test-core-build.html" ]
-        develop: [ "test/unit/test-core.html" ]
+        develop: [ "test/unit/test-core.html", "test/unit/test-table-ext.html"]
 
     replace: # grunt-text-replace
 # //            bump : {

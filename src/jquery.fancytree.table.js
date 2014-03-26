@@ -162,10 +162,10 @@ $.ui.fancytree.registerExtension({
 		if( !_recursive ){
 			ctx.hasCollapsedParents = node.parent && !node.parent.expanded;
 		}
-		// $.ui.fancytree.debug("*** nodeRender " + node + ", isRoot=" + isRootNode, "tr=" + node.tr);
+		// $.ui.fancytree.debug("*** nodeRender " + node + ", isRoot=" + isRootNode, "tr=" + node.tr, "hcp=" + ctx.hasCollapsedParents, "parent.tr=" + (node.parent && node.parent.tr));
 		if( !isRootNode ){
 			if(!node.tr){
-				if( ctx.hasCollapsedParents && !node.parent.tr ) {
+				if( ctx.hasCollapsedParents /*&& !node.parent.tr*/ ) {
 					// #166: we assume that the parent will be (recursively) rendered
 					// later anyway.
 					node.debug("nodeRender ignored due to unrendered parent");

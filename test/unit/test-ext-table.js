@@ -3,7 +3,7 @@ jQuery(document).ready(function(){
 // jQUnit defines:
 // asyncTest,deepEqual,equal,expect,module,notDeepEqual,notEqual,notStrictEqual,ok,QUnit,raises,start,stop,strictEqual,test
 
-/*globals deepEqual,equal,expect,module,ok,QUnit,start,stop,test */
+/*globals expect,module,ok,QUnit,start,stop,test */
 
 var $ = jQuery;
 
