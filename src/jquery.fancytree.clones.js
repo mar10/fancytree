@@ -196,7 +196,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.getCloneList = function(includeSelf
 $.ui.fancytree._FancytreeNodeClass.prototype.isClone = function(){
 	var refKey = this.data.refKey || null,
 		refList = refKey && this.tree.refMap[refKey] || null;
-	return refList && refList.length > 1;
+	return !!(refList && refList.length > 1);
 };
 
 
