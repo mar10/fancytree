@@ -1,5 +1,12 @@
 # 2.0.0-8 / Unreleased
+  * [FEATURE] #18: load lazy nodes, if initialized as 'expanded'.
+  * [FEATURE] #162: Optional parameter `noEvents` for node.setActive() and .setExpanded().
+  * [CHANGE] Prefixed all Less variables with '@fancy-' and introduced '@fancy-image-dir'.
+  * [CHANGE] 'loadChildren' event is now also triggered for initial tree load (before it was only triggered for lazy child nodes)
   * [BUGFIX] #117: line height too large when using doctype xhtml
+  * [BUGFIX] #115: Fixed error when trying to drag table headers
+  * [BUGFIX] #163: lazy load throws error if autoscroll: true and result is empty
+
 
 
 # BRANCH 'clones'

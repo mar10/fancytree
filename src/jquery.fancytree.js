@@ -942,19 +942,25 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	 * @returns {$.Promise}
 	 */
 	load: function(forceReload) {
-		var res, source;
+		var res, source,
+			that = this;
 
 		_assert( this.isLazy(), "load() requires a lazy node" );
 		_assert( forceReload || this.isUndefined(), "Pass forceReload=true to re-load a lazy node" );
 
-		if( forceReload && this.isLoaded() ){
-			this.resetLazy();
+		if( this.isLoaded() ){
+			this.resetLazy(); // also collapses
 		}
 		// This method is also called by setExpanded() and loadKeyPath(), so we
 		// have to avoid recursion.
 		source = this.tree._triggerNodeEvent("lazyLoad", this);
 		_assert(typeof source !== "boolean", "lazyLoad event must return source in data.result");
 		res = this.tree._callHook("nodeLoadChildren", this, source);
+		if( this.expanded ) {
+			res.always(function(){
+				that.render();
+			});
+		}
 		return res;
 	},
 	/** Expand all parents and optionally scroll into visible area as neccessary.
@@ -2406,10 +2412,10 @@ $.extend(Fancytree.prototype,
 			}
 			_assert($.isArray(children), "expected array of children");
 			node._setChildren(children);
-			if(node.parent){
-				// trigger fancytreeloadchildren (except for tree-reload)
-				tree._triggerNodeEvent("loadChildren", node);
-			}
+			// trigger fancytreeloadchildren
+			// if( node.parent ) {
+			tree._triggerNodeEvent("loadChildren", node);
+			// }
 		}).always(function(){
 			node._isLoading = false;
 		});
@@ -2695,7 +2701,7 @@ $.extend(Fancytree.prototype,
 					childNode1 = children[i];
 					childNode2 = childLI.ftnode;
 					if( childNode1 !== childNode2 ) {
-						node.debug("_fixOrder: mismatch at index " + i + ": " + childNode1 + " != " + childNode2);
+						// node.debug("_fixOrder: mismatch at index " + i + ": " + childNode1 + " != " + childNode2);
 						node.ul.insertBefore(childNode1.li, childNode2.li);
 					} else {
 						childLI = childLI.nextSibling;
@@ -2919,7 +2925,7 @@ $.extend(Fancytree.prototype,
 	 * If flag is false, the node is deactivated (must be a synchronous operation)
 	 * @param {EventData} ctx
 	 * @param {boolean} [flag=true]
-	 * @param {object} [opts] additional options. Defaults to {}
+	 * @param {object} [opts] additional options. Defaults to {noEvents: false}
 	 */
 	nodeSetActive: function(ctx, flag, callOpts) {
 		// Handle user click / [space] / [enter], according to clickFolderMode.
@@ -2929,6 +2935,7 @@ $.extend(Fancytree.prototype,
 			tree = ctx.tree,
 			opts = ctx.options,
 //			userEvent = !!ctx.originalEvent,
+			noEvents = (callOpts.noEvents === true),
 			isActive = (node === tree.activeNode);
 
 		// flag defaults to true
@@ -2938,7 +2945,7 @@ $.extend(Fancytree.prototype,
 		if(isActive === flag){
 			// Nothing to do
 			return _getResolvedPromise(node);
-		}else if(flag && this._triggerNodeEvent("beforeActivate", node, ctx.originalEvent) === false ){
+		}else if(flag && !noEvents && this._triggerNodeEvent("beforeActivate", node, ctx.originalEvent) === false ){
 			// Callback returned false
 			return _getRejectedPromise(node, ["rejected"]);
 		}
@@ -2956,19 +2963,23 @@ $.extend(Fancytree.prototype,
 			tree.activeNode = node;
 			tree.nodeRenderStatus(ctx);
 			tree.nodeSetFocus(ctx);
-			tree._triggerNodeEvent("activate", node);
+			if( !noEvents ) {
+				tree._triggerNodeEvent("activate", node);
+			}
 		}else{
 			_assert(tree.activeNode === node, "node was not active (inconsistency)");
 			tree.activeNode = null;
 			this.nodeRenderStatus(ctx);
-			ctx.tree._triggerNodeEvent("deactivate", node);
+			if( !noEvents ) {
+				ctx.tree._triggerNodeEvent("deactivate", node);
+			}
 		}
 	},
 	/** Expand or collapse node, return Deferred.promise.
 	 *
 	 * @param {EventData} ctx
 	 * @param {boolean} [flag=true]
-	 * @param {object} [opts] additional options. Defaults to {noAnimation: false}
+	 * @param {object} [opts] additional options. Defaults to {noAnimation: false, noEvents: false}
 	 * @returns {$.Promise} The deferred will be resolved as soon as the (lazy)
 	 *     data was retrieved, rendered, and the expand animation finshed.
 	 */
@@ -2978,7 +2989,8 @@ $.extend(Fancytree.prototype,
 			node = ctx.node,
 			tree = ctx.tree,
 			opts = ctx.options,
-			noAnimation = callOpts.noAnimation === true;
+			noAnimation = (callOpts.noAnimation === true),
+			noEvents = (callOpts.noEvents === true);
 
 		// flag defaults to true
 		flag = (flag !== false);
@@ -2996,7 +3008,7 @@ $.extend(Fancytree.prototype,
 		}else if( !flag && node.getLevel() < opts.minExpandLevel ) {
 			// Prevent collapsing locked levels
 			return _getRejectedPromise(node, ["locked"]);
-		}else if ( this._triggerNodeEvent("beforeExpand", node, ctx.originalEvent) === false ){
+		}else if ( !noEvents && this._triggerNodeEvent("beforeExpand", node, ctx.originalEvent) === false ){
 			// Callback returned false
 			return _getRejectedPromise(node, ["rejected"]);
 		}
@@ -3023,8 +3035,10 @@ $.extend(Fancytree.prototype,
 		}
 		// Trigger expand/collapse after expanding
 		dfd.done(function(){
-			ctx.tree._triggerNodeEvent(flag ? "expand" : "collapse", ctx);
-			if( opts.autoScroll && !noAnimation ) {
+			if( !noEvents ) {
+				ctx.tree._triggerNodeEvent(flag ? "expand" : "collapse", ctx);
+			}
+			if( opts.autoScroll && !noAnimation && node.hasChildren() ) {
 				// Scroll down to last child, but keep current node visible
 				node.getLastChild().scrollIntoView(true, node);
 			}

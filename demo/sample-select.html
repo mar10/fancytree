@@ -103,7 +103,7 @@
 			click: function(event, data) {
 				// We should not toggle, if target was "checkbox", because this
 				// would result in double-toggle (i.e. no toggle)
-				if( $.ui.fancytree.getEventTargetType(e) == "title" ){
+				if( $.ui.fancytree.getEventTargetType(event) === "title" ){
 					data.node.toggleSelected();
 				}
 			},
