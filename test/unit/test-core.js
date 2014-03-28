@@ -3,132 +3,12 @@ jQuery(document).ready(function(){
 // jQUnit defines:
 // asyncTest,deepEqual,equal,expect,module,notDeepEqual,notEqual,notStrictEqual,ok,QUnit,raises,start,stop,strictEqual,test
 
-/*globals deepEqual,equal,expect,module,ok,QUnit,start,stop,test */
+/*globals TEST_HELPERS, deepEqual,equal,expect,module,ok,QUnit,start,test */
 
 var TEST_DATA, TESTDATA_NODES, TESTDATA_TOPNODES, TESTDATA_VISIBLENODES,
 	$ = jQuery,
-	EVENT_SEQUENCE = [];
-
-/*******************************************************************************
- * QUnit setup
- */
-
-QUnit.log(function(data) {
-	if (window.console && window.console.log) {
-//		window.console.log(data.result + " :: " + data.message);
-	}
-});
-
-QUnit.done(function( details ) {
-	// Expand first section when all tests are run
-	$("ol#qunit-tests > li:first > ol").show("slow");
-//	if(jQuery.migrateWarnings != null){
-//		alert("" + jQuery.migrateWarnings || "no migrateWarnings");
-//	}
-});
-
-
-// Silence, please
-$.ui.fancytree.debugLevel = 1;
-
-
-/*******************************************************************************
- * Tool functions
- */
-//function simulateClick(selector) {
-//	var event = document.createEvent("MouseEvents");
-//	event.initEvent("click", true, true);
-//	$(selector).each(function(){
-//		this.dispatchEvent(event);
-//	});
-//}
-
-
-/** Helper to reset environment for asynchronous Fancytree tests. */
-function _appendEvent(res){
-	EVENT_SEQUENCE.push(res);
-}
-
-
-/** Helper to reset environment for asynchronous Fancytree tests. */
-function _setupAsync(){
-	QUnit.reset();
-	if( $("#tree").is(":ui-fancytree") ){
-		$("#tree").fancytree("destroy");
-	}
-	EVENT_SEQUENCE = [];
-	stop();
-}
-
-
-function _getBrowserInfo(){
-	var n = navigator.appName,
-		ua = navigator.userAgent,
-		tem,
-		m = ua.match(/(opera|chrome|safari|firefox|msie)\/?\s*(\.?\d+(\.\d+)*)/i);
-	if(m && (tem = ua.match(/version\/([\.\d]+)/i)) !== null){
-		m[2]= tem[1];
-	}
-	m = m ? [m[1], m[2]] : [n, navigator.appVersion, "-?"];
-	return m.join(", ");
-}
-
-
-/** Get FancytreeNode from current tree. */
-function _getNode(key){
-	var tree = $("#tree").fancytree("getTree"),
-		node = tree.getNodeByKey(key);
-	return node;
-}
-
-
-/** Get current Fancytree. */
-function _getTree(key){
-	return $("#tree").fancytree("getTree");
-}
-
-
-/** Get node title as rendered in the DOM. */
-function _getNodeTitle(key){
-	var node = _getNode(key);
-	if(!node){
-		return undefined;
-	}
-	return $(node.span).find(".fancytree-title").html();
-}
-
-
-/** Convert array of nodes to array to array of node keys. */
-function _getNodeKeyArray(nodeArray){
-	if(!$.isArray(nodeArray)){
-		return nodeArray;
-	}
-	return $.map(nodeArray, function(n){ return n.key; });
-}
-
-
-/** Fake an Ajax request, return a $.Promise. */
-function _fakeAjaxLoad(node, count, delay){
-	delay = delay || 0;
-	if($.isArray(delay)){ // random delay range [min..max]
-		delay = Math.round(delay[0] + Math.random() * (delay[1] - delay[0]));
-	}
-	var dfd = new $.Deferred();
-	setTimeout(function(){
-		var i,
-			children = [];
-		for(i=0; i<count; i++){
-			children.push({
-				key: node.key + "_" + (i+1),
-				title: node.title + "_" + (i+1),
-				lazy: true
-				});
-		}
-		// emulate ajax deferred: done(data, textStatus, jqXHR)
-		dfd.resolveWith(this, [children, null, null]);
-	}, delay);
-	return dfd.promise();
-}
+	// Use tools from testhelpers.js
+	tools = TEST_HELPERS;
 
 /*******************************************************************************
  * test data
@@ -170,35 +50,26 @@ TESTDATA_VISIBLENODES = 13;
 
 
 /*******************************************************************************
+ * Initialize QUnit 
+ */
+
+tools.initQUnit();
+
+// Create an Info section (will be expanded when tests are completed)
+tools.createInfoSection();
+
+// Silence, please
+$.ui.fancytree.debugLevel = 1;
+
+
+/*******************************************************************************
  * Module Init
  */
 module("Initialization");
 
-test("Version info", function() {
-	QUnit.reset();
-	if( $("#tree").is(":ui-fancytree") ){
-		$("#tree").fancytree("destroy");
-	}
-	expect(5);
-
-	ok(true, "Fancytree v" + $.ui.fancytree.version + ", buildType='" + $.ui.fancytree.buildType + "'");
-	ok(true, "jQuery UI " + jQuery.ui.version + " (uiBackCompat=" + $.uiBackCompat + ")");
-	ok(true, "jQuery " + jQuery.fn.jquery);
-	var doctype = document.documentElement.previousSibling,
-		doctypeSid = doctype.systemId,
-		doctypePid = doctype.publicId;
-	ok(true, "DOCTYPE " + doctypePid + " " + doctypeSid);
-//    ok(true, "DOCTYPE 2 " + window.document.doctype);
-
-	ok(true, "Browser: " + _getBrowserInfo());
-//    ok(true, "Cumulated test time: " + TOTAL_ELAP + " milliseconds");
-
-});
-
-
 test("Static members", function() {
 	// non-async test tht runs before any Fancytrees are created
-//    _setupAsync();
+//    tools.setupAsync();
 	QUnit.reset();
 	if( $("#tree").is(":ui-fancytree") ){
 		$("#tree").fancytree("destroy");
@@ -212,7 +83,7 @@ test("Static members", function() {
 
 
 test("Create fancytree", function() {
-	_setupAsync();
+	tools.setupAsync();
 	expect(25);
 
 	var widget,
@@ -280,7 +151,7 @@ test("Create fancytree", function() {
 
 
 test("Init node status from source", function() {
-	_setupAsync();
+	tools.setupAsync();
 	expect(3);
 	// Add some status info to TEST_DATA (make a deep copy first!)
 	var children = $.extend(true, [], TEST_DATA);
@@ -304,7 +175,7 @@ test("Init node status from source", function() {
 
 
 test("Init node with custom data", function() {
-	_setupAsync();
+	tools.setupAsync();
 	expect(2);
 	// Add some status info to TEST_DATA (make a deep copy first!)
 	var children = $.extend(true, [], TEST_DATA);
@@ -315,8 +186,8 @@ test("Init node with custom data", function() {
 	$("#tree").fancytree({
 		source: children,
 		init: function(event, data){
-			equal(_getNode("10_1_1").data.foo, "phew", "add custom string data");
-			equal(_getNode("10_1_2").data.bar, false, "add custom bool data");
+			equal(tools.getNode("10_1_1").data.foo, "phew", "add custom string data");
+			equal(tools.getNode("10_1_2").data.bar, false, "add custom bool data");
 			start();
 		}
 	});
@@ -329,7 +200,7 @@ test("Init node with custom data", function() {
 module("API");
 
 test("FancytreeNode class", function() {
-//  _setupAsync();
+//  tools.setupAsync();
 	QUnit.reset();
 	if( $("#tree").is(":ui-fancytree") ){
 		$("#tree").fancytree("destroy");
@@ -342,10 +213,10 @@ test("FancytreeNode class", function() {
 	var res, ROOT_NODE_KEY,
 		tree = $("#tree").fancytree("getTree"),
 		root = tree.rootNode,
-		node = _getNode("10_1_2");
+		node = tools.getNode("10_1_2");
 	// Properties
 	equal(node.tree, tree, "node.tree");
-	equal(node.parent, _getNode("10_1"), "node.parent");
+	equal(node.parent, tools.getNode("10_1"), "node.parent");
 	equal(node.key, "10_1_2", "node.key");
 	equal(node.children, null, "node.children");
 	equal(node.isStatusNode(), false, "node.isStatusNode()");
@@ -370,12 +241,12 @@ test("FancytreeNode class", function() {
 
 	// findAll()
 	deepEqual(root.findAll("nomatchexpected$$"), [], "findAll() - no match");
-	deepEqual(_getNodeKeyArray(root.findAll("with key")), ["2"], "findAll() - match title");
-	deepEqual(_getNodeKeyArray(root.findAll("with KEY")), ["2"], "findAll() - match title (ignore case)");
+	deepEqual(tools.getNodeKeyArray(root.findAll("with key")), ["2"], "findAll() - match title");
+	deepEqual(tools.getNodeKeyArray(root.findAll("with KEY")), ["2"], "findAll() - match title (ignore case)");
 	res = root.findAll(function(n){
 		return n.isFolder();
 	});
-	deepEqual(_getNodeKeyArray(res), ["10", "30", "31", "32"], "findAll() - custom match");
+	deepEqual(tools.getNodeKeyArray(res), ["10", "30", "31", "32"], "findAll() - custom match");
 
 	// findFirst()
 	equal(root.findFirst("nomatchexpected$$"), null, "findFirst() - no match");
@@ -404,15 +275,15 @@ test("FancytreeNode class", function() {
 
 //  getParentList: function(includeRoot, includeSelf) {
 	ROOT_NODE_KEY = tree.rootNode.key;
-	deepEqual(_getNodeKeyArray(node.getParentList()),
+	deepEqual(tools.getNodeKeyArray(node.getParentList()),
 			["10", "10_1"], "getParentList()");
-	deepEqual(_getNodeKeyArray(node.getParentList(false, false)),
+	deepEqual(tools.getNodeKeyArray(node.getParentList(false, false)),
 			["10", "10_1"], "getParentList(false, false)");
-	deepEqual(_getNodeKeyArray(node.getParentList(true, true)),
+	deepEqual(tools.getNodeKeyArray(node.getParentList(true, true)),
 			[ROOT_NODE_KEY, "10", "10_1", "10_1_2"], "getParentList(true, true)");
-	deepEqual(_getNodeKeyArray(node.getParentList(false, true)),
+	deepEqual(tools.getNodeKeyArray(node.getParentList(false, true)),
 			["10", "10_1", "10_1_2"], "getParentList(false, true)");
-	deepEqual(_getNodeKeyArray(node.getParentList(true, false)),
+	deepEqual(tools.getNodeKeyArray(node.getParentList(true, false)),
 			[ROOT_NODE_KEY, "10", "10_1"], "getParentList(true, false)");
 
 //  getPrevSibling: function() {
@@ -463,7 +334,7 @@ test("FancytreeNode class", function() {
 
 
 test("Fancytree class", function() {
-//  _setupAsync();
+//  tools.setupAsync();
 	QUnit.reset();
 	if( $("#tree").is(":ui-fancytree") ){
 		$("#tree").fancytree("destroy");
@@ -505,18 +376,18 @@ test("Fancytree class", function() {
 	// TODO: getFirstChild()
 	equal(tree.getNodeByKey("10_2").key, "10_2", "getNodeByKey()");
 	equal(tree.getNodeByKey("foobar"), null, "getNodeByKey() not found");
-	node = _getNode("10_2");
+	node = tools.getNode("10_2");
 	equal(tree.getNodeByKey("10_2_1", node).key, "10_2_1", "getNodeByKey(.., root)");
 	equal(tree.getNodeByKey("10_1_1", node), null, "getNodeByKey(.., root) not found");
 
-	deepEqual(_getNodeKeyArray(tree.getSelectedNodes()), [], "getSelectedNodes() - empty");
-	deepEqual(_getNodeKeyArray(tree.getSelectedNodes(true)), [], "getSelectedNodes(true) - empty");
-	_getNode("10_2").setSelected();
-	_getNode("10_2_1").setSelected();
-	_getNode("10_2_2").setSelected();
-	deepEqual(_getNodeKeyArray(tree.getSelectedNodes()),
+	deepEqual(tools.getNodeKeyArray(tree.getSelectedNodes()), [], "getSelectedNodes() - empty");
+	deepEqual(tools.getNodeKeyArray(tree.getSelectedNodes(true)), [], "getSelectedNodes(true) - empty");
+	tools.getNode("10_2").setSelected();
+	tools.getNode("10_2_1").setSelected();
+	tools.getNode("10_2_2").setSelected();
+	deepEqual(tools.getNodeKeyArray(tree.getSelectedNodes()),
 			["10_2", "10_2_1", "10_2_2"], "getSelectedNodes()");
-	deepEqual(_getNodeKeyArray(tree.getSelectedNodes(true)),
+	deepEqual(tools.getNodeKeyArray(tree.getSelectedNodes(true)),
 			["10_2"], "getSelectedNodes(true)");
 
 //  reactivate: function(source) {
@@ -558,7 +429,7 @@ test("Fancytree class", function() {
 module("Asynchronous API");
 
 test("trigger async expand", function() {
-	_setupAsync();
+	tools.setupAsync();
 	expect(4);
 
 	$("#tree").fancytree({
@@ -578,14 +449,14 @@ test("trigger async expand", function() {
 });
 
 test("makeVisible not rendered deep node", function () {
-	_setupAsync();
+	tools.setupAsync();
 	expect(5);
 
 	$("#tree").fancytree({
 		source: TEST_DATA
 	});
 
-	var node = _getNode("10_2_2");
+	var node = tools.getNode("10_2_2");
 	ok(node);
 	ok(!node.parent.isExpanded());
 	ok(!node.li); // not rendered yet
@@ -605,7 +476,7 @@ test("makeVisible not rendered deep node", function () {
 module("events");
 
 test(".click() to expand a folder", function() {
-	_setupAsync();
+	tools.setupAsync();
 	expect(8);
 
 	$("#tree").fancytree({
@@ -630,7 +501,7 @@ test(".click() to expand a folder", function() {
 
 
 test(".click() to activate a node", function() {
-	_setupAsync();
+	tools.setupAsync();
 	expect(8);
 
 	$("#tree").fancytree({
@@ -655,7 +526,7 @@ test(".click() to activate a node", function() {
 
 
 test(".click() to activate a folder (clickFolderMode 3 triggers expand)", function() {
-	_setupAsync();
+	tools.setupAsync();
 	expect(4);
 	var sequence = 1;
 	$("#tree").fancytree({
@@ -681,7 +552,7 @@ test(".click() to activate a folder (clickFolderMode 3 triggers expand)", functi
 
 
 test(".click() to select a node", function() {
-	_setupAsync();
+	tools.setupAsync();
 	expect(8);
 
 	$("#tree").fancytree({
@@ -711,7 +582,7 @@ test(".click() to select a node", function() {
 module("lazy loading");
 
 test("Using ajax options for `source`; .click() expands a lazy folder", function() {
-	_setupAsync();
+	tools.setupAsync();
 	expect(19);
 	var sequence = 1,
 		isClicked = false;
@@ -766,7 +637,7 @@ test("Using ajax options for `source`; .click() expands a lazy folder", function
 });
 
 test("Using $.ajax promise for `source`; .click() expands a lazy folder", function() {
-	_setupAsync();
+	tools.setupAsync();
 	expect(12);
 	var sequence = 1,
 		isClicked = false;
@@ -817,7 +688,7 @@ test("Using $.ajax promise for `source`; .click() expands a lazy folder", functi
 module("add children & patches");
 
 test("add children", function() {
-	_setupAsync();
+	tools.setupAsync();
 	expect(15);
 
 	var childList = [
@@ -840,27 +711,27 @@ test("add children", function() {
 		init: function(event, data){
 			data.tree.rootNode.addChildren(childList);
 
-			equal(_getNodeTitle("test1"), "New 1", "simple node");
-			var $span = $(_getNode("test1").span);
+			equal(tools.getNodeTitle("test1"), "New 1", "simple node");
+			var $span = $(tools.getNode("test1").span);
 //			equal($span.find("a.fancytree-title").attr("title"), "new tip", "set tooltip");
 			equal($span.find("span.fancytree-title").attr("title"), "new tip", "set tooltip");
-			equal(_getNode("test1").data.foo, "works", "set custom data");
+			equal(tools.getNode("test1").data.foo, "works", "set custom data");
 
-			equal(_getNode("test2").isFolder(), true, "is folder");
-			equal(_getNode("test2").isExpanded(), false, "folder was collapsed");
-			equal($(_getNode("test2").span).hasClass("fancytree-expanded"), false, "folder was rendered as collapsed");
-			equal(_getNode("test2_1").title, "New 2.1", "subnode created");
-			equal(_getNodeTitle("test2_1"), null, "subnode NOT rendered");
+			equal(tools.getNode("test2").isFolder(), true, "is folder");
+			equal(tools.getNode("test2").isExpanded(), false, "folder was collapsed");
+			equal($(tools.getNode("test2").span).hasClass("fancytree-expanded"), false, "folder was rendered as collapsed");
+			equal(tools.getNode("test2_1").title, "New 2.1", "subnode created");
+			equal(tools.getNodeTitle("test2_1"), null, "subnode NOT rendered");
 
-			equal(_getNode("test3").expanded, true, "node was expanded");
-			equal($(_getNode("test3").span).hasClass("fancytree-expanded"), true, "folder was rendered as expanded");
-			equal(_getNode("test3_1").title, "New 3.1", "subnode created");
-			equal(_getNodeTitle("test3_1"), "New 3.1", "subnode rendered expanded");
-			equal(_getNode("test3_1").isSelected(), true, "select");
-			equal($(_getNode("test3_1").span).hasClass("fancytree-selected"), true, "node was rendered as selected");
-			equal($(_getNode("test3_2").span).hasClass("customClass"), true, "set custom class");
+			equal(tools.getNode("test3").expanded, true, "node was expanded");
+			equal($(tools.getNode("test3").span).hasClass("fancytree-expanded"), true, "folder was rendered as expanded");
+			equal(tools.getNode("test3_1").title, "New 3.1", "subnode created");
+			equal(tools.getNodeTitle("test3_1"), "New 3.1", "subnode rendered expanded");
+			equal(tools.getNode("test3_1").isSelected(), true, "select");
+			equal($(tools.getNode("test3_1").span).hasClass("fancytree-selected"), true, "node was rendered as selected");
+			equal($(tools.getNode("test3_2").span).hasClass("customClass"), true, "set custom class");
 
-//            deepEqual(EVENT_SEQUENCE, [], "event sequence");
+//            deepEqual(tools.EVENT_SEQUENCE, [], "event sequence");
 
 			start();
 		}
@@ -868,7 +739,7 @@ test("add children", function() {
 });
 
 test("apply patch", function() {
-	_setupAsync();
+	tools.setupAsync();
 	expect(19);
 
 	var patchList = [
@@ -894,42 +765,42 @@ test("apply patch", function() {
 		},
 		init: function(event, data){
 			data.tree.applyPatch(patchList).done(function(){
-				_appendEvent("done");
+				tools.appendEvent("done");
 				ok(true, "called done()");
 
-				var $span = $(_getNode("2").span);
-				equal(_getNodeTitle("2"), "node 2: new", "rename nodes");
+				var $span = $(tools.getNode("2").span);
+				equal(tools.getNodeTitle("2"), "node 2: new", "rename nodes");
 //				equal($span.find("a.fancytree-title").attr("title"), "new tip", "set tooltip");
 				equal($span.find("span.fancytree-title").attr("title"), "new tip", "set tooltip");
-				equal(_getNode("2").data.foo, "works", "set custom data");
+				equal(tools.getNode("2").data.foo, "works", "set custom data");
 
-				ok(_getNode("3").isSelected(), "select");
-				ok($(_getNode("3").span).hasClass("fancytree-selected"), "node was rendered as selected");
+				ok(tools.getNode("3").isSelected(), "select");
+				ok($(tools.getNode("3").span).hasClass("fancytree-selected"), "node was rendered as selected");
 
-				ok($(_getNode("4").span).hasClass("customClass"), "set custom class");
+				ok($(tools.getNode("4").span).hasClass("customClass"), "set custom class");
 
-				equal(_getNode("10_1_1").title, "Renamed 10_1_1", "rename hidden");
-				equal(_getNodeTitle("10_1_1"), null, "rename hidden (not rendered)");
+				equal(tools.getNode("10_1_1").title, "Renamed 10_1_1", "rename hidden");
+				equal(tools.getNodeTitle("10_1_1"), null, "rename hidden (not rendered)");
 
-				equal(_getNode("10_1_2"), null, "remove nodes");
+				equal(tools.getNode("10_1_2"), null, "remove nodes");
 
-				equal(_getNode("5_1").title, "new 5_1", "add child nodes (created)");
-				equal(_getNodeTitle("5_1"), null, "add child nodes (NOT rendered)");
-				equal(_getNode("5_1").parent, _getNode("5"), "add child nodes (linked)");
+				equal(tools.getNode("5_1").title, "new 5_1", "add child nodes (created)");
+				equal(tools.getNodeTitle("5_1"), null, "add child nodes (NOT rendered)");
+				equal(tools.getNode("5_1").parent, tools.getNode("5"), "add child nodes (linked)");
 
-				equal(_getNode("10").expanded, true, "folder was expanded");
-				ok($(_getNode("10").span).hasClass("fancytree-expanded"), "folder was rendered as expanded");
+				equal(tools.getNode("10").expanded, true, "folder was expanded");
+				ok($(tools.getNode("10").span).hasClass("fancytree-expanded"), "folder was rendered as expanded");
 
-				equal(_getNode("20").expanded, false, "folder was collapsed");
-				ok(!$(_getNode("20").span).hasClass("fancytree-expanded"), "folder was rendered as collapsed");
+				equal(tools.getNode("20").expanded, false, "folder was collapsed");
+				ok(!$(tools.getNode("20").span).hasClass("fancytree-expanded"), "folder was rendered as collapsed");
 
-				equal(_getNode("30").expanded, true, "lazy node was expanded");
-				ok($(_getNode("30").span).hasClass("fancytree-expanded"), "node was rendered as expanded");
-//                deepEqual(EVENT_SEQUENCE, [], "event sequence");
+				equal(tools.getNode("30").expanded, true, "lazy node was expanded");
+				ok($(tools.getNode("30").span).hasClass("fancytree-expanded"), "node was rendered as expanded");
+//                deepEqual(tools.EVENT_SEQUENCE, [], "event sequence");
 
 				// TODO: patch.appendChildren, replaceChildren, insertChildren, ...
-//                ok(_getNode("40"), "add top-level nodes (created)");
-//                equal(_getNodeTitle("40"), "new top-level 40", "add top-level nodes (rendered)");
+//                ok(tools.getNode("40"), "add top-level nodes (created)");
+//                equal(tools.getNodeTitle("40"), "new top-level 40", "add top-level nodes (rendered)");
 				start();
 			});
 		}
@@ -942,20 +813,20 @@ test("apply patch", function() {
 module("keypath");
 
 test("loadKeyPath (allready loaded)", function() {
-	_setupAsync();
+	tools.setupAsync();
 	expect(1);
 
 	$("#tree").fancytree({
 		source: TEST_DATA
 	});
-	var tree = _getTree();
+	var tree = tools.getTree();
 	// TODO: test with numeric keys:
 
 	tree.loadKeyPath("/10/10_1/10_1_2", function(node, status){
-		_appendEvent(status + " #" + (node ? node.key : "null"));
+		tools.appendEvent(status + " #" + (node ? node.key : "null"));
 	}).done(function(data){
-		_appendEvent("done.");
-		deepEqual(EVENT_SEQUENCE,
+		tools.appendEvent("done.");
+		deepEqual(tools.EVENT_SEQUENCE,
 				["loaded #10",
 				 "loaded #10_1",
 				 "ok #10_1_2",
@@ -965,24 +836,24 @@ test("loadKeyPath (allready loaded)", function() {
 });
 
 test("loadKeyPath (lazy nodes)", function() {
-	_setupAsync();
+	tools.setupAsync();
 	expect(1);
 
 	$("#tree").fancytree({
 		source: TEST_DATA,
 		lazyLoad: function(event, data){
 			// fake an async, deleayed Ajax request that generates 5 lazy nodes
-			data.result = _fakeAjaxLoad(data.node, 5, 10);
+			data.result = tools.fakeAjaxLoad(data.node, 5, 10);
 		}
 	});
-	var tree = _getTree();
+	var tree = tools.getTree();
 	// TODO: test with numeric keys:
 
 	tree.loadKeyPath("/30/30_3/30_3_2", function(node, status){
-		_appendEvent(status + " #" + (node ? node.key : "null"));
+		tools.appendEvent(status + " #" + (node ? node.key : "null"));
 	}).done(function(data){
-		_appendEvent("done.");
-		deepEqual(EVENT_SEQUENCE,
+		tools.appendEvent("done.");
+		deepEqual(tools.EVENT_SEQUENCE,
 				["loaded #30",
 				 "loading #30",
 				 "loaded #30_3",
@@ -994,36 +865,36 @@ test("loadKeyPath (lazy nodes)", function() {
 });
 
 test("loadKeyPath (multiple lazy nodes with expand)", function() {
-	_setupAsync();
+	tools.setupAsync();
 	expect(7);
 
 	$("#tree").fancytree({
 		source: TEST_DATA,
 		lazyLoad: function(event, data){
-			data.result = _fakeAjaxLoad(data.node, 5, [0, 30]);
+			data.result = tools.fakeAjaxLoad(data.node, 5, [0, 30]);
 		}
 	});
-	var tree = _getTree(),
+	var tree = tools.getTree(),
 		pathList = ["/30/30_3/30_3_2",
 					"/30/30_3/30_3_1",
 					"/30/30_5/30_5_1",
 					"/30/30_5/30_5_XXX"];
 
 	tree.loadKeyPath(pathList, function(node, status){
-		_appendEvent(status + " #" + (node.key ? node.key : node));
+		tools.appendEvent(status + " #" + (node.key ? node.key : node));
 		if(status === "loaded" || status === "ok"){
 			node.makeVisible();
 		}
 	}).done(function(data){
-		_appendEvent("done.");
+		tools.appendEvent("done.");
 		// the event sequence depends on random delay, so we check for 'ok' only
-		ok($.inArray("ok #30_3_1", EVENT_SEQUENCE) >= 0, "node was loaded");
-		equal(_getNode("30_3_1").isVisible(), true, "node was expanded");
-		ok($.inArray("ok #30_3_2", EVENT_SEQUENCE) >= 0, "node was loaded");
-		equal(_getNode("30_3_2").isVisible(), true, "node was expanded");
-		ok($.inArray("ok #30_5_1", EVENT_SEQUENCE) >= 0, "node was loaded");
-		equal(_getNode("30_5_1").isVisible(), true, "node was expanded");
-		ok($.inArray("error #30_5_XXX", EVENT_SEQUENCE) >= 0, "missing node was reported");
+		ok($.inArray("ok #30_3_1", tools.EVENT_SEQUENCE) >= 0, "node was loaded");
+		equal(tools.getNode("30_3_1").isVisible(), true, "node was expanded");
+		ok($.inArray("ok #30_3_2", tools.EVENT_SEQUENCE) >= 0, "node was loaded");
+		equal(tools.getNode("30_3_2").isVisible(), true, "node was expanded");
+		ok($.inArray("ok #30_5_1", tools.EVENT_SEQUENCE) >= 0, "node was loaded");
+		equal(tools.getNode("30_5_1").isVisible(), true, "node was expanded");
+		ok($.inArray("error #30_5_XXX", tools.EVENT_SEQUENCE) >= 0, "missing node was reported");
 		start();
 	});
 });

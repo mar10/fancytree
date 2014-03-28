@@ -4,132 +4,13 @@ jQuery(document).ready(function(){
 // asyncTest,deepEqual,equal,expect,module,notDeepEqual,notEqual,notStrictEqual,ok,QUnit,raises,start,stop,strictEqual,test
 
 /*jshint unused:false */
-/*globals deepEqual,equal,expect,module,QUnit,start,stop,test */
+/*globals TEST_HELPERS,deepEqual,equal,expect,module,start,test */
 
 var TEST_DATA, TESTDATA_NODES, TESTDATA_TOPNODES, TESTDATA_VISIBLENODES,
 	$ = jQuery,
-	EVENT_SEQUENCE = [];
+	// Use tools from testhelpers.js
+	tools = TEST_HELPERS;
 
-/*******************************************************************************
- * QUnit setup
- */
-
-QUnit.log(function(data) {
-	if (window.console && window.console.log) {
-//		window.console.log(data.result + " :: " + data.message);
-	}
-});
-
-QUnit.done(function( details ) {
-	// Expand first section when all tests are run
-	$("ol#qunit-tests > li:first > ol").show("slow");
-//	if(jQuery.migrateWarnings != null){
-//		alert("" + jQuery.migrateWarnings || "no migrateWarnings");
-//	}
-});
-
-
-// Silence, please
-$.ui.fancytree.debugLevel = 1;
-
-
-/*******************************************************************************
- * Tool functions
- */
-//function simulateClick(selector) {
-//	var event = document.createEvent("MouseEvents");
-//	event.initEvent("click", true, true);
-//	$(selector).each(function(){
-//		this.dispatchEvent(event);
-//	});
-//}
-
-
-/** Helper to reset environment for asynchronous Fancytree tests. */
-function _appendEvent(res){
-	EVENT_SEQUENCE.push(res);
-}
-
-
-/** Helper to reset environment for asynchronous Fancytree tests. */
-function _setupAsync(){
-	QUnit.reset();
-	if( $("#tree").is(":ui-fancytree") ){
-		$("#tree").fancytree("destroy");
-	}
-	EVENT_SEQUENCE = [];
-	stop();
-}
-
-
-function _getBrowserInfo(){
-	var n = navigator.appName,
-		ua = navigator.userAgent,
-		tem,
-		m = ua.match(/(opera|chrome|safari|firefox|msie)\/?\s*(\.?\d+(\.\d+)*)/i);
-	if(m && (tem = ua.match(/version\/([\.\d]+)/i)) !== null){
-		m[2]= tem[1];
-	}
-	m = m ? [m[1], m[2]] : [n, navigator.appVersion, "-?"];
-	return m.join(", ");
-}
-
-
-/** Get FancytreeNode from current tree. */
-function _getNode(key){
-	var tree = $("#tree").fancytree("getTree"),
-		node = tree.getNodeByKey(key);
-	return node;
-}
-
-
-/** Get current Fancytree. */
-function _getTree(key){
-	return $("#tree").fancytree("getTree");
-}
-
-
-/** Get node title as rendered in the DOM. */
-function _getNodeTitle(key){
-	var node = _getNode(key);
-	if(!node){
-		return undefined;
-	}
-	return $(node.span).find(".fancytree-title").html();
-}
-
-
-/** Convert array of nodes to array to array of node keys. */
-function _getNodeKeyArray(nodeArray){
-	if(!$.isArray(nodeArray)){
-		return nodeArray;
-	}
-	return $.map(nodeArray, function(n){ return n.key; });
-}
-
-
-/** Fake an Ajax request, return a $.Promise. */
-function _fakeAjaxLoad(node, count, delay){
-	delay = delay || 0;
-	if($.isArray(delay)){ // random delay range [min..max]
-		delay = Math.round(delay[0] + Math.random() * (delay[1] - delay[0]));
-	}
-	var dfd = new $.Deferred();
-	setTimeout(function(){
-		var i,
-			children = [];
-		for(i=0; i<count; i++){
-			children.push({
-				key: node.key + "_" + (i+1),
-				title: node.title + "_" + (i+1),
-				lazy: true
-				});
-		}
-		// emulate ajax deferred: done(data, textStatus, jqXHR)
-		dfd.resolveWith(this, [children, null, null]);
-	}, delay);
-	return dfd.promise();
-}
 
 /*******************************************************************************
  * test data
@@ -172,12 +53,25 @@ TESTDATA_VISIBLENODES = 13;
 
 
 /*******************************************************************************
+ * Initialize QUnit 
+ */
+
+tools.initQUnit();
+
+// Create an Info section (will be expanded when tests are completed)
+tools.createInfoSection();
+
+// Silence, please
+$.ui.fancytree.debugLevel = 1;
+
+
+/*******************************************************************************
  *
  */
 module("clones");
 
 test("sync load", function() {
-	_setupAsync();
+	tools.setupAsync();
 	expect(12);
 
 	$("#tree").fancytree({
@@ -185,33 +79,33 @@ test("sync load", function() {
 		source: TEST_DATA,
 		lazyLoad: function(event, data){
 			// fake an async, deleayed Ajax request that generates 5 lazy nodes
-			data.result = _fakeAjaxLoad(data.node, 5, 10);
+			data.result = tools.fakeAjaxLoad(data.node, 5, 10);
 		}
 	});
 	var node, nodeList,
-		tree = _getTree();
+		tree = tools.getTree();
 
-	equal(_getNode("20_1_1").data.refKey, "rk_1", "set refKey");
-	equal(_getNode("20_2_1").data.refKey, "rk_1", "set refKey 2");
-	equal(_getNode("2").data.refKey, undefined, "no default refKey");
+	equal(tools.getNode("20_1_1").data.refKey, "rk_1", "set refKey");
+	equal(tools.getNode("20_2_1").data.refKey, "rk_1", "set refKey 2");
+	equal(tools.getNode("2").data.refKey, undefined, "no default refKey");
 
-	equal(_getNode("20_1_1").isClone(), true, "isClone() 1 detected");
-	equal(_getNode("20_2_1").isClone(), true, "isClone() 2 detected");
-	equal(_getNode("2").isClone(), false, "isClone() non-clone detected");
+	equal(tools.getNode("20_1_1").isClone(), true, "isClone() 1 detected");
+	equal(tools.getNode("20_2_1").isClone(), true, "isClone() 2 detected");
+	equal(tools.getNode("2").isClone(), false, "isClone() non-clone detected");
 
 	nodeList = tree.getNodesByRef("rk_1");
 	equal(nodeList.length, 2, "tree.getNodesByRef()");
-	deepEqual(_getNodeKeyArray(nodeList), ["20_1_1", "20_2_1"], "tree.getNodesByRef() finds all clones");
+	deepEqual(tools.getNodeKeyArray(nodeList), ["20_1_1", "20_2_1"], "tree.getNodesByRef() finds all clones");
 
-	nodeList = tree.getNodesByRef("rk_1", _getNode("10"));
+	nodeList = tree.getNodesByRef("rk_1", tools.getNode("10"));
 	equal(nodeList, null, "tree.getNodesByRef() restrict to branch: miss");
-	nodeList = tree.getNodesByRef("rk_1", _getNode("20"));
+	nodeList = tree.getNodesByRef("rk_1", tools.getNode("20"));
 	equal(nodeList.length, 2, "tree.getNodesByRef() restrict to branch: hit");
 
-	nodeList = _getNode("20_1_1").getCloneList();
-	deepEqual(_getNodeKeyArray(nodeList), ["20_2_1"], "node.getCloneList() 1 detected");
-	nodeList = _getNode("20_1_1").getCloneList(true);
-	deepEqual(_getNodeKeyArray(nodeList), ["20_1_1", "20_2_1"], "node.getCloneList(true) 2 detected");
+	nodeList = tools.getNode("20_1_1").getCloneList();
+	deepEqual(tools.getNodeKeyArray(nodeList), ["20_2_1"], "node.getCloneList() 1 detected");
+	nodeList = tools.getNode("20_1_1").getCloneList(true);
+	deepEqual(tools.getNodeKeyArray(nodeList), ["20_1_1", "20_2_1"], "node.getCloneList(true) 2 detected");
 
 	start();
 });
