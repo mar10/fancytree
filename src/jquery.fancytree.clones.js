@@ -49,7 +49,7 @@ function _removeArrayMember(arr, elem) {
 //  * Ref.: http://isthe.com/chongo/tech/comp/fnv/
 //  *
 //  * @param {string} str the input value
-//  * @param {boolean} [asString=false] set to true to return the hash value as 
+//  * @param {boolean} [asString=false] set to true to return the hash value as
 //  *     8-digit hex string instead of an integer
 //  * @param {integer} [seed] optionally pass the hash of the previous chunk
 //  * @returns {integer | string}
@@ -73,16 +73,16 @@ function _removeArrayMember(arr, elem) {
 
 /**
  * JS Implementation of MurmurHash3 (r136) (as of May 20, 2011)
- * 
+ *
  * @author <a href="mailto:gary.court@gmail.com">Gary Court</a>
  * @see http://github.com/garycourt/murmurhash-js
  * @author <a href="mailto:aappleby@gmail.com">Austin Appleby</a>
  * @see http://sites.google.com/site/murmurhash/
- * 
+ *
  * @param {string} key ASCII only
- * @param {boolean} [asString=false] 
+ * @param {boolean} [asString=false]
  * @param {number} seed Positive integer only
- * @return {number} 32-bit positive integer hash 
+ * @return {number} 32-bit positive integer hash
  */
 function hashMurmur3(key, asString, seed) {
 	/*jshint bitwise:false */
@@ -107,7 +107,7 @@ function hashMurmur3(key, asString, seed) {
 		k1 = ((((k1 & 0xffff) * c2) + ((((k1 >>> 16) * c2) & 0xffff) << 16))) & 0xffffffff;
 
 		h1 ^= k1;
-        h1 = (h1 << 13) | (h1 >>> 19);
+		h1 = (h1 << 13) | (h1 >>> 19);
 		h1b = ((((h1 & 0xffff) * 5) + ((((h1 >>> 16) * 5) & 0xffff) << 16))) & 0xffffffff;
 		h1 = (((h1b & 0xffff) + 0x6b64) + ((((h1b >>> 16) + 0xe654) & 0xffff) << 16));
 	}
@@ -202,7 +202,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.isClone = function(){
 
 /**
  * [ext-clones] Return all nodes with a given refKey (null if not found).
- * @param {string} refKey 
+ * @param {string} refKey
  * @param {FancytreeNode} [rootNode] optionally restrict results to descendants of this node
  * @requires jquery.fancytree.clones.js
  * @returns {FancytreeNode[] | null}
@@ -280,7 +280,7 @@ $.ui.fancytree.registerExtension({
 				if( refList ) {
 					refList.push(key);
 					if( refList.length === 2 && ctx.options.clones.highlightClones ) {
-						// Mark peer node, if it just became a clone (no need to 
+						// Mark peer node, if it just became a clone (no need to
 						// mark current node, since it will be rendered later anyway)
 						keyMap[refList[0]].renderStatus();
 					}

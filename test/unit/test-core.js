@@ -3,12 +3,12 @@ jQuery(document).ready(function(){
 // jQUnit defines:
 // asyncTest,deepEqual,equal,expect,module,notDeepEqual,notEqual,notStrictEqual,ok,QUnit,raises,start,stop,strictEqual,test
 
-/*globals TEST_HELPERS, deepEqual,equal,expect,module,ok,QUnit,start,test */
+/*globals TEST_TOOLS, deepEqual,equal,expect,module,ok,QUnit,start,test */
 
 var TEST_DATA, TESTDATA_NODES, TESTDATA_TOPNODES, TESTDATA_VISIBLENODES,
 	$ = jQuery,
-	// Use tools from testhelpers.js
-	tools = TEST_HELPERS;
+	// Use tools from test-tools.js
+	tools = TEST_TOOLS;
 
 /*******************************************************************************
  * test data
@@ -50,7 +50,7 @@ TESTDATA_VISIBLENODES = 13;
 
 
 /*******************************************************************************
- * Initialize QUnit 
+ * Initialize QUnit
  */
 
 tools.initQUnit();

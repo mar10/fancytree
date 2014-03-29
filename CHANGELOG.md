@@ -6,16 +6,12 @@
   * [BUGFIX] #117: line height too large when using doctype xhtml
   * [BUGFIX] #115: Fixed error when trying to drag table headers
   * [BUGFIX] #163: lazy load throws error if autoscroll: true and result is empty
-
-
-# BRANCH 'clones'
-  * [FEATURE] [ext-clones] new extension that introduces `refKey`, which may occur
-    multiple times in one tree (as opposed to `key`, which must be unique).  
+  * [FEATURE] [ext-clones] (experimental) new extension that introduces 
+    `node.refKey`, which may occur multiple times in one tree (as opposed to `key`, 
+    which must be unique).
     New methods `node.isClone()`, `node.getCloneList()` and `tree.getNodesByRef()`.
     Optionally, clones are tagged wit the `fancytree-clone` class.  
-  * In order to support persistence, there is also support to generate unique,
-    reproducible (sort of) default keys.
-  * [FEATURE] New option 'defaultKey'. This calback allows to generate key while loading.
+  * [FEATURE] New option 'defaultKey'. This calback allows to generate keys while loading.
 
 
 # 2.0.0-7 / 2014-03-09

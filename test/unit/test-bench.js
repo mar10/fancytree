@@ -2,10 +2,11 @@ jQuery(document).ready(function(){
 // jQUnit defines:
 // asyncTest,deepEqual,equal,expect,module,notDeepEqual,notEqual,notStrictEqual,ok,QUnit,raises,start,stop,strictEqual,test
 
-/*globals expect,module,ok,QUnit,start,stop,test */
+/*globals TEST_TOOLS,expect,module,ok,QUnit,test */
 
 var $ = jQuery,
-	TOTAL_ELAP = 0;
+	// Use tools from test-tools.js
+	tools = TEST_TOOLS;
 
 /* *****************************************************************************
  * QUnit setup
@@ -25,41 +26,6 @@ QUnit.done(function( details ) {
  * Tool functions
  */
 
-function AsyncTimer(name, count, start){
-	this.name = "AsyncTimer(" + name + ")";
-	this.stamp = null;
-	this.count = count;
-	if(start !== false){
-		this.start();
-	}
-}
-AsyncTimer.prototype = {
-	start: function(){
-		/*jshint expr:true */
-		window.console && window.console.time && window.console.time(this.name);
-		// halt QUnit
-		stop();
-		this.stamp = +new Date();
-	},
-	stop: function(){
-		/*jshint expr:true */
-		window.console && window.console.timeEnd && window.console.timeEnd(this.name);
-		var elap = +new Date() - this.stamp;
-		if( this.count && elap ){
-			ok(true, this.name + " took " + elap + " milliseconds, " + formatNumber(1000.0 * this.count / elap) + " items/sec");
-		}else{
-			ok(true, this.name + " took " + elap + " milliseconds");
-		}
-		TOTAL_ELAP += elap;
-		// Continue QUnit
-		start();
-	},
-	subtime: function(info){
-		var elap = +new Date() - this.stamp;
-		ok(true, "... " + this.name + " until '" + info + "' took " + elap + " milliseconds");
-	}
-};
-
 
 function _resetEmptyTree(options){
 	QUnit.reset();
@@ -78,59 +44,11 @@ function _resetEmptyTree(options){
 }
 
 
-/** Helper to reset environment for asynchronous Fancytree tests. */
-/*
-function _setupAsync(){
-	QUnit.reset();
-	if( $("#tree").is(":ui-fancytree") ){
-		$("#tree").fancytree("destroy");
-	}
-	EVENT_SEQUENCE = [];
-	stop();
-}
-*/
-
-function _getBrowserInfo(){
-	var n = navigator.appName,
-		ua = navigator.userAgent,
-		tem,
-		m = ua.match(/(opera|chrome|safari|firefox|msie)\/?\s*(\.?\d+(\.\d+)*)/i);
-	if(m && (tem = ua.match(/version\/([\.\d]+)/i)) !== null){
-		m[2]= tem[1];
-	}
-	m = m ? [m[1], m[2]] : [n, navigator.appVersion, "-?"];
-	return m.join(", ");
-}
-
-
-function formatNumber(num) {
-	var parts = num.toFixed(0).toString().split(".");
-	parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-	return parts.join(".");
-}
-
-
-function makeBenchWrapper(testName, count, callback) {
-	return function() {
-		var elap,
-			start = +new Date();
-//        callback.apply(this, arguments);
-		callback.call();
-		elap = +new Date() - start;
-		if( count && elap ){
-			ok(true, testName + " took " + elap + " milliseconds, " + formatNumber(1000 * count / elap) + " items/sec");
-		}else{
-			ok(true, testName + " took " + elap + " milliseconds");
-		}
-		TOTAL_ELAP += elap;
-	};
-}
-
 /* Execute callback immediately and log timing as test result.
  * This function should be called inside a test() function.
  */
 function benchmark(testName, count, callback) {
-	makeBenchWrapper(testName, count, callback).call();
+	tools.makeBenchWrapper(testName, count, callback).call();
 }
 
 //$.ui.fancytree._FancytreeNodeClass.prototype.addChildren
@@ -262,7 +180,7 @@ test("Expand 1000 nodes deep (with 10 top level nodes, triggers expand -> render
 
 	var tree = _resetEmptyTree(),
 		node = tree.getNodeByKey("root"),
-		timer = new AsyncTimer("1000 deep (10x10x10) with expand", 1000);
+		timer = new tools.AsyncTimer("1000 deep (10x10x10) with expand", 1000);
 
 	addNodes(node, 10, 10, 10);
 	timer.subtime("addNodes");
@@ -286,7 +204,7 @@ test("Expand 1000 top level nodes (triggers expand -> render and display)", func
 
 	var tree = _resetEmptyTree(),
 		node = tree.getNodeByKey("root"),
-		timer = new AsyncTimer("1000 top level nodes flat with expand", 1000);
+		timer = new tools.AsyncTimer("1000 top level nodes flat with expand", 1000);
 
 	addNodes(node, 1000, 0, 0);
 	timer.subtime("addNodes");
@@ -305,7 +223,7 @@ test("Expand 1000 top level nodes with ARIA and checkboxes (triggers expand -> r
 			checkbox:true
 		}),
 		node = tree.getNodeByKey("root"),
-		timer = new AsyncTimer("1000 top level nodes flat with expand", 1000);
+		timer = new tools.AsyncTimer("1000 top level nodes flat with expand", 1000);
 
 	addNodes(node, 1000, 0, 0);
 	timer.subtime("addNodes");
@@ -368,7 +286,7 @@ test("tabletree (6 columns): render and expand", function() {
 
 	tree = $tree.fancytree("getTree");
 	node = tree.getNodeByKey("root");
-	timer = new AsyncTimer("1000 nodes flat and expand", 1000);
+	timer = new tools.AsyncTimer("1000 nodes flat and expand", 1000);
 //    var timer = new AsyncTimer("1000 nodes (10 x 10 x 10) and force render(deep=true)");
 
 	addNodes(node, 1000, 0, 0);
@@ -397,8 +315,8 @@ test("", function() {
 	ok(true, "Fancytree v" + $.ui.fancytree.version);
 	ok(true, "jQuery UI " + jQuery.ui.version);
 	ok(true, "jQuery " + jQuery.fn.jquery);
-	ok(true, "Browser: " + _getBrowserInfo());
-	ok(true, "Cumulated test time: " + TOTAL_ELAP + " milliseconds");
+	ok(true, "Browser: " + tools.getBrowserInfo());
+	ok(true, "Cumulated test time: " + tools.TOTAL_ELAP + " milliseconds");
 });
 // ---
 });

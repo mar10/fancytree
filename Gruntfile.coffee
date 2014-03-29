@@ -78,6 +78,7 @@ module.exports = (grunt) ->
             src: [
                 "<%= meta.banner %>"
                 "src/jquery.fancytree.js"
+#                "src/jquery.fancytree.clones.js"
 #                "src/jquery.fancytree.columnview.js"
                 "src/jquery.fancytree.dnd.js"
                 "src/jquery.fancytree.edit.js"

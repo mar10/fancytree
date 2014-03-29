@@ -5,16 +5,16 @@
 
 /*globals expect,module,ok,QUnit,stop,test */
 
-var HELPERS = {};
+var TOOLS = {};
 
-window.TEST_HELPERS = HELPERS;
+window.TEST_TOOLS = TOOLS;
 
-HELPERS.EVENT_SEQUENCE = [];
+TOOLS.EVENT_SEQUENCE = [];
 
 /*******************************************************************************
  * QUnit setup
  */
-HELPERS.initQUnit = function() {
+TOOLS.initQUnit = function() {
 
 	QUnit.log(function(data) {
 		if (window.console && window.console.log) {
@@ -35,7 +35,7 @@ HELPERS.initQUnit = function() {
 };
 
 
-HELPERS.createInfoSection = function() {
+TOOLS.createInfoSection = function() {
 	// Create the first informational section
 	module("Test Environment Information");
 
@@ -55,7 +55,7 @@ HELPERS.createInfoSection = function() {
 		ok(true, "DOCTYPE " + doctypePid + " " + doctypeSid);
 	//    ok(true, "DOCTYPE 2 " + window.document.doctype);
 
-		ok(true, "Browser: " + HELPERS.getBrowserInfo());
+		ok(true, "Browser: " + TOOLS.getBrowserInfo());
 	//    ok(true, "Cumulated test time: " + TOTAL_ELAP + " milliseconds");
 	});
 };
@@ -73,24 +73,24 @@ HELPERS.createInfoSection = function() {
 
 
 /** Helper to reset environment for asynchronous Fancytree tests. */
-HELPERS.appendEvent = function(res) {
-	HELPERS.EVENT_SEQUENCE.push(res);
+TOOLS.appendEvent = function(res) {
+	TOOLS.EVENT_SEQUENCE.push(res);
 };
 
 
 /** Helper to reset environment for asynchronous Fancytree tests. */
-HELPERS.setupAsync = function() {
+TOOLS.setupAsync = function() {
 	QUnit.reset();
 	if( $("#tree").is(":ui-fancytree") ){
 		$("#tree").fancytree("destroy");
 	}
-	HELPERS.EVENT_SEQUENCE = [];
+	TOOLS.EVENT_SEQUENCE = [];
 	stop();
 };
 
 
 /** Return an info string of current browser. */
-HELPERS.getBrowserInfo = function() {
+TOOLS.getBrowserInfo = function() {
 	var n = navigator.appName,
 		ua = navigator.userAgent,
 		tem,
@@ -104,7 +104,7 @@ HELPERS.getBrowserInfo = function() {
 
 
 /** Get FancytreeNode from current tree. */
-HELPERS.getNode = function(key){
+TOOLS.getNode = function(key){
 	var tree = $("#tree").fancytree("getTree"),
 		node = tree.getNodeByKey(key);
 	return node;
@@ -112,14 +112,14 @@ HELPERS.getNode = function(key){
 
 
 /** Get current Fancytree. */
-HELPERS.getTree = function(key){
+TOOLS.getTree = function(key){
 	return $("#tree").fancytree("getTree");
 };
 
 
 /** Get node title as rendered in the DOM. */
-HELPERS.getNodeTitle = function(key){
-	var node = HELPERS.getNode(key);
+TOOLS.getNodeTitle = function(key){
+	var node = TOOLS.getNode(key);
 	if(!node){
 		return undefined;
 	}
@@ -128,7 +128,7 @@ HELPERS.getNodeTitle = function(key){
 
 
 /** Convert array of nodes to array to array of node keys. */
-HELPERS.getNodeKeyArray = function(nodeArray){
+TOOLS.getNodeKeyArray = function(nodeArray){
 	if(!$.isArray(nodeArray)){
 		return nodeArray;
 	}
@@ -137,7 +137,7 @@ HELPERS.getNodeKeyArray = function(nodeArray){
 
 
 /** Fake an Ajax request, return a $.Promise. */
-HELPERS.fakeAjaxLoad = function(node, count, delay){
+TOOLS.fakeAjaxLoad = function(node, count, delay){
 	delay = delay || 0;
 	if($.isArray(delay)){ // random delay range [min..max]
 		delay = Math.round(delay[0] + Math.random() * (delay[1] - delay[0]));
