@@ -182,7 +182,7 @@ var i,
 	CLASS_ATTRS = "active expanded focus folder hideCheckbox lazy selected unselectable".split(" "),
 	CLASS_ATTR_MAP = {},
 	//	Top-level Fancytree node attributes, that can be set by dict
-	NODE_ATTRS = "expanded extraClasses folder hideCheckbox key lazy selected title tooltip unselectable".split(" "),
+	NODE_ATTRS = "expanded extraClasses folder hideCheckbox key lazy refKey selected title tooltip unselectable".split(" "),
 	NODE_ATTR_MAP = {},
 	// Attribute names that should NOT be added to node.data
 	NONE_NODE_DATA_MAP = {"active": true, "children": true, "data": true, "focus": true};
@@ -254,8 +254,14 @@ function FancytreeNode(parent, obj){
 
 	// Fix missing key
 	if( this.key == null ){ // test for null OR undefined
-		this.key = "_" + (FT._nextNodeKey++);
+		if( this.tree.options.defaultKey ) {
+			this.key = this.tree.options.defaultKey(this);
+			_assert(this.key, "defaultKey() must return a unique key");
+		} else {
+			this.key = "_" + (FT._nextNodeKey++);
+		}
 	}
+
 	// Fix tree.activeNode
 	// TODO: not elegant: we use obj.active as marker to set tree.activeNode
 	// when loading from a dictionary.
@@ -270,6 +276,10 @@ function FancytreeNode(parent, obj){
 	if(cl && cl.length){
 		this._setChildren(cl);
 	}
+	// Add to key/ref map (except for root node)
+//	if( parent ) {
+	this.tree._callHook("treeRegisterNode", this.tree, true, this);
+//	}
 }
 
 
@@ -2448,6 +2458,7 @@ $.extend(Fancytree.prototype,
 		childNode.visit(function(n){
 			n.parent = null;
 		}, true);
+		this._callHook("treeRegisterNode", this, false, childNode);
 		if ( opts.removeNode ){
 			opts.removeNode.call(ctx.tree, {type: "removeNode"}, subCtx);
 		}
@@ -2479,6 +2490,7 @@ $.extend(Fancytree.prototype,
 	*/
 	nodeRemoveChildren: function(ctx) {
 		var subCtx,
+			tree = ctx.tree,
 			node = ctx.node,
 			children = node.children,
 			opts = ctx.options;
@@ -2500,6 +2512,7 @@ $.extend(Fancytree.prototype,
 		subCtx = $.extend({}, ctx);
 		node.visit(function(n){
 			n.parent = null;
+			tree._callHook("treeRegisterNode", tree, false, n);
 			if ( opts.removeNode ){
 				subCtx.node = n;
 				opts.removeNode.call(ctx.tree, {type: "removeNode"}, subCtx);
@@ -3361,6 +3374,8 @@ $.extend(Fancytree.prototype,
 			tree._triggerTreeEvent("init", false);
 		});
 		return dfd;
+	},
+	treeRegisterNode: function(ctx, add, node) {
 	},
 	treeSetFocus: function(ctx, flag, _calledByNodeSetFocus) {
 		flag = (flag !== false);

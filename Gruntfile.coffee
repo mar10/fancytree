@@ -177,7 +177,7 @@ module.exports = (grunt) ->
             # Linting according to http://contribute.jquery.org/style-guide/js/
             jshintrc: ".jshintrc"
         beforeConcat: [
-            "Gruntfile.js"
+            # "Gruntfile.js"
             "src/*.js"
             "3rd-party/**/jquery.fancytree.*.js"
             "test/unit/*.js"
@@ -201,7 +201,7 @@ module.exports = (grunt) ->
 
     qunit:
         build: [ "test/unit/test-core-build.html" ]
-        develop: [ "test/unit/test-core.html", "test/unit/test-table-ext.html"]
+        develop: [ "test/unit/test-core.html", "test/unit/test-ext-table.html", "test/unit/test-ext-misc.html"]
 
     replace: # grunt-text-replace
 # //            bump : {
@@ -289,14 +289,13 @@ module.exports = (grunt) ->
                 "build/<%= pkg.name %>-all.min.js": ["<%= concat.all.dest %>"]
 
     watch:
-        # options:
-        #     atBegin: true
         less:
             files: "src/**/*.less"
             tasks: ["less:development"]
         jshint:
-            atBegin: true
-            files: "src/*.js"
+            options:
+                atBegin: true
+            files: ["src/*.js", "test/unit/*.js"]
             tasks: ["jshint:beforeConcat"]
 
   # ----------------------------------------------------------------------------
