@@ -4,7 +4,7 @@ jQuery(document).ready(function(){
 // asyncTest,deepEqual,equal,expect,module,notDeepEqual,notEqual,notStrictEqual,ok,QUnit,raises,start,stop,strictEqual,test
 
 /*jshint unused:false */
-/*globals TEST_HELPERS,deepEqual,equal,expect,module,start,test */
+/*globals TEST_HELPERS,deepEqual,equal,expect,module,ok,start,test */
 
 var TEST_DATA, TESTDATA_NODES, TESTDATA_TOPNODES, TESTDATA_VISIBLENODES,
 	$ = jQuery,
@@ -35,7 +35,9 @@ TEST_DATA = [
 		{key: "20", title: "Simple node with active children (expand)", expanded: true, children: [
 			{key: "20_1", title: "Sub-item 2.1", children: [
 				{key: "20_1_1", title: "Sub-item 2.1.1", refKey: "rk_1"},
-				{key: "20_1_2", title: "Sub-item 2.1.2"}
+				{key: "20_1_2", title: "Sub-item 2.1.2"},
+				{title: "Sub-item 2.1.3 (no key)"},
+				{title: "Sub-item 2.1.4 (no key, but refKey)", refKey: "rk_2"}
 			]},
 			{key: "20_2", title: "Sub-item 1.2", children: [
 				{key: "20_2_1", title: "Sub-item 2.2.1", refKey: "rk_1"},
@@ -72,7 +74,7 @@ module("clones");
 
 test("sync load", function() {
 	tools.setupAsync();
-	expect(12);
+	expect(16);
 
 	$("#tree").fancytree({
 		extensions: ["clones"],
@@ -85,13 +87,17 @@ test("sync load", function() {
 	var node, nodeList,
 		tree = tools.getTree();
 
-	equal(tools.getNode("20_1_1").data.refKey, "rk_1", "set refKey");
-	equal(tools.getNode("20_2_1").data.refKey, "rk_1", "set refKey 2");
-	equal(tools.getNode("2").data.refKey, undefined, "no default refKey");
+	ok($.isPlainObject(tree.keyMap), "has keyMap");
+	deepEqual(tree.refMap,  {"rk_1": ["20_1_1", "20_2_1"], "rk_2": ["id_11b7cb44"]}, "has refMap");
 
+	equal(tools.getNode("10_1_1").refKey, undefined, "no default refKey");
+
+	equal(tools.getNode("20_1_1").refKey, "rk_1", "set refKey");
+	equal(tools.getNode("20_2_1").refKey, "rk_1", "set refKey 2");
+
+	equal(tools.getNode("10_1_1").isClone(), false, "isClone() non-clone detected");
 	equal(tools.getNode("20_1_1").isClone(), true, "isClone() 1 detected");
 	equal(tools.getNode("20_2_1").isClone(), true, "isClone() 2 detected");
-	equal(tools.getNode("2").isClone(), false, "isClone() non-clone detected");
 
 	nodeList = tree.getNodesByRef("rk_1");
 	equal(nodeList.length, 2, "tree.getNodesByRef()");
@@ -101,6 +107,11 @@ test("sync load", function() {
 	equal(nodeList, null, "tree.getNodesByRef() restrict to branch: miss");
 	nodeList = tree.getNodesByRef("rk_1", tools.getNode("20"));
 	equal(nodeList.length, 2, "tree.getNodesByRef() restrict to branch: hit");
+
+	nodeList = tree.getNodesByRef("rk_2");
+	equal(nodeList.length, 1, "also single refKeys are stored in refMap");
+	node = tools.getNodeKeyArray(nodeList[0]);
+	equal(node.key, "id_11b7cb44", "generate predictable unique default keys");
 
 	nodeList = tools.getNode("20_1_1").getCloneList();
 	deepEqual(tools.getNodeKeyArray(nodeList), ["20_2_1"], "node.getCloneList() 1 detected");

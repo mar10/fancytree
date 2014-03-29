@@ -55,6 +55,7 @@ var EventData = {};
  *
  * @property {String} title node text (may contain HTML tags)
  * @property {String} key unique key for this node (auto-generated if omitted)
+ * @property {String} refKey (reserved)
  * @property {Boolean} expanded
  * @property {Boolean} active (initialization only, but will not be stored  with the node).
  * @property {Boolean} focus (initialization only, but will not be stored  with the node).

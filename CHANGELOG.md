@@ -8,13 +8,12 @@
   * [BUGFIX] #163: lazy load throws error if autoscroll: true and result is empty
 
 
-
 # BRANCH 'clones'
   * [FEATURE] [ext-clones] new extension that introduces `refKey`, which may occur
     multiple times in one tree (as opposed to `key`, which must be unique).  
     New methods `node.isClone()`, `node.getCloneList()` and `tree.getNodesByRef()`.
     Optionally, clones are tagged wit the `fancytree-clone` class.  
-    In order to support persistence, there is also support to generate unique,
+  * In order to support persistence, there is also support to generate unique,
     reproducible (sort of) default keys.
   * [FEATURE] New option 'defaultKey'. This calback allows to generate key while loading.
 

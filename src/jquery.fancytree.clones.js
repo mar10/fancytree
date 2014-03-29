@@ -152,7 +152,7 @@ function hashMurmur3(key, asString, seed) {
  */
 function calcUniqueKey(node) {
 	var key,
-		path = $.map(node.getParentList(false, true), function(e){ return e.data.refKey || e.key; });
+		path = $.map(node.getParentList(false, true), function(e){ return e.refKey || e.key; });
 	path = path.join("/");
 	key = "id_" + hashMurmur3(path, true);
 	node.debug(path + " -> " + key);
@@ -169,7 +169,7 @@ function calcUniqueKey(node) {
 $.ui.fancytree._FancytreeNodeClass.prototype.getCloneList = function(includeSelf){
 	var key,
 		tree = this.tree,
-		refList = tree.refMap[this.data.refKey] || null,
+		refList = tree.refMap[this.refKey] || null,
 		keyMap = tree.keyMap;
 
 	if( refList ) {
@@ -194,7 +194,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.getCloneList = function(includeSelf
  * @returns {boolean}
  */
 $.ui.fancytree._FancytreeNodeClass.prototype.isClone = function(){
-	var refKey = this.data.refKey || null,
+	var refKey = this.refKey || null,
 		refList = refKey && this.tree.refMap[refKey] || null;
 	return !!(refList && refList.length > 1);
 };
@@ -234,7 +234,7 @@ $.ui.fancytree._FancytreeClass.prototype.getNodesByRef = function(refKey, rootNo
  */
 $.ui.fancytree.registerExtension({
 	name: "clones",
-	version: "0.0.2",
+	version: "0.0.3",
 	// Default options for this extension.
 	options: {
 		highlightActiveClones: true, // set 'fancytree-active-clone' on active clones and all peers
@@ -247,13 +247,14 @@ $.ui.fancytree.registerExtension({
 		ctx.tree.keyMap = {};
 	},
 	treeInit: function(ctx){
-		this._super(ctx);
 		this.$container.addClass("fancytree-ext-clones");
 		_assert(ctx.options.defaultKey == null);
 		// Generate unique / reproducible default keys
 		ctx.options.defaultKey = function(node){
 			return calcUniqueKey(node);
 		};
+		// The default implementation loads initial data
+		this._super(ctx);
 	},
 	treeRegisterNode: function(ctx, add, node) {
 		var refList, len,
@@ -261,16 +262,13 @@ $.ui.fancytree.registerExtension({
 			keyMap = tree.keyMap,
 			refMap = tree.refMap,
 			key = node.key,
-			refKey = (node && node.data.refKey != null) ? "" + node.data.refKey : null;
+			refKey = (node && node.refKey != null) ? "" + node.refKey : null;
 
 //		ctx.tree.debug("clones.treeRegisterNode", add, node);
 
 		if( key === "_statusNode" ){
 			return this._super(ctx, add, node);
 		}
-//		if ( true || key == null ) {
-//			node.key = calcUniqueKey(node);
-//		}
 
 		if( add ) {
 			if( keyMap[node.key] != null ) {
