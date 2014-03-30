@@ -1,5 +1,27 @@
 # 2.0.0-8 / Unreleased
+  * [FEATURE] #18: load lazy nodes, if initialized as 'expanded'.
+  * [FEATURE] #162: Optional parameter `noEvents` for node.setActive() and .setExpanded().
+  * [CHANGE] Prefixed all Less variables with '@fancy-' and introduced '@fancy-image-dir'.
+  * [CHANGE] 'loadChildren' event is now also triggered for initial tree load (before it was only triggered for lazy child nodes)
   * [BUGFIX] #117: line height too large when using doctype xhtml
+  * [BUGFIX] #115: Fixed error when trying to drag table headers
+  * [BUGFIX] #163: lazy load throws error if autoscroll: true and result is empty
+  * [FEATURE] [ext-clones] (experimental) new extension that introduces 
+    `node.refKey`, which may occur multiple times in one tree (as opposed to `key`, 
+    which must be unique).
+    New methods `node.isClone()`, `node.getCloneList()` and `tree.getNodesByRef()`.
+    Optionally, clones are tagged wit the `fancytree-clone` class.  
+  * [FEATURE] New option 'defaultKey'. This calback allows to generate keys while loading.
+
+
+# umd branch
+  * build process creates /dist folder
+  * "bower install fancytree" delivers dist folder
+  * ??? (only) tagged releaseses contain /dist folder
+  * ??? minified combined module has separate sections per extension for easy 
+    removal of unneeded code.
+  * ??? AMD support
+
 
 # 2.0.0-7 / 2014-03-09
   * [BREAKING CHANGE] node.isStatusNode() is now a function (was a property before).

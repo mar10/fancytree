@@ -83,6 +83,7 @@ module.exports = (grunt) ->
                 "lib/intro.js"
                 "src/jquery.fancytree.js"
                 "src/jquery.fancytree.childcounter.js"
+#                "src/jquery.fancytree.clones.js"
 #                "src/jquery.fancytree.columnview.js"
                 "src/jquery.fancytree.dnd.js"
                 "src/jquery.fancytree.edit.js"
@@ -186,7 +187,7 @@ module.exports = (grunt) ->
             # Linting according to http://contribute.jquery.org/style-guide/js/
             jshintrc: ".jshintrc"
         beforeConcat: [
-            "Gruntfile.js"
+            # "Gruntfile.js"
             "src/*.js"
             "3rd-party/**/jquery.fancytree.*.js"
             "test/unit/*.js"
@@ -210,7 +211,7 @@ module.exports = (grunt) ->
 
     qunit:
         build: [ "test/unit/test-core-build.html" ]
-        develop: [ "test/unit/test-core.html" ]
+        develop: [ "test/unit/test-core.html", "test/unit/test-ext-table.html", "test/unit/test-ext-misc.html"]
 
     replace: # grunt-text-replace
         build:
@@ -288,8 +289,9 @@ module.exports = (grunt) ->
             files: "src/**/*.less"
             tasks: ["less:development"]
         jshint:
-            atBegin: true
-            files: "src/*.js"
+            options:
+                atBegin: true
+            files: ["src/*.js", "test/unit/*.js"]
             tasks: ["jshint:beforeConcat"]
 
   # ----------------------------------------------------------------------------

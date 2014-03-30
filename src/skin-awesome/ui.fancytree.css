@@ -75,7 +75,6 @@ span.fancytree-drag-helper-img,
   vertical-align: top;
   background-repeat: no-repeat;
   background-position: left;
-  background-image: url("icons.gif");
   background-position: 0em 0em;
 }
 /* Used by iconclass option */
@@ -109,9 +108,6 @@ span.fancytree-expander {
   background-image: none;
   cursor: default;
 }
-.fancytree-loading span.fancytree-expander {
-  background-image: url("loading.gif");
-}
 /*------------------------------------------------------------------------------
  * Checkbox icon
  *----------------------------------------------------------------------------*/
@@ -141,15 +137,11 @@ span.fancytree-icon {
 /* Documents */
 /* Folders */
 /* Status node icons */
-.fancytree-statusnode-wait span.fancytree-icon {
-  background-image: url("loading.gif");
-}
 /*------------------------------------------------------------------------------
  * Node titles and highlighting
  *----------------------------------------------------------------------------*/
 span.fancytree-node {
   /* #117 */
-  display: inherit;
   width: 100%;
 }
 span.fancytree-title {

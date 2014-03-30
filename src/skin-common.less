@@ -29,8 +29,11 @@
 .clearBgImage(@cond:true) when (@cond){
 	background-image: none;
 }
-.setBgImageUrl(@url, @cond:true) when (@cond){
-	background-image: url(@url);
+// .setBgImageUrl(@url, @cond:true) when (@cond){
+// 	background-image: url(@url);
+// }
+.setBgImageUrl(@url) when (@fancy-use-sprites){
+	background-image: url("@{fancy-image-dir}/@{url}");
 }
 
 // background-position mixin for CSS sprites
@@ -150,7 +153,8 @@ span.fancytree-drag-helper-img,
 	vertical-align: top;
 	background-repeat: no-repeat;
 	background-position: left;
-	background-image: url("@{fancy-image-dir}/icons.gif");
+	// background-image: url("@{fancy-image-dir}/icons.gif");
+	.setBgImageUrl("icons.gif");
 	.setBgPos(0, 0);
 }
 /* Used by iconclass option */
@@ -268,7 +272,8 @@ span.fancytree-expander {
 // 'Loading' status overrides all others
 .fancytree-loading span.fancytree-expander  
 {
-	background-image: url("@{fancy-image-dir}/loading.gif");
+	// background-image: url("@{fancy-image-dir}/loading.gif") when @fancy-use-sprites;
+	.setBgImageUrl("loading.gif");
 	.useSprite(0, 0);
 }
 
@@ -385,7 +390,8 @@ span.fancytree-icon // Default icon
 /* Status node icons */
 
 .fancytree-statusnode-wait span.fancytree-icon {
-	background-image: url("@{fancy-image-dir}/loading.gif");
+	// background-image: url("@{fancy-image-dir}/loading.gif");
+	.setBgImageUrl("loading.gif");
 }
 .fancytree-statusnode-error span.fancytree-icon {
 	.useSprite(0, 7);
@@ -399,7 +405,7 @@ span.fancytree-icon // Default icon
 span.fancytree-node {
 	/* #117 */
 //	display: inline-block;
-	display: inherit;
+//	display: inherit;
 	width: 100%;
 	// border: @fancy-node-border-width solid transparent;  /* avoid jumping, when a border is added on hover */
 }
