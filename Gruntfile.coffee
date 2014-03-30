@@ -53,13 +53,14 @@ module.exports = (grunt) ->
 
     clean:
         build:
-            noWrite: true
             src: [ "build" ]
+        dist:
+            src: [ "dist" ]
 
     compress:
         build:
             options:
-                archive: "dist/<%= pkg.name %>-<%= pkg.version %>.zip"
+                archive: "archive/<%= pkg.name %>-<%= pkg.version %>.zip"
             files: [
                 {expand: true, cwd: "build/", src: ["**/*"], dest: ""}
                 ]
@@ -115,7 +116,7 @@ module.exports = (grunt) ->
                 keepalive: false
 
     copy:
-        build:
+        build: # copy production files to build folder
             files: [{
                     expand: true # required for cwd
                     cwd: "src/"
@@ -125,6 +126,8 @@ module.exports = (grunt) ->
                     src: ["*.txt", "*.md"]
                     dest: "build/"
                 }]
+        dist: # copy build folder to dist
+            files: [{expand: true, cwd: "build/", src: ["**"], dest: "dist/"}]
 
   #   csslint:
   # #      options:
@@ -210,20 +213,6 @@ module.exports = (grunt) ->
         develop: [ "test/unit/test-core.html" ]
 
     replace: # grunt-text-replace
-# //            bump : {
-# //                src : ["src/jquery.fancytree.js"],
-# //                overwrite : true,
-# //                replacements : [ {
-# //                    from : /version:\s*\"[0-9\.\-]+\"/,
-# //                    to : "version: \"<%= pkg.version %>\""
-# //                },{
-# //                    from : /@version\s*[0-9\.\-]+/,
-# //                    to : "@version <%= pkg.version %>"
-# //                },{
-# //                    from : /@date\s*[0-9T\.\-\:]+/,
-# //                    to : "@date <%= grunt.template.today('yyyy-mm-dd\"T\"HH:MM') %>"
-# //                } ]
-# //            },
         build:
             src: ["build/*.js"]
             overwrite : true
@@ -344,11 +333,17 @@ module.exports = (grunt) ->
       "qunit:build"
       "compress:build"
       # "compare_size"
+      # "clean:dist"
+      # "copy:dist"
       # "clean:build"
       ]
+  
   grunt.registerTask "release", [
       "checkrepo:beforeRelease"
       "build"
+      "clean:dist"
+      "copy:dist"
+      "clean:build"
       "tagrelease"
       "bumpup:prerelease"
       ]
