@@ -18,6 +18,7 @@
         "demo",
         "doc",
         "lib",
+        "src",
         "test",
         "CONTRIBUTING.md",
         "fancytree.jquery.json",
