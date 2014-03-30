@@ -18,6 +18,8 @@
   * build process creates /dist folder
   * "bower install fancytree" delivers dist folder
   * ??? (only) tagged releaseses contain /dist folder
+    http://stackoverflow.com/questions/19925288/how-do-you-figure-out-the-previous-tag-in-such-a-workfow
+    http://stackoverflow.com/questions/22621900/how-to-put-ignored-folder-into-release-archive-on-github
   * ??? minified combined module has separate sections per extension for easy 
     removal of unneeded code.
   * ??? AMD support

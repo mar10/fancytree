@@ -7,8 +7,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version DEVELOPMENT
- * @date DEVELOPMENT
+ * @version @VERSION
+ * @date @DATE
  */
 
 /** Core Fancytree module.
@@ -3692,11 +3692,12 @@ $.extend($.ui.fancytree,
 	/** @lends ui.fancytree */
 	{
 	/** @type {string} */
-	version: "development",
+	version: "@VERSION",      // Set to semver by 'grunt release'
 	/** @type {string} */
-	buildType: "develop",
+	buildType: "development", // Set to 'production' by 'grunt build'
 	/** @type {int} */
-	debugLevel: 2,  // used by $.ui.fancytree.debug() and as default for tree.options.debugLevel
+	debugLevel: 2,            // Set to 1 by 'grunt build'
+							  // Used by $.ui.fancytree.debug() and as default for tree.options.debugLevel
 
 	_nextId: 1,
 	_nextNodeKey: 1,

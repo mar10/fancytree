@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version DEVELOPMENT
- * @date DEVELOPMENT
+ * @version @VERSION
+ * @date @DATE
  */
 /**
  * @module fancytree/edit
