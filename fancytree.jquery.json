@@ -23,7 +23,7 @@
     }
   ],
   "dependencies": {
-    "jquery": ">=1.5",
+    "jquery": ">=1.7",
     "jquery-ui": ">=1.8.6"
   },
   "keywords": [

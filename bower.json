@@ -1,8 +1,34 @@
 {
-  "name": "jquery.fancytree",
-  "version": "2.0.0-8",
-  "dependencies": {
-    "jquery": ">=1.5",
-    "jquery-ui": ">=1.8.6"
-  }
+    "name": "jquery.fancytree",
+    "version": "2.0.0-8",
+    "keywords": [
+        "ajax",
+        "jquery",
+        "table",
+        "tabletree",
+        "tree",
+        "treegrid"
+    ],
+    "ignore": [
+        "**/.*",
+        "3rd-party",
+        "archive",
+        "bin",
+        "build",
+        "demo",
+        "doc",
+        "lib",
+        "src",
+        "test",
+        "CONTRIBUTING.md",
+        "fancytree.jquery.json",
+        "Gruntfile.coffee",
+        "index.html"
+    ],
+    "dependencies": {
+        "jquery": ">=1.7",
+        "jquery-ui": ">=1.8.6"
+    },
+    "devDependencies": {
+    }
 }
