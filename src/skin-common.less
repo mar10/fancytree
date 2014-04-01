@@ -403,11 +403,13 @@ span.fancytree-icon // Default icon
  *----------------------------------------------------------------------------*/
 
 span.fancytree-node {
-	/* #117 */
-//	display: inline-block;
-//	display: inherit;
+	/* See #117 */
+	display: inherit; // #117, resolves to 'display: list-item;' for standard trees
 	width: 100%;
 	// border: @fancy-node-border-width solid transparent;  /* avoid jumping, when a border is added on hover */
+}
+table.fancytree-container span.fancytree-node {
+	display: inline-block; // #117
 }
 
 span.fancytree-title {
