@@ -27,7 +27,7 @@ function _getIcon(opts, type){
 
 $.ui.fancytree.registerExtension({
 	name: "glyph",
-	version: "0.0.1",
+	version: "0.0.2",
 	// Default options for this extension.
 	options: {
 		prefix: "icon-",
@@ -114,7 +114,7 @@ $.ui.fancytree.registerExtension({
 		if(node.parent){
 			span = $("span.fancytree-expander", node.span).get(0);
 		}else{
-			span = $("span.fancytree-statusnode-wait, span.fancytree-statusnode-error", node.span).find("span.fancytree-expander").get(0);
+			span = $(".fancytree-statusnode-wait, .fancytree-statusnode-error", node[this.nodeContainerAttrName]).find("span.fancytree-expander").get(0);
 		}
 		if( status === "loading"){
 			// $("span.fancytree-expander", ctx.node.span).addClass(_getIcon(opts, "loading"));
