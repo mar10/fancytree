@@ -8,7 +8,7 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js" type="text/javascript"></script>
 
-	<link href="../../src/skin-win8/ui.fancytree.css" rel="stylesheet" type="text/css">
+	<link href="../../src/skin-win8/ui.fancytree.css" rel="stylesheet" type="text/css" class="skinswitcher">
 	<script src="../../src/jquery.fancytree.js" type="text/javascript"></script>
 	<script src="../../src/jquery.fancytree.dnd.js" type="text/javascript"></script>
 	<script src="../../src/jquery.fancytree.gridnav.js" type="text/javascript"></script>
@@ -84,6 +84,12 @@ $(function(){
 		checkbox: true,
 		selectMode: 3,
 		source: SOURCE,
+		// source: {
+		// 	url: "../demo/ajax-tree-plain.json"
+		// },
+		// source: [{title: "1", folder: true}],
+		// source: {foo: "bar", children: SOURCE},
+		titlesTabbable: true,     // Add all node titles to TAB chain
 		dnd: {
 			preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
 			preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
@@ -111,12 +117,6 @@ $(function(){
 			nodeColumnIdx: 2,     // render the node title into the 2nd column
 			checkboxColumnIdx: 0  // render the checkboxes into the 1st column
 		},
-		// source: {
-		// 	url: "../demo/ajax-tree-plain.json"
-		// },
-		// source: [{title: "1", folder: true}],
-		source: {foo: "bar", children: SOURCE},
-		titlesTabbable: true,     // Add all node titles to TAB chain
 		init: function(event, data) {
 			// alert("init: " + data.tree.data.foo);
 		},

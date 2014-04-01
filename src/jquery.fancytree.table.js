@@ -103,9 +103,9 @@ $.ui.fancytree.registerExtension({
 		}
 		for(i=0; i<tree.columnCount; i++) {
 			if(ctx.options.table.nodeColumnIdx === i){
-				$row.append("<td" + tdRole + "><span class='fancytree-node'></span></td>");
+				$row.append("<td" + tdRole + "><span class='fancytree-node' /></td>");
 			}else{
-				$row.append("<td" + tdRole + ">");
+				$row.append("<td" + tdRole + " />");
 			}
 		}
 		tree.rowFragment.appendChild($row.get(0));

@@ -329,6 +329,7 @@ module.exports = (grunt) ->
   grunt.registerTask "default", ["test"]
   grunt.registerTask "build", [
       "exec:tabfix"
+      "less:development"
       "test"
       "jsdoc:build"
       "docco:docs"
