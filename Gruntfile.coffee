@@ -18,7 +18,7 @@ module.exports = (grunt) ->
     # Project metadata, used by the <banner> directive.
     meta:
         # banner: "/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - " +
-        banner: "/*! <%= pkg.title || pkg.name %> - v@VERSION - " +
+        banner: "/*! <%= pkg.title || pkg.name %> - @VERSION - " +
                 "<%= grunt.template.today('yyyy-mm-dd HH:mm') %>\n" +
                 "<%= pkg.homepage ? '  * ' + pkg.homepage + '\\n' : '' %>" +
                 "  * Copyright (c) <%= grunt.template.today('yyyy') %> <%= pkg.author.name %>;" +
@@ -125,7 +125,8 @@ module.exports = (grunt) ->
                 src: ["skin-**/*.{css,gif,png}", "*.txt"]
                 dest: "build/"
             }, {
-                src: ["*.txt", "*.md"]
+                # src: ["*.txt", "*.md"]
+                src: ["MIT-LICENSE.txt"]
                 dest: "build/"
             }]
         dist: # copy build folder to dist
@@ -211,10 +212,12 @@ module.exports = (grunt) ->
             ]
 
     qunit:
-        build: [ "test/unit/test-core-build.html" ]
+        build: [ 
+            "test/unit/test-core-build.html" 
+        ]
         develop: [ 
-            "test/unit/test-core.html", 
-            "test/unit/test-ext-table.html", 
+            "test/unit/test-core.html"
+            "test/unit/test-ext-table.html"
             "test/unit/test-ext-misc.html"
         ]
 
@@ -223,6 +226,9 @@ module.exports = (grunt) ->
             src: ["build/*.js"]
             overwrite : true
             replacements: [ {
+                from : /@DATE/g
+                to : "<%= grunt.template.today('yyyy-mm-dd\"T\"HH:MM') %>"
+            },{
                 from : /buildType:\s*\"[a-zA-Z]+\"/g
                 to : "buildType: \"production\""
             },{
@@ -235,12 +241,6 @@ module.exports = (grunt) ->
             replacements: [ {
                 from : /@VERSION/g
                 to : "<%= pkg.version %>"
-            },{
-                from : /@DATE/g
-                to : "<%= grunt.template.today('yyyy-mm-dd\"T\"HH:MM') %>"
-            },{
-                from : /@DATE/g
-                to : "<%= grunt.template.today('yyyy-mm-dd\"T\"HH:MM') %>"
             } ]
 
     "saucelabs-qunit":
@@ -340,16 +340,15 @@ module.exports = (grunt) ->
       "jshint:afterConcat"
       "uglify"
       "qunit:build"
-      # "compress:build"
       # "compare_size"
+      ]
+  
+  grunt.registerTask "make_release", [
+      "checkrepo:beforeRelease"
+      "build"
       "clean:dist"
       "copy:dist"
       "clean:build"
-      ]
-  
-  grunt.registerTask "release", [
-      "checkrepo:beforeRelease"
-      "build"
       "replace:release"
       "compress:dist"
       "tagrelease"

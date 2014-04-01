@@ -1,4 +1,7 @@
-# 2.0.0-8 / Unreleased
+# 2.0.0-9 / Unreleased
+
+
+# 2.0.0-8 / 2014-04-01
   * [FEATURE] #18: load lazy nodes, if initialized as 'expanded'.
   * [FEATURE] #162: Optional parameter `noEvents` for node.setActive() and .setExpanded().
   * [CHANGE] Prefixed all Less variables with '@fancy-' and introduced '@fancy-image-dir'.
@@ -17,7 +20,6 @@
 
 
 # umd branch
-  * ??? (only) tagged releaseses contain /dist folder
   * ??? minified combined module has separate sections per extension for easy 
     removal of unneeded code.
   * ??? AMD support
