@@ -1,6 +1,6 @@
 {
     "name": "jquery.fancytree",
-    "version": "2.0.0-8",
+    "version": "2.0.0-9",
     "keywords": [
         "ajax",
         "jquery",
@@ -29,6 +29,5 @@
         "jquery": ">=1.7",
         "jquery-ui": ">=1.8.6"
     },
-    "devDependencies": {
-    }
+    "devDependencies": {}
 }
