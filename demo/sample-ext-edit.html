@@ -27,6 +27,7 @@ $(function(){
 		extensions: ["edit"],
 		source: {url: "ajax-tree-plain.json"},
 		edit: {
+			triggerStart: ["f2", "dblclick", "shift+click", "mac+enter"],
 			beforeClose: function(event, data){
 				// Return false to prevent cancel/save (data.input is available)
 			},

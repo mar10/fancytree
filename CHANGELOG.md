@@ -1,9 +1,17 @@
 # 2.0.0-9 / Unreleased
-  * [FEATURE] New helper method $.ui.fancytree.escapeHtml().
-  * [BUGFIX] [ext-edit] handles `<`, `>`, ...
+  * [Added] New helper method $.ui.fancytree.escapeHtml().
+  * [Added] [ext-clones] new method node,reRegister(key, refKey)
+  * [Improved] [ext-edit] handles `<`, `>`, ...
+  * [Improved] [ext-table] node.render(force) trigger renderColumns event
+  * [Fixed]
+  * [Removed]
 
 
 # umd branch
+  * [Added]
+  * [Improved]
+  * [Fixed]
+  * [Removed]
   * ??? minified combined module has separate sections per extension for easy 
     removal of unneeded code.
   * ??? AMD support

@@ -212,7 +212,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.reRegister = function(key, refKey){
 	key = (key == null) ? null :  "" + key;
 	refKey = (refKey == null) ? null :  "" + refKey;
 	this.debug("reRegister", key, refKey);
-	
+
 	var tree = this.tree,
 		prevKey = this.key,
 		prevRefKey = this.refKey,
