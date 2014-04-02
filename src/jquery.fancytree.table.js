@@ -35,9 +35,9 @@ function insertSiblingAfter(referenceNode, newNode) {
 function setChildRowVisibility(parent, flag) {
 	parent.visit(function(node){
 		var tr = node.tr;
-		flag = node.hide ? false : flag; // fix for ext-filter
+		currentFlag = node.hide ? false : flag; // fix for ext-filter
 		if(tr){
-			tr.style.display = flag ? "" : "none";
+			tr.style.display = currentFlag ? "" : "none";
 		}
 		if(!node.expanded){
 			return "skip";
