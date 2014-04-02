@@ -408,9 +408,6 @@ span.fancytree-node {
 	width: 100%;
 	// border: @fancy-node-border-width solid transparent;  /* avoid jumping, when a border is added on hover */
 }
-table.fancytree-container span.fancytree-node {
-	display: inline-block; // #117
-}
 
 span.fancytree-title {
 	display: inline-block; // Better alignment, when title contains <br>
@@ -508,6 +505,9 @@ span.fancytree-drop-target {
 
 table.fancytree-ext-table {
 	border-collapse: collapse;
+	span.fancytree-node {
+		display: inline-block; // #117
+	}
 }
 
 /*------------------------------------------------------------------------------
@@ -544,6 +544,7 @@ table.fancytree-ext-columnview {
 	}
 	span.fancytree-node {
 		position: relative; /* allow positioning of embedded spans */
+		display: inline-block; // #117
 	}
 	span.fancytree-node.fancytree-expanded {
 		background-color: #CBE8F6;

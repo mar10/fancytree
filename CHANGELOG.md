@@ -1,11 +1,4 @@
-# 2.0.0-9 / Unreleased
-  * [Added] New helper method $.ui.fancytree.escapeHtml().
-  * [Added] [ext-clones] new method node,reRegister(key, refKey)
-  * [Added] Support for bower.
-  * [Added] dist/ folder to repository
-  * [Improved] [ext-edit] handles `<`, `>`, ...
-  * [Improved] [ext-table] node.render(force) trigger renderColumns event
-  * [Fixed] [ext-table] #178 children are not displayed when filtering
+# 2.0.0-10 / Unreleased
 
 
 # umd branch
@@ -16,6 +9,16 @@
   * ??? minified combined module has separate sections per extension for easy 
     removal of unneeded code.
   * ??? AMD support
+
+
+# 2.0.0-9 / 2014-04-02
+  * [Added] New helper method $.ui.fancytree.escapeHtml().
+  * [Added] [ext-clones] new method node,reRegister(key, refKey)
+  * [Added] Support for bower.
+  * [Added] dist/ folder to repository
+  * [Improved] [ext-edit] handles `<`, `>`, ...
+  * [Improved] [ext-table] node.render(force) trigger renderColumns event
+  * [Fixed] [ext-table] #178 children are not displayed when filtering
 
 
 # 2.0.0-8 / 2014-04-01
