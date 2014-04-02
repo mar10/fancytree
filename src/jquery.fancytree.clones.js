@@ -202,7 +202,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.isClone = function(){
 
 /**
  * [ext-clones] Update key and/or refKey for an existing node.
- * @param {FancytreeNode} [node] 
+ * @param {FancytreeNode} [node]
  * @param {string} key
  * @param {string} refKey
  * @requires jquery.fancytree.clones.js
