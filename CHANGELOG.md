@@ -1,4 +1,12 @@
 # 2.0.0-9 / Unreleased
+  * [FEATURE] New helper method $.ui.fancytree.escapeHtml().
+  * [BUGFIX] [ext-edit] handles `<`, `>`, ...
+
+
+# umd branch
+  * ??? minified combined module has separate sections per extension for easy 
+    removal of unneeded code.
+  * ??? AMD support
 
 
 # 2.0.0-8 / 2014-04-01
@@ -17,12 +25,6 @@
   * [FEATURE] New option 'defaultKey'. This calback allows to generate keys while loading.
   * build process creates /dist folder
   * "bower install fancytree" delivers dist folder
-
-
-# umd branch
-  * ??? minified combined module has separate sections per extension for easy 
-    removal of unneeded code.
-  * ??? AMD support
 
 
 # 2.0.0-7 / 2014-03-09

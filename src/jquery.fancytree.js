@@ -178,6 +178,7 @@ function _makeNodeTitleMatcher(s){
 
 var i,
 	FT = null, // initialized below
+    ENTITY_MAP = {"&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;", "/": "&#x2F;"},
 	//boolean attributes that can be set with equivalent class names in the LI tags
 	CLASS_ATTRS = "active expanded focus folder hideCheckbox lazy selected unselectable".split(" "),
 	CLASS_ATTR_MAP = {},
@@ -3723,6 +3724,28 @@ $.extend($.ui.fancytree,
 	error: function(msg){
 		consoleApply("error", arguments);
 	},
+	/** Convert &lt;, &gt;, &amp;, &quot;, &#39;, &#x2F; to the equivalent entitites.
+	 *
+	 * @static
+	 * @param {string} s
+	 * @returns {string}
+	 */
+	escapeHtml: function(s){
+		return ("" + s).replace(/[&<>"'\/]/g, function (s) {
+			return ENTITY_MAP[s];
+		});
+	},
+	/** Inverse of escapeHtml().
+	 *
+	 * @static
+	 * @param {string} s
+	 * @returns {string}
+	 */
+	unescapeHtml: function(s){
+		var e = document.createElement("div");
+		e.innerHTML = s;
+		return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+	},
 	/** Return a {node: FancytreeNode, type: TYPE} object for a mouse event.
 	 *
 	 * @static
@@ -3914,27 +3937,4 @@ $.extend($.ui.fancytree,
 	}
 });
 
-// Use $.ui.fancytree.debugLevel as default for tree.options.debugLevel
-//$.ui.fancytree.debug($.ui.fancytree.prototype);
-//$.ui.fancytree.prototype.options.debugLevel = $.ui.fancytree.debugLevel;
-
-
-/* *****************************************************************************
- * Register AMD
- */
-// http://stackoverflow.com/questions/10918063/how-to-make-a-jquery-plugin-loadable-with-requirejs
-
-// if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
-//     define( "jquery", [], function () { return jQuery; } );
-// }
-
-// TODO: maybe like so:?
-// https://raw.github.com/malsup/blockui/master/jquery.blockUI.js
-/*
-if( typeof define === "function" && define.amd ) {
-	define( ["jquery"], function () {
-		return jQuery.ui.fancytree;
-	});
-}
-*/
 }(jQuery, window, document));
