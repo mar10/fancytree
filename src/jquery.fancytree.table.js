@@ -209,10 +209,13 @@ $.ui.fancytree.registerExtension({
 					opts.createNode.call(tree, {type: "createNode"}, ctx);
 				}
 			} else {
-				// Set icon, link, and title (normally this is only required on initial render)
-				//this.nodeRenderTitle(ctx);
-				// Update element classes according to node state
-				this.nodeRenderStatus(ctx);
+				if( force ) {
+					// Set icon, link, and title (normally this is only required on initial render)
+					this.nodeRenderTitle(ctx); // triggers renderColumns()
+				} else {
+					// Update element classes according to node state
+					this.nodeRenderStatus(ctx);
+				}
 			}
 		}
 		 // Allow tweaking after node state was rendered
