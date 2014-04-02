@@ -7,8 +7,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.0.0-8
- * @date 2014-04-01T08:34
+ * @version 2.0.0-9
+ * @date 2014-04-02T22:06
  */
 
 /** Core Fancytree module.
@@ -178,6 +178,7 @@ function _makeNodeTitleMatcher(s){
 
 var i,
 	FT = null, // initialized below
+	ENTITY_MAP = {"&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;", "/": "&#x2F;"},
 	//boolean attributes that can be set with equivalent class names in the LI tags
 	CLASS_ATTRS = "active expanded focus folder hideCheckbox lazy selected unselectable".split(" "),
 	CLASS_ATTR_MAP = {},
@@ -3692,7 +3693,7 @@ $.extend($.ui.fancytree,
 	/** @lends ui.fancytree */
 	{
 	/** @type {string} */
-	version: "2.0.0-8",      // Set to semver by 'grunt release'
+	version: "2.0.0-9",      // Set to semver by 'grunt release'
 	/** @type {string} */
 	buildType: "production", // Set to 'production' by 'grunt build'
 	/** @type {int} */
@@ -3722,6 +3723,28 @@ $.extend($.ui.fancytree,
 	},
 	error: function(msg){
 		consoleApply("error", arguments);
+	},
+	/** Convert &lt;, &gt;, &amp;, &quot;, &#39;, &#x2F; to the equivalent entitites.
+	 *
+	 * @static
+	 * @param {string} s
+	 * @returns {string}
+	 */
+	escapeHtml: function(s){
+		return ("" + s).replace(/[&<>"'\/]/g, function (s) {
+			return ENTITY_MAP[s];
+		});
+	},
+	/** Inverse of escapeHtml().
+	 *
+	 * @static
+	 * @param {string} s
+	 * @returns {string}
+	 */
+	unescapeHtml: function(s){
+		var e = document.createElement("div");
+		e.innerHTML = s;
+		return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
 	},
 	/** Return a {node: FancytreeNode, type: TYPE} object for a mouse event.
 	 *
@@ -3914,29 +3937,6 @@ $.extend($.ui.fancytree,
 	}
 });
 
-// Use $.ui.fancytree.debugLevel as default for tree.options.debugLevel
-//$.ui.fancytree.debug($.ui.fancytree.prototype);
-//$.ui.fancytree.prototype.options.debugLevel = $.ui.fancytree.debugLevel;
-
-
-/* *****************************************************************************
- * Register AMD
- */
-// http://stackoverflow.com/questions/10918063/how-to-make-a-jquery-plugin-loadable-with-requirejs
-
-// if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
-//     define( "jquery", [], function () { return jQuery; } );
-// }
-
-// TODO: maybe like so:?
-// https://raw.github.com/malsup/blockui/master/jquery.blockUI.js
-/*
-if( typeof define === "function" && define.amd ) {
-	define( ["jquery"], function () {
-		return jQuery.ui.fancytree;
-	});
-}
-*/
 }(jQuery, window, document));
 
 // Extending Fancytree
@@ -3960,8 +3960,8 @@ if( typeof define === "function" && define.amd ) {
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.0.0-8
- * @date 2014-04-01T08:34
+ * @version 2.0.0-9
+ * @date 2014-04-02T22:06
  */
 
 // To keep the global namespace clean, we wrap everything in a closure
@@ -4130,8 +4130,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.0.0-8
- * @date 2014-04-01T08:34
+ * @version 2.0.0-9
+ * @date 2014-04-02T22:06
  */
 
 ;(function($, window, document, undefined) {
@@ -4667,8 +4667,8 @@ $.ui.fancytree.registerExtension(
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.0.0-8
- * @date 2014-04-01T08:34
+ * @version 2.0.0-9
+ * @date 2014-04-02T22:06
  */
 /**
  * @module fancytree/edit
@@ -4683,7 +4683,9 @@ $.ui.fancytree.registerExtension(
  * Private functions and variables
  */
 
-var isMac = /Mac/.test(navigator.platform)
+var isMac = /Mac/.test(navigator.platform),
+	escapeHtml = $.ui.fancytree.escapeHtml,
+	unescapeHtml = $.ui.fancytree.unescapeHtml;
 	// modifiers = {shift: "shiftKey", ctrl: "ctrlKey", alt: "altKey", meta: "metaKey"},
 	// specialKeys = {
 	// 	8: "backspace", 9: "tab", 10: "return", 13: "return", 16: "shift", 17: "ctrl", 18: "alt", 19: "pause",
@@ -4699,8 +4701,8 @@ var isMac = /Mac/.test(navigator.platform)
 	// 	"`": "~", "1": "!", "2": "@", "3": "#", "4": "$", "5": "%", "6": "^", "7": "&",
 	// 	"8": "*", "9": "(", "0": ")", "-": "_", "=": "+", ";": ": ", "'": "\"", ",": "<",
 	// 	".": ">",  "/": "?",  "\\": "|"
-	// }
-	;
+	// };
+
 
 // $.ui.fancytree.isKeydownEvent = function(e, code){
 // 	var i, part, partmap, partlist = code.split("+"), len = parts.length;
@@ -4748,7 +4750,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editStart = function(){
 	// Replace node with <input>
 	$input = $("<input />", {
 		"class": "fancytree-edit-input",
-		value: prevTitle
+		value: unescapeHtml(prevTitle)
 	});
 	if ( instOpts.adjustWidthOfs != null ) {
 		$input.width($title.width() + instOpts.adjustWidthOfs);
@@ -4821,7 +4823,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editEnd = function(applyChanges, _e
 	$(document).off(".fancytree-edit");
 
 	if( doSave ) {
-		node.setTitle( newVal );
+		node.setTitle( escapeHtml(newVal) );
 	}else{
 		node.renderTitle();
 	}
@@ -4987,8 +4989,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.0.0-8
- * @date 2014-04-01T08:34
+ * @version 2.0.0-9
+ * @date 2014-04-02T22:06
  */
 
 ;(function($, window, document, undefined) {
@@ -5160,8 +5162,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.0.0-8
- * @date 2014-04-01T08:34
+ * @version 2.0.0-9
+ * @date 2014-04-02T22:06
  */
 
 ;(function($, window, document, undefined) {
@@ -5178,7 +5180,7 @@ function _getIcon(opts, type){
 
 $.ui.fancytree.registerExtension({
 	name: "glyph",
-	version: "0.0.1",
+	version: "0.0.2",
 	// Default options for this extension.
 	options: {
 		prefix: "icon-",
@@ -5265,7 +5267,7 @@ $.ui.fancytree.registerExtension({
 		if(node.parent){
 			span = $("span.fancytree-expander", node.span).get(0);
 		}else{
-			span = $("span.fancytree-statusnode-wait, span.fancytree-statusnode-error", node.span).find("span.fancytree-expander").get(0);
+			span = $(".fancytree-statusnode-wait, .fancytree-statusnode-error", node[this.nodeContainerAttrName]).find("span.fancytree-expander").get(0);
 		}
 		if( status === "loading"){
 			// $("span.fancytree-expander", ctx.node.span).addClass(_getIcon(opts, "loading"));
@@ -5288,8 +5290,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.0.0-8
- * @date 2014-04-01T08:34
+ * @version 2.0.0-9
+ * @date 2014-04-02T22:06
  */
 
 ;(function($, window, document, undefined) {
@@ -5431,8 +5433,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.0.0-8
- * @date 2014-04-01T08:34
+ * @version 2.0.0-9
+ * @date 2014-04-02T22:06
  */
 
 ;(function($, window, document, undefined) {
@@ -5774,8 +5776,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.0.0-8
- * @date 2014-04-01T08:34
+ * @version 2.0.0-9
+ * @date 2014-04-02T22:06
  */
 
 ;(function($, window, document, undefined) {
@@ -5800,9 +5802,9 @@ function insertSiblingAfter(referenceNode, newNode) {
 function setChildRowVisibility(parent, flag) {
 	parent.visit(function(node){
 		var tr = node.tr;
-		flag = node.hide ? false : flag; // fix for ext-filter
+		// currentFlag = node.hide ? false : flag; // fix for ext-filter
 		if(tr){
-			tr.style.display = flag ? "" : "none";
+			tr.style.display = (node.hide || !flag) ? "none" : "";
 		}
 		if(!node.expanded){
 			return "skip";
@@ -5868,9 +5870,9 @@ $.ui.fancytree.registerExtension({
 		}
 		for(i=0; i<tree.columnCount; i++) {
 			if(ctx.options.table.nodeColumnIdx === i){
-				$row.append("<td" + tdRole + "><span class='fancytree-node'></span></td>");
+				$row.append("<td" + tdRole + "><span class='fancytree-node' /></td>");
 			}else{
-				$row.append("<td" + tdRole + ">");
+				$row.append("<td" + tdRole + " />");
 			}
 		}
 		tree.rowFragment.appendChild($row.get(0));
@@ -5974,10 +5976,13 @@ $.ui.fancytree.registerExtension({
 					opts.createNode.call(tree, {type: "createNode"}, ctx);
 				}
 			} else {
-				// Set icon, link, and title (normally this is only required on initial render)
-				//this.nodeRenderTitle(ctx);
-				// Update element classes according to node state
-				this.nodeRenderStatus(ctx);
+				if( force ) {
+					// Set icon, link, and title (normally this is only required on initial render)
+					this.nodeRenderTitle(ctx); // triggers renderColumns()
+				} else {
+					// Update element classes according to node state
+					this.nodeRenderStatus(ctx);
+				}
 			}
 		}
 		 // Allow tweaking after node state was rendered
@@ -6097,8 +6102,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.0.0-8
- * @date 2014-04-01T08:34
+ * @version 2.0.0-9
+ * @date 2014-04-02T22:06
  */
 
 ;(function($, window, document, undefined) {

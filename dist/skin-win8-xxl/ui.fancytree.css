@@ -266,8 +266,12 @@ span.fancytree-icon {
  * Node titles and highlighting
  *----------------------------------------------------------------------------*/
 span.fancytree-node {
-  /* #117 */
+  /* See #117 */
+  display: inherit;
   width: 100%;
+}
+table.fancytree-container span.fancytree-node {
+  display: inline-block;
 }
 span.fancytree-title {
   display: inline-block;
