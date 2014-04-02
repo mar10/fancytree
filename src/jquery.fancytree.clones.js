@@ -201,6 +201,71 @@ $.ui.fancytree._FancytreeNodeClass.prototype.isClone = function(){
 
 
 /**
+ * [ext-clones] Update key and/or refKey for an existing node.
+ * @param {FancytreeNode} [node] 
+ * @param {string} key
+ * @param {string} refKey
+ * @requires jquery.fancytree.clones.js
+ * @returns {boolean}
+ */
+$.ui.fancytree._FancytreeNodeClass.prototype.reRegister = function(key, refKey){
+	key = (key == null) ? null :  "" + key;
+	refKey = (refKey == null) ? null :  "" + refKey;
+	this.debug("reRegister", key, refKey);
+	
+	var tree = this.tree,
+		prevKey = this.key,
+		prevRefKey = this.refKey,
+		keyMap = tree.keyMap,
+		refMap = tree.refMap,
+		refList = refMap[prevRefKey] || null,
+//		curCloneKeys = refList ? node.getCloneList(true),
+		modified = false;
+
+	// Key has changed: update all references
+	if( key != null && key !== this.key ) {
+		if( keyMap[key] ) {
+			$.error("[ext-clones] reRegister(" + key + "): already exists.");
+		}
+		// Update keyMap
+		delete keyMap[prevKey];
+		keyMap[key] = this;
+		// Update refMap
+		if( refList ) {
+			refMap[prevRefKey] = $.map(refList, function(e){
+				return e === prevKey ? key : e;
+			});
+		}
+		this.key = key;
+		modified = true;
+	}
+
+	// refKey has changed
+	if( refKey != null && refKey !== this.refKey ) {
+		// Remove previous refKeys
+		if( refList ){
+			if( refList.length === 1 ){
+				delete refMap[prevRefKey];
+			}else{
+				refMap[prevRefKey] = $.map(refList, function(e){
+					return e === prevKey ? null : e;
+				});
+			}
+		}
+		// Add refKey
+		if( refMap[refKey] ) {
+			refMap[refKey].append(key);
+		}else{
+			refMap[refKey] = [ this.key ];
+		}
+		this.refKey = refKey;
+		modified = true;
+	}
+	return modified;
+};
+
+
+/**
  * [ext-clones] Return all nodes with a given refKey (null if not found).
  * @param {string} refKey
  * @param {FancytreeNode} [rootNode] optionally restrict results to descendants of this node
