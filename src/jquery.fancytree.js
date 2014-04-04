@@ -3036,12 +3036,17 @@ $.extend(Fancytree.prototype,
 		}
 		// Trigger expand/collapse after expanding
 		dfd.done(function(){
-			if( !noEvents ) {
-				ctx.tree._triggerNodeEvent(flag ? "expand" : "collapse", ctx);
-			}
-			if( opts.autoScroll && !noAnimation && node.hasChildren() ) {
+			if( opts.autoScroll && !noAnimation ) {
 				// Scroll down to last child, but keep current node visible
-				node.getLastChild().scrollIntoView(true, node);
+				node.getLastChild().scrollIntoView(true, node).allways(function(){
+					if( !noEvents ) {
+						ctx.tree._triggerNodeEvent(flag ? "expand" : "collapse", ctx);
+					}
+				});
+			} else {
+				if( !noEvents ) {
+					ctx.tree._triggerNodeEvent(flag ? "expand" : "collapse", ctx);
+				}
 			}
 		});
 
