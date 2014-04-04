@@ -218,7 +218,7 @@ $.ui.fancytree.registerExtension({
 				}
 			}
 		}
-		 // Allow tweaking after node state was rendered
+		// Allow tweaking after node state was rendered
 //		tree._triggerNodeEvent("renderNode", ctx);
 		if ( opts.renderNode ){
 			opts.renderNode.call(tree, {type: "renderNode"}, ctx);
@@ -294,10 +294,19 @@ $.ui.fancytree.registerExtension({
 	 },
 	/* Expand node, return Deferred.promise. */
 	nodeSetExpanded: function(ctx, flag, opts) {
-		return this._super(ctx, flag, opts).always(function () {
+		var dfd = new $.Deferred(),
+			prevOpts = opts || {};
+
+		opts = $.extend({}, opts, {noEvents: true, noAnimation: true});
+		this._super(ctx, flag, opts).always(function () {
 			flag = (flag !== false);
 			setChildRowVisibility(ctx.node, flag);
+			if( !prevOpts.noEvents ) {
+				ctx.tree._triggerNodeEvent(flag ? "expand" : "collapse", ctx);
+			}
+			dfd.resolveWith(ctx.node);
 		});
+		return dfd.promise();
 	},
 	nodeSetStatus: function(ctx, status, message, details) {
 		if(status === "ok"){

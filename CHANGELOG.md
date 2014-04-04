@@ -1,4 +1,6 @@
 # 2.0.0-10 / Unreleased
+  * [Improved] setExpanded resolves promise *after* scrollIntoView
+  * [Improved] [ext-table] trigger expand event *after* animations
 
 
 # umd branch
