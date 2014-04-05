@@ -298,13 +298,23 @@ $.ui.fancytree.registerExtension({
 			prevOpts = opts || {};
 
 		opts = $.extend({}, opts, {noEvents: true, noAnimation: true});
-		this._super(ctx, flag, opts).always(function () {
+
+		function _afterExpand(ok) {
 			flag = (flag !== false);
 			setChildRowVisibility(ctx.node, flag);
 			if( !prevOpts.noEvents ) {
 				ctx.tree._triggerNodeEvent(flag ? "expand" : "collapse", ctx);
 			}
-			dfd.resolveWith(ctx.node);
+			if( ok ) {
+				dfd.resolveWith(ctx.node);
+			} else {
+				dfd.rejectWith(ctx.node);
+			}
+		}
+		this._super(ctx, flag, opts).done(function () {
+			_afterExpand(true);
+		}).fail(function () {
+			_afterExpand(false);
 		});
 		return dfd.promise();
 	},
