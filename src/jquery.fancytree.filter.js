@@ -52,6 +52,7 @@ function _escapeRegex(str){
 $.ui.fancytree._FancytreeClass.prototype.applyFilter = function(filter){
 	var match, re,
 		count = 0,
+		hideMode = this.options.filter.mode === "hide",
 		leavesOnly = this.options.filter.leavesOnly;
 
 	// Default to 'match title substring (not case sensitive)'
@@ -65,14 +66,14 @@ $.ui.fancytree._FancytreeClass.prototype.applyFilter = function(filter){
 
 	this.enableFilter = true;
 	this.$div.addClass("fancytree-ext-filter");
-	if( this.options.filter.mode === "hide"){
+	if( hideMode ){
 		this.$div.addClass("fancytree-ext-filter-hide");
 	} else {
 		this.$div.addClass("fancytree-ext-filter-dimm");
 	}
 	// Reset current filter
 	this.visit(function(node){
-		node.hide = true;
+// 		node.hide = hideMode && true;
 		delete node.match;
 		delete node.subMatch;
 	});
@@ -80,10 +81,10 @@ $.ui.fancytree._FancytreeClass.prototype.applyFilter = function(filter){
 	this.visit(function(node){
 		if ((!leavesOnly || node.children == null) && filter(node)) {
 			count++;
-			node.hide = false;
+// 			node.hide = false;
 			node.match = true;
 			node.visitParents(function(p){
-				p.hide = false;
+// 				p.hide = false;
 				p.subMatch = true;
 			});
 		}
@@ -101,7 +102,7 @@ $.ui.fancytree._FancytreeClass.prototype.applyFilter = function(filter){
  */
 $.ui.fancytree._FancytreeClass.prototype.clearFilter = function(){
 	this.visit(function(node){
-		delete node.hide;
+// 		delete node.hide;
 		delete node.match;
 		delete node.subMatch;
 	});
@@ -150,7 +151,7 @@ $.ui.fancytree.registerExtension({
 		}
 		$span.toggleClass("fancytree-match", !!node.match);
 		$span.toggleClass("fancytree-submatch", !!node.subMatch);
-		$span.toggleClass("fancytree-hide", !!node.hide);
+		$span.toggleClass("fancytree-hide", !(node.match || node.subMatch));
 
 		// if(opts.filter.mode === "hide"){
 		// 	// visible = !!(node.match || node.subMatch);
