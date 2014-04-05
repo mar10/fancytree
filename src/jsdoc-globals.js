@@ -50,6 +50,9 @@ var EventData = {};
 
 /**
  * Data object passed to FancytreeNode() constructor.
+ * Note: typically these attributes are accessed by meber methods, e.g. `node.isExpanded()`
+ * and `node.setSelected(false)`.
+ *
  * @name NodeData
  * @type {Object}
  *
