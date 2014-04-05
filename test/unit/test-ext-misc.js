@@ -48,8 +48,9 @@ TEST_DATA = [
 		{key: "31", title: "Lazy folder (preload)", folder: true, lazy: true, preload: true },
 		{key: "32", title: "Lazy folder (expand on load)", folder: true, lazy: true, expanded: true }
 	];
-TESTDATA_NODES = 23,
-TESTDATA_TOPNODES = 11,
+
+TESTDATA_NODES = 23;
+TESTDATA_TOPNODES = 11;
 TESTDATA_VISIBLENODES = 13;
 
 
@@ -117,6 +118,8 @@ test("sync load", function() {
 	deepEqual(tools.getNodeKeyArray(nodeList), ["20_2_1"], "node.getCloneList() 1 detected");
 	nodeList = tools.getNode("20_1_1").getCloneList(true);
 	deepEqual(tools.getNodeKeyArray(nodeList), ["20_1_1", "20_2_1"], "node.getCloneList(true) 2 detected");
+
+	nodeList = tools.getNode("20_1_1").getCloneList();
 
 	start();
 });
