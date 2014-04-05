@@ -2152,8 +2152,10 @@ Fancytree.prototype = /** @lends Fancytree# */{
 $.extend(Fancytree.prototype,
 	/** @lends Fancytree_Hooks# */
 	{
-
-	/** _Default handling for mouse click events. */
+	/** Default handling for mouse click events.
+	 *
+	 * @param {EventData} ctx
+	 */
 	nodeClick: function(ctx) {
 //      this.tree.logDebug("ftnode.onClick(" + event.type + "): ftnode:" + this + ", button:" + event.button + ", which: " + event.which);
 		var activate, expand,
@@ -2206,6 +2208,11 @@ $.extend(Fancytree.prototype,
 		}
 		// TODO: return promise?
 	},
+	/** Collapse all other  children of same parent.
+	 *
+	 * @param {EventData} ctx
+	 * @param {object} callOpts
+	 */
 	nodeCollapseSiblings: function(ctx, callOpts) {
 		// TODO: return promise?
 		var ac, i, l,
@@ -2220,6 +2227,9 @@ $.extend(Fancytree.prototype,
 			}
 		}
 	},
+	/** Default handling for mouse douleclick events.
+	 * @param {EventData} ctx
+	 */
 	nodeDblclick: function(ctx) {
 		// TODO: return promise?
 		if( ctx.targetType === "title" && ctx.options.clickFolderMode === 4) {
@@ -2235,6 +2245,7 @@ $.extend(Fancytree.prototype,
 	/** Default handling for mouse keydown events.
 	 *
 	 * NOTE: this may be called with node == null if tree (but no node) has focus.
+	 * @param {EventData} ctx
 	 */
 	nodeKeydown: function(ctx) {
 		// TODO: return promise?
@@ -2302,12 +2313,7 @@ $.extend(Fancytree.prototype,
 	//     var node = ctx.node;
 	//     if(this._triggerNodeEvent())
 	// },
-	/** Load children (async).
-	 *  source may be
-	 *    - an array of children
-	 *    - a node object
-	 *    - an Ajax options object
-	 *    - an Ajax.promise
+	/** Load child nodes (async).
 	 *
 	 * @param {EventData} ctx
 	 * @param {object[]|object|string|$.Promise|function} source
@@ -2730,6 +2736,7 @@ $.extend(Fancytree.prototype,
 	 *
 	 * nodeRenderStatus() is implied.
 	 * @param {EventData} ctx
+	 * @param {string} [title] optinal new title
 	 */
 	nodeRenderTitle: function(ctx, title) {
 		// set node connector images, links and text
@@ -3126,7 +3133,7 @@ $.extend(Fancytree.prototype,
 		// node.debug("nodeSetExpanded: returns");
 		return dfd.promise();
 	},
-	/**
+	/** Focus ot blur this node.
 	 * @param {EventData} ctx
 	 * @param {boolean} [flag=true]
 	 */
@@ -3328,7 +3335,7 @@ $.extend(Fancytree.prototype,
 	},
 	/** Parse Fancytree from source, as configured in the options.
 	 * @param {EventData} ctx
-	 * @param {object} [source] new source
+	 * @param {object} [source] optional new source (use last data otherwise)
 	 */
 	treeLoad: function(ctx, source) {
 		var type, $ul,
@@ -3381,8 +3388,17 @@ $.extend(Fancytree.prototype,
 		});
 		return dfd;
 	},
+	/** Node was inserted into or removed from the tree.
+	 * @param {EventData} ctx
+	 * @param {boolean} add
+	 * @param {FancytreeNode} node
+	 */
 	treeRegisterNode: function(ctx, add, node) {
 	},
+	/** Widget got focus.
+	 * @param {EventData} ctx
+	 * @param {boolean} [flag=true]
+	 */
 	treeSetFocus: function(ctx, flag, _calledByNodeSetFocus) {
 		flag = (flag !== false);
 
