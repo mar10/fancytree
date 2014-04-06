@@ -89,6 +89,11 @@ SOURCE = [
 				// (index #0 is rendered by fancytree by adding the checkbox)
 				$tdList.eq(1).text(node.getIndexHier()).addClass("alignRight");
 				// (index #2 is rendered by fancytree)
+				if( node.isFolder() ) {
+					$tdList.eq(2)
+						.prop("colspan", 5)
+						.nextAll().remove();
+				}
 				// $tdList.eq(3).text(node.key);
 				$tdList.eq(3).html("<input type='input' name='col1' value='" + node.key + "'>");
 				$tdList.eq(4).html("<input type='input' name='col2' value='" + node.key + "'>");

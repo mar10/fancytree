@@ -2548,7 +2548,7 @@ $.extend(Fancytree.prototype,
 		this.nodeRemoveChildMarkup(ctx);
 	},
 	/**
-	 * Create `<li><span>..</span> .. </li>` tags for this node.
+	 * Create `&lt;li>&lt;span>..&lt;/span> .. &lt;/li>` tags for this node.
 	 *
 	 * This method takes care that all HTML markup is created that is required
 	 * to display this node in it's current state.
@@ -2558,7 +2558,7 @@ $.extend(Fancytree.prototype,
 	 * nodeRenderTitle() and nodeRenderStatus() are implied.
 	 *
 	 * Note: if a node was created/removed, nodeRender() must be called for the
-	 *       parent!
+	 *       parent.
 	 * <code>
 	 * <li id='KEY' ftnode=NODE>
 	 *     <span class='fancytree-node fancytree-expanded fancytree-has-children fancytree-lastsib fancytree-exp-el fancytree-ico-e'>

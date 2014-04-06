@@ -102,7 +102,15 @@ $(function(){
 			var node = data.node,
 				$select = $("<select />"),
 				$tdList = $(node.tr).find(">td");
+
 			// (index #0 is rendered by fancytree by adding the checkbox)
+			if( node.isFolder() ) {
+				// make the title cell span the remaining columns, if it is a folder:
+				$tdList.eq(2)
+					.prop("colspan", 6)
+					.nextAll().remove();
+			}
+
 			$tdList.eq(1).text(node.getIndexHier()).addClass("alignRight");
 			// (index #2 is rendered by fancytree)
 			// $tdList.eq(3).text(node.key);

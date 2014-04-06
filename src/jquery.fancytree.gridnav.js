@@ -36,20 +36,79 @@ var	KC = $.ui.keyCode,
 	};
 
 
+/* Calculate TD column index (considering colspans).*/
+function getColIdx($tr, $td) {
+	var colspan,
+		td = $td.get(0),
+		idx = 0;
+
+	$tr.children().each(function () {
+		if( this === td ) {
+			return false;
+		}
+		colspan = $(this).prop("colspan");
+		idx += colspan ? colspan : 1;
+	});
+	return idx;
+}
+
+
+/* Find TD at given column index (considering colspans).*/
+function findTdAtColIdx($tr, colIdx) {
+	var colspan,
+		res = null,
+		idx = 0;
+
+	$tr.children().each(function () {
+		if( idx >= colIdx ) {
+			res = $(this);
+			return false;
+		}
+		colspan = $(this).prop("colspan");
+		idx += colspan ? colspan : 1;
+	});
+	return res;
+}
+
+
+/* Find adjacent cell for a given direction. Skip empty cells and consider merged cells */
 function findNeighbourTd($target, keyCode){
-	var $td = $target.closest("td");
+	var $tr, colIdx,
+		$td = $target.closest("td"),
+		$tdNext = null;
+
 	switch( keyCode ){
 		case KC.LEFT:
-			return $td.prev();
+			$tdNext = $td.prev();
+			break;
 		case KC.RIGHT:
-			return $td.next();
+			$tdNext = $td.next();
+			break;
 		case KC.UP:
-			return $td.parent().prevAll(":visible").first().find("td").eq($td.index());
 		case KC.DOWN:
-			return $td.parent().nextAll(":visible").first().find("td").eq($td.index());
+			$tr = $td.parent();
+			colIdx = getColIdx($tr, $td);
+			while( true ) {
+				$tr = (keyCode === KC.UP) ? $tr.prev() : $tr.next();
+				if( !$tr.length ) {
+					break;
+				}
+				// Skip hidden rows
+				if( $tr.is(":hidden") ) {
+					continue;
+				}
+				// Find adjacent cell in the same column
+				$tdNext = findTdAtColIdx($tr, colIdx);
+				// Skip cells that don't conatain a focusable element
+				if( $tdNext && $tdNext.find(":input").length ) {
+					break;
+				}
+			}
+			break;
 	}
-	return null;
+	return $tdNext;
 }
+
 
 /*******************************************************************************
  * Extension code
@@ -118,7 +177,7 @@ $.ui.fancytree.registerExtension({
 
 		// jQuery
 		inputType = $target.is(":input:enabled") ? $target.prop("type") : null;
-		ctx.tree.debug("ext-gridnav nodeKeydown", event, inputType);
+//		ctx.tree.debug("ext-gridnav nodeKeydown", event, inputType);
 
 		if( inputType && opts.handleCursorKeys ){
 			handleKeys = NAV_KEYS[inputType];
