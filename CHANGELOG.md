@@ -1,13 +1,11 @@
 # 2.0.0-10 / Unreleased
   * [Improved] setExpanded resolves promise *after* scrollIntoView
+  * [Improved] Allow to return false in lazyLoad for manual loading.
   * [Improved] [ext-table] trigger expand event *after* animations
+  * [Improved] [ext-gridnav] skips empty and merged cells
 
 
 # umd branch
-  * [Added]
-  * [Improved]
-  * [Fixed]
-  * [Removed]
   * ??? minified combined module has separate sections per extension for easy 
     removal of unneeded code.
   * ??? AMD support

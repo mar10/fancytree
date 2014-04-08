@@ -955,6 +955,9 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		// This method is also called by setExpanded() and loadKeyPath(), so we
 		// have to avoid recursion.
 		source = this.tree._triggerNodeEvent("lazyLoad", this);
+		if( source === false ) { // #69
+			return _getResolvedPromise(this);
+		}
 		_assert(typeof source !== "boolean", "lazyLoad event must return source in data.result");
 		res = this.tree._callHook("nodeLoadChildren", this, source);
 		if( this.expanded ) {
