@@ -383,6 +383,17 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		_assert(false, "Invalid mode: " + mode);
 	},
 	/**
+	 * Append new node after this.
+	 *
+	 * This a convenience function that calls addNode(node, 'after')
+	 *
+	 * @param {NodeData} node node definition
+	 * @returns {FancytreeNode} new node
+	 */
+	appendSibling: function(node){
+		return this.addNode(node, "after");
+	},
+	/**
 	 * Modify existing child nodes.
 	 *
 	 * @param {NodePatch} patch

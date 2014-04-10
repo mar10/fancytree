@@ -180,14 +180,14 @@ $(function(){
 		}
 	});
 	addSampleButton({
-		tooltip: "Use node.addChildren(data, beforeNode) and node .getNextSibling() to append a sibling",
+		tooltip: "Use node.appendSibling()",
 		label: "Apppend a sibling node",
 		newline: false,
 		code: function(){
 			var tree = $("#tree").fancytree("getTree"),
 				node = tree.getActiveNode(),
 				newData = {title: "New Node"},
-				newSibling = node.getParent().addChildren(newData, node.getNextSibling());
+				newSibling = node.appendSibling(newData);
 		}
 	});
 	addSampleButton({

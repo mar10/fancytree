@@ -1,4 +1,5 @@
 # 2.0.0-10 / Unreleased
+  * [Added] New method node.appendSibling()
   * [Improved] setExpanded resolves promise *after* scrollIntoView
   * [Improved] Allow to return false in lazyLoad for manual loading.
   * [Improved] [ext-table] trigger expand event *after* animations
