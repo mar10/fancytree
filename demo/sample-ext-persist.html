@@ -50,7 +50,7 @@
 			postProcess: function(event, data) {
 				// Create predictable, **unique** keys, which we need for our lazy
 				// persistence example. This is only required for this demo,
-				// because our lazyLoad handler will allways return the same
+				// because our lazyLoad handler will always return the same
 				// fake data.
 				var prefix = data.node.getIndexHier() + ".";
 				$.each(data.response, function(idx, childEntry){
