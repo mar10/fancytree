@@ -5,20 +5,20 @@
 // Allow unused variables for demonstration
 /*jshint unused:false */
 
-/**
+/*  *
  * The jQuery namespace, also acessible by the alias `$`.
  * @name jQuery
  * @namespace
  */
 
-/**
+/*  *
  * The <a href="http://jqueryui.com">jQuery UI</a> namespace.
  * @name ui
  * @namespace
  * @memberof jQuery
  */
 
-/**
+/*  *
  * Create stateful jQuery plugins using the same abstraction as all jQuery UI widgets.
  * @name jQuery.Widget
  * @class
@@ -26,7 +26,7 @@
  * @see http://api.jqueryui.com/jQuery.widget/
  */
 
-/**
+/*  *
  * (Upcoming) namespace for Fancytree.
  * @name moogle
  * @namespace

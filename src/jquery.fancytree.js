@@ -3420,20 +3420,21 @@ $.extend(Fancytree.prototype,
 /* ******************************************************************************
  * jQuery UI widget boilerplate
  */
+
 /**
- * This constructor is not called directly. Use `$(selector).fancytre({})`
- * to initialize the plugin instead.
- *
- * @class ui.fancytree
- * @classdesc The plugin (derrived from <a href=" http://api.jqueryui.com/jQuery.widget/">jQuery.Widget</a>).<br>
- * <pre class="sh_javascript sunlight-highlight-javascript">// Access instance methods and members:
- * var tree = $(selector).fancytree("getTree");
- * // Access static members:
- * alert($.ui.fancytree.version);
+ * The plugin (derrived from <a href=" http://api.jqueryui.com/jQuery.widget/">jQuery.Widget</a>).<br>
+ * This constructor is not called directly. Use `$(selector).fancytree({})`
+ * to initialize the plugin instead.<br>
+ * <pre class="sh_javascript sunlight-highlight-javascript">// Access widget methods and members:
+ * var tree = $("#tree").fancytree("getTree");
+ * var node = $("#tree").fancytree("getActiveNode", "1234");
  * </pre>
+ *
+ * @mixin Fancytree_Widget
  */
+
 $.widget("ui.fancytree",
-	/** @lends ui.fancytree# */
+	/** @lends Fancytree_Widget# */
 	{
 	/**These options will be used as defaults
 	 * @type {FancytreeOptions}
@@ -3682,22 +3683,28 @@ $.widget("ui.fancytree",
 			}
 		});
 	},
-	/** @returns {FancytreeNode} the active node or null */
+	/** Return the active node or null.
+	 * @returns {FancytreeNode} 
+	 */
 	getActiveNode: function() {
 		return this.tree.activeNode;
 	},
-	/**
+	/** Return the matching node or null.
 	 * @param {string} key
-	 * @returns {FancytreeNode} the matching node or null
+	 * @returns {FancytreeNode}
 	 */
 	getNodeByKey: function(key) {
 		return this.tree.getNodeByKey(key);
 	},
-	/** @returns {FancytreeNode} the invisible system root node */
+	/** Return the invisible system root node.
+	 * @returns {FancytreeNode} 
+	 */
 	getRootNode: function() {
 		return this.tree.rootNode;
 	},
-	/** @returns {Fancytree} the current tree instance */
+	/** Return the current tree instance.
+	 * @returns {Fancytree}
+	 */
 	getTree: function() {
 		return this.tree;
 	}
@@ -3706,15 +3713,18 @@ $.widget("ui.fancytree",
 // $.ui.fancytree was created by the widget factory. Create a local shortcut:
 FT = $.ui.fancytree;
 
-/*
- * Static members in the `$.ui.fancytree` namespace.
- *
- * @example:
- * alert(""version: " + $.ui.fancytree.version);
+/**
+ * Static members in the `$.ui.fancytree` namespace.<br>
+ * <br>
+ * <pre class="sh_javascript sunlight-highlight-javascript">// Access static members:
  * var node = $.ui.fancytree.getNode(element);
+ * alert($.ui.fancytree.version);
+ * </pre>
+ *
+ * @mixin Fancytree_Static
  */
 $.extend($.ui.fancytree,
-	/** @lends ui.fancytree */
+	/** @lends Fancytree_Static# */
 	{
 	/** @type {string} */
 	version: "@VERSION",      // Set to semver by 'grunt release'
@@ -3738,19 +3748,28 @@ $.extend($.ui.fancytree,
 		// http://jqueryui.com/upgrade-guide/1.9/#deprecated-offset-option-merged-into-my-and-at
 		positionMyOfs: isVersionAtLeast($.ui.version, 1, 9)
 		},
+	/** Throw an error if condition fails (debug method).
+	 * @param {boolean} cond
+	 * @param {string} msg
+	 */
 	assert: function(cond, msg){
 		return _assert(cond, msg);
 	},
+	/** Write message to console if debugLevel >= 2 
+	 * @param {string} msg
+	 */
 	debug: function(msg){
 		/*jshint expr:true */
 		($.ui.fancytree.debugLevel >= 2) && consoleApply("log", arguments);
 	},
+	/** Write error message to console.
+	 * @param {string} msg
+	 */
 	error: function(msg){
 		consoleApply("error", arguments);
 	},
 	/** Convert &lt;, &gt;, &amp;, &quot;, &#39;, &#x2F; to the equivalent entitites.
 	 *
-	 * @static
 	 * @param {string} s
 	 * @returns {string}
 	 */
@@ -3761,7 +3780,6 @@ $.extend($.ui.fancytree,
 	},
 	/** Inverse of escapeHtml().
 	 *
-	 * @static
 	 * @param {string} s
 	 * @returns {string}
 	 */
@@ -3772,7 +3790,6 @@ $.extend($.ui.fancytree,
 	},
 	/** Return a {node: FancytreeNode, type: TYPE} object for a mouse event.
 	 *
-	 * @static
 	 * @param {Event} event Mouse event, e.g. click, ...
 	 * @returns {string} 'title' | 'prefix' | 'expander' | 'checkbox' | 'icon' | undefined
 	 */
@@ -3844,6 +3861,9 @@ $.extend($.ui.fancytree,
 		return null;
 	},
 	*/
+	/** Write message to console if debugLevel >= 1 
+	 * @param {string} msg
+	 */
 	info: function(msg){
 		/*jshint expr:true */
 		($.ui.fancytree.debugLevel >= 1) && consoleApply("info", arguments);
@@ -3949,13 +3969,16 @@ $.extend($.ui.fancytree,
 	},
 	/** Add Fancytree extension definition to the list of globally available extensions.
 	 *
-	 * @param {Object} definition
+	 * @param {object} definition
 	 */
 	registerExtension: function(definition){
 		_assert(definition.name != null, "extensions must have a `name` property.");
 		_assert(definition.version != null, "extensions must have a `version` property.");
 		$.ui.fancytree._extensions[definition.name] = definition;
 	},
+	/** Write warning message to console.
+	 * @param {string} msg
+	 */
 	warn: function(msg){
 		consoleApply("warn", arguments);
 	}
