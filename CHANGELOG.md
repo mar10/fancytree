@@ -4,6 +4,7 @@
   * [Improved] Allow to return false in lazyLoad for manual loading.
   * [Improved] [ext-table] trigger expand event *after* animations
   * [Improved] [ext-gridnav] skips empty and merged cells
+  * [Improved] grunt build no longer depends on tabfix.py
 
 
 # umd branch

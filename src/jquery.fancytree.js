@@ -3695,7 +3695,7 @@ $.widget("ui.fancytree",
 		});
 	},
 	/** Return the active node or null.
-	 * @returns {FancytreeNode} 
+	 * @returns {FancytreeNode}
 	 */
 	getActiveNode: function() {
 		return this.tree.activeNode;
@@ -3708,7 +3708,7 @@ $.widget("ui.fancytree",
 		return this.tree.getNodeByKey(key);
 	},
 	/** Return the invisible system root node.
-	 * @returns {FancytreeNode} 
+	 * @returns {FancytreeNode}
 	 */
 	getRootNode: function() {
 		return this.tree.rootNode;
@@ -3766,7 +3766,7 @@ $.extend($.ui.fancytree,
 	assert: function(cond, msg){
 		return _assert(cond, msg);
 	},
-	/** Write message to console if debugLevel >= 2 
+	/** Write message to console if debugLevel >= 2
 	 * @param {string} msg
 	 */
 	debug: function(msg){
@@ -3872,7 +3872,7 @@ $.extend($.ui.fancytree,
 		return null;
 	},
 	*/
-	/** Write message to console if debugLevel >= 1 
+	/** Write message to console if debugLevel >= 1
 	 * @param {string} msg
 	 */
 	info: function(msg){

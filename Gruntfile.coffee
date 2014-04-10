@@ -312,6 +312,7 @@ module.exports = (grunt) ->
 
   grunt.registerTask "server", ["connect:forever"]
   grunt.registerTask "dev", ["connect:dev", "watch"]
+  grunt.registerTask "tabfix", ["exec:tabfix"]
   grunt.registerTask "test", [
       "jshint:beforeConcat",
       # "csslint",
@@ -328,7 +329,7 @@ module.exports = (grunt) ->
   
   grunt.registerTask "default", ["test"]
   grunt.registerTask "build", [
-      "exec:tabfix"
+      # "exec:tabfix"
       "less:development"
       "test"
       "jsdoc:build"
@@ -346,6 +347,7 @@ module.exports = (grunt) ->
   
   grunt.registerTask "make_release", [
       "checkrepo:beforeRelease"
+      "exec:tabfix"
       "build"
       "clean:dist"
       "copy:dist"
