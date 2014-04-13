@@ -269,9 +269,6 @@ span.fancytree-node {
   display: inherit;
   width: 100%;
 }
-table.fancytree-container span.fancytree-node {
-  display: inline-block;
-}
 span.fancytree-title {
   display: inline-block;
   padding-left: 3px;
@@ -339,6 +336,9 @@ span.fancytree-drop-target.fancytree-drop-accept a {
 table.fancytree-ext-table {
   border-collapse: collapse;
 }
+table.fancytree-ext-table span.fancytree-node {
+  display: inline-block;
+}
 /*------------------------------------------------------------------------------
  * 'columnview' extension
  *----------------------------------------------------------------------------*/
@@ -370,6 +370,7 @@ table.fancytree-ext-columnview tbody tr td > ul li {
 table.fancytree-ext-columnview span.fancytree-node {
   position: relative;
   /* allow positioning of embedded spans */
+  display: inline-block;
 }
 table.fancytree-ext-columnview span.fancytree-node.fancytree-expanded {
   background-color: #CBE8F6;
