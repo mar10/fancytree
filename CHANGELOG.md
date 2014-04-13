@@ -5,6 +5,7 @@
   * [Improved] [ext-table] trigger expand event *after* animations
   * [Improved] [ext-gridnav] skips empty and merged cells
   * [Improved] grunt build no longer depends on tabfix.py
+  * [Fixed] selectMode: 1 + "selected": true looks buggy
 
 
 # 2.0.0-9 / 2014-04-02

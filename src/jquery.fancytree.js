@@ -270,6 +270,9 @@ function FancytreeNode(parent, obj){
 		_assert(this.tree.activeNode === null, "only one active node allowed");
 		this.tree.activeNode = this;
 	}
+	if( obj.selected ){ // #186
+		this.tree.lastSelectedNode = this;
+	}
 	// TODO: handle obj.focus = true
 	// Create child nodes
 	this.children = null;
