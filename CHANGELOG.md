@@ -1,4 +1,7 @@
-# 2.0.0-10 / Unreleased
+# 2.0.0-11 / Unreleased
+  *
+
+# 2.0.0-10 / 2014-04-13
   * [Added] New method node.appendSibling()
   * [Improved] setExpanded resolves promise *after* scrollIntoView
   * [Improved] Allow to return false in lazyLoad for manual loading.
