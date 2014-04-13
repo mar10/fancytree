@@ -80,6 +80,10 @@ $.ui.fancytree.prototype.widgetMethod1 = function(arg1){
 // A full blown extension, extension is available for all trees and can be
 // enabled like so (see also the [live demo](http://wwwendt.de/tech/fancytree/demo/sample-ext-childcounter.html)):
 //
+//    <script src="../src/jquery.fancytree.js" type="text/javascript"></script>
+//    <script src="../src/jquery.fancytree.childcounter.js" type="text/javascript"></script>
+//    ...
+//
 //     $("#tree").fancytree({
 //         extensions: ["childcounter"],
 //         childcounter: {
@@ -98,7 +102,7 @@ $.ui.fancytree.registerExtension({
 	version: "1.0.0",
 
 // Extension specific options and their defaults.
-// This options will be available as `tree.options.childcounter`
+// This options will be available as `tree.options.childcounter.hideExpanded`
 
 	options: {
 		deep: true,
@@ -127,6 +131,8 @@ $.ui.fancytree.registerExtension({
 // `this`       : the Fancytree instance<br>
 // `this._local`: the namespace that contains extension attributes and private methods (same as this.ext.EXTNAME)<br>
 // `this._super`: the virtual function that was overridden (member of previous extension or Fancytree)
+//
+// See also the [complete list of available hook functions](http://www.wwwendt.de/tech/fancytree/doc/jsdoc/Fancytree_Hooks.html).
 
 	/* Init */
 // `treeInit` is triggered when a tree is initalized. We can set up classes or
@@ -136,7 +142,7 @@ $.ui.fancytree.registerExtension({
 			opts = ctx.options,
 			extOpts = ctx.options.childcounter;
 // Optionally check for dependencies with other extensions
-		//this._requireExtension("glyph", false, false);
+		// this._requireExtension("glyph", false, false);
 // Call the base implementation
 		this._super(ctx);
 // Add a class to the tree container

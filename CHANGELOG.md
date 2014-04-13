@@ -7,12 +7,6 @@
   * [Improved] grunt build no longer depends on tabfix.py
 
 
-# umd branch
-  * ??? minified combined module has separate sections per extension for easy 
-    removal of unneeded code.
-  * ??? AMD support
-
-
 # 2.0.0-9 / 2014-04-02
   * [Added] New helper method $.ui.fancytree.escapeHtml().
   * [Added] [ext-clones] new method node,reRegister(key, refKey)

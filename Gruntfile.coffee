@@ -79,11 +79,12 @@ module.exports = (grunt) ->
         all:
             options:
                 stripBanners: true
+#                separator: "/* @preserve EXTENSION */\n"
             src: [
                 "<%= meta.banner %>"
                 # "lib/intro.js"
                 "src/jquery.fancytree.js"
-                "src/jquery.fancytree.childcounter.js"
+#                "src/jquery.fancytree.childcounter.js"
 #                "src/jquery.fancytree.clones.js"
 #                "src/jquery.fancytree.columnview.js"
                 "src/jquery.fancytree.dnd.js"
@@ -276,6 +277,9 @@ module.exports = (grunt) ->
         build:
             options:
                 banner: "<%= meta.banner %>"
+                # preserveComments: (comment) => /@preserve/.test(comment)
+                # preserveComments: "some"
+                # preserveComments: (comment) -> comment.indexOf("EXT") >= 0
                 report: "min"
 #                  expand: true
 #                  cwd: "build/"
