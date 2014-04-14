@@ -1,18 +1,57 @@
-# 2.0.0-7 / Unreleased
+# 2.0.0-10 / Unreleased
+  * [Added] New method node.appendSibling()
+  * [Improved] setExpanded resolves promise *after* scrollIntoView
+  * [Improved] Allow to return false in lazyLoad for manual loading.
+  * [Improved] [ext-table] trigger expand event *after* animations
+  * [Improved] [ext-gridnav] skips empty and merged cells
+  * [Improved] grunt build no longer depends on tabfix.py
+  * [Fixed] selectMode: 1 + "selected": true looks buggy
+
+
+# 2.0.0-9 / 2014-04-02
+  * [Added] New helper method $.ui.fancytree.escapeHtml().
+  * [Added] [ext-clones] new method node,reRegister(key, refKey)
+  * [Added] Support for bower.
+  * [Added] dist/ folder to repository
+  * [Improved] [ext-edit] handles `<`, `>`, ...
+  * [Improved] [ext-table] node.render(force) trigger renderColumns event
+  * [Fixed] [ext-table] #178 children are not displayed when filtering
+
+
+# 2.0.0-8 / 2014-04-01
+  * [FEATURE] #18: load lazy nodes, if initialized as 'expanded'.
+  * [FEATURE] #162: Optional parameter `noEvents` for node.setActive() and .setExpanded().
+  * [CHANGE] Prefixed all Less variables with '@fancy-' and introduced '@fancy-image-dir'.
+  * [CHANGE] 'loadChildren' event is now also triggered for initial tree load (before it was only triggered for lazy child nodes)
+  * [BUGFIX] #117: line height too large when using doctype xhtml
+  * [BUGFIX] #115: Fixed error when trying to drag table headers
+  * [BUGFIX] #163: lazy load throws error if autoscroll: true and result is empty
+  * [FEATURE] [ext-clones] (experimental) new extension that introduces 
+    `node.refKey`, which may occur multiple times in one tree (as opposed to `key`, 
+    which must be unique).
+    New methods `node.isClone()`, `node.getCloneList()` and `tree.getNodesByRef()`.
+    Optionally, clones are tagged wit the `fancytree-clone` class.  
+  * [FEATURE] New option 'defaultKey'. This calback allows to generate keys while loading.
+  * build process creates /dist folder
+  * "bower install fancytree" delivers dist folder
+
+
+# 2.0.0-7 / 2014-03-09
   * [BREAKING CHANGE] node.isStatusNode() is now a function (was a property before).
     Added new property `node.statusNodeType`.
+  * [BREAKING CHANGE] Renamed ext-awesome to ext-glyph
+  * [DEPRECATION] Deprecated event `lazyload`, use `lazyLoad` (upper case L) instead.
+  * [DEPRECATION] Deprecated methods node.lazyLoad() and node.discard(). use load() and resetLazy() instead.
+  * [FEATURE] Added node.isUndefined(), isLoaded(), resetLazy(), load(), resetLazy()
+  * [FEATURE] [ext-persist] Added option `expandLazy` for recursive loading (still experimental).
+  * [FEATURE] [ext-filter] 'mode: hide' now works with ext-table (still experimental).
+  * [FEATURE] node.makeVisible() accepts options, scrolls into view, and returns a promise.
+  * [FEATURE] Sample xxl and bootstrap themes.
   * [CHANGE] nodeRenderStatus() is now implicitly called by nodeRenderTitle().  
     This also means that now all markup and css classes are finshed, when `renderNode` 
     is fired.
-  * [DEPRECATION] Deprecated event `lazyLoad`, use `lazyLoad` (upper case L) instead.
-  * [DEPRECATION] Deprecated methods node.lazyLoad() and node.discard(). use load() and resetLazy() instead.
-  * [FEATURE] Added node.isUndefined(), isLoaded(), resetLazy(), load(), resetLazy()
-  * [FEATURE] [ext-persist] Added option ``
-  * node.makeVisible() accepts options, scrolls into view, and returns a promise.
-  * Calling setExpanded() on a leaf node fires .done() (not .fail())
-  * Renamed ext-awesome to ext-glyph
-  * Removing the last node collapses it; lazy nodes become empty (not undefined).
-  * Sample xxl and bootstrap themes.
+  * [CHANGE] Calling setExpanded() on a leaf node fires .done() (not .fail())
+  * [CHANGE] Removing the last child node collapses the parent; lazy nodes become empty (not undefined).
 
 
 # 2.0.0-6 / 2014-02-08

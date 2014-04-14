@@ -4,8 +4,8 @@
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 	<title>Test Table - Fancytree</title>
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js" type="text/javascript"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js" type="text/javascript"></script>
 
 <style type="text/css">
 	/* Set alternating row colors (define BEFORE standard css). */
@@ -78,7 +78,7 @@ SOURCE = [
 			source: {foo: "bar", children: SOURCE},
 			titlesTabbable: true,     // Add all node titles to TAB chain
 			init: function(event, data) {
-				alert("init: " + data.tree.data.foo);
+				// alert("init: " + data.tree.data.foo);
 			},
 			lazyLoad: function(event, data) {
 				data.result = {url: "../demo/ajax-sub2.json"};
@@ -89,6 +89,11 @@ SOURCE = [
 				// (index #0 is rendered by fancytree by adding the checkbox)
 				$tdList.eq(1).text(node.getIndexHier()).addClass("alignRight");
 				// (index #2 is rendered by fancytree)
+				if( node.isFolder() ) {
+					$tdList.eq(2)
+						.prop("colspan", 5)
+						.nextAll().remove();
+				}
 				// $tdList.eq(3).text(node.key);
 				$tdList.eq(3).html("<input type='input' name='col1' value='" + node.key + "'>");
 				$tdList.eq(4).html("<input type='input' name='col2' value='" + node.key + "'>");

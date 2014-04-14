@@ -7,8 +7,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version DEVELOPMENT
- * @date DEVELOPMENT
+ * @version @VERSION
+ * @date @DATE
  */
 
 /** Core TestJSDocFancytree module.
@@ -148,7 +148,7 @@ $.extend($.moogle.myWidget,
 	/** @lends moogle.myWidget */
 	{
 	/** @type {string} */
-	version: "development",
+	version: "@VERSION",
 	/** Add TestJSDocFancytree extension definition to the list of globally available extensions.
 	 * @param {object} definition
 	 */

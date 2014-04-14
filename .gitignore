@@ -1,6 +1,6 @@
 /.settings
+/archive
 /build
-/dist
 /test/triage
 /doc/annotated-src
 /doc/jsdoc

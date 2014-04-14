@@ -5,8 +5,8 @@
 	<title>Test Editable Grid - Fancytree</title>
 
 	<link type="text/css" rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/smoothness/jquery-ui.css" />
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js" type="text/javascript"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js" type="text/javascript"></script>
 
 <style type="text/css">
 	/* custom alignment (set by 'renderColumns'' event) */
@@ -26,6 +26,9 @@
 	<script src="../src/jquery.fancytree.edit.js" type="text/javascript"></script>
 	<script src="../src/jquery.fancytree.gridnav.js" type="text/javascript"></script>
 	<script src="../src/jquery.fancytree.table.js" type="text/javascript"></script>
+<!--
+	<script src="../../build/jquery.fancytree-all.min.js" type="text/javascript"></script>
+-->
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
 	<link href="../lib/prettify.css" rel="stylesheet">
@@ -99,7 +102,15 @@ $(function(){
 			var node = data.node,
 				$select = $("<select />"),
 				$tdList = $(node.tr).find(">td");
+
 			// (index #0 is rendered by fancytree by adding the checkbox)
+			if( node.isFolder() ) {
+				// make the title cell span the remaining columns, if it is a folder:
+				$tdList.eq(2)
+					.prop("colspan", 6)
+					.nextAll().remove();
+			}
+
 			$tdList.eq(1).text(node.getIndexHier()).addClass("alignRight");
 			// (index #2 is rendered by fancytree)
 			// $tdList.eq(3).text(node.key);

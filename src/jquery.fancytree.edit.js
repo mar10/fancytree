@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version DEVELOPMENT
- * @date DEVELOPMENT
+ * @version @VERSION
+ * @date @DATE
  */
 /**
  * @module fancytree/edit
@@ -25,7 +25,9 @@
  * Private functions and variables
  */
 
-var isMac = /Mac/.test(navigator.platform)
+var isMac = /Mac/.test(navigator.platform),
+	escapeHtml = $.ui.fancytree.escapeHtml,
+	unescapeHtml = $.ui.fancytree.unescapeHtml;
 	// modifiers = {shift: "shiftKey", ctrl: "ctrlKey", alt: "altKey", meta: "metaKey"},
 	// specialKeys = {
 	// 	8: "backspace", 9: "tab", 10: "return", 13: "return", 16: "shift", 17: "ctrl", 18: "alt", 19: "pause",
@@ -41,8 +43,8 @@ var isMac = /Mac/.test(navigator.platform)
 	// 	"`": "~", "1": "!", "2": "@", "3": "#", "4": "$", "5": "%", "6": "^", "7": "&",
 	// 	"8": "*", "9": "(", "0": ")", "-": "_", "=": "+", ";": ": ", "'": "\"", ",": "<",
 	// 	".": ">",  "/": "?",  "\\": "|"
-	// }
-	;
+	// };
+
 
 // $.ui.fancytree.isKeydownEvent = function(e, code){
 // 	var i, part, partmap, partlist = code.split("+"), len = parts.length;
@@ -90,7 +92,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editStart = function(){
 	// Replace node with <input>
 	$input = $("<input />", {
 		"class": "fancytree-edit-input",
-		value: prevTitle
+		value: unescapeHtml(prevTitle)
 	});
 	if ( instOpts.adjustWidthOfs != null ) {
 		$input.width($title.width() + instOpts.adjustWidthOfs);
@@ -163,7 +165,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editEnd = function(applyChanges, _e
 	$(document).off(".fancytree-edit");
 
 	if( doSave ) {
-		node.setTitle( newVal );
+		node.setTitle( escapeHtml(newVal) );
 	}else{
 		node.renderTitle();
 	}

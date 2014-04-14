@@ -5,8 +5,8 @@
 	<title>Fancytree - Example: childcounter</title>
 
 	<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.1/themes/base/jquery-ui.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.js" type="text/javascript"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.js" type="text/javascript"></script>
 
 	<link href="../src/skin-win7/ui.fancytree.css" rel="stylesheet" type="text/css">
 	<script src="../src/jquery.fancytree.js" type="text/javascript"></script>
@@ -26,15 +26,17 @@ span.fancytree-icon {
 	position: relative;
 }
 span.fancytree-childcounter {
-	color:#800;
-/*	background:#8ee; */
+	color: #fff;
+	background: #428BCA;
 /*	border: 1px solid gray; */
 	position: absolute;
 	top: -6px;
 	right: -6px;
-	min-width:10px;
+	min-width: 10px;
 	height: 10px;
-	border-radius: 50%;
+	line-height: 1;
+	vertical-align: baseline;
+	border-radius: 10px; /*50%;*/
 	padding: 2px;
 	text-align: center;
 	font-size: 9px;

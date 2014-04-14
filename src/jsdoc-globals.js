@@ -5,20 +5,20 @@
 // Allow unused variables for demonstration
 /*jshint unused:false */
 
-/**
+/*  *
  * The jQuery namespace, also acessible by the alias `$`.
  * @name jQuery
  * @namespace
  */
 
-/**
+/*  *
  * The <a href="http://jqueryui.com">jQuery UI</a> namespace.
  * @name ui
  * @namespace
  * @memberof jQuery
  */
 
-/**
+/*  *
  * Create stateful jQuery plugins using the same abstraction as all jQuery UI widgets.
  * @name jQuery.Widget
  * @class
@@ -26,7 +26,7 @@
  * @see http://api.jqueryui.com/jQuery.widget/
  */
 
-/**
+/*  *
  * (Upcoming) namespace for Fancytree.
  * @name moogle
  * @namespace
@@ -50,11 +50,15 @@ var EventData = {};
 
 /**
  * Data object passed to FancytreeNode() constructor.
+ * Note: typically these attributes are accessed by meber methods, e.g. `node.isExpanded()`
+ * and `node.setSelected(false)`.
+ *
  * @name NodeData
  * @type {Object}
  *
  * @property {String} title node text (may contain HTML tags)
  * @property {String} key unique key for this node (auto-generated if omitted)
+ * @property {String} refKey (reserved)
  * @property {Boolean} expanded
  * @property {Boolean} active (initialization only, but will not be stored  with the node).
  * @property {Boolean} focus (initialization only, but will not be stored  with the node).
@@ -116,6 +120,7 @@ var TreePatch = {};
  * @property {Boolean} checkbox Display checkboxes to allow selection (default: false)
  * @property {Integer} clickFolderMode Defines what happens, when the user click a folder node.<br>1:activate, 2:expand, 3:activate and expand, 4:activate/dblclick expands  (default: 4)
  * @property {Integer} debugLevel  0..2 (null: use global setting $.ui.fancytree.debugInfo)
+ * @property {function} defaultKey callback(node) is called for ner nodes without a key. Must return a new unique key. (default null: generates default keys like that: "_" + counter)
  * @property {Boolean} enableAspx Accept passing ajax data in a property named `d` (default: true).
  * @property {String[]} extensions List of active extensions (default: [])
  * @property {object} fx Animation options, null:off (default: { height: "toggle", duration: 200 })

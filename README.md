@@ -31,8 +31,3 @@ Contributors:
 ### Browser Status Matrix
 
 [![Selenium Test Status](https://saucelabs.com/browser-matrix/sauce-fancytree.svg)](https://saucelabs.com/u/sauce-fancytree)
-
-
-----
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/mar10/fancytree/trend.png)](https://bitdeli.com/free "Bitdeli Badge")

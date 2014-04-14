@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version DEVELOPMENT
- * @date DEVELOPMENT
+ * @version @VERSION
+ * @date @DATE
  */
 
 ;(function($, window, document, undefined) {
@@ -35,8 +35,9 @@ function insertSiblingAfter(referenceNode, newNode) {
 function setChildRowVisibility(parent, flag) {
 	parent.visit(function(node){
 		var tr = node.tr;
+		// currentFlag = node.hide ? false : flag; // fix for ext-filter
 		if(tr){
-			tr.style.display = flag ? "" : "none";
+			tr.style.display = (node.hide || !flag) ? "none" : "";
 		}
 		if(!node.expanded){
 			return "skip";
@@ -94,7 +95,7 @@ $.ui.fancytree.registerExtension({
 		$(tree.tbody).empty();
 
 		tree.rowFragment = document.createDocumentFragment();
-		$row = $("<tr>");
+		$row = $("<tr />");
 		tdRole = "";
 		if(ctx.options.aria){
 			$row.attr("role", "row");
@@ -102,9 +103,9 @@ $.ui.fancytree.registerExtension({
 		}
 		for(i=0; i<tree.columnCount; i++) {
 			if(ctx.options.table.nodeColumnIdx === i){
-				$row.append("<td" + tdRole + "><span class='fancytree-node'></span></td>");
+				$row.append("<td" + tdRole + "><span class='fancytree-node' /></td>");
 			}else{
-				$row.append("<td" + tdRole + ">");
+				$row.append("<td" + tdRole + " />");
 			}
 		}
 		tree.rowFragment.appendChild($row.get(0));
@@ -161,13 +162,19 @@ $.ui.fancytree.registerExtension({
 		if( !_recursive ){
 			ctx.hasCollapsedParents = node.parent && !node.parent.expanded;
 		}
-		$.ui.fancytree.debug("*** nodeRender " + node + ", isRoot=" + isRootNode);
+		// $.ui.fancytree.debug("*** nodeRender " + node + ", isRoot=" + isRootNode, "tr=" + node.tr, "hcp=" + ctx.hasCollapsedParents, "parent.tr=" + (node.parent && node.parent.tr));
 		if( !isRootNode ){
 			if(!node.tr){
+				if( ctx.hasCollapsedParents /*&& !node.parent.tr*/ ) {
+					// #166: we assume that the parent will be (recursively) rendered
+					// later anyway.
+					node.debug("nodeRender ignored due to unrendered parent");
+					return;
+				}
 				// Create new <tr> after previous row
 				newRow = tree.rowFragment.firstChild.cloneNode(true);
 				prevNode = findPrevRowNode(node);
-//				$.ui.fancytree.debug("*** nodeRender " + node + ": prev: " + prevNode.key);
+				// $.ui.fancytree.debug("*** nodeRender " + node + ": prev: " + prevNode.key);
 				_assert(prevNode);
 				if(collapsed === true && _recursive){
 					// hide all child rows, so we can use an animation to show it later
@@ -202,13 +209,16 @@ $.ui.fancytree.registerExtension({
 					opts.createNode.call(tree, {type: "createNode"}, ctx);
 				}
 			} else {
-				// Set icon, link, and title (normally this is only required on initial render)
-				//this.nodeRenderTitle(ctx);
-				// Update element classes according to node state
-				this.nodeRenderStatus(ctx);
+				if( force ) {
+					// Set icon, link, and title (normally this is only required on initial render)
+					this.nodeRenderTitle(ctx); // triggers renderColumns()
+				} else {
+					// Update element classes according to node state
+					this.nodeRenderStatus(ctx);
+				}
 			}
 		}
-		 // Allow tweaking after node state was rendered
+		// Allow tweaking after node state was rendered
 //		tree._triggerNodeEvent("renderNode", ctx);
 		if ( opts.renderNode ){
 			opts.renderNode.call(tree, {type: "renderNode"}, ctx);
@@ -284,10 +294,29 @@ $.ui.fancytree.registerExtension({
 	 },
 	/* Expand node, return Deferred.promise. */
 	nodeSetExpanded: function(ctx, flag, opts) {
-		return this._super(ctx, flag, opts).always(function () {
+		var dfd = new $.Deferred(),
+			prevOpts = opts || {};
+
+		opts = $.extend({}, opts, {noEvents: true, noAnimation: true});
+
+		function _afterExpand(ok) {
 			flag = (flag !== false);
 			setChildRowVisibility(ctx.node, flag);
+			if( !prevOpts.noEvents ) {
+				ctx.tree._triggerNodeEvent(flag ? "expand" : "collapse", ctx);
+			}
+			if( ok ) {
+				dfd.resolveWith(ctx.node);
+			} else {
+				dfd.rejectWith(ctx.node);
+			}
+		}
+		this._super(ctx, flag, opts).done(function () {
+			_afterExpand(true);
+		}).fail(function () {
+			_afterExpand(false);
 		});
+		return dfd.promise();
 	},
 	nodeSetStatus: function(ctx, status, message, details) {
 		if(status === "ok"){

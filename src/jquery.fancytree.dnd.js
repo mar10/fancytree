@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version DEVELOPMENT
- * @date DEVELOPMENT
+ * @version @VERSION
+ * @date @DATE
  */
 
 ;(function($, window, document, undefined) {
@@ -55,15 +55,15 @@ function _initDragAndDrop(tree) {
 			// Let source tree create the helper element
 			helper: function(event) {
 				var sourceNode = $.ui.fancytree.getNode(event.target);
-				if(!sourceNode){ // issue 211
-					// TODO: remove this hint, when we understand when it happens
+				if(!sourceNode){ // Dynatree issue 211
+					// might happen, if dragging a table *header*
 					return "<div>ERROR?: helper requested but sourceNode not found</div>";
 				}
 				return sourceNode.tree.ext.dnd._onDragEvent("helper", sourceNode, null, event, null, null);
 			},
 			start: function(event, ui) {
-//              var sourceNode = $.ui.fancytree.getNode(event.target);
-				// don't return false if sourceNode == null (see issue 268)
+				var sourceNode = ui.helper.data("ftSourceNode");
+				return !!sourceNode; // Abort dragging if no node could be found
 			}
 		});
 	}

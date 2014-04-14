@@ -5,10 +5,10 @@
 	<title>Test Case | Fancytree</title>
 
 	<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.1/themes/base/jquery-ui.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js" type="text/javascript"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js" type="text/javascript"></script>
 
-	<link href="../../src/skin-win7/ui.fancytree.css" rel="stylesheet" type="text/css">
+	<link href="../../src/skin-win7/ui.fancytree.css" rel="stylesheet" type="text/css" class="skinswitcher">
 	<script src="../../src/jquery.fancytree.js" type="text/javascript"></script>
 	<script src="../../src/jquery.fancytree.dnd.js" type="text/javascript"></script>
 
@@ -100,13 +100,13 @@ $(function(){
 				data.otherNode.moveTo(node, data.hitMode);
 			}
 		},
-		lazyLoad: function(event, ctx) {
-			ctx.result = SOURCE_2;
-			ctx.tree.rootNode.fixSelection3FromEndNodes();
+		lazyLoad: function(event, data) {
+			data.result = SOURCE_2;
+			data.tree.rootNode.fixSelection3FromEndNodes();
 		},
-		loadChildren: function(event, ctx) {
-			ctx.tree.debug("loadChildren");
-			ctx.node.fixSelection3FromEndNodes();
+		loadChildren: function(event, data) {
+			data.tree.debug("loadChildren");
+			data.node.fixSelection3FromEndNodes();
 		}
 	});
 });
