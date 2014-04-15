@@ -82,8 +82,10 @@ $.ui.fancytree.registerExtension({
 				icon = "expanderOpen";
 			}else if( node.isUndefined() ){
 				icon = "expanderLazy";
-			}else{
+			}else if( node.hasChildren() ){
 				icon = "expanderClosed";
+			}else{
+				icon = "noExpander";
 			}
 			span.className = "fancytree-expander " + map[icon];
 		}
