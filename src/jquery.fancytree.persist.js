@@ -147,6 +147,7 @@ $.ui.fancytree._FancytreeClass.prototype.getPersistData = function(){
 	res[EXPANDED] = ($.cookie(inst.cookiePrefix + EXPANDED) || "").split(delim);
 	res[SELECTED] = ($.cookie(inst.cookiePrefix + SELECTED) || "").split(delim);
 	res[FOCUS] = $.cookie(inst.cookiePrefix + FOCUS);
+	return res;
 };
 
 
