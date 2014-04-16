@@ -50,6 +50,7 @@ function _initDragAndDrop(tree) {
 			scroll: true, // issue 244: enable scrolling (if ul.fancytree-container)
 			scrollSpeed: 7,
 			scrollSensitivity: 10,
+			zIndex: 999,
 			// Delegate draggable.start, drag, and stop events to our handler
 			connectToFancytree: true,
 			// Let source tree create the helper element
