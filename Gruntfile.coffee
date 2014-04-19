@@ -43,20 +43,13 @@ module.exports = (grunt) ->
 #          tagged: false # Require last commit (HEAD) to be tagged
           clean: true # // Require repo to be clean (no unstaged changes)
 
-    # compare_size:
-    #     files:
-    #         "jquery.ui-contextmenu.min.js"
-    #         "jquery.ui-contextmenu.js"
-    #     options:
-    #         compress:
-    #             gz: function (fileContents)
-    #                 return require("gzip-js").zip(fileContents, {}).length;
-
     clean:
         build:
             src: [ "build" ]
         dist:
             src: [ "dist" ]
+        extMin:
+            src: [ "build/jquery.fancytree.*.min.js" ]
 
     compress:
         dist:
@@ -79,7 +72,6 @@ module.exports = (grunt) ->
         all:
             options:
                 stripBanners: true
-#                separator: "/* @preserve EXTENSION */\n"
             src: [
                 "<%= meta.banner %>"
                 # "lib/intro.js"
@@ -99,6 +91,38 @@ module.exports = (grunt) ->
                 # "lib/outro.js"
                 ]
             dest: "build/<%= pkg.name %>-all.js"
+        custom:
+            options:
+                banner: "<%= meta.banner %>"
+                stripBanners: true
+                # separator: "/* @preserve EXTENSION */\n"
+                process: (src, fspec) -> 
+                  # Remove all comments, including /*! ... */
+                  src = src.replace(/\/\*(.|\n)*\*\//g, "")
+                  if /fancytree..+.min.js/.test(fspec)
+                    # If it is an extension:
+                    # Prepend a one-liner instead
+                    fspec = fspec.substr(6) # strip 'build/'
+                    src = "\n/*! Extension '" + fspec + "' */" + src
+                  return src
+            src: [
+                "lib/intro.js"
+                "build/jquery.fancytree.min.js"
+#                "build/jquery.fancytree.childcounter.min.js"
+#                "build/jquery.fancytree.clones.min.js"
+#                "build/jquery.fancytree.columnview.min.js"
+                "build/jquery.fancytree.dnd.min.js"
+                "build/jquery.fancytree.edit.min.js"
+                "build/jquery.fancytree.filter.min.js"
+                "build/jquery.fancytree.glyph.min.js"
+                "build/jquery.fancytree.gridnav.min.js"
+#                "build/jquery.fancytree.menu.min.js"
+                "build/jquery.fancytree.persist.min.js"
+                "build/jquery.fancytree.table.min.js"
+                "build/jquery.fancytree.themeroller.min.js"
+                "lib/outro.js"
+                ]
+            dest: "build/<%= pkg.name %>-custom.min.js"
 
     connect:
         forever:
@@ -133,14 +157,6 @@ module.exports = (grunt) ->
         dist: # copy build folder to dist
             files: [{expand: true, cwd: "build/", src: ["**"], dest: "dist/"}]
 
-  #   csslint:
-  # #      options:
-  # #              csslintrc: ".csslintrc"
-  #       strict:
-  #           options:
-  #               import: 2
-  #           src: ["src/**/*.css"]
-
     cssmin:
         options:
           report: "min"
@@ -153,10 +169,7 @@ module.exports = (grunt) ->
 
     docco:
         docs:
-#            expand: true
-#            cwd: "src/"
             src: ["src/jquery.fancytree.childcounter.js"]
-#            dest: "doc/annotated-src/"
             options:
                 output: "doc/annotated-src"
 
@@ -277,7 +290,9 @@ module.exports = (grunt) ->
         build:
             options:
                 banner: "<%= meta.banner %>"
-                # preserveComments: (comment) => /@preserve/.test(comment)
+                # preserveComments: (comment) -> 
+                #     grunt.log.writeln "@preserve", comment
+                #     /.*@preserve.*/.test(comment)
                 # preserveComments: "some"
                 # preserveComments: (comment) -> comment.indexOf("EXT") >= 0
                 report: "min"
@@ -294,6 +309,24 @@ module.exports = (grunt) ->
             files:
                 "build/<%= pkg.name %>.min.js": ["<%= concat.core.dest %>"],
                 "build/<%= pkg.name %>-all.min.js": ["<%= concat.all.dest %>"]
+        custom:
+            options:
+                # banner: "--- Fancytree Extension ---"
+                report: "min"
+                preserveComments: "some"
+            files: [
+              {
+                  src: ["**/jquery.fancytree*.js", "!*.min.js"]
+                  cwd: "src/"
+                  dest: "build/"
+                  expand: true
+                  rename: (dest, src) ->
+                      folder = src.substring(0, src.lastIndexOf("/"))
+                      filename = src.substring(src.lastIndexOf("/"), src.length)
+                      filename  = filename.substring(0, filename.lastIndexOf("."))
+                      return dest + folder + filename + ".min.js"
+              }
+              ]
 
     watch:
         less:
@@ -305,7 +338,9 @@ module.exports = (grunt) ->
             files: ["src/*.js", "test/unit/*.js"]
             tasks: ["jshint:beforeConcat"]
 
+
   # ----------------------------------------------------------------------------
+
 
   # Load "grunt*" dependencies
 
@@ -330,8 +365,9 @@ module.exports = (grunt) ->
       grunt.registerTask "travis", ["test"]
   else
       grunt.registerTask "travis", ["test", "sauce"]
-  
+
   grunt.registerTask "default", ["test"]
+
   grunt.registerTask "build", [
       # "exec:tabfix"
       "less:development"
@@ -340,13 +376,16 @@ module.exports = (grunt) ->
       "docco:docs"
       "clean:build"
       "copy:build"
-      "concat"
       "cssmin:build"
+      "concat:core"
+      "concat:all"
+      "uglify:custom"
+      "concat:custom"
+      "clean:extMin"
       "replace:production"
       "jshint:afterConcat"
-      "uglify"
+      "uglify:build"
       "qunit:build"
-      # "compare_size"
       ]
   
   grunt.registerTask "make_release", [
