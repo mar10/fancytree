@@ -12,9 +12,6 @@
  * @version @VERSION
  * @date @DATE
  */
-/**
- * @module fancytree/edit
- */
 
 ;(function($, window, document, undefined) {
 
