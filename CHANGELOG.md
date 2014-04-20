@@ -1,6 +1,8 @@
 # 2.0.0-11 / Unreleased
   * [Added] /dist/jquery.fancytree-custom.min.js with AMD support
-  
+  * [Added] #56: Allow to set special node.attributes from data-...
+  * [Fixed] #197: Allow special characters in tooltips
+
 
 # 2.0.0-10 / 2014-04-13
   * [Added] New method node.appendSibling()

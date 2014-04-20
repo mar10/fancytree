@@ -3891,10 +3891,9 @@ $.extend($.ui.fancytree,
 	parseHtml: function($ul) {
 		// TODO: understand this:
 		/*jshint validthis:true */
-		var $children = $ul.find(">li"),
-			extraClasses, i, l, iPos, tmp, classes, className,
+		var extraClasses, i, l, iPos, tmp, tmp2, classes, className,
+			$children = $ul.find(">li"),
 			children = [];
-//			that = this;
 
 		$children.each(function() {
 			var allData, jsonData,
@@ -3953,22 +3952,28 @@ $.extend($.ui.fancytree,
 			// Add <li data-NAME='...'> as node.data.NAME
 			// See http://api.jquery.com/data/#data-html5
 			allData = $li.data();
-//            alert("d: " + JSON.stringify(allData));
 			if(allData && !$.isEmptyObject(allData)) {
 				// Special handling for <li data-json='...'>
 				jsonData = allData.json;
 				delete allData.json;
-				$.extend(d.data, allData);
 				// If a 'data-json' attribute is present, evaluate and add to node.data
 				if(jsonData) {
-//	              alert("$li.data()" + JSON.stringify(jsonData));
 					// <li data-json='...'> is already returned as object
 					// see http://api.jquery.com/data/#data-html5
-					$.extend(d.data, jsonData);
+					$.extend(allData, jsonData);
 				}
+				// #56: Allow to set special node.attributes from data-...
+				for(i=0, l=NODE_ATTRS.length; i<l; i++){
+					tmp = NODE_ATTRS[i];
+					tmp2 = allData[tmp];
+					if( tmp2 != null ) {
+						delete allData[tmp];
+						d[tmp] = tmp2;
+					}
+				}
+				// All other data-... goes to node.data...
+				$.extend(d.data, allData);
 			}
-//	        that.debug("parse ", d);
-//	        var childNode = parentTreeNode.addChild(data);
 			// Recursive reading of child nodes, if LI tag contains an UL tag
 			$ul = $li.find(">ul:first");
 			if( $ul.length ) {
