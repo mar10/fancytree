@@ -168,6 +168,20 @@ function _makeResolveFunc(deferred, context){
 }
 
 
+function _getElementDataAsDict($el){
+	// Evaluate 'data-NAME' attributes with special treatment for 'data-json'.
+	var d = $.extend({}, $el.data()),
+		json = d.json;
+	delete d.fancytree; // added to container by widget factory
+	if( json ) {
+		delete d.json;
+		// <li data-json='...'> is already returned as object (http://api.jquery.com/data/#data-html5)
+		d = $.extend(d, json);
+	}
+	return d;
+}
+
+
 // TODO: use currying
 function _makeNodeTitleMatcher(s){
 	s = s.toLowerCase();
@@ -1633,7 +1647,8 @@ function Fancytree(widget) {
 		}
 	}
 	this.ext = {}; // Active extension instances
-	this.data = {};
+	// allow to init tree.data.foo from <div data-foo=''>
+	this.data = _getElementDataAsDict(this.$div);
 	this._id = $.ui.fancytree._nextId++;
 	this._ns = ".fancytree-" + this._id; // append for namespaced events
 	this.activeNode = null;
@@ -3374,6 +3389,8 @@ $.extend(Fancytree.prototype,
 				$ul = $container.find(">ul:first");
 				$ul.addClass("ui-fancytree-source ui-helper-hidden");
 				source = $.ui.fancytree.parseHtml($ul);
+				// allow to init tree.data.foo from <ul data-foo=''>
+				this.data = $.extend(this.data, _getElementDataAsDict($ul));
 				break;
 			case "json":
 	//            $().addClass("ui-helper-hidden");
@@ -3896,7 +3913,7 @@ $.extend($.ui.fancytree,
 			children = [];
 
 		$children.each(function() {
-			var allData, jsonData,
+			var allData,
 				$li = $(this),
 				$liSpan = $li.find(">span:first", this),
 				$liA = $liSpan.length ? null : $li.find(">a:first"),
@@ -3950,18 +3967,8 @@ $.extend($.ui.fancytree,
 				d.key = tmp;
 			}
 			// Add <li data-NAME='...'> as node.data.NAME
-			// See http://api.jquery.com/data/#data-html5
-			allData = $li.data();
+			allData = _getElementDataAsDict($li);
 			if(allData && !$.isEmptyObject(allData)) {
-				// Special handling for <li data-json='...'>
-				jsonData = allData.json;
-				delete allData.json;
-				// If a 'data-json' attribute is present, evaluate and add to node.data
-				if(jsonData) {
-					// <li data-json='...'> is already returned as object
-					// see http://api.jquery.com/data/#data-html5
-					$.extend(allData, jsonData);
-				}
 				// #56: Allow to set special node.attributes from data-...
 				for(i=0, l=NODE_ATTRS.length; i<l; i++){
 					tmp = NODE_ATTRS[i];

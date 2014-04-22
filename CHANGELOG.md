@@ -1,6 +1,7 @@
 # 2.0.0-11 / Unreleased
   * [Added] /dist/jquery.fancytree-custom.min.js with AMD support
   * [Added] #56: Allow to set special node.attributes from data-...
+  * [Added] #191: Allow to set additional tree.data attributes from <ul data-...>
   * [Fixed] #197: Allow special characters in tooltips
 
 
