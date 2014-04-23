@@ -27,7 +27,7 @@ ul.fancytree-container {
   background-color: white;
   border: 1px dotted gray;
   overflow: auto;
-  height: 100%;
+  min-height: 0%;
 }
 ul.fancytree-container ul {
   padding: 0 0 0 16px;

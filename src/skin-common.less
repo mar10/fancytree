@@ -89,11 +89,12 @@ ul.fancytree-container {
 	font-size: 10pt; // font size should not be too big
 	white-space: nowrap;
 	padding: 3px;
-	margin: 0; // issue 201
+	margin: 0; // DT issue 201
 	background-color: white;
 	border: 1px dotted gray;
 	overflow: auto;
-	height: 100%; // issue 263
+//	height: 100%; // DT issue 263, 470
+	min-height: 0%; // #192
 	ul {
 		padding: 0 0 0 16px;
 		margin: 0;
