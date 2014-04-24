@@ -244,9 +244,9 @@ function FancytreeNode(parent, obj){
 	this.tree = parent.tree;
 	this.ul = null;
 	this.li = null;  // <li id='key' ftnode=this> tag
-	// this.isStatusNode = false;
-	this.statusNodeType = null;
-	this._isLoading = false;
+	this.statusNodeType = null; // if this is a temp. node to display the status of its parent
+	this._isLoading = false;    // if this node itself is loading
+	this._error = null;         // {message: '...'} if a load error occured
 	this.data = {};
 
 	// TODO: merge this code with node.toDict()
@@ -1152,7 +1152,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		}
 
 		// In multi-hier mode, update the parents selection state
-		// issue #82: only if not initializing, because the children may not exist yet
+		// DT issue #82: only if not initializing, because the children may not exist yet
 //		if( !ftnode.data.isStatusNode() && opts.selectMode==3 && !isInitializing )
 //			ftnode._fixSelectionState();
 
@@ -2200,11 +2200,11 @@ $.extend(Fancytree.prototype,
 		if( targetType === "expander" ) {
 			// Clicking the expander icon always expands/collapses
 			this._callHook("nodeToggleExpanded", ctx);
-//            this._callHook("nodeSetFocus", ctx, true); // issue 95
+//            this._callHook("nodeSetFocus", ctx, true); // DT issue 95
 		} else if( targetType === "checkbox" ) {
 			// Clicking the checkbox always (de)selects
 			this._callHook("nodeToggleSelected", ctx);
-			this._callHook("nodeSetFocus", ctx, true); // issue 95
+			this._callHook("nodeSetFocus", ctx, true); // DT issue 95
 		} else {
 			// Honor `clickFolderMode` for
 			expand = false;
@@ -2414,7 +2414,7 @@ $.extend(Fancytree.prototype,
 		if($.isFunction(source.promise)){
 			// `source` is a deferred, i.e. ajax request
 			_assert(!node.isLoading());
-			node._isLoading = true;
+			// node._isLoading = true;
 			tree.nodeSetStatus(ctx, "loading");
 
 			source.done(function () {
@@ -2441,7 +2441,7 @@ $.extend(Fancytree.prototype,
 
 			if( $.isPlainObject(children) ){
 				// We got {foo: 'abc', children: [...]}
-				// Copy extra properties to tree.data.
+				// Copy extra properties to tree.data.foo
 				_assert($.isArray(children.children), "source must contain (or be) an array of children");
 				_assert(node.isRoot(), "source may only be an object for root nodes");
 				metaData = children;
@@ -2455,14 +2455,14 @@ $.extend(Fancytree.prototype,
 			// if( node.parent ) {
 			tree._triggerNodeEvent("loadChildren", node);
 			// }
-		}).always(function(){
-			node._isLoading = false;
+		// }).always(function(){
+		// 	node._isLoading = false;
 		});
 	},
 	/** [Not Implemented]  */
 	nodeLoadKeyPath: function(ctx, keyPathList) {
 		// TODO: implement and improve
-		// http://code.google.com/p/fancytree/issues/detail?id=222
+		// http://code.google.com/p/dynatree/issues/detail?id=222
 	},
 	/**
 	 * Remove a single direct child of ctx.node.
@@ -2563,7 +2563,6 @@ $.extend(Fancytree.prototype,
 		} else{
 			node.children = null;
 		}
-		// TODO: ? this._isLoading = false;
 		this.nodeRenderStatus(ctx);
 	},
 	/**Remove HTML markup for ctx.node and all its descendents.
@@ -2633,7 +2632,7 @@ $.extend(Fancytree.prototype,
 		// FT.debug("nodeRender(" + !!force + ", " + !!deep + ")", node.toString());
 
 		if( ! isRootNode && ! parent.ul ) {
-			// issue #105: calling node.collapse on a deep, unrendered node
+			// Calling node.collapse on a deep, unrendered node
 			return;
 		}
 		_assert(isRootNode || parent.ul, "parent UL must exist");
@@ -2878,7 +2877,7 @@ $.extend(Fancytree.prototype,
 			cnList.push(cn.active);
 //			$(">span.fancytree-title", statusElem).attr("tabindex", "0");
 //			tree.$container.removeAttr("tabindex");
-		}else{
+		// }else{
 //			$(">span.fancytree-title", statusElem).removeAttr("tabindex");
 //			tree.$container.attr("tabindex", "0");
 		}
@@ -2921,6 +2920,12 @@ $.extend(Fancytree.prototype,
 		}
 		if( node.partsel ){
 			cnList.push(cn.partsel);
+		}
+		if( node._isLoading ){
+			cnList.push(cn.loading);
+		}
+		if( node._error ){
+			cnList.push(cn.error);
 		}
 		if( node.selected ){
 			cnList.push(cn.selected);
@@ -3259,17 +3264,18 @@ $.extend(Fancytree.prototype,
 	 */
 	nodeSetStatus: function(ctx, status, message, details) {
 		var node = ctx.node,
-			tree = ctx.tree,
-			cn = ctx.options._classNames;
+			tree = ctx.tree;
+			// cn = ctx.options._classNames;
 
 		function _clearStatusNode() {
+			// Remove dedicated dummy node, if any
 			var firstChild = ( node.children ? node.children[0] : null );
 			if ( firstChild && firstChild.isStatusNode() ) {
 				try{
 					// I've seen exceptions here with loadKeyPath...
 					if(node.ul){
 						node.ul.removeChild(firstChild.li);
-						firstChild.li = null; // avoid leaks (issue 215)
+						firstChild.li = null; // avoid leaks (DT issue 215)
 					}
 				}catch(e){}
 				if( node.children.length === 1 ){
@@ -3280,6 +3286,9 @@ $.extend(Fancytree.prototype,
 			}
 		}
 		function _setStatusNode(data, type) {
+			// Create/modify the dedicated dummy node for 'loading...' or 
+			// 'error!' status. (only called for direct child of the invisible
+			// system root)
 			var firstChild = ( node.children ? node.children[0] : null );
 			if ( firstChild && firstChild.isStatusNode() ) {
 				$.extend(firstChild, data);
@@ -3287,41 +3296,46 @@ $.extend(Fancytree.prototype,
 			} else {
 				data.key = "_statusNode";
 				node._setChildren([data]);
-				// node.children[0].isStatusNode = true;
 				node.children[0].statusNodeType = type;
 				tree.render();
 			}
 			return node.children[0];
 		}
 
-		switch(status){
+		switch( status ){
 		case "ok":
 			_clearStatusNode();
-			$(node.span).removeClass(cn.loading);
-			$(node.span).removeClass(cn.error);
+			// $(node.span).removeClass(cn.loading).removeClass(cn.error);
+			node._isLoading = false;
+			node._error = null;
+			node.renderStatus();
 			break;
 		case "loading":
-			$(node.span).removeClass(cn.error);
-			$(node.span).addClass(cn.loading);
-			if(!node.parent){
+			// $(node.span).removeClass(cn.error).addClass(cn.loading);
+			if( !node.parent ) {
 				_setStatusNode({
 					title: tree.options.strings.loading + (message ? " (" + message + ") " : ""),
 					tooltip: details,
 					extraClasses: "fancytree-statusnode-wait"
 				}, status);
 			}
+			node._isLoading = true;
+			node._error = null;
+			node.renderStatus();
 			break;
 		case "error":
-			$(node.span).removeClass(cn.loading);
-			$(node.span).addClass(cn.error);
+			// $(node.span).removeClass(cn.loading).addClass(cn.error);
 			_setStatusNode({
 				title: tree.options.strings.loadError + (message ? " (" + message + ") " : ""),
 				tooltip: details,
 				extraClasses: "fancytree-statusnode-error"
 			}, status);
+			node._isLoading = false;
+			node._error = { message: message, details: details };
+			node.renderStatus();
 			break;
 		default:
-			$.error("invalid status " + status);
+			$.error("invalid node status " + status);
 		}
 	},
 	/**
@@ -3707,7 +3721,7 @@ $.widget("ui.fancytree",
 					return ( tree._triggerNodeEvent("dblclick", ctx, event) === false ) ? false : tree._callHook("nodeDblclick", ctx);
 				}
 //             } catch(e) {
-// //                var _ = null; // issue 117 // TODO
+// //                var _ = null; // DT issue 117 // TODO
 //                 $.error(e);
 			} finally {
 				tree.phase = prevPhase;
@@ -3848,7 +3862,7 @@ $.extend($.ui.fancytree,
 		}else if( /\bfancytree-icon\b/.test(tcn) ){
 			res.type = "icon";
 		}else if( /\bfancytree-node\b/.test(tcn) ){
-			// TODO: issue #93 (http://code.google.com/p/fancytree/issues/detail?id=93)
+			// TODO: (http://code.google.com/p/dynatree/issues/detail?id=93)
 //			res.type = this._getTypeForOuterNodeEvent(event);
 			res.type = "title";
 		}

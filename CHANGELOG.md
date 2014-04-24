@@ -5,6 +5,7 @@
   * [Improved] #192: Removed 'height: 100%' for container (was introduced to fix 
      an IE 9 bug, that now should be solved by 'min-height: 0%')
   * [Fixed] #197: Allow special characters in tooltips
+  * [Fixed] #68: renderStatus method doesn't render 'loading' status
 
 
 # 2.0.0-10 / 2014-04-13

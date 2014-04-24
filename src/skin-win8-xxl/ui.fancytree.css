@@ -157,7 +157,8 @@ span.fancytree-expander {
 .fancytree-exp-edl span.fancytree-expander:hover {
   background-position: -96px -192px;
 }
-.fancytree-loading span.fancytree-expander {
+.fancytree-loading span.fancytree-expander,
+.fancytree-loading span.fancytree-expander:hover {
   background-image: url("loading.gif");
   background-position: 0px 0px;
 }
@@ -279,6 +280,9 @@ span.fancytree-title {
   margin: 0px;
   margin-left: 3px;
   cursor: pointer;
+}
+span.fancytree-node.fancytree-error span.fancytree-title {
+  color: red;
 }
 /*------------------------------------------------------------------------------
  * Drag'n'drop support

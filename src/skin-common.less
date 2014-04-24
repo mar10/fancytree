@@ -271,7 +271,8 @@ span.fancytree-expander {
 }
 
 // 'Loading' status overrides all others
-.fancytree-loading span.fancytree-expander  
+.fancytree-loading span.fancytree-expander,
+.fancytree-loading span.fancytree-expander:hover
 {
 	// background-image: url("@{fancy-image-dir}/loading.gif") when @fancy-use-sprites;
 	.setBgImageUrl("loading.gif");
@@ -427,6 +428,9 @@ span.fancytree-title {
 	cursor: pointer;
 }
 
+span.fancytree-node.fancytree-error span.fancytree-title {
+	color: red;
+}
 
 /*------------------------------------------------------------------------------
  * Drag'n'drop support

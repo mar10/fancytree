@@ -155,6 +155,9 @@ span.fancytree-title {
   margin-left: 3px;
   cursor: pointer;
 }
+span.fancytree-node.fancytree-error span.fancytree-title {
+  color: red;
+}
 /*------------------------------------------------------------------------------
  * Drag'n'drop support
  *----------------------------------------------------------------------------*/
