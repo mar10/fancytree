@@ -3009,14 +3009,14 @@ $.extend(Fancytree.prototype,
 			tree.nodeRenderStatus(ctx);
 			tree.nodeSetFocus(ctx);
 			if( !noEvents ) {
-				tree._triggerNodeEvent("activate", node);
+				tree._triggerNodeEvent("activate", node, ctx.originalEvent);
 			}
 		}else{
 			_assert(tree.activeNode === node, "node was not active (inconsistency)");
 			tree.activeNode = null;
 			this.nodeRenderStatus(ctx);
 			if( !noEvents ) {
-				ctx.tree._triggerNodeEvent("deactivate", node);
+				ctx.tree._triggerNodeEvent("deactivate", node, ctx.originalEvent);
 			}
 		}
 	},
