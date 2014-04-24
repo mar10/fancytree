@@ -274,7 +274,6 @@ span.fancytree-expander {
 .fancytree-loading span.fancytree-expander,
 .fancytree-loading span.fancytree-expander:hover
 {
-	// background-image: url("@{fancy-image-dir}/loading.gif") when @fancy-use-sprites;
 	.setBgImageUrl("loading.gif");
 	.useSprite(0, 0);
 }
@@ -391,9 +390,10 @@ span.fancytree-icon // Default icon
 
 /* Status node icons */
 
-.fancytree-statusnode-wait span.fancytree-icon {
-	// background-image: url("@{fancy-image-dir}/loading.gif");
+.fancytree-statusnode-wait span.fancytree-icon,
+.fancytree-statusnode-wait span.fancytree-icon:hover {
 	.setBgImageUrl("loading.gif");
+	.useSprite(0, 0);
 }
 .fancytree-statusnode-error span.fancytree-icon {
 	.useSprite(0, 7);

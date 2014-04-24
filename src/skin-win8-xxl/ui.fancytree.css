@@ -257,8 +257,10 @@ span.fancytree-icon {
   background-position: -160px -32px;
 }
 /* Status node icons */
-.fancytree-statusnode-wait span.fancytree-icon {
+.fancytree-statusnode-wait span.fancytree-icon,
+.fancytree-statusnode-wait span.fancytree-icon:hover {
   background-image: url("loading.gif");
+  background-position: 0px 0px;
 }
 .fancytree-statusnode-error span.fancytree-icon {
   background-position: 0px -224px;
