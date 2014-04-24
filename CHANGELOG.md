@@ -4,6 +4,8 @@
   * [Added] #191: Allow to set additional tree.data attributes from <ul data-...>
   * [Improved] #192: Removed 'height: 100%' for container (was introduced to fix 
      an IE 9 bug, that now should be solved by 'min-height: 0%')
+  * [Improved] [ext-table] #93 renderColumns called for status nodes 
+    (added 'customStatus' option)
   * [Fixed] #197: Allow special characters in tooltips
   * [Fixed] #68: renderStatus method doesn't render 'loading' status
 

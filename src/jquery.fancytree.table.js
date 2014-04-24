@@ -74,12 +74,13 @@ function findPrevRowNode(node){
 
 $.ui.fancytree.registerExtension({
 	name: "table",
-	version: "0.1.0",
+	version: "0.2.0",
 	// Default options for this extension.
 	options: {
-		indentation: 16,        // indent every node level by 16px
-		nodeColumnIdx: 0,       // render node expander, icon, and title to column #0
-		checkboxColumnIdx: null // render the checkboxes into the 1st column
+		checkboxColumnIdx: null, // render the checkboxes into the this column index (default: nodeColumnIdx)
+		customStatus: false,	 // true: generate renderColumns events for status nodes
+		indentation: 16,         // indent every node level by 16px
+		nodeColumnIdx: 0         // render node expander, icon, and title to this column (default: #0)
 	},
 	// Overide virtual methods for this extension.
 	// `this`       : is this extension object
@@ -266,7 +267,7 @@ $.ui.fancytree.registerExtension({
 
 		this._super(ctx);
 		// Move checkbox to custom column
-		if(opts.checkbox && opts.table.checkboxColumnIdx != null){
+		if(opts.checkbox && opts.table.checkboxColumnIdx != null ){
 			$cb = $("span.fancytree-checkbox", node.span).detach();
 			$(node.tr).find("td:first").html($cb);
 		}
@@ -276,7 +277,9 @@ $.ui.fancytree.registerExtension({
 		if( ! node.isRoot() ){
 			this.nodeRenderStatus(ctx);
 		}
-		if ( opts.renderColumns ){
+		if( !opts.table.customStatus && node.isStatusNode() ) {
+			// default rendering for status node: leave other cells empty
+		} else if ( opts.renderColumns ) {
 			opts.renderColumns.call(ctx.tree, {type: "renderColumns"}, ctx);
 		}
 	},
