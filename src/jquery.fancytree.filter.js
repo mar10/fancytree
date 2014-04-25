@@ -53,14 +53,33 @@ $.ui.fancytree._FancytreeClass.prototype.applyFilter = function(filter){
 	var match, re,
 		count = 0,
 		hideMode = this.options.filter.mode === "hide",
-		leavesOnly = this.options.filter.leavesOnly;
+		leavesOnly = this.options.filter.leavesOnly,
+		filterProperty = this.options.filter.filterProperty;
 
 	// Default to 'match title substring (not case sensitive)'
 	if(typeof filter === "string"){
-		match = _escapeRegex(filter); // make sure a '.' is treated literally
-		re = new RegExp(".*" + match + ".*", "i");
+		if(this.options.filter.useRegex) {
+			//if user is supplying the regex run it directly
+			match = filter; // make sure a '.' is treated literally
+			re = new RegExp(match, "i");
+		}
+		else {
+			match = _escapeRegex(filter); // make sure a '.' is treated literally
+			re = new RegExp(".*" + match + ".*", "i");
+		}
 		filter = function(node){
-			return !!re.exec(node.title);
+			//check Fancytree properties and user defined properties
+			if(typeof node[filterProperty] === "undefined") {
+				if(typeof node.data[filterProperty] === "undefined") {
+					return false;
+				}
+				else {
+					return !!re.exec(node.data[filterProperty]);
+				}
+			}
+			else {
+				return !!re.exec(node[filterProperty]);
+			}
 		};
 	}
 
@@ -121,7 +140,9 @@ $.ui.fancytree.registerExtension({
 	// Default options for this extension.
 	options: {
 		mode: "dimm",
-		leavesOnly: false
+		leavesOnly: false,
+		useRegex: false,	//Property to allow users more flexibility by letting them supply a true regex. Default will allow current default functionality to work the 
+		filterProperty: "title"	//Allow users to filter on any Fancytree property or one of their own. Default will allow current default functionality to work the same
 	},
 	// Override virtual methods for this extension.
 	// `this`       : is this extension object
