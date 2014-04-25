@@ -34,12 +34,12 @@ function offsetString(n){
 function _initDragAndDrop(tree) {
 	var dnd = tree.options.dnd || null;
 	// Register 'connectToFancytree' option with ui.draggable
-	if(dnd /*&& (dnd.dragStart || dnd.dragDrop)*/) {
+	if( dnd ) {
 		_registerDnd();
 	}
 	// Attach ui.draggable to this Fancytree instance
 	if(dnd && dnd.dragStart ) {
-		tree.widget.element.draggable({
+		tree.widget.element.draggable($.extend({
 			addClasses: false,
 			appendTo: "body",
 			containment: false,
@@ -65,11 +65,11 @@ function _initDragAndDrop(tree) {
 				var sourceNode = ui.helper.data("ftSourceNode");
 				return !!sourceNode; // Abort dragging if no node could be found
 			}
-		});
+		}, tree.options.dnd.draggable));
 	}
 	// Attach ui.droppable to this Fancytree instance
 	if(dnd && dnd.dragDrop) {
-		tree.widget.element.droppable({
+		tree.widget.element.droppable($.extend({
 			addClasses: false,
 			tolerance: "intersect",
 			greedy: false
@@ -94,7 +94,7 @@ function _initDragAndDrop(tree) {
 				logMsg("droppable - over", event, ui);
 			}
 */
-		});
+		}, tree.options.dnd.droppable));
 	}
 }
 
@@ -211,17 +211,20 @@ $.ui.fancytree.registerExtension(
 	// Default options for this extension.
 	options: {
 		// Make tree nodes draggable:
-		dragStart: null, // Callback(sourceNode, data), return true, to enable dnd
-		dragStop: null, // Callback(sourceNode, data)
+		dragStart: null,  // Callback(sourceNode, data), return true, to enable dnd
+		dragStop: null,   // Callback(sourceNode, data)
 //      helper: null,
 		// Make tree nodes accept draggables
 		autoExpandMS: 1000, // Expand nodes after n milliseconds of hovering.
 		preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
 		preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
-		dragEnter: null, // Callback(targetNode, data)
-		dragOver: null, // Callback(targetNode, data)
-		dragDrop: null, // Callback(targetNode, data)
-		dragLeave: null // Callback(targetNode, data)
+		dragEnter: null,  // Callback(targetNode, data)
+		dragOver: null,   // Callback(targetNode, data)
+		dragDrop: null,   // Callback(targetNode, data)
+		dragLeave: null,  // Callback(targetNode, data)
+		//
+		draggable: null,  // Additional options passed to jQuery draggable
+		droppable: null   // Additional options passed to jQuery droppable
 	},
 	// Override virtual methods for this extension.
 	// `this`       : Fancytree instance

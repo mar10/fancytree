@@ -6,6 +6,7 @@
      an IE 9 bug, that now should be solved by 'min-height: 0%')
   * [Improved] [ext-table] #93 renderColumns called for status nodes 
     (added 'customStatus' option)
+  * [Improved] [ext-dnd] #196 Make draggable/droppable options configurable
   * [Fixed] #197: Allow special characters in tooltips
   * [Fixed] #68: renderStatus method doesn't render 'loading' status
   * [Fixed] #201: originalEvent not passed along to activate callback
