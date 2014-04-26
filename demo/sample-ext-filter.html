@@ -32,6 +32,7 @@
 				url: "ajax-tree-local.json"
 			},
 			filter: {
+//				filterProperty: "key"
 //				mode: "hide"
 			},
 			activate: function(event, data) {
@@ -48,8 +49,10 @@
 		 */
 		$("input[name=search]").keyup(function(e){
 			var match = $(this).val();
-			if(e && e.which === $.ui.keyCode.ESCAPE || $.trim(match) === ""){
-				$("button#btnResetSearch").click();
+            var prop = $("input[name=property]").val();
+            tree.options.filter.filterProperty = prop;
+			if(e && e.which === $.ui.keyCode.ESCAPE || $.trim(match) === "" || $.trim(prop) === ""){
+                tree.clearFilter();
 				return;
 			}
 			// Pass text as filter string (will be matched as substring in the node title)
@@ -58,11 +61,29 @@
 			$("span#matches").text("(" + n + " matches)");
 		}).focus();
 
+		$("input[name=property]").keyup(function(e){
+            var match = $("input[name=search]").val();
+            var prop = $(this).val();
+            tree.options.filter.filterProperty = prop;
+			if(e && e.which === $.ui.keyCode.ESCAPE || $.trim(match) === "" || $.trim(prop) === ""){
+                tree.clearFilter();
+				return;
+			}
+			var n = tree.applyFilter(match);
+			$("button#btnResetProperty").attr("disabled", false);
+			$("span#matches").text("(" + n + " matches)");
+        });
+
 		$("button#btnResetSearch").click(function(e){
 			$("input[name=search]").val("");
 			$("span#matches").text("");
 			tree.clearFilter();
 		}).attr("disabled", true);
+
+		$("button#btnResetProperty").click(function(e){
+			$("input[name=property]").val("");
+			tree.clearFilter();
+		});
 
 		$("input#hideMode").change(function(e){
 			tree.options.filter.mode = $(this).is(":checked") ? "hide" : "dimm";
@@ -70,7 +91,13 @@
 			$("input[name=search]").keyup();
 //			tree.render();
 		});
-	});
+
+		$("input#regExp").change(function(e){
+			tree.options.filter.useRegex = $(this).is(":checked");
+			tree.clearFilter();
+			$("input[name=search]").keyup();
+		});
+    });
 </script>
 </head>
 <body class="example">
@@ -93,9 +120,20 @@
 		<span id="matches"></span>
 	</p>
 	<p>
+		<label>Property:</label>
+		<input name="property" value="title">
+		<button id="btnResetProperty">&times;</button>
+	</p>
+	<p>
 		<label for="hideMode">
 			<input type="checkbox" id="hideMode">
 			Hide unmatched nodes
+		</label>
+	</p>
+	<p>
+		<label for="regExp">
+			<input type="checkbox" id="regExp">
+			Use regular expression
 		</label>
 	</p>
 	<!-- Add a <table> element where the tree should appear: -->
