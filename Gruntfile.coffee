@@ -18,8 +18,8 @@ module.exports = (grunt) ->
     # Project metadata, used by the <banner> directive.
     meta:
         # banner: "/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - " +
-        banner: "/*! <%= pkg.title || pkg.name %> - @VERSION - " +
-                "<%= grunt.template.today('yyyy-mm-dd HH:mm') %>\n" +
+        banner: "/*! <%= pkg.title || pkg.name %> - @VERSION - @DATE\n" +
+                # "<%= grunt.template.today('yyyy-mm-dd HH:mm') %>\n" +
                 "<%= pkg.homepage ? '  * ' + pkg.homepage + '\\n' : '' %>" +
                 "  * Copyright (c) <%= grunt.template.today('yyyy') %> <%= pkg.author.name %>;" +
                 " Licensed <%= _.pluck(pkg.licenses, 'type').join(', ') %> */\n"
@@ -76,7 +76,7 @@ module.exports = (grunt) ->
                 "<%= meta.banner %>"
                 # "lib/intro.js"
                 "src/jquery.fancytree.js"
-#                "src/jquery.fancytree.childcounter.js"
+                "src/jquery.fancytree.childcounter.js"
 #                "src/jquery.fancytree.clones.js"
 #                "src/jquery.fancytree.columnview.js"
                 "src/jquery.fancytree.dnd.js"
@@ -95,7 +95,6 @@ module.exports = (grunt) ->
             options:
                 banner: "<%= meta.banner %>"
                 stripBanners: true
-                # separator: "/* @preserve EXTENSION */\n"
                 process: (src, fspec) -> 
                   # Remove all comments, including /*! ... */
                   src = src.replace(/\/\*(.|\n)*\*\//g, "")
@@ -108,7 +107,7 @@ module.exports = (grunt) ->
             src: [
                 "lib/intro.js"
                 "build/jquery.fancytree.min.js"
-#                "build/jquery.fancytree.childcounter.min.js"
+                "build/jquery.fancytree.childcounter.min.js"
 #                "build/jquery.fancytree.clones.min.js"
 #                "build/jquery.fancytree.columnview.min.js"
                 "build/jquery.fancytree.dnd.min.js"
@@ -149,6 +148,11 @@ module.exports = (grunt) ->
                 cwd: "src/"
                 src: ["skin-**/*.{css,gif,png}", "*.txt"]
                 dest: "build/"
+            }, {
+                expand: true
+                cwd: "src/"
+                src: ["jquery.*.js"]
+                dest: "build/src/"
             }, {
                 # src: ["*.txt", "*.md"]
                 src: ["MIT-LICENSE.txt"]
@@ -237,7 +241,7 @@ module.exports = (grunt) ->
 
     replace: # grunt-text-replace
         production:
-            src: ["build/*.js"]
+            src: ["build/**/*.js"]
             overwrite : true
             replacements: [ {
                 from : /@DATE/g
@@ -250,7 +254,7 @@ module.exports = (grunt) ->
                 to : "debugLevel: 1"
             } ]
         release:
-            src: ["dist/*.js"]
+            src: ["dist/**/*.js"]
             overwrite : true
             replacements: [ {
                 from : /@VERSION/g
@@ -287,31 +291,23 @@ module.exports = (grunt) ->
         annotate: true
 
     uglify:
-        build:
-            options:
-                banner: "<%= meta.banner %>"
-                # preserveComments: (comment) -> 
-                #     grunt.log.writeln "@preserve", comment
-                #     /.*@preserve.*/.test(comment)
-                # preserveComments: "some"
-                # preserveComments: (comment) -> comment.indexOf("EXT") >= 0
-                report: "min"
-#                  expand: true
-#                  cwd: "build/"
-                sourceMap: 
-                    (path) -> path.replace(/.js/, ".js.map")
-                sourceMappingURL: 
-                    (path) -> path.replace(/^build\//, "") + ".map"
-#                    sourceMapIn: function(path) { return path.replace(/^build\//, "")}
-#                    sourceMapRoot: "/" //function(path) { return path.replace(/^build\//, "")}
-                sourceMapPrefix: 1 # strip 'build/' from paths
+        # build:
+        #     options:
+        #         banner: "<%= meta.banner %>"
+        #         # preserveComments: "some"
+        #         report: "min"
+        #         sourceMap: 
+        #             (path) -> path.replace(/.js/, ".js.map")
+        #         sourceMappingURL: 
+        #             (path) -> path.replace(/^build\//, "") + ".map"
+        #         sourceMapPrefix: 1 # strip 'build/' from paths
 
-            files:
-                "build/<%= pkg.name %>.min.js": ["<%= concat.core.dest %>"],
-                "build/<%= pkg.name %>-all.min.js": ["<%= concat.all.dest %>"]
+        #     files:
+        #         "build/<%= pkg.name %>.min.js": ["<%= concat.core.dest %>"],
+        #         "build/<%= pkg.name %>-all.min.js": ["<%= concat.all.dest %>"]
+
         custom:
             options:
-                # banner: "--- Fancytree Extension ---"
                 report: "min"
                 preserveComments: "some"
             files: [
@@ -369,7 +365,6 @@ module.exports = (grunt) ->
   grunt.registerTask "default", ["test"]
 
   grunt.registerTask "build", [
-      # "exec:tabfix"
       "less:development"
       "test"
       "jsdoc:build"
@@ -384,7 +379,7 @@ module.exports = (grunt) ->
       "clean:extMin"
       "replace:production"
       "jshint:afterConcat"
-      "uglify:build"
+      # "uglify:build"
       "qunit:build"
       ]
   

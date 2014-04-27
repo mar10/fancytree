@@ -1613,7 +1613,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
  * Construct a new tree object.
  *
  * @class Fancytree
- * @classdesc A Fancytree is the controller behind a fancytree.
+ * @classdesc The controller behind a fancytree.
  * This class also contains 'hook methods': see {@link Fancytree_Hooks}.
  *
  * @param {Widget} widget
