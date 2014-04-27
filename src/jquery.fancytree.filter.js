@@ -52,47 +52,27 @@ function _escapeRegex(str){
 $.ui.fancytree._FancytreeClass.prototype.applyFilter = function(filter){
 	var match, re,
 		count = 0,
-		hideMode = this.options.filter.mode === "hide",
-		leavesOnly = this.options.filter.leavesOnly,
-		filterProperty = this.options.filter.filterProperty;
+		leavesOnly = this.options.filter.leavesOnly;
 
 	// Default to 'match title substring (not case sensitive)'
 	if(typeof filter === "string"){
-		if(this.options.filter.useRegex) {
-			//if user is supplying the regex run it directly
-			match = filter; // make sure a '.' is treated literally
-			re = new RegExp(match, "i");
-		}
-		else {
-			match = _escapeRegex(filter); // make sure a '.' is treated literally
-			re = new RegExp(".*" + match + ".*", "i");
-		}
+		match = _escapeRegex(filter); // make sure a '.' is treated literally
+		re = new RegExp(".*" + match + ".*", "i");
 		filter = function(node){
-			//check Fancytree properties and user defined properties
-			if(typeof node[filterProperty] === "undefined") {
-				if(typeof node.data[filterProperty] === "undefined") {
-					return false;
-				}
-				else {
-					return !!re.exec(node.data[filterProperty]);
-				}
-			}
-			else {
-				return !!re.exec(node[filterProperty]);
-			}
+			return !!re.exec(node.title);
 		};
 	}
 
 	this.enableFilter = true;
 	this.$div.addClass("fancytree-ext-filter");
-	if( hideMode ){
+	if( this.options.filter.mode === "hide"){
 		this.$div.addClass("fancytree-ext-filter-hide");
 	} else {
 		this.$div.addClass("fancytree-ext-filter-dimm");
 	}
 	// Reset current filter
 	this.visit(function(node){
-// 		node.hide = hideMode && true;
+		node.hide = true;
 		delete node.match;
 		delete node.subMatch;
 	});
@@ -100,10 +80,10 @@ $.ui.fancytree._FancytreeClass.prototype.applyFilter = function(filter){
 	this.visit(function(node){
 		if ((!leavesOnly || node.children == null) && filter(node)) {
 			count++;
-// 			node.hide = false;
+			node.hide = false;
 			node.match = true;
 			node.visitParents(function(p){
-// 				p.hide = false;
+				p.hide = false;
 				p.subMatch = true;
 			});
 		}
@@ -121,7 +101,7 @@ $.ui.fancytree._FancytreeClass.prototype.applyFilter = function(filter){
  */
 $.ui.fancytree._FancytreeClass.prototype.clearFilter = function(){
 	this.visit(function(node){
-// 		delete node.hide;
+		delete node.hide;
 		delete node.match;
 		delete node.subMatch;
 	});
@@ -140,9 +120,7 @@ $.ui.fancytree.registerExtension({
 	// Default options for this extension.
 	options: {
 		mode: "dimm",
-		leavesOnly: false,
-		useRegex: false,	//Property to allow users more flexibility by letting them supply a true regex. Default will allow current default functionality to work the 
-		filterProperty: "title"	//Allow users to filter on any Fancytree property or one of their own. Default will allow current default functionality to work the same
+		leavesOnly: false
 	},
 	// Override virtual methods for this extension.
 	// `this`       : is this extension object
@@ -172,7 +150,7 @@ $.ui.fancytree.registerExtension({
 		}
 		$span.toggleClass("fancytree-match", !!node.match);
 		$span.toggleClass("fancytree-submatch", !!node.subMatch);
-		$span.toggleClass("fancytree-hide", !(node.match || node.subMatch));
+		$span.toggleClass("fancytree-hide", !!node.hide);
 
 		// if(opts.filter.mode === "hide"){
 		// 	// visible = !!(node.match || node.subMatch);
