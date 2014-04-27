@@ -8,7 +8,7 @@
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
  * @version 2.0.0-11
- * @date 2014-04-27T22:13
+ * @date 2014-04-27T22:28
  */
 
 /** Core Fancytree module.
