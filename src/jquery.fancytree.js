@@ -3286,7 +3286,7 @@ $.extend(Fancytree.prototype,
 			}
 		}
 		function _setStatusNode(data, type) {
-			// Create/modify the dedicated dummy node for 'loading...' or 
+			// Create/modify the dedicated dummy node for 'loading...' or
 			// 'error!' status. (only called for direct child of the invisible
 			// system root)
 			var firstChild = ( node.children ? node.children[0] : null );

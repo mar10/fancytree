@@ -2,6 +2,7 @@
   * [Added] /dist/jquery.fancytree-custom.min.js with AMD support
   * [Added] #56: Allow to set special node.attributes from data-...
   * [Added] #191: Allow to set additional tree.data attributes from <ul data-...>
+  * [Added] [ext-childcounter] #202: Allow lazy children count
   * [Improved] #192: Removed 'height: 100%' for container (was introduced to fix 
      an IE 9 bug, that now should be solved by 'min-height: 0%')
   * [Improved] [ext-table] #93 renderColumns called for status nodes 

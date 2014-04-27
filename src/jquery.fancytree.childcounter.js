@@ -160,7 +160,7 @@ $.ui.fancytree.registerExtension({
 	nodeRenderTitle: function(ctx, title) {
 		var node = ctx.node,
 			extOpts = ctx.options.childcounter,
-			count = node.countChildren(extOpts.deep);
+			count = (node.data.childCounter == null) ? node.countChildren(extOpts.deep) : +node.data.childCounter;
 // Let the base implementation render the title
 		this._super(ctx, title);
 // Append a counter badge
