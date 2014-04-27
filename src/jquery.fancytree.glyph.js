@@ -91,7 +91,7 @@ $.ui.fancytree.registerExtension({
 			span.className = "fancytree-expander " + map[icon];
 		}
 
-		span = $("span.fancytree-checkbox", node.span).get(0);
+		span = $("span.fancytree-checkbox", node.tr || node.span).get(0);
 		if( span ){
 			icon = node.selected ? "checkboxSelected" : (node.partsel ? "checkboxUnknown" : "checkbox");
 			span.className = "fancytree-checkbox " + map[icon];

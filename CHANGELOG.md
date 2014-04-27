@@ -12,6 +12,7 @@
   * [Fixed] #197: Allow special characters in tooltips
   * [Fixed] #68: renderStatus method doesn't render 'loading' status
   * [Fixed] #201: originalEvent not passed along to activate callback
+  * [Fixed] [ext-glyph] compatible with ext-table
 
 
 # 2.0.0-10 / 2014-04-13
