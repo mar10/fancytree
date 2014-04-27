@@ -45,8 +45,9 @@ $.ui.fancytree.registerExtension({
 			expanderOpen: "icon-caret-down",
 			folder: "icon-folder-close-alt",
 			folderOpen: "icon-folder-open-alt",
-			loading: "icon-refresh icon-spin"
+			loading: "icon-refresh icon-spin",
 			// loading: "icon-spinner icon-spin"
+			noExpander: ""
 		},
 		icon: null // TODO: allow callback here
 	},
@@ -82,8 +83,10 @@ $.ui.fancytree.registerExtension({
 				icon = "expanderOpen";
 			}else if( node.isUndefined() ){
 				icon = "expanderLazy";
-			}else{
+			}else if( node.hasChildren() ){
 				icon = "expanderClosed";
+			}else{
+				icon = "noExpander";
 			}
 			span.className = "fancytree-expander " + map[icon];
 		}

@@ -8,6 +8,7 @@
   * [Improved] [ext-table] #93 renderColumns called for status nodes 
     (added 'customStatus' option)
   * [Improved] [ext-dnd] #196 Make draggable/droppable options configurable
+  * [Fixed] [ext-glyph] #194 Render noExpander icon from icon map for leaf nodes
   * [Fixed] #197: Allow special characters in tooltips
   * [Fixed] #68: renderStatus method doesn't render 'loading' status
   * [Fixed] #201: originalEvent not passed along to activate callback
