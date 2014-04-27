@@ -2,7 +2,7 @@
   "name": "jquery.fancytree",
   "title": "jQuery Fancytree Plugin",
   "description": "Fancytree is a JavaScript dynamic tree view plugin for jQuery with support for persistence, keyboard, checkboxes, drag'n'drop, and lazy loading.",
-  "version": "2.0.0-12",
+  "version": "2.0.0-11",
   "homepage": "https://github.com/mar10/fancytree",
   "author": {
     "name": "Martin Wendt",
