@@ -43,11 +43,9 @@ function _loadLazyNodes(tree, instData, keyList, mode, dfd) {
 	var i, key, l, node,
 		foundOne = false,
 		deferredList = [],
-		// lazyNodeList = [],
-		missingKeyList = []; //keyList.slice(0),
+		missingKeyList = [];
 
 	keyList = keyList || [];
-	// expand = expand !== false;
 	dfd = dfd || $.Deferred();
 
 	for( i=0, l=keyList.length; i<l; i++ ) {
@@ -55,7 +53,6 @@ function _loadLazyNodes(tree, instData, keyList, mode, dfd) {
 		node = tree.getNodeByKey(key);
 		if( node ) {
 			if( mode && node.isUndefined() ) {
-				// lazyNodeList.push(node);
 				foundOne = true;
 				tree.debug("_loadLazyNodes: " + node + " is lazy: loading...");
 				if( mode === "expand" ) {
@@ -66,8 +63,6 @@ function _loadLazyNodes(tree, instData, keyList, mode, dfd) {
 			} else {
 				tree.debug("_loadLazyNodes: " + node + " already loaded.");
 				node.setExpanded();
-				// node.expanded = true;
-				// node.render();
 			}
 		} else {
 			missingKeyList.push(key);
@@ -108,21 +103,16 @@ $.ui.fancytree._FancytreeClass.prototype.clearCookies = function(types){
 		cookiePrefix = inst.cookiePrefix;
 
 	types = types || "active expanded focus selected";
-	// TODO: optimize
 	if(types.indexOf(ACTIVE) >= 0){
-		// $.cookie(cookiePrefix + ACTIVE, null);
 		$.removeCookie(cookiePrefix + ACTIVE);
 	}
 	if(types.indexOf(EXPANDED) >= 0){
-		// $.cookie(cookiePrefix + EXPANDED, null);
 		$.removeCookie(cookiePrefix + EXPANDED);
 	}
 	if(types.indexOf(FOCUS) >= 0){
-		// $.cookie(cookiePrefix + FOCUS, null);
 		$.removeCookie(cookiePrefix + FOCUS);
 	}
 	if(types.indexOf(SELECTED) >= 0){
-		// $.cookie(cookiePrefix + SELECTED, null);
 		$.removeCookie(cookiePrefix + SELECTED);
 	}
 };
@@ -159,7 +149,6 @@ $.ui.fancytree.registerExtension({
 	version: "0.2.0",
 	// Default options for this extension.
 	options: {
-//		appendRequestInfo: false,
 		cookieDelimiter: "~",
 		cookiePrefix: undefined, // 'fancytree-<treeId>-' by default
 		cookie: {
@@ -193,9 +182,7 @@ $.ui.fancytree.registerExtension({
 		}
 		$.cookie(cookieName, cookieList.join(instOpts.cookieDelimiter), instOpts.cookie);
 	},
-	// Overide virtual methods for this extension.
-	// `this`       : is this Fancytree object
-	// `this._super`: the virtual function that was overridden (member of prev. extension or Fancytree)
+
 	treeInit: function(ctx){
 		var tree = ctx.tree,
 			opts = ctx.options,
@@ -230,26 +217,6 @@ $.ui.fancytree.registerExtension({
 			}
 
 			dfd.done(function(){
-				// alert("persistent expand done");
-	// 			if(instData.storeExpanded){
-	// 				cookie = $.cookie(instData.cookiePrefix + EXPANDED);
-	// 				if(cookie){
-	// 					keyList = cookie.split(instOpts.cookieDelimiter);
-	// 					for(i=0; i<keyList.length; i++){
-	// 						node = tree.getNodeByKey(keyList[i]);
-	// 						if(node){
-	// 							if(node.expanded === undefined || instOpts.overrideSource && (node.expanded === false)){
-	// //								node.setExpanded();
-	// 								node.expanded = true;
-	// 								node.render();
-	// 							}
-	// 						}else{
-	// 							// node is no longer member of the tree: remove from cookie
-	// 							instData._setKey(EXPANDED, keyList[i], false);
-	// 						}
-	// 					}
-	// 				}
-	// 			}
 				if(instData.storeSelected){
 					cookie = $.cookie(instData.cookiePrefix + SELECTED);
 					if(cookie){
@@ -287,30 +254,29 @@ $.ui.fancytree.registerExtension({
 			});
 		});
 		// Init the tree
-		this._super(ctx);
+		return this._super(ctx);
 	},
-//	treeDestroy: function(ctx){
-//		this._super(ctx);
-//	},
 	nodeSetActive: function(ctx, flag, opts) {
-		var instData = this._local,
+		var res,
+			instData = this._local,
 			instOpts = this.options.persist;
 
-		flag = flag !== false;
-		this._super(ctx, flag, opts);
+		flag = (flag !== false);
+		res = this._super(ctx, flag, opts);
 
 		if(instData.storeActive){
 			$.cookie(instData.cookiePrefix + ACTIVE,
 					 this.activeNode ? this.activeNode.key : null,
 					 instOpts.cookie);
 		}
+		return res;
 	},
 	nodeSetExpanded: function(ctx, flag, opts) {
 		var res,
 			node = ctx.node,
 			instData = this._local;
 
-		flag = flag !== false;
+		flag = (flag !== false);
 		res = this._super(ctx, flag, opts);
 
 		if(instData.storeExpanded){
@@ -318,28 +284,33 @@ $.ui.fancytree.registerExtension({
 		}
 		return res;
 	},
-	nodeSetFocus: function(ctx) {
-		var instData = this._local,
+	nodeSetFocus: function(ctx, flag) {
+		var res,
+			instData = this._local,
 			instOpts = this.options.persist;
 
-		this._super(ctx);
+		flag = (flag !== false);
+		res = this._super(ctx, flag);
 
-		if(instData.storeFocus){
+		if(flag && instData.storeFocus){
 			$.cookie(instData.cookiePrefix + FOCUS,
 					 this.focusNode ? this.focusNode.key : null,
 					 instOpts.cookie);
 		}
+		return res
 	},
 	nodeSetSelected: function(ctx, flag) {
-		var node = ctx.node,
+		var res,
+			node = ctx.node,
 			instData = this._local;
 
-		flag = flag !== false;
-		this._super(ctx, flag);
+		flag = (flag !== false);
+		res = this._super(ctx, flag);
 
 		if(instData.storeSelected){
 			instData._setKey(SELECTED, node.key, flag);
 		}
+		return res;
 	}
 });
 }(jQuery, window, document));
