@@ -1,5 +1,6 @@
 # 2.0.0-12 / Unreleased
   * [Added] /dist/src folder contains uncompressed extensions for bower
+  * [Improved] cleanup
 
 
 # 2.0.0-11 / 2014-04-27
