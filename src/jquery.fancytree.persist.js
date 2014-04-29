@@ -297,7 +297,7 @@ $.ui.fancytree.registerExtension({
 					 this.focusNode ? this.focusNode.key : null,
 					 instOpts.cookie);
 		}
-		return res
+		return res;
 	},
 	nodeSetSelected: function(ctx, flag) {
 		var res,
