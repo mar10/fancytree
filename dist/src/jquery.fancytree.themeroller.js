@@ -11,8 +11,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.0.0-11
- * @date 2014-04-27T22:28
+ * @version 2.0.0-12
+ * @date 2014-04-29T19:55
  */
 
 ;(function($, window, document, undefined) {
@@ -32,10 +32,7 @@ $.ui.fancytree.registerExtension({
 		hoverClass: "ui-state-hover",
 		selectedClass: "ui-state-highlight"
 	},
-	// Overide virtual methods for this extension.
-	// `this`       : is this extension object
-	// `this._base` : the Fancytree instance
-	// `this._super`: the virtual function that was overriden (member of prev. extension or Fancytree)
+
 	treeInit: function(ctx){
 		this._super(ctx);
 		var $el = ctx.widget.element;

@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.0.0-11
- * @date 2014-04-27T22:28
+ * @version 2.0.0-12
+ * @date 2014-04-29T19:55
  */
 
 ;(function($, window, document, undefined) {
@@ -273,10 +273,6 @@ $.ui.fancytree.registerExtension({
 	// Local attributes
 	currentNode: null,
 
-	// Override virtual methods for this extension.
-	// `this`       : the Fancytree instance
-	// `this._local`: the namespace that contains extension attributes and private methods (same as this.ext.EXTNAME)
-	// `this._super`: the virtual function that was overridden (member of previous extension or Fancytree)
 	treeInit: function(ctx){
 		this._super(ctx);
 		this.$container.addClass("fancytree-ext-edit");
@@ -288,7 +284,7 @@ $.ui.fancytree.registerExtension({
 				return false;
 			}
 		}
-		this._super(ctx);
+		return this._super(ctx);
 	},
 	nodeDblclick: function(ctx) {
 		if( $.inArray("dblclick", ctx.options.edit.triggerStart) >= 0 ){

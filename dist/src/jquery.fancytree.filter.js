@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.0.0-11
- * @date 2014-04-27T22:28
+ * @version 2.0.0-12
+ * @date 2014-04-29T19:55
  */
 
 ;(function($, window, document, undefined) {
@@ -26,20 +26,6 @@ function _escapeRegex(str){
 	/*jshint regexdash:true */
 	return (str + "").replace(/([.?*+\^\$\[\]\\(){}|-])/g, "\\$1");
 }
-
-/* EXT-TABLE: Show/hide all rows that are structural descendants of `parent`. */
-// function setChildRowVisibility(parent, flag) {
-// 	parent.visit(function(node){
-// 		var tr = node.tr;
-// 		if(tr){
-// 			tr.style.display = flag ? "" : "none";
-// 		}
-// 		node.debug(flag ? "SHOW" : "HIDE");
-// 		if(!node.expanded){
-// 			return "skip";
-// 		}
-// 	});
-// }
 
 /**
  * [ext-filter] Dimm or hide nodes.
@@ -73,7 +59,6 @@ $.ui.fancytree._FancytreeClass.prototype.applyFilter = function(filter){
 	}
 	// Reset current filter
 	this.visit(function(node){
-// 		node.hide = hideMode && true;
 		delete node.match;
 		delete node.subMatch;
 	});
@@ -81,10 +66,8 @@ $.ui.fancytree._FancytreeClass.prototype.applyFilter = function(filter){
 	this.visit(function(node){
 		if ((!leavesOnly || node.children == null) && filter(node)) {
 			count++;
-// 			node.hide = false;
 			node.match = true;
 			node.visitParents(function(p){
-// 				p.hide = false;
 				p.subMatch = true;
 			});
 		}
@@ -102,7 +85,6 @@ $.ui.fancytree._FancytreeClass.prototype.applyFilter = function(filter){
  */
 $.ui.fancytree._FancytreeClass.prototype.clearFilter = function(){
 	this.visit(function(node){
-// 		delete node.hide;
 		delete node.match;
 		delete node.subMatch;
 	});
@@ -117,21 +99,13 @@ $.ui.fancytree._FancytreeClass.prototype.clearFilter = function(){
  */
 $.ui.fancytree.registerExtension({
 	name: "filter",
-	version: "0.0.2",
+	version: "0.1.0",
 	// Default options for this extension.
 	options: {
 		mode: "dimm",
 		leavesOnly: false
 	},
-	// Override virtual methods for this extension.
-	// `this`       : is this extension object
-	// `this._base` : the Fancytree instance
-	// `this._super`: the virtual function that was overriden (member of prev. extension or Fancytree)
 	treeInit: function(ctx){
-		this._super(ctx);
-		// ctx.tree.filter = false;
-	},
-	treeDestroy: function(ctx){
 		this._super(ctx);
 	},
 	nodeRenderStatus: function(ctx) {
@@ -142,31 +116,15 @@ $.ui.fancytree.registerExtension({
 			$span = $(node[tree.statusClassPropName]);
 
 		res = this._super(ctx);
-
-		if(!$span.length){
-			return res; // nothing to do, if node was not yet rendered
-		}
-		if(!tree.enableFilter){
+		// nothing to do, if node was not yet rendered
+		if( !$span.length || !tree.enableFilter ) {
 			return res;
 		}
-		$span.toggleClass("fancytree-match", !!node.match);
-		$span.toggleClass("fancytree-submatch", !!node.subMatch);
-		$span.toggleClass("fancytree-hide", !(node.match || node.subMatch));
+		$span
+			.toggleClass("fancytree-match", !!node.match)
+			.toggleClass("fancytree-submatch", !!node.subMatch)
+			.toggleClass("fancytree-hide", !(node.match || node.subMatch));
 
-		// if(opts.filter.mode === "hide"){
-		// 	// visible = !!(node.match || node.subMatch);
-		// 	visible = !node.hide;
-		// 	node.debug(node.title + ": visible=" + visible);
-		// 	if( node.li ) {
-		// 		$(node.li).toggle(visible);
-		// 	} else if( node.tr ) {
-		// 		// Show/hide all rows that are structural descendants of `parent`
-		// 		$(node.tr).toggle(visible);
-		// 		// if( !visible ) {
-		// 		// 	setChildRowVisibility(node, visible);
-		// 		// }
-		// 	}
-		// }
 		return res;
 	}
 });

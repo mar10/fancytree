@@ -7,8 +7,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.0.0-11
- * @date 2014-04-27T22:28
+ * @version 2.0.0-12
+ * @date 2014-04-29T19:55
  */
 
 /** Core Fancytree module.
@@ -3772,7 +3772,7 @@ $.extend($.ui.fancytree,
 	/** @lends Fancytree_Static# */
 	{
 	/** @type {string} */
-	version: "2.0.0-11",      // Set to semver by 'grunt release'
+	version: "2.0.0-12",      // Set to semver by 'grunt release'
 	/** @type {string} */
 	buildType: "production", // Set to 'production' by 'grunt build'
 	/** @type {int} */
@@ -4047,8 +4047,8 @@ $.extend($.ui.fancytree,
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.0.0-11
- * @date 2014-04-27T22:28
+ * @version 2.0.0-12
+ * @date 2014-04-29T19:55
  */
 
 // To keep the global namespace clean, we wrap everything in a closure
@@ -4223,8 +4223,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.0.0-11
- * @date 2014-04-27T22:28
+ * @version 2.0.0-12
+ * @date 2014-04-29T19:55
  */
 
 ;(function($, window, document, undefined) {
@@ -4287,8 +4287,7 @@ function _initDragAndDrop(tree) {
 			addClasses: false,
 			tolerance: "intersect",
 			greedy: false
-			/*
-			,
+/*
 			activate: function(event, ui) {
 				logMsg("droppable - activate", event, ui, this);
 			},
@@ -4326,18 +4325,11 @@ function _registerDnd() {
 			// 'draggable' was renamed to 'ui-draggable' since jQueryUI 1.10
 			var draggable = $(this).data("ui-draggable") || $(this).data("draggable"),
 				sourceNode = ui.helper.data("ftSourceNode") || null;
-//          logMsg("draggable-connectToFancytree.start, %s", sourceNode);
-//          logMsg("    this: %o", this);
-//          logMsg("    event: %o", event);
-//          logMsg("    draggable: %o", draggable);
-//          logMsg("    ui: %o", ui);
 
 			if(sourceNode) {
 				// Adjust helper offset, so cursor is slightly outside top/left corner
 				draggable.offset.click.top = -2;
 				draggable.offset.click.left = + 16;
-//              logMsg("    draggable2: %o", draggable);
-//              logMsg("    draggable.offset.click FIXED: %s/%s", draggable.offset.click.left, draggable.offset.click.top);
 				// Trigger dragStart event
 				// TODO: when called as connectTo..., the return value is ignored(?)
 				return sourceNode.tree.ext.dnd._onDragEvent("start", sourceNode, null, event, ui, draggable);
@@ -4350,8 +4342,7 @@ function _registerDnd() {
 				sourceNode = ui.helper.data("ftSourceNode") || null,
 				prevTargetNode = ui.helper.data("ftTargetNode") || null,
 				targetNode = $.ui.fancytree.getNode(event.target);
-//            logMsg("$.ui.fancytree.getNode(%o): %s", event.target, targetNode);
-//            logMsg("connectToFancytree.drag: helper: %o", ui.helper[0]);
+
 			if(event.target && !targetNode){
 				// We got a drag event, but the targetNode could not be found
 				// at the event location. This may happen,
@@ -4364,7 +4355,6 @@ function _registerDnd() {
 					return;
 				}
 			}
-//            logMsg("draggable-connectToFancytree.drag: targetNode(from event): %s, ftTargetNode: %s", targetNode, ui.helper.data("ftTargetNode"));
 			ui.helper.data("ftTargetNode", targetNode);
 			// Leaving a tree node
 			if(prevTargetNode && prevTargetNode !== targetNode ) {
@@ -4391,10 +4381,7 @@ function _registerDnd() {
 //				mouseDownEvent = draggable._mouseDownEvent,
 				eventType = event.type,
 				dropped = (eventType === "mouseup" && event.which === 1);
-//            logMsg("draggable-connectToFancytree.stop: targetNode(from event): %s, ftTargetNode: %s", targetNode, ui.helper.data("ftTargetNode"));
-//            logMsg("draggable-connectToFancytree.stop, %s", sourceNode);
-//            logMsg("    type: %o, downEvent: %o, upEvent: %o", eventType, mouseDownEvent, event);
-//            logMsg("    targetNode: %o", targetNode);
+
 			if(!dropped){
 				logMsg("Drag was cancelled");
 			}
@@ -4418,8 +4405,7 @@ function _registerDnd() {
  *
  */
 
-$.ui.fancytree.registerExtension(
-	{
+$.ui.fancytree.registerExtension({
 	name: "dnd",
 	version: "0.1.0",
 	// Default options for this extension.
@@ -4440,9 +4426,7 @@ $.ui.fancytree.registerExtension(
 		draggable: null,  // Additional options passed to jQuery draggable
 		droppable: null   // Additional options passed to jQuery droppable
 	},
-	// Override virtual methods for this extension.
-	// `this`       : Fancytree instance
-	// `this._super`: the virtual function that was overriden (member of prev. extension or Fancytree)
+
 	treeInit: function(ctx){
 		var tree = ctx.tree;
 		this._super(ctx);
@@ -4471,15 +4455,7 @@ $.ui.fancytree.registerExtension(
 				.css({"z-index": 1000})
 				.prependTo($(this.$div).parent());
 //                .prependTo("body");
-//          logMsg("Creating marker: %o", this.$dropMarker);
 		}
-/*
-		if(hitMode === "start"){
-		}
-		if(hitMode === "stop"){
-//          sourceNode.removeClass("fancytree-drop-target");
-		}
-*/
 //      this.$dropMarker.attr("class", hitMode);
 		if(hitMode === "after" || hitMode === "before" || hitMode === "over"){
 //          $source && $source.addClass("fancytree-drag-source");
@@ -4600,9 +4576,8 @@ $.ui.fancytree.registerExtension(
 		case "helper":
 			// Only event and node argument is available
 			$helper = $("<div class='fancytree-drag-helper'><span class='fancytree-drag-helper-img' /></div>")
-				// .append($(event.target).closest("span.fancytree-node").find("span.fancytree-title").clone());
 				.append(nodeTag.find("span.fancytree-title").clone());
-			// issue 244: helper should be child of scrollParent
+			// DT issue 244: helper should be child of scrollParent
 			$("ul.fancytree-container", node.tree.$div).append($helper);
 			// Attach node reference to helper object
 			$helper.data("ftSourceNode", node);
@@ -4610,6 +4585,7 @@ $.ui.fancytree.registerExtension(
 			// logMsg("helper.sourceNode=%o", $helper.data("ftSourceNode"));
 			res = $helper;
 			break;
+
 		case "start":
 			if( node.isStatusNode() ) {
 				res = false;
@@ -4627,6 +4603,7 @@ $.ui.fancytree.registerExtension(
 				nodeTag.addClass("fancytree-drag-source");
 			}
 			break;
+
 		case "enter":
 			if(dnd.preventRecursiveMoves && node.isDescendantOf(otherNode)){
 				r = false;
@@ -4653,6 +4630,7 @@ $.ui.fancytree.registerExtension(
 			ui.helper.data("enterResponse", res);
 			logMsg("helper.enterResponse: %o", res);
 			break;
+
 		case "over":
 			enterResponse = ui.helper.data("enterResponse");
 			hitMode = null;
@@ -4710,10 +4688,11 @@ $.ui.fancytree.registerExtension(
 				ctx.hitMode = hitMode;
 				res = dnd.dragOver(node, ctx);
 			}
-			// issue 332
+			// DT issue 332
 //			this._setDndStatus(otherNode, node, ui.helper, hitMode, res!==false);
 			this._local._setDndStatus(otherNode, node, ui.helper, hitMode, res!==false && hitMode !== null);
 			break;
+
 		case "drop":
 			hitMode = ui.helper.data("hitMode");
 			if(hitMode && dnd.dragDrop){
@@ -4721,6 +4700,7 @@ $.ui.fancytree.registerExtension(
 				dnd.dragDrop(node, ctx);
 			}
 			break;
+
 		case "leave":
 			// Cancel pending expand request
 			node.scheduleAction("cancel");
@@ -4731,14 +4711,16 @@ $.ui.fancytree.registerExtension(
 				dnd.dragLeave(node, ctx);
 			}
 			break;
+
 		case "stop":
 			nodeTag.removeClass("fancytree-drag-source");
 			if(dnd.dragStop){
 				dnd.dragStop(node, ctx);
 			}
 			break;
+
 		default:
-			throw "Unsupported drag event: " + eventName;
+			$.error("Unsupported drag event: " + eventName);
 		}
 		return res;
 	},
@@ -4763,8 +4745,8 @@ $.ui.fancytree.registerExtension(
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.0.0-11
- * @date 2014-04-27T22:28
+ * @version 2.0.0-12
+ * @date 2014-04-29T19:55
  */
 
 ;(function($, window, document, undefined) {
@@ -5027,10 +5009,6 @@ $.ui.fancytree.registerExtension({
 	// Local attributes
 	currentNode: null,
 
-	// Override virtual methods for this extension.
-	// `this`       : the Fancytree instance
-	// `this._local`: the namespace that contains extension attributes and private methods (same as this.ext.EXTNAME)
-	// `this._super`: the virtual function that was overridden (member of previous extension or Fancytree)
 	treeInit: function(ctx){
 		this._super(ctx);
 		this.$container.addClass("fancytree-ext-edit");
@@ -5042,7 +5020,7 @@ $.ui.fancytree.registerExtension({
 				return false;
 			}
 		}
-		this._super(ctx);
+		return this._super(ctx);
 	},
 	nodeDblclick: function(ctx) {
 		if( $.inArray("dblclick", ctx.options.edit.triggerStart) >= 0 ){
@@ -5082,8 +5060,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.0.0-11
- * @date 2014-04-27T22:28
+ * @version 2.0.0-12
+ * @date 2014-04-29T19:55
  */
 
 ;(function($, window, document, undefined) {
@@ -5099,20 +5077,6 @@ function _escapeRegex(str){
 	/*jshint regexdash:true */
 	return (str + "").replace(/([.?*+\^\$\[\]\\(){}|-])/g, "\\$1");
 }
-
-/* EXT-TABLE: Show/hide all rows that are structural descendants of `parent`. */
-// function setChildRowVisibility(parent, flag) {
-// 	parent.visit(function(node){
-// 		var tr = node.tr;
-// 		if(tr){
-// 			tr.style.display = flag ? "" : "none";
-// 		}
-// 		node.debug(flag ? "SHOW" : "HIDE");
-// 		if(!node.expanded){
-// 			return "skip";
-// 		}
-// 	});
-// }
 
 /**
  * [ext-filter] Dimm or hide nodes.
@@ -5146,7 +5110,6 @@ $.ui.fancytree._FancytreeClass.prototype.applyFilter = function(filter){
 	}
 	// Reset current filter
 	this.visit(function(node){
-// 		node.hide = hideMode && true;
 		delete node.match;
 		delete node.subMatch;
 	});
@@ -5154,10 +5117,8 @@ $.ui.fancytree._FancytreeClass.prototype.applyFilter = function(filter){
 	this.visit(function(node){
 		if ((!leavesOnly || node.children == null) && filter(node)) {
 			count++;
-// 			node.hide = false;
 			node.match = true;
 			node.visitParents(function(p){
-// 				p.hide = false;
 				p.subMatch = true;
 			});
 		}
@@ -5175,7 +5136,6 @@ $.ui.fancytree._FancytreeClass.prototype.applyFilter = function(filter){
  */
 $.ui.fancytree._FancytreeClass.prototype.clearFilter = function(){
 	this.visit(function(node){
-// 		delete node.hide;
 		delete node.match;
 		delete node.subMatch;
 	});
@@ -5190,21 +5150,13 @@ $.ui.fancytree._FancytreeClass.prototype.clearFilter = function(){
  */
 $.ui.fancytree.registerExtension({
 	name: "filter",
-	version: "0.0.2",
+	version: "0.1.0",
 	// Default options for this extension.
 	options: {
 		mode: "dimm",
 		leavesOnly: false
 	},
-	// Override virtual methods for this extension.
-	// `this`       : is this extension object
-	// `this._base` : the Fancytree instance
-	// `this._super`: the virtual function that was overriden (member of prev. extension or Fancytree)
 	treeInit: function(ctx){
-		this._super(ctx);
-		// ctx.tree.filter = false;
-	},
-	treeDestroy: function(ctx){
 		this._super(ctx);
 	},
 	nodeRenderStatus: function(ctx) {
@@ -5215,31 +5167,15 @@ $.ui.fancytree.registerExtension({
 			$span = $(node[tree.statusClassPropName]);
 
 		res = this._super(ctx);
-
-		if(!$span.length){
-			return res; // nothing to do, if node was not yet rendered
-		}
-		if(!tree.enableFilter){
+		// nothing to do, if node was not yet rendered
+		if( !$span.length || !tree.enableFilter ) {
 			return res;
 		}
-		$span.toggleClass("fancytree-match", !!node.match);
-		$span.toggleClass("fancytree-submatch", !!node.subMatch);
-		$span.toggleClass("fancytree-hide", !(node.match || node.subMatch));
+		$span
+			.toggleClass("fancytree-match", !!node.match)
+			.toggleClass("fancytree-submatch", !!node.subMatch)
+			.toggleClass("fancytree-hide", !(node.match || node.subMatch));
 
-		// if(opts.filter.mode === "hide"){
-		// 	// visible = !!(node.match || node.subMatch);
-		// 	visible = !node.hide;
-		// 	node.debug(node.title + ": visible=" + visible);
-		// 	if( node.li ) {
-		// 		$(node.li).toggle(visible);
-		// 	} else if( node.tr ) {
-		// 		// Show/hide all rows that are structural descendants of `parent`
-		// 		$(node.tr).toggle(visible);
-		// 		// if( !visible ) {
-		// 		// 	setChildRowVisibility(node, visible);
-		// 		// }
-		// 	}
-		// }
 		return res;
 	}
 });
@@ -5256,8 +5192,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.0.0-11
- * @date 2014-04-27T22:28
+ * @version 2.0.0-12
+ * @date 2014-04-29T19:55
  */
 
 ;(function($, window, document, undefined) {
@@ -5274,7 +5210,7 @@ function _getIcon(opts, type){
 
 $.ui.fancytree.registerExtension({
 	name: "glyph",
-	version: "0.0.2",
+	version: "0.1.0",
 	// Default options for this extension.
 	options: {
 		prefix: "icon-",
@@ -5288,19 +5224,15 @@ $.ui.fancytree.registerExtension({
 			error: "icon-exclamation-sign",
 			expanderClosed: "icon-caret-right",
 			expanderLazy: "icon-angle-right",
-			// expanderLazy: "icon-refresh icon-spin",
 			expanderOpen: "icon-caret-down",
 			folder: "icon-folder-close-alt",
 			folderOpen: "icon-folder-open-alt",
 			loading: "icon-refresh icon-spin",
-			// loading: "icon-spinner icon-spin"
 			noExpander: ""
 		},
 		icon: null // TODO: allow callback here
 	},
-	// Overide virtual methods for this extension.
-	// `this`       : is this extension object
-	// `this._super`: the virtual function that was overriden (member of prev. extension or Fancytree)
+
 	treeInit: function(ctx){
 		var tree = ctx.tree;
 		this._super(ctx);
@@ -5364,7 +5296,8 @@ $.ui.fancytree.registerExtension({
 		if(node.parent){
 			span = $("span.fancytree-expander", node.span).get(0);
 		}else{
-			span = $(".fancytree-statusnode-wait, .fancytree-statusnode-error", node[this.nodeContainerAttrName]).find("span.fancytree-expander").get(0);
+			span = $(".fancytree-statusnode-wait, .fancytree-statusnode-error", node[this.nodeContainerAttrName])
+				.find("span.fancytree-expander").get(0);
 		}
 		if( status === "loading"){
 			// $("span.fancytree-expander", ctx.node.span).addClass(_getIcon(opts, "loading"));
@@ -5387,8 +5320,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.0.0-11
- * @date 2014-04-27T22:28
+ * @version 2.0.0-12
+ * @date 2014-04-29T19:55
  */
 
 ;(function($, window, document, undefined) {
@@ -5589,8 +5522,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.0.0-11
- * @date 2014-04-27T22:28
+ * @version 2.0.0-12
+ * @date 2014-04-29T19:55
  */
 
 ;(function($, window, document, undefined) {
@@ -5621,11 +5554,9 @@ function _loadLazyNodes(tree, instData, keyList, mode, dfd) {
 	var i, key, l, node,
 		foundOne = false,
 		deferredList = [],
-		// lazyNodeList = [],
-		missingKeyList = []; //keyList.slice(0),
+		missingKeyList = [];
 
 	keyList = keyList || [];
-	// expand = expand !== false;
 	dfd = dfd || $.Deferred();
 
 	for( i=0, l=keyList.length; i<l; i++ ) {
@@ -5633,7 +5564,6 @@ function _loadLazyNodes(tree, instData, keyList, mode, dfd) {
 		node = tree.getNodeByKey(key);
 		if( node ) {
 			if( mode && node.isUndefined() ) {
-				// lazyNodeList.push(node);
 				foundOne = true;
 				tree.debug("_loadLazyNodes: " + node + " is lazy: loading...");
 				if( mode === "expand" ) {
@@ -5644,8 +5574,6 @@ function _loadLazyNodes(tree, instData, keyList, mode, dfd) {
 			} else {
 				tree.debug("_loadLazyNodes: " + node + " already loaded.");
 				node.setExpanded();
-				// node.expanded = true;
-				// node.render();
 			}
 		} else {
 			missingKeyList.push(key);
@@ -5686,21 +5614,16 @@ $.ui.fancytree._FancytreeClass.prototype.clearCookies = function(types){
 		cookiePrefix = inst.cookiePrefix;
 
 	types = types || "active expanded focus selected";
-	// TODO: optimize
 	if(types.indexOf(ACTIVE) >= 0){
-		// $.cookie(cookiePrefix + ACTIVE, null);
 		$.removeCookie(cookiePrefix + ACTIVE);
 	}
 	if(types.indexOf(EXPANDED) >= 0){
-		// $.cookie(cookiePrefix + EXPANDED, null);
 		$.removeCookie(cookiePrefix + EXPANDED);
 	}
 	if(types.indexOf(FOCUS) >= 0){
-		// $.cookie(cookiePrefix + FOCUS, null);
 		$.removeCookie(cookiePrefix + FOCUS);
 	}
 	if(types.indexOf(SELECTED) >= 0){
-		// $.cookie(cookiePrefix + SELECTED, null);
 		$.removeCookie(cookiePrefix + SELECTED);
 	}
 };
@@ -5737,7 +5660,6 @@ $.ui.fancytree.registerExtension({
 	version: "0.2.0",
 	// Default options for this extension.
 	options: {
-//		appendRequestInfo: false,
 		cookieDelimiter: "~",
 		cookiePrefix: undefined, // 'fancytree-<treeId>-' by default
 		cookie: {
@@ -5771,9 +5693,7 @@ $.ui.fancytree.registerExtension({
 		}
 		$.cookie(cookieName, cookieList.join(instOpts.cookieDelimiter), instOpts.cookie);
 	},
-	// Overide virtual methods for this extension.
-	// `this`       : is this Fancytree object
-	// `this._super`: the virtual function that was overridden (member of prev. extension or Fancytree)
+
 	treeInit: function(ctx){
 		var tree = ctx.tree,
 			opts = ctx.options,
@@ -5808,26 +5728,6 @@ $.ui.fancytree.registerExtension({
 			}
 
 			dfd.done(function(){
-				// alert("persistent expand done");
-	// 			if(instData.storeExpanded){
-	// 				cookie = $.cookie(instData.cookiePrefix + EXPANDED);
-	// 				if(cookie){
-	// 					keyList = cookie.split(instOpts.cookieDelimiter);
-	// 					for(i=0; i<keyList.length; i++){
-	// 						node = tree.getNodeByKey(keyList[i]);
-	// 						if(node){
-	// 							if(node.expanded === undefined || instOpts.overrideSource && (node.expanded === false)){
-	// //								node.setExpanded();
-	// 								node.expanded = true;
-	// 								node.render();
-	// 							}
-	// 						}else{
-	// 							// node is no longer member of the tree: remove from cookie
-	// 							instData._setKey(EXPANDED, keyList[i], false);
-	// 						}
-	// 					}
-	// 				}
-	// 			}
 				if(instData.storeSelected){
 					cookie = $.cookie(instData.cookiePrefix + SELECTED);
 					if(cookie){
@@ -5865,30 +5765,29 @@ $.ui.fancytree.registerExtension({
 			});
 		});
 		// Init the tree
-		this._super(ctx);
+		return this._super(ctx);
 	},
-//	treeDestroy: function(ctx){
-//		this._super(ctx);
-//	},
 	nodeSetActive: function(ctx, flag, opts) {
-		var instData = this._local,
+		var res,
+			instData = this._local,
 			instOpts = this.options.persist;
 
-		flag = flag !== false;
-		this._super(ctx, flag, opts);
+		flag = (flag !== false);
+		res = this._super(ctx, flag, opts);
 
 		if(instData.storeActive){
 			$.cookie(instData.cookiePrefix + ACTIVE,
 					 this.activeNode ? this.activeNode.key : null,
 					 instOpts.cookie);
 		}
+		return res;
 	},
 	nodeSetExpanded: function(ctx, flag, opts) {
 		var res,
 			node = ctx.node,
 			instData = this._local;
 
-		flag = flag !== false;
+		flag = (flag !== false);
 		res = this._super(ctx, flag, opts);
 
 		if(instData.storeExpanded){
@@ -5896,28 +5795,33 @@ $.ui.fancytree.registerExtension({
 		}
 		return res;
 	},
-	nodeSetFocus: function(ctx) {
-		var instData = this._local,
+	nodeSetFocus: function(ctx, flag) {
+		var res,
+			instData = this._local,
 			instOpts = this.options.persist;
 
-		this._super(ctx);
+		flag = (flag !== false);
+		res = this._super(ctx, flag);
 
-		if(instData.storeFocus){
+		if(flag && instData.storeFocus){
 			$.cookie(instData.cookiePrefix + FOCUS,
 					 this.focusNode ? this.focusNode.key : null,
 					 instOpts.cookie);
 		}
+		return res;
 	},
 	nodeSetSelected: function(ctx, flag) {
-		var node = ctx.node,
+		var res,
+			node = ctx.node,
 			instData = this._local;
 
-		flag = flag !== false;
-		this._super(ctx, flag);
+		flag = (flag !== false);
+		res = this._super(ctx, flag);
 
 		if(instData.storeSelected){
 			instData._setKey(SELECTED, node.key, flag);
 		}
+		return res;
 	}
 });
 }(jQuery, window, document));
@@ -5933,8 +5837,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.0.0-11
- * @date 2014-04-27T22:28
+ * @version 2.0.0-12
+ * @date 2014-04-29T19:55
  */
 
 ;(function($, window, document, undefined) {
@@ -6281,8 +6185,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.0.0-11
- * @date 2014-04-27T22:28
+ * @version 2.0.0-12
+ * @date 2014-04-29T19:55
  */
 
 ;(function($, window, document, undefined) {
@@ -6302,10 +6206,7 @@ $.ui.fancytree.registerExtension({
 		hoverClass: "ui-state-hover",
 		selectedClass: "ui-state-highlight"
 	},
-	// Overide virtual methods for this extension.
-	// `this`       : is this extension object
-	// `this._base` : the Fancytree instance
-	// `this._super`: the virtual function that was overriden (member of prev. extension or Fancytree)
+
 	treeInit: function(ctx){
 		this._super(ctx);
 		var $el = ctx.widget.element;

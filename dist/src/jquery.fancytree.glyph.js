@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.0.0-11
- * @date 2014-04-27T22:28
+ * @version 2.0.0-12
+ * @date 2014-04-29T19:55
  */
 
 ;(function($, window, document, undefined) {
@@ -27,7 +27,7 @@ function _getIcon(opts, type){
 
 $.ui.fancytree.registerExtension({
 	name: "glyph",
-	version: "0.0.2",
+	version: "0.1.0",
 	// Default options for this extension.
 	options: {
 		prefix: "icon-",
@@ -41,19 +41,15 @@ $.ui.fancytree.registerExtension({
 			error: "icon-exclamation-sign",
 			expanderClosed: "icon-caret-right",
 			expanderLazy: "icon-angle-right",
-			// expanderLazy: "icon-refresh icon-spin",
 			expanderOpen: "icon-caret-down",
 			folder: "icon-folder-close-alt",
 			folderOpen: "icon-folder-open-alt",
 			loading: "icon-refresh icon-spin",
-			// loading: "icon-spinner icon-spin"
 			noExpander: ""
 		},
 		icon: null // TODO: allow callback here
 	},
-	// Overide virtual methods for this extension.
-	// `this`       : is this extension object
-	// `this._super`: the virtual function that was overriden (member of prev. extension or Fancytree)
+
 	treeInit: function(ctx){
 		var tree = ctx.tree;
 		this._super(ctx);
@@ -117,7 +113,8 @@ $.ui.fancytree.registerExtension({
 		if(node.parent){
 			span = $("span.fancytree-expander", node.span).get(0);
 		}else{
-			span = $(".fancytree-statusnode-wait, .fancytree-statusnode-error", node[this.nodeContainerAttrName]).find("span.fancytree-expander").get(0);
+			span = $(".fancytree-statusnode-wait, .fancytree-statusnode-error", node[this.nodeContainerAttrName])
+				.find("span.fancytree-expander").get(0);
 		}
 		if( status === "loading"){
 			// $("span.fancytree-expander", ctx.node.span).addClass(_getIcon(opts, "loading"));
