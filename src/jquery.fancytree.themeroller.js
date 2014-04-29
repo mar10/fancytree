@@ -32,10 +32,7 @@ $.ui.fancytree.registerExtension({
 		hoverClass: "ui-state-hover",
 		selectedClass: "ui-state-highlight"
 	},
-	// Overide virtual methods for this extension.
-	// `this`       : is this extension object
-	// `this._base` : the Fancytree instance
-	// `this._super`: the virtual function that was overriden (member of prev. extension or Fancytree)
+
 	treeInit: function(ctx){
 		this._super(ctx);
 		var $el = ctx.widget.element;
