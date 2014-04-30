@@ -302,7 +302,7 @@ $.ui.fancytree._FancytreeClass.prototype.getNodesByRef = function(refKey, rootNo
  */
 $.ui.fancytree._FancytreeClass.prototype.changeRefKey = function(oldRefKey, newRefKey) {
     var i, node,
-    	keyMap = this.keyMap,
+		keyMap = this.keyMap,
         refList = this.refMap[oldRefKey] || null;
 
     if (refList) {
