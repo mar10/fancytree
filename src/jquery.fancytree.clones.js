@@ -294,6 +294,26 @@ $.ui.fancytree._FancytreeClass.prototype.getNodesByRef = function(refKey, rootNo
 };
 
 
+/**
+ * [ext-clones] Replace a refKey with a new one.
+ * @param {string} oldRefKey
+ * @param {string} newRefKey
+ * @requires jquery.fancytree.clones.js
+ */
+$.ui.fancytree._FancytreeClass.prototype.changeRefKey = function(oldRefKey, newRefKey) {
+    var keyMap = this.keyMap,
+        refList = this.refMap[oldRefKey] || null;
+    if (refList) {
+        for (var i = 0; i < refList.length; i++) {
+            var node = keyMap[refList[i]];
+            node.refKey = newRefKey;
+        }
+        delete this.refMap[oldRefKey];
+        this.refMap[newRefKey] = refList;
+    }
+};
+
+
 /*******************************************************************************
  * Extension code
  */
