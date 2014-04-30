@@ -27,7 +27,7 @@ ul.fancytree-container {
   background-color: white;
   border: 1px dotted gray;
   overflow: auto;
-  height: 100%;
+  min-height: 0%;
 }
 ul.fancytree-container ul {
   padding: 0 0 0 16px;
@@ -155,6 +155,9 @@ span.fancytree-title {
   margin-left: 3px;
   cursor: pointer;
 }
+span.fancytree-node.fancytree-error span.fancytree-title {
+  color: red;
+}
 /*------------------------------------------------------------------------------
  * Drag'n'drop support
  *----------------------------------------------------------------------------*/
@@ -278,7 +281,7 @@ table.fancytree-ext-columnview .fancytree-has-children span.fancytree-cv-right {
  * This section is automatically generated from the `ui-fancytree.less` template.
  ******************************************************************************/
 ul.fancytree-container ul {
-  padding: 0.3em 0 0 1em;
+  padding: 0 0 0 1.5em;
   margin: 0;
 }
 /* Prevent focus frame */
@@ -290,65 +293,74 @@ span.fancytree-node {
   border-radius: 3px;
   padding-left: 8px;
 }
-span.fancytree-node:hover {
-  border-color: #999999;
-}
-span.fancytree-node.fancytree-active {
-  background-color: #428bca;
-  border-color: #555555;
+span.fancytree-title {
+  border-radius: 3px;
 }
 span.fancytree-node.fancytree-selected {
+  background-color: #80c780;
+  border-color: #80c780;
+}
+span.fancytree-node.fancytree-selected span.fancytree-title {
+  background-color: #80c780;
+}
+span.fancytree-node.fancytree-active {
+  background-color: #6aa3d5;
+}
+.fancytree-container.fancytree-treefocus span.fancytree-node:hover {
+  background-color: #e9f2f9;
+}
+.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-focused {
+  border-color: #428bca;
+}
+.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-selected {
   background-color: #5cb85c;
 }
-.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-active,
-span.fancytree-node.fancytree-active:hover {
+.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-selected span.fancytree-title {
+  background-color: #5cb85c;
+}
+.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-active {
   background-color: #428bca;
-}
-.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-selected,
-span.fancytree-node.fancytree-selected:hover {
-  background-color: #5cb85c;
+  border-color: #428bca;
 }
 /*******************************************************************************
  * 'table' extension
  */
 table.fancytree-ext-table tbody tr td {
-  border: 1px solid #EDEDED;
-}
-table.fancytree-ext-table tbody span.fancytree-node,
-table.fancytree-ext-table tbody span.fancytree-node:hover {
-  border: none;
-  background: none;
-}
-table.fancytree-ext-table tbody span.fancytree-title:hover {
-  border: none;
-  background: inherit;
-  background: transparent;
-  background: none;
-  filter: none;
-}
-table.fancytree-ext-table tbody tr:hover {
-  background-color: #E5F3FB;
-  outline: 1px solid #70C0E7;
-}
-table.fancytree-ext-table tbody tr.fancytree-focused span.fancytree-title {
-  outline: 1px dotted black;
-}
-table.fancytree-ext-table tbody tr.fancytree-active:hover,
-table.fancytree-ext-table tbody tr.fancytree-selected:hover {
-  background-color: #CBE8F6;
-  outline: 1px solid #26A0DA;
-}
-table.fancytree-ext-table tbody tr.fancytree-active {
-  background-color: #F7F7F7;
-  outline: 1px solid #DEDEDE;
+  border: 1px solid #eeeeee;
 }
 table.fancytree-ext-table tbody tr.fancytree-selected {
-  background-color: #F7F7F7;
+  background-color: #80c780;
 }
-table.fancytree-ext-table.fancytree-treefocus tbody tr.fancytree-active {
-  background-color: #CBE8F6;
-  outline: 1px solid #26A0DA;
+table.fancytree-ext-table tbody tr.fancytree-selected span.fancytree-node {
+  background-color: #80c780;
+}
+table.fancytree-ext-table tbody tr.fancytree-selected span.fancytree-title {
+  background-color: #80c780;
+}
+table.fancytree-ext-table tbody tr.fancytree-active {
+  background-color: #6aa3d5;
+}
+table.fancytree-ext-table tbody tr.fancytree-active span.fancytree-node {
+  background-color: #6aa3d5;
+}
+table.fancytree-ext-table.fancytree-treefocus tbody tr:hover {
+  background-color: #e9f2f9;
+}
+table.fancytree-ext-table.fancytree-treefocus tbody tr.fancytree-focused span.fancytree-title {
+  outline: 1px dotted #428bca;
 }
 table.fancytree-ext-table.fancytree-treefocus tbody tr.fancytree-selected {
-  background-color: #CBE8F6;
+  background-color: #5cb85c;
+}
+table.fancytree-ext-table.fancytree-treefocus tbody tr.fancytree-selected span.fancytree-node {
+  background-color: #5cb85c;
+}
+table.fancytree-ext-table.fancytree-treefocus tbody tr.fancytree-selected span.fancytree-title {
+  background-color: #5cb85c;
+}
+table.fancytree-ext-table.fancytree-treefocus tbody tr.fancytree-active {
+  background-color: #428bca;
+}
+table.fancytree-ext-table.fancytree-treefocus tbody tr.fancytree-active span.fancytree-node {
+  background-color: #428bca;
 }

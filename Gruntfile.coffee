@@ -18,8 +18,8 @@ module.exports = (grunt) ->
     # Project metadata, used by the <banner> directive.
     meta:
         # banner: "/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - " +
-        banner: "/*! <%= pkg.title || pkg.name %> - @VERSION - " +
-                "<%= grunt.template.today('yyyy-mm-dd HH:mm') %>\n" +
+        banner: "/*! <%= pkg.title || pkg.name %> - @VERSION - @DATE\n" +
+                # "<%= grunt.template.today('yyyy-mm-dd HH:mm') %>\n" +
                 "<%= pkg.homepage ? '  * ' + pkg.homepage + '\\n' : '' %>" +
                 "  * Copyright (c) <%= grunt.template.today('yyyy') %> <%= pkg.author.name %>;" +
                 " Licensed <%= _.pluck(pkg.licenses, 'type').join(', ') %> */\n"
@@ -43,20 +43,13 @@ module.exports = (grunt) ->
 #          tagged: false # Require last commit (HEAD) to be tagged
           clean: true # // Require repo to be clean (no unstaged changes)
 
-    # compare_size:
-    #     files:
-    #         "jquery.ui-contextmenu.min.js"
-    #         "jquery.ui-contextmenu.js"
-    #     options:
-    #         compress:
-    #             gz: function (fileContents)
-    #                 return require("gzip-js").zip(fileContents, {}).length;
-
     clean:
         build:
             src: [ "build" ]
         dist:
             src: [ "dist" ]
+        extMin:
+            src: [ "build/jquery.fancytree.*.min.js" ]
 
     compress:
         dist:
@@ -79,12 +72,11 @@ module.exports = (grunt) ->
         all:
             options:
                 stripBanners: true
-#                separator: "/* @preserve EXTENSION */\n"
             src: [
                 "<%= meta.banner %>"
                 # "lib/intro.js"
                 "src/jquery.fancytree.js"
-#                "src/jquery.fancytree.childcounter.js"
+                "src/jquery.fancytree.childcounter.js"
 #                "src/jquery.fancytree.clones.js"
 #                "src/jquery.fancytree.columnview.js"
                 "src/jquery.fancytree.dnd.js"
@@ -99,6 +91,37 @@ module.exports = (grunt) ->
                 # "lib/outro.js"
                 ]
             dest: "build/<%= pkg.name %>-all.js"
+        custom:
+            options:
+                banner: "<%= meta.banner %>"
+                stripBanners: true
+                process: (src, fspec) -> 
+                  # Remove all comments, including /*! ... */
+                  src = src.replace(/\/\*(.|\n)*\*\//g, "")
+                  if /fancytree..+.min.js/.test(fspec)
+                    # If it is an extension:
+                    # Prepend a one-liner instead
+                    fspec = fspec.substr(6) # strip 'build/'
+                    src = "\n/*! Extension '" + fspec + "' */" + src
+                  return src
+            src: [
+                "lib/intro.js"
+                "build/jquery.fancytree.min.js"
+                "build/jquery.fancytree.childcounter.min.js"
+#                "build/jquery.fancytree.clones.min.js"
+#                "build/jquery.fancytree.columnview.min.js"
+                "build/jquery.fancytree.dnd.min.js"
+                "build/jquery.fancytree.edit.min.js"
+                "build/jquery.fancytree.filter.min.js"
+                "build/jquery.fancytree.glyph.min.js"
+                "build/jquery.fancytree.gridnav.min.js"
+#                "build/jquery.fancytree.menu.min.js"
+                "build/jquery.fancytree.persist.min.js"
+                "build/jquery.fancytree.table.min.js"
+                "build/jquery.fancytree.themeroller.min.js"
+                "lib/outro.js"
+                ]
+            dest: "build/<%= pkg.name %>-custom.min.js"
 
     connect:
         forever:
@@ -126,20 +149,17 @@ module.exports = (grunt) ->
                 src: ["skin-**/*.{css,gif,png}", "*.txt"]
                 dest: "build/"
             }, {
+                expand: true
+                cwd: "src/"
+                src: ["jquery.*.js"]
+                dest: "build/src/"
+            }, {
                 # src: ["*.txt", "*.md"]
                 src: ["MIT-LICENSE.txt"]
                 dest: "build/"
             }]
         dist: # copy build folder to dist
             files: [{expand: true, cwd: "build/", src: ["**"], dest: "dist/"}]
-
-  #   csslint:
-  # #      options:
-  # #              csslintrc: ".csslintrc"
-  #       strict:
-  #           options:
-  #               import: 2
-  #           src: ["src/**/*.css"]
 
     cssmin:
         options:
@@ -153,10 +173,7 @@ module.exports = (grunt) ->
 
     docco:
         docs:
-#            expand: true
-#            cwd: "src/"
             src: ["src/jquery.fancytree.childcounter.js"]
-#            dest: "doc/annotated-src/"
             options:
                 output: "doc/annotated-src"
 
@@ -224,7 +241,7 @@ module.exports = (grunt) ->
 
     replace: # grunt-text-replace
         production:
-            src: ["build/*.js"]
+            src: ["build/**/*.js"]
             overwrite : true
             replacements: [ {
                 from : /@DATE/g
@@ -237,7 +254,7 @@ module.exports = (grunt) ->
                 to : "debugLevel: 1"
             } ]
         release:
-            src: ["dist/*.js"]
+            src: ["dist/**/*.js"]
             overwrite : true
             replacements: [ {
                 from : /@VERSION/g
@@ -274,26 +291,38 @@ module.exports = (grunt) ->
         annotate: true
 
     uglify:
-        build:
-            options:
-                banner: "<%= meta.banner %>"
-                # preserveComments: (comment) => /@preserve/.test(comment)
-                # preserveComments: "some"
-                # preserveComments: (comment) -> comment.indexOf("EXT") >= 0
-                report: "min"
-#                  expand: true
-#                  cwd: "build/"
-                sourceMap: 
-                    (path) -> path.replace(/.js/, ".js.map")
-                sourceMappingURL: 
-                    (path) -> path.replace(/^build\//, "") + ".map"
-#                    sourceMapIn: function(path) { return path.replace(/^build\//, "")}
-#                    sourceMapRoot: "/" //function(path) { return path.replace(/^build\//, "")}
-                sourceMapPrefix: 1 # strip 'build/' from paths
+        # build:
+        #     options:
+        #         banner: "<%= meta.banner %>"
+        #         # preserveComments: "some"
+        #         report: "min"
+        #         sourceMap: 
+        #             (path) -> path.replace(/.js/, ".js.map")
+        #         sourceMappingURL: 
+        #             (path) -> path.replace(/^build\//, "") + ".map"
+        #         sourceMapPrefix: 1 # strip 'build/' from paths
 
-            files:
-                "build/<%= pkg.name %>.min.js": ["<%= concat.core.dest %>"],
-                "build/<%= pkg.name %>-all.min.js": ["<%= concat.all.dest %>"]
+        #     files:
+        #         "build/<%= pkg.name %>.min.js": ["<%= concat.core.dest %>"],
+        #         "build/<%= pkg.name %>-all.min.js": ["<%= concat.all.dest %>"]
+
+        custom:
+            options:
+                report: "min"
+                preserveComments: "some"
+            files: [
+              {
+                  src: ["**/jquery.fancytree*.js", "!*.min.js"]
+                  cwd: "src/"
+                  dest: "build/"
+                  expand: true
+                  rename: (dest, src) ->
+                      folder = src.substring(0, src.lastIndexOf("/"))
+                      filename = src.substring(src.lastIndexOf("/"), src.length)
+                      filename  = filename.substring(0, filename.lastIndexOf("."))
+                      return dest + folder + filename + ".min.js"
+              }
+              ]
 
     watch:
         less:
@@ -305,7 +334,9 @@ module.exports = (grunt) ->
             files: ["src/*.js", "test/unit/*.js"]
             tasks: ["jshint:beforeConcat"]
 
+
   # ----------------------------------------------------------------------------
+
 
   # Load "grunt*" dependencies
 
@@ -330,23 +361,26 @@ module.exports = (grunt) ->
       grunt.registerTask "travis", ["test"]
   else
       grunt.registerTask "travis", ["test", "sauce"]
-  
+
   grunt.registerTask "default", ["test"]
+
   grunt.registerTask "build", [
-      # "exec:tabfix"
       "less:development"
       "test"
       "jsdoc:build"
       "docco:docs"
       "clean:build"
       "copy:build"
-      "concat"
       "cssmin:build"
+      "concat:core"
+      "concat:all"
+      "uglify:custom"
+      "concat:custom"
+      "clean:extMin"
       "replace:production"
       "jshint:afterConcat"
-      "uglify"
+      # "uglify:build"
       "qunit:build"
-      # "compare_size"
       ]
   
   grunt.registerTask "make_release", [

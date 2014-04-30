@@ -47,13 +47,22 @@
 		 * Event handlers for our little demo interface
 		 */
 		$("input[name=search]").keyup(function(e){
-			var match = $(this).val();
+			var n,
+				match = $(this).val();
+
 			if(e && e.which === $.ui.keyCode.ESCAPE || $.trim(match) === ""){
 				$("button#btnResetSearch").click();
 				return;
 			}
-			// Pass text as filter string (will be matched as substring in the node title)
-			var n = tree.applyFilter(match);
+			if($("#regex").is(":checked")) {
+				// Pass function to perform match
+				n = tree.applyFilter(function(node) {
+					return new RegExp(match, "i").test(node.title);
+				});
+			} else {
+				// Pass a string to perform case insensitive matching
+				n = tree.applyFilter(match);
+			}
 			$("button#btnResetSearch").attr("disabled", false);
 			$("span#matches").text("(" + n + " matches)");
 		}).focus();
@@ -68,7 +77,10 @@
 			tree.options.filter.mode = $(this).is(":checked") ? "hide" : "dimm";
 			tree.clearFilter();
 			$("input[name=search]").keyup();
-//			tree.render();
+		});
+		$("input#regex").change(function(e){
+			tree.clearFilter();
+			$("input[name=search]").keyup();
 		});
 	});
 </script>
@@ -93,6 +105,10 @@
 		<span id="matches"></span>
 	</p>
 	<p>
+		<label for="regex">
+			<input type="checkbox" id="regex">
+			Regular expression
+		</label>
 		<label for="hideMode">
 			<input type="checkbox" id="hideMode">
 			Hide unmatched nodes

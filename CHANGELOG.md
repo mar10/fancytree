@@ -1,4 +1,26 @@
-# 2.0.0-10 / Unreleased
+# 2.0.0-12 / Unreleased
+  * [Added] /dist/src folder contains uncompressed extensions for bower
+  * [Improved] cleanup
+
+
+# 2.0.0-11 / 2014-04-27
+  * [Added] /dist/jquery.fancytree-custom.min.js with AMD support
+  * [Added] #56: Allow to set special node.attributes from data-...
+  * [Added] #191: Allow to set additional tree.data attributes from <ul data-...>
+  * [Added] [ext-childcounter] #202: Allow lazy children count
+  * [Improved] #192: Removed 'height: 100%' for container (was introduced to fix 
+     an IE 9 bug, that now should be solved by 'min-height: 0%')
+  * [Improved] [ext-table] #93 renderColumns called for status nodes 
+    (added 'customStatus' option)
+  * [Improved] [ext-dnd] #196 Make draggable/droppable options configurable
+  * [Fixed] [ext-glyph] #194 Render noExpander icon from icon map for leaf nodes
+  * [Fixed] #197: Allow special characters in tooltips
+  * [Fixed] #68: renderStatus method doesn't render 'loading' status
+  * [Fixed] #201: originalEvent not passed along to activate callback
+  * [Fixed] [ext-glyph] compatible with ext-table
+
+
+# 2.0.0-10 / 2014-04-13
   * [Added] New method node.appendSibling()
   * [Improved] setExpanded resolves promise *after* scrollIntoView
   * [Improved] Allow to return false in lazyLoad for manual loading.

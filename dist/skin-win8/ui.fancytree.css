@@ -27,7 +27,7 @@ ul.fancytree-container {
   background-color: white;
   border: 1px dotted gray;
   overflow: auto;
-  height: 100%;
+  min-height: 0%;
 }
 ul.fancytree-container ul {
   padding: 0 0 0 16px;
@@ -157,7 +157,8 @@ span.fancytree-expander {
 .fancytree-exp-edl span.fancytree-expander:hover {
   background-position: -48px -96px;
 }
-.fancytree-loading span.fancytree-expander {
+.fancytree-loading span.fancytree-expander,
+.fancytree-loading span.fancytree-expander:hover {
   background-image: url("loading.gif");
   background-position: 0px 0px;
 }
@@ -256,8 +257,10 @@ span.fancytree-icon {
   background-position: -80px -16px;
 }
 /* Status node icons */
-.fancytree-statusnode-wait span.fancytree-icon {
+.fancytree-statusnode-wait span.fancytree-icon,
+.fancytree-statusnode-wait span.fancytree-icon:hover {
   background-image: url("loading.gif");
+  background-position: 0px 0px;
 }
 .fancytree-statusnode-error span.fancytree-icon {
   background-position: 0px -112px;
@@ -279,6 +282,9 @@ span.fancytree-title {
   margin: 0px;
   margin-left: 3px;
   cursor: pointer;
+}
+span.fancytree-node.fancytree-error span.fancytree-title {
+  color: red;
 }
 /*------------------------------------------------------------------------------
  * Drag'n'drop support

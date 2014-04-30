@@ -27,7 +27,7 @@ ul.fancytree-container {
   background-color: white;
   border: 1px dotted gray;
   overflow: auto;
-  height: 100%;
+  min-height: 0%;
 }
 ul.fancytree-container ul {
   padding: 0 0 0 16px;
@@ -154,6 +154,9 @@ span.fancytree-title {
   margin: 0px;
   margin-left: 3px;
   cursor: pointer;
+}
+span.fancytree-node.fancytree-error span.fancytree-title {
+  color: red;
 }
 /*------------------------------------------------------------------------------
  * Drag'n'drop support
