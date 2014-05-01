@@ -301,18 +301,18 @@ $.ui.fancytree._FancytreeClass.prototype.getNodesByRef = function(refKey, rootNo
  * @requires jquery.fancytree.clones.js
  */
 $.ui.fancytree._FancytreeClass.prototype.changeRefKey = function(oldRefKey, newRefKey) {
-    var i, node,
+	var i, node,
 		keyMap = this.keyMap,
-        refList = this.refMap[oldRefKey] || null;
+		refList = this.refMap[oldRefKey] || null;
 
-    if (refList) {
-        for (i = 0; i < refList.length; i++) {
-            node = keyMap[refList[i]];
-            node.refKey = newRefKey;
-        }
-        delete this.refMap[oldRefKey];
-        this.refMap[newRefKey] = refList;
-    }
+	if (refList) {
+		for (i = 0; i < refList.length; i++) {
+			node = keyMap[refList[i]];
+			node.refKey = newRefKey;
+		}
+		delete this.refMap[oldRefKey];
+		this.refMap[newRefKey] = refList;
+	}
 };
 
 
