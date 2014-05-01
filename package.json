@@ -40,7 +40,7 @@
     "grunt-contrib-watch": "~0.5.3",
     "grunt-exec": "~0.4.0",
     "grunt-html": "~0.3.3",
-    "grunt-tagrelease": "~0.2.0",
+    "grunt-tagrelease": "^0.3.3",
     "grunt-text-replace": "~0.3.7",
     "qunitjs": "1.x",
     "grunt-saucelabs": "~4.1.2",
