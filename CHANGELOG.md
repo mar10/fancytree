@@ -1,4 +1,8 @@
-# 2.0.0-12 / Unreleased
+# 2.0.0 / 2014-05-01
+  * [Added] [ext-clones] #213 New method Fancytree.changeRefKey()
+
+
+# 2.0.0-12 / 2014-04-29
   * [Added] /dist/src folder contains uncompressed extensions for bower
   * [Improved] cleanup
 
