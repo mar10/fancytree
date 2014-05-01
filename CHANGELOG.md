@@ -1,3 +1,6 @@
+# 2.0.1 / Unreleased
+
+
 # 2.0.0 / 2014-05-01
   * [Added] [ext-clones] #213 New method Fancytree.changeRefKey()
 
@@ -28,7 +31,7 @@
   * [Added] New method node.appendSibling()
   * [Improved] setExpanded resolves promise *after* scrollIntoView
   * [Improved] Allow to return false in lazyLoad for manual loading.
-  * [Improved] [ext-table] trigger expand event *after* animations
+  * [Improved] [ext-table] trigger expand event *after* anPimations
   * [Improved] [ext-gridnav] skips empty and merged cells
   * [Improved] grunt build no longer depends on tabfix.py
   * [Fixed] selectMode: 1 + "selected": true looks buggy
