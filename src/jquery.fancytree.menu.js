@@ -62,37 +62,37 @@ $.ui.fancytree.registerExtension({
 //        tree.$container[0].oncontextmenu = function() {return false;};
 		// Replace the standard browser context menu with out own
         $.each(opts.menu, function(idx, menu) {
-		    tree.$container.delegate("span.fancytree-node", "contextmenu", function(event) {
-		    	var node = $.ui.fancytree.getNode(event),
-		    		ctx = {node: node, tree: node.tree, originalEvent: event, menu: menu};
-		    	tree.ext.menu._openMenu(ctx);
-		    	return false;
-		    });
+			tree.$container.delegate("span.fancytree-node", "contextmenu", function(event) {
+				var node = $.ui.fancytree.getNode(event),
+					ctx = {node: node, tree: node.tree, originalEvent: event, menu: menu};
+				tree.ext.menu._openMenu(ctx);
+				return false;
+			});
 
-		    // Use jquery.ui.menu
-		    $(menu.selector).menu({
-		    	create: function(event, ui){
-		    		tree.ext.menu.data.$menu = $(this).menu("widget");
-		    		var data = $.extend({}, tree.ext.menu.data);
-		    		opts.menu.create.call(tree, event, data);
-		    	},
-		    	focus: function(event, ui){
-		    		var data = $.extend({}, tree.ext.menu.data, {
-		    			menuItem: ui.item,
-		    			menuId: ui.item.find(">a").attr("href")
-		    		});
-		    		opts.menu.focus.call(tree, event, data);
-		    	},
-		    	select: function(event, ui){
-		    		var data = $.extend({}, tree.ext.menu.data, {
-		    			menuItem: ui.item,
-		    			menuId: ui.item.find(">a").attr("href")
-		    		});
-		    		if( opts.menu.select.call(tree, event, data) !== false){
-		    			tree.ext.menu._closeMenu(ctx);
-		    		}
-		    	}
-		    }).hide();
+			// Use jquery.ui.menu
+			$(menu.selector).menu({
+				create: function(event, ui){
+					tree.ext.menu.data.$menu = $(this).menu("widget");
+					var data = $.extend({}, tree.ext.menu.data);
+					opts.menu.create.call(tree, event, data);
+				},
+				focus: function(event, ui){
+					var data = $.extend({}, tree.ext.menu.data, {
+						menuItem: ui.item,
+						menuId: ui.item.find(">a").attr("href")
+					});
+					opts.menu.focus.call(tree, event, data);
+				},
+				select: function(event, ui){
+					var data = $.extend({}, tree.ext.menu.data, {
+						menuItem: ui.item,
+						menuId: ui.item.find(">a").attr("href")
+					});
+					if( opts.menu.select.call(tree, event, data) !== false){
+						tree.ext.menu._closeMenu(ctx);
+					}
+				}
+			}).hide();
         });
 	},
 	treeDestroy: function(ctx){
