@@ -2818,7 +2818,7 @@ $.extend(Fancytree.prototype,
 		role = aria ? " role='img'" : "";
 		if ( icon && typeof icon === "string" ) {
 			imageSrc = (icon.charAt(0) === "/") ? icon : ((opts.imagePath || "") + icon);
-			ares.push("<img src='" + imageSrc + "' alt='' />");
+			ares.push("<img src='" + imageSrc + "' class='fancytree-icon' alt='' />");
 		} else if ( node.data.iconclass ) {
 			// TODO: review and test and document
 			ares.push("<span " + role + " class='fancytree-custom-icon" + " " + node.data.iconclass +  "'></span>");
