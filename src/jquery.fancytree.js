@@ -168,6 +168,20 @@ function _makeResolveFunc(deferred, context){
 }
 
 
+function _getElementDataAsDict($el){
+	// Evaluate 'data-NAME' attributes with special treatment for 'data-json'.
+	var d = $.extend({}, $el.data()),
+		json = d.json;
+	delete d.fancytree; // added to container by widget factory
+	if( json ) {
+		delete d.json;
+		// <li data-json='...'> is already returned as object (http://api.jquery.com/data/#data-html5)
+		d = $.extend(d, json);
+	}
+	return d;
+}
+
+
 // TODO: use currying
 function _makeNodeTitleMatcher(s){
 	s = s.toLowerCase();
@@ -230,9 +244,9 @@ function FancytreeNode(parent, obj){
 	this.tree = parent.tree;
 	this.ul = null;
 	this.li = null;  // <li id='key' ftnode=this> tag
-	// this.isStatusNode = false;
-	this.statusNodeType = null;
-	this._isLoading = false;
+	this.statusNodeType = null; // if this is a temp. node to display the status of its parent
+	this._isLoading = false;    // if this node itself is loading
+	this._error = null;         // {message: '...'} if a load error occured
 	this.data = {};
 
 	// TODO: merge this code with node.toDict()
@@ -1138,7 +1152,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		}
 
 		// In multi-hier mode, update the parents selection state
-		// issue #82: only if not initializing, because the children may not exist yet
+		// DT issue #82: only if not initializing, because the children may not exist yet
 //		if( !ftnode.data.isStatusNode() && opts.selectMode==3 && !isInitializing )
 //			ftnode._fixSelectionState();
 
@@ -1599,7 +1613,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
  * Construct a new tree object.
  *
  * @class Fancytree
- * @classdesc A Fancytree is the controller behind a fancytree.
+ * @classdesc The controller behind a fancytree.
  * This class also contains 'hook methods': see {@link Fancytree_Hooks}.
  *
  * @param {Widget} widget
@@ -1633,7 +1647,8 @@ function Fancytree(widget) {
 		}
 	}
 	this.ext = {}; // Active extension instances
-	this.data = {};
+	// allow to init tree.data.foo from <div data-foo=''>
+	this.data = _getElementDataAsDict(this.$div);
 	this._id = $.ui.fancytree._nextId++;
 	this._ns = ".fancytree-" + this._id; // append for namespaced events
 	this.activeNode = null;
@@ -2185,11 +2200,11 @@ $.extend(Fancytree.prototype,
 		if( targetType === "expander" ) {
 			// Clicking the expander icon always expands/collapses
 			this._callHook("nodeToggleExpanded", ctx);
-//            this._callHook("nodeSetFocus", ctx, true); // issue 95
+//            this._callHook("nodeSetFocus", ctx, true); // DT issue 95
 		} else if( targetType === "checkbox" ) {
 			// Clicking the checkbox always (de)selects
 			this._callHook("nodeToggleSelected", ctx);
-			this._callHook("nodeSetFocus", ctx, true); // issue 95
+			this._callHook("nodeSetFocus", ctx, true); // DT issue 95
 		} else {
 			// Honor `clickFolderMode` for
 			expand = false;
@@ -2399,7 +2414,7 @@ $.extend(Fancytree.prototype,
 		if($.isFunction(source.promise)){
 			// `source` is a deferred, i.e. ajax request
 			_assert(!node.isLoading());
-			node._isLoading = true;
+			// node._isLoading = true;
 			tree.nodeSetStatus(ctx, "loading");
 
 			source.done(function () {
@@ -2426,7 +2441,7 @@ $.extend(Fancytree.prototype,
 
 			if( $.isPlainObject(children) ){
 				// We got {foo: 'abc', children: [...]}
-				// Copy extra properties to tree.data.
+				// Copy extra properties to tree.data.foo
 				_assert($.isArray(children.children), "source must contain (or be) an array of children");
 				_assert(node.isRoot(), "source may only be an object for root nodes");
 				metaData = children;
@@ -2440,14 +2455,14 @@ $.extend(Fancytree.prototype,
 			// if( node.parent ) {
 			tree._triggerNodeEvent("loadChildren", node);
 			// }
-		}).always(function(){
-			node._isLoading = false;
+		// }).always(function(){
+		// 	node._isLoading = false;
 		});
 	},
 	/** [Not Implemented]  */
 	nodeLoadKeyPath: function(ctx, keyPathList) {
 		// TODO: implement and improve
-		// http://code.google.com/p/fancytree/issues/detail?id=222
+		// http://code.google.com/p/dynatree/issues/detail?id=222
 	},
 	/**
 	 * Remove a single direct child of ctx.node.
@@ -2548,7 +2563,6 @@ $.extend(Fancytree.prototype,
 		} else{
 			node.children = null;
 		}
-		// TODO: ? this._isLoading = false;
 		this.nodeRenderStatus(ctx);
 	},
 	/**Remove HTML markup for ctx.node and all its descendents.
@@ -2618,7 +2632,7 @@ $.extend(Fancytree.prototype,
 		// FT.debug("nodeRender(" + !!force + ", " + !!deep + ")", node.toString());
 
 		if( ! isRootNode && ! parent.ul ) {
-			// issue #105: calling node.collapse on a deep, unrendered node
+			// Calling node.collapse on a deep, unrendered node
 			return;
 		}
 		_assert(isRootNode || parent.ul, "parent UL must exist");
@@ -2821,7 +2835,7 @@ $.extend(Fancytree.prototype,
 		}
 		if(!nodeTitle){
 			// TODO: escape tooltip string
-			tooltip = node.tooltip ? " title='" + node.tooltip.replace(/\"/g, "&quot;") + "'" : "";
+			tooltip = node.tooltip ? " title='" + FT.escapeHtml(node.tooltip) + "'" : "";
 			id = aria ? " id='ftal_" + node.key + "'" : "";
 			role = aria ? " role='treeitem'" : "";
 			tabindex = opts.titlesTabbable ? " tabindex='0'" : "";
@@ -2863,7 +2877,7 @@ $.extend(Fancytree.prototype,
 			cnList.push(cn.active);
 //			$(">span.fancytree-title", statusElem).attr("tabindex", "0");
 //			tree.$container.removeAttr("tabindex");
-		}else{
+		// }else{
 //			$(">span.fancytree-title", statusElem).removeAttr("tabindex");
 //			tree.$container.attr("tabindex", "0");
 		}
@@ -2906,6 +2920,12 @@ $.extend(Fancytree.prototype,
 		}
 		if( node.partsel ){
 			cnList.push(cn.partsel);
+		}
+		if( node._isLoading ){
+			cnList.push(cn.loading);
+		}
+		if( node._error ){
+			cnList.push(cn.error);
 		}
 		if( node.selected ){
 			cnList.push(cn.selected);
@@ -2989,14 +3009,14 @@ $.extend(Fancytree.prototype,
 			tree.nodeRenderStatus(ctx);
 			tree.nodeSetFocus(ctx);
 			if( !noEvents ) {
-				tree._triggerNodeEvent("activate", node);
+				tree._triggerNodeEvent("activate", node, ctx.originalEvent);
 			}
 		}else{
 			_assert(tree.activeNode === node, "node was not active (inconsistency)");
 			tree.activeNode = null;
 			this.nodeRenderStatus(ctx);
 			if( !noEvents ) {
-				ctx.tree._triggerNodeEvent("deactivate", node);
+				ctx.tree._triggerNodeEvent("deactivate", node, ctx.originalEvent);
 			}
 		}
 	},
@@ -3244,17 +3264,18 @@ $.extend(Fancytree.prototype,
 	 */
 	nodeSetStatus: function(ctx, status, message, details) {
 		var node = ctx.node,
-			tree = ctx.tree,
-			cn = ctx.options._classNames;
+			tree = ctx.tree;
+			// cn = ctx.options._classNames;
 
 		function _clearStatusNode() {
+			// Remove dedicated dummy node, if any
 			var firstChild = ( node.children ? node.children[0] : null );
 			if ( firstChild && firstChild.isStatusNode() ) {
 				try{
 					// I've seen exceptions here with loadKeyPath...
 					if(node.ul){
 						node.ul.removeChild(firstChild.li);
-						firstChild.li = null; // avoid leaks (issue 215)
+						firstChild.li = null; // avoid leaks (DT issue 215)
 					}
 				}catch(e){}
 				if( node.children.length === 1 ){
@@ -3265,6 +3286,9 @@ $.extend(Fancytree.prototype,
 			}
 		}
 		function _setStatusNode(data, type) {
+			// Create/modify the dedicated dummy node for 'loading...' or
+			// 'error!' status. (only called for direct child of the invisible
+			// system root)
 			var firstChild = ( node.children ? node.children[0] : null );
 			if ( firstChild && firstChild.isStatusNode() ) {
 				$.extend(firstChild, data);
@@ -3272,41 +3296,46 @@ $.extend(Fancytree.prototype,
 			} else {
 				data.key = "_statusNode";
 				node._setChildren([data]);
-				// node.children[0].isStatusNode = true;
 				node.children[0].statusNodeType = type;
 				tree.render();
 			}
 			return node.children[0];
 		}
 
-		switch(status){
+		switch( status ){
 		case "ok":
 			_clearStatusNode();
-			$(node.span).removeClass(cn.loading);
-			$(node.span).removeClass(cn.error);
+			// $(node.span).removeClass(cn.loading).removeClass(cn.error);
+			node._isLoading = false;
+			node._error = null;
+			node.renderStatus();
 			break;
 		case "loading":
-			$(node.span).removeClass(cn.error);
-			$(node.span).addClass(cn.loading);
-			if(!node.parent){
+			// $(node.span).removeClass(cn.error).addClass(cn.loading);
+			if( !node.parent ) {
 				_setStatusNode({
 					title: tree.options.strings.loading + (message ? " (" + message + ") " : ""),
 					tooltip: details,
 					extraClasses: "fancytree-statusnode-wait"
 				}, status);
 			}
+			node._isLoading = true;
+			node._error = null;
+			node.renderStatus();
 			break;
 		case "error":
-			$(node.span).removeClass(cn.loading);
-			$(node.span).addClass(cn.error);
+			// $(node.span).removeClass(cn.loading).addClass(cn.error);
 			_setStatusNode({
 				title: tree.options.strings.loadError + (message ? " (" + message + ") " : ""),
 				tooltip: details,
 				extraClasses: "fancytree-statusnode-error"
 			}, status);
+			node._isLoading = false;
+			node._error = { message: message, details: details };
+			node.renderStatus();
 			break;
 		default:
-			$.error("invalid status " + status);
+			$.error("invalid node status " + status);
 		}
 	},
 	/**
@@ -3374,6 +3403,8 @@ $.extend(Fancytree.prototype,
 				$ul = $container.find(">ul:first");
 				$ul.addClass("ui-fancytree-source ui-helper-hidden");
 				source = $.ui.fancytree.parseHtml($ul);
+				// allow to init tree.data.foo from <ul data-foo=''>
+				this.data = $.extend(this.data, _getElementDataAsDict($ul));
 				break;
 			case "json":
 	//            $().addClass("ui-helper-hidden");
@@ -3690,7 +3721,7 @@ $.widget("ui.fancytree",
 					return ( tree._triggerNodeEvent("dblclick", ctx, event) === false ) ? false : tree._callHook("nodeDblclick", ctx);
 				}
 //             } catch(e) {
-// //                var _ = null; // issue 117 // TODO
+// //                var _ = null; // DT issue 117 // TODO
 //                 $.error(e);
 			} finally {
 				tree.phase = prevPhase;
@@ -3831,7 +3862,7 @@ $.extend($.ui.fancytree,
 		}else if( /\bfancytree-icon\b/.test(tcn) ){
 			res.type = "icon";
 		}else if( /\bfancytree-node\b/.test(tcn) ){
-			// TODO: issue #93 (http://code.google.com/p/fancytree/issues/detail?id=93)
+			// TODO: (http://code.google.com/p/dynatree/issues/detail?id=93)
 //			res.type = this._getTypeForOuterNodeEvent(event);
 			res.type = "title";
 		}
@@ -3891,13 +3922,12 @@ $.extend($.ui.fancytree,
 	parseHtml: function($ul) {
 		// TODO: understand this:
 		/*jshint validthis:true */
-		var $children = $ul.find(">li"),
-			extraClasses, i, l, iPos, tmp, classes, className,
+		var extraClasses, i, l, iPos, tmp, tmp2, classes, className,
+			$children = $ul.find(">li"),
 			children = [];
-//			that = this;
 
 		$children.each(function() {
-			var allData, jsonData,
+			var allData,
 				$li = $(this),
 				$liSpan = $li.find(">span:first", this),
 				$liA = $liSpan.length ? null : $li.find(">a:first"),
@@ -3951,24 +3981,20 @@ $.extend($.ui.fancytree,
 				d.key = tmp;
 			}
 			// Add <li data-NAME='...'> as node.data.NAME
-			// See http://api.jquery.com/data/#data-html5
-			allData = $li.data();
-//            alert("d: " + JSON.stringify(allData));
+			allData = _getElementDataAsDict($li);
 			if(allData && !$.isEmptyObject(allData)) {
-				// Special handling for <li data-json='...'>
-				jsonData = allData.json;
-				delete allData.json;
-				$.extend(d.data, allData);
-				// If a 'data-json' attribute is present, evaluate and add to node.data
-				if(jsonData) {
-//	              alert("$li.data()" + JSON.stringify(jsonData));
-					// <li data-json='...'> is already returned as object
-					// see http://api.jquery.com/data/#data-html5
-					$.extend(d.data, jsonData);
+				// #56: Allow to set special node.attributes from data-...
+				for(i=0, l=NODE_ATTRS.length; i<l; i++){
+					tmp = NODE_ATTRS[i];
+					tmp2 = allData[tmp];
+					if( tmp2 != null ) {
+						delete allData[tmp];
+						d[tmp] = tmp2;
+					}
 				}
+				// All other data-... goes to node.data...
+				$.extend(d.data, allData);
 			}
-//	        that.debug("parse ", d);
-//	        var childNode = parentTreeNode.addChild(data);
 			// Recursive reading of child nodes, if LI tag contains an UL tag
 			$ul = $li.find(">ul:first");
 			if( $ul.length ) {
