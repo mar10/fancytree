@@ -9,10 +9,10 @@ persistence, keyboard, checkboxes, tables, drag'n'drop, and lazy loading.
 
 ### Status
 
-Entered *Beta*.
+Released 2.0.
 
 See the [change log](https://github.com/mar10/fancytree/blob/master/CHANGELOG.md) 
-for details (including **changes that break backwards compatibility**).
+for details.
 
 
 ### Get Started
@@ -23,9 +23,7 @@ for details (including **changes that break backwards compatibility**).
 
 ### Credits
 
-Contributors:
-
-  *  <https://github.com/mar10/fancytree/contributors>
+Thanks to all [contributors](https://github.com/mar10/fancytree/contributors).
 
 
 ### Browser Status Matrix
