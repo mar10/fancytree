@@ -2817,7 +2817,7 @@ $.extend(Fancytree.prototype,
 		// folder or doctype icon
 		role = aria ? " role='img'" : "";
 		if ( icon && typeof icon === "string" ) {
-			imageSrc = (icon.charAt(0) === "/") ? icon : (opts.imagePath + icon);
+			imageSrc = (icon.charAt(0) === "/") ? icon : ((opts.imagePath || "") + icon);
 			ares.push("<img src='" + imageSrc + "' alt='' />");
 		} else if ( node.data.iconclass ) {
 			// TODO: review and test and document
