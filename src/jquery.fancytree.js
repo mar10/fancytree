@@ -275,6 +275,8 @@ function FancytreeNode(parent, obj){
 		} else {
 			this.key = "_" + (FT._nextNodeKey++);
 		}
+	} else {
+		this.key = "" + this.key; // Convert to string (#217)
 	}
 
 	// Fix tree.activeNode
@@ -2834,7 +2836,6 @@ $.extend(Fancytree.prototype,
 			nodeTitle = opts.renderTitle.call(tree, {type: "renderTitle"}, ctx) || "";
 		}
 		if(!nodeTitle){
-			// TODO: escape tooltip string
 			tooltip = node.tooltip ? " title='" + FT.escapeHtml(node.tooltip) + "'" : "";
 			id = aria ? " id='ftal_" + node.key + "'" : "";
 			role = aria ? " role='treeitem'" : "";

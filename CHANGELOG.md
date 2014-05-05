@@ -1,4 +1,7 @@
 # 2.0.1 / Unreleased
+  * [Added] Add 'fancytree-icon' class to icon IMG
+  * [Fixed] #217: persistence when node keys are numeric
+  * [Fixed] relative custom imagePath option
 
 
 # 2.0.0 / 2014-05-01
