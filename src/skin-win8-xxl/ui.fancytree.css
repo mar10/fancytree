@@ -383,9 +383,12 @@ table.fancytree-ext-columnview span.fancytree-node.fancytree-expanded {
   background-color: #CBE8F6;
 }
 table.fancytree-ext-columnview .fancytree-has-children span.fancytree-cv-right {
-  background-position: 0px -160px;
   position: absolute;
   right: 3px;
+  background-position: 0px -160px;
+}
+table.fancytree-ext-columnview .fancytree-has-children span.fancytree-cv-right:hover {
+  background-position: -32px -160px;
 }
 /*------------------------------------------------------------------------------
  * 'filter' extension

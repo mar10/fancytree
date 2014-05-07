@@ -558,9 +558,12 @@ table.fancytree-ext-columnview {
 	// 	background-color: royalblue;
 	// }
 	.fancytree-has-children span.fancytree-cv-right {
-		.useSprite(0, 5);
 		position: absolute;
 		right: 3px;
+		.useSprite(0, 5);
+		&:hover {
+			.useSprite(1, 5);
+		}
 	}
 }
 

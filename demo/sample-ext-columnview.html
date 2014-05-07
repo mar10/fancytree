@@ -23,6 +23,26 @@
 		border-collapse: collapse;
 		width: 100%;
 	}
+	table.fancytree-container tbody tr td{
+		max-width: 300px; /* width does not work */
+	}
+	span.fancytree-node{
+		white-space: nowrap; /* prevent long lines to wrap */
+		overflow: hidden;
+		-o-text-overflow: ellipsis;
+		-ms-text-overflow: ellipsis;
+		text-overflow: ellipsis;
+/*
+		display: inline;
+		overflow-wrap: break-word;
+		word-wrap: break-word;
+		word-break: break-all;
+*/
+	}
+	span.fancytree-title{
+		display: inline; /* prevent long lines to start with a break after the icon */
+	}
+
 	span.selTag{
 		border: 1px outset #dec;
 		display: inline-block;

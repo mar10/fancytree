@@ -1,5 +1,6 @@
 # 2.0.1 / Unreleased
   * [Added] Add 'fancytree-icon' class to icon IMG
+  * [Improved] [ext-columnview] css
   * [Fixed] #217: persistence when node keys are numeric
   * [Fixed] relative custom imagePath option
 
