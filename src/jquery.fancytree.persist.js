@@ -39,7 +39,7 @@ var ACTIVE = "active",
 /* Recursively load lazy nodes
  * @param {string} mode 'load', 'expand', false
  */
-function _loadLazyNodes(tree, instData, keyList, mode, dfd) {
+function _loadLazyNodes(tree, local, keyList, mode, dfd) {
 	var i, key, l, node,
 		foundOne = false,
 		deferredList = [],
@@ -74,13 +74,13 @@ function _loadLazyNodes(tree, instData, keyList, mode, dfd) {
 		// All lazy-expands have finished
 		if( foundOne && missingKeyList.length > 0 ) {
 			// If we read new nodes from server, try to resolve yet-missing keys
-			_loadLazyNodes(tree, instData, missingKeyList, mode, dfd);
+			_loadLazyNodes(tree, local, missingKeyList, mode, dfd);
 		} else {
 			if( missingKeyList.length ) {
 				tree.warn("_loadLazyNodes: could not load those keys: ", missingKeyList);
 				for( i=0, l=missingKeyList.length; i<l; i++ ) {
 					key = keyList[i];
-					instData._setKey(EXPANDED, keyList[i], false);
+					local._appendKey(EXPANDED, keyList[i], false);
 				}
 			}
 			dfd.resolve();
@@ -99,21 +99,21 @@ function _loadLazyNodes(tree, instData, keyList, mode, dfd) {
  * @requires jquery.fancytree.persist.js
  */
 $.ui.fancytree._FancytreeClass.prototype.clearCookies = function(types){
-	var inst = this.ext.persist,
-		cookiePrefix = inst.cookiePrefix;
+	var local = this.ext.persist,
+		prefix = local.cookiePrefix;
 
 	types = types || "active expanded focus selected";
 	if(types.indexOf(ACTIVE) >= 0){
-		$.removeCookie(cookiePrefix + ACTIVE);
+		local._data(prefix + ACTIVE, null);
 	}
 	if(types.indexOf(EXPANDED) >= 0){
-		$.removeCookie(cookiePrefix + EXPANDED);
+		local._data(prefix + EXPANDED, null);
 	}
 	if(types.indexOf(FOCUS) >= 0){
-		$.removeCookie(cookiePrefix + FOCUS);
+		local._data(prefix + FOCUS, null);
 	}
 	if(types.indexOf(SELECTED) >= 0){
-		$.removeCookie(cookiePrefix + SELECTED);
+		local._data(prefix + SELECTED, null);
 	}
 };
 
@@ -128,15 +128,15 @@ $.ui.fancytree._FancytreeClass.prototype.clearCookies = function(types){
  * @requires jquery.fancytree.persist.js
  */
 $.ui.fancytree._FancytreeClass.prototype.getPersistData = function(){
-	var inst = this.ext.persist,
-		instOpts= this.options.persist,
-		delim = instOpts.cookieDelimiter,
+	var local = this.ext.persist,
+		prefix = local.cookiePrefix,
+		delim = local.cookieDelimiter,
 		res = {};
 
-	res[ACTIVE] = $.cookie(inst.cookiePrefix + ACTIVE);
-	res[EXPANDED] = ($.cookie(inst.cookiePrefix + EXPANDED) || "").split(delim);
-	res[SELECTED] = ($.cookie(inst.cookiePrefix + SELECTED) || "").split(delim);
-	res[FOCUS] = $.cookie(inst.cookiePrefix + FOCUS);
+	res[ACTIVE] = local._data(prefix + ACTIVE);
+	res[EXPANDED] = (local._data(prefix + EXPANDED) || "").split(delim);
+	res[SELECTED] = (local._data(prefix + SELECTED) || "").split(delim);
+	res[FOCUS] = local._data(prefix + FOCUS);
 	return res;
 };
 
@@ -146,7 +146,7 @@ $.ui.fancytree._FancytreeClass.prototype.getPersistData = function(){
  */
 $.ui.fancytree.registerExtension({
 	name: "persist",
-	version: "0.2.0",
+	version: "0.3.0",
 	// Default options for this extension.
 	options: {
 		cookieDelimiter: "~",
@@ -158,67 +158,92 @@ $.ui.fancytree.registerExtension({
 			domain: "",
 			secure: false
 		},
-		expandLazy: false, // true: recursively expand and load lazy nodes
-		overrideSource: false,  // true: cookie takes precedence over `source` data attributes.
+		expandLazy: false,     // true: recursively expand and load lazy nodes
+		overrideSource: false, // true: cookie takes precedence over `source` data attributes.
+		store: "auto",         // 'cookie': force cookie, 'localStore': force localStore
 		types: "active expanded focus selected"
 	},
 
+	/* Generic read/write string data to cookie or localStorage. */
+	_data: function(key, value){
+		var ls = this._local.localStorage;
+
+		if( value === undefined ) {
+			return ls ? ls[key] : $.cookie(key);
+		} else if ( value === null ) {
+			if( ls ) {
+				delete ls[key];
+			} else {
+				$.removeCookie(key);
+			}
+		} else {
+			if( ls ) {
+				ls[key] = value;
+			} else {
+				$.cookie(key, value, this.options.persist.cookie);
+			}
+		}
+	},
+
 	/* Append `key` to a cookie. */
-	_setKey: function(type, key, flag){
+	_appendKey: function(type, key, flag){
 		key = "" + key; // #90
-		var instData = this._local,
+		var local = this._local,
 			instOpts = this.options.persist,
-			cookieName = instData.cookiePrefix + type,
-			cookie = $.cookie(cookieName),
-			cookieList = cookie ? cookie.split(instOpts.cookieDelimiter) : [],
-			idx = $.inArray(key, cookieList);
+			delim = instOpts.cookieDelimiter,
+			cookieName = local.cookiePrefix + type,
+			data = local._data(cookieName),
+			keyList = data ? data.split(delim) : [],
+			idx = $.inArray(key, keyList);
 		// Remove, even if we add a key,  so the key is always the last entry
 		if(idx >= 0){
-			cookieList.splice(idx, 1);
+			keyList.splice(idx, 1);
 		}
 		// Append key to cookie
 		if(flag){
-			cookieList.push(key);
+			keyList.push(key);
 		}
-		$.cookie(cookieName, cookieList.join(instOpts.cookieDelimiter), instOpts.cookie);
+		local._data(cookieName, keyList.join(delim));
 	},
 
 	treeInit: function(ctx){
 		var tree = ctx.tree,
 			opts = ctx.options,
-			instData = this._local,
+			local = this._local,
 			instOpts = this.options.persist;
 
-		_assert($.cookie, "Missing required plugin for 'persist' extension: jquery.cookie.js");
+		// For 'auto' or 'cookie' mode, the cookie plugin must be available
+		_assert(instOpts.store === "localStore" || $.cookie, "Missing required plugin for 'persist' extension: jquery.cookie.js");
 
-		instData.cookiePrefix = instOpts.cookiePrefix || ("fancytree-" + tree._id + "-");
-		instData.storeActive = instOpts.types.indexOf(ACTIVE) >= 0;
-		instData.storeExpanded = instOpts.types.indexOf(EXPANDED) >= 0;
-		instData.storeSelected = instOpts.types.indexOf(SELECTED) >= 0;
-		instData.storeFocus = instOpts.types.indexOf(FOCUS) >= 0;
+		local.cookiePrefix = instOpts.cookiePrefix || ("fancytree-" + tree._id + "-");
+		local.storeActive = instOpts.types.indexOf(ACTIVE) >= 0;
+		local.storeExpanded = instOpts.types.indexOf(EXPANDED) >= 0;
+		local.storeSelected = instOpts.types.indexOf(SELECTED) >= 0;
+		local.storeFocus = instOpts.types.indexOf(FOCUS) >= 0;
+		local.localStorage = (instOpts.store === "cookie") ? null : window.localStorage;
 
 		// Bind init-handler to apply cookie state
 		tree.$div.bind("fancytreeinit", function(event){
 			var cookie, dfd, i, keyList, node,
-				prevFocus = $.cookie(instData.cookiePrefix + FOCUS); // record this before node.setActive() overrides it;
+				prevFocus = $.cookie(local.cookiePrefix + FOCUS); // record this before node.setActive() overrides it;
 
 			tree.debug("COOKIE " + document.cookie);
 
-			cookie = $.cookie(instData.cookiePrefix + EXPANDED);
+			cookie = local._data(local.cookiePrefix + EXPANDED);
 			keyList = cookie && cookie.split(instOpts.cookieDelimiter);
 
-			if( instData.storeExpanded ) {
+			if( local.storeExpanded ) {
 				// Recursively load nested lazy nodes if expandLazy is 'expand' or 'load'
 				// Also remove expand-cookies for unmatched nodes
-				dfd = _loadLazyNodes(tree, instData, keyList, instOpts.expandLazy ? "expand" : false , null);
+				dfd = _loadLazyNodes(tree, local, keyList, instOpts.expandLazy ? "expand" : false , null);
 			} else {
 				// nothing to do
 				dfd = new $.Deferred().resolve();
 			}
 
 			dfd.done(function(){
-				if(instData.storeSelected){
-					cookie = $.cookie(instData.cookiePrefix + SELECTED);
+				if(local.storeSelected){
+					cookie = local._data(local.cookiePrefix + SELECTED);
 					if(cookie){
 						keyList = cookie.split(instOpts.cookieDelimiter);
 						for(i=0; i<keyList.length; i++){
@@ -231,13 +256,13 @@ $.ui.fancytree.registerExtension({
 								}
 							}else{
 								// node is no longer member of the tree: remove from cookie also
-								instData._setKey(SELECTED, keyList[i], false);
+								local._appendKey(SELECTED, keyList[i], false);
 							}
 						}
 					}
 				}
-				if(instData.storeActive){
-					cookie = $.cookie(instData.cookiePrefix + ACTIVE);
+				if(local.storeActive){
+					cookie = local._data(local.cookiePrefix + ACTIVE);
 					if(cookie && (opts.persist.overrideSource || !tree.activeNode)){
 						node = tree.getNodeByKey(cookie);
 						if(node){
@@ -245,7 +270,7 @@ $.ui.fancytree.registerExtension({
 						}
 					}
 				}
-				if(instData.storeFocus && prevFocus){
+				if(local.storeFocus && prevFocus){
 					node = tree.getNodeByKey(prevFocus);
 					if(node){
 						node.setFocus();
@@ -258,57 +283,51 @@ $.ui.fancytree.registerExtension({
 	},
 	nodeSetActive: function(ctx, flag, opts) {
 		var res,
-			instData = this._local,
-			instOpts = this.options.persist;
+			local = this._local;
 
 		flag = (flag !== false);
 		res = this._super(ctx, flag, opts);
 
-		if(instData.storeActive){
-			$.cookie(instData.cookiePrefix + ACTIVE,
-					 this.activeNode ? this.activeNode.key : null,
-					 instOpts.cookie);
+		if(local.storeActive){
+			local._data(local.cookiePrefix + ACTIVE, this.activeNode ? this.activeNode.key : null);
 		}
 		return res;
 	},
 	nodeSetExpanded: function(ctx, flag, opts) {
 		var res,
 			node = ctx.node,
-			instData = this._local;
+			local = this._local;
 
 		flag = (flag !== false);
 		res = this._super(ctx, flag, opts);
 
-		if(instData.storeExpanded){
-			instData._setKey(EXPANDED, node.key, flag);
+		if(local.storeExpanded){
+			local._appendKey(EXPANDED, node.key, flag);
 		}
 		return res;
 	},
 	nodeSetFocus: function(ctx, flag) {
 		var res,
-			instData = this._local,
-			instOpts = this.options.persist;
+			local = this._local;
 
 		flag = (flag !== false);
 		res = this._super(ctx, flag);
 
-		if(flag && instData.storeFocus){
-			$.cookie(instData.cookiePrefix + FOCUS,
-					 this.focusNode ? this.focusNode.key : null,
-					 instOpts.cookie);
+		if(flag && local.storeFocus){
+			local._data(local.cookiePrefix + FOCUS, this.focusNode ? this.focusNode.key : null);
 		}
 		return res;
 	},
 	nodeSetSelected: function(ctx, flag) {
 		var res,
 			node = ctx.node,
-			instData = this._local;
+			local = this._local;
 
 		flag = (flag !== false);
 		res = this._super(ctx, flag);
 
-		if(instData.storeSelected){
-			instData._setKey(SELECTED, node.key, flag);
+		if(local.storeSelected){
+			local._appendKey(SELECTED, node.key, flag);
 		}
 		return res;
 	}
