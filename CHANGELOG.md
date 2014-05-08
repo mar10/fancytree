@@ -1,6 +1,9 @@
-# 2.0.1 / Unreleased
+# 2.1.0 / Unreleased
   * [Added] Add 'fancytree-icon' class to icon IMG
   * [Improved] [ext-columnview] css
+  * [Improved]: New option 'scrollParent' is evaluated by node.scrollIntoView()
+    (which is also called on expand). This allows autoScroll to work with 
+    [ext-table]: set scrollParent to `window` or a wrapper DIV with  overflow: auto.
   * [Fixed] #217: persistence when node keys are numeric
   * [Fixed] relative custom imagePath option
 
