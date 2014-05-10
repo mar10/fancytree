@@ -124,7 +124,7 @@ SOURCE = [
 				return;
 			}
 			// Pass text as filter string (will be matched as substring in the node title)
-			var n = tree.applyFilter(match);
+			var n = tree.filterNodes(match);
 			$("#btnResetSearch").attr("disabled", false);
 			$("span#matches").text("(" + n + " matches)");
 		}).focus();

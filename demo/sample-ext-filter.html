@@ -32,7 +32,7 @@
 				url: "ajax-tree-local.json"
 			},
 			filter: {
-//				mode: "hide"
+				mode: "hide"
 			},
 			activate: function(event, data) {
 //				alert("activate " + data.node);
@@ -48,6 +48,7 @@
 		 */
 		$("input[name=search]").keyup(function(e){
 			var n,
+				leavesOnly = $("#leavesOnly").is(":checked"),
 				match = $(this).val();
 
 			if(e && e.which === $.ui.keyCode.ESCAPE || $.trim(match) === ""){
@@ -56,12 +57,12 @@
 			}
 			if($("#regex").is(":checked")) {
 				// Pass function to perform match
-				n = tree.applyFilter(function(node) {
+				n = tree.filterNodes(function(node) {
 					return new RegExp(match, "i").test(node.title);
-				});
+				}, leavesOnly);
 			} else {
 				// Pass a string to perform case insensitive matching
-				n = tree.applyFilter(match);
+				n = tree.filterNodes(match, leavesOnly);
 			}
 			$("button#btnResetSearch").attr("disabled", false);
 			$("span#matches").text("(" + n + " matches)");
@@ -77,11 +78,38 @@
 			tree.options.filter.mode = $(this).is(":checked") ? "hide" : "dimm";
 			tree.clearFilter();
 			$("input[name=search]").keyup();
+		}).prop("checked", true);
+		$("input#leavesOnly").change(function(e){
+			// tree.options.filter.leavesOnly = $(this).is(":checked");
+			tree.clearFilter();
+			$("input[name=search]").keyup();
 		});
 		$("input#regex").change(function(e){
 			tree.clearFilter();
 			$("input[name=search]").keyup();
 		});
+
+		addSampleButton({
+			label: "Filter active branch",
+			newline: false,
+			code: function(){
+				if( !tree.getActiveNode() ) {
+					alert("Please activate a folder.");
+					return;
+				}
+				tree.filterBranches(function(node){
+					return node.isActive();
+				});
+			}
+		});
+		addSampleButton({
+			label: "Reset filter",
+			newline: false,
+			code: function(){
+				tree.clearFilter();
+			}
+		});
+
 	});
 </script>
 </head>
@@ -92,7 +120,7 @@
 			Dynamic filter support.
 		</p>
 		<p>
-			<b>Status</b>: alpha
+			<b>Status</b>: beta
 		</p>
 	</div>
 	<div>
@@ -105,14 +133,21 @@
 		<span id="matches"></span>
 	</p>
 	<p>
-		<label for="regex">
-			<input type="checkbox" id="regex">
-			Regular expression
-		</label>
 		<label for="hideMode">
 			<input type="checkbox" id="hideMode">
 			Hide unmatched nodes
 		</label>
+		<label for="leavesOnly">
+			<input type="checkbox" id="leavesOnly">
+			Leaves only
+		</label>
+
+		<label for="regex">
+			<input type="checkbox" id="regex">
+			Regular expression
+		</label>
+	</p>
+	<p id="sampleButtons">
 	</p>
 	<!-- Add a <table> element where the tree should appear: -->
 	<div id="tree">
