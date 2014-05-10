@@ -67,7 +67,7 @@ span.external span.fancytree-title:after {
 //			autoFocus: true,
 			minExpandLevel: 2,
 			clickFolderMode: 3, // expand with single click
-			autoActivate: false,
+			autoActivate: false, // we use scheduleAction()
 			autoCollapse: true,
 			autoScroll: true,
 			tabbable: false, // we don't want the focus frame
@@ -82,15 +82,20 @@ span.external span.fancytree-title:after {
 				data.node.scheduleAction("cancel");
 			},
 			activate: function(event, data){
-				var node = data.node;
+				var node = data.node,
+					orgEvent = data.originalEvent;
+
 				if(node.data.href){
-					window.open(node.data.href, node.data.target);
+					window.open(node.data.href, (orgEvent.ctrlKey || orgEvent.metaKey) ? "_blank" : node.data.target);
 				}
 			},
 			click: function(event, data){ // allow re-loads
-				var node = data.node;
+				var node = data.node,
+					orgEvent = data.originalEvent;
+
 				if(node.isActive() && node.data.href){
-					data.tree.reactivate();
+					// data.tree.reactivate();
+					window.open(node.data.href, (orgEvent.ctrlKey || orgEvent.metaKey) ? "_blank" : node.data.target);
 				}
 			}
 		});
