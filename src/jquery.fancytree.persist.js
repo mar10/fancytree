@@ -160,25 +160,25 @@ $.ui.fancytree.registerExtension({
 		},
 		expandLazy: false,     // true: recursively expand and load lazy nodes
 		overrideSource: false, // true: cookie takes precedence over `source` data attributes.
-		store: "auto",         // 'cookie': force cookie, 'localStore': force localStore
+		store: "auto",         // 'cookie': force cookie, 'local': force localStore, 'session': force sessionStore
 		types: "active expanded focus selected"
 	},
 
-	/* Generic read/write string data to cookie or localStorage. */
+	/* Generic read/write string data to cookie, sessionStorage or localStorage. */
 	_data: function(key, value){
-		var ls = this._local.localStorage;
+		var ls = this._local.localStorage; // null, sessionStorage, or localStorage
 
 		if( value === undefined ) {
-			return ls ? ls[key] : $.cookie(key);
+			return ls ? ls.getItem(key) : $.cookie(key);
 		} else if ( value === null ) {
 			if( ls ) {
-				delete ls[key];
+				ls.removeItem(key);
 			} else {
 				$.removeCookie(key);
 			}
 		} else {
 			if( ls ) {
-				ls[key] = value;
+				ls.setItem(key, value);
 			} else {
 				$.cookie(key, value, this.options.persist.cookie);
 			}
@@ -220,7 +220,11 @@ $.ui.fancytree.registerExtension({
 		local.storeExpanded = instOpts.types.indexOf(EXPANDED) >= 0;
 		local.storeSelected = instOpts.types.indexOf(SELECTED) >= 0;
 		local.storeFocus = instOpts.types.indexOf(FOCUS) >= 0;
-		local.localStorage = (instOpts.store === "cookie") ? null : window.localStorage;
+		if( instOpts.store === "cookie" || !window.localStorage ) {
+			local.localStorage = null;
+		} else {
+			local.localStorage = (instOpts.store === "local") ? window.localStorage : window.sessionStorage;
+		}
 
 		// Bind init-handler to apply cookie state
 		tree.$div.bind("fancytreeinit", function(event){

@@ -39,9 +39,6 @@ $.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, bra
 		match = _escapeRegex(filter); // make sure a '.' is treated literally
 		re = new RegExp(".*" + match + ".*", "i");
 		filter = function(node){
-			if( re.exec(node.title) ){
-				console.log("match", node)
-			}
 			return !!re.exec(node.title);
 		};
 	}
