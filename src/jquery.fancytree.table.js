@@ -306,7 +306,7 @@ $.ui.fancytree.registerExtension({
 			flag = (flag !== false);
 			setChildRowVisibility(ctx.node, flag);
 			if( ok ) {
-				if( flag && ctx.options.autoScroll && !opts.noAnimation ) {
+				if( flag && ctx.options.autoScroll && !opts.noAnimation && ctx.node.hasChildren() ) {
 					// Scroll down to last child, but keep current node visible
 					ctx.node.getLastChild().scrollIntoView(true, {topNode: ctx.node}).always(function(){
 						if( !opts.noEvents ) {
