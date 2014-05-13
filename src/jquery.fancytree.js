@@ -1366,23 +1366,30 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			this.warn("scrollIntoView() with 'topNode' option is deprecated since 2014-05-08. Use 'options.topNode' instead.");
 			options = {topNode: options};
 		}
+		// this.$scrollParent = (this.options.scrollParent === "auto") ? $ul.scrollParent() : $(this.options.scrollParent);
+		// this.$scrollParent = this.$scrollParent.length ? this.$scrollParent || this.$container;
+
 		var topNodeY, nodeY, horzScrollbarHeight, containerOffsetTop,
 			opts = $.extend({
 				effects: (effects === true) ? {duration: 200, queue: false} : effects,
-				parent: this.tree.options.scrollParent || this.tree.$container,
+				scrollOfs: this.tree.options.scrollOfs,
+				scrollParent: this.tree.options.scrollParent || this.tree.$container,
 				topNode: null
 			}, options),
 			dfd = new $.Deferred(),
 			that = this,
 			nodeHeight = $(this.span).height(),
-			$container = $(opts.parent),
-			containerHeight = $container.height(),
+			$container = $(opts.scrollParent),
+			topOfs = opts.scrollOfs.top || 0,
+			bottomOfs = opts.scrollOfs.bottom || 0,
+			containerHeight = $container.height(),// - topOfs - bottomOfs,
 			scrollTop = $container.scrollTop(),
 			$animateTarget = $container,
 			isParentWindow = $container[0] === window,
 			topNode = opts.topNode || null,
 			newScrollTop = null;
 
+		// this.debug("scrollIntoView(), scrollTop=", scrollTop, opts.scrollOfs);
 		_assert($(this.span).is(":visible"), "scrollIntoView node is invisible"); // otherwise we cannot calc offsets
 
 		if( isParentWindow ) {
@@ -1394,31 +1401,39 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			_assert($container[0] !== document && $container[0] !== document.body, "scrollParent should be an simple element or `window`, not document or body.");
 
 			containerOffsetTop = $container.offset().top,
-			nodeY = $(this.span).offset().top -  containerOffsetTop + scrollTop; // relative to scroll parent
+			nodeY = $(this.span).offset().top - containerOffsetTop + scrollTop; // relative to scroll parent
 			topNodeY = topNode ? $(topNode.span).offset().top - containerOffsetTop  + scrollTop : 0;
 			horzScrollbarHeight = Math.max(0, ($container.innerHeight() - $container[0].clientHeight));
 			containerHeight -= horzScrollbarHeight;
 		}
-		if(nodeY < scrollTop){
+
+		// this.debug("    scrollIntoView(), nodeY=", nodeY, "containerHeight=", containerHeight);
+		if( nodeY < (scrollTop + topOfs) ){
 			// Node is above visible container area
-			newScrollTop = nodeY;
-		}else if((nodeY + nodeHeight) > (scrollTop + containerHeight)){
-			newScrollTop = nodeY + nodeHeight - containerHeight;
+			newScrollTop = nodeY - topOfs;
+			// this.debug("    scrollIntoView(), UPPER newScrollTop=", newScrollTop);
+
+		}else if((nodeY + nodeHeight) > (scrollTop + containerHeight - bottomOfs)){
+			newScrollTop = nodeY + nodeHeight - containerHeight + bottomOfs;
+			// this.debug("    scrollIntoView(), LOWER newScrollTop=", newScrollTop);
 			// If a topNode was passed, make sure that it is never scrolled
 			// outside the upper border
 			if(topNode){
 				_assert($(topNode.span).is(":visible"));
 				if( topNodeY < newScrollTop ){
-					newScrollTop = topNodeY;
+					newScrollTop = topNodeY + topOfs;
+					// this.debug("    scrollIntoView(), TOP newScrollTop=", newScrollTop);
 				}
 			}
 		}
+
 		if(newScrollTop !== null){
+			// this.debug("    scrollIntoView(), SET newScrollTop=", newScrollTop);
 			if(opts.effects){
 				opts.effects.complete = function(){
 					dfd.resolveWith(that);
 				};
-				$animateTarget.animate({
+				$animateTarget.stop(true).animate({
 					scrollTop: newScrollTop
 				}, opts.effects);
 			}else{
@@ -2984,7 +2999,6 @@ $.extend(Fancytree.prototype,
 			node = ctx.node,
 			tree = ctx.tree,
 			opts = ctx.options,
-//			userEvent = !!ctx.originalEvent,
 			noEvents = (callOpts.noEvents === true),
 			isActive = (node === tree.activeNode);
 
@@ -3008,7 +3022,7 @@ $.extend(Fancytree.prototype,
 			}
 			if(opts.activeVisible){
 				// tree.nodeMakeVisible(ctx);
-				node.makeVisible();
+				node.makeVisible({scrollIntoView: false}); // nodeSetFocus will scroll
 			}
 			tree.activeNode = node;
 			tree.nodeRenderStatus(ctx);
@@ -3205,7 +3219,7 @@ $.extend(Fancytree.prototype,
 				this._callHook("treeSetFocus", ctx, true, true);
 			}
 			// this.nodeMakeVisible(ctx);
-			node.makeVisible();
+			node.makeVisible({scrollIntoView: false});
 			tree.focusNode = node;
 //			node.debug("FOCUS...");
 //			$(node.span).find(".fancytree-title").focus();
@@ -3516,6 +3530,7 @@ $.widget("ui.fancytree",
 		keyboard: true,
 		keyPathSeparator: "/",
 		minExpandLevel: 1,
+		scrollOfs: {top: 0, bottom: 0},
 		scrollParent: null,
 		selectMode: 2,
 		strings: {

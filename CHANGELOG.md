@@ -1,7 +1,7 @@
 # 2.1.0 / Unreleased
   * [Added] #210: [ext-persist] optionally store information in sessionStorage or localStorage
   * [Added] #64 [ext-filter] filterBranches() will restrict display to sub-trees
-  * [Added]: New option 'scrollParent' is evaluated by node.scrollIntoView()
+  * [Added]: New options 'scrollParent' and 'scrollOfs' are evaluated by node.scrollIntoView()
   * [Improved] [ext-columnview] css
   * [Improved] Add 'fancytree-icon' class to icon IMG
     (which is also called on expand). This allows autoScroll to work with 

@@ -64,13 +64,14 @@ span.external span.fancytree-title:after {
 	$(function(){
 		// --- Initialize sample trees
 		$("#tree").fancytree({
-//			autoFocus: true,
-			minExpandLevel: 2,
-			clickFolderMode: 3, // expand with single click
 			autoActivate: false, // we use scheduleAction()
 			autoCollapse: true,
+//			autoFocus: true,
 			autoScroll: true,
+			clickFolderMode: 3, // expand with single click
+			minExpandLevel: 2,
 			tabbable: false, // we don't want the focus frame
+			// scrollParent: null, // use $container
 			focus: function(event, data) {
 				var node = data.node;
 				// Auto-activate focused node after 1 second
