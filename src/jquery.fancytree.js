@@ -1421,7 +1421,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			if(topNode){
 				_assert($(topNode.span).is(":visible"));
 				if( topNodeY < newScrollTop ){
-					newScrollTop = topNodeY + topOfs;
+					newScrollTop = topNodeY - topOfs;
 					// this.debug("    scrollIntoView(), TOP newScrollTop=", newScrollTop);
 				}
 			}
