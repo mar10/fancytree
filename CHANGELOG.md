@@ -3,6 +3,7 @@
   * [Added] #64 [ext-filter] filterBranches() will restrict display to sub-trees
   * [Added]: New options 'scrollParent' and 'scrollOfs' are evaluated by node.scrollIntoView()
   * [Improved] [ext-columnview] css
+  * [Improved] skin-win8 now includes the loading.gif as inline CSS for faster response
   * [Improved] Add 'fancytree-icon' class to icon IMG
     (which is also called on expand). This allows autoScroll to work with 
     [ext-table]: set scrollParent to `window` or a wrapper DIV with  overflow: auto
