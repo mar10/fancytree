@@ -3868,7 +3868,11 @@ $.extend($.ui.fancytree,
 	 *     TYPE: 'title' | 'prefix' | 'expander' | 'checkbox' | 'icon' | undefined
 	 */
 	getEventTarget: function(event){
-		var tcn = event && event.target ? event.target.className : "",
+		var domNode = event && event.target;
+		while(domNode != undefined && domNode.tagName != "SPAN") {
+			domNode = domNode.parentNode;
+		}
+		var tcn = event && domNode ? domNode.className : "",
 			res = {node: this.getNode(event.target), type: undefined};
 		// tcn may contains UI themeroller or Font Awesome classes, so we use
 		// a fast version of $(res.node).hasClass()
