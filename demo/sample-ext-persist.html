@@ -6,11 +6,10 @@
 
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
 	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js" type="text/javascript"></script>
+	<script src="../lib/jquery.cookie.js" type="text/javascript"></script>
 
 	<link href="../src/skin-win7/ui.fancytree.css" rel="stylesheet" type="text/css">
 	<script src="../src/jquery.fancytree.js" type="text/javascript"></script>
-	<script src="../lib/jquery.cookie.js" type="text/javascript"></script>
-
 	<script src="../src/jquery.fancytree.persist.js" type="text/javascript"></script>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
@@ -35,7 +34,9 @@
 				url: "ajax-tree-plain.json"
 			},
 			persist: {
-				expandLazy: true
+				expandLazy: true,
+				overrideSource: false, // true: cookie takes precedence over `source` data attributes.
+				store: "auto" // 'cookie', 'local': use localStore, 'session': sessionStore
 			},
 			// don't use this in production code:
 			ajax: {
@@ -66,8 +67,12 @@
 		});
 		var tree = $("#tree").fancytree("getTree");
 
-		$("button#btnReset").click(function(e){
-			tree.clearCookies();
+		addSampleButton({
+			label: "Reset Cookie",
+			newline: false,
+			code: function(){
+				tree.clearCookies();
+			}
 		});
 
 		$("input#hideMode").change(function(e){
@@ -104,7 +109,8 @@
 			<label><input type="checkbox" name="active"> Active node</label>
 			<label><input type="checkbox" name="selected"> Selected nodes</label>
 		</fieldset>
-		<button id="btnReset">Reset cookie</button>
+	</p>
+	<p id="sampleButtons">
 	</p>
 	<!-- Add a <table> element where the tree should appear: -->
 	<div id="tree">

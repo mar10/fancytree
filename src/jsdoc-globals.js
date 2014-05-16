@@ -131,6 +131,8 @@ var TreePatch = {};
  * @property {Boolean} keyboard Support keyboard navigation (default: true).
  * @property {String} keyPathSeparator (default: "/")
  * @property {Integer} minExpandLevel 1: root node is not collapsible (default: 1)
+ * @property {object} scrollOfs: optional margins for node.scrollIntoView() (default: {top: 0, bottom: 0})
+ * @property {jQuery} scrollParent: scrollable container for node.scrollIntoView() (default: $container)
  * @property {Integer} selectMode 1:single, 2:multi, 3:multi-hier (default: 2)
  * @property {any} source Used to Initialize the tree.
  * @property {object} strings Translation table
