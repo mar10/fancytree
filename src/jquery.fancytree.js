@@ -3870,11 +3870,12 @@ $.extend($.ui.fancytree,
 	getEventTarget: function(event){
 		//Need to check if for HTML elements in case someone uses HTMl inside a title and the
 		//event can be targeted to the correct Fancy Tree node.
-		var domNode = event && event.target;
+		var tcn,
+			domNode = event && event.target;
 		while(domNode !== undefined && domNode.tagName !== "SPAN") {
 			domNode = domNode.parentNode;
 		}
-		var tcn = event && domNode ? domNode.className : "",
+		tcn = event && domNode ? domNode.className : "",
 			res = {node: this.getNode(domNode), type: undefined};
 		// tcn may contains UI themeroller or Font Awesome classes, so we use
 		// a fast version of $(res.node).hasClass()
