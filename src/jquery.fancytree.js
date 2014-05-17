@@ -3870,8 +3870,8 @@ $.extend($.ui.fancytree,
 	getEventTarget: function(event){
 		//Need to check if for HTML elements in case someone uses HTMl inside a title and the
 		//event can be targeted to the correct Fancy Tree node.
-		var tcn,
-			domNode = event && event.target;
+		var tcn, res,
+			Node = event && event.target;
 		while(domNode !== undefined && domNode.tagName !== "SPAN") {
 			domNode = domNode.parentNode;
 		}
