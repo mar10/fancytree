@@ -3870,8 +3870,7 @@ $.extend($.ui.fancytree,
 	getEventTarget: function(event){
 		var tcn = event && event.target ? event.target.className : "",
 			res = {node: this.getNode(event.target), type: undefined};
-		// tcn may contains UI themeroller or Font Awesome classes, so we use
-		// a fast version of $(res.node).hasClass()
+		// We use a fast version of $(res.node).hasClass()
 		// See http://jsperf.com/test-for-classname/2
 		if( /\bfancytree-title\b/.test(tcn) ){
 			res.type = "title";
@@ -3882,8 +3881,10 @@ $.extend($.ui.fancytree,
 		}else if( /\bfancytree-icon\b/.test(tcn) ){
 			res.type = "icon";
 		}else if( /\bfancytree-node\b/.test(tcn) ){
-			// TODO: (http://code.google.com/p/dynatree/issues/detail?id=93)
-//			res.type = this._getTypeForOuterNodeEvent(event);
+			// Somewhere near the title
+			res.type = "title";
+		}else if( event && event.target && $(event.target).closest(".fancytree-title").length ) {
+			// #228: clicking an embedded element inside a title
 			res.type = "title";
 		}
 		return res;

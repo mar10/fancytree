@@ -9,6 +9,7 @@
     [ext-table]: set scrollParent to `window` or a wrapper DIV with  overflow: auto
   * [Fixed] #217: persistence when node keys are numeric
   * [Fixed] relative custom imagePath option
+  * [Fixed] #228: html in node title prevents click
   * [Deprecated] [ext-filter] Use filterNodes() instead of applyFilter()
   * [Deprecated] [ext-filter] 'leavesOnly' option removed (see filterNodes())
 
