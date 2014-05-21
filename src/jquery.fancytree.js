@@ -3868,27 +3868,27 @@ $.extend($.ui.fancytree,
 	 *     TYPE: 'title' | 'prefix' | 'expander' | 'checkbox' | 'icon' | undefined
 	 */
 	getEventTarget: function(event){
-        	var tcn = event && event.target ? event.target.className : "",
-            	res = {node: this.getNode(event.target), type: undefined};
-        	// We use a fast version of $(res.node).hasClass()
-	        // See http://jsperf.com/test-for-classname/2
-        	if( /\bfancytree-title\b/.test(tcn) ){
-            		res.type = "title";
-        	}else if( /\bfancytree-expander\b/.test(tcn) ){
-            		res.type = (res.node.hasChildren() === false ? "prefix" : "expander");
-        	}else if( /\bfancytree-checkbox\b/.test(tcn) || /\bfancytree-radio\b/.test(tcn) ){
-            		res.type = "checkbox";
-        	}else if( /\bfancytree-icon\b/.test(tcn) ){
-            		res.type = "icon";
-        	}else if( /\bfancytree-node\b/.test(tcn) ){
-            		// Somewhere near the title
+		var tcn = event && event.target ? event.target.className : "",
+		res = {node: this.getNode(event.target), type: undefined};
+		// We use a fast version of $(res.node).hasClass()
+		// See http://jsperf.com/test-for-classname/2
+		if( /\bfancytree-title\b/.test(tcn) ){
 			res.type = "title";
-        	}else if( event && event.target && $(event.target).closest(".fancytree-title").length ) {
-            		// #228: clicking an embedded element inside a title
-            		res.type = "title";
-        	}
-        	return res;
-    	},
+		}else if( /\bfancytree-expander\b/.test(tcn) ){
+			res.type = (res.node.hasChildren() === false ? "prefix" : "expander");
+		}else if( /\bfancytree-checkbox\b/.test(tcn) || /\bfancytree-radio\b/.test(tcn) ){
+			res.type = "checkbox";
+		}else if( /\bfancytree-icon\b/.test(tcn) ){
+			res.type = "icon";
+		}else if( /\bfancytree-node\b/.test(tcn) ){
+			// Somewhere near the title
+			res.type = "title";
+		}else if( event && event.target && $(event.target).closest(".fancytree-title").length ) {
+			// #228: clicking an embedded element inside a title
+			res.type = "title";
+		}
+		return res;
+	},
         /** Return a FancytreeNode instance from element.
 	 *
 	 * @param {Element | jQueryObject | Event} el
