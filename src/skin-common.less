@@ -604,3 +604,20 @@ table.fancytree-ext-columnview {
 		font-weight: normal;
 	}
 }
+
+/*------------------------------------------------------------------------------
+ * 'wide' extension
+ *----------------------------------------------------------------------------*/
+// ul.fancytree-container span.fancytree-node >span,
+ul.fancytree-ext-wide span.fancytree-node >span {
+	position: relative;
+	z-index: 2;
+}
+// ul.fancytree-container span.fancytree-node span.fancytree-title,
+ul.fancytree-ext-wide span.fancytree-node span.fancytree-title {
+	position: relative;
+	z-index: 1;
+	width: 100%;
+	padding-left: 503px;
+	margin-left: -500px;
+}

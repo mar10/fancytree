@@ -1,7 +1,8 @@
 # 2.1.0 / Unreleased
   * [Added] #210: [ext-persist] optionally store information in sessionStorage or localStorage
   * [Added] #64 [ext-filter] filterBranches() will restrict display to sub-trees
-  * [Added]: New options 'scrollParent' and 'scrollOfs' are evaluated by node.scrollIntoView()
+  * [Added] New options 'scrollParent' and 'scrollOfs' are evaluated by node.scrollIntoView()
+  * [Added] [ext-wide] use 100% wide selection bar (experimental)
   * [Improved] [ext-columnview] css
   * [Improved] skin-win8 now includes the loading.gif as inline CSS for faster response
   * [Improved] Add 'fancytree-icon' class to icon IMG

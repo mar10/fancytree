@@ -163,8 +163,10 @@ function calcUniqueKey(node) {
 /**
  * [ext-clones] Return a list of clone-nodes or null.
  * @param {boolean} [includeSelf=false]
- * @requires jquery.fancytree.clones.js
  * @returns {FancytreeNode[] | null}
+ *
+ * @alias FancytreeNode#getCloneList
+ * @requires jquery.fancytree.clones.js
  */
 $.ui.fancytree._FancytreeNodeClass.prototype.getCloneList = function(includeSelf){
 	var key,
@@ -190,8 +192,10 @@ $.ui.fancytree._FancytreeNodeClass.prototype.getCloneList = function(includeSelf
 
 /**
  * [ext-clones] Return true if this node has at least another clone with same refKey.
- * @requires jquery.fancytree.clones.js
  * @returns {boolean}
+ *
+ * @alias FancytreeNode#isClone
+ * @requires jquery.fancytree.clones.js
  */
 $.ui.fancytree._FancytreeNodeClass.prototype.isClone = function(){
 	var refKey = this.refKey || null,
@@ -205,8 +209,10 @@ $.ui.fancytree._FancytreeNodeClass.prototype.isClone = function(){
  * @param {FancytreeNode} [node]
  * @param {string} key
  * @param {string} refKey
- * @requires jquery.fancytree.clones.js
  * @returns {boolean}
+ *
+ * @alias FancytreeNode#reRegister
+ * @requires jquery.fancytree.clones.js
  */
 $.ui.fancytree._FancytreeNodeClass.prototype.reRegister = function(key, refKey){
 	key = (key == null) ? null :  "" + key;
@@ -269,8 +275,9 @@ $.ui.fancytree._FancytreeNodeClass.prototype.reRegister = function(key, refKey){
  * [ext-clones] Return all nodes with a given refKey (null if not found).
  * @param {string} refKey
  * @param {FancytreeNode} [rootNode] optionally restrict results to descendants of this node
- * @requires jquery.fancytree.clones.js
  * @returns {FancytreeNode[] | null}
+ * @alias Fancytree#getNodesByRef
+ * @requires jquery.fancytree.clones.js
  */
 $.ui.fancytree._FancytreeClass.prototype.getNodesByRef = function(refKey, rootNode){
 	var keyMap = this.keyMap,
@@ -298,6 +305,7 @@ $.ui.fancytree._FancytreeClass.prototype.getNodesByRef = function(refKey, rootNo
  * [ext-clones] Replace a refKey with a new one.
  * @param {string} oldRefKey
  * @param {string} newRefKey
+ * @alias Fancytree#changeRefKey
  * @requires jquery.fancytree.clones.js
  */
 $.ui.fancytree._FancytreeClass.prototype.changeRefKey = function(oldRefKey, newRefKey) {
