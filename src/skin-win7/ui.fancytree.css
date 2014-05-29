@@ -180,6 +180,7 @@ span.fancytree-expander {
  * Checkbox icon
  *----------------------------------------------------------------------------*/
 span.fancytree-checkbox {
+  margin-left: 3px;
   background-position: 0px -32px;
 }
 span.fancytree-checkbox:hover {
@@ -230,6 +231,7 @@ span.fancytree-checkbox:hover {
  * 2nd character (optional): 'f': folder
  *----------------------------------------------------------------------------*/
 span.fancytree-icon {
+  margin-left: 3px;
   background-position: 0px 0px;
 }
 /* Documents */

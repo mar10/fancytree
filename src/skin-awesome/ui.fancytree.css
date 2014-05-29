@@ -126,6 +126,9 @@ span.fancytree-expander {
 /*------------------------------------------------------------------------------
  * Checkbox icon
  *----------------------------------------------------------------------------*/
+span.fancytree-checkbox {
+  margin-left: 0.5em;
+}
 /*------------------------------------------------------------------------------
  * Radiobutton icon
  * This is a customization, that may be activated by overriding the 'checkbox'
@@ -140,6 +143,9 @@ span.fancytree-expander {
  * 1st character: 'e': expanded, 'c': collapsed
  * 2nd character (optional): 'f': folder
  *----------------------------------------------------------------------------*/
+span.fancytree-icon {
+  margin-left: 0.5em;
+}
 /* Documents */
 /* Folders */
 /*------------------------------------------------------------------------------
