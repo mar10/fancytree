@@ -300,6 +300,9 @@ $(function(){
 				  {name: "Lion", value: "lion", href: "skin-lion/ui.fancytree.css"}
 				  ]
 //		init: "lion"
-	});
-
+	})
+	// .after($("<label><input name='cbWide' type='checkbox'>Wide</label>"));
+	// $("[name=cbWide]").on("change", function(e){
+	// 	$(".fancytree-container").toggleClass("fancytree-ext-wide", $(this).is(":checked"));
+	// });
 });

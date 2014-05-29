@@ -1,5 +1,5 @@
 /*!
- * Fancytree "Win8" skin.
+ * Fancytree "win8" skin (highlighting the node span instead of title-only).
  *
  * DON'T EDIT THE CSS FILE DIRECTLY, since it is automatically generated from
  * the LESS templates.
@@ -417,6 +417,20 @@ table.fancytree-ext-columnview .fancytree-has-children span.fancytree-cv-right:h
 .fancytree-ext-filter-hide span.fancytree-node.fancytree-match span.fancytree-title {
   color: black;
   font-weight: normal;
+}
+/*------------------------------------------------------------------------------
+ * 'wide' extension
+ *----------------------------------------------------------------------------*/
+ul.fancytree-ext-wide span.fancytree-node > span {
+  position: relative;
+  z-index: 2;
+}
+ul.fancytree-ext-wide span.fancytree-node span.fancytree-title {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  padding-left: 503px;
+  margin-left: -500px;
 }
 /*******************************************************************************
  * Styles specific to this skin.

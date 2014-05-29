@@ -1,14 +1,17 @@
 # 2.1.0 / Unreleased
   * [Added] #210: [ext-persist] optionally store information in sessionStorage or localStorage
   * [Added] #64 [ext-filter] filterBranches() will restrict display to sub-trees
-  * [Added]: New options 'scrollParent' and 'scrollOfs' are evaluated by node.scrollIntoView()
+  * [Added] New options 'scrollParent' and 'scrollOfs' are evaluated by node.scrollIntoView()
+  * [Added] [ext-wide] use 100% wide selection bar (experimental)
   * [Improved] [ext-columnview] css
+  * [Improved] skin-win8 now includes the loading.gif as inline CSS for faster response
   * [Improved] Add 'fancytree-icon' class to icon IMG
     (which is also called on expand). This allows autoScroll to work with 
     [ext-table]: set scrollParent to `window` or a wrapper DIV with  overflow: auto
   * [Fixed] #217: persistence when node keys are numeric
   * [Fixed] #241: fromDict() does not update node title
   * [Fixed] relative custom imagePath option
+  * [Fixed] #228: html in node title prevents click
   * [Deprecated] [ext-filter] Use filterNodes() instead of applyFilter()
   * [Deprecated] [ext-filter] 'leavesOnly' option removed (see filterNodes())
 
