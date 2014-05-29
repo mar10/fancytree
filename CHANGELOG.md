@@ -8,6 +8,7 @@
   * [Improved] Add 'fancytree-icon' class to icon IMG
     (which is also called on expand). This allows autoScroll to work with 
     [ext-table]: set scrollParent to `window` or a wrapper DIV with  overflow: auto
+  * [Improved] css v-align for checkboxes and icons
   * [Fixed] #217: persistence when node keys are numeric
   * [Fixed] #228: html in node title prevents click
   * [Fixed] #235: D'n'd helper is displaced, when window is scrolled
