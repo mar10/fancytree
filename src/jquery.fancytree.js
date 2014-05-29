@@ -3819,6 +3819,29 @@ $.extend($.ui.fancytree,
 	assert: function(cond, msg){
 		return _assert(cond, msg);
 	},
+	/** Return a function that executes *fn* at most every *timeout* ms.
+	 * @param {integer} timeout
+	 * @param {function} fn
+	 * @param {boolean} [invokeAsap=false]
+	 * @param {any} [ctx]
+	 */
+	debounce : function(timeout, fn, invokeAsap, ctx) {
+		var timer;
+		if(arguments.length === 3 && typeof invokeAsap !== "boolean") {
+			ctx = invokeAsap;
+			invokeAsap = false;
+		}
+		return function() {
+			var args = arguments;
+			ctx = ctx || this;
+			invokeAsap && !timer && fn.apply(ctx, args);
+			clearTimeout(timer);
+			timer = setTimeout(function() {
+				invokeAsap || fn.apply(ctx, args);
+				timer = null;
+			}, timeout);
+		};
+	},
 	/** Write message to console if debugLevel >= 2
 	 * @param {string} msg
 	 */

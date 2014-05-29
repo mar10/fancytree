@@ -3,6 +3,7 @@
   * [Added] #64 [ext-filter] filterBranches() will restrict display to sub-trees
   * [Added] New options 'scrollParent' and 'scrollOfs' are evaluated by node.scrollIntoView()
   * [Added] [ext-wide] use 100% wide selection bar (experimental)
+  * [Added] $.ui.fancytree.debounce()
   * [Improved] [ext-columnview] css
   * [Improved] skin-win8 now includes the loading.gif as inline CSS for faster response
   * [Improved] Add 'fancytree-icon' class to icon IMG
