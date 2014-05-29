@@ -11,6 +11,7 @@
 @fancy-icon-width: 16px;
 @fancy-icon-height: 16px;
 @fancy-icon-margin-left: 3px;
+@fancy-icon-margin-top: 1px;
 @fancy-line-height: 16px;
 @fancy-node-border-width: 1px;
 @fancy-node-outline-width: 1px;
@@ -148,8 +149,7 @@ span.fancytree-icon,
 span.fancytree-checkbox,
 span.fancytree-radio,
 span.fancytree-drag-helper-img,
-#fancytree-drop-marker
-{
+#fancytree-drop-marker {
 	width: @fancy-icon-width;
 	height: @fancy-icon-height;
 //	display: -moz-inline-box; // @ FF 1+2 removed for issue 221
@@ -161,16 +161,22 @@ span.fancytree-drag-helper-img,
 	.setBgImageUrl("icons.gif");
 	.setBgPos(0, 0);
 }
+span.fancytree-icon,
+span.fancytree-checkbox,
+span.fancytree-radio,
+span.fancytree-custom-icon {
+	margin-top: @fancy-icon-margin-top;
+}
 /* Used by iconclass option */
 span.fancytree-custom-icon {
 	display: inline-block;
 }
 /* Used by 'icon' node option: */
-.fancytree-container img
-{
+img.fancytree-icon {
 	width: @fancy-icon-width;
 	height: @fancy-icon-height;
 	margin-left: @fancy-icon-margin-left;
+	margin-top: @fancy-icon-margin-top;
 	vertical-align: top;
 	border-style: none;
 }
@@ -200,76 +206,61 @@ span.fancytree-expander {
 
 .fancytree-exp-n span.fancytree-expander, 
 .fancytree-exp-nl span.fancytree-expander {
-	// background-image: none;
 	.clearBgImage( @fancy-hide-connectors );
 	cursor: default;
 }
 .fancytree-exp-n span.fancytree-expander,       // End-node, not last sibling
-.fancytree-exp-n span.fancytree-expander:hover 
-{
+.fancytree-exp-n span.fancytree-expander:hover {
 	.useSprite(0, 4);
 }
 .fancytree-exp-nl span.fancytree-expander,      // End-node, last sibling
-.fancytree-exp-nl span.fancytree-expander:hover 
-{
+.fancytree-exp-nl span.fancytree-expander:hover {
 	.useSprite(1, 4);
 }
 
 // --- Collapsed
 
-.fancytree-exp-c span.fancytree-expander // Collapsed, not delayed, not last sibling
-{
+.fancytree-exp-c span.fancytree-expander { // Collapsed, not delayed, not last sibling
 	.useSprite(0, 5);
 }
-.fancytree-exp-c span.fancytree-expander:hover 
-{
+.fancytree-exp-c span.fancytree-expander:hover {
 	.useSprite(1, 5);
 }
-.fancytree-exp-cl span.fancytree-expander // Collapsed, not delayed, last sibling
-{
+.fancytree-exp-cl span.fancytree-expander { // Collapsed, not delayed, last sibling
 	.useSprite(0, 6);
 }
-.fancytree-exp-cl span.fancytree-expander:hover
-{
+.fancytree-exp-cl span.fancytree-expander:hover {
 	.useSprite(1, 6);
 }
-.fancytree-exp-cd span.fancytree-expander // Collapsed, delayed, not last sibling
-{
+.fancytree-exp-cd span.fancytree-expander { // Collapsed, delayed, not last sibling
 	.useSprite(4, 5);
 }
-.fancytree-exp-cd span.fancytree-expander:hover
-{
+.fancytree-exp-cd span.fancytree-expander:hover {
 	.useSprite(5, 5);
 }
-.fancytree-exp-cdl span.fancytree-expander // Collapsed, delayed, last sibling
-{
+.fancytree-exp-cdl span.fancytree-expander { // Collapsed, delayed, last sibling
 	.useSprite(4, 6);
 }
-.fancytree-exp-cdl span.fancytree-expander:hover
-{
+.fancytree-exp-cdl span.fancytree-expander:hover {
 	.useSprite(5, 6);
 }
 
 // --- Expanded
 
-.fancytree-exp-e span.fancytree-expander,  // Expanded, not delayed, not last sibling
-.fancytree-exp-ed span.fancytree-expander  // Expanded, delayed, not last sibling
-{
+.fancytree-exp-e span.fancytree-expander,   // Expanded, not delayed, not last sibling
+.fancytree-exp-ed span.fancytree-expander { // Expanded, delayed, not last sibling
 	.useSprite(2, 5);
 }
 .fancytree-exp-e span.fancytree-expander:hover,
-.fancytree-exp-ed span.fancytree-expander:hover
-{
+.fancytree-exp-ed span.fancytree-expander:hover {
 	.useSprite(3, 5);
 }
-.fancytree-exp-el span.fancytree-expander,  // Expanded, not delayed, last sibling
-.fancytree-exp-edl span.fancytree-expander  // Expanded, delayed, last sibling
-{
+.fancytree-exp-el span.fancytree-expander,   // Expanded, not delayed, last sibling
+.fancytree-exp-edl span.fancytree-expander { // Expanded, delayed, last sibling
 	.useSprite(2, 6);
 }
 .fancytree-exp-el span.fancytree-expander:hover,  
-.fancytree-exp-edl span.fancytree-expander:hover  
-{
+.fancytree-exp-edl span.fancytree-expander:hover {
 	.useSprite(3, 6);
 }
 
@@ -277,8 +268,7 @@ span.fancytree-expander {
 .fancytree-loading span.fancytree-expander,
 .fancytree-loading span.fancytree-expander:hover,
 .fancytree-statusnode-wait span.fancytree-icon,
-.fancytree-statusnode-wait span.fancytree-icon:hover 
-{
+.fancytree-statusnode-wait span.fancytree-icon:hover {
 	background-image: @fancy-loading-url;
 //  .setBgImageUrl(@fancy-loading-url);
 	.useSprite(0, 0);
@@ -296,7 +286,7 @@ span.fancytree-expander {
  *----------------------------------------------------------------------------*/
 
 span.fancytree-checkbox {
-	margin-left: @fancy-icon-margin-left;
+//	margin-left: @fancy-icon-margin-left;
 	.useSprite(0, 2);
 }
 span.fancytree-checkbox:hover {
@@ -324,7 +314,7 @@ span.fancytree-checkbox:hover {
  *----------------------------------------------------------------------------*/
 
 .fancytree-radio span.fancytree-checkbox {
-	margin-left: @fancy-icon-margin-left;
+//	margin-left: @fancy-icon-margin-left;
 	.useSprite(0, 3);
 }
 .fancytree-radio span.fancytree-checkbox:hover {
@@ -354,9 +344,8 @@ span.fancytree-checkbox:hover {
  * 2nd character (optional): 'f': folder
  *----------------------------------------------------------------------------*/
 
-span.fancytree-icon // Default icon
-{
-	margin-left: @fancy-icon-margin-left;
+span.fancytree-icon { // Default icon
+//	margin-left: @fancy-icon-margin-left;
 	.useSprite(0, 0);
 }
 

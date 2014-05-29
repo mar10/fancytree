@@ -75,7 +75,7 @@
     `node.refKey`, which may occur multiple times in one tree (as opposed to `key`, 
     which must be unique).
     New methods `node.isClone()`, `node.getCloneList()` and `tree.getNodesByRef()`.
-    Optionally, clones are tagged wit the `fancytree-clone` class.  
+    Optionally, clones are tagged wit the `fancytree-clone` class.
   * [FEATURE] New option 'defaultKey'. This calback allows to generate keys while loading.
   * build process creates /dist folder
   * "bower install fancytree" delivers dist folder
@@ -92,7 +92,7 @@
   * [FEATURE] [ext-filter] 'mode: hide' now works with ext-table (still experimental).
   * [FEATURE] node.makeVisible() accepts options, scrolls into view, and returns a promise.
   * [FEATURE] Sample xxl and bootstrap themes.
-  * [CHANGE] nodeRenderStatus() is now implicitly called by nodeRenderTitle().  
+  * [CHANGE] nodeRenderStatus() is now implicitly called by nodeRenderTitle().<br>
     This also means that now all markup and css classes are finshed, when `renderNode` 
     is fired.
   * [CHANGE] Calling setExpanded() on a leaf node fires .done() (not .fail())

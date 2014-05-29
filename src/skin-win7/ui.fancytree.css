@@ -79,15 +79,22 @@ span.fancytree-drag-helper-img,
   background-image: url("icons.gif");
   background-position: 0px 0px;
 }
+span.fancytree-icon,
+span.fancytree-checkbox,
+span.fancytree-radio,
+span.fancytree-custom-icon {
+  margin-top: 1px;
+}
 /* Used by iconclass option */
 span.fancytree-custom-icon {
   display: inline-block;
 }
 /* Used by 'icon' node option: */
-.fancytree-container img {
+img.fancytree-icon {
   width: 16px;
   height: 16px;
   margin-left: 3px;
+  margin-top: 1px;
   vertical-align: top;
   border-style: none;
 }
@@ -173,7 +180,6 @@ span.fancytree-expander {
  * Checkbox icon
  *----------------------------------------------------------------------------*/
 span.fancytree-checkbox {
-  margin-left: 3px;
   background-position: 0px -32px;
 }
 span.fancytree-checkbox:hover {
@@ -197,7 +203,6 @@ span.fancytree-checkbox:hover {
  * class name as 'fancytree-radio' in the tree options.
  *----------------------------------------------------------------------------*/
 .fancytree-radio span.fancytree-checkbox {
-  margin-left: 3px;
   background-position: 0px -48px;
 }
 .fancytree-radio span.fancytree-checkbox:hover {
@@ -225,7 +230,6 @@ span.fancytree-checkbox:hover {
  * 2nd character (optional): 'f': folder
  *----------------------------------------------------------------------------*/
 span.fancytree-icon {
-  margin-left: 3px;
   background-position: 0px 0px;
 }
 /* Documents */
