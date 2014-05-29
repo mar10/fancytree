@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.0.0
- * @date 2014-05-01T21:48
+ * @version 2.1.0
+ * @date 2014-05-29T16:44
  */
 
 ;(function($, window, document, undefined) {
@@ -27,19 +27,12 @@ function _escapeRegex(str){
 	return (str + "").replace(/([.?*+\^\$\[\]\\(){}|-])/g, "\\$1");
 }
 
-/**
- * [ext-filter] Dimm or hide nodes.
- *
- * @param {function | string} filter
- * @returns {integer} count
- * @alias Fancytree#applyFilter
- * @requires jquery.fancytree.filter.js
- */
-$.ui.fancytree._FancytreeClass.prototype.applyFilter = function(filter){
+$.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, branchMode, leavesOnly){
 	var match, re,
 		count = 0,
-		hideMode = this.options.filter.mode === "hide",
-		leavesOnly = this.options.filter.leavesOnly;
+		hideMode = this.options.filter.mode === "hide";
+		// leavesOnly = !branchMode && this.options.filter.leavesOnly;
+	leavesOnly = !!leavesOnly && !branchMode;
 
 	// Default to 'match title substring (not case sensitive)'
 	if(typeof filter === "string"){
@@ -70,6 +63,12 @@ $.ui.fancytree._FancytreeClass.prototype.applyFilter = function(filter){
 			node.visitParents(function(p){
 				p.subMatch = true;
 			});
+			if( branchMode ) {
+				node.visit(function(p){
+					p.match = true;
+				});
+				return "skip";
+			}
 		}
 	});
 	// Redraw
@@ -78,9 +77,40 @@ $.ui.fancytree._FancytreeClass.prototype.applyFilter = function(filter){
 };
 
 /**
+ * [ext-filter] Dimm or hide nodes.
+ *
+ * @param {function | string} filter
+ * @param {boolean} [leavesOnly=false]
+ * @returns {integer} count
+ * @alias Fancytree#filterNodes
+ * @requires jquery.fancytree.filter.js
+ */
+$.ui.fancytree._FancytreeClass.prototype.filterNodes = function(filter, leavesOnly){
+	return this._applyFilterImpl(filter, false, leavesOnly);
+};
+
+$.ui.fancytree._FancytreeClass.prototype.applyFilter = function(filter){
+	this.warn("Fancytree.applyFilter() is deprecated since 2014-05-10. Use .filterNodes() instead.");
+	return this.filterNodes.apply(this, arguments);
+};
+
+/**
+ * [ext-filter] Dimm or hide whole branches.
+ *
+ * @param {function | string} filter
+ * @returns {integer} count
+ * @alias Fancytree#filterBranches
+ * @requires jquery.fancytree.filter.js
+ */
+$.ui.fancytree._FancytreeClass.prototype.filterBranches = function(filter){
+	return this._applyFilterImpl(filter, true, null);
+};
+
+
+/**
  * [ext-filter] Reset the filter.
  *
- * @alias Fancytree#applyFilter
+ * @alias Fancytree#clearFilter
  * @requires jquery.fancytree.filter.js
  */
 $.ui.fancytree._FancytreeClass.prototype.clearFilter = function(){
@@ -99,11 +129,11 @@ $.ui.fancytree._FancytreeClass.prototype.clearFilter = function(){
  */
 $.ui.fancytree.registerExtension({
 	name: "filter",
-	version: "0.1.0",
+	version: "0.2.0",
 	// Default options for this extension.
 	options: {
-		mode: "dimm",
-		leavesOnly: false
+		mode: "dimm"
+//		leavesOnly: false
 	},
 	treeInit: function(ctx){
 		this._super(ctx);
