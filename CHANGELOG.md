@@ -9,9 +9,10 @@
     (which is also called on expand). This allows autoScroll to work with 
     [ext-table]: set scrollParent to `window` or a wrapper DIV with  overflow: auto
   * [Fixed] #217: persistence when node keys are numeric
+  * [Fixed] #228: html in node title prevents click
+  * [Fixed] #235: D'n'd helper is displaced, when window is scrolled
   * [Fixed] #241: fromDict() does not update node title
   * [Fixed] relative custom imagePath option
-  * [Fixed] #228: html in node title prevents click
   * [Deprecated] [ext-filter] Use filterNodes() instead of applyFilter()
   * [Deprecated] [ext-filter] 'leavesOnly' option removed (see filterNodes())
 
