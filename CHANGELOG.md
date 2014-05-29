@@ -1,14 +1,16 @@
-# 2.1.0 / Unreleased
+# 2.1.1 / Unreleased
+
+# 2.1.0 / 2014-05-29
   * [Added] #210: [ext-persist] optionally store information in sessionStorage or localStorage
   * [Added] #64 [ext-filter] filterBranches() will restrict display to sub-trees
   * [Added] New options 'scrollParent' and 'scrollOfs' are evaluated by node.scrollIntoView()
+    (which is also called on expand). This allows autoScroll to work with 
+    [ext-table]: set scrollParent to `window` or a wrapper DIV with  overflow: auto
   * [Added] [ext-wide] use 100% wide selection bar (experimental)
   * [Added] $.ui.fancytree.debounce()
   * [Improved] [ext-columnview] css
   * [Improved] skin-win8 now includes the loading.gif as inline CSS for faster response
   * [Improved] Add 'fancytree-icon' class to icon IMG
-    (which is also called on expand). This allows autoScroll to work with 
-    [ext-table]: set scrollParent to `window` or a wrapper DIV with  overflow: auto
   * [Improved] css v-align for checkboxes and icons
   * [Fixed] #217: persistence when node keys are numeric
   * [Fixed] #228: html in node title prevents click
