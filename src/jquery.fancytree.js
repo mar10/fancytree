@@ -690,9 +690,8 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			// recursively set children and render
 			this.removeChildren();
 			this.addChildren(dict.children);
-		}else{
-			this.renderTitle();
 		}
+		this.renderTitle();
 /*
 		var children = dict.children;
 		if(children === undefined){
@@ -3820,6 +3819,29 @@ $.extend($.ui.fancytree,
 	assert: function(cond, msg){
 		return _assert(cond, msg);
 	},
+	/** Return a function that executes *fn* at most every *timeout* ms.
+	 * @param {integer} timeout
+	 * @param {function} fn
+	 * @param {boolean} [invokeAsap=false]
+	 * @param {any} [ctx]
+	 */
+	debounce : function(timeout, fn, invokeAsap, ctx) {
+		var timer;
+		if(arguments.length === 3 && typeof invokeAsap !== "boolean") {
+			ctx = invokeAsap;
+			invokeAsap = false;
+		}
+		return function() {
+			var args = arguments;
+			ctx = ctx || this;
+			invokeAsap && !timer && fn.apply(ctx, args);
+			clearTimeout(timer);
+			timer = setTimeout(function() {
+				invokeAsap || fn.apply(ctx, args);
+				timer = null;
+			}, timeout);
+		};
+	},
 	/** Write message to console if debugLevel >= 2
 	 * @param {string} msg
 	 */
@@ -3869,7 +3891,7 @@ $.extend($.ui.fancytree,
 	 */
 	getEventTarget: function(event){
 		var tcn = event && event.target ? event.target.className : "",
-		res = {node: this.getNode(event.target), type: undefined};
+			res = {node: this.getNode(event.target), type: undefined};
 		// We use a fast version of $(res.node).hasClass()
 		// See http://jsperf.com/test-for-classname/2
 		if( /\bfancytree-title\b/.test(tcn) ){
@@ -3889,7 +3911,7 @@ $.extend($.ui.fancytree,
 		}
 		return res;
 	},
-        /** Return a FancytreeNode instance from element.
+	/** Return a FancytreeNode instance from element.
 	 *
 	 * @param {Element | jQueryObject | Event} el
 	 * @returns {FancytreeNode} matching node or null
