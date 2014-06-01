@@ -1,12 +1,21 @@
-# 2.1.0 / Unreleased
+# 2.1.1 / Unreleased
+
+# 2.1.0 / 2014-05-29
   * [Added] #210: [ext-persist] optionally store information in sessionStorage or localStorage
   * [Added] #64 [ext-filter] filterBranches() will restrict display to sub-trees
-  * [Added]: New options 'scrollParent' and 'scrollOfs' are evaluated by node.scrollIntoView()
-  * [Improved] [ext-columnview] css
-  * [Improved] Add 'fancytree-icon' class to icon IMG
+  * [Added] New options 'scrollParent' and 'scrollOfs' are evaluated by node.scrollIntoView()
     (which is also called on expand). This allows autoScroll to work with 
     [ext-table]: set scrollParent to `window` or a wrapper DIV with  overflow: auto
+  * [Added] [ext-wide] use 100% wide selection bar (experimental)
+  * [Added] $.ui.fancytree.debounce()
+  * [Improved] [ext-columnview] css
+  * [Improved] skin-win8 now includes the loading.gif as inline CSS for faster response
+  * [Improved] Add 'fancytree-icon' class to icon IMG
+  * [Improved] css v-align for checkboxes and icons
   * [Fixed] #217: persistence when node keys are numeric
+  * [Fixed] #228: html in node title prevents click
+  * [Fixed] #235: D'n'd helper is displaced, when window is scrolled
+  * [Fixed] #241: fromDict() does not update node title
   * [Fixed] relative custom imagePath option
   * [Deprecated] [ext-filter] Use filterNodes() instead of applyFilter()
   * [Deprecated] [ext-filter] 'leavesOnly' option removed (see filterNodes())
@@ -70,7 +79,7 @@
     `node.refKey`, which may occur multiple times in one tree (as opposed to `key`, 
     which must be unique).
     New methods `node.isClone()`, `node.getCloneList()` and `tree.getNodesByRef()`.
-    Optionally, clones are tagged wit the `fancytree-clone` class.  
+    Optionally, clones are tagged wit the `fancytree-clone` class.
   * [FEATURE] New option 'defaultKey'. This calback allows to generate keys while loading.
   * build process creates /dist folder
   * "bower install fancytree" delivers dist folder
@@ -87,7 +96,7 @@
   * [FEATURE] [ext-filter] 'mode: hide' now works with ext-table (still experimental).
   * [FEATURE] node.makeVisible() accepts options, scrolls into view, and returns a promise.
   * [FEATURE] Sample xxl and bootstrap themes.
-  * [CHANGE] nodeRenderStatus() is now implicitly called by nodeRenderTitle().  
+  * [CHANGE] nodeRenderStatus() is now implicitly called by nodeRenderTitle().<br>
     This also means that now all markup and css classes are finshed, when `renderNode` 
     is fired.
   * [CHANGE] Calling setExpanded() on a leaf node fires .done() (not .fail())

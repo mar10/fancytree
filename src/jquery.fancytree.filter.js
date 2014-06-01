@@ -110,7 +110,7 @@ $.ui.fancytree._FancytreeClass.prototype.filterBranches = function(filter){
 /**
  * [ext-filter] Reset the filter.
  *
- * @alias Fancytree#applyFilter
+ * @alias Fancytree#clearFilter
  * @requires jquery.fancytree.filter.js
  */
 $.ui.fancytree._FancytreeClass.prototype.clearFilter = function(){

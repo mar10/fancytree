@@ -28,6 +28,7 @@ ul.fancytree-container {
   border: 1px dotted gray;
   overflow: auto;
   min-height: 0%;
+  position: relative;
 }
 ul.fancytree-container ul {
   padding: 0 0 0 16px;
@@ -78,15 +79,22 @@ span.fancytree-drag-helper-img,
   background-image: url("icons.gif");
   background-position: 0px 0px;
 }
+span.fancytree-icon,
+span.fancytree-checkbox,
+span.fancytree-radio,
+span.fancytree-custom-icon {
+  margin-top: 1px;
+}
 /* Used by iconclass option */
 span.fancytree-custom-icon {
   display: inline-block;
 }
 /* Used by 'icon' node option: */
-.fancytree-container img {
+img.fancytree-icon {
   width: 32px;
   height: 32px;
   margin-left: 3px;
+  margin-top: 1px;
   vertical-align: top;
   border-style: none;
 }
@@ -196,7 +204,6 @@ span.fancytree-checkbox:hover {
  * class name as 'fancytree-radio' in the tree options.
  *----------------------------------------------------------------------------*/
 .fancytree-radio span.fancytree-checkbox {
-  margin-left: 3px;
   background-position: 0px -96px;
 }
 .fancytree-radio span.fancytree-checkbox:hover {
@@ -418,8 +425,22 @@ table.fancytree-ext-columnview .fancytree-has-children span.fancytree-cv-right:h
   color: black;
   font-weight: normal;
 }
+/*------------------------------------------------------------------------------
+ * 'wide' extension
+ *----------------------------------------------------------------------------*/
+ul.fancytree-ext-wide span.fancytree-node > span {
+  position: relative;
+  z-index: 2;
+}
+ul.fancytree-ext-wide span.fancytree-node span.fancytree-title {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  padding-left: 503px;
+  margin-left: -500px;
+}
 /*!
- * Fancytree "Win8" skin.
+ * Fancytree "win8" skin (highlighting the node span instead of title-only).
  *
  * DON'T EDIT THE CSS FILE DIRECTLY, since it is automatically generated from
  * the LESS templates.

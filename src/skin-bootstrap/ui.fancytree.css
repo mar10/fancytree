@@ -1,5 +1,5 @@
 /*!
- * Fancytree "bootstrap" skin.
+ * Fancytree "bootstrap" skin (highlighting the node span instead of title-only).
  *
  * DON'T EDIT THE CSS FILE DIRECTLY, since it is automatically generated from
  * the LESS templates.
@@ -28,6 +28,7 @@ ul.fancytree-container {
   border: 1px dotted gray;
   overflow: auto;
   min-height: 0%;
+  position: relative;
 }
 ul.fancytree-container ul {
   padding: 0 0 0 16px;
@@ -77,15 +78,22 @@ span.fancytree-drag-helper-img,
   background-position: left;
   background-position: 0em 0em;
 }
+span.fancytree-icon,
+span.fancytree-checkbox,
+span.fancytree-radio,
+span.fancytree-custom-icon {
+  margin-top: 1px;
+}
 /* Used by iconclass option */
 span.fancytree-custom-icon {
   display: inline-block;
 }
 /* Used by 'icon' node option: */
-.fancytree-container img {
+img.fancytree-icon {
   width: 1em;
   height: 1em;
   margin-left: 0.5em;
+  margin-top: 1px;
   vertical-align: top;
   border-style: none;
 }
@@ -126,9 +134,6 @@ span.fancytree-checkbox {
  * This is a customization, that may be activated by overriding the 'checkbox'
  * class name as 'fancytree-radio' in the tree options.
  *----------------------------------------------------------------------------*/
-.fancytree-radio span.fancytree-checkbox {
-  margin-left: 0.5em;
-}
 /*------------------------------------------------------------------------------
  * Node type icon
  * Note: IE6 doesn't correctly evaluate multiples class names,
@@ -280,6 +285,20 @@ table.fancytree-ext-columnview .fancytree-has-children span.fancytree-cv-right {
 .fancytree-ext-filter-hide span.fancytree-node.fancytree-match span.fancytree-title {
   color: black;
   font-weight: normal;
+}
+/*------------------------------------------------------------------------------
+ * 'wide' extension
+ *----------------------------------------------------------------------------*/
+ul.fancytree-ext-wide span.fancytree-node > span {
+  position: relative;
+  z-index: 2;
+}
+ul.fancytree-ext-wide span.fancytree-node span.fancytree-title {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  padding-left: 503px;
+  margin-left: -500px;
 }
 /*******************************************************************************
  * Styles specific to this skin.

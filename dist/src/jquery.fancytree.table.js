@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.0.0
- * @date 2014-05-01T21:48
+ * @version 2.1.0
+ * @date 2014-05-29T16:44
  */
 
 ;(function($, window, document, undefined) {
@@ -298,23 +298,37 @@ $.ui.fancytree.registerExtension({
 	/* Expand node, return Deferred.promise. */
 	nodeSetExpanded: function(ctx, flag, opts) {
 		var dfd = new $.Deferred(),
-			prevOpts = opts || {};
+			subOpts = $.extend({}, opts, {noEvents: true, noAnimation: true});
 
-		opts = $.extend({}, opts, {noEvents: true, noAnimation: true});
+		opts = opts || {};
 
 		function _afterExpand(ok) {
 			flag = (flag !== false);
 			setChildRowVisibility(ctx.node, flag);
-			if( !prevOpts.noEvents ) {
-				ctx.tree._triggerNodeEvent(flag ? "expand" : "collapse", ctx);
-			}
 			if( ok ) {
-				dfd.resolveWith(ctx.node);
+				if( flag && ctx.options.autoScroll && !opts.noAnimation && ctx.node.hasChildren() ) {
+					// Scroll down to last child, but keep current node visible
+					ctx.node.getLastChild().scrollIntoView(true, {topNode: ctx.node}).always(function(){
+						if( !opts.noEvents ) {
+							ctx.tree._triggerNodeEvent(flag ? "expand" : "collapse", ctx);
+						}
+						dfd.resolveWith(ctx.node);
+					});
+				} else {
+					if( !opts.noEvents ) {
+						ctx.tree._triggerNodeEvent(flag ? "expand" : "collapse", ctx);
+					}
+					dfd.resolveWith(ctx.node);
+				}
 			} else {
+				if( !opts.noEvents ) {
+					ctx.tree._triggerNodeEvent(flag ? "expand" : "collapse", ctx);
+				}
 				dfd.rejectWith(ctx.node);
 			}
 		}
-		this._super(ctx, flag, opts).done(function () {
+		// Call base-expand with disabled  events and animation
+		this._super(ctx, flag, subOpts).done(function () {
 			_afterExpand(true);
 		}).fail(function () {
 			_afterExpand(false);
