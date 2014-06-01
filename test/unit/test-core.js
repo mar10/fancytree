@@ -521,7 +521,7 @@ test(".click() to activate a node", function() {
 			start();
 		}
 	});
-	$("#tree #ft_2").click();
+	$("#tree #ft_2 span.fancytree-title").click();
 });
 
 
@@ -547,7 +547,7 @@ test(".click() to activate a folder (clickFolderMode 3 triggers expand)", functi
 			start();
 		}
 	});
-	$("#tree #ft_10").click();
+	$("#tree #ft_10 span.fancytree-title").click();
 });
 
 
