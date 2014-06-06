@@ -47,7 +47,6 @@ ul.fancytree-container li {
   background-repeat: repeat-y;
   background-image: none;
   margin: 0;
-  padding: 1px 0 0 0;
 }
 ul.fancytree-container li.fancytree-lastsib {
   background-image: none;
@@ -241,7 +240,6 @@ table.fancytree-ext-columnview tbody tr td > ul li {
   background-image: none;
   /* no v-lines */
   margin: 0;
-  padding: 1px 0 0 0;
 }
 table.fancytree-ext-columnview span.fancytree-node {
   position: relative;
