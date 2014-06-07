@@ -1886,7 +1886,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 			selectedName = (selected !== false) ? "ft_" + this._id + "[]" : selected,
 			activeName = (active !== false) ? "ft_" + this._id + "_active" : active,
 			id = "fancytree_result_" + this._id,
-			$result = this.$container.find("div#" + id);
+			$result = $("#" + id);
 
 		if($result.length){
 			$result.empty();
