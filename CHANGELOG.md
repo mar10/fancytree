@@ -1,4 +1,7 @@
-# 2.1.1 / Unreleased
+# 2.2.0 / Unreleased
+  * [Improved] #245 tree.generateInput() now returns data using PHPs array
+    convention, i.e. by appending '[]' to the name.
+
 
 # 2.1.0 / 2014-05-29
   * [Added] #210: [ext-persist] optionally store information in sessionStorage or localStorage

@@ -1893,7 +1893,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 		}else{
 			$result = $("<div>", {
 				id: id
-			}).hide().appendTo(this.$container);
+			}).hide().insertAfter(this.$container);
 		}
 		if(selectedName){
 			nodeList = this.getSelectedNodes( this.options.selectMode === 3 );
