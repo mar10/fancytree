@@ -40,9 +40,9 @@
 				}
 			]
 		},
-		{title: "Document with some children (expanded on init)", key: "id4", expand: true,
+		{title: "Document with some children (expanded on init)", key: "id4", expanded: true,
 			children: [
-				{title: "Sub-item 4.1 (active on init)", activate: true,
+				{title: "Sub-item 4.1 (active on init)", active: true,
 					children: [
 						{title: "Sub-item 4.1.1", key: "id4.1.1" },
 						{title: "Sub-item 4.1.2", key: "id4.1.2" }
@@ -57,7 +57,8 @@
 				{title: "Sub-item 4.3 (hideCheckbox)", hideCheckbox: true },
 				{title: "Sub-item 4.4 (unselectable)", unselectable: true }
 			]
-		}
+		},
+		{title: "Lazy folder", folder: true, lazy: true }
 	];
 	$(function(){
 
@@ -123,6 +124,12 @@
 			checkbox: true,
 			selectMode: 3,
 			source: treeData,
+			lazyLoad: function(event, ctx) {
+   				ctx.result = {url: "ajax-sub2.json", debugDelay: 1000};
+   			},
+			loadChildren: function(event, ctx) {
+   				ctx.node.fixSelection3AfterClick();
+   			},
 			select: function(event, data) {
 				// Get a list of all selected nodes, and convert to a key array:
 				var selKeys = $.map(data.tree.getSelectedNodes(), function(node){

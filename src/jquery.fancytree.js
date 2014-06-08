@@ -614,7 +614,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			var i, l, child, s, state, allSelected,someSelected,
 				children = node.children;
 
-			if( children ){
+			if( children && children.length ){
 				// check all children recursively
 				allSelected = true;
 				someSelected = false;

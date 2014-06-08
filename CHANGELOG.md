@@ -1,6 +1,7 @@
 # 2.2.0 / Unreleased
   * [Improved] #245 tree.generateInput() now returns data using PHPs array
-    convention, i.e. by appending '[]' to the name.
+    convention, i.e. by appending brackets to the name: 'ft_1[]'.
+  * [Fixed] #250: Children lazy empty nodes remain checked when parent is unchecked with hierarchical multi-selection
 
 
 # 2.1.0 / 2014-05-29
