@@ -161,10 +161,11 @@ SAMPLE_BUTTON_DEFAULTS = {
 function addSampleButton(options)
 {
 	var opts = $.extend({}, SAMPLE_BUTTON_DEFAULTS, options),
-		$container;
-	$container = $("<span />", {
-		"class": "sampleButtonContainer"
-	});
+		$buttonBar = $("#sampleButtons"),
+		$container = $("<span />", {
+			"class": "sampleButtonContainer"
+		});
+
 	$("<button />", {
 		id: opts.id,
 		title: opts.tooltip,
@@ -218,7 +219,7 @@ function addSampleButton(options)
 	if( !$("#sampleButtons").length ){
 		$.error("addSampleButton() needs a container with id #sampleButtons");
 	}
-	$container.appendTo($("#sampleButtons"));
+	$container.appendTo($buttonBar);
 }
 
 

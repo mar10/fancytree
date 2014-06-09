@@ -1977,7 +1977,12 @@ Fancytree.prototype = /** @lends Fancytree# */{
 		}, true);
 		return match;
 	},
-	// TODO: getRoot()
+	/** Return the invisible system root node.
+	 * @returns {FancytreeNode}
+	 */
+	getRootNode: function() {
+		return this.rootNode;
+	},
 	/**
 	 * Return an array of selected nodes.
 	 * @param {boolean} [stopOnParents=false] only return the topmost selected
