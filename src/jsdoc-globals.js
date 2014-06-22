@@ -38,9 +38,9 @@
  * @type {Object}
  *
  * @property {Fancytree} tree The tree instance
- * @property {object} widget The [jQuery UI tree widget](http://api.jqueryui.com/jQuery.widget)
+ * @property {object} widget The <a href="http://api.jqueryui.com/jQuery.widget">jQuery UI tree widget</a>
  * @property {FancytreeOptions} options Shortcut to tree.options
- * @property {Event} originalEvent The [jQuery Event](http://api.jquery.com/category/events/event-object) that initially triggered this call
+ * @property {Event} originalEvent The <a href="http://api.jquery.com/category/events/event-object">jQuery Event</a> that initially triggered this call
  * @property {FancytreeNode | null} node The node that this call applies to (`null` for tree events)
  * @property {any} result (output parameter) Event handlers can return values back to the caller. Used by `lazyLoad`, `postProcess`, ...
  * @property {String | undefined} targetType (only for click and dblclick events) 'title' | 'prefix' | 'expander' | 'checkbox' | 'icon'
@@ -150,7 +150,7 @@ var FancytreeOptions = {};
  * @description
  * Events are called like this:
  *    `CALLBACK_NAME(event, data)`
- * where `event` is a [jQuery Event](http://api.jquery.com/category/events/event-object) object and `data` is of type {@link EventData}
+ * where `event` is a <a href="http://api.jquery.com/category/events/event-object">jQuery Event</a> object and `data` is of type {@link EventData}
  * The `this` context is set to  tree's the HTMLDivElement
  *
  * @see {@link http://api.jquery.com/category/events/event-object|jQuery Event}
@@ -178,7 +178,7 @@ var FancytreeOptions = {};
  * @property {function} focus `data.node` received keyboard focus
  * @property {function} focusTree `data.tree` received keyboard focus
  * @property {function} init Widget was (re-)initialized.
- * @property {function} keydown `data.node` received key. `event.which` contains the key. Return `false` to prevent default processing, i.e. navigation. Return `result.preventNav` to prevent navigation but still allow default handling inside embedded input controls.
+ * @property {function} keydown `data.node` received key. `event.which` contains the key. Return `false` to prevent default processing, i.e. navigation. Call `data.result = "preventNav";` to prevent navigation but still allow default handling inside embedded input controls.
  * @property {function} keypress (currently unused)
  * @property {function} lazyLoad `data.node` is a lazy node that is expanded for the first time. The new child data must be returned in the `data.result` property (see `source` option for available formats).
  * @property {function} loadChildren Node data was loaded, i.e. `node.nodeLoadChildren()` finished

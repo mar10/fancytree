@@ -23,6 +23,7 @@ module.exports = (grunt) ->
                 "<%= pkg.homepage ? '  * ' + pkg.homepage + '\\n' : '' %>" +
                 "  * Copyright (c) <%= grunt.template.today('yyyy') %> <%= pkg.author.name %>;" +
                 " Licensed <%= _.pluck(pkg.licenses, 'type').join(', ') %> */\n"
+
     bumpup:
         options:
             dateformat: "YYYY-MM-DD HH:mm"
