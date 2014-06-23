@@ -351,6 +351,11 @@ $.ui.fancytree.registerExtension({
 		// The default implementation loads initial data
 		this._super(ctx);
 	},
+	treeClear: function(ctx){
+		ctx.tree.refMap = {};
+		ctx.tree.keyMap = {};
+		return this._super(ctx);
+	},
 	treeRegisterNode: function(ctx, add, node) {
 		var refList, len,
 			tree = ctx.tree,
