@@ -24,25 +24,25 @@ module.exports = (grunt) ->
                 "  * Copyright (c) <%= grunt.template.today('yyyy') %> <%= pkg.author.name %>;" +
                 " Licensed <%= _.pluck(pkg.licenses, 'type').join(', ') %> */\n"
 
-    bumpup:
-        options:
-            dateformat: "YYYY-MM-DD HH:mm"
-            normalize: true
-            updateProps: 
-                pkg: "package.json"
-        files: ["package.json", "bower.json", "fancytree.jquery.json"]
+    # bumpup:
+    #     options:
+    #         dateformat: "YYYY-MM-DD HH:mm"
+    #         normalize: true
+    #         updateProps: 
+    #             pkg: "package.json"
+    #     files: ["package.json", "bower.json", "fancytree.jquery.json"]
 
-    checkrepo:
-      beforeBump:
-          tag:
-              eq: "<%= pkg.version %>" # Check if highest repo tag == pkg.version
-#          tagged: false # Require last commit (HEAD) to be tagged
-          clean: true # // Require repo to be clean (no unstaged changes)
-      beforeRelease:
-          tag:
-              lt: "<%= pkg.version %>" # Check if highest repo tag is lower than pkg.version
-#          tagged: false # Require last commit (HEAD) to be tagged
-          clean: true # // Require repo to be clean (no unstaged changes)
+#     checkrepo:
+#       beforeBump:
+#           tag:
+#               eq: "<%= pkg.version %>" # Check if highest repo tag == pkg.version
+# #          tagged: false # Require last commit (HEAD) to be tagged
+#           clean: true # // Require repo to be clean (no unstaged changes)
+#       beforeRelease:
+#           tag:
+#               lt: "<%= pkg.version %>" # Check if highest repo tag is lower than pkg.version
+# #          tagged: false # Require last commit (HEAD) to be tagged
+#           clean: true # // Require repo to be clean (no unstaged changes)
 
     clean:
         build:
@@ -286,12 +286,12 @@ module.exports = (grunt) ->
                 ]
                 testname: "fancytree qunit tests"
 
-    tagrelease:
-        file: "package.json"
-        commit:  true
-        message: "Tagging the %version% release."
-        prefix:  "v"
-        annotate: true
+    # tagrelease:
+    #     file: "package.json"
+    #     commit:  true
+    #     message: "Tagging the %version% release."
+    #     prefix:  "v"
+    #     annotate: true
 
     uglify:
         # build:
@@ -337,6 +337,21 @@ module.exports = (grunt) ->
             files: ["src/*.js", "test/unit/*.js"]
             tasks: ["jshint:beforeConcat"]
 
+    yabs:
+        release:
+            common: # defaults for all tools
+                manifests: ['package.json', 'bower.json', 'fancytree.jquery.json']
+            # The following tools are run in order:
+            check: { clean: true, branch: ['master'] }
+            run_test: { tasks: ['test'] }
+            bump: {} # 'bump' also uses the increment mode `yabs:release:MODE`
+            run_build: { tasks: ['build'] }
+            commit: { add: '.' }
+            tag: {}
+            push: { tags: true }
+            bump_develop: { inc: 'prepatch' }
+            commit_develop: { add: '.', message: 'Bump prerelease ({%= version %}) [ci skip]' }
+            # push_develop: {}
 
   # ----------------------------------------------------------------------------
 
@@ -395,8 +410,8 @@ module.exports = (grunt) ->
       "clean:build"
       "replace:release"
       "compress:dist"
-      "tagrelease"
-      "bumpup:prerelease"
+      # "tagrelease"
+      # "bumpup:prerelease"
       ]
 
   grunt.registerTask "upload", [
