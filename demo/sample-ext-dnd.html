@@ -42,13 +42,15 @@
 		// and pass the tree options as an argument to the fancytree() function:
 		$("#tree").fancytree({
 			extensions: ["dnd"],
+			// titlesTabbable: true,
 			source: {
 				url: "ajax-tree-fs.json"
 			},
 			dnd: {
+				autoExpandMS: 400,
+				focusOnClick: true,
 				preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
 				preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
-				autoExpandMS: 400,
 				dragStart: function(node, data) {
 					/** This function MUST be defined to enable dragging for the tree.
 					 *  Return false to cancel dragging of node.

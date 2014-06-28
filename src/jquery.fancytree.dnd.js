@@ -204,6 +204,7 @@ $.ui.fancytree.registerExtension({
 		autoExpandMS: 1000, // Expand nodes after n milliseconds of hovering.
 		preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
 		preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
+		focusOnClick: false, // Focus, although draggable cancels mousedown event (#270)
 		dragEnter: null,  // Callback(targetNode, data)
 		dragOver: null,   // Callback(targetNode, data)
 		dragDrop: null,   // Callback(targetNode, data)
@@ -216,6 +217,20 @@ $.ui.fancytree.registerExtension({
 	treeInit: function(ctx){
 		var tree = ctx.tree;
 		this._super(ctx);
+		// issue #270: draggable eats mousedown events
+		if( tree.options.dnd.dragStart ){
+			tree.$container.on("mousedown", function(event){
+				if( !tree.hasFocus() && ctx.options.dnd.focusOnClick ) {
+					var node = $.ui.fancytree.getNode(event);
+					node.debug("Re-enable focus that was prevented by jQuery UI draggable.");
+					// node.setFocus();
+					// $(node.span).closest(":tabbable").focus();
+					// $(event.target).trigger("focus");
+					// $(event.target).closest(":tabbable").trigger("focus");
+					$(event.target).closest(":tabbable").focus();
+				}
+			});
+		}
 		_initDragAndDrop(tree);
 	},
 	/* Override key handler in order to cancel dnd on escape.*/
@@ -224,6 +239,12 @@ $.ui.fancytree.registerExtension({
 		if( event.which === $.ui.keyCode.ESCAPE) {
 			this._local._cancelDrag();
 		}
+		return this._super(ctx);
+	},
+	nodeClick: function(ctx) {
+		// if( ctx.options.dnd.dragStart ){
+		// 	ctx.tree.$container.focus();
+		// }
 		return this._super(ctx);
 	},
 	/* Display drop marker according to hitMode ('after', 'before', 'over', 'out', 'start', 'stop'). */

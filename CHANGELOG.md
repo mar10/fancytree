@@ -1,8 +1,11 @@
 # 2.2.0 / Unreleased
   * [Improved] #245 tree.generateInput() now returns data using PHPs array
     convention, i.e. by appending brackets to the name: 'ft_1[]'.
-  * [Fixed] #250: Children lazy empty nodes remain checked when parent is unchecked with hierarchical multi-selection
-
+  * [Fixed] #250: Children lazy empty nodes remain checked when parent is 
+    unchecked with hierarchical multi-selection
+  * [Added] Option dnd.focusOnClick sets focus to tree widget, even when dragging 
+    is enabled
+  * [Added] node.info()
 
 # 2.1.0 / 2014-05-29
   * [Added] #210: [ext-persist] optionally store information in sessionStorage or localStorage
