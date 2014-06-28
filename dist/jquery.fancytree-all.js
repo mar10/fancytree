@@ -7,8 +7,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.1.0
- * @date 2014-05-29T16:44
+ * @version 2.2.0
+ * @date 2014-06-28T17:15
  */
 
 /** Core Fancytree module.
@@ -614,7 +614,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			var i, l, child, s, state, allSelected,someSelected,
 				children = node.children;
 
-			if( children ){
+			if( children && children.length ){
 				// check all children recursively
 				allSelected = true;
 				someSelected = false;
@@ -851,6 +851,16 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	 */
 	hasFocus: function() {
 		return (this.tree.hasFocus() && this.tree.focusNode === this);
+	},
+	/** Write to browser console if debugLevel >= 1 (prepending node info)
+	 *
+	 * @param {*} msg string or object or array of such
+	 */
+	info: function(msg){
+		if( this.tree.options.debugLevel >= 1 ) {
+			Array.prototype.unshift.call(arguments, this.toString());
+			consoleApply("info", arguments);
+		}
 	},
 	/** Return true if node is active (see also FancytreeNode#isSelected).
 	 * @returns {boolean}
@@ -1196,7 +1206,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		// Navigate to node
 		function _goto(n){
 			if( n ){
-				n.makeVisible();
+				try { n.makeVisible(); } catch(e) {} // #272
 				// Node may still be hidden by a filter
 				if( ! $(n.span).is(":visible") ) {
 					n.debug("Navigate: skipping hidden node");
@@ -1883,17 +1893,17 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	generateFormElements: function(selected, active) {
 		// TODO: test case
 		var nodeList,
-			selectedName = (selected !== false) ? "ft_" + this._id : selected,
+			selectedName = (selected !== false) ? "ft_" + this._id + "[]" : selected,
 			activeName = (active !== false) ? "ft_" + this._id + "_active" : active,
 			id = "fancytree_result_" + this._id,
-			$result = this.$container.find("div#" + id);
+			$result = $("#" + id);
 
 		if($result.length){
 			$result.empty();
 		}else{
 			$result = $("<div>", {
 				id: id
-			}).hide().appendTo(this.$container);
+			}).hide().insertAfter(this.$container);
 		}
 		if(selectedName){
 			nodeList = this.getSelectedNodes( this.options.selectMode === 3 );
@@ -1967,7 +1977,12 @@ Fancytree.prototype = /** @lends Fancytree# */{
 		}, true);
 		return match;
 	},
-	// TODO: getRoot()
+	/** Return the invisible system root node.
+	 * @returns {FancytreeNode}
+	 */
+	getRootNode: function() {
+		return this.rootNode;
+	},
 	/**
 	 * Return an array of selected nodes.
 	 * @param {boolean} [stopOnParents=false] only return the topmost selected
@@ -3791,7 +3806,7 @@ $.extend($.ui.fancytree,
 	/** @lends Fancytree_Static# */
 	{
 	/** @type {string} */
-	version: "2.1.0",      // Set to semver by 'grunt release'
+	version: "2.2.0",      // Set to semver by 'grunt release'
 	/** @type {string} */
 	buildType: "production", // Set to 'production' by 'grunt build'
 	/** @type {int} */
@@ -4090,8 +4105,8 @@ $.extend($.ui.fancytree,
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.1.0
- * @date 2014-05-29T16:44
+ * @version 2.2.0
+ * @date 2014-06-28T17:15
  */
 
 // To keep the global namespace clean, we wrap everything in a closure
@@ -4266,8 +4281,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.1.0
- * @date 2014-05-29T16:44
+ * @version 2.2.0
+ * @date 2014-06-28T17:15
  */
 
 ;(function($, window, document, undefined) {
@@ -4461,6 +4476,7 @@ $.ui.fancytree.registerExtension({
 		autoExpandMS: 1000, // Expand nodes after n milliseconds of hovering.
 		preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
 		preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
+		focusOnClick: false, // Focus, although draggable cancels mousedown event (#270)
 		dragEnter: null,  // Callback(targetNode, data)
 		dragOver: null,   // Callback(targetNode, data)
 		dragDrop: null,   // Callback(targetNode, data)
@@ -4473,6 +4489,20 @@ $.ui.fancytree.registerExtension({
 	treeInit: function(ctx){
 		var tree = ctx.tree;
 		this._super(ctx);
+		// issue #270: draggable eats mousedown events
+		if( tree.options.dnd.dragStart ){
+			tree.$container.on("mousedown", function(event){
+				if( !tree.hasFocus() && ctx.options.dnd.focusOnClick ) {
+					var node = $.ui.fancytree.getNode(event);
+					node.debug("Re-enable focus that was prevented by jQuery UI draggable.");
+					// node.setFocus();
+					// $(node.span).closest(":tabbable").focus();
+					// $(event.target).trigger("focus");
+					// $(event.target).closest(":tabbable").trigger("focus");
+					$(event.target).closest(":tabbable").focus();
+				}
+			});
+		}
 		_initDragAndDrop(tree);
 	},
 	/* Override key handler in order to cancel dnd on escape.*/
@@ -4481,6 +4511,12 @@ $.ui.fancytree.registerExtension({
 		if( event.which === $.ui.keyCode.ESCAPE) {
 			this._local._cancelDrag();
 		}
+		return this._super(ctx);
+	},
+	nodeClick: function(ctx) {
+		// if( ctx.options.dnd.dragStart ){
+		// 	ctx.tree.$container.focus();
+		// }
 		return this._super(ctx);
 	},
 	/* Display drop marker according to hitMode ('after', 'before', 'over', 'out', 'start', 'stop'). */
@@ -4790,8 +4826,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.1.0
- * @date 2014-05-29T16:44
+ * @version 2.2.0
+ * @date 2014-06-28T17:15
  */
 
 ;(function($, window, document, undefined) {
@@ -5105,8 +5141,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.1.0
- * @date 2014-05-29T16:44
+ * @version 2.2.0
+ * @date 2014-06-28T17:15
  */
 
 ;(function($, window, document, undefined) {
@@ -5267,8 +5303,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.1.0
- * @date 2014-05-29T16:44
+ * @version 2.2.0
+ * @date 2014-06-28T17:15
  */
 
 ;(function($, window, document, undefined) {
@@ -5395,8 +5431,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.1.0
- * @date 2014-05-29T16:44
+ * @version 2.2.0
+ * @date 2014-06-28T17:15
  */
 
 ;(function($, window, document, undefined) {
@@ -5597,8 +5633,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.1.0
- * @date 2014-05-29T16:44
+ * @version 2.2.0
+ * @date 2014-06-28T17:15
  */
 
 ;(function($, window, document, undefined) {
@@ -5935,8 +5971,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.1.0
- * @date 2014-05-29T16:44
+ * @version 2.2.0
+ * @date 2014-06-28T17:15
  */
 
 ;(function($, window, document, undefined) {
@@ -6297,8 +6333,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.1.0
- * @date 2014-05-29T16:44
+ * @version 2.2.0
+ * @date 2014-06-28T17:15
  */
 
 ;(function($, window, document, undefined) {

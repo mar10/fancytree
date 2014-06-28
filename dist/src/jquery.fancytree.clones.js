@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.1.0
- * @date 2014-05-29T16:44
+ * @version 2.2.0
+ * @date 2014-06-28T17:15
  */
 
 ;(function($, window, document, undefined) {
@@ -350,6 +350,11 @@ $.ui.fancytree.registerExtension({
 		};
 		// The default implementation loads initial data
 		this._super(ctx);
+	},
+	treeClear: function(ctx){
+		ctx.tree.refMap = {};
+		ctx.tree.keyMap = {};
+		return this._super(ctx);
 	},
 	treeRegisterNode: function(ctx, add, node) {
 		var refList, len,

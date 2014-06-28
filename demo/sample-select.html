@@ -125,11 +125,11 @@
 			selectMode: 3,
 			source: treeData,
 			lazyLoad: function(event, ctx) {
-   				ctx.result = {url: "ajax-sub2.json", debugDelay: 1000};
-   			},
+				ctx.result = {url: "ajax-sub2.json", debugDelay: 1000};
+			},
 			loadChildren: function(event, ctx) {
-   				ctx.node.fixSelection3AfterClick();
-   			},
+				ctx.node.fixSelection3AfterClick();
+			},
 			select: function(event, data) {
 				// Get a list of all selected nodes, and convert to a key array:
 				var selKeys = $.map(data.tree.getSelectedNodes(), function(node){
