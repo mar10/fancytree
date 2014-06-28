@@ -32,17 +32,17 @@ module.exports = (grunt) ->
     #             pkg: "package.json"
     #     files: ["package.json", "bower.json", "fancytree.jquery.json"]
 
-#     checkrepo:
-#       beforeBump:
-#           tag:
-#               eq: "<%= pkg.version %>" # Check if highest repo tag == pkg.version
-# #          tagged: false # Require last commit (HEAD) to be tagged
-#           clean: true # // Require repo to be clean (no unstaged changes)
-#       beforeRelease:
-#           tag:
-#               lt: "<%= pkg.version %>" # Check if highest repo tag is lower than pkg.version
-# #          tagged: false # Require last commit (HEAD) to be tagged
-#           clean: true # // Require repo to be clean (no unstaged changes)
+    checkrepo:
+      beforeBump:
+          tag:
+              eq: "<%= pkg.version %>" # Check if highest repo tag == pkg.version
+#          tagged: false # Require last commit (HEAD) to be tagged
+          clean: true # // Require repo to be clean (no unstaged changes)
+      beforeRelease:
+          tag:
+              lt: "<%= pkg.version %>" # Check if highest repo tag is lower than pkg.version
+#          tagged: false # Require last commit (HEAD) to be tagged
+          clean: true # // Require repo to be clean (no unstaged changes)
 
     clean:
         build:
@@ -345,13 +345,13 @@ module.exports = (grunt) ->
             check: { clean: true, branch: ['master'] }
             run_test: { tasks: ['test'] }
             bump: {} # 'bump' also uses the increment mode `yabs:release:MODE`
-            run_build: { tasks: ['build'] }
+            run_build: { tasks: ['make_release'] }
             commit: { add: '.' }
             tag: {}
             push: { tags: true }
             bump_develop: { inc: 'prepatch' }
             commit_develop: { add: '.', message: 'Bump prerelease ({%= version %}) [ci skip]' }
-            # push_develop: {}
+            push_develop: { tags: true }
 
   # ----------------------------------------------------------------------------
 
@@ -402,7 +402,7 @@ module.exports = (grunt) ->
       ]
   
   grunt.registerTask "make_release", [
-      "checkrepo:beforeRelease"
+      # "checkrepo:beforeRelease"
       "exec:tabfix"
       "build"
       "clean:dist"
