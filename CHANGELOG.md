@@ -1,4 +1,5 @@
 # 2.2.1 / Unreleased
+  * [Fixed] #258 Fix moveTo when moving a node to same parent
 
 # 2.2.0 / 2014-06-28
   * [Added] Option dnd.focusOnClick sets focus to tree widget, even when dragging 
