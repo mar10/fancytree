@@ -117,6 +117,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editStart = function(){
 				node.editEnd(true, event);
 				return false; // so we don't start editmode on Mac
 			}
+			event.stopPropagation();
 		}).blur(function(event){
 			return node.editEnd(true, event);
 		});
