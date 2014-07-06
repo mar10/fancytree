@@ -1480,12 +1480,19 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	setFocus: function(flag){
 		return this.tree._callHook("nodeSetFocus", this, flag);
 	},
-	// TODO: setLazyNodeStatus
 	/**Select this node, i.e. check the checkbox.
 	 * @param {boolean} [flag=true] pass false to deselect
 	 */
 	setSelected: function(flag){
 		return this.tree._callHook("nodeSetSelected", this, flag);
+	},
+	/**Mark a lazy node as 'error', 'loading', or 'ok'.
+	 * @param {string} status 'error', 'ok'
+	 * @param {string} [message]
+	 * @param {string} [details]
+	 */
+	setStatus: function(status, message, details){
+		return this.tree._callHook("nodeSetStatus", this, status, message, details);
 	},
 	/**Rename this node.
 	 * @param {string} title
@@ -1678,6 +1685,9 @@ function Fancytree(widget) {
 				widget.options.lazyload.apply(this, arguments);
 			};
 		}
+	}
+	if( this.options && $.isFunction(this.options.loaderror) ) {
+		$.error("The 'loaderror' event was renamed since 2014-07-03. Use 'loadError' (with uppercase E) instead.");
 	}
 	this.ext = {}; // Active extension instances
 	// allow to init tree.data.foo from <div data-foo=''>
@@ -2391,7 +2401,7 @@ $.extend(Fancytree.prototype,
 	 *     data was rendered.
 	 */
 	nodeLoadChildren: function(ctx, source) {
-		var ajax, delay,
+		var ajax, delay, dfd,
 			tree = ctx.tree,
 			node = ctx.node;
 
@@ -2411,7 +2421,7 @@ $.extend(Fancytree.prototype,
 
 				node.debug("nodeLoadChildren waiting debug delay " + Math.round(delay) + "ms");
 				ajax.debugDelay = false;
-				source = $.Deferred(function (dfd) {
+				dfd = $.Deferred(function (dfd) {
 					setTimeout(function () {
 						$.ajax(ajax)
 							.done(function () {	dfd.resolveWith(this, arguments); })
@@ -2419,34 +2429,75 @@ $.extend(Fancytree.prototype,
 					}, delay);
 				});
 			}else{
-				source = $.ajax(ajax);
+				dfd = $.ajax(ajax);
 			}
 
-			// TODO: change 'pipe' to 'then' for jQuery 1.8
-			// $.pipe returns a new Promise with filtered  results
-			source = source.pipe(function (data, textStatus, jqXHR) {
-				var res;
+			// Defer the deferred: we want to be able to reject, even if ajax
+			// resolved ok.
+			source = new $.Deferred();
+			node.debug("source = new");
+			dfd.done(function (data, textStatus, jqXHR) {
+				node.debug("dfd.done");
+				var errorObj, res;
 				if(typeof data === "string"){
 					$.error("Ajax request returned a string (did you get the JSON dataType wrong?).");
 				}
-				// postProcess is similar to the standard dataFilter hook,
+				// postProcess is similar to the standard ajax dataFilter hook,
 				// but it is also called for JSONP
 				if( ctx.options.postProcess ){
-					res = tree._triggerNodeEvent("postProcess", ctx, ctx.originalEvent, {response: data, dataType: this.dataType});
+					res = tree._triggerNodeEvent("postProcess", ctx, ctx.originalEvent, {response: data, error: null, dataType: this.dataType});
+					if( res.error ) {
+						errorObj = $.isPlainObject(res.error) ? res.error : {message: res.error};
+						errorObj = tree._makeHookContext(node, null, errorObj);
+						source.rejectWith(this, [errorObj]);
+						return;
+					}
+				    node.debug("dfd.done, res", res);
 					data = $.isArray(res) ? res : data;
+				    node.debug("dfd.done, data", data);
 				} else if (data && data.hasOwnProperty("d") && ctx.options.enableAspx ) {
 					// Process ASPX WebMethod JSON object inside "d" property
 					data = (typeof data.d === "string") ? $.parseJSON(data.d) : data.d;
 				}
-				return data;
-			}, function (jqXHR, textStatus, errorThrown) {
-				return tree._makeHookContext(node, null, {
+				source.resolveWith(this, [data]);
+			}).fail(function (jqXHR, textStatus, errorThrown) {
+				var errorObj = tree._makeHookContext(node, null, {
 					error: jqXHR,
 					args: Array.prototype.slice.call(arguments),
 					message: errorThrown,
 					details: jqXHR.status + ": " + errorThrown
 				});
+				source.rejectWith(this, [errorObj]);
 			});
+			// // TODO: change 'pipe' to 'then' for jQuery 1.8
+			// // $.pipe returns a new Promise with filtered  results
+			// source = source.pipe(function (data, textStatus, jqXHR) {
+			// 	var errorObj, res;
+			// 	if(typeof data === "string"){
+			// 		$.error("Ajax request returned a string (did you get the JSON dataType wrong?).");
+			// 	}
+			// 	// postProcess is similar to the standard dataFilter hook,
+			// 	// but it is also called for JSONP
+			// 	if( ctx.options.postProcess ){
+			// 		res = tree._triggerNodeEvent("postProcess", ctx, ctx.originalEvent, {response: data, error: null, dataType: this.dataType});
+			// 		if( res.error ) {
+			// 			errorObj = $.isPlainObject(res.error) ? res.error : {message: res.error};
+			// 			return tree._makeHookContext(node, null, errorObj);
+			// 		}
+			// 		data = $.isArray(res) ? res : data;
+			// 	} else if (data && data.hasOwnProperty("d") && ctx.options.enableAspx ) {
+			// 		// Process ASPX WebMethod JSON object inside "d" property
+			// 		data = (typeof data.d === "string") ? $.parseJSON(data.d) : data.d;
+			// 	}
+			// 	return data;
+			// }, function (jqXHR, textStatus, errorThrown) {
+			// 	return tree._makeHookContext(node, null, {
+			// 		error: jqXHR,
+			// 		args: Array.prototype.slice.call(arguments),
+			// 		message: errorThrown,
+			// 		details: jqXHR.status + ": " + errorThrown
+			// 	});
+			// });
 		}
 
 		if($.isFunction(source.promise)){
@@ -2455,7 +2506,7 @@ $.extend(Fancytree.prototype,
 			// node._isLoading = true;
 			tree.nodeSetStatus(ctx, "loading");
 
-			source.done(function () {
+			source.done(function (children) {
 				tree.nodeSetStatus(ctx, "ok");
 			}).fail(function(error){
 				var ctxErr;
@@ -2469,14 +2520,16 @@ $.extend(Fancytree.prototype,
 						message: error ? (error.message || error.toString()) : ""
 					});
 				}
-				tree._triggerNodeEvent("loaderror", ctxErr, null);
-				tree.nodeSetStatus(ctx, "error", ctxErr.message, ctxErr.details);
+				if( tree._triggerNodeEvent("loadError", ctxErr, null) !== false ) {
+					tree.nodeSetStatus(ctx, "error", ctxErr.message, ctxErr.details);
+				}
 			});
 		}
 		// $.when(source) resolves also for non-deferreds
 		return $.when(source).done(function(children){
 			var metaData;
 
+		    node.debug("source.done, children", children);
 			if( $.isPlainObject(children) ){
 				// We got {foo: 'abc', children: [...]}
 				// Copy extra properties to tree.data.foo

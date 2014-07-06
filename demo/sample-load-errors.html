@@ -63,7 +63,7 @@
 			}
 		}
 
-		function loaderror(e,data) {
+		function loadError(e,data) {
 			var error = data.error;
 			if (error.status && error.statusText) {
 				data.message = "Ajax error: " + data.message;
@@ -84,7 +84,7 @@
 			source: source,
 			ajax: { debugDelay: 1000 },
 			lazyLoad: lazyLoad,
-			loaderror: loaderror
+			loadError: loadError
 		});
 
 		$("#table1").fancytree({
@@ -98,7 +98,7 @@
 			source: source,
 			ajax: { debugDelay: 1000 },
 			lazyLoad: lazyLoad,
-			loaderror: loaderror,
+			loadError: loadError,
 			extensions: ["table"]
 		});
 	});
@@ -118,19 +118,19 @@
 	<!-- End_Exclude -->
 
 	<div>
-		<label>No 'loaderror' handler:</label>
+		<label>No 'loadError' handler:</label>
 		<div id="tree1"></div>
 	</div>
 	<br/>
 
 	<div>
-		<label>'loaderror' handler is specified:</label>
+		<label>'loadError' handler is specified:</label>
 		<div id="tree2"></div>
 	</div>
 	<br/>
 
 	<div>
-		<label>No 'loaderror' handler (table extension):</label>
+		<label>No 'loadError' handler (table extension):</label>
 		<table id="table1" style="width:100%">
 			<thead style="display: none"><tr><th></th></tr>
 			</thead>
@@ -140,7 +140,7 @@
 	<br/>
 
 	<div>
-		<label>'loaderror' handler is specified (table extension):</label>
+		<label>'loadError' handler is specified (table extension):</label>
 		<table id="table2" style="width:100%">
 			<thead style="display: none"><tr><th></th></tr>
 			</thead>

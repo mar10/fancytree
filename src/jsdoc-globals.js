@@ -182,6 +182,7 @@ var FancytreeOptions = {};
  * @property {function} keypress (currently unused)
  * @property {function} lazyLoad `data.node` is a lazy node that is expanded for the first time. The new child data must be returned in the `data.result` property (see `source` option for available formats).
  * @property {function} loadChildren Node data was loaded, i.e. `node.nodeLoadChildren()` finished
+ * @property {function} loadError A load error occured. Return `false` to prevent default processing
  * @property {function} postProcess Allows to modify the ajax response
  * @property {function} removeNode `data.node` was removed (NOTE: this event is only available as callback, but not for bind())
  * @property {function} renderColumns (used by table extension)
