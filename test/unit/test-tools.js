@@ -5,32 +5,52 @@
 
 /*globals expect,module,ok,QUnit,start,stop,test */
 
-var TOOLS = {};
+var TOOLS = {},
+	log = [];
 
 window.TEST_TOOLS = TOOLS;
 
 TOOLS.EVENT_SEQUENCE = [];
 TOOLS.TOTAL_ELAP = 0;
 
+
 /*******************************************************************************
  * QUnit setup
  */
 TOOLS.initQUnit = function() {
 
-	QUnit.log(function(data) {
-		if (window.console && window.console.log) {
-	//		window.console.log(data.result + " :: " + data.message);
+	// See https://github.com/axemclion/grunt-saucelabs
+	QUnit.done(function (testResults) {
+	  var details, i, len,
+		tests = [];
+	  for(i = 0, len = log.length; i < len; i++) {
+		details = log[i];
+		tests.push({
+		  name: details.name,
+		  result: details.result,
+		  expected: details.expected,
+		  actual: details.actual,
+		  source: details.source
+		});
+	  }
+	  testResults.tests = tests;
+	  /*jshint camelcase:false*/
+	  window.global_test_results = testResults;
+	  /*jshint camelcase:true*/
+
+	  // Expand first section when all tests are run
+	  $("ol#qunit-tests > li:first > ol").show("slow");
+	});
+
+	// See https://github.com/axemclion/grunt-saucelabs
+	QUnit.testStart(function(testDetails){
+	  QUnit.log(function(details){
+		if (!details.result) {
+		  details.name = testDetails.name;
+		  log.push(details);
 		}
+	  });
 	});
-
-	QUnit.done(function( details ) {
-		// Expand first section when all tests are run
-		$("ol#qunit-tests > li:first > ol").show("slow");
-	//	if(jQuery.migrateWarnings != null){
-	//		alert("" + jQuery.migrateWarnings || "no migrateWarnings");
-	//	}
-	});
-
 	// Silence, please
 	$.ui.fancytree.debugLevel = 1;
 };

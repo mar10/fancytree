@@ -24,14 +24,6 @@ module.exports = (grunt) ->
                 "  * Copyright (c) <%= grunt.template.today('yyyy') %> <%= pkg.author.name %>;" +
                 " Licensed <%= _.pluck(pkg.licenses, 'type').join(', ') %> */\n"
 
-    # bumpup:
-    #     options:
-    #         dateformat: "YYYY-MM-DD HH:mm"
-    #         normalize: true
-    #         updateProps: 
-    #             pkg: "package.json"
-    #     files: ["package.json", "bower.json", "fancytree.jquery.json"]
-
     checkrepo:
       beforeBump:
           tag:
@@ -268,9 +260,10 @@ module.exports = (grunt) ->
         all:
             options:
                 urls: ["http://localhost:9999/test/unit/test-core.html"]
-                tunnelTimeout: 5
+                # tunnelTimeout: 5
                 build: process.env.TRAVIS_JOB_ID
-                concurrency: 3
+                # concurrency: 3
+                throttled: 10
                 browsers: [
                     { browserName: "chrome", platform: "Windows 7" }
                     { browserName: "firefox", platform: "Windows 7" }
@@ -285,13 +278,6 @@ module.exports = (grunt) ->
                     { browserName: "safari", platform: "OS X 10.8" }
                 ]
                 testname: "fancytree qunit tests"
-
-    # tagrelease:
-    #     file: "package.json"
-    #     commit:  true
-    #     message: "Tagging the %version% release."
-    #     prefix:  "v"
-    #     annotate: true
 
     uglify:
         # build:

@@ -2435,9 +2435,7 @@ $.extend(Fancytree.prototype,
 			// Defer the deferred: we want to be able to reject, even if ajax
 			// resolved ok.
 			source = new $.Deferred();
-			node.debug("source = new");
 			dfd.done(function (data, textStatus, jqXHR) {
-				node.debug("dfd.done");
 				var errorObj, res;
 				if(typeof data === "string"){
 					$.error("Ajax request returned a string (did you get the JSON dataType wrong?).");
@@ -2452,9 +2450,8 @@ $.extend(Fancytree.prototype,
 						source.rejectWith(this, [errorObj]);
 						return;
 					}
-				    node.debug("dfd.done, res", res);
 					data = $.isArray(res) ? res : data;
-				    node.debug("dfd.done, data", data);
+
 				} else if (data && data.hasOwnProperty("d") && ctx.options.enableAspx ) {
 					// Process ASPX WebMethod JSON object inside "d" property
 					data = (typeof data.d === "string") ? $.parseJSON(data.d) : data.d;
@@ -2469,35 +2466,6 @@ $.extend(Fancytree.prototype,
 				});
 				source.rejectWith(this, [errorObj]);
 			});
-			// // TODO: change 'pipe' to 'then' for jQuery 1.8
-			// // $.pipe returns a new Promise with filtered  results
-			// source = source.pipe(function (data, textStatus, jqXHR) {
-			// 	var errorObj, res;
-			// 	if(typeof data === "string"){
-			// 		$.error("Ajax request returned a string (did you get the JSON dataType wrong?).");
-			// 	}
-			// 	// postProcess is similar to the standard dataFilter hook,
-			// 	// but it is also called for JSONP
-			// 	if( ctx.options.postProcess ){
-			// 		res = tree._triggerNodeEvent("postProcess", ctx, ctx.originalEvent, {response: data, error: null, dataType: this.dataType});
-			// 		if( res.error ) {
-			// 			errorObj = $.isPlainObject(res.error) ? res.error : {message: res.error};
-			// 			return tree._makeHookContext(node, null, errorObj);
-			// 		}
-			// 		data = $.isArray(res) ? res : data;
-			// 	} else if (data && data.hasOwnProperty("d") && ctx.options.enableAspx ) {
-			// 		// Process ASPX WebMethod JSON object inside "d" property
-			// 		data = (typeof data.d === "string") ? $.parseJSON(data.d) : data.d;
-			// 	}
-			// 	return data;
-			// }, function (jqXHR, textStatus, errorThrown) {
-			// 	return tree._makeHookContext(node, null, {
-			// 		error: jqXHR,
-			// 		args: Array.prototype.slice.call(arguments),
-			// 		message: errorThrown,
-			// 		details: jqXHR.status + ": " + errorThrown
-			// 	});
-			// });
 		}
 
 		if($.isFunction(source.promise)){
@@ -2529,7 +2497,6 @@ $.extend(Fancytree.prototype,
 		return $.when(source).done(function(children){
 			var metaData;
 
-		    node.debug("source.done, children", children);
 			if( $.isPlainObject(children) ){
 				// We got {foo: 'abc', children: [...]}
 				// Copy extra properties to tree.data.foo
@@ -2543,9 +2510,7 @@ $.extend(Fancytree.prototype,
 			_assert($.isArray(children), "expected array of children");
 			node._setChildren(children);
 			// trigger fancytreeloadchildren
-			// if( node.parent ) {
 			tree._triggerNodeEvent("loadChildren", node);
-			// }
 		// }).always(function(){
 		// 	node._isLoading = false;
 		});
