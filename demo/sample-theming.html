@@ -60,7 +60,13 @@ span.fancytree-node.custom1 > span.fancytree-icon {
 		addSampleButton({
 			label: "Set icons",
 			code: function(){
-				alert("TODO");
+				var tree = $("#tree").fancytree("getTree"),
+					node = tree.getNodeByKey("node_4.1");
+				node.extraClasses = "custom1";
+				node.renderTitle();
+				node = tree.getNodeByKey("node_4.2");
+				node.data.icon = "customDoc1.gif";
+				node.renderTitle();
 			}
 		});
 	});
@@ -82,8 +88,8 @@ span.fancytree-node.custom1 > span.fancytree-icon {
 		<ul>
 			<li class="folder expanded">Standard nodes, modified by extra CSS rules
 				<ul>
-					<li>Sub-item 4.1
-					<li>Sub-item 4.2
+					<li id="node_4.1">Sub-item 4.1
+					<li id="node_4.2">Sub-item 4.2
 				</ul>
 
 			<li class="folder expanded">Override CSS style per node
