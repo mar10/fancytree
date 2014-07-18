@@ -78,7 +78,7 @@
 				});
 		});
 		$("button#expand").click(function(event){
-			tree.getNodeByKey("id3").toggleExpand().done(function(){
+			tree.getNodeByKey("id3").toggleExpanded().done(function(){
 				alert("expanded " + this);
 			}).fail(function(errMsg){
 				alert("failed to expand " + this + ": " + errMsg);
