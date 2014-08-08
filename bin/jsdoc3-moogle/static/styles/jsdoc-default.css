@@ -295,6 +295,9 @@ tr:hover .showHover
 	color: #454545;
 }
 
+table.methods tbody tr {
+	cursor: pointer;
+}
 table.methods tbody tr:hover {
 	background-color: seashell;
 }
