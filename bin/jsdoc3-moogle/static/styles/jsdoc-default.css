@@ -301,3 +301,7 @@ table.methods tbody tr {
 table.methods tbody tr:hover {
 	background-color: seashell;
 }
+
+nav {
+	margin-left: -250px; /* prevent GitHub logo to overlap TOC links */
+}
