@@ -27,6 +27,10 @@
 		padding: 3px;
 		background-color: silver;
 	}
+	/* Prevent scrolling while DND */
+	ul.fancytree-container {
+	    position: inherit;
+	}
 	/* Fancytree extension 'table' */
 	table.fancytree-ext-table {
 		font-size: 80%;
@@ -69,6 +73,11 @@
 				preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
 				preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
 				autoExpandMS: 400,
+				draggable: {
+					//zIndex: 1000,
+					scroll: false,
+					revert: "invalid"
+				},
 				dragStart: function(node, data) {
 					if( data.originalEvent.shiftKey ){
 						console.log("dragStart with SHIFT");
