@@ -1,4 +1,7 @@
-# 2.3.0 / Unreleased
+# 2.3.0-1 / Unreleased
+  * 
+
+# 2.3.0 / 2014-08-17
   * [CHANGED] renamed (undocumented) event 'loaderror' to 'loadError'
   * [Added] postProcess now allows to signal error conditions (so it becomes easy to handle custom ajax response formats)
   * [Added] node.setStatus()
