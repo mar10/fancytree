@@ -36,7 +36,7 @@
 		function lazyLoad(event, data) {
 			switch (data.node.key) {
 				case "ajax":
-					data.result = { url: "ajax-sub2.json" };
+					data.result = { url: "ajax-sub2.json" /*, debugDelay: 5000*/ };
 					break;
 				case "custom":
 					data.result = $.Deferred(function (dfd) {
