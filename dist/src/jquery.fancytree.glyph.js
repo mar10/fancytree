@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.2.0
- * @date 2014-06-28T17:15
+ * @version 2.3.0
+ * @date 2014-08-17T10:39
  */
 
 ;(function($, window, document, undefined) {
@@ -58,6 +58,7 @@ $.ui.fancytree.registerExtension({
 	nodeRenderStatus: function(ctx) {
 		var icon, span,
 			node = ctx.node,
+			$span = $(node.span),
 			opts = ctx.options.glyph,
 			// callback = opts.icon,
 			map = opts.map
@@ -70,8 +71,9 @@ $.ui.fancytree.registerExtension({
 		if( node.isRoot() ){
 			return;
 		}
-
-		span = $("span.fancytree-expander", node.span).get(0);
+		// #257: only search one level deep:
+		// span = $("span.fancytree-expander", node.span).get(0);
+		span = $span.children("span.fancytree-expander").get(0);
 		if( span ){
 			if( node.isLoading() ){
 				icon = "loading";
@@ -84,16 +86,22 @@ $.ui.fancytree.registerExtension({
 			}else{
 				icon = "noExpander";
 			}
+			// node.debug(icon, map[icon], span);
 			span.className = "fancytree-expander " + map[icon];
 		}
 
-		span = $("span.fancytree-checkbox", node.tr || node.span).get(0);
+		if( node.tr ){
+			span = $(node.tr).children("span.fancytree-checkbox").get(0);
+		}else{
+			span = $span.children("span.fancytree-checkbox").get(0);
+		}
 		if( span ){
 			icon = node.selected ? "checkboxSelected" : (node.partsel ? "checkboxUnknown" : "checkbox");
 			span.className = "fancytree-checkbox " + map[icon];
 		}
 
-		span = $("span.fancytree-icon", node.span).get(0);
+		// span = $("span.fancytree-icon", node.span).get(0);
+		span = $span.children("span.fancytree-icon").get(0);
 		if( span ){
 			if( node.folder ){
 				icon = node.expanded ? _getIcon(opts, "folderOpen") : _getIcon(opts, "folder");

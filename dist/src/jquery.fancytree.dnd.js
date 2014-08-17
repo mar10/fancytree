@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.2.0
- * @date 2014-06-28T17:15
+ * @version 2.3.0
+ * @date 2014-08-17T10:39
  */
 
 ;(function($, window, document, undefined) {
@@ -45,9 +45,8 @@ function _initDragAndDrop(tree) {
 			containment: false,
 			delay: 0,
 			distance: 4,
-			// TODO: merge Dynatree issue 419
 			revert: false,
-			scroll: true, // issue 244: enable scrolling (if ul.fancytree-container)
+			scroll: true, // to disable, also set css 'position: inherit' on ul.fancytree-container
 			scrollSpeed: 7,
 			scrollSensitivity: 10,
 			// Delegate draggable.start, drag, and stop events to our handler

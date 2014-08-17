@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.2.0
- * @date 2014-06-28T17:15
+ * @version 2.3.0
+ * @date 2014-08-17T10:39
  */
 
 ;(function($, window, document, undefined) {
@@ -206,7 +206,6 @@ $.ui.fancytree._FancytreeNodeClass.prototype.isClone = function(){
 
 /**
  * [ext-clones] Update key and/or refKey for an existing node.
- * @param {FancytreeNode} [node]
  * @param {string} key
  * @param {string} refKey
  * @returns {boolean}
