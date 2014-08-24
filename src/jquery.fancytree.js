@@ -982,7 +982,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		return this.load(discard);
 	},
 	/**
-	 * Load all children of a lazy node.
+	 * Load all children of a lazy node if neccessary. The *expanded* state is maintained.
 	 * @param {boolean} [forceReload=false] Pass true to discard any existing nodes before.
 	 * @returns {$.Promise}
 	 */
@@ -991,8 +991,10 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			that = this;
 
 		_assert( this.isLazy(), "load() requires a lazy node" );
-		_assert( forceReload || this.isUndefined(), "Pass forceReload=true to re-load a lazy node" );
-
+		// _assert( forceReload || this.isUndefined(), "Pass forceReload=true to re-load a lazy node" );
+		if( !forceReload && !this.isUndefined() ) {
+			return _getResolvedPromise(this);
+		}
 		if( this.isLoaded() ){
 			this.resetLazy(); // also collapses
 		}

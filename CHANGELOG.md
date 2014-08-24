@@ -1,4 +1,7 @@
-# 2.3.0 / Unreleased
+# 2.3.1 / Unreleased
+  * [Improved] #294 node.load() should resolve 'ok', if node is already loaded
+
+# 2.3.0 / 2014-08-17
   * [CHANGED] renamed (undocumented) event 'loaderror' to 'loadError'
   * [Added] postProcess now allows to signal error conditions (so it becomes easy to handle custom ajax response formats)
   * [Added] node.setStatus()

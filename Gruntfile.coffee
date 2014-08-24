@@ -328,19 +328,19 @@ module.exports = (grunt) ->
             common: # defaults for all tools
               manifests: ['package.json', 'bower.json', 'fancytree.jquery.json']
             # The following tools are run in order:
-            check: { clean: true, branch: ['master'] }
             run_test: { tasks: ['test'] }
+            check: { clean: true, branch: ['master'], canPush: true }
             bump: {} # 'bump' also uses the increment mode `yabs:release:MODE`
             run_build: { tasks: ['make_release'] }
             commit: { add: '.' }
             tag: {}
-            push: { tags: true }
+            push: { tags: true, useFollowTags: true },
             githubRelease:
               repo: "mar10/fancytree"
               draft: false
             bump_develop: { inc: 'prepatch' }
-            commit_develop: { add: '.', message: 'Bump prerelease ({%= version %}) [ci skip]' }
-            push_develop: { tags: true }
+            commit_develop: { message: 'Bump prerelease ({%= version %}) [ci skip]' }
+            push_develop: {}
 
   # ----------------------------------------------------------------------------
 
