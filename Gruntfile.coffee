@@ -44,13 +44,13 @@ module.exports = (grunt) ->
         extMin:
             src: [ "build/jquery.fancytree.*.min.js" ]
 
-    compress:
-        dist:
-            options:
-                archive: "archive/<%= pkg.name %>-<%= pkg.version %>.zip"
-            files: [
-                {expand: true, cwd: "dist/", src: ["**/*"], dest: ""}
-                ]
+    # compress:
+    #     dist:
+    #         options:
+    #             archive: "archive/<%= pkg.name %>-<%= pkg.version %>.zip"
+    #         files: [
+    #             {expand: true, cwd: "dist/", src: ["**/*"], dest: ""}
+    #             ]
 
     concat:
         core:
@@ -398,7 +398,7 @@ module.exports = (grunt) ->
       "copy:dist"
       "clean:build"
       "replace:release"
-      "compress:dist"
+      # "compress:dist"
       # "tagrelease"
       # "bumpup:prerelease"
       ]
