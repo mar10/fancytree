@@ -1,5 +1,6 @@
 # 2.3.1 / Unreleased
   * [Improved] #294 node.load() should resolve 'ok', if node is already loaded
+  * [Improved] #293 minExpandLevel does not auto-expand
 
 # 2.3.0 / 2014-08-17
   * [CHANGED] renamed (undocumented) event 'loaderror' to 'loadError'

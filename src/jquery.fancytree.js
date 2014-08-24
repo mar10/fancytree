@@ -2850,10 +2850,13 @@ $.extend(Fancytree.prototype,
 		// TODO: optiimize this if clause
 		if( level < opts.minExpandLevel ) {
 			if(level > 1){
+				if( !node.lazy ) {
+					node.expanded = true;
+				}
 				if(aria){
-					ares.push("<span role='button' class='fancytree-expander'></span>");
+					ares.push("<span role='button' class='fancytree-expander fancytree-expander-fixed'></span>");
 				}else{
-					ares.push("<span class='fancytree-expander'></span>");
+					ares.push("<span class='fancytree-expander fancytree-expander-fixed''></span>");
 				}
 			}
 			// .. else (i.e. for root level) skip expander/connector alltogether
