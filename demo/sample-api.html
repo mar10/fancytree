@@ -22,6 +22,7 @@ $(function(){
 	// Initialize the tree inside the <div>element.
 	// The tree structure is read from the contained <ul> tag.
 	$("#tree").fancytree({
+		checkbox: true,
 		activate: function(event, data) {
 			$("#echoActive").text(data.node.title);
 //              alert(node.getKeyPath());
@@ -37,20 +38,16 @@ $(function(){
 		blur: function(event, data) {
 			$("#echoFocused").text("-");
 		},
-		lazyread: function(event, data){
-			var fakeJsonResult = [
-				{ title: 'Lazy node 1', lazy: true },
-				{ title: 'Simple node 2', select: true }
-			];
-//              alert ("Let's pretend we're using this AJAX response to load the branch:\n " + jsonResult);
-			function fakeAjaxResponse() {
-				return function() {
-					node.addChild(fakeJsonResult);
-					// Remove the 'loading...' status:
-					node.setLazyNodeStatus(DTNodeStatus_Ok);
-				};
-			}
-			window.setTimeout(fakeAjaxResponse(), 1500);
+		lazyLoad: function(event, data){
+			// Simulate a slow ajax request
+			var dfd = new $.Deferred()
+			data.result = dfd;
+			window.setTimeout(function(){
+				dfd.resolve([
+					{ title: 'Lazy node 1', lazy: true },
+					{ title: 'Simple node 2', select: true }
+				]);
+			}, 1500);
 		}
 	});
 });
@@ -254,6 +251,21 @@ $(function(){
 			if( !node ) return;
 			// Set node data and - optionally - replace children
 			node.fromDict(CLIPBOARD);
+		}
+	});
+	addSampleButton({
+		label: "Remove selected nodes (but keep children)",
+		newline: true,
+		code: function(){
+			var tree = $("#tree").fancytree("getTree"),
+	    	    selNodes = tree.getSelectedNodes();
+	    
+		    selNodes.forEach(function(node) {
+		    	while( node.hasChildren() ) {
+	    			node.getFirstChild().moveTo(node.parent, "child");
+		    	}
+		        node.remove();
+		    });
 		}
 	});
 });
