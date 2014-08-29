@@ -39,7 +39,7 @@ function _assert(cond, msg){
 	// TODO: see qunit.js extractStacktrace()
 	if(!cond){
 		msg = msg ? ": " + msg : "";
-		$.error("Assertion failed" + msg);
+		$.error("Fancytree assertion failed" + msg);
 	}
 }
 
