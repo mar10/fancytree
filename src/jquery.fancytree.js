@@ -1408,7 +1408,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 
 		if( isParentWindow ) {
 			nodeY = $(this.span).offset().top;
-			topNodeY = topNode ? $(topNode.span).offset().top : 0;
+			topNodeY = (topNode && topNode.span) ? $(topNode.span).offset().top : 0;
 			$animateTarget = $("html,body");
 
 		} else {
@@ -1433,7 +1433,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			// If a topNode was passed, make sure that it is never scrolled
 			// outside the upper border
 			if(topNode){
-				_assert($(topNode.span).is(":visible"));
+				_assert(topNode.isRoot() || $(topNode.span).is(":visible"), "topNode must be visible");
 				if( topNodeY < newScrollTop ){
 					newScrollTop = topNodeY - topOfs;
 					// this.debug("    scrollIntoView(), TOP newScrollTop=", newScrollTop);
