@@ -103,11 +103,15 @@ $.ui.fancytree.registerExtension({
 		// span = $("span.fancytree-icon", node.span).get(0);
 		span = $span.children("span.fancytree-icon").get(0);
 		if( span ){
-			if( node.folder ){
-				icon = node.expanded ? _getIcon(opts, "folderOpen") : _getIcon(opts, "folder");
-			}else{
-				icon = node.expanded ? _getIcon(opts, "docOpen") : _getIcon(opts, "doc");
-			}
+			if ( node.data && node.data.type ){
+                    		icon = _getIcon(opts, node.data.type);
+                	}else{
+				if( node.folder ){
+					icon = node.expanded ? _getIcon(opts, "folderOpen") : _getIcon(opts, "folder");
+				}else{
+					icon = node.expanded ? _getIcon(opts, "docOpen") : _getIcon(opts, "doc");
+				}
+                	}
 			span.className = "fancytree-icon " + icon;
 		}
 	},
