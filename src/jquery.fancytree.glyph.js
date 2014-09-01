@@ -91,7 +91,7 @@ $.ui.fancytree.registerExtension({
 		}
 
 		if( node.tr ){
-			span = $(node.tr).children("span.fancytree-checkbox").get(0);
+			span = $("td", node.tr).children("span.fancytree-checkbox").get(0);
 		}else{
 			span = $span.children("span.fancytree-checkbox").get(0);
 		}
