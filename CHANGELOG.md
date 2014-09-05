@@ -1,4 +1,6 @@
 # 2.3.1 / Unreleased
+  * [Added] CDN support, e.g.  
+    //cdn.jsdelivr.net/jquery.fancytree/2/jquery.fancytree-all.min.js
   * [Improved] #294 node.load() should resolve 'ok', if node is already loaded
   * [Improved] #293 minExpandLevel does not auto-expand
   * [Fixed] crash in scrollIntoView() when parent is `window`
