@@ -116,7 +116,7 @@ module.exports = (grunt) ->
 #                "src/jquery.fancytree.wide.js"
                 "lib/outro.js"
                 ]
-            dest: "build/<%= pkg.name %>-custom.min.js"
+            dest: "build/<%= pkg.name %>-all.min.js"
 
     connect:
         forever:
@@ -124,7 +124,7 @@ module.exports = (grunt) ->
                 port: 8080
                 base: "./"
                 keepalive: true
-        dev: # pass on, so subsequent tastks (like watch) can start
+        dev: # pass on, so subsequent tasks (like watch) can start
             options:
                 port: 8080
                 base: "./"
