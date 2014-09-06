@@ -65,18 +65,26 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editStart = function(){
 		node = this,
 		tree = this.tree,
 		local = tree.ext.edit,
-		prevTitle = node.title,
 		instOpts = tree.options.edit,
 		$title = $(".fancytree-title", node.span),
-		eventData = {node: node, tree: tree, options: tree.options};
+		eventData = {
+			node: node,
+			tree: tree,
+			options: tree.options,
+			isNew: $(node.span).hasClass("fancytree-edit-new"),
+			orgTitle: node.title,
+			input: null,
+			dirty: false
+			};
 
-	if( instOpts.beforeEdit.call(node, {type: "beforeEdit"}, eventData) === false){
+	$.ui.fancytree.assert(!local.currentNode, "recursive edit");
+	local.currentNode = this;
+	local.eventData = eventData;
+
+	// beforeEdit may want to modify the title before editing
+	if( instOpts.beforeEdit.call(node, {type: "beforeEdit"}, eventData) === false ) {
 		return false;
 	}
-	// beforeEdit may want to modify the title before editing
-	prevTitle = node.title;
-
-	node.debug("editStart");
 	// Disable standard Fancytree mouse- and key handling
 	tree.widget._unbind();
 	// #116: ext-dnd prevents the blur event, so we have to catch outer clicks
@@ -89,20 +97,18 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editStart = function(){
 	// Replace node with <input>
 	$input = $("<input />", {
 		"class": "fancytree-edit-input",
-		value: unescapeHtml(prevTitle)
+		value: unescapeHtml(eventData.orgTitle)
 	});
+	local.eventData.input = $input;
 	if ( instOpts.adjustWidthOfs != null ) {
 		$input.width($title.width() + instOpts.adjustWidthOfs);
 	}
 	if ( instOpts.inputCss != null ) {
 		$input.css(instOpts.inputCss);
 	}
-	eventData.input = $input;
 
 	$title.html($input);
 
-	$.ui.fancytree.assert(!local.currentNode, "recursive edit");
-	local.currentNode = this;
 	// Focus <input> and bind keyboard handler
 	$input
 		.focus()
@@ -128,32 +134,45 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editStart = function(){
 
 /**
  * [ext-edit] Stop inline editing.
- * @param {Boolean} [applyChanges=false]
+ * @param {Boolean} [applyChanges=false] false: cancel edit, true: save (if modified)
  * @alias FancytreeNode#editEnd
  * @requires jquery.fancytree.edit.js
  */
 $.ui.fancytree._FancytreeNodeClass.prototype.editEnd = function(applyChanges, _event){
-	var node = this,
+	var newVal,
+		node = this,
 		tree = this.tree,
 		local = tree.ext.edit,
+		eventData = local.eventData,
 		instOpts = tree.options.edit,
 		$title = $(".fancytree-title", node.span),
-		$input = $title.find("input.fancytree-edit-input"),
-		newVal = $input.val(),
-		dirty = $input.hasClass("fancytree-edit-dirty"),
-		doSave = (applyChanges || (dirty && applyChanges !== false)) && (newVal !== node.title),
-		eventData = {
-			node: node, tree: tree, options: tree.options, originalEvent: _event,
-			dirty: dirty,
-			save: doSave,
-			input: $input,
-			value: newVal
-			};
+		$input = $title.find("input.fancytree-edit-input");
 
+	// eventData.isNew = $(node.span).hasClass("fancytree-edit-new");
+
+	if( instOpts.trim ) {
+		$input.val($.trim($input.val()));
+	}
+	newVal = $input.val();
+	// eventData.dirty = $input.hasClass("fancytree-edit-dirty") || ;
+	eventData.dirty = ( newVal !== node.title );
+
+	// Find out, if saving is required
+	if( applyChanges === false ) {
+		// If true/false was passed, honor this (except in rename mode, if unchanged)
+		eventData.save = false;
+	} else if( eventData.isNew ) {
+		// In create mode, we save everyting, except for empty text
+		eventData.save = (newVal !== "");
+	} else {
+		// In rename mode, we save everyting, except for empty or unchanged text
+		eventData.save = eventData.dirty && (newVal !== "");
+	}
+	// Allow to break (keep editor open), modify input, or re-define data.save
 	if( instOpts.beforeClose.call(node, {type: "beforeClose"}, eventData) === false){
 		return false;
 	}
-	if( doSave && instOpts.save.call(node, {type: "save"}, eventData) === false){
+	if( eventData.save && instOpts.save.call(node, {type: "save"}, eventData) === false){
 		return false;
 	}
 	$input
@@ -162,15 +181,25 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editEnd = function(applyChanges, _e
 	// Unbind outer-click handler
 	$(document).off(".fancytree-edit");
 
-	if( doSave ) {
+	if( eventData.save ) {
 		node.setTitle( escapeHtml(newVal) );
+		// $(node.span).removeClass("fancytree-edit-new");
+		node.setFocus();
 	}else{
-		node.renderTitle();
+		if( eventData.isNew ) {
+			node.remove();
+			node = eventData.node = null;
+			local.relatedNode.setFocus();
+		} else {
+			node.renderTitle();
+			node.setFocus();
+		}
 	}
+	local.eventData = null;
+	local.currentNode = null;
+    local.relatedNode = null;
 	// Re-enable mouse and keyboard handling
 	tree.widget._bind();
-	local.currentNode = null;
-	node.setFocus();
 	// Set keyboard focus, even if setFocus() claims 'nothing to do'
 	$(tree.$container).focus();
 	eventData.input = null;
@@ -179,53 +208,51 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editEnd = function(applyChanges, _e
 };
 
 
-$.ui.fancytree._FancytreeNodeClass.prototype.startEdit = function(){
-	this.warn("FancytreeNode.startEdit() is deprecated since 2014-01-04. Use .editStart() instead.");
-	return this.editStart.apply(this, arguments);
+// $.ui.fancytree._FancytreeNodeClass.prototype.startEdit = function(){
+// 	this.warn("FancytreeNode.startEdit() is deprecated since 2014-01-04. Use .editStart() instead.");
+// 	return this.editStart.apply(this, arguments);
+// };
+
+
+// $.ui.fancytree._FancytreeNodeClass.prototype.endEdit = function(){
+// 	this.warn("FancytreeNode.endEdit() is deprecated since 2014-01-04. Use .editEnd() instead.");
+// 	return this.editEnd.apply(this, arguments);
+// };
+
+
+/**
+* [ext-edit] Create a new child or sibling node and start edit mode.
+*
+* @param {String} [mode='child'] 'before', 'after', or 'child'
+* @param {Object} [init] NodeData (or simple title string) 
+* @lends FancytreeNode.prototype
+* @requires jquery.fancytree.edit.js
+*/
+$.ui.fancytree._FancytreeNodeClass.prototype.editCreateNode = function(mode, init){
+	var newNode,
+		that = this;
+
+	mode = mode || "child";
+	if( init == null ) {
+		init = { title: "" };
+	} else if( typeof init === "string" ) {
+		init = { title: init };
+	} else {
+		$.ui.fancytree.assert($.isPlainObject(init));
+	}
+    // Make sure node is expanded (and loaded) in 'child' mode
+    if( mode === "child" && !this.isExpanded() && this.hasChildren() !== false ) {
+        this.setExpanded().done(function(){
+            that.editCreateNode(mode, init);
+        });
+        return;
+    }
+    newNode = this.addNode(init, mode);
+    newNode.makeVisible();
+    $(newNode.span).addClass("fancytree-edit-new");
+    this.tree.ext.edit.relatedNode = this;
+    newNode.editStart();
 };
-
-
-$.ui.fancytree._FancytreeNodeClass.prototype.endEdit = function(){
-	this.warn("FancytreeNode.endEdit() is deprecated since 2014-01-04. Use .editEnd() instead.");
-	return this.editEnd.apply(this, arguments);
-};
-
-
-///**
-// * Create a new child or sibling node.
-// *
-// * @param {String} [mode] 'before', 'after', or 'child'
-// * @lends FancytreeNode.prototype
-// * @requires jquery.fancytree.edit.js
-// */
-//$.ui.fancytree._FancytreeNodeClass.prototype.editCreateNode = function(mode){
-//	var newNode,
-//		node = this,
-//		tree = this.tree,
-//		local = tree.ext.edit,
-//		instOpts = tree.options.edit,
-//		$title = $(".fancytree-title", node.span),
-//		$input = $title.find("input.fancytree-edit-input"),
-//		newVal = $input.val(),
-//		dirty = $input.hasClass("fancytree-edit-dirty"),
-//		doSave = (applyChanges || (dirty && applyChanges !== false)) && (newVal !== node.title),
-//		eventData = {
-//			node: node, tree: tree, options: tree.options, originalEvent: _event,
-//			dirty: dirty,
-//			save: doSave,
-//			input: $input,
-//			value: newVal
-//			};
-//
-//	node.debug("editCreate");
-//
-//	if( instOpts.beforeEdit.call(node, {type: "beforeCreateNode"}, eventData) === false){
-//		return false;
-//	}
-//	newNode = this.addNode({title: "Neuer Knoten"}, mode);
-//
-//	newNode.editStart();
-//};
 
 
 /**
@@ -256,14 +283,17 @@ $.ui.fancytree._FancytreeNodeClass.prototype.isEditing = function(){
  */
 $.ui.fancytree.registerExtension({
 	name: "edit",
-	version: "0.1.0",
+	version: "0.2.0",
 	// Default options for this extension.
 	options: {
 		adjustWidthOfs: 4,   // null: don't adjust input size to content
+		allowEmpty: false,   // Prevent empty input
 		inputCss: {minWidth: "3em"},
 		triggerCancel: ["esc", "tab", "click"],
 		// triggerStart: ["f2", "dblclick", "shift+click", "mac+enter"],
 		triggerStart: ["f2", "shift+click", "mac+enter"],
+		trim: true,          // Trim whitespace before save
+		// Events:
 		beforeClose: $.noop, // Return false to prevent cancel/save (data.input is available)
 		beforeEdit: $.noop,  // Return false to prevent edit mode
 		close: $.noop,       // Editor was removed

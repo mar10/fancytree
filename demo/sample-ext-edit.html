@@ -18,36 +18,88 @@
 	<script src="sample.js" type="text/javascript"></script>
 	<!-- End_Exclude -->
 
+<style type="text/css">
+	span.pending span.fancytree-title {
+		font-style: italic;
+	}
+	span.pending span.fancytree-title:after {
+		content: "\2026"; /* ellipsis */
+	}
+</style>
 <script type="text/javascript">
-
 // ----------
 
 $(function(){
 	$("#tree").fancytree({
 		extensions: ["edit"],
 		source: {url: "ajax-tree-plain.json"},
+		lazyLoad: function(event, data) {
+			data.result = { url: "ajax-sub2.json", debugDelay: 1000 };
+		},
 		edit: {
 			triggerStart: ["f2", "dblclick", "shift+click", "mac+enter"],
-			beforeClose: function(event, data){
-				// Return false to prevent cancel/save (data.input is available)
-			},
 			beforeEdit: function(event, data){
 				// Return false to prevent edit mode
-			},
-			close: function(event, data){
-				// Editor was removed
 			},
 			edit: function(event, data){
 				// Editor was opened (available as data.input)
 			},
+			beforeClose: function(event, data){
+				// Return false to prevent cancel/save (data.input is available)
+			},
 			save: function(event, data){
 				// Save data.input.val() or return false to keep editor open
-				alert("save " + data.input.val());
+				console.log("save...", this, data);
+				// Simulate to start a slow ajax request...
+				setTimeout(function(){
+					$(data.node.span).removeClass("pending");
+					// Let's pretend the server returned a slightly modified
+					// title:
+					data.node.setTitle(data.node.title + "!");
+				}, 2000);
+				// We return true, so ext-edit will set the current user input
+				// as title
+				return true;
+			},
+			close: function(event, data){
+				// Editor was removed
+				if( data.save ) {
+					// Since we started an async request, mark the node as preliminary
+					$(data.node.span).addClass("pending");
+				}
 			}
 		}
 	});
 });
 </script>
+
+<!-- Start_Exclude: This block is not part of the sample code -->
+ <script>
+$(function(){
+	addSampleButton({
+		label: "Add child",
+		newline: false,
+		code: function(){
+			var node = $("#tree").fancytree("getActiveNode");
+			if( !node ) {
+				alert("Please activate a parent node.");
+				return;
+			}
+			node.editCreateNode("child", "Node title");
+		}
+	});
+	addSampleButton({
+		label: "Add sibling",
+		newline: false,
+		code: function(){
+			var node = $("#tree").fancytree("getActiveNode");
+			node.editCreateNode("after", "Node title");
+		}
+	});
+});
+</script>
+<!-- End_Exclude -->
+
 </head>
 
 <body class="example">
@@ -57,21 +109,20 @@ $(function(){
 			Inline editing for tree nodes.
 		</p>
 		<p>
-			Edit the node titles with<br>
-			- dblclick<br>
-			- Shift + click<br>
-			- [F2]<br>
-			- or [Enter] (on Mac only)<br>
+			Edit the node titles with `dblclick`, `Shift + click` [F2], or [Enter] (on Mac only).
 		</p>
 		<p>
-			<b>Status</b>: pre-alpha.
+			<b>Status:</b> beta.
+			<b>Details:</b> <a href="https://github.com/mar10/fancytree/wiki/ExtEdit">ext-edit</a>.
 		</p>
 	</div>
-
+	
 	<div id="tree">
 	</div>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
+	<p id="sampleButtons">
+	</p>
 	<hr>
 	<p class="sample-links  no_code">
 		<a class="hideInsideFS" href="https://github.com/mar10/fancytree/">Fancytree project home</a>
