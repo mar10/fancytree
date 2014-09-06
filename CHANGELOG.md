@@ -1,6 +1,8 @@
 # 2.3.1 / Unreleased
+  * [CHANGED] Renamed dist/jquery.fancytree-custom.min.js to jquery.fancytree-all.min.js
   * [Improved] #294 node.load() should resolve 'ok', if node is already loaded
   * [Improved] #293 minExpandLevel does not auto-expand
+  * [Added] `iconClass` callback option
   * [Fixed] #305 Checkbox doesn't show with Glyph + Table
 
 # 2.3.0 / 2014-08-17
