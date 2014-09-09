@@ -936,10 +936,16 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	isLoading: function() {
 		return !!this._isLoading;
 	},
+	/**
+	 * @deprecated since v2.4.0:  Use isRootNode() instead
+	 */
+	isRoot: function() {
+		return this.isRootNode();
+	},
 	/** Return true if this is the (invisible) system root node.
 	 * @returns {boolean}
 	 */
-	isRoot: function() {
+	isRootNode: function() {
 		return (this.tree.rootNode === this);
 	},
 	/** Return true if node is selected, i.e. has a checkmark set (see also FancytreeNode#isActive).
@@ -954,6 +960,12 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	 */
 	isStatusNode: function() {
 		return !!this.statusNodeType;
+	},
+	/** Return true if this a top level node, i.e. a direct child of the (invisible) system root node.
+	 * @returns {boolean}
+	 */
+	isTopLevel: function() {
+		return (this.tree.rootNode === this.parent);
 	},
 	/** Return true if node is lazy and not yet loaded. For non-lazy nodes always return false.
 	 * @returns {boolean}

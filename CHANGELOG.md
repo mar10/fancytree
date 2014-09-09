@@ -3,12 +3,12 @@
   * [CHANGED] ext-edit callbacks no longer pass `data.value` (use `data.input.val()` instead).
   * [Added] CDN support (http://www.jsdelivr.com/#!jquery.fancytree)
   * [Added] New method `editCreateNode()` (ext-edit)
-  * [Added] `iconClass` callback option
+  * [Added] node.isRootNode() and node.isTopLevel()
   * [Improved] #294 node.load() should resolve 'ok', if node is already loaded
   * [Improved] #293 minExpandLevel does not auto-expand
   * [Fixed] crash in scrollIntoView() when parent is `window`
   * [Fixed] #305 Checkbox doesn't show with Glyph + Table
-
+  * [Deprecated] node.isRoot(). Use node.isRootNode() instead
 
 # 2.3.0 / 2014-08-17
   * [CHANGED] renamed (undocumented) event 'loaderror' to 'loadError'
