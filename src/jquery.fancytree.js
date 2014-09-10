@@ -1672,21 +1672,21 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
  *
  * @param {Widget} widget
  *
+ * @property {FancytreeNode} activeNode
+ * @property {string} ariaPropName
+ * @property {string} $container
+ * @property {object} data
+ * @property {jQueryObject} $div
+ * @property {object} ext
+ * @property {FancytreeNode} focusNode
+ * @property {string} _id
+ * @property {FancytreeNode} lastSelectedNode
+ * @property {string} nodeContainerAttrName
  * @property {FancytreeOptions} options
  * @property {FancytreeNode} rootNode
- * @property {FancytreeNode} activeNode
- * @property {FancytreeNode} focusNode
- * @property {jQueryObject} $div
- * @property {object} widget
- * @property {object} ext
- * @property {object} data
- * @property {object} options
- * @property {string} _id
  * @property {string} statusClassPropName
- * @property {string} ariaPropName
- * @property {string} nodeContainerAttrName
- * @property {string} $container
- * @property {FancytreeNode} lastSelectedNode
+ * @property {string} systemFocusElement
+ * @property {object} widget
  */
 function Fancytree(widget) {
 	this.widget = widget;
@@ -1706,7 +1706,7 @@ function Fancytree(widget) {
 	this.ext = {}; // Active extension instances
 	// allow to init tree.data.foo from <div data-foo=''>
 	this.data = _getElementDataAsDict(this.$div);
-	this._id = $.ui.fancytree._nextId++;
+	this._id = ( this.options.id == null ) ? $.ui.fancytree._nextId++ : this.options.id;
 	this._ns = ".fancytree-" + this._id; // append for namespaced events
 	this.activeNode = null;
 	this.focusNode = null;
@@ -3584,6 +3584,7 @@ $.widget("ui.fancytree",
 		fx: { height: "toggle", duration: 200 },
 		generateIds: false,
 		icons: true,
+		id: null,
 		idPrefix: "ft_",
 		keyboard: true,
 		keyPathSeparator: "/",
