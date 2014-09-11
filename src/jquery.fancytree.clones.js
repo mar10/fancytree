@@ -20,13 +20,7 @@
 /*******************************************************************************
  * Private functions and variables
  */
-function _assert(cond, msg){
-	// TODO: see qunit.js extractStacktrace()
-	if(!cond){
-		msg = msg ? ": " + msg : "";
-		$.error("Assertion failed" + msg);
-	}
-}
+var _assert = $.ui.fancytree.assert;
 
 
 /* Return first occurrence of member from array. */

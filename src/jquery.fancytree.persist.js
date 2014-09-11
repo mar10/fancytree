@@ -23,14 +23,8 @@
 /*******************************************************************************
  * Private functions and variables
  */
-function _assert(cond, msg){
-	msg = msg || "";
-	if(!cond){
-		$.error("Assertion failed " + msg);
-	}
-}
-
-var ACTIVE = "active",
+var _assert = $.ui.fancytree.assert,
+    ACTIVE = "active",
 	EXPANDED = "expanded",
 	FOCUS = "focus",
 	SELECTED = "selected";
