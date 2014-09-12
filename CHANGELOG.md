@@ -2,6 +2,7 @@
   * [CHANGED] Renamed dist/jquery.fancytree-custom.min.js to jquery.fancytree-all.min.js
   * [CHANGED] ext-edit callbacks no longer pass `data.value` (use `data.input.val()` instead).
   * [Added] New option `id` to override default tree id
+  * [Added] New argument `stopOnParents` for tree.generateFormElements()
   * [Added] CDN support (http://www.jsdelivr.com/#!jquery.fancytree)
   * [Added] New method `editCreateNode()` (ext-edit)
   * [Added] node.isRootNode() and node.isTopLevel()

@@ -1914,10 +1914,11 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	 *
 	 * In selectMode 3 only the topmost selected nodes are considered.
 	 *
-	 * @param {boolean | string} [selected=true]
-	 * @param {boolean | string} [active=true]
+	 * @param {boolean | string} [selected=true] Pass a string to define the variable name (default: `ft_ID[]`)
+	 * @param {boolean | string} [active=true] Pass a string to define the variable name (default: `ft_ID_active`)
+	 * @param {boolean} [stopOnParents] Pass false to generate all selected nodes, even in selectMode 3
 	 */
-	generateFormElements: function(selected, active) {
+	generateFormElements: function(selected, active, stopOnParents) {
 		// TODO: test case
 		var nodeList,
 			selectedName = (selected !== false) ? "ft_" + this._id + "[]" : selected,
@@ -1925,6 +1926,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 			id = "fancytree_result_" + this._id,
 			$result = $("#" + id);
 
+		stopOnParents = ( typeof stopOnParents === "boolean" ) ? stopOnParents : (this.options.selectMode === 3);
 		if($result.length){
 			$result.empty();
 		}else{
@@ -1933,7 +1935,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 			}).hide().insertAfter(this.$container);
 		}
 		if(selectedName){
-			nodeList = this.getSelectedNodes( this.options.selectMode === 3 );
+			nodeList = this.getSelectedNodes(stopOnParents);
 			$.each(nodeList, function(idx, node){
 				$result.append($("<input>", {
 					type: "checkbox",
