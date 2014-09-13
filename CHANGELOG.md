@@ -8,6 +8,7 @@
   * [Added] node.isRootNode() and node.isTopLevel()
   * [Improved] #294 node.load() should resolve 'ok', if node is already loaded
   * [Improved] #293 minExpandLevel does not auto-expand
+  * [Improved] #313 Allow HTML in tooltips
   * [Fixed] crash in scrollIntoView() when parent is `window`
   * [Fixed] #305 Checkbox doesn't show with Glyph + Table
   * [Deprecated] node.isRoot(). Use node.isRootNode() instead

@@ -2915,7 +2915,8 @@ $.extend(Fancytree.prototype,
 			nodeTitle = opts.renderTitle.call(tree, {type: "renderTitle"}, ctx) || "";
 		}
 		if(!nodeTitle){
-			tooltip = node.tooltip ? " title='" + FT.escapeHtml(node.tooltip) + "'" : "";
+			// tooltip = node.tooltip ? " title='" + FT.escapeHtml(node.tooltip) + "'" : "";
+			tooltip = node.tooltip ? " title='" + node.tooltip.replace("'", "&apos;") + "'" : "";
 			id = aria ? " id='ftal_" + node.key + "'" : "";
 			role = aria ? " role='treeitem'" : "";
 			tabindex = opts.titlesTabbable ? " tabindex='0'" : "";

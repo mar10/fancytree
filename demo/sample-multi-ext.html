@@ -8,18 +8,6 @@
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
 	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js" type="text/javascript"></script>
 
-<style type="text/css">
-	.ui-menu kbd { /* Keyboard shortcuts for ui-contextmenu titles */
-		float: right;
-	}
-	/* custom alignment (set by 'renderColumns'' event) */
-	td.alignRight {
-	   text-align: right;
-	}
-	td input[type=input] {
-		width: 40px;
-	}
-</style>
 	<!-- jquery-contextmenu (https://github.com/mar10/jquery-ui-contextmenu/) -->
 	<script src="//cdn.jsdelivr.net/jquery.ui-contextmenu/1/jquery.ui-contextmenu.min.js"></script>
 
@@ -45,6 +33,16 @@
 		width: 150px;
 		font-size: 63%;
 	}
+	.ui-menu kbd { /* Keyboard shortcuts for ui-contextmenu titles */
+		float: right;
+	}
+	/* custom alignment (set by 'renderColumns'' event) */
+	td.alignRight {
+	   text-align: right;
+	}
+	td input[type=input] {
+		width: 40px;
+	}
 </style>
 
 <script type="text/javascript">
@@ -55,7 +53,7 @@ var SORUCE = [
 		 ]},
 		{title: "node 2", folder: true, expanded: false, children: [
 			{title: "node 2.1"},
-			{title: "node 2.2"}
+			{title: "node 2.2 (with tooltip)", tooltip: "A <b>bold</b> tooltip's text"}
 		 ]}
 	],
 	CLIPBOARD = null;
@@ -235,6 +233,15 @@ $(function(){
 	});
 
 	/*
+	 * Tooltips 
+	 */
+	$("#tree").tooltip({
+	    content: function () {
+			return $(this).attr("title");
+	    }
+	});
+
+	/*
 	 * Context menu (https://github.com/mar10/jquery-ui-contextmenu)
 	 */
 	$("#tree").contextmenu({
@@ -287,6 +294,7 @@ $(function(){
 			<kbd>Ctrl+UP</kbd>, <kbd>Ctrl+DOWN</kbd>, <kbd>Ctrl+LEFT</kbd>, <kbd>Ctrl+RIGHT</kbd> to move nodes around.
 			</li>
 			<li>3rd-party <a href="https://github.com/mar10/jquery-ui-contextmenu">contextmenu</a> for additional edit commands</li>
+			<li>3rd-party <a href="https://github.com/mar10/jquery-ui-contextmenu">tooltips</a> with html support</li>
 		</ul>
 	</div>
 	<div>
