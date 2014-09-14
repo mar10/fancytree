@@ -1,11 +1,13 @@
 # 2.4.0 / Unreleased
   * [CHANGED] Renamed dist/jquery.fancytree-custom.min.js to jquery.fancytree-all.min.js
   * [CHANGED] ext-edit callbacks no longer pass `data.value` (use `data.input.val()` instead).
+  * [Added] CDN support (http://www.jsdelivr.com/#!jquery.fancytree)
+  * [Added] New method `node.visitAndLoad()`
+  * [Added] New method `node.editCreateNode()` (ext-edit)
+  * [Added] New method `node.isRootNode()`
+  * [Added] New method `node.isTopLevel()`
   * [Added] New option `id` to override default tree id
   * [Added] New argument `stopOnParents` for tree.generateFormElements()
-  * [Added] CDN support (http://www.jsdelivr.com/#!jquery.fancytree)
-  * [Added] New method `editCreateNode()` (ext-edit)
-  * [Added] node.isRootNode() and node.isTopLevel()
   * [Improved] #294 node.load() should resolve 'ok', if node is already loaded
   * [Improved] #293 minExpandLevel does not auto-expand
   * [Improved] #313 Allow HTML in tooltips

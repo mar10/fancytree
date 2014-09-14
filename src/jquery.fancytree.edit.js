@@ -225,7 +225,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editEnd = function(applyChanges, _e
 *
 * @param {String} [mode='child'] 'before', 'after', or 'child'
 * @param {Object} [init] NodeData (or simple title string) 
-* @lends FancytreeNode.prototype
+* @alias FancytreeNode#editCreateNode
 * @requires jquery.fancytree.edit.js
 */
 $.ui.fancytree._FancytreeNodeClass.prototype.editCreateNode = function(mode, init){
