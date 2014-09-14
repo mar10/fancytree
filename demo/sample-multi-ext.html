@@ -84,6 +84,12 @@ $(function(){
 			}
 		},
 		edit: {
+			close: function(event, data) {
+				if( data.save ){
+					// Quick-enter: add new nodes until we hit [enter] on an empty title
+					$("#tree").trigger("nodeCommand", {cmd: "addSibling"});
+				}
+			}
 		},
 		table: {
 			indentation: 20,
@@ -155,21 +161,10 @@ $(function(){
 			node.remove();
 			break;
 		case "addChild":
-			node.editCreateNode("child", "New node");
-			// refNode = node.addChildren({
-			// 	title: "New node",
-			// 	isNew: true
-			// });
-			// node.setExpanded();
-			// refNode.editStart();
+			node.editCreateNode("child", "");
 			break;
 		case "addSibling":
-			node.editCreateNode("after", "New node");
-			// refNode = node.getParent().addChildren({
-			// 	title: "New node",
-			// 	isNew: true
-			// }, node.getNextSibling());
-			// refNode.editStart();
+			node.editCreateNode("after", "");
 			break;
 		case "cut":
 			CLIPBOARD = {mode: data.cmd, data: node};
