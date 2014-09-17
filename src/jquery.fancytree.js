@@ -3867,7 +3867,7 @@ $.widget("ui.fancytree",
 	 * @returns {FancytreeNode}
 	 */
 	getNodeByKey: function(key) {
-		return this.tree.getNodeByKey(key);
+		return this.tree.getNodeByKey("" + key);
 	},
 	/** Return the invisible system root node.
 	 * @returns {FancytreeNode}
