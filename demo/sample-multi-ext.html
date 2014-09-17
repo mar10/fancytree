@@ -85,7 +85,7 @@ $(function(){
 		},
 		edit: {
 			close: function(event, data) {
-				if( data.save ){
+				if( data.save && data.isNew ){
 					// Quick-enter: add new nodes until we hit [enter] on an empty title
 					$("#tree").trigger("nodeCommand", {cmd: "addSibling"});
 				}
