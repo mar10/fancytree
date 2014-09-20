@@ -8,6 +8,7 @@
   * [Improved] #293 minExpandLevel does not auto-expand
   * [Fixed] crash in scrollIntoView() when parent is `window`
   * [Fixed] #305 Checkbox doesn't show with Glyph + Table
+  * [Fixed] #295 loadKeyPath with multiple paths
   * [Deprecated] node.isRoot(). Use node.isRootNode() instead
 
 # 2.3.0 / 2014-08-17
