@@ -1601,7 +1601,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	 * Return false if iteration was stopped.
 	 *
 	 * @param {function} fn the callback function.
-	 *     Return false to stop iteration, return "skip" to skip this node and 
+	 *     Return false to stop iteration, return "skip" to skip this node and
 	 *     its children only.
 	 * @param {boolean} [includeSelf=false]
 	 * @returns {boolean}
@@ -1633,7 +1633,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	 * programmers to flood the server with requests ;-)
 	 *
 	 * @param {function} [fn] optional callback function.
-	 *     Return false to stop iteration, return "skip" to skip this node and 
+	 *     Return false to stop iteration, return "skip" to skip this node and
 	 *     its children only.
 	 * @param {boolean} [includeSelf=false]
 	 * @returns {$.Promise}

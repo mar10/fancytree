@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.3.0
- * @date 2014-08-17T10:39
+ * @version 2.4.0
+ * @date 2014-09-21T13:14
  */
 
 ;(function($, window, document, undefined) {
@@ -20,13 +20,7 @@
 /*******************************************************************************
  * Private functions and variables
  */
-// function _assert(cond, msg){
-// 	// TODO: see qunit.js extractStacktrace()
-// 	if(!cond){
-// 		msg = msg ? ": " + msg : "";
-// 		$.error("Assertion failed" + msg);
-// 	}
-// }
+// var _assert = $.ui.fancytree.assert;
 
 /* Calculate inner width without scrollbar */
 function realInnerWidth($el) {

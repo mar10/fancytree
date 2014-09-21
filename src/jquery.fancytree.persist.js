@@ -24,7 +24,7 @@
  * Private functions and variables
  */
 var _assert = $.ui.fancytree.assert,
-    ACTIVE = "active",
+	ACTIVE = "active",
 	EXPANDED = "expanded",
 	FOCUS = "focus",
 	SELECTED = "selected";
