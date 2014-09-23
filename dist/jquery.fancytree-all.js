@@ -7,8 +7,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.4.0
- * @date 2014-09-21T13:14
+ * @version 2.4.1
+ * @date 2014-09-23T19:33
  */
 
 /** Core Fancytree module.
@@ -844,7 +844,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			}
 			return true;
 		}
-		return ( this.children && this.children.length );
+		return !!( this.children && this.children.length );
 	},
 	/** Return true if node has keyboard focus.
 	 * @returns {boolean}
@@ -3905,7 +3905,7 @@ $.extend($.ui.fancytree,
 	/** @lends Fancytree_Static# */
 	{
 	/** @type {string} */
-	version: "2.4.0",      // Set to semver by 'grunt release'
+	version: "2.4.1",      // Set to semver by 'grunt release'
 	/** @type {string} */
 	buildType: "production", // Set to 'production' by 'grunt build'
 	/** @type {int} */
@@ -4204,8 +4204,8 @@ $.extend($.ui.fancytree,
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.4.0
- * @date 2014-09-21T13:14
+ * @version 2.4.1
+ * @date 2014-09-23T19:33
  */
 
 // To keep the global namespace clean, we wrap everything in a closure
@@ -4380,8 +4380,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.4.0
- * @date 2014-09-21T13:14
+ * @version 2.4.1
+ * @date 2014-09-23T19:33
  */
 
 ;(function($, window, document, undefined) {
@@ -4826,8 +4826,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.4.0
- * @date 2014-09-21T13:14
+ * @version 2.4.1
+ * @date 2014-09-23T19:33
  */
 
 ;(function($, window, document, undefined) {
@@ -5370,8 +5370,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.4.0
- * @date 2014-09-21T13:14
+ * @version 2.4.1
+ * @date 2014-09-23T19:33
  */
 
 ;(function($, window, document, undefined) {
@@ -5716,8 +5716,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.4.0
- * @date 2014-09-21T13:14
+ * @version 2.4.1
+ * @date 2014-09-23T19:33
  */
 
 ;(function($, window, document, undefined) {
@@ -5878,8 +5878,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.4.0
- * @date 2014-09-21T13:14
+ * @version 2.4.1
+ * @date 2014-09-23T19:33
  */
 
 ;(function($, window, document, undefined) {
@@ -6011,8 +6011,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.4.0
- * @date 2014-09-21T13:14
+ * @version 2.4.1
+ * @date 2014-09-23T19:33
  */
 
 ;(function($, window, document, undefined) {
@@ -6213,8 +6213,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.4.0
- * @date 2014-09-21T13:14
+ * @version 2.4.1
+ * @date 2014-09-23T19:33
  */
 
 ;(function($, window, document, undefined) {
@@ -6545,8 +6545,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.4.0
- * @date 2014-09-21T13:14
+ * @version 2.4.1
+ * @date 2014-09-23T19:33
  */
 
 ;(function($, window, document, undefined) {
@@ -6902,8 +6902,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.4.0
- * @date 2014-09-21T13:14
+ * @version 2.4.1
+ * @date 2014-09-23T19:33
  */
 
 ;(function($, window, document, undefined) {
