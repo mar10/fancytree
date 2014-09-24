@@ -2907,12 +2907,12 @@ $.extend(Fancytree.prototype,
 			return;
 		}
 		// connector (expanded, expandable or simple)
-		// TODO: optiimize this if clause
+		// TODO: optimize this if clause
 		if( level < opts.minExpandLevel ) {
+			if( !node.lazy ) {
+				node.expanded = true;
+			}
 			if(level > 1){
-				if( !node.lazy ) {
-					node.expanded = true;
-				}
 				if(aria){
 					ares.push("<span role='button' class='fancytree-expander fancytree-expander-fixed'></span>");
 				}else{
