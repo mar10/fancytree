@@ -1,4 +1,9 @@
-# 2.4.0 / Unreleased
+# 2.4.2-0 / Unreleased
+
+# 2.4.1 / 2014-09-23
+  * [Fixed] Regression #323
+
+# 2.4.0 / 2014-09-21
   * [CHANGED] Renamed dist/jquery.fancytree-custom.min.js to jquery.fancytree-all.min.js
   * [CHANGED] ext-edit callbacks no longer pass `data.value` (use `data.input.val()` instead).
   * [Added] CDN support (http://www.jsdelivr.com/#!jquery.fancytree)

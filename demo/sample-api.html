@@ -258,14 +258,14 @@ $(function(){
 		newline: true,
 		code: function(){
 			var tree = $("#tree").fancytree("getTree"),
-	    	    selNodes = tree.getSelectedNodes();
-	    
-		    selNodes.forEach(function(node) {
-		    	while( node.hasChildren() ) {
-	    			node.getFirstChild().moveTo(node.parent, "child");
-		    	}
-		        node.remove();
-		    });
+				selNodes = tree.getSelectedNodes();
+
+			selNodes.forEach(function(node) {
+				while( node.hasChildren() ) {
+					node.getFirstChild().moveTo(node.parent, "child");
+				}
+				node.remove();
+			});
 		}
 	});
 });

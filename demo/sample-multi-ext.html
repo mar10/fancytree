@@ -235,6 +235,15 @@ $(function(){
 	});
 
 	/*
+	 * Tooltips
+	 */
+	$("#tree").tooltip({
+		content: function () {
+			return $(this).attr("title");
+		}
+	});
+
+	/*
 	 * Context menu (https://github.com/mar10/jquery-ui-contextmenu)
 	 */
 	$("#tree").contextmenu({
@@ -299,14 +308,14 @@ $(function(){
 	</div>
 	<table id="tree">
 		<colgroup>
-		<col width="30px"></col>
-		<col width="50px"></col>
-		<col width="250px"></col>
-		<col width="50px"></col>
-		<col width="50px"></col>
-		<col width="30px"></col>
-		<col width="30px"></col>
-		<col width="50px"></col>
+		<col width="30px">
+		<col width="50px">
+		<col width="250px">
+		<col width="50px">
+		<col width="50px">
+		<col width="30px">
+		<col width="30px">
+		<col width="50px">
 		</colgroup>
 		<thead>
 			<tr> <th></th> <th>#</th> <th></th> <th>Ed1</th> <th>Ed2</th> <th>Rb1</th> <th>Rb2</th> <th>Cb</th></tr>

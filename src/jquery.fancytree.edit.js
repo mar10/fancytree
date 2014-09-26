@@ -197,7 +197,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editEnd = function(applyChanges, _e
 	}
 	local.eventData = null;
 	local.currentNode = null;
-    local.relatedNode = null;
+	local.relatedNode = null;
 	// Re-enable mouse and keyboard handling
 	tree.widget._bind();
 	// Set keyboard focus, even if setFocus() claims 'nothing to do'
@@ -224,8 +224,8 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editEnd = function(applyChanges, _e
 * [ext-edit] Create a new child or sibling node and start edit mode.
 *
 * @param {String} [mode='child'] 'before', 'after', or 'child'
-* @param {Object} [init] NodeData (or simple title string) 
-* @lends FancytreeNode.prototype
+* @param {Object} [init] NodeData (or simple title string)
+* @alias FancytreeNode#editCreateNode
 * @requires jquery.fancytree.edit.js
 */
 $.ui.fancytree._FancytreeNodeClass.prototype.editCreateNode = function(mode, init){
@@ -240,18 +240,18 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editCreateNode = function(mode, ini
 	} else {
 		$.ui.fancytree.assert($.isPlainObject(init));
 	}
-    // Make sure node is expanded (and loaded) in 'child' mode
-    if( mode === "child" && !this.isExpanded() && this.hasChildren() !== false ) {
-        this.setExpanded().done(function(){
-            that.editCreateNode(mode, init);
-        });
-        return;
-    }
-    newNode = this.addNode(init, mode);
-    newNode.makeVisible();
-    $(newNode.span).addClass("fancytree-edit-new");
-    this.tree.ext.edit.relatedNode = this;
-    newNode.editStart();
+	// Make sure node is expanded (and loaded) in 'child' mode
+	if( mode === "child" && !this.isExpanded() && this.hasChildren() !== false ) {
+		this.setExpanded().done(function(){
+			that.editCreateNode(mode, init);
+		});
+		return;
+	}
+	newNode = this.addNode(init, mode);
+	newNode.makeVisible();
+	$(newNode.span).addClass("fancytree-edit-new");
+	this.tree.ext.edit.relatedNode = this;
+	newNode.editStart();
 };
 
 
