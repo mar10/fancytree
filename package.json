@@ -47,7 +47,7 @@
     "grunt-saucelabs": "^8.1.1",
     "grunt-tagrelease": "^0.3.3",
     "grunt-text-replace": "~0.3.7",
-    "grunt-yabs": "^0.3.0",
+    "grunt-yabs": "^0.4.0",
     "ink-docstrap": "git://github.com/terryweiss/docstrap",
     "qunitjs": "1.x"
   },
