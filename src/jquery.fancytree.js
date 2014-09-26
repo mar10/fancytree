@@ -1002,7 +1002,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		var res, source,
 			that = this;
 
-		// _assert( this.isLazy(), "load() requires a lazy node" );
+		_assert( this.isLazy(), "load() requires a lazy node" );
 		// _assert( forceReload || this.isUndefined(), "Pass forceReload=true to re-load a lazy node" );
 		if( !forceReload && !this.isUndefined() ) {
 			return _getResolvedPromise(this);
@@ -1718,21 +1718,21 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
  *
  * @param {Widget} widget
  *
- * @property {FancytreeNode} activeNode
- * @property {string} ariaPropName
- * @property {string} $container
- * @property {object} data
- * @property {jQueryObject} $div
- * @property {object} ext
- * @property {FancytreeNode} focusNode
- * @property {string} _id
- * @property {FancytreeNode} lastSelectedNode
- * @property {string} nodeContainerAttrName
  * @property {FancytreeOptions} options
  * @property {FancytreeNode} rootNode
- * @property {string} statusClassPropName
- * @property {string} systemFocusElement
+ * @property {FancytreeNode} activeNode
+ * @property {FancytreeNode} focusNode
+ * @property {jQueryObject} $div
  * @property {object} widget
+ * @property {object} ext
+ * @property {object} data
+ * @property {object} options
+ * @property {string} _id
+ * @property {string} statusClassPropName
+ * @property {string} ariaPropName
+ * @property {string} nodeContainerAttrName
+ * @property {string} $container
+ * @property {FancytreeNode} lastSelectedNode
  */
 function Fancytree(widget) {
 	this.widget = widget;
@@ -1752,7 +1752,7 @@ function Fancytree(widget) {
 	this.ext = {}; // Active extension instances
 	// allow to init tree.data.foo from <div data-foo=''>
 	this.data = _getElementDataAsDict(this.$div);
-	this._id = ( this.options.id == null ) ? $.ui.fancytree._nextId++ : this.options.id;
+	this._id = $.ui.fancytree._nextId++;
 	this._ns = ".fancytree-" + this._id; // append for namespaced events
 	this.activeNode = null;
 	this.focusNode = null;
@@ -1960,11 +1960,10 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	 *
 	 * In selectMode 3 only the topmost selected nodes are considered.
 	 *
-	 * @param {boolean | string} [selected=true] Pass a string to define the variable name (default: `ft_ID[]`)
-	 * @param {boolean | string} [active=true] Pass a string to define the variable name (default: `ft_ID_active`)
-	 * @param {boolean} [stopOnParents] Pass false to generate all selected nodes, even in selectMode 3
+	 * @param {boolean | string} [selected=true]
+	 * @param {boolean | string} [active=true]
 	 */
-	generateFormElements: function(selected, active, stopOnParents) {
+	generateFormElements: function(selected, active) {
 		// TODO: test case
 		var nodeList,
 			selectedName = (selected !== false) ? "ft_" + this._id + "[]" : selected,
@@ -1972,7 +1971,6 @@ Fancytree.prototype = /** @lends Fancytree# */{
 			id = "fancytree_result_" + this._id,
 			$result = $("#" + id);
 
-		stopOnParents = ( typeof stopOnParents === "boolean" ) ? stopOnParents : (this.options.selectMode === 3);
 		if($result.length){
 			$result.empty();
 		}else{
@@ -1981,7 +1979,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 			}).hide().insertAfter(this.$container);
 		}
 		if(selectedName){
-			nodeList = this.getSelectedNodes(stopOnParents);
+			nodeList = this.getSelectedNodes( this.options.selectMode === 3 );
 			$.each(nodeList, function(idx, node){
 				$result.append($("<input>", {
 					type: "checkbox",
@@ -2907,12 +2905,12 @@ $.extend(Fancytree.prototype,
 			return;
 		}
 		// connector (expanded, expandable or simple)
-		// TODO: optiimize this if clause
+		// TODO: optimize this if clause
 		if( level < opts.minExpandLevel ) {
+			if( !node.lazy ) {
+				node.expanded = true;
+			}
 			if(level > 1){
-				if( !node.lazy ) {
-					node.expanded = true;
-				}
 				if(aria){
 					ares.push("<span role='button' class='fancytree-expander fancytree-expander-fixed'></span>");
 				}else{
@@ -2961,8 +2959,7 @@ $.extend(Fancytree.prototype,
 			nodeTitle = opts.renderTitle.call(tree, {type: "renderTitle"}, ctx) || "";
 		}
 		if(!nodeTitle){
-			// tooltip = node.tooltip ? " title='" + FT.escapeHtml(node.tooltip) + "'" : "";
-			tooltip = node.tooltip ? " title='" + node.tooltip.replace("'", "&apos;") + "'" : "";
+			tooltip = node.tooltip ? " title='" + FT.escapeHtml(node.tooltip) + "'" : "";
 			id = aria ? " id='ftal_" + node.key + "'" : "";
 			role = aria ? " role='treeitem'" : "";
 			tabindex = opts.titlesTabbable ? " tabindex='0'" : "";
@@ -3417,12 +3414,7 @@ $.extend(Fancytree.prototype,
 			var firstChild = ( node.children ? node.children[0] : null );
 			if ( firstChild && firstChild.isStatusNode() ) {
 				$.extend(firstChild, data);
-				firstChild.statusNodeType = type;
 				tree._callHook("nodeRender", firstChild);
-				tree._callHook("nodeRenderTitle", firstChild);
-				// tree._callHook("nodeRenderStatus", firstChild);
-				// node.render();
-				// firstChild.renderTitle();
 			} else {
 				data.key = "_statusNode";
 				node._setChildren([data]);
@@ -3638,7 +3630,6 @@ $.widget("ui.fancytree",
 		fx: { height: "toggle", duration: 200 },
 		generateIds: false,
 		icons: true,
-		id: null,
 		idPrefix: "ft_",
 		keyboard: true,
 		keyPathSeparator: "/",
@@ -3872,7 +3863,7 @@ $.widget("ui.fancytree",
 	 * @returns {FancytreeNode}
 	 */
 	getNodeByKey: function(key) {
-		return this.tree.getNodeByKey("" + key);
+		return this.tree.getNodeByKey(key);
 	},
 	/** Return the invisible system root node.
 	 * @returns {FancytreeNode}

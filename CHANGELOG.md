@@ -20,6 +20,7 @@
   * [Fixed] #305 Checkbox doesn't show with Glyph + Table
   * [Fixed] #316 Fix hasChildren() when children = []
   * [Fixed] #237 ajax LoadError not updated in StatusNode with Table ext
+  * [Fixed] #295 loadKeyPath with multiple paths
   * [Deprecated] node.isRoot(). Use node.isRootNode() instead
 
 # 2.3.0 / 2014-08-17

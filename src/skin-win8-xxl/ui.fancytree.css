@@ -173,8 +173,7 @@ span.fancytree-expander {
   background-position: 0px 0px;
 }
 /* Status node icons */
-span.fancytree-node.fancytree-statusnode-error span.fancytree-icon,
-.fancytree-statusnode-error span.fancytree-node span.fancytree-icon {
+.fancytree-statusnode-error span.fancytree-icon {
   background-position: 0px -224px;
 }
 /*------------------------------------------------------------------------------

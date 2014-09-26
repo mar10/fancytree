@@ -17,6 +17,25 @@
 
 "use strict";
 
+// prevent duplicate loading
+// if ( $.ui.fancytree && $.ui.fancytree.version ) {
+//     $.ui.fancytree.warn("Fancytree: duplicate include");
+//     return;
+// }
+
+
+/*******************************************************************************
+ * Private functions and variables
+ */
+/*
+function _assert(cond, msg){
+	msg = msg || "";
+	if(!cond){
+		$.error("Assertion failed " + msg);
+	}
+}
+*/
+
 /*******************************************************************************
  * Private functions and variables
  */

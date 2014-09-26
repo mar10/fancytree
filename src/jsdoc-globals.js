@@ -126,7 +126,6 @@ var TreePatch = {};
  * @property {object} fx Animation options, null:off (default: { height: "toggle", duration: 200 })
  * @property {Boolean} generateIds Add `id="..."` to node markup (default: true).
  * @property {Boolean} icons Display node icons  (default: true)
- * @property {String} id (default: use auto-incremented counter)
  * @property {String} idPrefix (default: "ft_")
  * @property {String} imagePath Path to a folder containing icons (default: null, using 'skin/' subdirectory).
  * @property {Boolean} keyboard Support keyboard navigation (default: true).

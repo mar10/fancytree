@@ -20,7 +20,12 @@
 /* *****************************************************************************
  * Private functions and variables
  */
-var _assert = $.ui.fancytree.assert;
+function _assert(cond, msg){
+	msg = msg || "";
+	if(!cond){
+		$.error("Assertion failed " + msg);
+	}
+}
 
 function insertSiblingAfter(referenceNode, newNode) {
 	referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);

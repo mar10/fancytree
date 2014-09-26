@@ -12,7 +12,6 @@
     "type": "git",
     "url": "https://github.com/mar10/fancytree"
   },
-  "main": "dist/jquery.fancytree-all.min.js",
   "bugs": {
     "url": "https://github.com/mar10/fancytree/issues"
   },

@@ -20,7 +20,13 @@
 /*******************************************************************************
  * Private functions and variables
  */
-// var _assert = $.ui.fancytree.assert;
+// function _assert(cond, msg){
+// 	// TODO: see qunit.js extractStacktrace()
+// 	if(!cond){
+// 		msg = msg ? ": " + msg : "";
+// 		$.error("Assertion failed" + msg);
+// 	}
+// }
 
 /* Calculate inner width without scrollbar */
 function realInnerWidth($el) {
