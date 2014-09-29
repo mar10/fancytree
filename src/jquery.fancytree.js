@@ -3045,6 +3045,9 @@ $.extend(Fancytree.prototype,
 		if( node.partsel ){
 			cnList.push(cn.partsel);
 		}
+		if( node.unselectable ){
+			cnList.push(cn.unselectable);
+		}
 		if( node._isLoading ){
 			cnList.push(cn.loading);
 		}
@@ -3655,6 +3658,7 @@ $.widget("ui.fancytree",
 			lazy: "fancytree-lazy",
 			focused: "fancytree-focused",
 			partsel: "fancytree-partsel",
+			unselectable: "fancytree-unselectable",
 			lastsib: "fancytree-lastsib",
 			loading: "fancytree-loading",
 			error: "fancytree-error"

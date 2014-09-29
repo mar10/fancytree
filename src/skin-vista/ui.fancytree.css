@@ -214,6 +214,12 @@ span.fancytree-checkbox:hover {
 .fancytree-selected span.fancytree-checkbox:hover {
   background-position: -48px -32px;
 }
+.fancytree-unselectable span.fancytree-checkbox,
+.fancytree-unselectable span.fancytree-checkbox:hover {
+  opacity: 0.4;
+  filter: alpha(opacity=40);
+  background-position: 0px -32px;
+}
 /*------------------------------------------------------------------------------
  * Radiobutton icon
  * This is a customization, that may be activated by overriding the 'checkbox'
@@ -236,6 +242,10 @@ span.fancytree-checkbox:hover {
 }
 .fancytree-radio .fancytree-selected span.fancytree-checkbox:hover {
   background-position: -48px -48px;
+}
+.fancytree-radio .fancytree-unselectable span.fancytree-checkbox,
+.fancytree-radio .fancytree-unselectable span.fancytree-checkbox:hover {
+  background-position: 0px -48px;
 }
 /*------------------------------------------------------------------------------
  * Node type icon

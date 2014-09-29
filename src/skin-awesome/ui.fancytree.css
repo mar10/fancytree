@@ -129,6 +129,11 @@ span.fancytree-expander {
 span.fancytree-checkbox {
   margin-left: 0.5em;
 }
+.fancytree-unselectable span.fancytree-checkbox,
+.fancytree-unselectable span.fancytree-checkbox:hover {
+  opacity: 0.4;
+  filter: alpha(opacity=40);
+}
 /*------------------------------------------------------------------------------
  * Radiobutton icon
  * This is a customization, that may be activated by overriding the 'checkbox'
