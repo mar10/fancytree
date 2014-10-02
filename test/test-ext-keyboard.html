@@ -30,7 +30,7 @@
 	<!-- End_Exclude -->
 
 <script type="text/javascript">
-SORUCE = [
+SOURCE = [
 	{title: "node 1", folder: true, expanded: true, children: [
 		{title: "node 1.1"},
 		{title: "node 1.2"}
@@ -45,7 +45,7 @@ $(function(){
 	$("#plainTree").fancytree({
 		checkbox: true,
 //		aria: true,
-		source: SORUCE,
+		source: SOURCE,
 		lazyLoad: function(event, data) {
 			data.result = {url: "../demo/ajax-sub2.json"};
 		}
@@ -65,7 +65,7 @@ $(function(){
 			handleCursorKeys: true,  // Allow UP/DOWN in inputs to move to prev/next node
 			// titlesTabbable: true     // Add all node titles to TAB chain
 		},
-		source: SORUCE,
+		source: SOURCE,
 		titlesTabbable: true,     // Add all node titles to TAB chain
 		lazyLoad: function(event, data) {
 			data.result = {url: "../demo/ajax-sub2.json"};
@@ -91,7 +91,7 @@ $(function(){
 
 	$("#inputTree").fancytree({
 		checkbox: true,
-		source: SORUCE,
+		source: SOURCE,
 		lazyLoad: function(event, data) {
 			data.result = {url: "../demo/ajax-sub2.json"};
 		},
