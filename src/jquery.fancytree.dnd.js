@@ -226,7 +226,9 @@ $.ui.fancytree.registerExtension({
 					// $(node.span).closest(":tabbable").focus();
 					// $(event.target).trigger("focus");
 					// $(event.target).closest(":tabbable").trigger("focus");
-					$(event.target).closest(":tabbable").focus();
+					setTimeout(function() { // #300
+						$(event.target).closest(":tabbable").focus();
+					}, 10);
 				}
 			});
 		}
