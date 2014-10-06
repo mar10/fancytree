@@ -34,9 +34,9 @@ TOOLS.initQUnit = function() {
 		});
 	  }
 	  testResults.tests = tests;
-	  /*jshint camelcase:false*/
-	  window.global_test_results = testResults;
-	  /*jshint camelcase:true*/
+	  /*jshint camelcase:false*/ // jscs: disable
+	  window.global_test_results = testResults; // used by saucelabs
+	  /*jshint camelcase:true*/ // jscs: enable
 
 	  // Expand first section when all tests are run
 	  $("ol#qunit-tests > li:first > ol").show("slow");
