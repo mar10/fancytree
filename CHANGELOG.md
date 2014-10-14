@@ -1,5 +1,8 @@
 # 2.4.2-0 / Unreleased
-  * [Improved] #153 Add class `fancytree-unselectable` to respective nodes
+  * [Improved] #153 Add class `fancytree-unselectable` to respective nodes and
+    dimm unselectable checkboxes
+  * [Fixed] #324 Fix problem where minExpandLevel was not expanding root node
+  * [Fixed] #300 dnd.focusOnClick for jQuery UI 1.11
 
 # 2.4.1 / 2014-09-23
   * [Fixed] Regression #323
