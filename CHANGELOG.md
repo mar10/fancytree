@@ -1,4 +1,5 @@
 # 2.4.2-0 / Unreleased
+  * [Improved] Update to jQuery 1.1.11, jQuery UI 1.11.1
   * [Improved] #153 Add class `fancytree-unselectable` to respective nodes and
     dimm unselectable checkboxes
   * [Fixed] #324 Fix problem where minExpandLevel was not expanding root node
