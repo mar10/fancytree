@@ -264,23 +264,6 @@ span.fancytree-expander {
 	.useSprite(3, 6);
 }
 
-// 'Loading' status overrides all others
-.fancytree-loading span.fancytree-expander,
-.fancytree-loading span.fancytree-expander:hover,
-.fancytree-statusnode-wait span.fancytree-icon,
-.fancytree-statusnode-wait span.fancytree-icon:hover {
-	background-image: @fancy-loading-url;
-//  .setBgImageUrl(@fancy-loading-url);
-	.useSprite(0, 0);
-}
-
-/* Status node icons */
-
-.fancytree-statusnode-error span.fancytree-icon {
-	.useSprite(0, 7);
-}
-
-
 /*------------------------------------------------------------------------------
  * Checkbox icon
  *----------------------------------------------------------------------------*/
@@ -391,6 +374,23 @@ span.fancytree-icon { // Default icon
 }
 .fancytree-ico-ef span.fancytree-icon:hover {
 	.useSprite(5, 1);
+}
+
+// 'Loading' status overrides all others
+.fancytree-loading span.fancytree-expander,
+.fancytree-loading span.fancytree-expander:hover,
+.fancytree-statusnode-wait span.fancytree-icon,
+.fancytree-statusnode-wait span.fancytree-icon:hover {
+	background-image: @fancy-loading-url;
+//  .setBgImageUrl(@fancy-loading-url);
+	.useSprite(0, 0);
+}
+
+/* Status node icons */
+
+.fancytree-statusnode-error span.fancytree-icon,
+.fancytree-statusnode-error span.fancytree-icon:hover {
+	.useSprite(0, 7);
 }
 
 
