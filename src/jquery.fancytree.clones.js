@@ -155,7 +155,7 @@ function calcUniqueKey(node) {
 		path = $.map(node.getParentList(false, true), function(e){ return e.refKey || e.key; });
 	path = path.join("/");
 	key = "id_" + hashMurmur3(path, true);
-	node.debug(path + " -> " + key);
+	// node.debug(path + " -> " + key);
 	return key;
 }
 
@@ -216,7 +216,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.isClone = function(){
 $.ui.fancytree._FancytreeNodeClass.prototype.reRegister = function(key, refKey){
 	key = (key == null) ? null :  "" + key;
 	refKey = (refKey == null) ? null :  "" + refKey;
-	this.debug("reRegister", key, refKey);
+	// this.debug("reRegister", key, refKey);
 
 	var tree = this.tree,
 		prevKey = this.key,
@@ -386,7 +386,7 @@ $.ui.fancytree.registerExtension({
 				} else {
 					refMap[refKey] = [key];
 				}
-				node.debug("clones.treeRegisterNode: add clone =>", refMap[refKey]);
+				// node.debug("clones.treeRegisterNode: add clone =>", refMap[refKey]);
 			}
 		}else {
 			if( keyMap[key] == null ) {
@@ -395,7 +395,7 @@ $.ui.fancytree.registerExtension({
 			delete keyMap[key];
 			if( refKey ) {
 				refList = refMap[refKey];
-				node.debug("clones.treeRegisterNode: remove clone BEFORE =>", refMap[refKey]);
+				// node.debug("clones.treeRegisterNode: remove clone BEFORE =>", refMap[refKey]);
 				if( refList ) {
 					len = refList.length;
 					if( len <= 1 ){
@@ -410,7 +410,7 @@ $.ui.fancytree.registerExtension({
 							keyMap[refList[0]].renderStatus();
 						}
 					}
-					node.debug("clones.treeRegisterNode: remove clone =>", refMap[refKey]);
+					// node.debug("clones.treeRegisterNode: remove clone =>", refMap[refKey]);
 				}
 			}
 		}
@@ -441,7 +441,7 @@ $.ui.fancytree.registerExtension({
 
 		if( ctx.options.clones.highlightActiveClones && node.isClone() ) {
 			$.each(node.getCloneList(true), function(idx, n){
-				n.debug("clones.nodeSetActive: ", flag !== false);
+				// n.debug("clones.nodeSetActive: ", flag !== false);
 				$(n[scpn]).toggleClass("fancytree-active-clone", flag !== false);
 			});
 		}
