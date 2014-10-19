@@ -3417,7 +3417,8 @@ $.extend(Fancytree.prototype,
 			var firstChild = ( node.children ? node.children[0] : null );
 			if ( firstChild && firstChild.isStatusNode() ) {
 				$.extend(firstChild, data);
-				tree._callHook("nodeRender", firstChild);
+				// tree._callHook("nodeRender", firstChild);
+				tree._callHook("nodeRenderTitle", firstChild);
 			} else {
 				data.key = "_statusNode";
 				node._setChildren([data]);
