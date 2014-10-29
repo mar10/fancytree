@@ -388,7 +388,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	 * This a convenience function that calls addChildren()
 	 *
 	 * @param {NodeData} node node definition
-	 * @param {string} [mode=child] 'before', 'after', or 'child' ('over' is a synonym for 'child')
+	 * @param {string} [mode=child] 'before', 'after', 'firstChild', or 'child' ('over' is a synonym for 'child')
 	 * @returns {FancytreeNode} new node
 	 */
 	addNode: function(node, mode){
@@ -400,6 +400,10 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			return this.getParent().addChildren(node, this.getNextSibling());
 		case "before":
 			return this.getParent().addChildren(node, this);
+		case "firstChild":
+			// Insert before the first child if any
+			var insertBefore=(this.children? this.children[0]: null);
+			return this.addChildren(node, insertBefore);
 		case "child":
 		case "over":
 			return this.addChildren(node);
