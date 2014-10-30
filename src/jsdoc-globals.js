@@ -187,7 +187,7 @@ var FancytreeOptions = {};
  * @property {function} removeNode `data.node` was removed (NOTE: this event is only available as callback, but not for bind())
  * @property {function} renderColumns (used by table extension)
  * @property {function} renderNode Allow tweaking after node state was rendered (NOTE: this event is only available as callback, but not for bind())
- * @property {function} renderTitle TODO: may be removed! (NOTE: this event is only available as callback, but not for bind())
+ * @property {function} renderTitle Allow replacing the `&lt;span class='fancytree-title'>` markup (NOTE: this event is only available as callback, but not for bind())
  * @property {function} select `data.node` was selected
  *
  */
