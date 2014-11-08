@@ -48,10 +48,10 @@ function consoleApply(method, args){
 		fn = window.console ? window.console[method] : null;
 
 	if(fn){
-		if(fn.apply){
+		try{
 			fn.apply(window.console, args);
-		}else{
-			// IE?
+		} catch(e) {
+			// IE 8?
 			s = "";
 			for( i=0; i<args.length; i++){
 				s += args[i];
