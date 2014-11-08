@@ -89,7 +89,7 @@ $(function(){
 			if(node.data.href){
 				window.open(node.data.href, (orgEvent.ctrlKey || orgEvent.metaKey) ? "_blank" : node.data.target);
 			}
-			if( window.parent &&  parent.history ) {
+			if( window.parent &&  parent.history && parent.history.pushState ) {
 				// Add #HREF to URL without actually loading content
 				parent.history.pushState({title: node.title}, "", "#" + (node.data.href || ""));
 			}
