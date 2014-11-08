@@ -40,7 +40,7 @@
 			return false;
 //          $(this).fancytree("debug", "fancytreeactivate");
 		});
-		var tree = $("div:ui-fancytree").data("fancytree").getTree();
+		var tree = $("div:ui-fancytree").data("ui-fancytree").getTree();
 		DT.debug("Test ':ui-fancytree' expression " + $("div:ui-fancytree").length);
 
 		/* Load tree from Ajax JSON
@@ -60,7 +60,7 @@
 			}
 		});
 		// call methods on multiple instances
-		$("div:ui-fancytree").fancytree("foo", "after init");
+//		$("div:ui-fancytree").fancytree("foo", "after init");
 		//
 		$("button").button();
 		$("button#destroy").click(function(event){
