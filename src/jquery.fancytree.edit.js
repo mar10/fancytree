@@ -97,6 +97,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editStart = function(){
 	// Replace node with <input>
 	$input = $("<input />", {
 		"class": "fancytree-edit-input",
+		type: "text",
 		value: unescapeHtml(eventData.orgTitle)
 	});
 	local.eventData.input = $input;
