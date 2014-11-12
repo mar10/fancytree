@@ -20,8 +20,7 @@
 /* *****************************************************************************
  * Private functions and variables
  */
-var logMsg = $.ui.fancytree.debug,
-	didRegisterDnd = false;
+var didRegisterDnd = false;
 
 /* Convert number to string and prepend +/-; return empty string for 0.*/
 function offsetString(n){
@@ -74,22 +73,22 @@ function _initDragAndDrop(tree) {
 			greedy: false
 /*
 			activate: function(event, ui) {
-				logMsg("droppable - activate", event, ui, this);
+				tree.debug("droppable - activate", event, ui, this);
 			},
 			create: function(event, ui) {
-				logMsg("droppable - create", event, ui);
+				tree.debug("droppable - create", event, ui);
 			},
 			deactivate: function(event, ui) {
-				logMsg("droppable - deactivate", event, ui);
+				tree.debug("droppable - deactivate", event, ui);
 			},
 			drop: function(event, ui) {
-				logMsg("droppable - drop", event, ui);
+				tree.debug("droppable - drop", event, ui);
 			},
 			out: function(event, ui) {
-				logMsg("droppable - out", event, ui);
+				tree.debug("droppable - out", event, ui);
 			},
 			over: function(event, ui) {
-				logMsg("droppable - over", event, ui);
+				tree.debug("droppable - over", event, ui);
 			}
 */
 		}, tree.options.dnd.droppable));
@@ -121,7 +120,7 @@ function _registerDnd() {
 			}
 		},
 		drag: function(event, ui) {
-			var isHelper,
+			var isHelper, logObject,
 				// 'draggable' was renamed to 'ui-draggable' since jQueryUI 1.10
 				draggable = $(this).data("ui-draggable") || $(this).data("draggable"),
 				sourceNode = ui.helper.data("ftSourceNode") || null,
@@ -136,7 +135,8 @@ function _registerDnd() {
 				// We ignore it:
 				isHelper = $(event.target).closest("div.fancytree-drag-helper,#fancytree-drop-marker").length > 0;
 				if(isHelper){
-					logMsg("Drag event over helper: ignored.");
+					logObject = sourceNode || prevTargetNode || $.ui.fancytree;
+					logObject.debug("Drag event over helper: ignored.");
 					return;
 				}
 			}
@@ -160,7 +160,8 @@ function _registerDnd() {
 		},
 		stop: function(event, ui) {
 			// 'draggable' was renamed to 'ui-draggable' since jQueryUI 1.10
-			var draggable = $(this).data("ui-draggable") || $(this).data("draggable"),
+			var logObject,
+				draggable = $(this).data("ui-draggable") || $(this).data("draggable"),
 				sourceNode = ui.helper.data("ftSourceNode") || null,
 				targetNode = ui.helper.data("ftTargetNode") || null,
 //				mouseDownEvent = draggable._mouseDownEvent,
@@ -168,7 +169,8 @@ function _registerDnd() {
 				dropped = (eventType === "mouseup" && event.which === 1);
 
 			if(!dropped){
-				logMsg("Drag was cancelled");
+				logObject = sourceNode || targetNode || $.ui.fancytree;
+				logObject.debug("Drag was cancelled");
 			}
 			if(targetNode) {
 				if(dropped){
@@ -371,7 +373,7 @@ $.ui.fancytree.registerExtension({
 	 */
 	_onDragEvent: function(eventName, node, otherNode, event, ui, draggable) {
 		if(eventName !== "over"){
-			logMsg("tree.ext.dnd._onDragEvent(%s, %o, %o) - %o", eventName, node, otherNode, this);
+			this.debug("tree.ext.dnd._onDragEvent(%s, %o, %o) - %o", eventName, node, otherNode, this);
 		}
 		var $helper, nodeOfs, relPos, relPos2,
 			enterResponse, hitMode, r,
@@ -391,8 +393,8 @@ $.ui.fancytree.registerExtension({
 			$("ul.fancytree-container", node.tree.$div).append($helper);
 			// Attach node reference to helper object
 			$helper.data("ftSourceNode", node);
-			// logMsg("helper=%o", $helper);
-			// logMsg("helper.sourceNode=%o", $helper.data("ftSourceNode"));
+			// this.debug("helper=%o", $helper);
+			// this.debug("helper.sourceNode=%o", $helper.data("ftSourceNode"));
 			res = $helper;
 			break;
 
@@ -438,7 +440,7 @@ $.ui.fancytree.registerExtension({
 				};
 			}
 			ui.helper.data("enterResponse", res);
-			logMsg("helper.enterResponse: %o", res);
+			this.debug("helper.enterResponse: %o", res);
 			break;
 
 		case "over":
@@ -473,20 +475,20 @@ $.ui.fancytree.registerExtension({
 				// TODO: these are no-ops when moving nodes, but not in copy mode
 				if( dnd.preventVoidMoves ){
 					if(node === otherNode){
-						logMsg("    drop over source node prevented");
+						this.debug("    drop over source node prevented");
 						hitMode = null;
 					}else if(hitMode === "before" && otherNode && node === otherNode.getNextSibling()){
-						logMsg("    drop after source node prevented");
+						this.debug("    drop after source node prevented");
 						hitMode = null;
 					}else if(hitMode === "after" && otherNode && node === otherNode.getPrevSibling()){
-						logMsg("    drop before source node prevented");
+						this.debug("    drop before source node prevented");
 						hitMode = null;
 					}else if(hitMode === "over" && otherNode && otherNode.parent === node && otherNode.isLastSibling() ){
-						logMsg("    drop last child over own parent prevented");
+						this.debug("    drop last child over own parent prevented");
 						hitMode = null;
 					}
 				}
-//                logMsg("hitMode: %s - %s - %s", hitMode, (node.parent === otherNode), node.isLastSibling());
+//                this.debug("hitMode: %s - %s - %s", hitMode, (node.parent === otherNode), node.isLastSibling());
 				ui.helper.data("hitMode", hitMode);
 			}
 			// Auto-expand node (only when 'over' the node, not 'before', or 'after')
