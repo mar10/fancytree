@@ -40,7 +40,9 @@ function _initDragAndDrop(tree) {
 	if(dnd && dnd.dragStart ) {
 		tree.widget.element.draggable($.extend({
 			addClasses: false,
-			appendTo: "body",
+			// DT issue 244: helper should be child of scrollParent:
+			appendTo: tree.$container,
+//			appendTo: "body",
 			containment: false,
 			delay: 0,
 			distance: 4,
@@ -52,12 +54,23 @@ function _initDragAndDrop(tree) {
 			connectToFancytree: true,
 			// Let source tree create the helper element
 			helper: function(event) {
-				var sourceNode = $.ui.fancytree.getNode(event.target);
-				if(!sourceNode){ // Dynatree issue 211
-					// might happen, if dragging a table *header*
+				var $helper,
+					sourceNode = $.ui.fancytree.getNode(event.target),
+					$nodeTag = $(sourceNode.span);
+				if(!sourceNode){
+					// DT issue 211: might happen, if dragging a table *header*
 					return "<div>ERROR?: helper requested but sourceNode not found</div>";
 				}
-				return sourceNode.tree.ext.dnd._onDragEvent("helper", sourceNode, null, event, null, null);
+				// Only event and node argument is available
+				$helper = $("<div class='fancytree-drag-helper'><span class='fancytree-drag-helper-img' /></div>")
+					.css({zIndex: 3, position: "relative"}) // so it appears above ext-wide selection bar
+					.append($nodeTag.find("span.fancytree-title").clone());
+
+				// Attach node reference to helper object
+				$helper.data("ftSourceNode", sourceNode);
+				// we return an unconnected element, so `draggable` will add this
+				// to the parent specified as `appendTo` option
+				return $helper;
 			},
 			start: function(event, ui) {
 				var sourceNode = ui.helper.data("ftSourceNode");
@@ -197,22 +210,23 @@ $.ui.fancytree.registerExtension({
 	version: "0.1.0",
 	// Default options for this extension.
 	options: {
-		// Make tree nodes draggable:
-		dragStart: null,  // Callback(sourceNode, data), return true, to enable dnd
-		dragStop: null,   // Callback(sourceNode, data)
-//      helper: null,
 		// Make tree nodes accept draggables
-		autoExpandMS: 1000, // Expand nodes after n milliseconds of hovering.
+		autoExpandMS: 1000,  // Expand nodes after n milliseconds of hovering.
+		draggable: null,     // Additional options passed to jQuery draggable
+		droppable: null,     // Additional options passed to jQuery droppable
+		focusOnClick: false, // Focus, although draggable cancels mousedown event (#270)
+//      helper: null,        // Callback
+//		helperParent: null,  // jQuery object (defaults to Fancytree container)
 		preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
 		preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
-		focusOnClick: false, // Focus, although draggable cancels mousedown event (#270)
+		// Events (drag support)
+		dragStart: null,  // Callback(sourceNode, data), return true, to enable dnd
+		dragStop: null,   // Callback(sourceNode, data)
+		// Events (drop support)
 		dragEnter: null,  // Callback(targetNode, data)
 		dragOver: null,   // Callback(targetNode, data)
 		dragDrop: null,   // Callback(targetNode, data)
-		dragLeave: null,  // Callback(targetNode, data)
-		//
-		draggable: null,  // Additional options passed to jQuery draggable
-		droppable: null   // Additional options passed to jQuery droppable
+		dragLeave: null   // Callback(targetNode, data)
 	},
 
 	treeInit: function(ctx){
@@ -375,7 +389,7 @@ $.ui.fancytree.registerExtension({
 		if(eventName !== "over"){
 			this.debug("tree.ext.dnd._onDragEvent(%s, %o, %o) - %o", eventName, node, otherNode, this);
 		}
-		var $helper, nodeOfs, relPos, relPos2,
+		var /*$helper, $helperParent,*/ nodeOfs, relPos, relPos2,
 			enterResponse, hitMode, r,
 			opts = this.options,
 			dnd = opts.dnd,
@@ -384,19 +398,21 @@ $.ui.fancytree.registerExtension({
 			$nodeTag = $(node.span);
 
 		switch (eventName) {
-		case "helper":
-			// Only event and node argument is available
-			$helper = $("<div class='fancytree-drag-helper'><span class='fancytree-drag-helper-img' /></div>")
-				.css({zIndex: 3, position: "relative"}) // so it appears above ext-wide selection bar
-				.append($nodeTag.find("span.fancytree-title").clone());
-			// DT issue 244: helper should be child of scrollParent
-			$("ul.fancytree-container", node.tree.$div).append($helper);
-			// Attach node reference to helper object
-			$helper.data("ftSourceNode", node);
-			// this.debug("helper=%o", $helper);
-			// this.debug("helper.sourceNode=%o", $helper.data("ftSourceNode"));
-			res = $helper;
-			break;
+// 		case "helper":
+// 			// Only event and node argument is available
+// 			$helper = $("<div class='fancytree-drag-helper'><span class='fancytree-drag-helper-img' /></div>")
+// 				.css({zIndex: 3, position: "relative"}) // so it appears above ext-wide selection bar
+// 				.append($nodeTag.find("span.fancytree-title").clone());
+// 			// #345: helper parent is now set using draggable.appendTo
+// //			$helperParent = dnd.helperParent || $("ul.fancytree-container", node.tree.$div);
+// 			// DT issue 244: helper should be child of scrollParent
+// //			$helperParent.append($helper);
+// 			// Attach node reference to helper object
+// 			$helper.data("ftSourceNode", node);
+// 			// this.debug("helper=%o", $helper);
+// 			// this.debug("helper.sourceNode=%o", $helper.data("ftSourceNode"));
+// 			res = $helper;
+// 			break;
 
 		case "start":
 			if( node.isStatusNode() ) {

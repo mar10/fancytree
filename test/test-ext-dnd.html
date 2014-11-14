@@ -76,6 +76,8 @@
 				autoExpandMS: 400,
 				draggable: {
 					//zIndex: 1000,
+					// appendTo: "body",
+					// helper: "clone",
 					scroll: false,
 					revert: "invalid"
 				},
@@ -128,6 +130,14 @@
 				preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
 				preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
 				autoExpandMS: 400,
+				draggable: {
+					//zIndex: 1000,
+					// appendTo: "body",
+					// helper: "clone",
+					scroll: false,
+					revert: "invalid"
+				},
+
 				dragStart: function(node, data) {
 					return true;
 				},
