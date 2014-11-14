@@ -20,7 +20,7 @@
 "use strict";
 
 // prevent duplicate loading
-if ( $.ui.fancytree && $.ui.fancytree.version ) {
+if ( $.ui && $.ui.fancytree ) {
 	$.ui.fancytree.warn("Fancytree: ignored duplicate include");
 	return;
 }
@@ -30,18 +30,16 @@ if ( $.ui.fancytree && $.ui.fancytree.version ) {
  * Private functions and variables
  */
 
-function _raiseNotImplemented(msg){
-	msg = msg || "";
-	$.error("Not implemented: " + msg);
-}
-
 function _assert(cond, msg){
 	// TODO: see qunit.js extractStacktrace()
 	if(!cond){
 		msg = msg ? ": " + msg : "";
+		// consoleApply("assert", [!!cond, msg]);
 		$.error("Fancytree assertion failed" + msg);
 	}
 }
+
+_assert($.ui, "Fancytree requires jQuery UI (http://jqueryui.com)");
 
 function consoleApply(method, args){
 	var i, s,
@@ -508,7 +506,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	debug: function(msg){
 		if( this.tree.options.debugLevel >= 2 ) {
 			Array.prototype.unshift.call(arguments, this.toString());
-			consoleApply("debug", arguments);
+			consoleApply("log", arguments);
 		}
 	},
 	/** Deprecated.
@@ -1948,7 +1946,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	debug: function(msg){
 		if( this.options.debugLevel >= 2 ) {
 			Array.prototype.unshift.call(arguments, this.toString());
-			consoleApply("debug", arguments);
+			consoleApply("log", arguments);
 		}
 	},
 	// TODO: disable()
@@ -3544,7 +3542,7 @@ $.extend(Fancytree.prototype,
 			}
 		}else if(typeof source === "string"){
 			// TODO: source is an element ID
-			_raiseNotImplemented();
+			$.error("Not implemented");
 		}
 
 		// $container.addClass("ui-widget ui-widget-content ui-corner-all");
