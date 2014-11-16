@@ -36,7 +36,7 @@
 			},
 			persist: {
 				expandLazy: true,
-				overrideSource: false, // true: cookie takes precedence over `source` data attributes.
+				// overrideSource: false, // true: cookie takes precedence over `source` data attributes.
 				store: "auto" // 'cookie', 'local': use localStore, 'session': sessionStore
 			},
 			// don't use this in production code:
@@ -76,12 +76,6 @@
 			}
 		});
 
-		$("input#hideMode").change(function(e){
-			tree.options.filter.mode = $(this).is(":checked") ? "hide" : "dimm";
-			tree.clearFilter();
-			$("input[name=search]").keyup();
-//			tree.render();
-		});
 	});
 </script>
 </head>
@@ -104,15 +98,10 @@
 	<div>
 		<label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
 	</div>
-	<p>
-		<fieldset>
-			<legend>Choose persistent data types</legend>
-			<label><input type="checkbox" name="active"> Active node</label>
-			<label><input type="checkbox" name="selected"> Selected nodes</label>
-		</fieldset>
-	</p>
+
 	<p id="sampleButtons">
 	</p>
+
 	<!-- Add a <table> element where the tree should appear: -->
 	<div id="tree">
 	</div>

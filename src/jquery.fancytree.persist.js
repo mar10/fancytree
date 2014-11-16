@@ -153,7 +153,7 @@ $.ui.fancytree.registerExtension({
 			secure: false
 		},
 		expandLazy: false,     // true: recursively expand and load lazy nodes
-		overrideSource: false, // true: cookie takes precedence over `source` data attributes.
+		overrideSource: true,  // true: cookie takes precedence over `source` data attributes.
 		store: "auto",         // 'cookie': force cookie, 'local': force localStore, 'session': force sessionStore
 		types: "active expanded focus selected"
 	},
