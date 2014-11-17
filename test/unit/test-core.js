@@ -199,18 +199,18 @@ test("Init node with custom data", function() {
  */
 module("API");
 
-test("FancytreeNode class", function() {
+test("FancytreeNode class", function(assert) {
 //  tools.setupAsync();
 	QUnit.reset();
 	if( $("#tree").is(":ui-fancytree") ){
 		$("#tree").fancytree("destroy");
 	}
-	expect(28);
+	expect(39);
 
 	$("#tree").fancytree({
 		source: TEST_DATA
 	});
-	var res, ROOT_NODE_KEY,
+	var res, ROOT_NODE_KEY, nodeAdded,
 		tree = $("#tree").fancytree("getTree"),
 		root = tree.rootNode,
 		node = tools.getNode("10_1_2");
@@ -227,7 +227,38 @@ test("FancytreeNode class", function() {
 
 	// Methods
 //  addChildren: function(children){
-//  addNode: function(node, mode){
+
+	// addNode
+	assert.throws(function(){
+		root.addNode({"title": "my title"}, "undefined mode");
+	}, "Fancytree assertion failed: Invalid mode: undefined mode");
+
+	nodeAdded = root.addNode({"title": "my title 1", "key": "add-node-1"});
+	assert.equal(root.children.slice(-1)[0].key, "add-node-1", "Node added at the last position");
+
+	nodeAdded.addNode({"title": "my title 2", "key": "add-node-2"});
+	assert.equal(nodeAdded.countChildren(), 1, "Children added");
+	assert.equal(nodeAdded.children[0].key, "add-node-2", "Children at first position");
+
+	nodeAdded.addNode({"title": "my title 3", "key": "add-node-3"}, "child");
+	assert.equal(nodeAdded.countChildren(), 2, "Children added");
+	assert.equal(nodeAdded.children.slice(-1)[0].key, "add-node-3", "Children added at last position");
+
+	nodeAdded.addNode({"title": "my title 4", "key": "add-node-4"}, "firstChild");
+	assert.equal(nodeAdded.countChildren(), 3, "Children added");
+	assert.equal(nodeAdded.children[0].key, "add-node-4", "Children add at the first position");
+
+	nodeAdded.children[0].addNode({"title": "my title 5", "key": "add-node-5"}, "before");
+	assert.equal(nodeAdded.children[0].key, "add-node-5", "Children added before element");
+
+	nodeAdded.children[0].addNode({"title": "my title 6", "key": "add-node-6"}, "after");
+	assert.equal(nodeAdded.children[1].key, "add-node-6", "Children added after element");
+
+	nodeAdded.removeChildren();
+	nodeAdded.addNode({"title": "my title 7", "key": "add-node-7"}, "firstChild");
+	assert.equal(nodeAdded.countChildren(), 1, "Children added at first even if no child");
+	nodeAdded.remove();
+
 //  applyPatch: function(patch) {
 //  collapseSiblings: function() {
 //  copyTp: function(targetNode, mode, map) {
