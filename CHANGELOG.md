@@ -2,8 +2,9 @@
   * [CHANGED] [ext-persist] overrideSource option now defaults to true
   * [Improved] [ext-dnd] Make draggable helper and parent configurable
   * [Improved] #153 Add class `fancytree-unselectable` to respective nodes and
-  * [Improved] Update to jQuery 1.1.11, jQuery UI 1.11.2
     dimm unselectable checkboxes
+  * [Improved] Update to jQuery 1.1.11, jQuery UI 1.11.2
+  * [Improved] New mode 'firstChild' for node.addNode()
   * [Fixed] #324 Fix problem where minExpandLevel was not expanding root node
   * [Fixed] #300 dnd.focusOnClick for jQuery UI 1.11
   * [Fixed] #354 [ext-persist] with selectMode 3
