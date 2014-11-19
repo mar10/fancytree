@@ -56,6 +56,7 @@
 
 <script type="text/javascript">
 	$(function(){
+		var count = 1;
 		// Attach the fancytree widget to an existing <div id="tree"> element
 		// and pass the tree options as an argument to the fancytree() function:
 		$("#tree").fancytree({
@@ -102,7 +103,8 @@
 				dragDrop: function(node, data) {
 					if( !data.otherNode ){
 						// It's a non-tree draggable
-						alert("dropped " + $(data.draggable.element).text());
+						var title = $(data.draggable.element).text() + " (" + (count)++ + ")";
+						node.addNode({title: title}, data.hitMode);
 						return;
 					}
 					data.otherNode.moveTo(node, data.hitMode);
