@@ -1,5 +1,6 @@
 # 2.4.2-0 / Unreleased
   * [CHANGED] [ext-persist] overrideSource option now defaults to true
+  * [Added] quicksearch: navigate to next node by typing the first letters
   * [Improved] [ext-dnd] Make draggable helper and parent configurable
   * [Improved] #153 Add class `fancytree-unselectable` to respective nodes and
     dimm unselectable checkboxes

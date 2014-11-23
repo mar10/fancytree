@@ -193,6 +193,14 @@ function _makeNodeTitleMatcher(s){
 	};
 }
 
+
+function _makeNodeTitleStartMatcher(s){
+	var reMatch = new RegExp("^" + s, "i");
+	return function(node){
+		return reMatch.test(node.title);
+	};
+}
+
 var i,
 	FT = null, // initialized below
 	ENTITY_MAP = {"&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;", "/": "&#x2F;"},
@@ -400,7 +408,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			return this.getParent().addChildren(node, this);
 		case "firstChild":
 			// Insert before the first child if any
-			var insertBefore=(this.children? this.children[0]: null);
+			var insertBefore = (this.children ? this.children[0] : null);
 			return this.addChildren(node, insertBefore);
 		case "child":
 		case "over":
@@ -477,7 +485,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	/** Copy this node as sibling or child of `node`.
 	 *
 	 * @param {FancytreeNode} node source node
-	 * @param {string} mode 'before' | 'after' | 'child'
+	 * @param {string} [mode=child] 'before' | 'after' | 'child'
 	 * @param {Function} [map] callback function(NodeData) that could modify the new node
 	 * @returns {FancytreeNode} new
 	 */
@@ -1549,8 +1557,8 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	 *
 	 * The result is compatible with node.addChildren().
 	 *
-	 * @param {boolean} recursive
-	 * @param {function} callback callback(dict) is called for every node, in order to allow modifications
+	 * @param {boolean} [recursive=false] include child nodes
+	 * @param {function} [callback] callback(dict) is called for every node, in order to allow modifications
 	 * @returns {NodeData}
 	 */
 	toDict: function(recursive, callback) {
@@ -1761,6 +1769,8 @@ function Fancytree(widget) {
 	this._hasFocus = null;
 	this.lastSelectedNode = null;
 	this.systemFocusElement = null;
+	this.lastQuicksearchTerm = "";
+	this.lastQuicksearchTime = 0;
 
 	this.statusClassPropName = "span";
 	this.ariaPropName = "li";
@@ -1956,6 +1966,75 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	// TODO: disable()
 	// TODO: enable()
 	// TODO: enableUpdate()
+
+	/** Find the next visible node that starts with `match`, starting at `startNode`
+	 * and wrap-around at the end.
+	 *
+	 * @param {string|function} match
+	 * @param {FancytreeNode} [startNode] defaults to first node
+	 * @returns {FancytreeNode} matching node or null
+	 */
+	findNextNode: function(match, startNode, visibleOnly) {
+		var stopNode = null,
+			parentChildren = startNode.parent.children,
+			matchingNode = null,
+			walkVisible = function(parent, idx, fn) {
+				var i, grandParent,
+					parentChildren = parent.children,
+					siblingCount = parentChildren.length,
+					node = parentChildren[idx];
+				// visit node itself
+				if( node && fn(node) === false ) {
+					return false;
+				}
+				// visit descendants
+				if( node && node.children && node.expanded ) {
+					if( walkVisible(node, 0, fn) === false ) {
+						return false;
+					}
+				}
+				// visit subsequent siblings
+				for( i = idx + 1; i < siblingCount; i++ ) {
+					if( walkVisible(parent, i, fn) === false ) {
+						return false;
+					}
+				}
+				// visit parent's subsequent siblings
+				grandParent = parent.parent;
+				if( grandParent ) {
+					return walkVisible(grandParent, grandParent.children.indexOf(parent) + 1, fn);
+				} else {
+					// wrap-around: restart with first node
+					return walkVisible(parent, 0, fn);
+				}
+			};
+
+		match = (typeof match === "string") ? _makeNodeTitleStartMatcher(match) : match;
+		startNode = startNode || this.rootNode.getFirstChild();
+
+		walkVisible(startNode.parent, parentChildren.indexOf(startNode), function(node){
+			// Stop iteration if we see the start node a second time
+			if( node === stopNode ) {
+				return false;
+			}
+			stopNode = stopNode || node;
+			// Ignore nodes hidden by a filter
+			if( ! $(node.span).is(":visible") ) {
+				node.debug("quicksearch: skipping hidden node");
+				return;
+			}
+			// Test if we found a match, but search for a second match if this
+			// was the currently active node
+			if( match(node) ) {
+				// node.debug("quicksearch match " + node.title, startNode);
+				matchingNode = node;
+				if( matchingNode !== startNode ) {
+					return false;
+				}
+			}
+		});
+		return matchingNode;
+	},
 	// TODO: fromDict
 	/**
 	 * Generate INPUT elements that can be submitted with html forms.
@@ -2391,11 +2470,15 @@ $.extend(Fancytree.prototype,
 	 */
 	nodeKeydown: function(ctx) {
 		// TODO: return promise?
-		var res,
+		var matchNode, stamp, res,
 			event = ctx.originalEvent,
 			node = ctx.node,
 			tree = ctx.tree,
 			opts = ctx.options,
+			which = event.which,
+			whichChar = String.fromCharCode(which),
+			clean = !(event.altKey || event.ctrlKey || event.metaKey || event.shiftKey),
+			$target = $(event.target),
 			handled = true,
 			activate = !(event.ctrlKey || !opts.autoActivate ),
 			KC = $.ui.keyCode;
@@ -2409,7 +2492,23 @@ $.extend(Fancytree.prototype,
 			node.debug("Keydown force focus on first node");
 		}
 
-		switch( event.which ) {
+		if( opts.quicksearch && clean && /\w/.test(whichChar) && !$target.is(":input:enabled") ) {
+			// Allow to search for longer streaks if typed in quickly
+			stamp = new Date().getTime();
+			if( stamp - tree.lastQuicksearchTime > 500 ) {
+				tree.lastQuicksearchTerm = "";
+			}
+			tree.lastQuicksearchTime = stamp;
+			tree.lastQuicksearchTerm += whichChar;
+			// tree.debug("quicksearch find", tree.lastQuicksearchTerm);
+			matchNode = tree.findNextNode(tree.lastQuicksearchTerm, tree.getActiveNode());
+			if( matchNode ) {
+				matchNode.setActive();
+			}
+			event.preventDefault();
+			return;
+		}
+		switch( which ) {
 			// charCodes:
 			case KC.NUMPAD_ADD: //107: // '+'
 			case 187: // '+' @ Chrome, Safari
@@ -3639,6 +3738,7 @@ $.widget("ui.fancytree",
 		keyboard: true,
 		keyPathSeparator: "/",
 		minExpandLevel: 1,
+		quicksearch: false,
 		scrollOfs: {top: 0, bottom: 0},
 		scrollParent: null,
 		selectMode: 2,
