@@ -5,7 +5,7 @@
 	<title>Fancytree - Configurator</title>
 
 	<script src="//code.jquery.com/jquery-1.11.1.min.js" type="text/javascript"></script>
-	<script src="//code.jquery.com/ui/1.11.1/jquery-ui.min.js" type="text/javascript"></script>
+	<script src="//code.jquery.com/ui/1.11.2/jquery-ui.min.js" type="text/javascript"></script>
 
 	<link href="../src/skin-win7/ui.fancytree.css" rel="stylesheet" type="text/css"">
 	<script src="../src/jquery.fancytree.js" type="text/javascript"></script>
@@ -77,6 +77,8 @@ var OPT_LIST = [
 //     hint: "Use <span> instead of <a> tags for all nodes"},
 //	{name: "persist", value: false,
 //	 hint: "Persist expand-status to a cookie"},
+	{name: "quicksearch", value: false,
+	 hint: "Navigate to next node by typing the first letters."},
 	{name: "selectMode", value: [{name: "single", value: 1},
 								 {name: "multi", value: 2, selected: true},
 								 {name: "multi-hier", value: 3}],

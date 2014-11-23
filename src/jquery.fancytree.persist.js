@@ -153,7 +153,7 @@ $.ui.fancytree.registerExtension({
 			secure: false
 		},
 		expandLazy: false,     // true: recursively expand and load lazy nodes
-		overrideSource: false, // true: cookie takes precedence over `source` data attributes.
+		overrideSource: true,  // true: cookie takes precedence over `source` data attributes.
 		store: "auto",         // 'cookie': force cookie, 'local': force localStore, 'session': force sessionStore
 		types: "active expanded focus selected"
 	},
@@ -225,7 +225,7 @@ $.ui.fancytree.registerExtension({
 			var cookie, dfd, i, keyList, node,
 				prevFocus = $.cookie(local.cookiePrefix + FOCUS); // record this before node.setActive() overrides it;
 
-			tree.debug("COOKIE " + document.cookie);
+			// tree.debug("document.cookie:", document.cookie);
 
 			cookie = local._data(local.cookiePrefix + EXPANDED);
 			keyList = cookie && cookie.split(instOpts.cookieDelimiter);
@@ -248,7 +248,7 @@ $.ui.fancytree.registerExtension({
 							node = tree.getNodeByKey(keyList[i]);
 							if(node){
 								if(node.selected === undefined || instOpts.overrideSource && (node.selected === false)){
-	//								node.setSelected();
+//									node.setSelected();
 									node.selected = true;
 									node.renderStatus();
 								}
@@ -257,6 +257,16 @@ $.ui.fancytree.registerExtension({
 								local._appendKey(SELECTED, keyList[i], false);
 							}
 						}
+					}
+					// In selectMode 3 we have to fix the child nodes, since we
+					// only stored the selected *top* nodes
+					if( tree.options.selectMode === 3 ){
+						tree.visit(function(n){
+							if( n.selected ) {
+								n.fixSelection3AfterClick();
+								return "skip";
+							}
+						});
 					}
 				}
 				if(local.storeActive){
@@ -317,7 +327,8 @@ $.ui.fancytree.registerExtension({
 		return res;
 	},
 	nodeSetSelected: function(ctx, flag) {
-		var res,
+		var res, selNodes,
+			tree = ctx.tree,
 			node = ctx.node,
 			local = this._local;
 
@@ -325,7 +336,18 @@ $.ui.fancytree.registerExtension({
 		res = this._super(ctx, flag);
 
 		if(local.storeSelected){
-			local._appendKey(SELECTED, node.key, flag);
+			if( tree.options.selectMode === 3 ){
+				// In selectMode 3 we only store the the selected *top* nodes.
+				// De-selecting a node may also de-select some parents, so we
+				// calculate the current status again
+				selNodes = $.map(tree.getSelectedNodes(true), function(n){
+					return n.key;
+				});
+				selNodes = selNodes.join(ctx.options.persist.cookieDelimiter);
+				local._data(local.cookiePrefix + SELECTED, selNodes);
+			} else {
+				local._appendKey(SELECTED, node.key, flag);
+			}
 		}
 		return res;
 	}

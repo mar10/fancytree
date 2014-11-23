@@ -20,8 +20,7 @@
 /* *****************************************************************************
  * Private functions and variables
  */
-var logMsg = $.ui.fancytree.debug,
-	didRegisterDnd = false;
+var didRegisterDnd = false;
 
 /* Convert number to string and prepend +/-; return empty string for 0.*/
 function offsetString(n){
@@ -41,7 +40,9 @@ function _initDragAndDrop(tree) {
 	if(dnd && dnd.dragStart ) {
 		tree.widget.element.draggable($.extend({
 			addClasses: false,
-			appendTo: "body",
+			// DT issue 244: helper should be child of scrollParent:
+			appendTo: tree.$container,
+//			appendTo: "body",
 			containment: false,
 			delay: 0,
 			distance: 4,
@@ -53,12 +54,23 @@ function _initDragAndDrop(tree) {
 			connectToFancytree: true,
 			// Let source tree create the helper element
 			helper: function(event) {
-				var sourceNode = $.ui.fancytree.getNode(event.target);
-				if(!sourceNode){ // Dynatree issue 211
-					// might happen, if dragging a table *header*
+				var $helper,
+					sourceNode = $.ui.fancytree.getNode(event.target),
+					$nodeTag = $(sourceNode.span);
+				if(!sourceNode){
+					// DT issue 211: might happen, if dragging a table *header*
 					return "<div>ERROR?: helper requested but sourceNode not found</div>";
 				}
-				return sourceNode.tree.ext.dnd._onDragEvent("helper", sourceNode, null, event, null, null);
+				// Only event and node argument is available
+				$helper = $("<div class='fancytree-drag-helper'><span class='fancytree-drag-helper-img' /></div>")
+					.css({zIndex: 3, position: "relative"}) // so it appears above ext-wide selection bar
+					.append($nodeTag.find("span.fancytree-title").clone());
+
+				// Attach node reference to helper object
+				$helper.data("ftSourceNode", sourceNode);
+				// we return an unconnected element, so `draggable` will add this
+				// to the parent specified as `appendTo` option
+				return $helper;
 			},
 			start: function(event, ui) {
 				var sourceNode = ui.helper.data("ftSourceNode");
@@ -74,22 +86,22 @@ function _initDragAndDrop(tree) {
 			greedy: false
 /*
 			activate: function(event, ui) {
-				logMsg("droppable - activate", event, ui, this);
+				tree.debug("droppable - activate", event, ui, this);
 			},
 			create: function(event, ui) {
-				logMsg("droppable - create", event, ui);
+				tree.debug("droppable - create", event, ui);
 			},
 			deactivate: function(event, ui) {
-				logMsg("droppable - deactivate", event, ui);
+				tree.debug("droppable - deactivate", event, ui);
 			},
 			drop: function(event, ui) {
-				logMsg("droppable - drop", event, ui);
+				tree.debug("droppable - drop", event, ui);
 			},
 			out: function(event, ui) {
-				logMsg("droppable - out", event, ui);
+				tree.debug("droppable - out", event, ui);
 			},
 			over: function(event, ui) {
-				logMsg("droppable - over", event, ui);
+				tree.debug("droppable - over", event, ui);
 			}
 */
 		}, tree.options.dnd.droppable));
@@ -121,7 +133,7 @@ function _registerDnd() {
 			}
 		},
 		drag: function(event, ui) {
-			var isHelper,
+			var isHelper, logObject,
 				// 'draggable' was renamed to 'ui-draggable' since jQueryUI 1.10
 				draggable = $(this).data("ui-draggable") || $(this).data("draggable"),
 				sourceNode = ui.helper.data("ftSourceNode") || null,
@@ -136,7 +148,8 @@ function _registerDnd() {
 				// We ignore it:
 				isHelper = $(event.target).closest("div.fancytree-drag-helper,#fancytree-drop-marker").length > 0;
 				if(isHelper){
-					logMsg("Drag event over helper: ignored.");
+					logObject = sourceNode || prevTargetNode || $.ui.fancytree;
+					logObject.debug("Drag event over helper: ignored.");
 					return;
 				}
 			}
@@ -160,7 +173,8 @@ function _registerDnd() {
 		},
 		stop: function(event, ui) {
 			// 'draggable' was renamed to 'ui-draggable' since jQueryUI 1.10
-			var draggable = $(this).data("ui-draggable") || $(this).data("draggable"),
+			var logObject,
+				draggable = $(this).data("ui-draggable") || $(this).data("draggable"),
 				sourceNode = ui.helper.data("ftSourceNode") || null,
 				targetNode = ui.helper.data("ftTargetNode") || null,
 //				mouseDownEvent = draggable._mouseDownEvent,
@@ -168,7 +182,8 @@ function _registerDnd() {
 				dropped = (eventType === "mouseup" && event.which === 1);
 
 			if(!dropped){
-				logMsg("Drag was cancelled");
+				logObject = sourceNode || targetNode || $.ui.fancytree;
+				logObject.debug("Drag was cancelled");
 			}
 			if(targetNode) {
 				if(dropped){
@@ -195,22 +210,23 @@ $.ui.fancytree.registerExtension({
 	version: "0.1.0",
 	// Default options for this extension.
 	options: {
-		// Make tree nodes draggable:
-		dragStart: null,  // Callback(sourceNode, data), return true, to enable dnd
-		dragStop: null,   // Callback(sourceNode, data)
-//      helper: null,
 		// Make tree nodes accept draggables
-		autoExpandMS: 1000, // Expand nodes after n milliseconds of hovering.
+		autoExpandMS: 1000,  // Expand nodes after n milliseconds of hovering.
+		draggable: null,     // Additional options passed to jQuery draggable
+		droppable: null,     // Additional options passed to jQuery droppable
+		focusOnClick: false, // Focus, although draggable cancels mousedown event (#270)
+//      helper: null,        // Callback
+//		helperParent: null,  // jQuery object (defaults to Fancytree container)
 		preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
 		preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
-		focusOnClick: false, // Focus, although draggable cancels mousedown event (#270)
+		// Events (drag support)
+		dragStart: null,  // Callback(sourceNode, data), return true, to enable dnd
+		dragStop: null,   // Callback(sourceNode, data)
+		// Events (drop support)
 		dragEnter: null,  // Callback(targetNode, data)
 		dragOver: null,   // Callback(targetNode, data)
 		dragDrop: null,   // Callback(targetNode, data)
-		dragLeave: null,  // Callback(targetNode, data)
-		//
-		draggable: null,  // Additional options passed to jQuery draggable
-		droppable: null   // Additional options passed to jQuery droppable
+		dragLeave: null   // Callback(targetNode, data)
 	},
 
 	treeInit: function(ctx){
@@ -371,9 +387,9 @@ $.ui.fancytree.registerExtension({
 	 */
 	_onDragEvent: function(eventName, node, otherNode, event, ui, draggable) {
 		if(eventName !== "over"){
-			logMsg("tree.ext.dnd._onDragEvent(%s, %o, %o) - %o", eventName, node, otherNode, this);
+			this.debug("tree.ext.dnd._onDragEvent(%s, %o, %o) - %o", eventName, node, otherNode, this);
 		}
-		var $helper, nodeOfs, relPos, relPos2,
+		var /*$helper, $helperParent,*/ nodeOfs, relPos, relPos2,
 			enterResponse, hitMode, r,
 			opts = this.options,
 			dnd = opts.dnd,
@@ -382,19 +398,21 @@ $.ui.fancytree.registerExtension({
 			$nodeTag = $(node.span);
 
 		switch (eventName) {
-		case "helper":
-			// Only event and node argument is available
-			$helper = $("<div class='fancytree-drag-helper'><span class='fancytree-drag-helper-img' /></div>")
-				.css({zIndex: 3, position: "relative"}) // so it appears above ext-wide selection bar
-				.append($nodeTag.find("span.fancytree-title").clone());
-			// DT issue 244: helper should be child of scrollParent
-			$("ul.fancytree-container", node.tree.$div).append($helper);
-			// Attach node reference to helper object
-			$helper.data("ftSourceNode", node);
-			// logMsg("helper=%o", $helper);
-			// logMsg("helper.sourceNode=%o", $helper.data("ftSourceNode"));
-			res = $helper;
-			break;
+// 		case "helper":
+// 			// Only event and node argument is available
+// 			$helper = $("<div class='fancytree-drag-helper'><span class='fancytree-drag-helper-img' /></div>")
+// 				.css({zIndex: 3, position: "relative"}) // so it appears above ext-wide selection bar
+// 				.append($nodeTag.find("span.fancytree-title").clone());
+// 			// #345: helper parent is now set using draggable.appendTo
+// //			$helperParent = dnd.helperParent || $("ul.fancytree-container", node.tree.$div);
+// 			// DT issue 244: helper should be child of scrollParent
+// //			$helperParent.append($helper);
+// 			// Attach node reference to helper object
+// 			$helper.data("ftSourceNode", node);
+// 			// this.debug("helper=%o", $helper);
+// 			// this.debug("helper.sourceNode=%o", $helper.data("ftSourceNode"));
+// 			res = $helper;
+// 			break;
 
 		case "start":
 			if( node.isStatusNode() ) {
@@ -438,7 +456,7 @@ $.ui.fancytree.registerExtension({
 				};
 			}
 			ui.helper.data("enterResponse", res);
-			logMsg("helper.enterResponse: %o", res);
+			this.debug("helper.enterResponse: %o", res);
 			break;
 
 		case "over":
@@ -473,20 +491,20 @@ $.ui.fancytree.registerExtension({
 				// TODO: these are no-ops when moving nodes, but not in copy mode
 				if( dnd.preventVoidMoves ){
 					if(node === otherNode){
-						logMsg("    drop over source node prevented");
+						this.debug("    drop over source node prevented");
 						hitMode = null;
 					}else if(hitMode === "before" && otherNode && node === otherNode.getNextSibling()){
-						logMsg("    drop after source node prevented");
+						this.debug("    drop after source node prevented");
 						hitMode = null;
 					}else if(hitMode === "after" && otherNode && node === otherNode.getPrevSibling()){
-						logMsg("    drop before source node prevented");
+						this.debug("    drop before source node prevented");
 						hitMode = null;
 					}else if(hitMode === "over" && otherNode && otherNode.parent === node && otherNode.isLastSibling() ){
-						logMsg("    drop last child over own parent prevented");
+						this.debug("    drop last child over own parent prevented");
 						hitMode = null;
 					}
 				}
-//                logMsg("hitMode: %s - %s - %s", hitMode, (node.parent === otherNode), node.isLastSibling());
+//                this.debug("hitMode: %s - %s - %s", hitMode, (node.parent === otherNode), node.isLastSibling());
 				ui.helper.data("hitMode", hitMode);
 			}
 			// Auto-expand node (only when 'over' the node, not 'before', or 'after')

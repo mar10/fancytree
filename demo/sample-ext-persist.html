@@ -5,7 +5,7 @@
 	<title>Fancytree - Example: Persist</title>
 
 	<script src="//code.jquery.com/jquery-1.11.1.min.js" type="text/javascript"></script>
-	<script src="//code.jquery.com/ui/1.11.1/jquery-ui.min.js" type="text/javascript"></script>
+	<script src="//code.jquery.com/ui/1.11.2/jquery-ui.min.js" type="text/javascript"></script>
 	<script src="../lib/jquery.cookie.js" type="text/javascript"></script>
 
 	<link href="../src/skin-win7/ui.fancytree.css" rel="stylesheet" type="text/css">
@@ -30,12 +30,13 @@
 		$("#tree").fancytree({
 			extensions: ["persist"],
 			checkbox: true,
+			selectMode: 3,
 			source: {
 				url: "ajax-tree-plain.json"
 			},
 			persist: {
 				expandLazy: true,
-				overrideSource: false, // true: cookie takes precedence over `source` data attributes.
+				// overrideSource: false, // true: cookie takes precedence over `source` data attributes.
 				store: "auto" // 'cookie', 'local': use localStore, 'session': sessionStore
 			},
 			// don't use this in production code:
@@ -75,12 +76,6 @@
 			}
 		});
 
-		$("input#hideMode").change(function(e){
-			tree.options.filter.mode = $(this).is(":checked") ? "hide" : "dimm";
-			tree.clearFilter();
-			$("input[name=search]").keyup();
-//			tree.render();
-		});
 	});
 </script>
 </head>
@@ -103,15 +98,10 @@
 	<div>
 		<label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
 	</div>
-	<p>
-		<fieldset>
-			<legend>Choose persistent data types</legend>
-			<label><input type="checkbox" name="active"> Active node</label>
-			<label><input type="checkbox" name="selected"> Selected nodes</label>
-		</fieldset>
-	</p>
+
 	<p id="sampleButtons">
 	</p>
+
 	<!-- Add a <table> element where the tree should appear: -->
 	<div id="tree">
 	</div>

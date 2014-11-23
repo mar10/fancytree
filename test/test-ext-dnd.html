@@ -5,7 +5,7 @@
 	<title>Test D'n'D - Fancytree</title>
 
 	<script src="//code.jquery.com/jquery-1.11.1.min.js" type="text/javascript"></script>
-	<script src="//code.jquery.com/ui/1.11.1/jquery-ui.min.js" type="text/javascript"></script>
+	<script src="//code.jquery.com/ui/1.11.2/jquery-ui.min.js" type="text/javascript"></script>
 
 	<link href="../src/skin-win7/ui.fancytree.css" rel="stylesheet" type="text/css">
 	<script src="../src/jquery.fancytree.js" type="text/javascript"></script>
@@ -56,11 +56,13 @@
 
 <script type="text/javascript">
 	$(function(){
+		var count = 1;
 		// Attach the fancytree widget to an existing <div id="tree"> element
 		// and pass the tree options as an argument to the fancytree() function:
 		$("#tree").fancytree({
 			extensions: ["dnd"],
 			checkbox: true,
+//			debugLevel: 1,
 			source: {
 				url: "unit/ajax-tree-plain.json"
 			},
@@ -75,6 +77,8 @@
 				autoExpandMS: 400,
 				draggable: {
 					//zIndex: 1000,
+					// appendTo: "body",
+					// helper: "clone",
 					scroll: false,
 					revert: "invalid"
 				},
@@ -99,7 +103,8 @@
 				dragDrop: function(node, data) {
 					if( !data.otherNode ){
 						// It's a non-tree draggable
-						alert("dropped " + $(data.draggable.element).text());
+						var title = $(data.draggable.element).text() + " (" + (count)++ + ")";
+						node.addNode({title: title}, data.hitMode);
 						return;
 					}
 					data.otherNode.moveTo(node, data.hitMode);
@@ -127,6 +132,14 @@
 				preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
 				preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
 				autoExpandMS: 400,
+				draggable: {
+					//zIndex: 1000,
+					// appendTo: "body",
+					// helper: "clone",
+					scroll: false,
+					revert: "invalid"
+				},
+
 				dragStart: function(node, data) {
 					return true;
 				},

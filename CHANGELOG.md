@@ -1,10 +1,16 @@
 # 2.4.2-0 / Unreleased
-  * [Added] [ext-filter] New option `autoApply` re-applies filter on lazy loading
-  * [Improved] Update to jQuery 1.1.11, jQuery UI 1.11.1
+  * [CHANGED] [ext-persist] overrideSource option now defaults to true
+  * [Added] quicksearch: navigate to next node by typing the first letters
+  * [Added] [ext-filter] Option `autoApply` re-applies filter on lazy loading
+    (on by default)
+  * [Improved] [ext-dnd] Make draggable helper and parent configurable
   * [Improved] #153 Add class `fancytree-unselectable` to respective nodes and
     dimm unselectable checkboxes
+  * [Improved] Update to jQuery 1.1.11, jQuery UI 1.11.2
+  * [Improved] New mode 'firstChild' for node.addNode()
   * [Fixed] #324 Fix problem where minExpandLevel was not expanding root node
   * [Fixed] #300 dnd.focusOnClick for jQuery UI 1.11
+  * [Fixed] #354 [ext-persist] with selectMode 3
 
 # 2.4.1 / 2014-09-23
   * [Fixed] Regression #323
