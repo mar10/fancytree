@@ -164,18 +164,6 @@ span.fancytree-expander {
 .fancytree-exp-edl span.fancytree-expander:hover {
   background-position: -48px -96px;
 }
-.fancytree-loading span.fancytree-expander,
-.fancytree-loading span.fancytree-expander:hover,
-.fancytree-statusnode-wait span.fancytree-icon,
-.fancytree-statusnode-wait span.fancytree-icon:hover {
-  background-image: url("loading.gif");
-  background-position: 0px 0px;
-}
-/* Status node icons */
-span.fancytree-node.fancytree-statusnode-error span.fancytree-icon,
-.fancytree-statusnode-error span.fancytree-node span.fancytree-icon {
-  background-position: 0px -112px;
-}
 /*------------------------------------------------------------------------------
  * Checkbox icon
  *----------------------------------------------------------------------------*/
@@ -197,6 +185,12 @@ span.fancytree-checkbox:hover {
 }
 .fancytree-selected span.fancytree-checkbox:hover {
   background-position: -48px -32px;
+}
+.fancytree-unselectable span.fancytree-checkbox,
+.fancytree-unselectable span.fancytree-checkbox:hover {
+  opacity: 0.4;
+  filter: alpha(opacity=40);
+  background-position: 0px -32px;
 }
 /*------------------------------------------------------------------------------
  * Radiobutton icon
@@ -220,6 +214,10 @@ span.fancytree-checkbox:hover {
 }
 .fancytree-radio .fancytree-selected span.fancytree-checkbox:hover {
   background-position: -48px -48px;
+}
+.fancytree-radio .fancytree-unselectable span.fancytree-checkbox,
+.fancytree-radio .fancytree-unselectable span.fancytree-checkbox:hover {
+  background-position: 0px -48px;
 }
 /*------------------------------------------------------------------------------
  * Node type icon
@@ -268,6 +266,18 @@ span.fancytree-icon {
 }
 .fancytree-ico-ef span.fancytree-icon:hover {
   background-position: -80px -16px;
+}
+.fancytree-loading span.fancytree-expander,
+.fancytree-loading span.fancytree-expander:hover,
+.fancytree-statusnode-wait span.fancytree-icon,
+.fancytree-statusnode-wait span.fancytree-icon:hover {
+  background-image: url("loading.gif");
+  background-position: 0px 0px;
+}
+/* Status node icons */
+.fancytree-statusnode-error span.fancytree-icon,
+.fancytree-statusnode-error span.fancytree-icon:hover {
+  background-position: 0px -112px;
 }
 /*------------------------------------------------------------------------------
  * Node titles and highlighting

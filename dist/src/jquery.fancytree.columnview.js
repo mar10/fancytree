@@ -9,13 +9,32 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.4.1
- * @date 2014-09-23T19:33
+ * @version 2.5.0
+ * @date 2014-11-23T19:12
  */
 
 ;(function($, window, document, undefined) {
 
 "use strict";
+
+// prevent duplicate loading
+// if ( $.ui.fancytree && $.ui.fancytree.version ) {
+//     $.ui.fancytree.warn("Fancytree: duplicate include");
+//     return;
+// }
+
+
+/*******************************************************************************
+ * Private functions and variables
+ */
+/*
+function _assert(cond, msg){
+	msg = msg || "";
+	if(!cond){
+		$.error("Assertion failed " + msg);
+	}
+}
+*/
 
 /*******************************************************************************
  * Private functions and variables

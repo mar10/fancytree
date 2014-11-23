@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.4.1
- * @date 2014-09-23T19:33
+ * @version 2.5.0
+ * @date 2014-11-23T19:12
  */
 
 ;(function($, window, document, undefined) {
@@ -77,14 +77,14 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editStart = function(){
 			dirty: false
 			};
 
-	$.ui.fancytree.assert(!local.currentNode, "recursive edit");
-	local.currentNode = this;
-	local.eventData = eventData;
-
 	// beforeEdit may want to modify the title before editing
 	if( instOpts.beforeEdit.call(node, {type: "beforeEdit"}, eventData) === false ) {
 		return false;
 	}
+	$.ui.fancytree.assert(!local.currentNode, "recursive edit");
+	local.currentNode = this;
+	local.eventData = eventData;
+
 	// Disable standard Fancytree mouse- and key handling
 	tree.widget._unbind();
 	// #116: ext-dnd prevents the blur event, so we have to catch outer clicks
@@ -97,6 +97,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editStart = function(){
 	// Replace node with <input>
 	$input = $("<input />", {
 		"class": "fancytree-edit-input",
+		type: "text",
 		value: unescapeHtml(eventData.orgTitle)
 	});
 	local.eventData.input = $input;

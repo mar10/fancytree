@@ -116,18 +116,16 @@ span.fancytree-expander {
   background-image: none;
   cursor: default;
 }
-.fancytree-loading span.fancytree-expander,
-.fancytree-loading span.fancytree-expander:hover,
-.fancytree-statusnode-wait span.fancytree-icon,
-.fancytree-statusnode-wait span.fancytree-icon:hover {
-  background-image: url("loading.gif");
-}
-/* Status node icons */
 /*------------------------------------------------------------------------------
  * Checkbox icon
  *----------------------------------------------------------------------------*/
 span.fancytree-checkbox {
   margin-left: 0.5em;
+}
+.fancytree-unselectable span.fancytree-checkbox,
+.fancytree-unselectable span.fancytree-checkbox:hover {
+  opacity: 0.4;
+  filter: alpha(opacity=40);
 }
 /*------------------------------------------------------------------------------
  * Radiobutton icon
@@ -148,6 +146,13 @@ span.fancytree-icon {
 }
 /* Documents */
 /* Folders */
+.fancytree-loading span.fancytree-expander,
+.fancytree-loading span.fancytree-expander:hover,
+.fancytree-statusnode-wait span.fancytree-icon,
+.fancytree-statusnode-wait span.fancytree-icon:hover {
+  background-image: url("loading.gif");
+}
+/* Status node icons */
 /*------------------------------------------------------------------------------
  * Node titles and highlighting
  *----------------------------------------------------------------------------*/
