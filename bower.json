@@ -25,7 +25,8 @@
   ],
   "keywords": [
     "ajax",
-    "jquery",
+    "jquery-plugin",
+    "lazy",
     "table",
     "tabletree",
     "tree",

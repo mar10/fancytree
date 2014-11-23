@@ -1,4 +1,5 @@
 # 2.5.1-0 / Unreleased
+  * Publish on npm Registry
 
 # 2.5.0 / 2014-11-23
   * [CHANGED] [ext-persist] overrideSource option now defaults to true
