@@ -131,7 +131,7 @@ var TreePatch = {};
  * @property {Boolean} keyboard Support keyboard navigation (default: true).
  * @property {String} keyPathSeparator (default: "/")
  * @property {Integer} minExpandLevel 2: top-level nodes are not collapsible (default: 1)
- * @property {Boolean} quicksearch navigate to next node by typing the first letters
+ * @property {Boolean} quicksearch navigate to next node by typing the first letters (default: false)
  * @property {object} scrollOfs: optional margins for node.scrollIntoView() (default: {top: 0, bottom: 0})
  * @property {jQuery} scrollParent: scrollable container for node.scrollIntoView() (default: $container)
  * @property {Integer} selectMode 1:single, 2:multi, 3:multi-hier (default: 2)
