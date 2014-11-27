@@ -1,6 +1,7 @@
 # 2.5.1-0 / Unreleased
   * [Added] Option `focusOnSelect` to set focus when node is checked by a mouse 
     click (default: false)
+  * [Improved] #359 Better navigation performance when skipping hidden nodes
   * Publish on npm Registry
 
 # 2.5.0 / 2014-11-23

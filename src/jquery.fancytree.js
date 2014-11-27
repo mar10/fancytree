@@ -1224,6 +1224,11 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	 * @param {boolean} [activate=true]
 	 * @returns {$.Promise}
 	 */
+	// navigate: function(where, activate) {
+	// 	console.time("navigate")
+	// 	this._navigate(where, activate)
+	// 	console.timeEnd("navigate")		
+	// },
 	navigate: function(where, activate) {
 		var i, parents,
 			handled = true,
@@ -1268,7 +1273,11 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 				break;
 			case KC.UP:
 				sib = this.getPrevSibling();
-				while( sib && sib.expanded && sib.children && sib.children.length ){
+				// #359: skip hidden sibling nodes, preventing a _goto() recursion
+				while( sib && !$(sib.span).is(":visible") ) {
+					sib = sib.getPrevSibling();
+				}
+				while( sib && sib.expanded && sib.children && sib.children.length ) {
 					sib = sib.children[sib.children.length - 1];
 				}
 				if( !sib && this.parent && this.parent.parent ){
@@ -1283,6 +1292,10 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 					parents = this.getParentList(false, true);
 					for(i=parents.length-1; i>=0; i--) {
 						sib = parents[i].getNextSibling();
+						// #359: skip hidden sibling nodes, preventing a _goto() recursion
+						while( sib && !$(sib.span).is(":visible") ) {
+							sib = sib.getNextSibling();
+						}
 						if( sib ){ break; }
 					}
 				}
@@ -2010,7 +2023,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 			};
 
 		match = (typeof match === "string") ? _makeNodeTitleStartMatcher(match) : match;
-		startNode = startNode || this.rootNode.getFirstChild();
+		startNode = startNode || this.getFirstChild();
 
 		walkVisible(startNode.parent, parentChildren.indexOf(startNode), function(node){
 			// Stop iteration if we see the start node a second time
@@ -2490,7 +2503,7 @@ $.extend(Fancytree.prototype,
 
 		// Set focus to first node, if no other node has the focus yet
 		if( !node ){
-			this.rootNode.getFirstChild().setFocus();
+			this.getFirstChild().setFocus();
 			node = ctx.node = this.focusNode;
 			node.debug("Keydown force focus on first node");
 		}
