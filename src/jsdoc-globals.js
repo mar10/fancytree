@@ -123,6 +123,7 @@ var TreePatch = {};
  * @property {function} defaultKey callback(node) is called for ner nodes without a key. Must return a new unique key. (default null: generates default keys like that: "_" + counter)
  * @property {Boolean} enableAspx Accept passing ajax data in a property named `d` (default: true).
  * @property {String[]} extensions List of active extensions (default: [])
+ * @property {Boolean} focusOnSelect Set focus when node is checked by a mouse click (default: false)
  * @property {object} fx Animation options, null:off (default: { height: "toggle", duration: 200 })
  * @property {Boolean} generateIds Add `id="..."` to node markup (default: true).
  * @property {Boolean} icons Display node icons  (default: true)

@@ -19,15 +19,15 @@
 
 	<script type="text/javascript">
 	$(function(){
-		var DT = $.ui.fancytree;
-		$.ui.fancytree.debug("Using fancytree " + $.ui.fancytree.version);
+		var FT = $.ui.fancytree;
+		FT.debug("Using fancytree " + FT.version);
 		// attach to all instances
 		$("#tree, #tree3").fancytree({
 			checkbox: true,
 			selectMode: 1,
 			activate: function(event, data){
 				var node = data.node;
-				$.ui.fancytree.debug("activate: event=", event, ", data=", data);
+				FT.debug("activate: event=", event, ", data=", data);
 				if(!$.isEmptyObject(node.data)){
 					alert("custom node data: " + JSON.stringify(node.data));
 				}
@@ -41,7 +41,7 @@
 //          $(this).fancytree("debug", "fancytreeactivate");
 		});
 		var tree = $("div:ui-fancytree").data("ui-fancytree").getTree();
-		DT.debug("Test ':ui-fancytree' expression " + $("div:ui-fancytree").length);
+		FT.debug("Test ':ui-fancytree' expression " + $("div:ui-fancytree").length);
 
 		/* Load tree from Ajax JSON
 		 */

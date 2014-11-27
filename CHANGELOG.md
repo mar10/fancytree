@@ -1,4 +1,6 @@
 # 2.5.1-0 / Unreleased
+  * [Added] Option `focusOnSelect` to set focus when node is checked by a mouse 
+    click (default: false)
   * Publish on npm Registry
 
 # 2.5.0 / 2014-11-23
