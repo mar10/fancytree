@@ -1,6 +1,7 @@
 # 2.5.1-0 / Unreleased
   * [Added] Option `focusOnSelect` to set focus when node is checked by a mouse 
     click (default: false)
+  * [Added] `restore` event, sent after ext-persist has restored the tree state
   * [Improved] #359 Better navigation performance when skipping hidden nodes
   * Publish on npm Registry
 

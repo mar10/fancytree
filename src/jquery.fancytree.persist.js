@@ -284,6 +284,7 @@ $.ui.fancytree.registerExtension({
 						node.setFocus();
 					}
 				}
+				tree._triggerTreeEvent("restore", null, {});
 			});
 		});
 		// Init the tree

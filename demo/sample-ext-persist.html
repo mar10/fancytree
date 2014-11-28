@@ -43,6 +43,12 @@
 			ajax: {
 				debugDelay: [200, 1000]
 			},
+			init: function(event, data) {
+				data.tree.debug("init", data);
+			},
+			restore: function(event, data) {
+				data.tree.debug("restore", data);
+			},
 			activate: function(event, data) {
 //				alert("activate " + data.node);
 			},

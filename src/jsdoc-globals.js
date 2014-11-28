@@ -190,6 +190,7 @@ var FancytreeOptions = {};
  * @property {function} renderColumns (used by table extension)
  * @property {function} renderNode Allow tweaking after node state was rendered (NOTE: this event is only available as callback, but not for bind())
  * @property {function} renderTitle Allow replacing the `&lt;span class='fancytree-title'>` markup (NOTE: this event is only available as callback, but not for bind())
+ * @property {function} restore ext-persist has expanded, selected, and activated the previous state
  * @property {function} select `data.node` was selected
  *
  */
