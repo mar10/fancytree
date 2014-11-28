@@ -2348,9 +2348,9 @@ Fancytree.prototype = /** @lends Fancytree# */{
 		return res;
 	},
 	/* _trigger a widget event with additional tree data. */
-	_triggerTreeEvent: function(type, originalEvent) {
+	_triggerTreeEvent: function(type, originalEvent, extra) {
 //		this.debug("_trigger(" + type + ")", ctx);
-		var ctx = this._makeHookContext(this, originalEvent),
+		var ctx = this._makeHookContext(this, originalEvent, extra),
 			res = this.widget._trigger(type, originalEvent, ctx);
 
 		if(res !== false && ctx.result !== undefined){
@@ -3671,10 +3671,10 @@ $.extend(Fancytree.prototype,
 			if( ctx.options.selectMode === 3 ){
 				tree.rootNode.fixSelection3FromEndNodes();
 			}
-			tree._triggerTreeEvent("init", true);
+			tree._triggerTreeEvent("init", null, { status: true });
 		}).fail(function(){
 			tree.render();
-			tree._triggerTreeEvent("init", false);
+			tree._triggerTreeEvent("init", null, { status: false });
 		});
 		return dfd;
 	},

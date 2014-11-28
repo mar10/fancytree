@@ -84,7 +84,7 @@ test("Static members", function() {
 
 test("Create fancytree", function() {
 	tools.setupAsync();
-	expect(25);
+	expect(26);
 
 	var widget,
 		insideConstructor = true;
@@ -108,6 +108,7 @@ test("Create fancytree", function() {
 		},
 		init: function(event, data){
 			equal(event.type, "fancytreeinit", "receive `init` callback");
+			equal(data.status, true, "`init` status is true");
 			ok(insideConstructor, "running synchronously");
 			ok(!!data.tree.rootNode, "`data.tree` is the tree object");
 			equal(data.options.source.length, TESTDATA_TOPNODES, "data.options.contains widget options");
