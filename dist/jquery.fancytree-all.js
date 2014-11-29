@@ -7,8 +7,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.5.0
- * @date 2014-11-23T19:12
+ * @version 2.6.0
+ * @date 2014-11-29T08:33
  */
 
 /** Core Fancytree module.
@@ -1224,6 +1224,11 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	 * @param {boolean} [activate=true]
 	 * @returns {$.Promise}
 	 */
+	// navigate: function(where, activate) {
+	// 	console.time("navigate")
+	// 	this._navigate(where, activate)
+	// 	console.timeEnd("navigate")
+	// },
 	navigate: function(where, activate) {
 		var i, parents,
 			handled = true,
@@ -1268,7 +1273,11 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 				break;
 			case KC.UP:
 				sib = this.getPrevSibling();
-				while( sib && sib.expanded && sib.children && sib.children.length ){
+				// #359: skip hidden sibling nodes, preventing a _goto() recursion
+				while( sib && !$(sib.span).is(":visible") ) {
+					sib = sib.getPrevSibling();
+				}
+				while( sib && sib.expanded && sib.children && sib.children.length ) {
 					sib = sib.children[sib.children.length - 1];
 				}
 				if( !sib && this.parent && this.parent.parent ){
@@ -1283,6 +1292,10 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 					parents = this.getParentList(false, true);
 					for(i=parents.length-1; i>=0; i--) {
 						sib = parents[i].getNextSibling();
+						// #359: skip hidden sibling nodes, preventing a _goto() recursion
+						while( sib && !$(sib.span).is(":visible") ) {
+							sib = sib.getNextSibling();
+						}
 						if( sib ){ break; }
 					}
 				}
@@ -2010,7 +2023,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 			};
 
 		match = (typeof match === "string") ? _makeNodeTitleStartMatcher(match) : match;
-		startNode = startNode || this.rootNode.getFirstChild();
+		startNode = startNode || this.getFirstChild();
 
 		walkVisible(startNode.parent, parentChildren.indexOf(startNode), function(node){
 			// Stop iteration if we see the start node a second time
@@ -2335,9 +2348,9 @@ Fancytree.prototype = /** @lends Fancytree# */{
 		return res;
 	},
 	/* _trigger a widget event with additional tree data. */
-	_triggerTreeEvent: function(type, originalEvent) {
+	_triggerTreeEvent: function(type, originalEvent, extra) {
 //		this.debug("_trigger(" + type + ")", ctx);
-		var ctx = this._makeHookContext(this, originalEvent),
+		var ctx = this._makeHookContext(this, originalEvent, extra),
 			res = this.widget._trigger(type, originalEvent, ctx);
 
 		if(res !== false && ctx.result !== undefined){
@@ -2389,11 +2402,14 @@ $.extend(Fancytree.prototype,
 		if( targetType === "expander" ) {
 			// Clicking the expander icon always expands/collapses
 			this._callHook("nodeToggleExpanded", ctx);
-//            this._callHook("nodeSetFocus", ctx, true); // DT issue 95
+
 		} else if( targetType === "checkbox" ) {
 			// Clicking the checkbox always (de)selects
 			this._callHook("nodeToggleSelected", ctx);
-			this._callHook("nodeSetFocus", ctx, true); // DT issue 95
+			if( ctx.options.focusOnSelect ) { // #358
+				this._callHook("nodeSetFocus", ctx, true);
+			}
+
 		} else {
 			// Honor `clickFolderMode` for
 			expand = false;
@@ -2487,7 +2503,7 @@ $.extend(Fancytree.prototype,
 
 		// Set focus to first node, if no other node has the focus yet
 		if( !node ){
-			this.rootNode.getFirstChild().setFocus();
+			this.getFirstChild().setFocus();
 			node = ctx.node = this.focusNode;
 			node.debug("Keydown force focus on first node");
 		}
@@ -3655,10 +3671,10 @@ $.extend(Fancytree.prototype,
 			if( ctx.options.selectMode === 3 ){
 				tree.rootNode.fixSelection3FromEndNodes();
 			}
-			tree._triggerTreeEvent("init", true);
+			tree._triggerTreeEvent("init", null, { status: true });
 		}).fail(function(){
 			tree.render();
-			tree._triggerTreeEvent("init", false);
+			tree._triggerTreeEvent("init", null, { status: false });
 		});
 		return dfd;
 	},
@@ -3735,6 +3751,7 @@ $.widget("ui.fancytree",
 		generateIds: false,
 		icons: true,
 		idPrefix: "ft_",
+		focusOnSelect: false,
 		keyboard: true,
 		keyPathSeparator: "/",
 		minExpandLevel: 1,
@@ -4002,7 +4019,7 @@ $.extend($.ui.fancytree,
 	/** @lends Fancytree_Static# */
 	{
 	/** @type {string} */
-	version: "2.5.0",      // Set to semver by 'grunt release'
+	version: "2.6.0",      // Set to semver by 'grunt release'
 	/** @type {string} */
 	buildType: "production", // Set to 'production' by 'grunt build'
 	/** @type {int} */
@@ -4301,8 +4318,8 @@ $.extend($.ui.fancytree,
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.5.0
- * @date 2014-11-23T19:12
+ * @version 2.6.0
+ * @date 2014-11-29T08:33
  */
 
 // To keep the global namespace clean, we wrap everything in a closure
@@ -4477,8 +4494,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.5.0
- * @date 2014-11-23T19:12
+ * @version 2.6.0
+ * @date 2014-11-29T08:33
  */
 
 ;(function($, window, document, undefined) {
@@ -4929,8 +4946,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.5.0
- * @date 2014-11-23T19:12
+ * @version 2.6.0
+ * @date 2014-11-29T08:33
  */
 
 ;(function($, window, document, undefined) {
@@ -5493,8 +5510,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.5.0
- * @date 2014-11-23T19:12
+ * @version 2.6.0
+ * @date 2014-11-29T08:33
  */
 
 ;(function($, window, document, undefined) {
@@ -5840,8 +5857,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.5.0
- * @date 2014-11-23T19:12
+ * @version 2.6.0
+ * @date 2014-11-29T08:33
  */
 
 ;(function($, window, document, undefined) {
@@ -6015,8 +6032,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.5.0
- * @date 2014-11-23T19:12
+ * @version 2.6.0
+ * @date 2014-11-29T08:33
  */
 
 ;(function($, window, document, undefined) {
@@ -6148,8 +6165,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.5.0
- * @date 2014-11-23T19:12
+ * @version 2.6.0
+ * @date 2014-11-29T08:33
  */
 
 ;(function($, window, document, undefined) {
@@ -6350,8 +6367,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.5.0
- * @date 2014-11-23T19:12
+ * @version 2.6.0
+ * @date 2014-11-29T08:33
  */
 
 ;(function($, window, document, undefined) {
@@ -6623,6 +6640,7 @@ $.ui.fancytree.registerExtension({
 						node.setFocus();
 					}
 				}
+				tree._triggerTreeEvent("restore", null, {});
 			});
 		});
 		// Init the tree
@@ -6704,8 +6722,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.5.0
- * @date 2014-11-23T19:12
+ * @version 2.6.0
+ * @date 2014-11-29T08:33
  */
 
 ;(function($, window, document, undefined) {
@@ -6830,7 +6848,7 @@ $.ui.fancytree.registerExtension({
 //    },
 	nodeRemoveChildMarkup: function(ctx) {
 		var node = ctx.node;
-//		DT.debug("nodeRemoveChildMarkup()", node.toString());
+//		node.debug("nodeRemoveChildMarkup()");
 		node.visit(function(n){
 			if(n.tr){
 				$(n.tr).remove();
@@ -6840,7 +6858,7 @@ $.ui.fancytree.registerExtension({
 	},
 	nodeRemoveMarkup: function(ctx) {
 		var node = ctx.node;
-//		DT.debug("nodeRemoveMarkup()", node.toString());
+//		node.debug("nodeRemoveMarkup()");
 		if(node.tr){
 			$(node.tr).remove();
 			node.tr = null;
@@ -7066,8 +7084,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.5.0
- * @date 2014-11-23T19:12
+ * @version 2.6.0
+ * @date 2014-11-29T08:33
  */
 
 ;(function($, window, document, undefined) {

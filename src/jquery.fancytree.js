@@ -1227,7 +1227,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	// navigate: function(where, activate) {
 	// 	console.time("navigate")
 	// 	this._navigate(where, activate)
-	// 	console.timeEnd("navigate")		
+	// 	console.timeEnd("navigate")
 	// },
 	navigate: function(where, activate) {
 		var i, parents,
