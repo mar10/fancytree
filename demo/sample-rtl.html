@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
-	<title>Fancytree - Example: Table</title>
+	<title>Fancytree - Example: RTL</title>
 
 	<script src="//code.jquery.com/jquery-1.11.1.min.js" type="text/javascript"></script>
 	<script src="//code.jquery.com/ui/1.11.2/jquery-ui.min.js" type="text/javascript"></script>
@@ -41,6 +41,7 @@
 			$("#tree").fancytree({
 				extensions: ["dnd"],
 				dnd: {
+					focusOnClick: true,
 					dragStart: function(node, data) {
 						return true;
 					},
@@ -51,15 +52,24 @@
 						data.otherNode.moveTo(node, data.hitMode);
 					}
 				},
-				init: function(){
+				init: function(event, data){
 					// Set RTL attribute on init
 					$(this).find(".fancytree-container").attr("DIR", "RTL").addClass("fancytree-rtl");
 				},
-				keydown: function(node, event) {
+				keydown: function(event, data) {
+					var KC = $.ui.keyCode,
+						oe = event.originalEvent;
+						
+					// Swap LEFT/RIGHT keys
 					switch( event.which ) {
-					// TODO: swap left/right key
-					case $.ui.keyCode.LEFT:
-						alert("left");
+					case KC.LEFT:
+	    				oe.keyCode = KC.RIGHT;
+						oe.which = KC.RIGHT;
+						break;
+					case KC.RIGHT:
+	    				oe.keyCode = KC.LEFT;
+						oe.which = KC.LEFT;
+						break;
 					}
 				}
 			});
