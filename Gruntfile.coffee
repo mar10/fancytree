@@ -314,6 +314,18 @@ module.exports = (grunt) ->
                       return dest + folder + filename + ".min.js"
               }
               ]
+        # map_all:
+        #     options:
+        #         compress: false
+        #         mangle: false
+        #         sourceMap: true
+        #         preserveComments: 'all'
+        #     files: [
+        #       {
+        #           src: 'build/jquery.fancytree-all.min.js'
+        #           dest: 'build/jquery.fancytree-all.min.js.map'
+        #       }
+        #       ]
 
     watch:
         less:
