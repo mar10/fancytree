@@ -22,6 +22,7 @@
 	<script src="../src/jquery.fancytree.js" type="text/javascript"></script>
 	<script src="../src/jquery.fancytree.edit.js" type="text/javascript"></script>
 	<script src="../src/jquery.fancytree.glyph.js" type="text/javascript"></script>
+	<script src="../src/jquery.fancytree.wide.js" type="text/javascript"></script>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
 	<link href="../lib/prettify.css" rel="stylesheet">
@@ -48,9 +49,10 @@ body {
 	$(function(){
 		// Initialize Fancytree
 		$("#tree").fancytree({
-			extensions: ["glyph", "edit"],
+			extensions: ["glyph", "edit", "wide"],
 			checkbox: true,
 			selectMode: 2,
+			toggleEffect: { effect: "drop", options: {direction: "left"}, duration: 400 },
 			glyph: {
 				map: {
 					doc: "glyphicon glyphicon-file",
@@ -69,6 +71,11 @@ body {
 					loading: "glyphicon glyphicon-refresh"
 					// loading: "icon-spinner icon-spin"
 				}
+			},
+			wide: {
+				iconWidth: "1em",     // Adjust this if @fancy-icon-width != "16px"
+				iconSpacing: "0.5em", // Adjust this if @fancy-icon-spacing != "3px"
+				levelOfs: "1.5em"     // Adjust this if ul padding != "16px"
 			},
 //			source: {url: "ajax-tree-plain.json", debugDelay: 1000},
 			source: {url: "ajax-tree-taxonomy.json", debugDelay: 1000},

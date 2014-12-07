@@ -74,7 +74,7 @@ $.ui.fancytree.registerExtension({
 		// Force some required options
 		tree.widget.options.autoCollapse = true;
 //      tree.widget.options.autoActivate = true;
-		tree.widget.options.fx = false;
+		tree.widget.options.toggleEffect = false;
 		tree.widget.options.clickFolderMode = 1;
 
 		// Make sure that only active path is expanded when a node is activated:

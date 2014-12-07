@@ -1,4 +1,14 @@
-# 2.5.1-0 / Unreleased
+# 2.6.1-0 / Unreleased
+  * [CHANGED] Dropped `fx` option. Use `toggleEffect` instead.
+  * [CHANGED] 'win8' and 'bootstrap' skins where modified to highlight the 
+    title span instead of the node span, in order to be compatible with
+    [ext-wide]. The original skins are available as 'skin-win8-n' and
+    'skin-bootstrap-n' respectively.
+  * [Added] ext-wide extension (experimental)
+  * [Fixed] #246 Gaps when filtering in hide mode (patch by @lefunque)
+  * [Fixed] #287 wrong image on hovers
+
+# 2.6.0 / 2014-11-29
   * [Added] Option `focusOnSelect` to set focus when node is checked by a mouse 
     click (default: false)
   * [Added] `restore` event, sent after ext-persist has restored the tree state
@@ -60,6 +70,7 @@
   * [Fixed] #250: Children lazy empty nodes remain checked when parent is 
     unchecked with hierarchical multi-selection
   * [Fixed] #272 Navigation in filtered trees
+
 
 # 2.1.0 / 2014-05-29
   * [Added] #210: [ext-persist] optionally store information in sessionStorage or localStorage

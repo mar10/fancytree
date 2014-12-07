@@ -124,7 +124,6 @@ var TreePatch = {};
  * @property {Boolean} enableAspx Accept passing ajax data in a property named `d` (default: true).
  * @property {String[]} extensions List of active extensions (default: [])
  * @property {Boolean} focusOnSelect Set focus when node is checked by a mouse click (default: false)
- * @property {object} fx Animation options, null:off (default: { height: "toggle", duration: 200 })
  * @property {Boolean} generateIds Add `id="..."` to node markup (default: true).
  * @property {Boolean} icons Display node icons  (default: true)
  * @property {String} idPrefix (default: "ft_")
@@ -140,6 +139,7 @@ var TreePatch = {};
  * @property {object} strings Translation table
  * @property {Boolean} tabbable Add tabindex='0' to container, so tree can be reached using TAB
  * @property {Boolean} titlesTabbable Add tabindex='0' to node title span, so it can receive keyboard focus
+ * @property {object} toggleEffect Animation options, false:off (default: { effect: "blind", options: {direction: "vertical", scale: "box"}, duration: 200 })
  * @property {function} EVENT
  *
  */

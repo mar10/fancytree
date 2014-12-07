@@ -37,7 +37,7 @@ function _resetEmptyTree(options){
 
 	opts = $.extend({
 		source: [{title: "root node", key: "root"}],
-		fx: false
+		toggleEffect: false
 	}, options);
 	$tree.fancytree(opts);
 	return $tree.fancytree("getTree");

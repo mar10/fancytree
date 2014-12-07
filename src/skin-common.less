@@ -5,16 +5,22 @@
  ******************************************************************************/
 
 // Variables (defaults, may be overwritten by the including .less files)
-@fancy-use-sprites: true;  // false: suppress all background positions
-@fancy-hide-connectors: true; // false: show vertical connector lines
+@fancy-use-sprites: true;      // false: suppress all background positions
+@fancy-hide-connectors: true;  // false: show vertical connector lines
 
+@fancy-level-indent: 16px;
+@fancy-line-height: 16px;      // height of a nodes selection bar including borders
+@fancy-node-v-spacing: 1px;    // gap between two node borders
 @fancy-icon-width: 16px;
 @fancy-icon-height: 16px;
-@fancy-icon-margin-left: 3px;
-@fancy-icon-margin-top: 1px;
-@fancy-line-height: 16px;
+@fancy-icon-spacing: 3px;      // margin between icon/icon or icon/title
+@fancy-icon-ofs-top: 0px;      // extra vertical offset for expander, checkbox and icon
+@fancy-title-ofs-top: 0px;     // extra vertical offset for title
 @fancy-node-border-width: 1px;
+@fancy-node-border-radius: 0px;
 @fancy-node-outline-width: 1px;
+
+// @fancy-line-ofs-top: (@fancy-line-height - @fancy-icon-height) / 2;
 
 @fancy-image-dir: ".";
 @fancy-loading-url: url("@{fancy-image-dir}/loading.gif");
@@ -25,48 +31,34 @@
 //------------------------------------------------------------------------------
 // Mixins
 //------------------------------------------------------------------------------
-
-// background-position mixin for CSS sprites
 .setBgPos(@x, @y, @cond:true) when (@cond){
 	background-position: (@x * -@fancy-icon-width) (@y * -@fancy-icon-height);
 }
 .clearBgImage(@cond:true) when (@cond){
 	background-image: none;
 }
-// .setBgImageUrl(@url, @cond:true) when (@cond){
-// 	background-image: url(@url);
-// }
 .setBgImageUrl(@url) when (@fancy-use-sprites){
 	background-image: url("@{fancy-image-dir}/@{url}");
 }
-
-// background-position mixin for CSS sprites
 .useSprite(@x, @y) when (@fancy-use-sprites){
 	.setBgPos(@x, @y);
 }
-
-//  
-.rounded-corners (@radius) {
+.rounded-corners(@radius) {
   -webkit-border-radius: @radius;
   -moz-border-radius: @radius;
   -ms-border-radius: @radius;
   -o-border-radius: @radius;
   border-radius: @radius;
 }
-
-//
 .spanStyleMixin(@color, @bgcolor, @bordercolor){
 	border-color: @bordercolor;
 	background: @bgcolor;
 	color: @color;
 }
 .spanStyleMixin(@color, @bgcolor, @bordercolor, @startColor, @stopColor){
-	
 	.spanStyleMixin(@color, @bgcolor, @bordercolor);
-
 	// @c-start: argb(@startColor);
 	// @c-end: argb(@stopColor);
-
 	background: -moz-linear-gradient(top, @startColor 0%, @stopColor 100%); // FF3.6+
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,@startColor), color-stop(100%,@stopColor)); // Chrome,Safari4+
 	background: -webkit-linear-gradient(top, @startColor 0%,@stopColor 100%); // Chrome10+,Safari5.1+
@@ -101,7 +93,7 @@ ul.fancytree-container {
 	min-height: 0%; // #192
 	position: relative; // #235
 	ul {
-		padding: 0 0 0 16px;
+		padding: 0 0 0 @fancy-level-indent;
 		margin: 0;
 	}
 	li {
@@ -118,7 +110,7 @@ ul.fancytree-container {
 		background-image: none;  // no v-lines
 
 		margin: 0;
-		padding: 1px 0 0 0;
+//		padding: 1px 0 0 0; // issue #246
 	}
 	// Suppress lines for last child node
 	li.fancytree-lastsib {
@@ -163,9 +155,10 @@ span.fancytree-drag-helper-img,
 }
 span.fancytree-icon,
 span.fancytree-checkbox,
+span.fancytree-expander,
 span.fancytree-radio,
 span.fancytree-custom-icon {
-	margin-top: @fancy-icon-margin-top;
+	margin-top: @fancy-icon-ofs-top;
 }
 /* Used by iconclass option */
 span.fancytree-custom-icon {
@@ -175,8 +168,8 @@ span.fancytree-custom-icon {
 img.fancytree-icon {
 	width: @fancy-icon-width;
 	height: @fancy-icon-height;
-	margin-left: @fancy-icon-margin-left;
-	margin-top: @fancy-icon-margin-top;
+	margin-left: @fancy-icon-spacing;
+	margin-top: @fancy-icon-ofs-top;
 	vertical-align: top;
 	border-style: none;
 }
@@ -269,7 +262,7 @@ span.fancytree-expander {
  *----------------------------------------------------------------------------*/
 
 span.fancytree-checkbox {
-	margin-left: @fancy-icon-margin-left;
+	margin-left: @fancy-icon-spacing;
 	.useSprite(0, 2);
 	&:hover { .useSprite(1, 2); }
 }
@@ -332,7 +325,7 @@ span.fancytree-checkbox {
  *----------------------------------------------------------------------------*/
 
 span.fancytree-icon { // Default icon
-	margin-left: @fancy-icon-margin-left;
+	margin-left: @fancy-icon-spacing;
 	.useSprite(0, 0);
 }
 
@@ -402,26 +395,29 @@ span.fancytree-node {
 	/* See #117 */
 	display: inherit; // #117, resolves to 'display: list-item;' for standard trees
 	width: 100%;
-	// border: @fancy-node-border-width solid transparent;  /* avoid jumping, when a border is added on hover */
+	margin-top: @fancy-node-v-spacing;
+	min-height: @fancy-line-height;
 }
-
 span.fancytree-title {
-	display: inline-block; // Better alignment, when title contains <br>
-	// vertical-align: top;
-	padding-left: 3px;
-	padding-right: 3px; // Otherwise italic font will be outside bounds
-	//	line-height: 16px; // should be the same as img height, in case 16 px
 	color: black; // inherit doesn't work on IE
+	cursor: pointer;
+	display: inline-block; // Better alignment, when title contains <br>
 	vertical-align: top;
-	margin: 0px;
-	margin-left: 3px;
+	min-height: @fancy-line-height;
+	padding: 0 3px 0 3px; // Otherwise italic font will be outside right bounds
+	// padding-left: 3px;
+	// padding-right: 3px; // Otherwise italic font will be outside bounds
+	margin: @fancy-title-ofs-top 0 0 @fancy-icon-spacing;
+	// margin: 0px;
+	// margin-top: @fancy-line-ofs-top;
+	// margin-left: @fancy-icon-spacing;
+    border: @fancy-node-border-width solid transparent;  // avoid jumping, when a border is added on hover
+    .rounded-corners(@fancy-node-border-radius);
 //  outline: 0; // @ Firefox, prevent dotted border after click 
 // Set transparent border to prevent jumping when active node gets a border
 //	   (we can do this, because this theme doesn't use vertical lines)
 //	border: 1px solid white; // Note: 'transparent' would not work in IE6
-	cursor: pointer;
 }
-
 span.fancytree-node.fancytree-error span.fancytree-title {
 	color: red;
 }
@@ -537,7 +533,7 @@ table.fancytree-ext-columnview {
 				background-image: none;  /* no v-lines */
 
 				margin: 0;
-				padding: 1px 0 0 0;
+//				padding: 1px 0 0 0;  // issue #246
 			}
 		}
 	}
@@ -602,22 +598,30 @@ table.fancytree-ext-columnview {
 /*------------------------------------------------------------------------------
  * 'wide' extension
  *----------------------------------------------------------------------------*/
-// ul.fancytree-container span.fancytree-node >span,
-ul.fancytree-ext-wide span.fancytree-node >span {
-	position: relative;
-	z-index: 2;
-}
-// ul.fancytree-container span.fancytree-node span.fancytree-title,
-ul.fancytree-ext-wide span.fancytree-node span.fancytree-title {
-	position: relative;
-	z-index: 1;
-	width: 100%;
-	padding-left: 503px;
-	margin-left: -500px;
 
-// 	cursor: pointer;
-// 	position: absolute;
-// 	left: 0px;
-// //	-moz-user-select: none;
-// 	box-sizing: border-box;
+ul.fancytree-ext-wide {
+	position: relative;
+	min-width: 100%;
+	z-index: 2;
+
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+
+	span.fancytree-node >span {
+		position: relative;
+		z-index: 2;
+	}
+	span.fancytree-node span.fancytree-title {
+		position: absolute; // Allow left: 0. Note: prevents smooth dropdown animation
+		z-index: 1; // Behind expander and checkbox
+		left: 0px;
+		width: 100%;
+		margin-left: 0;
+		margin-right: 0;
+
+		-webkit-box-sizing: border-box;
+		-moz-box-sizing: border-box;
+		box-sizing: border-box;
+	}
 }

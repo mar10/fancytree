@@ -5,15 +5,16 @@
  * the LESS templates.
  */
 
-// Dynatree Vista styles
+// Fancytree Win7 styles
 
 // both: 
-//    unselected background: #FCFCFC 'nearly white'
-//    hover bar (unselected, inactive): #F8FCFE..#EFF9FE (border: #D8F0FA) 'very light blue'
+//    unselected background: #FCFCFC 'nearly white', no border
+//
+//    hover bar (unselected, inactive): #fcfdfe..#EFF9FE (border: #b8d6fb) 'very light blue'
 //         background: #f8fcfe; //
 //         background: -moz-linear-gradient(top, #f8fcfe 0%, #eff9fe 100%); 
 
-//    active node: #F6FBFD..#D5EFFC (border: #99DEFD)  'light blue'
+//    active node: #F6FBFD..#D5EFFC (border: #719acb)  'light blue'
 //         background: #f6fbfd; 
 //         background: -moz-linear-gradient(top, #f6fbfd 0%, #d5effc 100%);
 
@@ -47,67 +48,54 @@
 // after where it is used.
 @fancy-use-sprites: true;  
 @fancy-hide-connectors: true;
+
+@fancy-line-height: 20px;      // height of a nodes selection bar including borders
+@fancy-node-v-spacing: 1px;    // gap between two node borders
 @fancy-icon-width: 16px;
 @fancy-icon-height: 16px;
-@fancy-line-height: 16px;
-@fancy-icon-margin-left: 3px;
+@fancy-icon-spacing: 3px;      // margin between icon/icon or icon/title
+@fancy-icon-ofs-top: 2px;      // extra vertical offset for expander, checkbox and icon
+@fancy-title-ofs-top: 0px;     // extra vertical offset for title
+@fancy-node-border-width: 1px;
+@fancy-node-border-radius: 3px;
+@fancy-node-outline-width: 1px;
 
+
+ul.fancytree-container {
+
+}
 
 /*******************************************************************************
  * Node titles
  */
 span.fancytree-title {
-  border: @fancy-node-border-width solid transparent;  // avoid jumping, when a border is added on hover
-  border-radius: 3px;
 }
-span.fancytree-title:hover {
-  .spanStyleMixin(inherit, #f8fcfe, #D8F0FA, #f8fcfe, #eff9fe);
-}
-span.fancytree-focused span.fancytree-title {
-  outline: 1px dotted black;
-}
-
-
-// Safari does not support outline on a tags?
-// @media screen and (-webkit-min-device-pixel-ratio:0) {
-//   span.fancytree-focused a:link
-//   {
-//     border: 1px dotted black;
-//   }
-// }
-
-
 // active nodes inside an UN-focused tree are gray instead of blue
-span.fancytree-active .fancytree-title {
-  .spanStyleMixin(inherit, #e5e5e5, #d9d9d9, #fafafb, #e5e5e5);
-}
-
-.fancytree-treefocus span.fancytree-active .fancytree-title,
+span.fancytree-active .fancytree-title,
 span.fancytree-selected .fancytree-title {
-  .spanStyleMixin(inherit, #f6fbfd, #99defd, #f6fbfd, #d5effc);
+    .spanStyleMixin(inherit, #e5e5e5, #d9d9d9, #fafafb, #e5e5e5);
 }
-
+span.fancytree-selected .fancytree-title {
+    font-style: italic;
+}
+// Markers inside an active tree
+.fancytree-treefocus {
+    span.fancytree-active .fancytree-title,
+    span.fancytree-selected .fancytree-title {
+        .spanStyleMixin(inherit, #f6fbfd, #99defd, #f6fbfd, #d5effc);
+    }
+    span.fancytree-focused span.fancytree-title {
+        border: @fancy-node-border-width solid #719acb;
+    }
+}
+// Hover is always colored (even if tree is inactive)
+span.fancytree-title:hover {
+    .spanStyleMixin(inherit, #f8fcfe, #d8f0fa, #f8fcfe, #eff9fe);
+}
 span.fancytree-active .fancytree-title:hover,
-span.fancytree-active.fancytree-focused .fancytree-title,
-span.fancytree-selected .fancytree-title:hover,
-span.fancytree-selected.fancytree-focused .fancytree-title {
-  .spanStyleMixin(inherit, #f2f9fd, #B6E6FB, #f2f9fd, #c4e8fa);
+span.fancytree-selected .fancytree-title:hover {
+    .spanStyleMixin(inherit, #f2f9fd, #719acb, #f2f9fd, #c4e8fa);
 }
-
-// File Explorer does not distinguish selected and active (if multiple nodes are selected)
-// span.fancytree-active .fancytree-title,
-// span.fancytree-active.fancytree-focused .fancytree-title {
-//   .spanStyleMixin(inherit, #daedff, #3399FF, #daedff, #b4d9ff);
-// }
-
-.fancytree-selected .fancytree-title {
-  font-style: italic;
-}
-.fancytree-has-children .fancytree-title {
-}
-.fancytree-expanded .fancytree-title {
-}
-
 
 /*******************************************************************************
  * 'table' extension
@@ -115,11 +103,11 @@ span.fancytree-selected.fancytree-focused .fancytree-title {
 
 table.fancytree-ext-table tbody {
   tr td {
-    border: 1px solid #EDEDED;
+    border: 1px solid #ededed;
   }
   tr:hover  {
     .spanStyleMixin(inherit, #f8fcfe, inherit, #f8fcfe, #eff9fe);
-    outline: 1px solid #D8F0FA;
+    outline: 1px solid #d8f0fa;
   }
   // tr:hover td {
   //   outline: 1px solid #D8F0FA;

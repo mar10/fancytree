@@ -1761,16 +1761,19 @@ function Fancytree(widget) {
 	this.widget = widget;
 	this.$div = widget.element;
 	this.options = widget.options;
-	if( this.options && $.isFunction(this.options.lazyload) ) {
-		if( ! $.isFunction(this.options.lazyLoad ) ) {
+	if( this.options ) {
+		if(  $.isFunction(this.options.lazyload ) && !$.isFunction(this.options.lazyLoad) ) {
 			this.options.lazyLoad = function() {
 				FT.warn("The 'lazyload' event is deprecated since 2014-02-25. Use 'lazyLoad' (with uppercase L) instead.");
-				widget.options.lazyload.apply(this, arguments);
+				return widget.options.lazyload.apply(this, arguments);
 			};
 		}
-	}
-	if( this.options && $.isFunction(this.options.loaderror) ) {
-		$.error("The 'loaderror' event was renamed since 2014-07-03. Use 'loadError' (with uppercase E) instead.");
+		if( $.isFunction(this.options.loaderror) ) {
+			$.error("The 'loaderror' event was renamed since 2014-07-03. Use 'loadError' (with uppercase E) instead.");
+		}
+		if( this.options.fx !== undefined ) {
+			FT.warn("The 'fx' options was replaced by 'toggleEffect' since 2014-11-30.");
+		}
 	}
 	this.ext = {}; // Active extension instances
 	// allow to init tree.data.foo from <div data-foo=''>
@@ -3337,7 +3340,8 @@ $.extend(Fancytree.prototype,
 		});
 		// vvv Code below is executed after loading finished:
 		_afterLoad = function(callback){
-			var duration, easing, isVisible, isExpanded;
+			var isVisible, isExpanded,
+				effect = opts.toggleEffect;
 
 			node.expanded = flag;
 			// Create required markup, but make sure the top UL is hidden, so we
@@ -3361,14 +3365,20 @@ $.extend(Fancytree.prototype,
 				if ( isVisible === isExpanded ) {
 					node.warn("nodeSetExpanded: UL.style.display already set");
 
-				} else if ( !opts.fx || noAnimation ) {
+				} else if ( !effect || noAnimation ) {
 					node.ul.style.display = ( node.expanded || !parent ) ? "" : "none";
 
 				} else {
-					duration = opts.fx.duration || 200;
-					easing = opts.fx.easing;
+					// The UI toggle() effect works with the ext-wide extension,
+					// while jQuery.animate() has problems when the title span
+					// has positon: absolute
+
+					// duration = opts.fx.duration || 200;
+					// easing = opts.fx.easing;
+					// $(node.ul).animate(opts.fx, duration, easing, function(){
+
 					// node.debug("nodeSetExpanded: animate start...");
-					$(node.ul).animate(opts.fx, duration, easing, function(){
+					$(node.ul).toggle(effect.effect, effect.options, effect.duration, function(){
 						// node.debug("nodeSetExpanded: animate done");
 						callback();
 					});
@@ -3747,7 +3757,10 @@ $.widget("ui.fancytree",
 		disabled: false, // TODO: required anymore?
 		enableAspx: true, // TODO: document
 		extensions: [],
-		fx: { height: "toggle", duration: 200 },
+		// fx: { height: "toggle", duration: 200 },
+		// toggleEffect: { effect: "drop", options: {direction: "left"}, duration: 200 },
+		// toggleEffect: { effect: "slide", options: {direction: "up"}, duration: 200 },
+		toggleEffect: { effect: "blind", options: {direction: "vertical", scale: "box"}, duration: 200 },
 		generateIds: false,
 		icons: true,
 		idPrefix: "ft_",

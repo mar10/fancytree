@@ -1,5 +1,5 @@
 /*!
- * Fancytree "bootstrap" skin.
+ * Fancytree "bootstrap" skin (highlighting the node span instead of title-only).
  *
  * DON'T EDIT THE CSS FILE DIRECTLY, since it is automatically generated from
  * the LESS templates.
@@ -27,7 +27,7 @@
 @fancy-icon-width: 1em;
 @fancy-icon-height: 1em;
 @fancy-line-height: 1em;
-@fancy-icon-margin-left: 0.5em;
+@fancy-icon-spacing: 0.5em;
 
 ul.fancytree-container ul {
 	padding: 0 0 0 1.5em;
@@ -57,47 +57,42 @@ ul.fancytree-container ul {
 @border-radius-small: 3px;
 /////////////
 
-span.fancytree-title {
+span.fancytree-node {
 	border: @fancy-node-border-width solid transparent;  // avoid jumping, when a border is added on hover
 	border-radius: @border-radius-small;
-	outline-radius: @border-radius-small;
 	padding-left: 8px;
 }
-// span.fancytree-title {
-// 	border-radius: @border-radius-small;
-// }
+span.fancytree-title {
+	border-radius: @border-radius-small;
+}
 // Inactive tree:
-span.fancytree-node.fancytree-selected span.fancytree-title { // selected nodes inside inactive tree
+span.fancytree-node.fancytree-selected { // selected nodes inside inactive tree
 	background-color: lighten(@brand-success, 10%);
 	border-color: lighten(@brand-success, 10%);
+	span.fancytree-title {
+		background-color: lighten(@brand-success, 10%); // green title, even when active
+	}
 }
-span.fancytree-node.fancytree-active span.fancytree-title { // active nodes inside inactive tree
+span.fancytree-node.fancytree-active { // active nodes inside inactive tree
 	background-color: lighten(@brand-primary, 10%);
-}
-span.fancytree-node.fancytree-active.fancytree-selected span.fancytree-title { // active nodes inside inactive tree
-	color: lighten(@brand-success, 10%);
-	// border-color: lighten(@brand-success, 10%);
-	// outline: 2px solid lighten(@brand-success, 10%);
 }
 // Active tree:
 .fancytree-container.fancytree-treefocus {
-	span.fancytree-title:hover {
+	span.fancytree-node:hover {
 		background-color: lighten(@brand-primary, 42%);
 	}
-	span.fancytree-node.fancytree-focused span.fancytree-title {
+	span.fancytree-node.fancytree-focused {
 		border-color: @brand-primary;
 	}
-	span.fancytree-node.fancytree-selected span.fancytree-title {
+	span.fancytree-node.fancytree-selected {
 		background-color: @brand-success;
+		span.fancytree-title {
+			background-color: @brand-success; // green title, even when active
+		}
 	}
-	span.fancytree-node.fancytree-active span.fancytree-title {
+	span.fancytree-node.fancytree-active {
 		background-color: @brand-primary;
 		border-color: @brand-primary;
-	}
-	span.fancytree-node.fancytree-active.fancytree-selected span.fancytree-title {
-		color: @brand-success;
-		// border-color: @brand-success;
-		// outline: 2px solid @brand-success;
 	}
 }
 
@@ -167,13 +162,4 @@ table.fancytree-ext-table.fancytree-treefocus tbody {
 			background-color: @brand-primary;
 		}
 	}
-}
-/*------------------------------------------------------------------------------
- * 'wide' extension
- *----------------------------------------------------------------------------*/
-ul.fancytree-container span.fancytree-node span.fancytree-title,
-ul.fancytree-ext-wide span.fancytree-node span.fancytree-title {
-	-moz-box-sizing: content-box; // bootstrap sets content box
-	-webkit-box-sizing: content-box;
-	box-sizing: content-box;
 }
