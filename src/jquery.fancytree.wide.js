@@ -68,10 +68,9 @@ function renderLevelCss(containerId, depth, levelOfs, lineOfs, measureUnit) {
 	}
 	// Some UI animations wrap the UL inside a DIV and set position:relative on both.
 	// This breaks the left:0 and padding-left:nn settings of the title
-
-	// width: auto; ?
 	rules.push("#" + containerId +
-		" div.ui-effects-wrapper ul li span.fancytree-title { padding-left: 3px; position: static; }");
+		" div.ui-effects-wrapper ul li span.fancytree-title " +
+		"{ padding-left: 3px; position: static; width: auto; }");
 	return rules.join("\n");
 }
 
