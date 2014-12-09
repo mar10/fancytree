@@ -5,6 +5,7 @@
     [ext-wide]. The original skins are available as 'skin-win8-n' and
     'skin-bootstrap-n' respectively.
   * [Added] ext-wide extension (experimental)
+  * [Improved] tree.reactivate() returns a promise
   * [Fixed] #246 Gaps when filtering in hide mode (patch by @lefunque)
   * [Fixed] #287 wrong image on hovers
 
