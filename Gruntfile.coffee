@@ -263,7 +263,7 @@ module.exports = (grunt) ->
                 # tunnelTimeout: 5
                 build: process.env.TRAVIS_JOB_ID
                 # concurrency: 3
-                throttled: 12
+                throttled: 8
                 browsers: [
                   { browserName: "chrome", platform: "Windows 7" }
                   { browserName: "firefox", platform: "Windows 7" }
