@@ -652,26 +652,28 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		_walk(this);
 
 		// Update parent's state
-		this.visitParents(function(node){
-			var i, l, child, state,
-				children = node.children,
-				allSelected = true,
-				someSelected = false;
-
-			for( i=0, l=children.length; i<l; i++ ){
-				child = children[i];
-				// When fixing the parents, we trust the sibling status (i.e.
-				// we don't recurse)
-				if( child.selected || child.partsel ) {
-					someSelected = true;
+		if (this.tree.options.selectParents) {
+			this.visitParents(function(node){
+				var i, l, child, state,
+					children = node.children,
+					allSelected = true,
+					someSelected = false;
+	
+				for( i=0, l=children.length; i<l; i++ ){
+					child = children[i];
+					// When fixing the parents, we trust the sibling status (i.e.
+					// we don't recurse)
+					if( child.selected || child.partsel ) {
+						someSelected = true;
+					}
+					if( !child.unselectable && !child.selected ) {
+						allSelected = false;
+					}
 				}
-				if( !child.unselectable && !child.selected ) {
-					allSelected = false;
-				}
-			}
-			state = allSelected ? true : (someSelected ? undefined : false);
-			node._changeSelectStatusAttrs(state);
-		});
+				state = allSelected ? true : (someSelected ? undefined : false);
+				node._changeSelectStatusAttrs(state);
+			});
+		}	
 	},
 	// TODO: focus()
 	/**
@@ -3778,6 +3780,7 @@ $.widget("ui.fancytree",
 		scrollOfs: {top: 0, bottom: 0},
 		scrollParent: null,
 		selectMode: 2,
+		selectParents: true,
 		strings: {
 			loading: "Loading&#8230;",
 			loadError: "Load error!"
