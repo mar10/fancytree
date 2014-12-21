@@ -141,12 +141,12 @@ module.exports = (grunt) ->
             files: [{
                 expand: true # required for cwd
                 cwd: "src/"
-                src: ["skin-**/*.{css,gif,png}", "*.txt"]
+                src: ["skin-**/*.{css,gif,png,less}", "*.txt"]
                 dest: "build/"
             }, {
                 expand: true
                 cwd: "src/"
-                src: ["jquery.*.js"]
+                src: ["jquery.*.js", "skin-common.less"]
                 dest: "build/src/"
             }, {
                 # src: ["*.txt", "*.md"]
