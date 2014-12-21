@@ -59,15 +59,15 @@
 				keydown: function(event, data) {
 					var KC = $.ui.keyCode,
 						oe = event.originalEvent;
-						
+
 					// Swap LEFT/RIGHT keys
 					switch( event.which ) {
 					case KC.LEFT:
-	    				oe.keyCode = KC.RIGHT;
+						oe.keyCode = KC.RIGHT;
 						oe.which = KC.RIGHT;
 						break;
 					case KC.RIGHT:
-	    				oe.keyCode = KC.LEFT;
+						oe.keyCode = KC.LEFT;
 						oe.which = KC.LEFT;
 						break;
 					}

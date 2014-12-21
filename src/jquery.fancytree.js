@@ -2304,7 +2304,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	/** Re-fire beforeActivate and activate events. */
 	reactivate: function(setFocus) {
 		var res,
-		    node = this.activeNode;
+			node = this.activeNode;
 
 		if( !node ) {
 			return _getResolvedPromise();
@@ -2548,7 +2548,7 @@ $.extend(Fancytree.prototype,
 		}
 		switch( FT.keyEventToString(event) ) {
 			case "+":
-			case "=": // 187: '+' @ Chrome, Safari 
+			case "=": // 187: '+' @ Chrome, Safari
 				tree.nodeSetExpanded(ctx, true);
 				break;
 			case "-":

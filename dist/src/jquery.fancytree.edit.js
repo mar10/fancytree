@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.6.0
- * @date 2014-11-29T08:33
+ * @version 2.7.0
+ * @date 2014-12-21T15:57
  */
 
 ;(function($, window, document, undefined) {
@@ -25,34 +25,6 @@
 var isMac = /Mac/.test(navigator.platform),
 	escapeHtml = $.ui.fancytree.escapeHtml,
 	unescapeHtml = $.ui.fancytree.unescapeHtml;
-	// modifiers = {shift: "shiftKey", ctrl: "ctrlKey", alt: "altKey", meta: "metaKey"},
-	// specialKeys = {
-	// 	8: "backspace", 9: "tab", 10: "return", 13: "return", 16: "shift", 17: "ctrl", 18: "alt", 19: "pause",
-	// 	20: "capslock", 27: "esc", 32: "space", 33: "pageup", 34: "pagedown", 35: "end", 36: "home",
-	// 	37: "left", 38: "up", 39: "right", 40: "down", 45: "insert", 46: "del",
-	// 	96: "0", 97: "1", 98: "2", 99: "3", 100: "4", 101: "5", 102: "6", 103: "7",
-	// 	104: "8", 105: "9", 106: "*", 107: "+", 109: "-", 110: ".", 111 : "/",
-	// 	112: "f1", 113: "f2", 114: "f3", 115: "f4", 116: "f5", 117: "f6", 118: "f7", 119: "f8",
-	// 	120: "f9", 121: "f10", 122: "f11", 123: "f12", 144: "numlock", 145: "scroll", 186: ";", 191: "/",
-	// 	220: "\\", 222: "'", 224: "meta"
-	// },
-	// shiftNums = {
-	// 	"`": "~", "1": "!", "2": "@", "3": "#", "4": "$", "5": "%", "6": "^", "7": "&",
-	// 	"8": "*", "9": "(", "0": ")", "-": "_", "=": "+", ";": ": ", "'": "\"", ",": "<",
-	// 	".": ">",  "/": "?",  "\\": "|"
-	// };
-
-
-// $.ui.fancytree.isKeydownEvent = function(e, code){
-// 	var i, part, partmap, partlist = code.split("+"), len = parts.length;
-// 	var c = String.fromCharCode(e.which).toLowerCase();
-// 	for( i = 0; i < len; i++ ) {
-// 	}
-// 	alert (parts.unshift());
-// 	alert (parts.unshift());
-// 	alert (parts.unshift());
-// };
-
 
 /**
  * [ext-edit] Start inline editing of current node title.
@@ -207,18 +179,6 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editEnd = function(applyChanges, _e
 	instOpts.close.call(node, {type: "close"}, eventData);
 	return true;
 };
-
-
-// $.ui.fancytree._FancytreeNodeClass.prototype.startEdit = function(){
-// 	this.warn("FancytreeNode.startEdit() is deprecated since 2014-01-04. Use .editStart() instead.");
-// 	return this.editStart.apply(this, arguments);
-// };
-
-
-// $.ui.fancytree._FancytreeNodeClass.prototype.endEdit = function(){
-// 	this.warn("FancytreeNode.endEdit() is deprecated since 2014-01-04. Use .editEnd() instead.");
-// 	return this.editEnd.apply(this, arguments);
-// };
 
 
 /**

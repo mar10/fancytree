@@ -7,8 +7,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.6.0
- * @date 2014-11-29T08:33
+ * @version 2.7.0
+ * @date 2014-12-21T15:57
  */
 
 /** Core Fancytree module.
@@ -204,6 +204,20 @@ function _makeNodeTitleStartMatcher(s){
 var i,
 	FT = null, // initialized below
 	ENTITY_MAP = {"&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;", "/": "&#x2F;"},
+	IGNORE_KEYCODES = { 16: true, 17: true, 18: true },
+	SPECIAL_KEYCODES = {
+		8: "backspace", 9: "tab", 10: "return", 13: "return",
+		// 16: null, 17: null, 18: null, // ignore shift, ctrl, alt
+		19: "pause", 20: "capslock", 27: "esc", 32: "space", 33: "pageup",
+		34: "pagedown", 35: "end", 36: "home", 37: "left", 38: "up",
+		39: "right", 40: "down", 45: "insert", 46: "del", 59: ";", 61: "=",
+		96: "0", 97: "1", 98: "2", 99: "3", 100: "4", 101: "5", 102: "6",
+		103: "7", 104: "8", 105: "9", 106: "*", 107: "+", 109: "-", 110: ".",
+		111: "/", 112: "f1", 113: "f2", 114: "f3", 115: "f4", 116: "f5",
+		117: "f6", 118: "f7", 119: "f8", 120: "f9", 121: "f10", 122: "f11",
+		123: "f12", 144: "numlock", 145: "scroll", 173: "-", 186: ";", 187: "=",
+		188: ",", 189: "-", 190: ".", 191: "/", 192: "`", 219: "[", 220: "\\",
+		221: "]", 222: "'"},
 	//boolean attributes that can be set with equivalent class names in the LI tags
 	CLASS_ATTRS = "active expanded focus folder hideCheckbox lazy selected unselectable".split(" "),
 	CLASS_ATTR_MAP = {},
@@ -1498,6 +1512,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	/**Activate this node.
 	 * @param {boolean} [flag=true] pass false to deactivate
 	 * @param {object} [opts] additional options. Defaults to {noEvents: false}
+	 * @returns {$.Promise}
 	 */
 	setActive: function(flag, opts){
 		return this.tree._callHook("nodeSetActive", this, flag, opts);
@@ -1761,16 +1776,19 @@ function Fancytree(widget) {
 	this.widget = widget;
 	this.$div = widget.element;
 	this.options = widget.options;
-	if( this.options && $.isFunction(this.options.lazyload) ) {
-		if( ! $.isFunction(this.options.lazyLoad ) ) {
+	if( this.options ) {
+		if(  $.isFunction(this.options.lazyload ) && !$.isFunction(this.options.lazyLoad) ) {
 			this.options.lazyLoad = function() {
 				FT.warn("The 'lazyload' event is deprecated since 2014-02-25. Use 'lazyLoad' (with uppercase L) instead.");
-				widget.options.lazyload.apply(this, arguments);
+				return widget.options.lazyload.apply(this, arguments);
 			};
 		}
-	}
-	if( this.options && $.isFunction(this.options.loaderror) ) {
-		$.error("The 'loaderror' event was renamed since 2014-07-03. Use 'loadError' (with uppercase E) instead.");
+		if( $.isFunction(this.options.loaderror) ) {
+			$.error("The 'loaderror' event was renamed since 2014-07-03. Use 'loadError' (with uppercase E) instead.");
+		}
+		if( this.options.fx !== undefined ) {
+			FT.warn("The 'fx' options was replaced by 'toggleEffect' since 2014-11-30.");
+		}
 	}
 	this.ext = {}; // Active extension instances
 	// allow to init tree.data.foo from <div data-foo=''>
@@ -2285,14 +2303,18 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	},
 	/** Re-fire beforeActivate and activate events. */
 	reactivate: function(setFocus) {
-		var node = this.activeNode;
-		if( node ) {
-			this.activeNode = null; // Force re-activating
-			node.setActive();
-			if( setFocus ){
-				node.setFocus();
-			}
+		var res,
+			node = this.activeNode;
+
+		if( !node ) {
+			return _getResolvedPromise();
 		}
+		this.activeNode = null; // Force re-activating
+		res = node.setActive();
+		if( setFocus ){
+			node.setFocus();
+		}
+		return res;
 	},
 	/** Reload tree from source and return a promise.
 	 * @param [source] optional new source (defaults to initial source data)
@@ -2496,10 +2518,10 @@ $.extend(Fancytree.prototype,
 			clean = !(event.altKey || event.ctrlKey || event.metaKey || event.shiftKey),
 			$target = $(event.target),
 			handled = true,
-			activate = !(event.ctrlKey || !opts.autoActivate ),
-			KC = $.ui.keyCode;
+			activate = !(event.ctrlKey || !opts.autoActivate );
 
 //		node.debug("ftnode.nodeKeydown(" + event.type + "): ftnode:" + this + ", charCode:" + event.charCode + ", keyCode: " + event.keyCode + ", which: " + event.which);
+//      FT.debug("keyEventToString", which, '"' + String.fromCharCode(which) + '"', '"' + FT.keyEventToString(event) + '"');
 
 		// Set focus to first node, if no other node has the focus yet
 		if( !node ){
@@ -2524,31 +2546,29 @@ $.extend(Fancytree.prototype,
 			event.preventDefault();
 			return;
 		}
-		switch( which ) {
-			// charCodes:
-			case KC.NUMPAD_ADD: //107: // '+'
-			case 187: // '+' @ Chrome, Safari
+		switch( FT.keyEventToString(event) ) {
+			case "+":
+			case "=": // 187: '+' @ Chrome, Safari
 				tree.nodeSetExpanded(ctx, true);
 				break;
-			case KC.NUMPAD_SUBTRACT: // '-'
-			case 189: // '-' @ Chrome, Safari
+			case "-":
 				tree.nodeSetExpanded(ctx, false);
 				break;
-			case KC.SPACE:
+			case "space":
 				if(opts.checkbox){
 					tree.nodeToggleSelected(ctx);
 				}else{
 					tree.nodeSetActive(ctx, true);
 				}
 				break;
-			case KC.ENTER:
+			case "enter":
 				tree.nodeSetActive(ctx, true);
 				break;
-			case KC.BACKSPACE:
-			case KC.LEFT:
-			case KC.RIGHT:
-			case KC.UP:
-			case KC.DOWN:
+			case "backspace":
+			case "left":
+			case "right":
+			case "up":
+			case "down":
 				res = node.navigate(event.which, activate);
 				break;
 			default:
@@ -2870,21 +2890,13 @@ $.extend(Fancytree.prototype,
 		}
 		_assert(isRootNode || parent.ul, "parent UL must exist");
 
-// 		if(node.li && (force || (node.li.parentNode !== node.parent.ul) ) ){
-// 			if(node.li.parentNode !== node.parent.ul){
-// //					alert("unlink " + node + " (must be child of " + node.parent + ")");
-// 				this.warn("unlink " + node + " (must be child of " + node.parent + ")");
-// 			}
-// //	            this.debug("nodeRemoveMarkup...");
-// 			this.nodeRemoveMarkup(ctx);
-// 		}
 		// Render the node
 		if( !isRootNode ){
 			// Discard markup on force-mode, or if it is not linked to parent <ul>
 			if(node.li && (force || (node.li.parentNode !== node.parent.ul) ) ){
 				if(node.li.parentNode !== node.parent.ul){
-//					alert("unlink " + node + " (must be child of " + node.parent + ")");
-					this.warn("unlink " + node + " (must be child of " + node.parent + ")");
+					// May happen, when a top-level node was dropped over another
+					this.debug("Unlinking " + node + " (must be child of " + node.parent + ")");
 				}
 //	            this.debug("nodeRemoveMarkup...");
 				this.nodeRemoveMarkup(ctx);
@@ -3214,6 +3226,7 @@ $.extend(Fancytree.prototype,
 	 * @param {EventData} ctx
 	 * @param {boolean} [flag=true]
 	 * @param {object} [opts] additional options. Defaults to {noEvents: false}
+	 * @returns {$.Promise}
 	 */
 	nodeSetActive: function(ctx, flag, callOpts) {
 		// Handle user click / [space] / [enter], according to clickFolderMode.
@@ -3337,7 +3350,8 @@ $.extend(Fancytree.prototype,
 		});
 		// vvv Code below is executed after loading finished:
 		_afterLoad = function(callback){
-			var duration, easing, isVisible, isExpanded;
+			var isVisible, isExpanded,
+				effect = opts.toggleEffect;
 
 			node.expanded = flag;
 			// Create required markup, but make sure the top UL is hidden, so we
@@ -3361,14 +3375,20 @@ $.extend(Fancytree.prototype,
 				if ( isVisible === isExpanded ) {
 					node.warn("nodeSetExpanded: UL.style.display already set");
 
-				} else if ( !opts.fx || noAnimation ) {
+				} else if ( !effect || noAnimation ) {
 					node.ul.style.display = ( node.expanded || !parent ) ? "" : "none";
 
 				} else {
-					duration = opts.fx.duration || 200;
-					easing = opts.fx.easing;
+					// The UI toggle() effect works with the ext-wide extension,
+					// while jQuery.animate() has problems when the title span
+					// has positon: absolute
+
+					// duration = opts.fx.duration || 200;
+					// easing = opts.fx.easing;
+					// $(node.ul).animate(opts.fx, duration, easing, function(){
+
 					// node.debug("nodeSetExpanded: animate start...");
-					$(node.ul).animate(opts.fx, duration, easing, function(){
+					$(node.ul).toggle(effect.effect, effect.options, effect.duration, function(){
 						// node.debug("nodeSetExpanded: animate done");
 						callback();
 					});
@@ -3747,7 +3767,10 @@ $.widget("ui.fancytree",
 		disabled: false, // TODO: required anymore?
 		enableAspx: true, // TODO: document
 		extensions: [],
-		fx: { height: "toggle", duration: 200 },
+		// fx: { height: "toggle", duration: 200 },
+		// toggleEffect: { effect: "drop", options: {direction: "left"}, duration: 200 },
+		// toggleEffect: { effect: "slide", options: {direction: "up"}, duration: 200 },
+		toggleEffect: { effect: "blind", options: {direction: "vertical", scale: "box"}, duration: 200 },
 		generateIds: false,
 		icons: true,
 		idPrefix: "ft_",
@@ -4019,7 +4042,7 @@ $.extend($.ui.fancytree,
 	/** @lends Fancytree_Static# */
 	{
 	/** @type {string} */
-	version: "2.6.0",      // Set to semver by 'grunt release'
+	version: "2.7.0",      // Set to semver by 'grunt release'
 	/** @type {string} */
 	buildType: "production", // Set to 'production' by 'grunt build'
 	/** @type {int} */
@@ -4053,7 +4076,7 @@ $.extend($.ui.fancytree,
 	 * @param {boolean} [invokeAsap=false]
 	 * @param {any} [ctx]
 	 */
-	debounce : function(timeout, fn, invokeAsap, ctx) {
+	debounce: function(timeout, fn, invokeAsap, ctx) {
 		var timer;
 		if(arguments.length === 3 && typeof invokeAsap !== "boolean") {
 			ctx = invokeAsap;
@@ -4092,16 +4115,6 @@ $.extend($.ui.fancytree,
 		return ("" + s).replace(/[&<>"'\/]/g, function (s) {
 			return ENTITY_MAP[s];
 		});
-	},
-	/** Inverse of escapeHtml().
-	 *
-	 * @param {string} s
-	 * @returns {string}
-	 */
-	unescapeHtml: function(s){
-		var e = document.createElement("div");
-		e.innerHTML = s;
-		return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
 	},
 	/** Return a {node: FancytreeNode, type: TYPE} object for a mouse event.
 	 *
@@ -4183,6 +4196,25 @@ $.extend($.ui.fancytree,
 	info: function(msg){
 		/*jshint expr:true */
 		($.ui.fancytree.debugLevel >= 1) && consoleApply("info", arguments);
+	},
+	/** Convert a keydown event to a string like 'ctrl+a', 'ctrl+shift+f2'.
+	 * @param {event}
+	 * @returns {string}
+	 */
+	keyEventToString: function(event) {
+		// Poor-man's hotkeys. See here for a complete implementation:
+		//   https://github.com/jeresig/jquery.hotkeys
+		var which = event.which,
+			s = [];
+
+		if( event.altKey ) { s.push("alt"); }
+		if( event.ctrlKey ) { s.push("ctrl"); }
+		if( event.metaKey ) { s.push("meta"); }
+		if( event.shiftKey ) { s.push("shift"); }
+		if( !IGNORE_KEYCODES[which] ) {
+			s.push( SPECIAL_KEYCODES[which] || String.fromCharCode(which).toLowerCase() );
+		}
+		return s.join("+");
 	},
 	/**
 	 * Parse tree data from HTML <ul> markup
@@ -4287,6 +4319,16 @@ $.extend($.ui.fancytree,
 		_assert(definition.version != null, "extensions must have a `version` property.");
 		$.ui.fancytree._extensions[definition.name] = definition;
 	},
+	/** Inverse of escapeHtml().
+	 *
+	 * @param {string} s
+	 * @returns {string}
+	 */
+	unescapeHtml: function(s){
+		var e = document.createElement("div");
+		e.innerHTML = s;
+		return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+	},
 	/** Write warning message to console.
 	 * @param {string} msg
 	 */
@@ -4318,8 +4360,8 @@ $.extend($.ui.fancytree,
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.6.0
- * @date 2014-11-29T08:33
+ * @version 2.7.0
+ * @date 2014-12-21T15:57
  */
 
 // To keep the global namespace clean, we wrap everything in a closure
@@ -4494,8 +4536,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.6.0
- * @date 2014-11-29T08:33
+ * @version 2.7.0
+ * @date 2014-12-21T15:57
  */
 
 ;(function($, window, document, undefined) {
@@ -4946,8 +4988,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.6.0
- * @date 2014-11-29T08:33
+ * @version 2.7.0
+ * @date 2014-12-21T15:57
  */
 
 ;(function($, window, document, undefined) {
@@ -5510,8 +5552,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.6.0
- * @date 2014-11-29T08:33
+ * @version 2.7.0
+ * @date 2014-12-21T15:57
  */
 
 ;(function($, window, document, undefined) {
@@ -5526,34 +5568,6 @@ $.ui.fancytree.registerExtension({
 var isMac = /Mac/.test(navigator.platform),
 	escapeHtml = $.ui.fancytree.escapeHtml,
 	unescapeHtml = $.ui.fancytree.unescapeHtml;
-	// modifiers = {shift: "shiftKey", ctrl: "ctrlKey", alt: "altKey", meta: "metaKey"},
-	// specialKeys = {
-	// 	8: "backspace", 9: "tab", 10: "return", 13: "return", 16: "shift", 17: "ctrl", 18: "alt", 19: "pause",
-	// 	20: "capslock", 27: "esc", 32: "space", 33: "pageup", 34: "pagedown", 35: "end", 36: "home",
-	// 	37: "left", 38: "up", 39: "right", 40: "down", 45: "insert", 46: "del",
-	// 	96: "0", 97: "1", 98: "2", 99: "3", 100: "4", 101: "5", 102: "6", 103: "7",
-	// 	104: "8", 105: "9", 106: "*", 107: "+", 109: "-", 110: ".", 111 : "/",
-	// 	112: "f1", 113: "f2", 114: "f3", 115: "f4", 116: "f5", 117: "f6", 118: "f7", 119: "f8",
-	// 	120: "f9", 121: "f10", 122: "f11", 123: "f12", 144: "numlock", 145: "scroll", 186: ";", 191: "/",
-	// 	220: "\\", 222: "'", 224: "meta"
-	// },
-	// shiftNums = {
-	// 	"`": "~", "1": "!", "2": "@", "3": "#", "4": "$", "5": "%", "6": "^", "7": "&",
-	// 	"8": "*", "9": "(", "0": ")", "-": "_", "=": "+", ";": ": ", "'": "\"", ",": "<",
-	// 	".": ">",  "/": "?",  "\\": "|"
-	// };
-
-
-// $.ui.fancytree.isKeydownEvent = function(e, code){
-// 	var i, part, partmap, partlist = code.split("+"), len = parts.length;
-// 	var c = String.fromCharCode(e.which).toLowerCase();
-// 	for( i = 0; i < len; i++ ) {
-// 	}
-// 	alert (parts.unshift());
-// 	alert (parts.unshift());
-// 	alert (parts.unshift());
-// };
-
 
 /**
  * [ext-edit] Start inline editing of current node title.
@@ -5710,18 +5724,6 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editEnd = function(applyChanges, _e
 };
 
 
-// $.ui.fancytree._FancytreeNodeClass.prototype.startEdit = function(){
-// 	this.warn("FancytreeNode.startEdit() is deprecated since 2014-01-04. Use .editStart() instead.");
-// 	return this.editStart.apply(this, arguments);
-// };
-
-
-// $.ui.fancytree._FancytreeNodeClass.prototype.endEdit = function(){
-// 	this.warn("FancytreeNode.endEdit() is deprecated since 2014-01-04. Use .editEnd() instead.");
-// 	return this.editEnd.apply(this, arguments);
-// };
-
-
 /**
 * [ext-edit] Create a new child or sibling node and start edit mode.
 *
@@ -5857,8 +5859,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.6.0
- * @date 2014-11-29T08:33
+ * @version 2.7.0
+ * @date 2014-12-21T15:57
  */
 
 ;(function($, window, document, undefined) {
@@ -6032,8 +6034,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.6.0
- * @date 2014-11-29T08:33
+ * @version 2.7.0
+ * @date 2014-12-21T15:57
  */
 
 ;(function($, window, document, undefined) {
@@ -6165,8 +6167,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.6.0
- * @date 2014-11-29T08:33
+ * @version 2.7.0
+ * @date 2014-12-21T15:57
  */
 
 ;(function($, window, document, undefined) {
@@ -6367,8 +6369,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.6.0
- * @date 2014-11-29T08:33
+ * @version 2.7.0
+ * @date 2014-12-21T15:57
  */
 
 ;(function($, window, document, undefined) {
@@ -6722,8 +6724,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.6.0
- * @date 2014-11-29T08:33
+ * @version 2.7.0
+ * @date 2014-12-21T15:57
  */
 
 ;(function($, window, document, undefined) {
@@ -7084,8 +7086,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.6.0
- * @date 2014-11-29T08:33
+ * @version 2.7.0
+ * @date 2014-12-21T15:57
  */
 
 ;(function($, window, document, undefined) {
@@ -7147,6 +7149,190 @@ $.ui.fancytree.registerExtension({
 		$el.toggleClass("ui-state-focus", node.hasFocus());
 		$el.toggleClass("ui-state-highlight", node.isSelected());
 //		node.debug("ext-themeroller.nodeRenderStatus: ", node.span.className);
+	}
+});
+}(jQuery, window, document));
+
+/*!
+ * jquery.fancytree.wide.js
+ * Support for 100% wide selection bars.
+ * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
+ *
+ * Copyright (c) 2014, Martin Wendt (http://wwWendt.de)
+ *
+ * Released under the MIT license
+ * https://github.com/mar10/fancytree/wiki/LicenseInfo
+ *
+ * @version 2.7.0
+ * @date 2014-12-21T15:57
+ */
+
+;(function($, window, document, undefined) {
+
+"use strict";
+
+var reNumUnit = /^([+-]?(?:\d+|\d*\.\d+))([a-z]*|%)$/; // split "1.5em" to ["1.5", "em"]
+
+/*******************************************************************************
+ * Private functions and variables
+ */
+// var _assert = $.ui.fancytree.assert;
+
+/* Calculate inner width without scrollbar */
+// function realInnerWidth($el) {
+// 	// http://blog.jquery.com/2012/08/16/jquery-1-8-box-sizing-width-csswidth-and-outerwidth/
+// //	inst.contWidth = parseFloat(this.$container.css("width"), 10);
+// 	// 'Client width without scrollbar' - 'padding'
+// 	return $el[0].clientWidth - ($el.innerWidth() -  parseFloat($el.css("width"), 10));
+// }
+
+/* Create a global embedded CSS style for the tree. */
+function defineHeadStyleElement(id, cssText) {
+	id = "fancytree-style-" + id;
+	var $headStyle = $("#" + id);
+
+	if( !cssText ) {
+		$headStyle.remove();
+		return null;
+	}
+	if( !$headStyle.length ) {
+		$headStyle = $("<style />")
+			.attr("id", id)
+			.addClass("fancytree-style")
+			.prop("type", "text/css")
+			.appendTo("head");
+	}
+	try {
+		$headStyle.html(cssText);
+	} catch ( e ) {
+		// fix for IE 6-8
+		$headStyle[0].styleSheet.cssText = cssText;
+	}
+	return $headStyle;
+}
+
+/* Calculate the CSS rules that indent title spans. */
+function renderLevelCss(containerId, depth, levelOfs, lineOfs, measureUnit) {
+	var i,
+		prefix = "#" + containerId + " span.fancytree-level-",
+		rules = [];
+
+	for(i = 0; i < depth; i++) {
+		rules.push(prefix + (i + 1) + " span.fancytree-title { padding-left: " +
+			(i * levelOfs + lineOfs) + measureUnit + "; }");
+	}
+	// Some UI animations wrap the UL inside a DIV and set position:relative on both.
+	// This breaks the left:0 and padding-left:nn settings of the title
+	rules.push("#" + containerId +
+		" div.ui-effects-wrapper ul li span.fancytree-title " +
+		"{ padding-left: 3px; position: static; width: auto; }");
+	return rules.join("\n");
+}
+
+
+// /**
+//  * [ext-wide] Recalculate the width of the selection bar after the tree container
+//  * was resized.<br>
+//  * May be called explicitly on container resize, since there is no resize event
+//  * for DIV tags.
+//  *
+//  * @alias Fancytree#wideUpdate
+//  * @requires jquery.fancytree.wide.js
+//  */
+// $.ui.fancytree._FancytreeClass.prototype.wideUpdate = function(){
+// 	var inst = this.ext.wide,
+// 		prevCw = inst.contWidth,
+// 		prevLo = inst.lineOfs;
+
+// 	inst.contWidth = realInnerWidth(this.$container);
+// 	// Each title is precceeded by 2 or 3 icons (16px + 3 margin)
+// 	//     + 1px title border and 3px title padding
+// 	// TODO: use code from treeInit() below
+// 	inst.lineOfs = (this.options.checkbox ? 3 : 2) * 19;
+// 	if( prevCw !== inst.contWidth || prevLo !== inst.lineOfs ) {
+// 		this.debug("wideUpdate: " + inst.contWidth);
+// 		this.visit(function(node){
+// 			node.tree._callHook("nodeRenderTitle", node);
+// 		});
+// 	}
+// };
+
+/*******************************************************************************
+ * Extension code
+ */
+$.ui.fancytree.registerExtension({
+	name: "wide",
+	version: "0.0.3",
+	// Default options for this extension.
+	options: {
+		iconWidth: null,  // Adjust this if @fancy-icon-width != "16px"
+		iconSpacing: null, // Adjust this if @fancy-icon-spacing != "3px"
+		levelOfs: null    // Adjust this if ul padding != "16px"
+	},
+
+	treeCreate: function(ctx){
+		this._super(ctx);
+		this.$container.addClass("fancytree-ext-wide");
+
+		var containerId, cssText, iconSpacingUnit, iconWidthUnit, levelOfsUnit,
+			instOpts = ctx.options.wide,
+			// css sniffing
+			$dummyLI = $("<li id='fancytreeTemp'><span class='fancytree-node'><span class='fancytree-icon' /><span class='fancytree-title' /></span><ul />")
+				.appendTo(ctx.tree.$container),
+			$dummyIcon = $dummyLI.find(".fancytree-icon"),
+			$dummyUL = $dummyLI.find("ul"),
+			// $dummyTitle = $dummyLI.find(".fancytree-title"),
+			iconSpacing = instOpts.iconSpacing || $dummyIcon.css("margin-left"),
+			iconWidth = instOpts.iconWidth || $dummyIcon.css("width"),
+			levelOfs = instOpts.levelOfs || $dummyUL.css("padding-left");
+
+		$dummyLI.remove();
+
+		iconSpacingUnit = iconSpacing.match(reNumUnit)[2];
+		iconSpacing = parseFloat(iconSpacing, 10);
+		iconWidthUnit = iconWidth.match(reNumUnit)[2];
+		iconWidth = parseFloat(iconWidth, 10);
+		levelOfsUnit = levelOfs.match(reNumUnit)[2];
+		if( iconSpacingUnit !== iconWidthUnit || levelOfsUnit !== iconWidthUnit ) {
+			$.error("iconWidth, iconSpacing, and levelOfs must have the same css measure unit");
+		}
+		this._local.measureUnit = iconWidthUnit;
+		this._local.levelOfs = parseFloat(levelOfs);
+		this._local.lineOfs = (ctx.options.checkbox ? 3 : 2) * (iconWidth + iconSpacing) + iconSpacing;
+		this._local.maxDepth = 10;
+
+		// Get/Set a unique Id on the container (if not already exists)
+		containerId = this.$container.uniqueId().attr("id");
+		// Generated css rules for some levels (extended on demand)
+		cssText = renderLevelCss(containerId, this._local.maxDepth,
+			this._local.levelOfs, this._local.lineOfs, this._local.measureUnit);
+		defineHeadStyleElement(containerId, cssText);
+	},
+	treeDestroy: function(ctx){
+		// Remove generated css rules
+		defineHeadStyleElement(this.$container.attr("id"), null);
+		return this._super(ctx);
+	},
+	nodeRenderStatus: function(ctx) {
+		var containerId, cssText, res,
+			node = ctx.node,
+			level = node.getLevel();
+
+		res = this._super(ctx);
+		// Generate some more level-n rules if required
+		if( level > this._local.maxDepth ) {
+			containerId = this.$container.attr("id");
+			this._local.maxDepth *= 2;
+			node.debug("Define global ext-wide css up to level " + this._local.maxDepth);
+			cssText = renderLevelCss(containerId, this._local.maxDepth,
+				this._local.levelOfs, this._local.lineOfs, this._local.measureUnit);
+			defineHeadStyleElement(containerId, cssText);
+		}
+		// Add level-n class to apply indentation padding.
+		// (Setting element style would not work, since it cannot easily be
+		// overriden while animations run)
+		$(node.span).addClass("fancytree-level-" + level);
+		return res;
 	}
 });
 }(jQuery, window, document));

@@ -63,7 +63,6 @@ ul.fancytree-container li {
   background-repeat: repeat-y;
   background-image: none;
   margin: 0;
-  padding: 1px 0 0 0;
 }
 ul.fancytree-container li.fancytree-lastsib {
   background-image: none;
@@ -97,9 +96,10 @@ span.fancytree-drag-helper-img,
 }
 span.fancytree-icon,
 span.fancytree-checkbox,
+span.fancytree-expander,
 span.fancytree-radio,
 span.fancytree-custom-icon {
-  margin-top: 1px;
+  margin-top: 0px;
 }
 /* Used by iconclass option */
 span.fancytree-custom-icon {
@@ -110,7 +110,7 @@ img.fancytree-icon {
   width: 16px;
   height: 16px;
   margin-left: 3px;
-  margin-top: 1px;
+  margin-top: 0px;
   vertical-align: top;
   border-style: none;
 }
@@ -303,16 +303,23 @@ span.fancytree-node {
   /* See #117 */
   display: inherit;
   width: 100%;
+  margin-top: 1px;
+  min-height: 16px;
 }
 span.fancytree-title {
-  display: inline-block;
-  padding-left: 3px;
-  padding-right: 3px;
   color: black;
-  vertical-align: top;
-  margin: 0px;
-  margin-left: 3px;
   cursor: pointer;
+  display: inline-block;
+  vertical-align: top;
+  min-height: 16px;
+  padding: 0 3px 0 3px;
+  margin: 0px 0 0 3px;
+  border: 1px solid transparent;
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  -ms-border-radius: 0px;
+  -o-border-radius: 0px;
+  border-radius: 0px;
 }
 span.fancytree-node.fancytree-error span.fancytree-title {
   color: red;
@@ -403,7 +410,6 @@ table.fancytree-ext-columnview tbody tr td > ul li {
   background-image: none;
   /* no v-lines */
   margin: 0;
-  padding: 1px 0 0 0;
 }
 table.fancytree-ext-columnview span.fancytree-node {
   position: relative;
@@ -455,16 +461,28 @@ table.fancytree-ext-columnview .fancytree-has-children span.fancytree-cv-right:h
 /*------------------------------------------------------------------------------
  * 'wide' extension
  *----------------------------------------------------------------------------*/
+ul.fancytree-ext-wide {
+  position: relative;
+  min-width: 100%;
+  z-index: 2;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
 ul.fancytree-ext-wide span.fancytree-node > span {
   position: relative;
   z-index: 2;
 }
 ul.fancytree-ext-wide span.fancytree-node span.fancytree-title {
-  position: relative;
+  position: absolute;
   z-index: 1;
+  left: 0px;
   width: 100%;
-  padding-left: 503px;
-  margin-left: -500px;
+  margin-left: 0;
+  margin-right: 0;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
 /*******************************************************************************
  * Styles specific to this skin.

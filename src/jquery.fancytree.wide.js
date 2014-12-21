@@ -173,8 +173,8 @@ $.ui.fancytree.registerExtension({
 				this._local.levelOfs, this._local.lineOfs, this._local.measureUnit);
 			defineHeadStyleElement(containerId, cssText);
 		}
-		// Add level-n class to apply indentation padding. 
-		// (Setting element style would not work, since it cannot easily be 
+		// Add level-n class to apply indentation padding.
+		// (Setting element style would not work, since it cannot easily be
 		// overriden while animations run)
 		$(node.span).addClass("fancytree-level-" + level);
 		return res;

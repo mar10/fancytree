@@ -1,5 +1,4 @@
 /*!
- *
  * jquery.fancytree.wide.js
  * Support for 100% wide selection bars.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
@@ -9,115 +8,175 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.6.0
- * @date 2014-11-29T08:33
+ * @version 2.7.0
+ * @date 2014-12-21T15:57
  */
 
 ;(function($, window, document, undefined) {
 
 "use strict";
 
+var reNumUnit = /^([+-]?(?:\d+|\d*\.\d+))([a-z]*|%)$/; // split "1.5em" to ["1.5", "em"]
+
 /*******************************************************************************
  * Private functions and variables
  */
-// function _assert(cond, msg){
-// 	// TODO: see qunit.js extractStacktrace()
-// 	if(!cond){
-// 		msg = msg ? ": " + msg : "";
-// 		$.error("Assertion failed" + msg);
-// 	}
-// }
+// var _assert = $.ui.fancytree.assert;
 
 /* Calculate inner width without scrollbar */
-function realInnerWidth($el) {
-	// http://blog.jquery.com/2012/08/16/jquery-1-8-box-sizing-width-csswidth-and-outerwidth/
-//	inst.contWidth = parseFloat(this.$container.css("width"), 10);
-	// 'Client width without scrollbar' - 'padding'
-	return $el[0].clientWidth - ($el.innerWidth() -  parseFloat($el.css("width"), 10));
+// function realInnerWidth($el) {
+// 	// http://blog.jquery.com/2012/08/16/jquery-1-8-box-sizing-width-csswidth-and-outerwidth/
+// //	inst.contWidth = parseFloat(this.$container.css("width"), 10);
+// 	// 'Client width without scrollbar' - 'padding'
+// 	return $el[0].clientWidth - ($el.innerWidth() -  parseFloat($el.css("width"), 10));
+// }
+
+/* Create a global embedded CSS style for the tree. */
+function defineHeadStyleElement(id, cssText) {
+	id = "fancytree-style-" + id;
+	var $headStyle = $("#" + id);
+
+	if( !cssText ) {
+		$headStyle.remove();
+		return null;
+	}
+	if( !$headStyle.length ) {
+		$headStyle = $("<style />")
+			.attr("id", id)
+			.addClass("fancytree-style")
+			.prop("type", "text/css")
+			.appendTo("head");
+	}
+	try {
+		$headStyle.html(cssText);
+	} catch ( e ) {
+		// fix for IE 6-8
+		$headStyle[0].styleSheet.cssText = cssText;
+	}
+	return $headStyle;
+}
+
+/* Calculate the CSS rules that indent title spans. */
+function renderLevelCss(containerId, depth, levelOfs, lineOfs, measureUnit) {
+	var i,
+		prefix = "#" + containerId + " span.fancytree-level-",
+		rules = [];
+
+	for(i = 0; i < depth; i++) {
+		rules.push(prefix + (i + 1) + " span.fancytree-title { padding-left: " +
+			(i * levelOfs + lineOfs) + measureUnit + "; }");
+	}
+	// Some UI animations wrap the UL inside a DIV and set position:relative on both.
+	// This breaks the left:0 and padding-left:nn settings of the title
+	rules.push("#" + containerId +
+		" div.ui-effects-wrapper ul li span.fancytree-title " +
+		"{ padding-left: 3px; position: static; width: auto; }");
+	return rules.join("\n");
 }
 
 
-/**
- * [ext-wide] Recalculate the width of the selection bar after the tree container
- * was resized.<br>
- * May be called explicitly on container resize, since there is no resize event
- * for DIV tags.
- *
- * @alias Fancytree#wideUpdate
- * @requires jquery.fancytree.wide.js
- */
-$.ui.fancytree._FancytreeClass.prototype.wideUpdate = function(){
-	var inst = this.ext.wide,
-		prevCw = inst.contWidth,
-		prevLo = inst.lineOfs;
-	// http://blog.jquery.com/2012/08/16/jquery-1-8-box-sizing-width-csswidth-and-outerwidth/
-//	inst.contWidth = parseFloat(this.$container.css("width"), 10);
-	inst.contWidth = realInnerWidth(this.$container);
-	// Each title is precceeded by 2 or 3 icons (16px + 3 margin)
-	//     + 1px title border and 3px title padding
-	inst.lineOfs = (this.options.checkbox ? 3 : 2) * 19;
-	if( prevCw !== inst.contWidth || prevLo !== inst.lineOfs ) {
-		this.debug("wideUpdate: " + inst.contWidth);
-		this.visit(function(node){
-			node.tree._callHook("nodeRenderTitle", node);
-		});
-	}
-};
+// /**
+//  * [ext-wide] Recalculate the width of the selection bar after the tree container
+//  * was resized.<br>
+//  * May be called explicitly on container resize, since there is no resize event
+//  * for DIV tags.
+//  *
+//  * @alias Fancytree#wideUpdate
+//  * @requires jquery.fancytree.wide.js
+//  */
+// $.ui.fancytree._FancytreeClass.prototype.wideUpdate = function(){
+// 	var inst = this.ext.wide,
+// 		prevCw = inst.contWidth,
+// 		prevLo = inst.lineOfs;
+
+// 	inst.contWidth = realInnerWidth(this.$container);
+// 	// Each title is precceeded by 2 or 3 icons (16px + 3 margin)
+// 	//     + 1px title border and 3px title padding
+// 	// TODO: use code from treeInit() below
+// 	inst.lineOfs = (this.options.checkbox ? 3 : 2) * 19;
+// 	if( prevCw !== inst.contWidth || prevLo !== inst.lineOfs ) {
+// 		this.debug("wideUpdate: " + inst.contWidth);
+// 		this.visit(function(node){
+// 			node.tree._callHook("nodeRenderTitle", node);
+// 		});
+// 	}
+// };
 
 /*******************************************************************************
  * Extension code
  */
 $.ui.fancytree.registerExtension({
 	name: "wide",
-	version: "0.0.2",
+	version: "0.0.3",
 	// Default options for this extension.
 	options: {
-		autoResize: true,  // call wideUpdate() on window.resize events
-		cheap: false,      // true: use static css only
-		margin: {left: 3, right: 3} // free margins near the selection bar
+		iconWidth: null,  // Adjust this if @fancy-icon-width != "16px"
+		iconSpacing: null, // Adjust this if @fancy-icon-spacing != "3px"
+		levelOfs: null    // Adjust this if ul padding != "16px"
 	},
 
 	treeCreate: function(ctx){
-		this.$container.addClass("fancytree-ext-wide");
 		this._super(ctx);
-		// http://blog.jquery.com/2012/08/16/jquery-1-8-box-sizing-width-csswidth-and-outerwidth/
-//		this._local.contWidth = parseFloat(ctx.tree.$container.css("width"), 10);
-		this._local.contWidth = realInnerWidth(ctx.tree.$container);
-		// Every nested UL is indented by 16px
-		// Each title is precceeded by 2 or 3 icons (16px + 3 margin)
-		//     + 1px title border and 3px title padding
-		this._local.lineOfs = (ctx.options.checkbox ? 3 : 2) * 19;
-		this._local.levelOfs = 16;
-		this._local.titlePadding = 3;
-		$(window).on("resize" + ctx.widget.eventNamespace, $.ui.fancytree.debounce(200, function(event){
-			if( ctx.options.wide.autoResize && !ctx.options.wide.cheap ) {
-				ctx.tree.wideUpdate();
-			}
-		}));
+		this.$container.addClass("fancytree-ext-wide");
+
+		var containerId, cssText, iconSpacingUnit, iconWidthUnit, levelOfsUnit,
+			instOpts = ctx.options.wide,
+			// css sniffing
+			$dummyLI = $("<li id='fancytreeTemp'><span class='fancytree-node'><span class='fancytree-icon' /><span class='fancytree-title' /></span><ul />")
+				.appendTo(ctx.tree.$container),
+			$dummyIcon = $dummyLI.find(".fancytree-icon"),
+			$dummyUL = $dummyLI.find("ul"),
+			// $dummyTitle = $dummyLI.find(".fancytree-title"),
+			iconSpacing = instOpts.iconSpacing || $dummyIcon.css("margin-left"),
+			iconWidth = instOpts.iconWidth || $dummyIcon.css("width"),
+			levelOfs = instOpts.levelOfs || $dummyUL.css("padding-left");
+
+		$dummyLI.remove();
+
+		iconSpacingUnit = iconSpacing.match(reNumUnit)[2];
+		iconSpacing = parseFloat(iconSpacing, 10);
+		iconWidthUnit = iconWidth.match(reNumUnit)[2];
+		iconWidth = parseFloat(iconWidth, 10);
+		levelOfsUnit = levelOfs.match(reNumUnit)[2];
+		if( iconSpacingUnit !== iconWidthUnit || levelOfsUnit !== iconWidthUnit ) {
+			$.error("iconWidth, iconSpacing, and levelOfs must have the same css measure unit");
+		}
+		this._local.measureUnit = iconWidthUnit;
+		this._local.levelOfs = parseFloat(levelOfs);
+		this._local.lineOfs = (ctx.options.checkbox ? 3 : 2) * (iconWidth + iconSpacing) + iconSpacing;
+		this._local.maxDepth = 10;
+
+		// Get/Set a unique Id on the container (if not already exists)
+		containerId = this.$container.uniqueId().attr("id");
+		// Generated css rules for some levels (extended on demand)
+		cssText = renderLevelCss(containerId, this._local.maxDepth,
+			this._local.levelOfs, this._local.lineOfs, this._local.measureUnit);
+		defineHeadStyleElement(containerId, cssText);
 	},
 	treeDestroy: function(ctx){
-		$(window).off("resize" + ctx.widget.eventNamespace);
-		this._super(ctx);
+		// Remove generated css rules
+		defineHeadStyleElement(this.$container.attr("id"), null);
+		return this._super(ctx);
 	},
-	nodeRenderTitle: function(ctx) {
-		var ofs, res, margin,
-			instOpts = ctx.options.wide,
-			inst = this._local,
-			cw = inst.contWidth,
-			node = ctx.node;
+	nodeRenderStatus: function(ctx) {
+		var containerId, cssText, res,
+			node = ctx.node,
+			level = node.getLevel();
 
 		res = this._super(ctx);
-
-		if( !instOpts.cheap ) {
-			margin = instOpts.margin;
-			ofs = (node.getLevel() - 1) * inst.levelOfs + inst.lineOfs;
-			$(node.span).find(".fancytree-title").css({
-				width: cw - margin.left - margin.right - ofs,
-				marginLeft:  -ofs + margin.left,
-				paddingLeft: +ofs - margin.left + inst.titlePadding,
-				paddingRight: inst.titlePadding
-			});
+		// Generate some more level-n rules if required
+		if( level > this._local.maxDepth ) {
+			containerId = this.$container.attr("id");
+			this._local.maxDepth *= 2;
+			node.debug("Define global ext-wide css up to level " + this._local.maxDepth);
+			cssText = renderLevelCss(containerId, this._local.maxDepth,
+				this._local.levelOfs, this._local.lineOfs, this._local.measureUnit);
+			defineHeadStyleElement(containerId, cssText);
 		}
+		// Add level-n class to apply indentation padding.
+		// (Setting element style would not work, since it cannot easily be
+		// overriden while animations run)
+		$(node.span).addClass("fancytree-level-" + level);
 		return res;
 	}
 });

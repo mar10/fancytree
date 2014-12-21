@@ -1,5 +1,5 @@
 /*!
- * Fancytree "bootstrap" skin (highlighting the node span instead of title-only).
+ * Fancytree "bootstrap" skin.
  *
  * DON'T EDIT THE CSS FILE DIRECTLY, since it is automatically generated from
  * the LESS templates.
@@ -47,7 +47,6 @@ ul.fancytree-container li {
   background-repeat: repeat-y;
   background-image: none;
   margin: 0;
-  padding: 1px 0 0 0;
 }
 ul.fancytree-container li.fancytree-lastsib {
   background-image: none;
@@ -80,9 +79,10 @@ span.fancytree-drag-helper-img,
 }
 span.fancytree-icon,
 span.fancytree-checkbox,
+span.fancytree-expander,
 span.fancytree-radio,
 span.fancytree-custom-icon {
-  margin-top: 1px;
+  margin-top: 2px;
 }
 /* Used by iconclass option */
 span.fancytree-custom-icon {
@@ -93,7 +93,7 @@ img.fancytree-icon {
   width: 1em;
   height: 1em;
   margin-left: 0.5em;
-  margin-top: 1px;
+  margin-top: 2px;
   vertical-align: top;
   border-style: none;
 }
@@ -160,16 +160,23 @@ span.fancytree-node {
   /* See #117 */
   display: inherit;
   width: 100%;
+  margin-top: 0px;
+  min-height: 1em;
 }
 span.fancytree-title {
-  display: inline-block;
-  padding-left: 3px;
-  padding-right: 3px;
   color: black;
-  vertical-align: top;
-  margin: 0px;
-  margin-left: 3px;
   cursor: pointer;
+  display: inline-block;
+  vertical-align: top;
+  min-height: 1em;
+  padding: 0 3px 0 3px;
+  margin: 0px 0 0 0.5em;
+  border: 1px solid transparent;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
 }
 span.fancytree-node.fancytree-error span.fancytree-title {
   color: red;
@@ -246,7 +253,6 @@ table.fancytree-ext-columnview tbody tr td > ul li {
   background-image: none;
   /* no v-lines */
   margin: 0;
-  padding: 1px 0 0 0;
 }
 table.fancytree-ext-columnview span.fancytree-node {
   position: relative;
@@ -294,16 +300,28 @@ table.fancytree-ext-columnview .fancytree-has-children span.fancytree-cv-right {
 /*------------------------------------------------------------------------------
  * 'wide' extension
  *----------------------------------------------------------------------------*/
+ul.fancytree-ext-wide {
+  position: relative;
+  min-width: 100%;
+  z-index: 2;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
 ul.fancytree-ext-wide span.fancytree-node > span {
   position: relative;
   z-index: 2;
 }
 ul.fancytree-ext-wide span.fancytree-node span.fancytree-title {
-  position: relative;
+  position: absolute;
   z-index: 1;
+  left: 0px;
   width: 100%;
-  padding-left: 503px;
-  margin-left: -500px;
+  margin-left: 0;
+  margin-right: 0;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
 /*******************************************************************************
  * Styles specific to this skin.
@@ -318,39 +336,36 @@ ul.fancytree-container ul {
 .fancytree-container:focus {
   outline: none;
 }
-span.fancytree-node {
+span.fancytree-title {
   border: 1px solid transparent;
   border-radius: 3px;
-  padding-left: 8px;
-}
-span.fancytree-title {
-  border-radius: 3px;
-}
-span.fancytree-node.fancytree-selected {
-  background-color: #80c780;
-  border-color: #80c780;
+  outline-radius: 3px;
 }
 span.fancytree-node.fancytree-selected span.fancytree-title {
   background-color: #80c780;
+  border-color: #80c780;
 }
-span.fancytree-node.fancytree-active {
+span.fancytree-node.fancytree-active span.fancytree-title {
   background-color: #6aa3d5;
 }
-.fancytree-container.fancytree-treefocus span.fancytree-node:hover {
+span.fancytree-node.fancytree-active.fancytree-selected span.fancytree-title {
+  color: #80c780;
+}
+.fancytree-container.fancytree-treefocus span.fancytree-title:hover {
   background-color: #e9f2f9;
 }
-.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-focused {
+.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-focused span.fancytree-title {
   border-color: #428bca;
-}
-.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-selected {
-  background-color: #5cb85c;
 }
 .fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-selected span.fancytree-title {
   background-color: #5cb85c;
 }
-.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-active {
+.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-active span.fancytree-title {
   background-color: #428bca;
   border-color: #428bca;
+}
+.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-active.fancytree-selected span.fancytree-title {
+  color: #5cb85c;
 }
 /*******************************************************************************
  * 'table' extension
@@ -393,4 +408,14 @@ table.fancytree-ext-table.fancytree-treefocus tbody tr.fancytree-active {
 }
 table.fancytree-ext-table.fancytree-treefocus tbody tr.fancytree-active span.fancytree-node {
   background-color: #428bca;
+}
+/*------------------------------------------------------------------------------
+ * 'wide' extension
+ *----------------------------------------------------------------------------*/
+ul.fancytree-container span.fancytree-node span.fancytree-title,
+ul.fancytree-ext-wide span.fancytree-node span.fancytree-title {
+  /*	-moz-box-sizing: content-box; // bootstrap sets content box
+	-webkit-box-sizing: content-box;
+	box-sizing: content-box;
+*/
 }
