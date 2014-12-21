@@ -6,6 +6,7 @@
     'skin-bootstrap-n' respectively.
   * [Added] ext-wide extension (experimental)
   * [Added] LESS files to distribution
+  * [Added] Publish on [cdnjs](https://cdnjs.com/libraries/jquery.fancytree)
   * [Improved] tree.reactivate() returns a promise
   * [Fixed] #246 Gaps when filtering in hide mode (patch by @lefunque)
   * [Fixed] #287 wrong image on hovers
