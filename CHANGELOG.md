@@ -1,4 +1,7 @@
-# 2.6.1-0 / Unreleased
+# 2.7.1-0 / Unreleased
+  *
+
+# 2.7.0 / 2014-12-21
   * [CHANGED] Dropped `fx` option. Use `toggleEffect` instead.
   * [CHANGED] 'win8' and 'bootstrap' skins where modified to highlight the 
     title span instead of the node span, in order to be compatible with
