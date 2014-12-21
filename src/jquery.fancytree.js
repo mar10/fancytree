@@ -2890,21 +2890,13 @@ $.extend(Fancytree.prototype,
 		}
 		_assert(isRootNode || parent.ul, "parent UL must exist");
 
-// 		if(node.li && (force || (node.li.parentNode !== node.parent.ul) ) ){
-// 			if(node.li.parentNode !== node.parent.ul){
-// //					alert("unlink " + node + " (must be child of " + node.parent + ")");
-// 				this.warn("unlink " + node + " (must be child of " + node.parent + ")");
-// 			}
-// //	            this.debug("nodeRemoveMarkup...");
-// 			this.nodeRemoveMarkup(ctx);
-// 		}
 		// Render the node
 		if( !isRootNode ){
 			// Discard markup on force-mode, or if it is not linked to parent <ul>
 			if(node.li && (force || (node.li.parentNode !== node.parent.ul) ) ){
 				if(node.li.parentNode !== node.parent.ul){
-//					alert("unlink " + node + " (must be child of " + node.parent + ")");
-					this.warn("unlink " + node + " (must be child of " + node.parent + ")");
+					// May happen, when a top-level node was dropped over another
+					this.debug("Unlinking " + node + " (must be child of " + node.parent + ")");
 				}
 //	            this.debug("nodeRemoveMarkup...");
 				this.nodeRemoveMarkup(ctx);
