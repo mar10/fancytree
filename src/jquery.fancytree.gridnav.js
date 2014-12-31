@@ -125,7 +125,7 @@ $.ui.fancytree.registerExtension({
 	treeInit: function(ctx){
 		// gridnav requires the table extension to be loaded before itself
 		this._requireExtension("table", true, true);
-		this._super(ctx);
+		this._superApply(arguments);
 
 		this.$container.addClass("fancytree-ext-gridnav");
 
@@ -150,7 +150,7 @@ $.ui.fancytree.registerExtension({
 
 		flag = (flag !== false);
 
-		this._super(ctx, flag);
+		this._superApply(arguments);
 
 		if( flag ){
 			if( ctx.options.titlesTabbable ){
@@ -193,7 +193,7 @@ $.ui.fancytree.registerExtension({
 			return true;
 		}
 		ctx.tree.debug("ext-gridnav NOT HANDLED", event, inputType);
-		return this._super(ctx);
+		return this._superApply(arguments);
 	}
 });
 }(jQuery, window, document));

@@ -57,7 +57,7 @@ $.ui.fancytree.registerExtension({
 		tree.tr = $("tbody tr", $table)[0];
 		tree.columnCount = $(">td", tree.tr).length;
 		// Perform default behavior
-		this._super(ctx);
+		this._superApply(arguments);
 		// Standard Fancytree created a root <ul>. Now move this into first table cell
 		$ul = $(tree.rootNode.ul);
 		$tdFirst = $(">td", tree.tr).eq(0);
@@ -123,7 +123,7 @@ $.ui.fancytree.registerExtension({
 	},
 	nodeRender: function(ctx, force, deep, collapsed, _recursive) {
 		// Render standard nested <ul> - <li> hierarchy
-		this._super(ctx, force, deep, collapsed, _recursive);
+		this._superApply(arguments);
 		// Remove expander and add a trailing triangle instead
 		var level, $tdChild, $ul,
 			tree = ctx.tree,

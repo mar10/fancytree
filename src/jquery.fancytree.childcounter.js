@@ -144,7 +144,7 @@ $.ui.fancytree.registerExtension({
 // Optionally check for dependencies with other extensions
 		/* this._requireExtension("glyph", false, false); */
 // Call the base implementation
-		this._super(ctx);
+		this._superApply(arguments);
 // Add a class to the tree container
 		this.$container.addClass("fancytree-ext-childcounter");
 	},
@@ -153,7 +153,7 @@ $.ui.fancytree.registerExtension({
 // this method could as well be omitted).
 
 	treeDestroy: function(ctx){
-		this._super(ctx);
+		this._superApply(arguments);
 	},
 
 // Overload the `renderTitle` hook, to append a counter badge
@@ -162,7 +162,7 @@ $.ui.fancytree.registerExtension({
 			extOpts = ctx.options.childcounter,
 			count = (node.data.childCounter == null) ? node.countChildren(extOpts.deep) : +node.data.childCounter;
 // Let the base implementation render the title
-		this._super(ctx, title);
+		this._superApply(arguments);
 // Append a counter badge
 		if( (count || ! extOpts.hideZeros) && (!node.isExpanded() || !extOpts.hideExpanded) ){
 			$("span.fancytree-icon", node.span).append($("<span class='fancytree-childcounter'/>").text(count));
@@ -174,7 +174,7 @@ $.ui.fancytree.registerExtension({
 			node = ctx.node;
 // Let the base implementation expand/collapse the node, then redraw the title
 // after the animation has finished
-		return this._super(ctx, flag, opts).always(function(){
+		return this._superApply(arguments).always(function(){
 			tree.nodeRenderTitle(ctx);
 		});
 	}

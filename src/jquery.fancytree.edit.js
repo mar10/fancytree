@@ -266,7 +266,7 @@ $.ui.fancytree.registerExtension({
 	currentNode: null,
 
 	treeInit: function(ctx){
-		this._super(ctx);
+		this._superApply(arguments);
 		this.$container.addClass("fancytree-ext-edit");
 	},
 	nodeClick: function(ctx) {
@@ -276,14 +276,14 @@ $.ui.fancytree.registerExtension({
 				return false;
 			}
 		}
-		return this._super(ctx);
+		return this._superApply(arguments);
 	},
 	nodeDblclick: function(ctx) {
 		if( $.inArray("dblclick", ctx.options.edit.triggerStart) >= 0 ){
 			ctx.node.editStart();
 			return false;
 		}
-		return this._super(ctx);
+		return this._superApply(arguments);
 	},
 	nodeKeydown: function(ctx) {
 		switch( ctx.originalEvent.which ) {
@@ -300,7 +300,7 @@ $.ui.fancytree.registerExtension({
 			}
 			break;
 		}
-		return this._super(ctx);
+		return this._superApply(arguments);
 	}
 });
 }(jQuery, window, document));

@@ -34,7 +34,7 @@ $.ui.fancytree.registerExtension({
 	},
 
 	treeInit: function(ctx){
-		this._super(ctx);
+		this._superApply(arguments);
 		var $el = ctx.widget.element;
 
 		if($el[0].nodeName === "TABLE"){
@@ -53,13 +53,13 @@ $.ui.fancytree.registerExtension({
 		});
 	},
 	treeDestroy: function(ctx){
-		this._super(ctx);
+		this._superApply(arguments);
 		ctx.widget.element.removeClass("ui-widget ui-widget-content ui-corner-all");
 	},
 	nodeRenderStatus: function(ctx){
 		var node = ctx.node,
 			$el = $(node.span);
-		this._super(ctx);
+		this._superApply(arguments);
 /*
 		.ui-state-highlight: Class to be applied to highlighted or selected elements. Applies "highlight" container styles to an element and its child text, links, and icons.
 		.ui-state-error: Class to be applied to error messaging container elements. Applies "error" container styles to an element and its child text, links, and icons.

@@ -336,7 +336,7 @@ $.ui.fancytree.registerExtension({
 	},
 
 	treeCreate: function(ctx){
-		this._super(ctx);
+		this._superApply(arguments);
 		ctx.tree.refMap = {};
 		ctx.tree.keyMap = {};
 	},
@@ -348,12 +348,12 @@ $.ui.fancytree.registerExtension({
 			return calcUniqueKey(node);
 		};
 		// The default implementation loads initial data
-		this._super(ctx);
+		this._superApply(arguments);
 	},
 	treeClear: function(ctx){
 		ctx.tree.refMap = {};
 		ctx.tree.keyMap = {};
-		return this._super(ctx);
+		return this._superApply(arguments);
 	},
 	treeRegisterNode: function(ctx, add, node) {
 		var refList, len,
@@ -366,7 +366,7 @@ $.ui.fancytree.registerExtension({
 //		ctx.tree.debug("clones.treeRegisterNode", add, node);
 
 		if( key === "_statusNode" ){
-			return this._super(ctx, add, node);
+			return this._superApply(arguments);
 		}
 
 		if( add ) {
@@ -414,13 +414,13 @@ $.ui.fancytree.registerExtension({
 				}
 			}
 		}
-		return this._super(ctx, add, node);
+		return this._superApply(arguments);
 	},
 	nodeRenderStatus: function(ctx) {
 		var $span, res,
 			node = ctx.node;
 
-		res = this._super(ctx);
+		res = this._superApply(arguments);
 
 		if( ctx.options.clones.highlightClones ) {
 			$span = $(node[ctx.tree.statusClassPropName]);
@@ -437,7 +437,7 @@ $.ui.fancytree.registerExtension({
 			scpn = ctx.tree.statusClassPropName,
 			node = ctx.node;
 
-		res = this._super(ctx, flag);
+		res = this._superApply(arguments);
 
 		if( ctx.options.clones.highlightActiveClones && node.isClone() ) {
 			$.each(node.getCloneList(true), function(idx, n){

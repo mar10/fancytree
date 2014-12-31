@@ -52,7 +52,7 @@ $.ui.fancytree.registerExtension({
 
 	treeInit: function(ctx){
 		var tree = ctx.tree;
-		this._super(ctx);
+		this._superApply(arguments);
 		tree.$container.addClass("fancytree-ext-glyph");
 	},
 	nodeRenderStatus: function(ctx) {
@@ -65,7 +65,7 @@ $.ui.fancytree.registerExtension({
 			// $span = $(node.span)
 			;
 
-		this._super(ctx);
+		this._superApply(arguments);
 
 		if( node.isRoot() ){
 			return;
@@ -113,7 +113,7 @@ $.ui.fancytree.registerExtension({
 			opts = ctx.options.glyph,
 			node = ctx.node;
 
-		this._super(ctx, status, message, details);
+		this._superApply(arguments);
 
 		if(node.parent){
 			span = $("span.fancytree-expander", node.span).get(0);

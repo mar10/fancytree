@@ -142,10 +142,10 @@ $.ui.fancytree.registerExtension({
 		mode: "dimm"
 	},
 	treeInit: function(ctx){
-		this._super(ctx);
+		this._superApply(arguments);
 	},
 	nodeLoadChildren: function(ctx, source) {
-		return this._super(ctx, source).done(function() {
+		return this._superApply(arguments).done(function() {
 			if( ctx.tree.enableFilter && ctx.tree.lastFilterArgs && ctx.options.filter.autoApply ) {
 				ctx.tree._applyFilterImpl.apply(ctx.tree, ctx.tree.lastFilterArgs);
 			}
@@ -158,7 +158,7 @@ $.ui.fancytree.registerExtension({
 			tree = ctx.tree,
 			$span = $(node[tree.statusClassPropName]);
 
-		res = this._super(ctx);
+		res = this._superApply(arguments);
 		// nothing to do, if node was not yet rendered
 		if( !$span.length || !tree.enableFilter ) {
 			return res;

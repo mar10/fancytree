@@ -49,7 +49,7 @@ $.ui.fancytree.registerExtension({
 		var opts = ctx.options,
 			tree = ctx.tree;
 
-		this._super(ctx);
+		this._superApply(arguments);
 
 		// Prepare an object that will be passed with menu events
 		tree.ext.menu.data = {
@@ -94,7 +94,7 @@ $.ui.fancytree.registerExtension({
 		}).hide();
 	},
 	treeDestroy: function(ctx){
-		this._super(ctx);
+		this._superApply(arguments);
 	},
 	_openMenu: function(ctx){
 		var data,
@@ -149,7 +149,7 @@ $.ui.fancytree.registerExtension({
 //			ctx.tree.ext.menu._openMenu(ctx);
 //			return false;
 //		}
-//		this._super(ctx);
+//		this._superApply(arguments);
 //	}
 });
 }(jQuery, window, document));

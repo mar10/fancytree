@@ -66,7 +66,7 @@ $(function(){
 
 				this.debug("sampleExt1.treeInit start...");
 				if( CNT++ > 3 ) $.error("recursion");
-				this._super(ctx);
+				this._superApply(arguments);
 				this.debug("sampleExt1.treeInit done.");
 			}
 		});
@@ -87,7 +87,7 @@ $(function(){
 					extOpts = ctx.options.sampleExt2;
 
 				this.debug("sampleExt2.treeInit start...");
-				this._super(ctx);
+				this._superApply(arguments);
 				this.debug("sampleExt2.treeInit done.");
 			}
 		});

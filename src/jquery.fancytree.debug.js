@@ -59,7 +59,7 @@ $.ui.fancytree.registerExtension({
 			tree.debug("COOKIE " + document.cookie);
 		});
 		// Init the tree
-		this._super(ctx);
+		this._superApply(arguments);
 	},
 	nodeClick: function(ctx) {
 		if(this.options.tracecalls.traceHooks){
@@ -135,7 +135,7 @@ $.ui.fancytree.registerExtension({
 			var s = this.options.prefix + "render '" + ctx.node + "'";
 			/*jshint expr:true */
 			window.console && window.console.time && window.console.time(s);
-			this._super(ctx, force, deep, collapsed);
+			this._superApply(arguments);
 			window.console && window.console.timeEnd && window.console.timeEnd(s);
 		}
 	 });

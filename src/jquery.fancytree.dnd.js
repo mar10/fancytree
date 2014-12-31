@@ -231,7 +231,7 @@ $.ui.fancytree.registerExtension({
 
 	treeInit: function(ctx){
 		var tree = ctx.tree;
-		this._super(ctx);
+		this._superApply(arguments);
 		// issue #270: draggable eats mousedown events
 		if( tree.options.dnd.dragStart ){
 			tree.$container.on("mousedown", function(event){
@@ -256,13 +256,13 @@ $.ui.fancytree.registerExtension({
 		if( event.which === $.ui.keyCode.ESCAPE) {
 			this._local._cancelDrag();
 		}
-		return this._super(ctx);
+		return this._superApply(arguments);
 	},
 	nodeClick: function(ctx) {
 		// if( ctx.options.dnd.dragStart ){
 		// 	ctx.tree.$container.focus();
 		// }
-		return this._super(ctx);
+		return this._superApply(arguments);
 	},
 	/* Display drop marker according to hitMode ('after', 'before', 'over', 'out', 'start', 'stop'). */
 	_setDndStatus: function(sourceNode, targetNode, helper, hitMode, accept) {

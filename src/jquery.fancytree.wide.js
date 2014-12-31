@@ -116,7 +116,7 @@ $.ui.fancytree.registerExtension({
 	},
 
 	treeCreate: function(ctx){
-		this._super(ctx);
+		this._superApply(arguments);
 		this.$container.addClass("fancytree-ext-wide");
 
 		var containerId, cssText, iconSpacingUnit, iconWidthUnit, levelOfsUnit,
@@ -156,14 +156,14 @@ $.ui.fancytree.registerExtension({
 	treeDestroy: function(ctx){
 		// Remove generated css rules
 		defineHeadStyleElement(this.$container.attr("id"), null);
-		return this._super(ctx);
+		return this._superApply(arguments);
 	},
 	nodeRenderStatus: function(ctx) {
 		var containerId, cssText, res,
 			node = ctx.node,
 			level = node.getLevel();
 
-		res = this._super(ctx);
+		res = this._superApply(arguments);
 		// Generate some more level-n rules if required
 		if( level > this._local.maxDepth ) {
 			containerId = this.$container.attr("id");
