@@ -28,7 +28,7 @@
 	$(function(){
 		$("#tree").fancytree({
 			checkbox: true,
-			// Tree events
+			// --- Tree events -------------------------------------------------
 			blurTree: function(event, data) {
 				logEvent(event, data);
 			},
@@ -41,7 +41,10 @@
 			focusTree: function(event, data) {
 				logEvent(event, data);
 			},
-			// Node events
+			restore: function(event, data) {
+				logEvent(event, data);
+			},
+			// --- Node events -------------------------------------------------
 			activate: function(event, data) {
 				logEvent(event, data);
 				var node = data.node;

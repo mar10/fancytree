@@ -2527,14 +2527,14 @@ $.extend(Fancytree.prototype,
 			handled = true,
 			activate = !(event.ctrlKey || !opts.autoActivate );
 
-//		node.debug("ftnode.nodeKeydown(" + event.type + "): ftnode:" + this + ", charCode:" + event.charCode + ", keyCode: " + event.keyCode + ", which: " + event.which);
-//      FT.debug("keyEventToString", which, '"' + String.fromCharCode(which) + '"', '"' + FT.keyEventToString(event) + '"');
+//		(node || FT).debug("ftnode.nodeKeydown(" + event.type + "): ftnode:" + this + ", charCode:" + event.charCode + ", keyCode: " + event.keyCode + ", which: " + event.which);
+//		FT.debug("keyEventToString", which, '"' + String.fromCharCode(which) + '"', '"' + FT.keyEventToString(event) + '"');
 
-		// Set focus to first node, if no other node has the focus yet
+		// Set focus to active (or first node) if no other node has the focus yet
 		if( !node ){
-			this.getFirstChild().setFocus();
+			(this.getActiveNode() || this.getFirstChild()).setFocus();
 			node = ctx.node = this.focusNode;
-			node.debug("Keydown force focus on first node");
+			node.debug("Keydown force focus on active node");
 		}
 
 		if( opts.quicksearch && clean && /\w/.test(whichChar) && !$target.is(":input:enabled") ) {
@@ -3232,7 +3232,7 @@ $.extend(Fancytree.prototype,
 	 * If flag is false, the node is deactivated (must be a synchronous operation)
 	 * @param {EventData} ctx
 	 * @param {boolean} [flag=true]
-	 * @param {object} [opts] additional options. Defaults to {noEvents: false}
+	 * @param {object} [opts] additional options. Defaults to {noEvents: false, noFocus: false}
 	 * @returns {$.Promise}
 	 */
 	nodeSetActive: function(ctx, flag, callOpts) {
@@ -3243,6 +3243,7 @@ $.extend(Fancytree.prototype,
 			tree = ctx.tree,
 			opts = ctx.options,
 			noEvents = (callOpts.noEvents === true),
+			noFocus = (callOpts.noFocus === true),
 			isActive = (node === tree.activeNode);
 
 		// flag defaults to true
@@ -3269,7 +3270,9 @@ $.extend(Fancytree.prototype,
 			}
 			tree.activeNode = node;
 			tree.nodeRenderStatus(ctx);
-			tree.nodeSetFocus(ctx);
+			if( !noFocus ) {
+				tree.nodeSetFocus(ctx);
+			}
 			if( !noEvents ) {
 				tree._triggerNodeEvent("activate", node, ctx.originalEvent);
 			}
@@ -3438,7 +3441,7 @@ $.extend(Fancytree.prototype,
 		// node.debug("nodeSetExpanded: returns");
 		return dfd.promise();
 	},
-	/** Focus ot blur this node.
+	/** Focus or blur this node.
 	 * @param {EventData} ctx
 	 * @param {boolean} [flag=true]
 	 */
@@ -3465,10 +3468,8 @@ $.extend(Fancytree.prototype,
 		if(flag){
 			if( !this.hasFocus() ){
 				node.debug("nodeSetFocus: forcing container focus");
-				// Note: we pass _calledByNodeSetFocus=true
-				this._callHook("treeSetFocus", ctx, true, true);
+				this._callHook("treeSetFocus", ctx, true, {calledByNode: true});
 			}
-			// this.nodeMakeVisible(ctx);
 			node.makeVisible({scrollIntoView: false});
 			tree.focusNode = node;
 //			node.debug("FOCUS...");
@@ -3716,14 +3717,18 @@ $.extend(Fancytree.prototype,
 	 * @param {EventData} ctx
 	 * @param {boolean} [flag=true]
 	 */
-	treeSetFocus: function(ctx, flag, _calledByNodeSetFocus) {
+	treeSetFocus: function(ctx, flag, callOpts) {
 		flag = (flag !== false);
 
-		// this.debug("treeSetFocus(" + flag + "), _calledByNodeSetFocus: " + _calledByNodeSetFocus);
+		// this.debug("treeSetFocus(" + flag + "), callOpts: " + callOpts);
 		// this.debug("    focusNode: " + this.focusNode);
 		// this.debug("    activeNode: " + this.activeNode);
 		if( flag !== this.hasFocus() ){
 			this._hasFocus = flag;
+			if( !flag && this.focusNode ) {
+				// Node also looses focus if widget blurs
+				this.focusNode.setFocus(false);
+			}
 			this.$container.toggleClass("fancytree-treefocus", flag);
 			this._triggerTreeEvent(flag ? "focusTree" : "blurTree");
 		}
