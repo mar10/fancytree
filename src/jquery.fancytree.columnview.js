@@ -98,22 +98,23 @@ $.ui.fancytree.registerExtension({
 			}
 		// Adjust keyboard behaviour:
 		}).bind("fancytreekeydown", function(event, data){
-			var next = null;
+			var next = null,
+				node = data.node || data.tree.getFirstChild();
 			switch(event.which){
 			case $.ui.keyCode.DOWN:
-				next = data.node.getNextSibling();
+				next = node.getNextSibling();
 				if( next ){
 					next.setFocus();
 				}
 				return false;
 			case $.ui.keyCode.LEFT:
-				next = data.node.getParent();
+				next = node.getParent();
 				if( next ){
 					next.setFocus();
 				}
 				return false;
 			case $.ui.keyCode.UP:
-				next = data.node.getPrevSibling();
+				next = node.getPrevSibling();
 				if( next ){
 					next.setFocus();
 				}
