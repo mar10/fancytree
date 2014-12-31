@@ -101,19 +101,26 @@ function _makeVirtualFunction(methodName, tree, base, extension, extName){
 			_local = tree.ext[extName],
 			_super = function(){
 				return prevFunc.apply(tree, arguments);
+			},
+			_superApply = function(args){
+				return prevFunc.apply(tree, args);
 			};
 
 		// Return the wrapper function
 		return function(){
 			var prevLocal = tree._local,
-				prevSuper = tree._super;
+				prevSuper = tree._super,
+				prevSuperApply = tree._superApply;
+
 			try{
 				tree._local = _local;
 				tree._super = _super;
+				tree._superApply = _superApply;
 				return  baseFunc.apply(tree, arguments);
 			}finally{
 				tree._local = prevLocal;
 				tree._super = prevSuper;
+				tree._superApply = prevSuperApply;
 			}
 		};
 	})(); // end of Immediate Function

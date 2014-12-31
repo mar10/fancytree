@@ -288,14 +288,14 @@ $.ui.fancytree.registerExtension({
 			});
 		});
 		// Init the tree
-		return this._super(ctx);
+		return this._superApply(arguments);
 	},
 	nodeSetActive: function(ctx, flag, opts) {
 		var res,
 			local = this._local;
 
 		flag = (flag !== false);
-		res = this._super(ctx, flag, opts);
+		res = this._superApply(arguments);
 
 		if(local.storeActive){
 			local._data(local.cookiePrefix + ACTIVE, this.activeNode ? this.activeNode.key : null);
@@ -308,7 +308,7 @@ $.ui.fancytree.registerExtension({
 			local = this._local;
 
 		flag = (flag !== false);
-		res = this._super(ctx, flag, opts);
+		res = this._superApply(arguments);
 
 		if(local.storeExpanded){
 			local._appendKey(EXPANDED, node.key, flag);
@@ -320,7 +320,7 @@ $.ui.fancytree.registerExtension({
 			local = this._local;
 
 		flag = (flag !== false);
-		res = this._super(ctx, flag);
+		res = this._superApply(arguments);
 
 		if(flag && local.storeFocus){
 			local._data(local.cookiePrefix + FOCUS, this.focusNode ? this.focusNode.key : null);
@@ -334,7 +334,7 @@ $.ui.fancytree.registerExtension({
 			local = this._local;
 
 		flag = (flag !== false);
-		res = this._super(ctx, flag);
+		res = this._superApply(arguments);
 
 		if(local.storeSelected){
 			if( tree.options.selectMode === 3 ){
