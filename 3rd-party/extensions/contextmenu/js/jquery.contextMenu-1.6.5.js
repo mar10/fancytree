@@ -942,6 +942,11 @@ var // currently active contextMenu trigger
 				// iOS needs to see a click-event bound to an element to actually
 				// have the TouchEvents infrastructure trigger the click event
 				$t.on('click', $.noop);
+				
+                // append the img options
+                if (item.img) {
+                	$('<img src="' + item.img + '"/>').appendTo($t);
+                }
 
 				item.$node = $t.data({
 					'contextMenu': opt,
