@@ -2131,12 +2131,10 @@ Fancytree.prototype = /** @lends Fancytree# */{
 		return this.rootNode.getFirstChild();
 	},
 	/**
-	 * Return node that has keyboard focus.
-	 * @param {boolean} [ifTreeHasFocus=false] (not yet implemented)
+	 * Return node that has keyboard focus or null.
 	 * @returns {FancytreeNode}
 	 */
-	getFocusNode: function(ifTreeHasFocus) {
-		// TODO: implement ifTreeHasFocus
+	getFocusNode: function() {
 		return this.focusNode;
 	},
 	/**
