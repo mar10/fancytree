@@ -4126,6 +4126,37 @@ $.extend($.ui.fancytree,
 			return ENTITY_MAP[s];
 		});
 	},
+	/** Make jQuery.position() arguments backwards compatible, i.e. if 
+	 * jQuery UI version <= 1.8, convert 
+	 *   { my: "left+3 center", at: "left bottom", of: $target }
+	 * to
+	 *   { my: "left center", at: "left bottom", of: $target, offset: "3  0" }
+	 *
+	 * See http://jqueryui.com/upgrade-guide/1.9/#deprecated-offset-option-merged-into-my-and-at
+	 * and http://jsfiddle.net/mar10/6xtu9a4e/
+	 */
+	fixPositionOptions: function(opts) {
+	    if( opts.offset || ("" + opts.my + opts.at ).indexOf("%") >= 0 ) {
+	       $.error("expected new position syntax (but '%' is not supported)");
+	    }
+		if( ! $.ui.fancytree.jquerySupports.positionMyOfs ) {
+			var // parse 'left+3 center' into ['left+3 center', 'left', '+3', 'center', undefined]
+				myParts = /(\w+)([+-]?\d+)?\s+(\w+)([+-]?\d+)?/.exec(opts.my),
+				atParts = /(\w+)([+-]?\d+)?\s+(\w+)([+-]?\d+)?/.exec(opts.at),
+	            // convert to numbers
+	            dx = (myParts[2] ? (+myParts[2]) : 0) + (atParts[2] ? (+atParts[2]) : 0),
+	            dy = (myParts[4] ? (+myParts[4]) : 0) + (atParts[4] ? (+atParts[4]) : 0);
+
+	        opts = $.extend({}, opts, { // make a copy and overwrite
+	            my: myParts[1] + " " + myParts[3],
+	            at: atParts[1] + " " + atParts[3]
+	        });
+	        if( dx || dy ) {
+	            opts.offset = "" + dx + " " + dy;
+	        }
+		}
+		return opts;
+	},
 	/** Return a {node: FancytreeNode, type: TYPE} object for a mouse event.
 	 *
 	 * @param {Event} event Mouse event, e.g. click, ...

@@ -266,8 +266,7 @@ $.ui.fancytree.registerExtension({
 	},
 	/* Display drop marker according to hitMode ('after', 'before', 'over', 'out', 'start', 'stop'). */
 	_setDndStatus: function(sourceNode, targetNode, helper, hitMode, accept) {
-		var posOpts,
-			markerOffsetX = 0,
+		var markerOffsetX = 0,
 			markerAt = "center",
 			instData = this._local,
 			$source = sourceNode ? $(sourceNode.span) : null,
@@ -305,23 +304,13 @@ $.ui.fancytree.registerExtension({
 				markerOffsetX = 8;
 			}
 
-			if( $.ui.fancytree.jquerySupports.positionMyOfs ){
-				posOpts = {
+			instData.$dropMarker
+				.show()
+				.position($.ui.fancytree.fixPositionOptions({
 					my: "left" + offsetString(markerOffsetX) + " center",
 					at: "left " + markerAt,
 					of: $target
-				};
-			} else {
-				posOpts = {
-					my: "left center",
-					at: "left " + markerAt,
-					of: $target,
-					offset: "" + markerOffsetX + " 0"
-				};
-			}
-			instData.$dropMarker
-				.show()
-				.position(posOpts);
+					}));
 //          helper.addClass("fancytree-drop-hover");
 		} else {
 //          $source && $source.removeClass("fancytree-drag-source");
