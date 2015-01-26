@@ -4,22 +4,10 @@
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 	<title>Multiple Extensions - Fancytree</title>
 
-	<link type="text/css" rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css" />
+    <link href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css" type="text/css" rel="stylesheet">
 	<script src="//code.jquery.com/jquery-1.11.1.min.js" type="text/javascript"></script>
 	<script src="//code.jquery.com/ui/1.11.2/jquery-ui.min.js" type="text/javascript"></script>
 
-<style type="text/css">
-	.ui-menu kbd { /* Keyboard shortcuts for ui-contextmenu titles */
-		float: right;
-	}
-	/* custom alignment (set by 'renderColumns'' event) */
-	td.alignRight {
-	   text-align: right;
-	}
-	td input[type=input] {
-		width: 40px;
-	}
-</style>
 	<!-- jquery-contextmenu (https://github.com/mar10/jquery-ui-contextmenu/) -->
 	<script src="//cdn.jsdelivr.net/jquery.ui-contextmenu/1/jquery.ui-contextmenu.min.js"></script>
 
@@ -42,8 +30,18 @@
 
 <style type="text/css">
 	.ui-menu {
-		width: 150px;
+		width: 180px;
 		font-size: 63%;
+	}
+	.ui-menu kbd { /* Keyboard shortcuts for ui-contextmenu titles */
+		float: right;
+	}
+	/* custom alignment (set by 'renderColumns'' event) */
+	td.alignRight {
+	   text-align: right;
+	}
+	td input[type=input] {
+		width: 40px;
 	}
 </style>
 
@@ -87,6 +85,12 @@ $(function(){
 			}
 		},
 		edit: {
+			close: function(event, data) {
+				if( data.save && data.isNew ){
+					// Quick-enter: add new nodes until we hit [enter] on an empty title
+					$("#tree").trigger("nodeCommand", {cmd: "addSibling"});
+				}
+			}
 		},
 		table: {
 			indentation: 20,
@@ -158,21 +162,10 @@ $(function(){
 			node.remove();
 			break;
 		case "addChild":
-			node.editCreateNode("child", "New node");
-			// refNode = node.addChildren({
-			// 	title: "New node",
-			// 	isNew: true
-			// });
-			// node.setExpanded();
-			// refNode.editStart();
+			node.editCreateNode("child", "");
 			break;
 		case "addSibling":
-			node.editCreateNode("after", "New node");
-			// refNode = node.getParent().addChildren({
-			// 	title: "New node",
-			// 	isNew: true
-			// }, node.getNextSibling());
-			// refNode.editStart();
+			node.editCreateNode("after", "");
 			break;
 		case "cut":
 			CLIPBOARD = {mode: data.cmd, data: node};
@@ -293,7 +286,7 @@ $(function(){
 			<li>'ext-edit': inline editing.<br>
 			Try <kbd>F2</kbd> to rename a node,<br>
 			<kbd>Ctrl+C</kbd>, <kbd>Ctrl+X</kbd>, <kbd>Ctrl+P</kbd> for copy/paste,<br>
-			<kbd>Ctrl+N</kbd>, <kbd>Ctrl+Shift+N</kbd> to add new nodes,<br>
+			<kbd>Ctrl+N</kbd>, <kbd>Ctrl+Shift+N</kbd> to add new nodes (Quick-enter: add new nodes until we hit [enter] on an empty title),<br>
 			<kbd>Ctrl+UP</kbd>, <kbd>Ctrl+DOWN</kbd>, <kbd>Ctrl+LEFT</kbd>, <kbd>Ctrl+RIGHT</kbd> to move nodes around.
 			</li>
 			<li>3rd-party <a href="https://github.com/mar10/jquery-ui-contextmenu">contextmenu</a> for additional edit commands</li>
