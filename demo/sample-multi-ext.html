@@ -110,17 +110,15 @@ $(function(){
 				$select = $("<select />"),
 				$tdList = $(node.tr).find(">td");
 
-			// (index #0 is rendered by fancytree by adding the checkbox)
+			// (Index #0 is rendered by fancytree by adding the checkbox)
+			$tdList.eq(1).text(node.getIndexHier()).addClass("alignRight");
+			// Index #2 is rendered by fancytree, but we make the title cell 
+			// span the remaining columns if it is a folder:
 			if( node.isFolder() ) {
-				// make the title cell span the remaining columns, if it is a folder:
 				$tdList.eq(2)
 					.prop("colspan", 6)
 					.nextAll().remove();
 			}
-
-			$tdList.eq(1).text(node.getIndexHier()).addClass("alignRight");
-			// (index #2 is rendered by fancytree)
-			// $tdList.eq(3).text(node.key);
 			$tdList.eq(3).html("<input type='input' value='" + "" + "'>");
 			$tdList.eq(4).html("<input type='input' value='" + "" + "'>");
 			$tdList.eq(5).html("<input type='checkbox' value='" + "" + "'>");
@@ -138,22 +136,32 @@ $(function(){
 
 		switch( data.cmd ) {
 		case "moveUp":
-			node.moveTo(node.getPrevSibling(), "before");
-			node.setActive();
+			refNode = node.getPrevSibling();
+			if( refNode ) {			
+				node.moveTo(refNode, "before");
+				node.setActive();
+			}
 			break;
 		case "moveDown":
-			node.moveTo(node.getNextSibling(), "after");
-			node.setActive();
+			refNode = node.getNextSibling();
+			if( refNode ) {			
+				node.moveTo(refNode, "after");
+				node.setActive();
+			}
 			break;
 		case "indent":
 			refNode = node.getPrevSibling();
-			node.moveTo(refNode, "child");
-			refNode.setExpanded();
-			node.setActive();
+			if( refNode ) {			
+				node.moveTo(refNode, "child");
+				refNode.setExpanded();
+				node.setActive();
+			}
 			break;
 		case "outdent":
-			node.moveTo(node.getParent(), "after");
-			node.setActive();
+			if( !node.isTopLevel() ) {			
+				node.moveTo(node.getParent(), "after");
+				node.setActive();
+			}
 			break;
 		case "rename":
 			node.editStart();
@@ -279,15 +287,18 @@ $(function(){
 		<ul>
 			<li>'ext-dnd' to re-order nodes using drag-and-drop.</li>
 			<li>'ext-table' + 'ext-gridnav' to implement a treegrid.<br>
-			Try <kbd>UP / DOWN / LEFT / RIGHT</kbd>, <kbd>TAB</kbd>, <kbd>Shift+TAB</kbd>
-			to navigate between grid cells. Note that embedded input controls
-			remain functional.
+				Try <kbd>UP / DOWN / LEFT / RIGHT</kbd>, <kbd>TAB</kbd>, <kbd>Shift+TAB</kbd>
+				to navigate between grid cells. Note that embedded input controls
+				remain functional.
 			</li>
 			<li>'ext-edit': inline editing.<br>
-			Try <kbd>F2</kbd> to rename a node,<br>
-			<kbd>Ctrl+C</kbd>, <kbd>Ctrl+X</kbd>, <kbd>Ctrl+P</kbd> for copy/paste,<br>
-			<kbd>Ctrl+N</kbd>, <kbd>Ctrl+Shift+N</kbd> to add new nodes (Quick-enter: add new nodes until we hit [enter] on an empty title),<br>
-			<kbd>Ctrl+UP</kbd>, <kbd>Ctrl+DOWN</kbd>, <kbd>Ctrl+LEFT</kbd>, <kbd>Ctrl+RIGHT</kbd> to move nodes around.
+				Try <kbd>F2</kbd> to rename a node.<br>
+				<kbd>Ctrl+N</kbd>, <kbd>Ctrl+Shift+N</kbd> to add nodes (Quick-enter: add new nodes until
+				[enter] is hit on an empty title).
+			</li>
+			<li>Extended keyboard shortcuts:<br>
+				<kbd>Ctrl+C</kbd>, <kbd>Ctrl+X</kbd>, <kbd>Ctrl+P</kbd> for copy/paste,<br>
+				<kbd>Ctrl+UP</kbd>, <kbd>Ctrl+DOWN</kbd>, <kbd>Ctrl+LEFT</kbd>, <kbd>Ctrl+RIGHT</kbd> to move nodes around and change indentation.
 			</li>
 			<li>3rd-party <a href="https://github.com/mar10/jquery-ui-contextmenu">contextmenu</a> for additional edit commands</li>
 		</ul>
