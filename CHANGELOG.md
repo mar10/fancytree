@@ -2,6 +2,7 @@
   * [Improved] Bluring the widget will now blur the focused node too.
   * [Improved] Persistence will only set node focus if widget had focus (otherwise only activate the node).
   * [Improved] Set default focus on first keypress to active node (first node otherwise)
+  * [Improved] #383 Accept ECMAScript 6 Promise as source
   * [Added] `_superApply()` for hook handlers.
   * [Fixed] persistence for focus (when using non-cookie storage)
 

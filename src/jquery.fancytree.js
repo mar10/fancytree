@@ -1974,7 +1974,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 				this.warn("could not find node with key '" + key + "'");
 			}
 		}
-		// Return a promise that is resovled, when ALL patches were applied
+		// Return a promise that is resolved, when ALL patches were applied
 		return $.when.apply($, deferredList).promise();
 	},
 	/* TODO: implement in dnd extension
@@ -2303,7 +2303,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 			deferredList.push(dfd);
 			__lazyload(key, node, dfd);
 		}
-		// Return a promise that is resovled, when ALL paths were loaded
+		// Return a promise that is resolved, when ALL paths were loaded
 		return $.when.apply($, deferredList).promise();
 	},
 	/** Re-fire beforeActivate and activate events. */
@@ -2669,7 +2669,16 @@ $.extend(Fancytree.prototype,
 				source.rejectWith(this, [errorObj]);
 			});
 		}
-
+		// #383: accept and convert ECMAScript 6 Promise
+		if( $.isFunction(source.then) && $.isFunction(source["catch"]) ) {
+			dfd = source;
+			source = new $.Deferred();
+			dfd.then(function(value){
+				source.resolve(value);
+			}, function(reason){
+				source.reject(reason);
+			});
+		}
 		if($.isFunction(source.promise)){
 			// `source` is a deferred, i.e. ajax request
 			_assert(!node.isLoading());
