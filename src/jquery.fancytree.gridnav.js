@@ -192,7 +192,7 @@ $.ui.fancytree.registerExtension({
 			}
 			return true;
 		}
-		ctx.tree.debug("ext-gridnav NOT HANDLED", event, inputType);
+		// ctx.tree.debug("ext-gridnav NOT HANDLED", event, inputType);
 		return this._superApply(arguments);
 	}
 });

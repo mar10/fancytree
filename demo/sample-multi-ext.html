@@ -63,7 +63,7 @@ $(function(){
 	$("#tree").fancytree({
 		checkbox: true,
 		titlesTabbable: true,     // Add all node titles to TAB chain
-		quicksearch: true,
+		quicksearch: true,        // Jump to nodes when pressing first character
 		source: SOURCE,
 
 		// extensions: ["edit", "table", "gridnav"],
@@ -85,6 +85,7 @@ $(function(){
 			}
 		},
 		edit: {
+			triggerStart: ["f2", "shift+click", "mac+enter"],
 			close: function(event, data) {
 				if( data.save && data.isNew ){
 					// Quick-enter: add new nodes until we hit [enter] on an empty title
@@ -167,7 +168,11 @@ $(function(){
 			node.editStart();
 			break;
 		case "remove":
+			refNode = node.getNextSibling() || node.getPrevSibling() || node.getParent();
 			node.remove();
+			if( refNode ) {
+				refNode.setActive();
+			}
 			break;
 		case "addChild":
 			node.editCreateNode("child", "");
@@ -203,35 +208,59 @@ $(function(){
 			return;
 		}
 
-	}).on("keydown", function(e){
-		var c = String.fromCharCode(e.which),
-			cmd = null;
+	// }).on("click dblclick", function(e){
+	// 	console.log( e, $.ui.fancytree.eventToString(e) );
 
-		if( c === "N" && e.ctrlKey && e.shiftKey) {
+	}).on("keydown", function(e){
+		var cmd = null;
+
+		// console.log(e.type, $.ui.fancytree.eventToString(e));
+		switch( $.ui.fancytree.eventToString(e) ) {
+		case "ctrl+shift+n":
+		case "meta+shift+n": // mac: cmd+shift+n
 			cmd = "addChild";
-		} else if( c === "C" && e.ctrlKey ) {
+			break;
+		case "ctrl+c":
+		case "meta+c": // mac
 			cmd = "copy";
-		} else if( c === "V" && e.ctrlKey ) {
+			break;
+		case "ctrl+v":
+		case "meta+v": // mac
 			cmd = "paste";
-		} else if( c === "X" && e.ctrlKey ) {
+			break;
+		case "ctrl+x":
+		case "meta+x": // mac
 			cmd = "cut";
-		} else if( c === "N" && e.ctrlKey ) {
+			break;
+		case "ctrl+n":
+		case "meta+n": // mac
 			cmd = "addSibling";
-		} else if( e.which === $.ui.keyCode.DELETE ) {
+			break;
+		case "del":
+		case "meta+backspace": // mac
 			cmd = "remove";
-		} else if( e.which === $.ui.keyCode.F2 ) {
-			cmd = "rename";
-		} else if( e.which === $.ui.keyCode.UP && e.ctrlKey ) {
+			break;
+		// case "f2":  // already triggered by ext-edit pluging
+		// 	cmd = "rename";
+		// 	break;
+		case "ctrl+up":
 			cmd = "moveUp";
-		} else if( e.which === $.ui.keyCode.DOWN && e.ctrlKey ) {
+			break;
+		case "ctrl+down":
 			cmd = "moveDown";
-		} else if( e.which === $.ui.keyCode.RIGHT && e.ctrlKey ) {
+			break;
+		case "ctrl+right":
+		case "ctrl+shift+right": // mac
 			cmd = "indent";
-		} else if( e.which === $.ui.keyCode.LEFT && e.ctrlKey ) {
+			break;
+		case "ctrl+left":
+		case "ctrl+shift+left": // mac
 			cmd = "outdent";
 		}
 		if( cmd ){
 			$(this).trigger("nodeCommand", {cmd: cmd});
+			// e.preventDefault();
+			// e.stopPropagation();
 			return false;
 		}
 	});

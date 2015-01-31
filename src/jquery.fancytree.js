@@ -225,6 +225,7 @@ var i,
 		123: "f12", 144: "numlock", 145: "scroll", 173: "-", 186: ";", 187: "=",
 		188: ",", 189: "-", 190: ".", 191: "/", 192: "`", 219: "[", 220: "\\",
 		221: "]", 222: "'"},
+	MOUSE_BUTTONS = { 0: "", 1: "left", 2: "middle", 3: "right" },
 	//boolean attributes that can be set with equivalent class names in the LI tags
 	CLASS_ATTRS = "active expanded focus folder hideCheckbox lazy selected unselectable".split(" "),
 	CLASS_ATTR_MAP = {},
@@ -2526,7 +2527,7 @@ $.extend(Fancytree.prototype,
 			activate = !(event.ctrlKey || !opts.autoActivate );
 
 //		(node || FT).debug("ftnode.nodeKeydown(" + event.type + "): ftnode:" + this + ", charCode:" + event.charCode + ", keyCode: " + event.keyCode + ", which: " + event.which);
-//		FT.debug("keyEventToString", which, '"' + String.fromCharCode(which) + '"', '"' + FT.keyEventToString(event) + '"');
+//		FT.debug("eventToString", which, '"' + String.fromCharCode(which) + '"', '"' + FT.eventToString(event) + '"');
 
 		// Set focus to active (or first node) if no other node has the focus yet
 		if( !node ){
@@ -2551,7 +2552,7 @@ $.extend(Fancytree.prototype,
 			event.preventDefault();
 			return;
 		}
-		switch( FT.keyEventToString(event) ) {
+		switch( FT.eventToString(event) ) {
 			case "+":
 			case "=": // 187: '+' @ Chrome, Safari
 				tree.nodeSetExpanded(ctx, true);
@@ -4247,24 +4248,37 @@ $.extend($.ui.fancytree,
 		/*jshint expr:true */
 		($.ui.fancytree.debugLevel >= 1) && consoleApply("info", arguments);
 	},
-	/** Convert a keydown event to a string like 'ctrl+a', 'ctrl+shift+f2'.
+	/** Convert a keydown or mouse event to a canonical string like 'ctrl+a', 'ctrl+shift+f2', 'shift+leftdblclick'.
+	 * This is especially handy for switch-statements in event handlers.
 	 * @param {event}
 	 * @returns {string}
 	 */
-	keyEventToString: function(event) {
+	eventToString: function(event) {
 		// Poor-man's hotkeys. See here for a complete implementation:
 		//   https://github.com/jeresig/jquery.hotkeys
 		var which = event.which,
+			et = event.type,
 			s = [];
 
 		if( event.altKey ) { s.push("alt"); }
 		if( event.ctrlKey ) { s.push("ctrl"); }
 		if( event.metaKey ) { s.push("meta"); }
 		if( event.shiftKey ) { s.push("shift"); }
-		if( !IGNORE_KEYCODES[which] ) {
-			s.push( SPECIAL_KEYCODES[which] || String.fromCharCode(which).toLowerCase() );
+
+		if( et === "click" || et === "dblclick" ) {
+			s.push(MOUSE_BUTTONS[event.button] + et);
+		} else {
+			if( !IGNORE_KEYCODES[which] ) {
+				s.push( SPECIAL_KEYCODES[which] || String.fromCharCode(which).toLowerCase() );
+			}
 		}
 		return s.join("+");
+	},
+	/* @deprecated: use eventToString(event) instead.
+	 */
+	keyEventToString: function(event) {
+		this.warn("keyEventToString() is deprecated: use eventToString()");
+		return this.eventToString(event);
 	},
 	/**
 	 * Parse tree data from HTML <ul> markup
