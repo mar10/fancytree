@@ -1,4 +1,5 @@
 # 2.7.1-0 / Unreleased
+  * [Changed] Deprecated ext-menu (was never officially supported, see http://localhost:8080/demo/index.html#sample-ext-menu.html)
   * [Improved] Bluring the widget will now blur the focused node too.
   * [Improved] Persistence will only set node focus if widget had focus (otherwise only activate the node).
   * [Improved] Set default focus on first keypress to active node (first node otherwise)
