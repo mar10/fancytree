@@ -1461,8 +1461,12 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			newScrollTop = null;
 
 		// this.debug("scrollIntoView(), scrollTop=", scrollTop, opts.scrollOfs);
-		_assert($(this.span).is(":visible"), "scrollIntoView node is invisible"); // otherwise we cannot calc offsets
-
+//		_assert($(this.span).is(":visible"), "scrollIntoView node is invisible"); // otherwise we cannot calc offsets
+		if( !$(this.span).is(":visible") ) {
+			// We cannot calc offsets for hidden elements
+			this.warn("scrollIntoView(): node is invisible.");
+			return _getResolvedPromise();
+		}
 		if( isParentWindow ) {
 			nodeY = $(this.span).offset().top;
 			topNodeY = (topNode && topNode.span) ? $(topNode.span).offset().top : 0;

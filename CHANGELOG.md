@@ -7,6 +7,7 @@
   * [Added] `_superApply()` for hook handlers.
   * [Added] eventToString() supports mouse events
   * [Fixed] persistence for focus (when using non-cookie storage)
+  * [Fixed] #391 Exception on autoscrolling filtered trees
 
 # 2.7.0 / 2014-12-21
   * [CHANGED] Dropped `fx` option. Use `toggleEffect` instead.
