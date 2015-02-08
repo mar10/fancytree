@@ -3,13 +3,13 @@
  * Support for 100% wide selection bars.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2014, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2015, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.7.0
- * @date 2014-12-21T15:57
+ * @version 2.8.0
+ * @date 2015-02-08T17:56
  */
 
 ;(function($, window, document, undefined) {
@@ -116,7 +116,7 @@ $.ui.fancytree.registerExtension({
 	},
 
 	treeCreate: function(ctx){
-		this._super(ctx);
+		this._superApply(arguments);
 		this.$container.addClass("fancytree-ext-wide");
 
 		var containerId, cssText, iconSpacingUnit, iconWidthUnit, levelOfsUnit,
@@ -156,14 +156,14 @@ $.ui.fancytree.registerExtension({
 	treeDestroy: function(ctx){
 		// Remove generated css rules
 		defineHeadStyleElement(this.$container.attr("id"), null);
-		return this._super(ctx);
+		return this._superApply(arguments);
 	},
 	nodeRenderStatus: function(ctx) {
 		var containerId, cssText, res,
 			node = ctx.node,
 			level = node.getLevel();
 
-		res = this._super(ctx);
+		res = this._superApply(arguments);
 		// Generate some more level-n rules if required
 		if( level > this._local.maxDepth ) {
 			containerId = this.$container.attr("id");

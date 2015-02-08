@@ -4,13 +4,13 @@
  * Miscellaneous debug extensions.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2014, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2015, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.7.0
- * @date 2014-12-21T15:57
+ * @version 2.8.0
+ * @date 2015-02-08T17:56
  */
 
 ;(function($, window, document, undefined) {
@@ -59,7 +59,7 @@ $.ui.fancytree.registerExtension({
 			tree.debug("COOKIE " + document.cookie);
 		});
 		// Init the tree
-		this._super(ctx);
+		this._superApply(arguments);
 	},
 	nodeClick: function(ctx) {
 		if(this.options.tracecalls.traceHooks){
@@ -135,7 +135,7 @@ $.ui.fancytree.registerExtension({
 			var s = this.options.prefix + "render '" + ctx.node + "'";
 			/*jshint expr:true */
 			window.console && window.console.time && window.console.time(s);
-			this._super(ctx, force, deep, collapsed);
+			this._superApply(arguments);
 			window.console && window.console.timeEnd && window.console.timeEnd(s);
 		}
 	 });

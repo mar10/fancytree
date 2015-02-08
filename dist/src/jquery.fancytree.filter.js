@@ -4,13 +4,13 @@
  * Remove or highlight tree nodes, based on a filter.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2014, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2015, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.7.0
- * @date 2014-12-21T15:57
+ * @version 2.8.0
+ * @date 2015-02-08T17:56
  */
 
 ;(function($, window, document, undefined) {
@@ -142,10 +142,10 @@ $.ui.fancytree.registerExtension({
 		mode: "dimm"
 	},
 	treeInit: function(ctx){
-		this._super(ctx);
+		this._superApply(arguments);
 	},
 	nodeLoadChildren: function(ctx, source) {
-		return this._super(ctx, source).done(function() {
+		return this._superApply(arguments).done(function() {
 			if( ctx.tree.enableFilter && ctx.tree.lastFilterArgs && ctx.options.filter.autoApply ) {
 				ctx.tree._applyFilterImpl.apply(ctx.tree, ctx.tree.lastFilterArgs);
 			}
@@ -158,7 +158,7 @@ $.ui.fancytree.registerExtension({
 			tree = ctx.tree,
 			$span = $(node[tree.statusClassPropName]);
 
-		res = this._super(ctx);
+		res = this._superApply(arguments);
 		// nothing to do, if node was not yet rendered
 		if( !$span.length || !tree.enableFilter ) {
 			return res;

@@ -4,13 +4,13 @@
  * Drag-and-drop support.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2014, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2015, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.7.0
- * @date 2014-12-21T15:57
+ * @version 2.8.0
+ * @date 2015-02-08T17:56
  */
 
 ;(function($, window, document, undefined) {
@@ -231,7 +231,7 @@ $.ui.fancytree.registerExtension({
 
 	treeInit: function(ctx){
 		var tree = ctx.tree;
-		this._super(ctx);
+		this._superApply(arguments);
 		// issue #270: draggable eats mousedown events
 		if( tree.options.dnd.dragStart ){
 			tree.$container.on("mousedown", function(event){
@@ -256,18 +256,17 @@ $.ui.fancytree.registerExtension({
 		if( event.which === $.ui.keyCode.ESCAPE) {
 			this._local._cancelDrag();
 		}
-		return this._super(ctx);
+		return this._superApply(arguments);
 	},
 	nodeClick: function(ctx) {
 		// if( ctx.options.dnd.dragStart ){
 		// 	ctx.tree.$container.focus();
 		// }
-		return this._super(ctx);
+		return this._superApply(arguments);
 	},
 	/* Display drop marker according to hitMode ('after', 'before', 'over', 'out', 'start', 'stop'). */
 	_setDndStatus: function(sourceNode, targetNode, helper, hitMode, accept) {
-		var posOpts,
-			markerOffsetX = 0,
+		var markerOffsetX = 0,
 			markerAt = "center",
 			instData = this._local,
 			$source = sourceNode ? $(sourceNode.span) : null,
@@ -305,23 +304,13 @@ $.ui.fancytree.registerExtension({
 				markerOffsetX = 8;
 			}
 
-			if( $.ui.fancytree.jquerySupports.positionMyOfs ){
-				posOpts = {
+			instData.$dropMarker
+				.show()
+				.position($.ui.fancytree.fixPositionOptions({
 					my: "left" + offsetString(markerOffsetX) + " center",
 					at: "left " + markerAt,
 					of: $target
-				};
-			} else {
-				posOpts = {
-					my: "left center",
-					at: "left " + markerAt,
-					of: $target,
-					offset: "" + markerOffsetX + " 0"
-				};
-			}
-			instData.$dropMarker
-				.show()
-				.position(posOpts);
+					}));
 //          helper.addClass("fancytree-drop-hover");
 		} else {
 //          $source && $source.removeClass("fancytree-drag-source");

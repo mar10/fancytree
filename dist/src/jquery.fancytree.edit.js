@@ -4,13 +4,13 @@
  * Make node titles editable.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2014, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2015, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.7.0
- * @date 2014-12-21T15:57
+ * @version 2.8.0
+ * @date 2015-02-08T17:56
  */
 
 ;(function($, window, document, undefined) {
@@ -266,7 +266,7 @@ $.ui.fancytree.registerExtension({
 	currentNode: null,
 
 	treeInit: function(ctx){
-		this._super(ctx);
+		this._superApply(arguments);
 		this.$container.addClass("fancytree-ext-edit");
 	},
 	nodeClick: function(ctx) {
@@ -276,14 +276,14 @@ $.ui.fancytree.registerExtension({
 				return false;
 			}
 		}
-		return this._super(ctx);
+		return this._superApply(arguments);
 	},
 	nodeDblclick: function(ctx) {
 		if( $.inArray("dblclick", ctx.options.edit.triggerStart) >= 0 ){
 			ctx.node.editStart();
 			return false;
 		}
-		return this._super(ctx);
+		return this._superApply(arguments);
 	},
 	nodeKeydown: function(ctx) {
 		switch( ctx.originalEvent.which ) {
@@ -300,7 +300,7 @@ $.ui.fancytree.registerExtension({
 			}
 			break;
 		}
-		return this._super(ctx);
+		return this._superApply(arguments);
 	}
 });
 }(jQuery, window, document));

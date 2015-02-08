@@ -6,13 +6,13 @@
  *
  * @depends: jquery.cookie.js
  *
- * Copyright (c) 2014, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2015, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.7.0
- * @date 2014-12-21T15:57
+ * @version 2.8.0
+ * @date 2015-02-08T17:56
  */
 
 ;(function($, window, document, undefined) {
@@ -223,7 +223,7 @@ $.ui.fancytree.registerExtension({
 		// Bind init-handler to apply cookie state
 		tree.$div.bind("fancytreeinit", function(event){
 			var cookie, dfd, i, keyList, node,
-				prevFocus = $.cookie(local.cookiePrefix + FOCUS); // record this before node.setActive() overrides it;
+				prevFocus = local._data(local.cookiePrefix + FOCUS); // record this before node.setActive() overrides it;
 
 			// tree.debug("document.cookie:", document.cookie);
 
@@ -274,28 +274,37 @@ $.ui.fancytree.registerExtension({
 					if(cookie && (opts.persist.overrideSource || !tree.activeNode)){
 						node = tree.getNodeByKey(cookie);
 						if(node){
-							node.setActive();
+							node.debug("persist: set active", cookie);
+							// We only want to set the focus if the container
+							// had the keyboard focus before
+							node.setActive(true, {noFocus: true});
 						}
 					}
 				}
 				if(local.storeFocus && prevFocus){
 					node = tree.getNodeByKey(prevFocus);
 					if(node){
-						node.setFocus();
+						// node.debug("persist: set focus", cookie);
+						if( tree.options.titlesTabbable ) {
+							$(node.span).find(".fancytree-title").focus();
+						} else {
+							$(tree.$container).focus();
+						}
+						// node.setFocus();
 					}
 				}
 				tree._triggerTreeEvent("restore", null, {});
 			});
 		});
 		// Init the tree
-		return this._super(ctx);
+		return this._superApply(arguments);
 	},
 	nodeSetActive: function(ctx, flag, opts) {
 		var res,
 			local = this._local;
 
 		flag = (flag !== false);
-		res = this._super(ctx, flag, opts);
+		res = this._superApply(arguments);
 
 		if(local.storeActive){
 			local._data(local.cookiePrefix + ACTIVE, this.activeNode ? this.activeNode.key : null);
@@ -308,7 +317,7 @@ $.ui.fancytree.registerExtension({
 			local = this._local;
 
 		flag = (flag !== false);
-		res = this._super(ctx, flag, opts);
+		res = this._superApply(arguments);
 
 		if(local.storeExpanded){
 			local._appendKey(EXPANDED, node.key, flag);
@@ -320,9 +329,9 @@ $.ui.fancytree.registerExtension({
 			local = this._local;
 
 		flag = (flag !== false);
-		res = this._super(ctx, flag);
+		res = this._superApply(arguments);
 
-		if(flag && local.storeFocus){
+		if( local.storeFocus ) {
 			local._data(local.cookiePrefix + FOCUS, this.focusNode ? this.focusNode.key : null);
 		}
 		return res;
@@ -334,7 +343,7 @@ $.ui.fancytree.registerExtension({
 			local = this._local;
 
 		flag = (flag !== false);
-		res = this._super(ctx, flag);
+		res = this._superApply(arguments);
 
 		if(local.storeSelected){
 			if( tree.options.selectMode === 3 ){
