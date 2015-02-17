@@ -68,8 +68,8 @@ SOURCE = [
 			},
 			table: {
 				indentation: 20,      // indent 20px per node level
-				nodeColumnIdx: 2,     // render the node title into the 2nd column
-				checkboxColumnIdx: 0  // render the checkboxes into the 1st column
+				nodeColumnIdx: 2,     // render the node title into the 3rd column
+				checkboxColumnIdx: 1  // render the checkboxes into the 2nd column
 			},
 			// source: {
 			// 	url: "../demo/ajax-tree-plain.json"
@@ -86,8 +86,8 @@ SOURCE = [
 			renderColumns: function(event, data) {
 				var node = data.node,
 					$tdList = $(node.tr).find(">td");
-				// (index #0 is rendered by fancytree by adding the checkbox)
-				$tdList.eq(1).text(node.getIndexHier()).addClass("alignRight");
+				$tdList.eq(0).text(node.getIndexHier()).addClass("alignRight");
+				// (index #1 is rendered by fancytree by adding the checkbox)
 				// (index #2 is rendered by fancytree)
 				if( node.isFolder() ) {
 					$tdList.eq(2)
@@ -214,7 +214,7 @@ SOURCE = [
 		<col width="30px"></col>
 		</colgroup>
 		<thead>
-			<tr> <th></th> <th>#</th> <th></th> <th>Ed1</th> <th>Ed2</th> <th>Rb1</th> <th>Rb2</th> </tr>
+			<tr> <th>#</th> <th></th> <th></th> <th>Ed1</th> <th>Ed2</th> <th>Rb1</th> <th>Rb2</th> </tr>
 		</thead>
 		<tbody>
 		</tbody>
