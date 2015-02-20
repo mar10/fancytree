@@ -1,5 +1,6 @@
 # 2.8.1-0 / Unreleased
-  * [Fixed] #393 checkboxColumnIdx not working
+  * [Fixed] #393 ext-table: checkboxColumnIdx not working
+  * [Fixed] #397 ext-edit: Creating sub category fails
 
 # 2.8.0 / 2015-02-08
   * [Changed] Deprecated ext-menu (was never officially supported, see http://localhost:8080/demo/index.html#sample-ext-menu.html)
