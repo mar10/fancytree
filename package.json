@@ -24,6 +24,7 @@
   "dependencies": {},
   "keywords": [
     "ajax",
+    "ecosystem:jquery",
     "jquery-plugin",
     "lazy",
     "table",
