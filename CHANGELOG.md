@@ -1,6 +1,8 @@
 # 2.8.1-0 / Unreleased
+  * [Improved] generateFormElements() new argument `opts`, default: `{stopOnParents: true}`
   * [Fixed] #393 ext-table: checkboxColumnIdx not working
   * [Fixed] #397 ext-edit: Creating sub category fails
+  * [Fixed] #403 generateFormElements() doesn't work with string args
 
 # 2.8.0 / 2015-02-08
   * [Changed] Deprecated ext-menu (was never officially supported, see http://localhost:8080/demo/index.html#sample-ext-menu.html)
