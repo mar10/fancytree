@@ -237,11 +237,13 @@ $.ui.fancytree.registerExtension({
 			tree.$container.on("mousedown", function(event){
 				if( !tree.hasFocus() && ctx.options.dnd.focusOnClick ) {
 					var node = $.ui.fancytree.getNode(event);
-					node.debug("Re-enable focus that was prevented by jQuery UI draggable.");
-					// node.setFocus();
-					// $(node.span).closest(":tabbable").focus();
-					// $(event.target).trigger("focus");
-					// $(event.target).closest(":tabbable").trigger("focus");
+					if (node){
+						node.debug("Re-enable focus that was prevented by jQuery UI draggable.");
+						// node.setFocus();
+						// $(node.span).closest(":tabbable").focus();
+						// $(event.target).trigger("focus");
+						// $(event.target).closest(":tabbable").trigger("focus");
+					}
 					setTimeout(function() { // #300
 						$(event.target).closest(":tabbable").focus();
 					}, 10);
