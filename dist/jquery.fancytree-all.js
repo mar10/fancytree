@@ -7,8 +7,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.8.0
- * @date 2015-02-08T17:56
+ * @version 2.8.1
+ * @date 2015-03-01T20:28
  */
 
 /** Core Fancytree module.
@@ -2082,18 +2082,23 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	/**
 	 * Generate INPUT elements that can be submitted with html forms.
 	 *
-	 * In selectMode 3 only the topmost selected nodes are considered.
+	 * In selectMode 3 only the topmost selected nodes are considered, unless
+	 * `opts.stopOnParents: false` is passed.
 	 *
-	 * @param {boolean | string} [selected=true]
-	 * @param {boolean | string} [active=true]
+	 * @param {boolean | string} [selected=true] Pass false to disable, pass a string to overide the field name (default: 'ft_ID[]')
+	 * @param {boolean | string} [active=true] Pass false to disable, pass a string to overide the field name (default: 'ft_ID_active')
+	 * @param {object} [opts] default { stopOnParents: true }
 	 */
-	generateFormElements: function(selected, active) {
+	generateFormElements: function(selected, active, opts) {
 		// TODO: test case
+		opts = opts || {};
+
 		var nodeList,
-			selectedName = (selected !== false) ? "ft_" + this._id + "[]" : selected,
-			activeName = (active !== false) ? "ft_" + this._id + "_active" : active,
+			selectedName = (typeof selected === "string") ? selected : "ft_" + this._id + "[]",
+			activeName = (typeof active === "string") ? active : "ft_" + this._id + "_active",
 			id = "fancytree_result_" + this._id,
-			$result = $("#" + id);
+			$result = $("#" + id),
+			stopOnParents = this.options.selectMode === 3 && opts.stopOnParents !== false;
 
 		if($result.length){
 			$result.empty();
@@ -2102,8 +2107,8 @@ Fancytree.prototype = /** @lends Fancytree# */{
 				id: id
 			}).hide().insertAfter(this.$container);
 		}
-		if(selectedName){
-			nodeList = this.getSelectedNodes( this.options.selectMode === 3 );
+		if(selected !== false){
+			nodeList = this.getSelectedNodes(stopOnParents);
 			$.each(nodeList, function(idx, node){
 				$result.append($("<input>", {
 					type: "checkbox",
@@ -2113,7 +2118,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 				}));
 			});
 		}
-		if(activeName && this.activeNode){
+		if(active !== false && this.activeNode){
 			$result.append($("<input>", {
 				type: "radio",
 				name: activeName,
@@ -4066,7 +4071,7 @@ $.extend($.ui.fancytree,
 	/** @lends Fancytree_Static# */
 	{
 	/** @type {string} */
-	version: "2.8.0",      // Set to semver by 'grunt release'
+	version: "2.8.1",      // Set to semver by 'grunt release'
 	/** @type {string} */
 	buildType: "production", // Set to 'production' by 'grunt build'
 	/** @type {int} */
@@ -4428,8 +4433,8 @@ $.extend($.ui.fancytree,
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.8.0
- * @date 2015-02-08T17:56
+ * @version 2.8.1
+ * @date 2015-03-01T20:28
  */
 
 // To keep the global namespace clean, we wrap everything in a closure
@@ -4604,8 +4609,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.8.0
- * @date 2015-02-08T17:56
+ * @version 2.8.1
+ * @date 2015-03-01T20:28
  */
 
 ;(function($, window, document, undefined) {
@@ -5056,8 +5061,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.8.0
- * @date 2015-02-08T17:56
+ * @version 2.8.1
+ * @date 2015-03-01T20:28
  */
 
 ;(function($, window, document, undefined) {
@@ -5609,8 +5614,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.8.0
- * @date 2015-02-08T17:56
+ * @version 2.8.1
+ * @date 2015-03-01T20:28
  */
 
 ;(function($, window, document, undefined) {
@@ -5791,7 +5796,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editEnd = function(applyChanges, _e
 */
 $.ui.fancytree._FancytreeNodeClass.prototype.editCreateNode = function(mode, init){
 	var newNode,
-		that = this;
+		self = this;
 
 	mode = mode || "child";
 	if( init == null ) {
@@ -5804,15 +5809,16 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editCreateNode = function(mode, ini
 	// Make sure node is expanded (and loaded) in 'child' mode
 	if( mode === "child" && !this.isExpanded() && this.hasChildren() !== false ) {
 		this.setExpanded().done(function(){
-			that.editCreateNode(mode, init);
+			self.editCreateNode(mode, init);
 		});
 		return;
 	}
 	newNode = this.addNode(init, mode);
-	newNode.makeVisible();
-	$(newNode.span).addClass("fancytree-edit-new");
-	this.tree.ext.edit.relatedNode = this;
-	newNode.editStart();
+	newNode.makeVisible(/*{noAnimation: true}*/).done(function(){
+		$(newNode.span).addClass("fancytree-edit-new");
+		self.tree.ext.edit.relatedNode = self;
+		newNode.editStart();
+	});
 };
 
 
@@ -5916,8 +5922,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.8.0
- * @date 2015-02-08T17:56
+ * @version 2.8.1
+ * @date 2015-03-01T20:28
  */
 
 ;(function($, window, document, undefined) {
@@ -6091,8 +6097,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.8.0
- * @date 2015-02-08T17:56
+ * @version 2.8.1
+ * @date 2015-03-01T20:28
  */
 
 ;(function($, window, document, undefined) {
@@ -6224,8 +6230,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.8.0
- * @date 2015-02-08T17:56
+ * @version 2.8.1
+ * @date 2015-03-01T20:28
  */
 
 ;(function($, window, document, undefined) {
@@ -6426,8 +6432,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.8.0
- * @date 2015-02-08T17:56
+ * @version 2.8.1
+ * @date 2015-03-01T20:28
  */
 
 ;(function($, window, document, undefined) {
@@ -6790,8 +6796,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.8.0
- * @date 2015-02-08T17:56
+ * @version 2.8.1
+ * @date 2015-03-01T20:28
  */
 
 ;(function($, window, document, undefined) {
@@ -6855,7 +6861,7 @@ function findPrevRowNode(node){
 
 $.ui.fancytree.registerExtension({
 	name: "table",
-	version: "0.2.0",
+	version: "0.2.1",
 	// Default options for this extension.
 	options: {
 		checkboxColumnIdx: null, // render the checkboxes into the this column index (default: nodeColumnIdx)
@@ -7050,10 +7056,8 @@ $.ui.fancytree.registerExtension({
 		// Move checkbox to custom column
 		if(opts.checkbox && opts.table.checkboxColumnIdx != null ){
 			$cb = $("span.fancytree-checkbox", node.span).detach();
-			$(node.tr).find("td:first").html($cb);
+			$(node.tr).find("td").eq(+opts.table.checkboxColumnIdx).html($cb);
 		}
-		// Let user code write column content
-		// ctx.tree._triggerNodeEvent("renderColumns", node);
 		// Update element classes according to node state
 		if( ! node.isRoot() ){
 			this.nodeRenderStatus(ctx);
@@ -7061,6 +7065,7 @@ $.ui.fancytree.registerExtension({
 		if( !opts.table.customStatus && node.isStatusNode() ) {
 			// default rendering for status node: leave other cells empty
 		} else if ( opts.renderColumns ) {
+			// Let user code write column content
 			opts.renderColumns.call(ctx.tree, {type: "renderColumns"}, ctx);
 		}
 	},
@@ -7152,8 +7157,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.8.0
- * @date 2015-02-08T17:56
+ * @version 2.8.1
+ * @date 2015-03-01T20:28
  */
 
 ;(function($, window, document, undefined) {
@@ -7229,8 +7234,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.8.0
- * @date 2015-02-08T17:56
+ * @version 2.8.1
+ * @date 2015-03-01T20:28
  */
 
 ;(function($, window, document, undefined) {

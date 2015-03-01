@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.8.0
- * @date 2015-02-08T17:56
+ * @version 2.8.1
+ * @date 2015-03-01T20:28
  */
 
 ;(function($, window, document, undefined) {
@@ -74,7 +74,7 @@ function findPrevRowNode(node){
 
 $.ui.fancytree.registerExtension({
 	name: "table",
-	version: "0.2.0",
+	version: "0.2.1",
 	// Default options for this extension.
 	options: {
 		checkboxColumnIdx: null, // render the checkboxes into the this column index (default: nodeColumnIdx)
@@ -269,10 +269,8 @@ $.ui.fancytree.registerExtension({
 		// Move checkbox to custom column
 		if(opts.checkbox && opts.table.checkboxColumnIdx != null ){
 			$cb = $("span.fancytree-checkbox", node.span).detach();
-			$(node.tr).find("td:first").html($cb);
+			$(node.tr).find("td").eq(+opts.table.checkboxColumnIdx).html($cb);
 		}
-		// Let user code write column content
-		// ctx.tree._triggerNodeEvent("renderColumns", node);
 		// Update element classes according to node state
 		if( ! node.isRoot() ){
 			this.nodeRenderStatus(ctx);
@@ -280,6 +278,7 @@ $.ui.fancytree.registerExtension({
 		if( !opts.table.customStatus && node.isStatusNode() ) {
 			// default rendering for status node: leave other cells empty
 		} else if ( opts.renderColumns ) {
+			// Let user code write column content
 			opts.renderColumns.call(ctx.tree, {type: "renderColumns"}, ctx);
 		}
 	},

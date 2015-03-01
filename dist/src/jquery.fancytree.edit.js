@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.8.0
- * @date 2015-02-08T17:56
+ * @version 2.8.1
+ * @date 2015-03-01T20:28
  */
 
 ;(function($, window, document, undefined) {
@@ -191,7 +191,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editEnd = function(applyChanges, _e
 */
 $.ui.fancytree._FancytreeNodeClass.prototype.editCreateNode = function(mode, init){
 	var newNode,
-		that = this;
+		self = this;
 
 	mode = mode || "child";
 	if( init == null ) {
@@ -204,15 +204,16 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editCreateNode = function(mode, ini
 	// Make sure node is expanded (and loaded) in 'child' mode
 	if( mode === "child" && !this.isExpanded() && this.hasChildren() !== false ) {
 		this.setExpanded().done(function(){
-			that.editCreateNode(mode, init);
+			self.editCreateNode(mode, init);
 		});
 		return;
 	}
 	newNode = this.addNode(init, mode);
-	newNode.makeVisible();
-	$(newNode.span).addClass("fancytree-edit-new");
-	this.tree.ext.edit.relatedNode = this;
-	newNode.editStart();
+	newNode.makeVisible(/*{noAnimation: true}*/).done(function(){
+		$(newNode.span).addClass("fancytree-edit-new");
+		self.tree.ext.edit.relatedNode = self;
+		newNode.editStart();
+	});
 };
 
 
