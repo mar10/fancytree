@@ -2535,7 +2535,7 @@ $.extend(Fancytree.prototype,
 
 		// Set focus to active (or first node) if no other node has the focus yet
 		if( !node ){
-			focusNode = (this.getActiveNode() || this.getFirstChild())
+			focusNode = (this.getActiveNode() || this.getFirstChild());
 			if (focusNode){
 				focusNode.setFocus();
 				node = ctx.node = this.focusNode;
