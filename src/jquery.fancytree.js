@@ -2518,7 +2518,7 @@ $.extend(Fancytree.prototype,
 	 */
 	nodeKeydown: function(ctx) {
 		// TODO: return promise?
-		var matchNode, stamp, res,
+		var matchNode, stamp, res, focusNode
 			event = ctx.originalEvent,
 			node = ctx.node,
 			tree = ctx.tree,
@@ -2535,9 +2535,12 @@ $.extend(Fancytree.prototype,
 
 		// Set focus to active (or first node) if no other node has the focus yet
 		if( !node ){
-			(this.getActiveNode() || this.getFirstChild()).setFocus();
-			node = ctx.node = this.focusNode;
-			node.debug("Keydown force focus on active node");
+			focusNode = (this.getActiveNode() || this.getFirstChild())
+			if (focusNode){
+				focusNode.setFocus();
+				node = ctx.node = this.focusNode;
+				node.debug("Keydown force focus on active node");
+			}
 		}
 
 		if( opts.quicksearch && clean && /\w/.test(whichChar) && !$target.is(":input:enabled") ) {
