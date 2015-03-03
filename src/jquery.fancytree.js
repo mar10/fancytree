@@ -2518,7 +2518,7 @@ $.extend(Fancytree.prototype,
 	 */
 	nodeKeydown: function(ctx) {
 		// TODO: return promise?
-		var matchNode, stamp, res, focusNode
+		var matchNode, stamp, res, focusNode,
 			event = ctx.originalEvent,
 			node = ctx.node,
 			tree = ctx.tree,
