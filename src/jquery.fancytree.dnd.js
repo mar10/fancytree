@@ -54,13 +54,14 @@ function _initDragAndDrop(tree) {
 			connectToFancytree: true,
 			// Let source tree create the helper element
 			helper: function(event) {
-				var $helper,
-					sourceNode = $.ui.fancytree.getNode(event.target),
-					$nodeTag = $(sourceNode.span);
+				var $helper, $nodeTag,
+					sourceNode = $.ui.fancytree.getNode(event.target);
+
 				if(!sourceNode){
-					// DT issue 211: might happen, if dragging a table *header*
+					// #405, DT issue 211: might happen, if dragging a table *header*
 					return "<div>ERROR?: helper requested but sourceNode not found</div>";
 				}
+				$nodeTag = $(sourceNode.span);
 				// Only event and node argument is available
 				$helper = $("<div class='fancytree-drag-helper'><span class='fancytree-drag-helper-img' /></div>")
 					.css({zIndex: 3, position: "relative"}) // so it appears above ext-wide selection bar

@@ -1,4 +1,7 @@
-# 2.8.1-0 / Unreleased
+# 2.8.2-0 / Unreleased
+  * [Fixed] #402, #405 rare exception in dnd events
+
+# 2.8.1 / 2015-03-01
   * [Improved] generateFormElements() new argument `opts`, default: `{stopOnParents: true}`
   * [Fixed] #393 ext-table: checkboxColumnIdx not working
   * [Fixed] #397 ext-edit: Creating sub category fails

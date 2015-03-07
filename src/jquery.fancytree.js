@@ -4138,7 +4138,7 @@ $.extend($.ui.fancytree,
 	error: function(msg){
 		consoleApply("error", arguments);
 	},
-	/** Convert &lt;, &gt;, &amp;, &quot;, &#39;, &#x2F; to the equivalent entitites.
+	/** Convert &lt;, &gt;, &amp;, &quot;, &#39;, &#x2F; to the equivalent entities.
 	 *
 	 * @param {string} s
 	 * @returns {string}
