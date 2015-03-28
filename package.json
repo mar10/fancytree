@@ -15,10 +15,11 @@
   "bugs": {
     "url": "https://github.com/mar10/fancytree/issues"
   },
+  "license": "MIT",
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://code.google.com/p/fancytree/wiki/LicenseInfo"
+      "url": "https://raw.githubusercontent.com/mar10/fancytree/master/LICENSE.txt"
     }
   ],
   "dependencies": {},
