@@ -1126,7 +1126,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			this.parent.expanded = false;
 		} else {
 			pos = $.inArray(this, this.parent.children);
-			_assert(pos >= 0);
+			_assert(pos >= 0, "invalid source parent");
 			this.parent.children.splice(pos, 1);
 		}
 		// Remove from source DOM parent
@@ -1145,13 +1145,13 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			case "before":
 				// Insert this node before target node
 				pos = $.inArray(targetNode, targetParent.children);
-				_assert(pos >= 0);
+				_assert(pos >= 0, "invalid target parent");
 				targetParent.children.splice(pos, 0, this);
 				break;
 			case "after":
 				// Insert this node after target node
 				pos = $.inArray(targetNode, targetParent.children);
-				_assert(pos >= 0);
+				_assert(pos >= 0, "invalid target parent");
 				targetParent.children.splice(pos+1, 0, this);
 				break;
 			default:
@@ -1919,7 +1919,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 			isMissing = required && this.ext[name] == null,
 			badOrder = !isMissing && before != null && (before !== isBefore);
 
-		_assert(thisName && thisName !== name);
+		_assert(thisName && thisName !== name, "invalid or same name");
 
 		if( isMissing || badOrder ){
 			if( !message ){
@@ -2694,7 +2694,7 @@ $.extend(Fancytree.prototype,
 		}
 		if($.isFunction(source.promise)){
 			// `source` is a deferred, i.e. ajax request
-			_assert(!node.isLoading());
+			_assert(!node.isLoading(), "recursive load");
 			// node._isLoading = true;
 			tree.nodeSetStatus(ctx, "loading");
 
@@ -2759,7 +2759,7 @@ $.extend(Fancytree.prototype,
 		// FT.debug("nodeRemoveChild()", node.toString(), childNode.toString());
 
 		if( children.length === 1 ) {
-			_assert(childNode === children[0]);
+			_assert(childNode === children[0], "invalid single child");
 			return this.nodeRemoveChildren(ctx);
 		}
 		if( this.activeNode && (childNode === this.activeNode || this.activeNode.isDescendantOf(childNode))){
@@ -2772,7 +2772,7 @@ $.extend(Fancytree.prototype,
 		this.nodeRemoveMarkup(subCtx);
 		this.nodeRemoveChildren(subCtx);
 		idx = $.inArray(childNode, children);
-		_assert(idx >= 0);
+		_assert(idx >= 0, "invalid child");
 		// Unlink to support GC
 		childNode.visit(function(n){
 			n.parent = null;
