@@ -2652,7 +2652,7 @@ $.extend(Fancytree.prototype,
 			source = new $.Deferred();
 			dfd.done(function (data, textStatus, jqXHR) {
 				var errorObj, res;
-				if(typeof data === "string"){
+				if(this.dataType === "json" && typeof data === "string"){
 					$.error("Ajax request returned a string (did you get the JSON dataType wrong?).");
 				}
 				// postProcess is similar to the standard ajax dataFilter hook,
