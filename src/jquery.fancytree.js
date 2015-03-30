@@ -3304,6 +3304,7 @@ $.extend(Fancytree.prototype,
 				ctx.tree._triggerNodeEvent("deactivate", node, ctx.originalEvent);
 			}
 		}
+		return _getResolvedPromise(node);
 	},
 	/** Expand or collapse node, return Deferred.promise.
 	 *
