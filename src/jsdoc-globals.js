@@ -124,7 +124,7 @@ var TreePatch = {};
  * @property {Boolean} enableAspx Accept passing ajax data in a property named `d` (default: true).
  * @property {String[]} extensions List of active extensions (default: [])
  * @property {Boolean} focusOnSelect Set focus when node is checked by a mouse click (default: false)
- * @property {Boolean} generateIds Add `id="..."` to node markup (default: true).
+ * @property {Boolean} generateIds Add `id="..."` to node markup (default: false).
  * @property {Boolean} icons Display node icons  (default: true)
  * @property {String} idPrefix (default: "ft_")
  * @property {String} imagePath Path to a folder containing icons (default: null, using 'skin/' subdirectory).
