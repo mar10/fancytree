@@ -1,5 +1,7 @@
 # 2.8.2-0 / Unreleased
+  * [Improved] #417 only raise exception about data being a string if dataType is "json"
   * [Fixed] #402, #405 rare exception in dnd events
+  * [Fixed] #420 nodeSetActive not returning promise
 
 # 2.8.1 / 2015-03-01
   * [Improved] generateFormElements() new argument `opts`, default: `{stopOnParents: true}`

@@ -50,28 +50,29 @@ var EventData = {};
 
 /**
  * Data object passed to FancytreeNode() constructor.
- * Note: typically these attributes are accessed by meber methods, e.g. `node.isExpanded()`
- * and `node.setSelected(false)`.
+ * Note: typically these attributes are accessed by class methods, e.g. `node.isExpanded()`
+ * and `node.setTitle("foo")`.
  *
  * @name NodeData
  * @type {Object}
  *
- * @property {String} title node text (may contain HTML tags)
- * @property {String} key unique key for this node (auto-generated if omitted)
- * @property {String} refKey (reserved)
- * @property {Boolean} expanded
- * @property {Boolean} active (initialization only, but will not be stored  with the node).
- * @property {Boolean} focus (initialization only, but will not be stored  with the node).
- * @property {Boolean} folder
- * @property {Boolean} hideCheckbox
- * @property {Boolean} lazy
- * @property {Boolean} selected
- * @property {Boolean} unselectable
- * @property {NodeData[]} children optional array of child nodes
- * @property {String} tooltip
- * @property {String} extraClasses class names added to the node markup (separate with space)
- * @property {object} data all properties from will be copied to `node.data`
- * @property {any} OTHER attributes other than listed above will be copied to `node.data`
+ * @property {Boolean} active (Initialization only, but will not be stored  with the node.)
+ * @property {NodeData[]} children Optional array of child nodes.
+ * @property {object} data All unknown properties from constructor will be copied to `node.data`.
+ * @property {Boolean} expanded Initial expansion state. Use `node.setExpanded()` or `node.isExpanded()` to access.
+ * @property {String} extraClasses Class names added to the node markup (separate with space).
+ * @property {Boolean} focus (Initialization only, but will not be stored  with the node.)
+ * @property {Boolean} folder Folders have different default icons and honor the `clickFolderMode` option.
+ * @property {Boolean} hideCheckbox Remove checkbox for this node.
+ * @property {String} iconClass Class names added to the node icon markup to allow custom icons or glyphs (separate with space, e.g. `ui-icon ui-icon-heart`).
+ * @property {String} key Unique key for this node (auto-generated if omitted)
+ * @property {Boolean} lazy Lazy folders call the `lazyLoad` on first expand to load their children.
+ * @property {String} refKey (Reserved, used by 'clones' extension.)
+ * @property {Boolean} selected Initial selection state. Use `node.setSelected()` or `node.isSelected()` to access.
+ * @property {String} title Node text (may contain HTML tags). Use `node.setTitle()` to modify.
+ * @property {String} tooltip Will be added as `title` attribute, thus enabling a tooltip.
+ * @property {Boolean} unselectable Prevent selection using mouse or keyboard.
+ * @property {any} OTHER Attributes other than listed above will be copied to `node.data`.
  *
  */
 var NodeData = {};
