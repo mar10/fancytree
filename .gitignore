@@ -11,3 +11,4 @@
 /src/custom-skin-*
 *.log
 sauce_connect.*
+.pyftpsync-meta.json
