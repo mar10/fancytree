@@ -1,5 +1,8 @@
 # 2.8.2-0 / Unreleased
+  * [Changed] ext-filter: `tree.filterNodes(filter, opts)` now accept an `opts`
+    object instead of `leavesOnly`
   * [Improved] #417 only raise exception about data being a string if dataType is "json"
+  * [Added] #394 New option `autoExpand` for [ext-filter]
   * [Fixed] #402, #405 rare exception in dnd events
   * [Fixed] #420 nodeSetActive not returning promise
   * [Fixed] #270 Keyboard focus not working when using dnd extension

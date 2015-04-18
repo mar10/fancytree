@@ -33,8 +33,9 @@
 				url: "ajax-tree-local.json"
 			},
 			filter: {
-				mode: "hide",
-				autoApply: true
+				autoApply: true,
+				// autoExpand: true,
+				mode: "hide"
 			},
 			activate: function(event, data) {
 //				alert("activate " + data.node);
@@ -55,7 +56,10 @@
 		 */
 		$("input[name=search]").keyup(function(e){
 			var n,
-				leavesOnly = $("#leavesOnly").is(":checked"),
+				opts = {
+					autoExpand: $("#autoExpand").is(":checked"),
+					leavesOnly: $("#leavesOnly").is(":checked")
+				},
 				match = $(this).val();
 
 			if(e && e.which === $.ui.keyCode.ESCAPE || $.trim(match) === ""){
@@ -66,10 +70,10 @@
 				// Pass function to perform match
 				n = tree.filterNodes(function(node) {
 					return new RegExp(match, "i").test(node.title);
-				}, leavesOnly);
+				}, opts);
 			} else {
 				// Pass a string to perform case insensitive matching
-				n = tree.filterNodes(match, leavesOnly);
+				n = tree.filterNodes(match, opts);
 			}
 			$("button#btnResetSearch").attr("disabled", false);
 			$("span#matches").text("(" + n + " matches)");
@@ -83,6 +87,10 @@
 
 		$("input#hideMode").change(function(e){
 			tree.options.filter.mode = $(this).is(":checked") ? "hide" : "dimm";
+			tree.clearFilter();
+			$("input[name=search]").keyup();
+		}).prop("checked", true);
+		$("input#autoExpand").change(function(e){
 			tree.clearFilter();
 			$("input[name=search]").keyup();
 		}).prop("checked", true);
@@ -150,7 +158,10 @@
 			<input type="checkbox" id="leavesOnly">
 			Leaves only
 		</label>
-
+		<label for="autoExpand">
+			<input type="checkbox" id="autoExpand">
+			Auto expand
+		</label>
 		<label for="regex">
 			<input type="checkbox" id="regex">
 			Regular expression
