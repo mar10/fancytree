@@ -236,7 +236,8 @@ $.ui.fancytree.registerExtension({
 		// issue #270: draggable eats mousedown events
 		if( tree.options.dnd.dragStart ){
 			tree.$container.on("mousedown", function(event){
-				if( !tree.hasFocus() && ctx.options.dnd.focusOnClick ) {
+//				if( !tree.hasFocus() && ctx.options.dnd.focusOnClick ) {
+				if( ctx.options.dnd.focusOnClick ) {  // #270
 					var node = $.ui.fancytree.getNode(event);
 					if (node){
 						node.debug("Re-enable focus that was prevented by jQuery UI draggable.");
