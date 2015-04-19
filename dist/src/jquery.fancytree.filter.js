@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.8.1
- * @date 2015-03-01T20:28
+ * @version 2.9.0
+ * @date 2015-04-19T13:41
  */
 
 ;(function($, window, document, undefined) {
@@ -27,12 +27,13 @@ function _escapeRegex(str){
 	return (str + "").replace(/([.?*+\^\$\[\]\\(){}|-])/g, "\\$1");
 }
 
-$.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, branchMode, leavesOnly){
-	var match, re,
+$.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, branchMode, opts){
+	var leavesOnly, match, re,
 		count = 0,
 		hideMode = this.options.filter.mode === "hide";
-		// leavesOnly = !branchMode && this.options.filter.leavesOnly;
-	leavesOnly = !!leavesOnly && !branchMode;
+
+	opts = opts || {};
+	leavesOnly = !!opts.leavesOnly && !branchMode;
 
 	// Default to 'match title substring (not case sensitive)'
 	if(typeof filter === "string"){
@@ -64,6 +65,10 @@ $.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, bra
 			node.match = true;
 			node.visitParents(function(p){
 				p.subMatch = true;
+				if( opts.autoExpand && !p.expanded ) {
+					p.setExpanded(true, {noAnimation: true, noEvents: true, scrollIntoView: false});
+					p._filterAutoExpanded = true;
+				}
 			});
 			if( branchMode ) {
 				node.visit(function(p){
@@ -82,13 +87,17 @@ $.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, bra
  * [ext-filter] Dimm or hide nodes.
  *
  * @param {function | string} filter
- * @param {boolean} [leavesOnly=false]
+ * @param {boolean} [opts={autoExpand: false, leavesOnly: false}]
  * @returns {integer} count
  * @alias Fancytree#filterNodes
  * @requires jquery.fancytree.filter.js
  */
-$.ui.fancytree._FancytreeClass.prototype.filterNodes = function(filter, leavesOnly){
-	return this._applyFilterImpl(filter, false, leavesOnly);
+$.ui.fancytree._FancytreeClass.prototype.filterNodes = function(filter, opts) {
+	if( typeof opts === "boolean" ) {
+		opts = { leavesOnly: opts };
+		this.warn("Fancytree.filterNodes() leavesOnly option is deprecated since 2015-04-20.");
+	}
+	return this._applyFilterImpl(filter, false, opts);
 };
 
 /**
@@ -103,11 +112,12 @@ $.ui.fancytree._FancytreeClass.prototype.applyFilter = function(filter){
  * [ext-filter] Dimm or hide whole branches.
  *
  * @param {function | string} filter
+ * @param {boolean} [opts={autoExpand: false}]
  * @returns {integer} count
  * @alias Fancytree#filterBranches
  * @requires jquery.fancytree.filter.js
  */
-$.ui.fancytree._FancytreeClass.prototype.filterBranches = function(filter){
+$.ui.fancytree._FancytreeClass.prototype.filterBranches = function(filter, opts){
 	return this._applyFilterImpl(filter, true, null);
 };
 
@@ -122,6 +132,10 @@ $.ui.fancytree._FancytreeClass.prototype.clearFilter = function(){
 	this.visit(function(node){
 		delete node.match;
 		delete node.subMatch;
+		if( node._filterAutoExpanded && node.expanded ) {
+			node.setExpanded(false, {noAnimation: true, noEvents: true, scrollIntoView: false});
+		}
+		delete node._filterAutoExpanded;
 	});
 	this.enableFilter = false;
 	this.lastFilterArgs = null;
@@ -135,21 +149,25 @@ $.ui.fancytree._FancytreeClass.prototype.clearFilter = function(){
  */
 $.ui.fancytree.registerExtension({
 	name: "filter",
-	version: "0.3.0",
+	version: "0.4.0",
 	// Default options for this extension.
 	options: {
 		autoApply: true, // re-apply last filter if lazy data is loaded
 		mode: "dimm"
 	},
-	treeInit: function(ctx){
-		this._superApply(arguments);
-	},
+	// treeInit: function(ctx){
+	// 	this._superApply(arguments);
+	// },
 	nodeLoadChildren: function(ctx, source) {
 		return this._superApply(arguments).done(function() {
 			if( ctx.tree.enableFilter && ctx.tree.lastFilterArgs && ctx.options.filter.autoApply ) {
 				ctx.tree._applyFilterImpl.apply(ctx.tree, ctx.tree.lastFilterArgs);
 			}
 		});
+	},
+	nodeSetExpanded: function(ctx, flag, callOpts) {
+		delete ctx.node._filterAutoExpanded;
+		return this._superApply(arguments);
 	},
 	nodeRenderStatus: function(ctx) {
 		// Set classes for current status

@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.8.1
- * @date 2015-03-01T20:28
+ * @version 2.9.0
+ * @date 2015-04-19T13:41
  */
 
 ;(function($, window, document, undefined) {
@@ -54,13 +54,14 @@ function _initDragAndDrop(tree) {
 			connectToFancytree: true,
 			// Let source tree create the helper element
 			helper: function(event) {
-				var $helper,
-					sourceNode = $.ui.fancytree.getNode(event.target),
-					$nodeTag = $(sourceNode.span);
+				var $helper, $nodeTag,
+					sourceNode = $.ui.fancytree.getNode(event.target);
+
 				if(!sourceNode){
-					// DT issue 211: might happen, if dragging a table *header*
+					// #405, DT issue 211: might happen, if dragging a table *header*
 					return "<div>ERROR?: helper requested but sourceNode not found</div>";
 				}
+				$nodeTag = $(sourceNode.span);
 				// Only event and node argument is available
 				$helper = $("<div class='fancytree-drag-helper'><span class='fancytree-drag-helper-img' /></div>")
 					.css({zIndex: 3, position: "relative"}) // so it appears above ext-wide selection bar
@@ -235,13 +236,16 @@ $.ui.fancytree.registerExtension({
 		// issue #270: draggable eats mousedown events
 		if( tree.options.dnd.dragStart ){
 			tree.$container.on("mousedown", function(event){
-				if( !tree.hasFocus() && ctx.options.dnd.focusOnClick ) {
+//				if( !tree.hasFocus() && ctx.options.dnd.focusOnClick ) {
+				if( ctx.options.dnd.focusOnClick ) {  // #270
 					var node = $.ui.fancytree.getNode(event);
-					node.debug("Re-enable focus that was prevented by jQuery UI draggable.");
-					// node.setFocus();
-					// $(node.span).closest(":tabbable").focus();
-					// $(event.target).trigger("focus");
-					// $(event.target).closest(":tabbable").trigger("focus");
+					if (node){
+						node.debug("Re-enable focus that was prevented by jQuery UI draggable.");
+						// node.setFocus();
+						// $(node.span).closest(":tabbable").focus();
+						// $(event.target).trigger("focus");
+						// $(event.target).closest(":tabbable").trigger("focus");
+					}
 					setTimeout(function() { // #300
 						$(event.target).closest(":tabbable").focus();
 					}, 10);
