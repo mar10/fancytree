@@ -1,4 +1,6 @@
-# 2.8.2-0 / Unreleased
+# 2.9.1-0 / Unreleased
+
+# 2.9.0 / 2015-04-19
   * [Changed] ext-filter: `tree.filterNodes(filter, opts)` now accept an `opts`
     object instead of `leavesOnly`
   * [Improved] #417 only raise exception about data being a string if dataType is "json"
