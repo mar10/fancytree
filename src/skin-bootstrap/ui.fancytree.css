@@ -122,8 +122,7 @@ span.fancytree-expander {
 span.fancytree-checkbox {
   margin-left: 0.5em;
 }
-.fancytree-unselectable span.fancytree-checkbox,
-.fancytree-unselectable span.fancytree-checkbox:hover {
+.fancytree-unselectable span.fancytree-checkbox {
   opacity: 0.4;
   filter: alpha(opacity=40);
 }

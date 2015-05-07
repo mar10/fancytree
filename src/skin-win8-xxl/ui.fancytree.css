@@ -187,11 +187,18 @@ span.fancytree-checkbox:hover {
 .fancytree-selected span.fancytree-checkbox:hover {
   background-position: -96px -64px;
 }
-.fancytree-unselectable span.fancytree-checkbox,
-.fancytree-unselectable span.fancytree-checkbox:hover {
+.fancytree-unselectable span.fancytree-checkbox {
   opacity: 0.4;
   filter: alpha(opacity=40);
+}
+.fancytree-unselectable span.fancytree-checkbox:hover {
   background-position: 0px -64px;
+}
+.fancytree-unselectable.fancytree-partsel span.fancytree-checkbox:hover {
+  background-position: -128px -64px;
+}
+.fancytree-unselectable.fancytree-selected span.fancytree-checkbox:hover {
+  background-position: -64px -64px;
 }
 /*------------------------------------------------------------------------------
  * Radiobutton icon

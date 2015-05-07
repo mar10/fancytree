@@ -1,4 +1,5 @@
 # 2.9.1-0 / Unreleased
+  * [Fixed] #427 selected and unselectable shows unchecked checkbox
 
 # 2.9.0 / 2015-04-19
   * [Changed] ext-filter: `tree.filterNodes(filter, opts)` now accept an `opts`
