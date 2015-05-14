@@ -1,5 +1,6 @@
 # 2.9.1-0 / Unreleased
   * [Fixed] #427 selected and unselectable shows unchecked checkbox
+  * [Improved] Update to jQuery UI 1.11.4, jQuery 1.11.3
 
 # 2.9.0 / 2015-04-19
   * [Changed] ext-filter: `tree.filterNodes(filter, opts)` now accept an `opts`
