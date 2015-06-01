@@ -118,7 +118,7 @@ $.ui.fancytree._FancytreeClass.prototype.applyFilter = function(filter){
  * @requires jquery.fancytree.filter.js
  */
 $.ui.fancytree._FancytreeClass.prototype.filterBranches = function(filter, opts){
-	return this._applyFilterImpl(filter, true, null);
+	return this._applyFilterImpl(filter, true, opts);
 };
 
 
