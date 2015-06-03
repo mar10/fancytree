@@ -968,7 +968,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	isLoading: function() {
 		return !!this._isLoading;
 	},
-	/**
+	/*
 	 * @deprecated since v2.4.0:  Use isRootNode() instead
 	 */
 	isRoot: function() {
@@ -2579,7 +2579,7 @@ $.extend(Fancytree.prototype,
 					tree.nodeSetActive(ctx, true);
 				}
 				break;
-			case "enter":
+			case "return":
 				tree.nodeSetActive(ctx, true);
 				break;
 			case "backspace":
@@ -2870,20 +2870,20 @@ $.extend(Fancytree.prototype,
 	 *
 	 * Note: if a node was created/removed, nodeRender() must be called for the
 	 *       parent.
-	 * <code>
-	 * <li id='KEY' ftnode=NODE>
-	 *     <span class='fancytree-node fancytree-expanded fancytree-has-children fancytree-lastsib fancytree-exp-el fancytree-ico-e'>
-	 *         <span class="fancytree-expander"></span>
-	 *         <span class="fancytree-checkbox"></span> // only present in checkbox mode
-	 *         <span class="fancytree-icon"></span>
-	 *         <a href="#" class="fancytree-title"> Node 1 </a>
-	 *     </span>
-	 *     <ul> // only present if node has children
-	 *         <li id='KEY' ftnode=NODE> child1 ... </li>
-	 *         <li id='KEY' ftnode=NODE> child2 ... </li>
-	 *     </ul>
-	 * </li>
-	 * </code>
+	 * &lt;code>
+	 * &lt;li id='KEY' ftnode=NODE>
+	 *     &lt;span class='fancytree-node fancytree-expanded fancytree-has-children fancytree-lastsib fancytree-exp-el fancytree-ico-e'>
+	 *         &lt;span class="fancytree-expander">&lt;/span>
+	 *         &lt;span class="fancytree-checkbox">&lt;/span> // only present in checkbox mode
+	 *         &lt;span class="fancytree-icon">&lt;/span>
+	 *         &lt;a href="#" class="fancytree-title"> Node 1 &lt;/a>
+	 *     &lt;/span>
+	 *     &lt;ul> // only present if node has children
+	 *         &lt;li id='KEY' ftnode=NODE> child1 ... &lt;/li>
+	 *         &lt;li id='KEY' ftnode=NODE> child2 ... &lt;/li>
+	 *     &lt;/ul>
+	 * &lt;/li>
+	 * &lt;/code>
 	 *
 	 * @param {EventData} ctx
 	 * @param {boolean} [force=false] re-render, even if html markup was already created
@@ -3035,7 +3035,8 @@ $.extend(Fancytree.prototype,
 			}
 		}
 	},
-	/** Create HTML for the node's outer <span> (expander, checkbox, icon, and title).
+	/** Create HTML inside the node's outer &lt;span> (i.e. expander, checkbox, 
+	 * icon, and title).
 	 *
 	 * nodeRenderStatus() is implied.
 	 * @param {EventData} ctx
