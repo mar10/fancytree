@@ -102,7 +102,7 @@ module.exports = (grunt) ->
                 "lib/intro.js"
                 "build/jquery.fancytree.min.js"
                 "build/jquery.fancytree.childcounter.min.js"
-               "build/jquery.fancytree.clones.min.js"
+                "build/jquery.fancytree.clones.min.js"
 #                "build/jquery.fancytree.columnview.min.js"
                 "build/jquery.fancytree.dnd.min.js"
                 "build/jquery.fancytree.edit.min.js"
@@ -139,14 +139,19 @@ module.exports = (grunt) ->
     copy:
         build: # copy production files to build folder
             files: [{
-                expand: true # required for cwd
-                cwd: "src/"
-                src: ["skin-**/*.{css,gif,png,less}", "*.txt"]
-                dest: "build/"
-            }, {
+            #     expand: true # required for cwd
+            #     cwd: "src/"
+            #     src: ["skin-**/*.{css,gif,png,less}", "*.txt"]
+            #     dest: "build/"
+            # }, {
                 expand: true
                 cwd: "src/"
-                src: ["jquery.*.js", "skin-common.less"]
+                src: [
+                  "skin-**/*.{css,gif,png,less,md}"
+                  "*.txt"
+                  "jquery.*.js"
+                  "skin-common.less"
+                  ]
                 dest: "build/src/"
             }, {
                 # src: ["*.txt", "*.md"]

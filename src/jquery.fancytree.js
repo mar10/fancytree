@@ -3035,7 +3035,7 @@ $.extend(Fancytree.prototype,
 			}
 		}
 	},
-	/** Create HTML inside the node's outer &lt;span> (i.e. expander, checkbox, 
+	/** Create HTML inside the node's outer &lt;span> (i.e. expander, checkbox,
 	 * icon, and title).
 	 *
 	 * nodeRenderStatus() is implied.
