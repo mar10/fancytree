@@ -64,7 +64,7 @@ var EventData = {};
  * @property {Boolean} focus (Initialization only, but will not be stored  with the node.)
  * @property {Boolean} folder Folders have different default icons and honor the `clickFolderMode` option.
  * @property {Boolean} hideCheckbox Remove checkbox for this node.
- * @property {String} iconClass Class names added to the node icon markup to allow custom icons or glyphs (separate with space, e.g. `ui-icon ui-icon-heart`).
+ * @property {String} iconclass Class names added to the node icon markup to allow custom icons or glyphs (separate with space, e.g. `ui-icon ui-icon-heart`).
  * @property {String} key Unique key for this node (auto-generated if omitted)
  * @property {Boolean} lazy Lazy folders call the `lazyLoad` on first expand to load their children.
  * @property {String} refKey (Reserved, used by 'clones' extension.)
@@ -165,7 +165,7 @@ var FancytreeOptions = {};
  *     }
  * });
  *
- * @property {function} activate `data.node` was deactivated
+ * @property {function} activate `data.node` was activated
  * @property {function} beforeActivate Return `false` to prevent default processing
  * @property {function} beforeExpand Return `false` to prevent default processing
  * @property {function} beforeSelect Return `false` to prevent default processing
