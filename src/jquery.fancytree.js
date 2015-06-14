@@ -1369,7 +1369,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	render: function(force, deep) {
 		return this.tree._callHook("nodeRender", this, force, deep);
 	},
-	/** Create HTML markup for the node's outer <span> (expander, checkbox, icon, and title).
+	/** Create HTML markup for the node's outer &lt;span> (expander, checkbox, icon, and title).
 	 * @see Fancytree_Hooks#nodeRenderTitle
 	 */
 	renderTitle: function() {
