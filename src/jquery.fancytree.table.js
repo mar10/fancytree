@@ -347,6 +347,10 @@ $.ui.fancytree.registerExtension({
 	treeClear: function(ctx) {
 		this.nodeRemoveChildMarkup(this._makeHookContext(this.rootNode));
 		return this._superApply(arguments);
+	},
+	treeDestroy: function(ctx) {
+		this.$container.find("tbody").empty();
+		this.$source && this.$source.removeClass("ui-helper-hidden");
 	}
 	/*,
 	treeSetFocus: function(ctx, flag) {

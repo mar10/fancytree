@@ -3663,6 +3663,8 @@ $.extend(Fancytree.prototype,
 	 * @param {EventData} ctx
 	 */
 	treeDestroy: function(ctx) {
+		this.$div.find(">ul.fancytree-container").remove();
+		this.$source && this.$source.removeClass("ui-helper-hidden");
 	},
 	/** Widget was (re-)initialized.
 	 * @param {EventData} ctx
@@ -3922,9 +3924,6 @@ $.widget("ui.fancytree",
 	destroy: function() {
 		this._unbind();
 		this.tree._callHook("treeDestroy", this.tree);
-		// this.element.removeClass("ui-widget ui-widget-content ui-corner-all");
-		this.tree.$div.find(">ul.fancytree-container").remove();
-		this.$source && this.$source.removeClass("ui-helper-hidden");
 		// In jQuery UI 1.8, you must invoke the destroy method from the base widget
 		$.Widget.prototype.destroy.call(this);
 		// TODO: delete tree and nodes to make garbage collect easier?
