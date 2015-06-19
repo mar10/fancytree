@@ -4,6 +4,7 @@
   * [Fixed] #427 table + themeroller: apply color to TR
   * [Fixed] #442 filterBranches shall use opts to allow autoExpand
   * [Fixed] #445 enter key not handled correctly
+  * [Fixed] #449 After deleting last child, parent node remains expanded
   * [Fixed] #452 destroy not removing nodes with ext-table
   * [Improved] Update to jQuery UI 1.11.4, jQuery 1.11.3
 
