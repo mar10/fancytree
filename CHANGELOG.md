@@ -6,6 +6,7 @@
   * [Fixed] #445 enter key not handled correctly
   * [Fixed] #449 After deleting last child, parent node remains expanded
   * [Fixed] #452 destroy not removing nodes with ext-table
+  * [Fixed] #457 Autoscroll fails with lazyloading returning empty list
   * [Improved] Update to jQuery UI 1.11.4, jQuery 1.11.3
 
 # 2.9.0 / 2015-04-19
