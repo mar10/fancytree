@@ -1,5 +1,6 @@
 # 2.10.0-0 / Unreleased
   * [Changed] New dist folder layout: moved skin-* folders into src/ folder
+  * [Improved] #443 Support js-cookie (still compatible with jquery-cookie)
   * [Fixed] #415 selected and unselectable shows unchecked checkbox
   * [Fixed] #427 table + themeroller: apply color to TR
   * [Fixed] #442 filterBranches shall use opts to allow autoExpand

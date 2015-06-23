@@ -40,12 +40,12 @@ $(function(){
 		},
 		lazyLoad: function(event, data){
 			// Simulate a slow ajax request
-			var dfd = new $.Deferred()
-			data.result = dfd;
+			var dfd = new $.Deferred();
+			data.result = dfd.promise();
 			window.setTimeout(function(){
 				dfd.resolve([
-					{ title: 'Lazy node 1', lazy: true },
-					{ title: 'Simple node 2', select: true }
+					{ title: "Lazy node 1", lazy: true },
+					{ title: "Simple node 2", select: true }
 				]);
 			}, 1500);
 		}
