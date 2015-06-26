@@ -11,8 +11,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.9.0
- * @date 2015-04-19T13:41
+ * @version 2.10.0
+ * @date 2015-06-26T22:37
  */
 
 ;(function($, window, document, undefined) {
@@ -49,7 +49,7 @@ $.ui.fancytree.registerExtension({
 			var node = $.ui.fancytree.getNode(event.target),
 				flag = (event.type === "mouseenter");
 			node.debug("hover: " + flag);
-			$(node.span).toggleClass("ui-state-hover ui-corner-all", flag);
+			$(node.tr ? node.tr : node.span).toggleClass("ui-state-hover ui-corner-all", flag);
 		});
 	},
 	treeDestroy: function(ctx){
@@ -58,7 +58,7 @@ $.ui.fancytree.registerExtension({
 	},
 	nodeRenderStatus: function(ctx){
 		var node = ctx.node,
-			$el = $(node.span);
+			$el = $(node.tr ? node.tr : node.span);
 		this._superApply(arguments);
 /*
 		.ui-state-highlight: Class to be applied to highlighted or selected elements. Applies "highlight" container styles to an element and its child text, links, and icons.
@@ -73,7 +73,6 @@ $.ui.fancytree.registerExtension({
 		$el.toggleClass("ui-state-active", node.isActive());
 		$el.toggleClass("ui-state-focus", node.hasFocus());
 		$el.toggleClass("ui-state-highlight", node.isSelected());
-//		node.debug("ext-themeroller.nodeRenderStatus: ", node.span.className);
 	}
 });
 }(jQuery, window, document));

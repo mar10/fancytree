@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.9.0
- * @date 2015-04-19T13:41
+ * @version 2.10.0
+ * @date 2015-06-26T22:37
  */
 
 ;(function($, window, document, undefined) {
@@ -118,7 +118,7 @@ $.ui.fancytree._FancytreeClass.prototype.applyFilter = function(filter){
  * @requires jquery.fancytree.filter.js
  */
 $.ui.fancytree._FancytreeClass.prototype.filterBranches = function(filter, opts){
-	return this._applyFilterImpl(filter, true, null);
+	return this._applyFilterImpl(filter, true, opts);
 };
 
 

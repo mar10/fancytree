@@ -1,5 +1,5 @@
 /*!
- * Fancytree "win8" skin (highlighting the node span instead of title-only).
+ * Fancytree "Win8" skin.
  *
  * DON'T EDIT THE CSS FILE DIRECTLY, since it is automatically generated from
  * the LESS templates.
@@ -83,7 +83,7 @@ span.fancytree-checkbox,
 span.fancytree-expander,
 span.fancytree-radio,
 span.fancytree-custom-icon {
-  margin-top: 0px;
+  margin-top: 2px;
 }
 /* Used by iconclass option */
 span.fancytree-custom-icon {
@@ -94,7 +94,7 @@ img.fancytree-icon {
   width: 16px;
   height: 16px;
   margin-left: 3px;
-  margin-top: 0px;
+  margin-top: 2px;
   vertical-align: top;
   border-style: none;
 }
@@ -187,11 +187,18 @@ span.fancytree-checkbox:hover {
 .fancytree-selected span.fancytree-checkbox:hover {
   background-position: -48px -32px;
 }
-.fancytree-unselectable span.fancytree-checkbox,
-.fancytree-unselectable span.fancytree-checkbox:hover {
+.fancytree-unselectable span.fancytree-checkbox {
   opacity: 0.4;
   filter: alpha(opacity=40);
+}
+.fancytree-unselectable span.fancytree-checkbox:hover {
   background-position: 0px -32px;
+}
+.fancytree-unselectable.fancytree-partsel span.fancytree-checkbox:hover {
+  background-position: -64px -32px;
+}
+.fancytree-unselectable.fancytree-selected span.fancytree-checkbox:hover {
+  background-position: -32px -32px;
 }
 /*------------------------------------------------------------------------------
  * Radiobutton icon
@@ -287,15 +294,15 @@ span.fancytree-node {
   /* See #117 */
   display: inherit;
   width: 100%;
-  margin-top: 1px;
-  min-height: 16px;
+  margin-top: 0px;
+  min-height: 20px;
 }
 span.fancytree-title {
   color: black;
   cursor: pointer;
   display: inline-block;
   vertical-align: top;
-  min-height: 16px;
+  min-height: 20px;
   padding: 0 3px 0 3px;
   margin: 0px 0 0 3px;
   border: 1px solid transparent;
@@ -476,30 +483,28 @@ ul.fancytree-ext-wide span.fancytree-node span.fancytree-title {
 /*******************************************************************************
  * Node titles
  */
-span.fancytree-node {
+span.fancytree-title {
   border: 1px solid transparent;
 }
-span.fancytree-node:hover {
-  background-color: #E5F3FB;
-  border-color: #70C0E7;
+.fancytree-container.fancytree-treefocus span.fancytree-focused span.fancytree-title {
+  border-color: #3399ff;
 }
-.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-focused {
-  border-color: #3399FF;
+span.fancytree-active span.fancytree-title,
+span.fancytree-selected span.fancytree-title {
+  background-color: #f7f7f7;
+  border-color: #dedede;
 }
-span.fancytree-node.fancytree-active,
-span.fancytree-node.fancytree-selected {
-  background-color: #F7F7F7;
-  border-color: #DEDEDE;
-}
-.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-active,
-.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-selected,
-span.fancytree-node.fancytree-active:hover,
-span.fancytree-node.fancytree-selected:hover {
-  background-color: #CBE8F6;
-  border-color: #26A0DA;
-}
-.fancytree-node.fancytree-selected {
+span.fancytree-node span.fancytree-selected span.fancytree-title {
   font-style: italic;
+}
+span.fancytree-node:hover span.fancytree-title {
+  background-color: #eff9fe;
+  border-color: #70c0e7;
+}
+.fancytree-container.fancytree-treefocus span.fancytree-active span.fancytree-title,
+.fancytree-container.fancytree-treefocus span.fancytree-selected span.fancytree-title {
+  background-color: #cbe8f6;
+  border-color: #26a0da;
 }
 /*******************************************************************************
  * 'table' extension

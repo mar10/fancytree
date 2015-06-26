@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.9.0
- * @date 2015-04-19T13:41
+ * @version 2.10.0
+ * @date 2015-06-26T22:37
  */
 
 ;(function($, window, document, undefined) {
@@ -347,6 +347,10 @@ $.ui.fancytree.registerExtension({
 	treeClear: function(ctx) {
 		this.nodeRemoveChildMarkup(this._makeHookContext(this.rootNode));
 		return this._superApply(arguments);
+	},
+	treeDestroy: function(ctx) {
+		this.$container.find("tbody").empty();
+		this.$source && this.$source.removeClass("ui-helper-hidden");
 	}
 	/*,
 	treeSetFocus: function(ctx, flag) {

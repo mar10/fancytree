@@ -4,31 +4,42 @@
  * Persist tree status in cookiesRemove or highlight tree nodes, based on a filter.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * @depends: jquery.cookie.js
+ * @depends: js-cookie or jquery-cookie
  *
  * Copyright (c) 2008-2015, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.9.0
- * @date 2015-04-19T13:41
+ * @version 2.10.0
+ * @date 2015-06-26T22:37
  */
 
 ;(function($, window, document, undefined) {
 
 "use strict";
-
+/* global Cookies:false */
 
 /*******************************************************************************
  * Private functions and variables
  */
-var _assert = $.ui.fancytree.assert,
+var cookieGetter, cookieRemover, cookieSetter,
+	_assert = $.ui.fancytree.assert,
 	ACTIVE = "active",
 	EXPANDED = "expanded",
 	FOCUS = "focus",
 	SELECTED = "selected";
 
+if( typeof Cookies === "function" ) {
+	// Assume https://github.com/js-cookie/js-cookie
+	cookieSetter = Cookies.set;
+	cookieGetter = Cookies.get;
+	cookieRemover = Cookies.remove;
+} else {
+	// Fall back to https://github.com/carhartl/jquery-cookie
+	cookieSetter = cookieGetter = $.cookie;
+	cookieRemover = $.removeCookie;
+}
 
 /* Recursively load lazy nodes
  * @param {string} mode 'load', 'expand', false
@@ -163,18 +174,18 @@ $.ui.fancytree.registerExtension({
 		var ls = this._local.localStorage; // null, sessionStorage, or localStorage
 
 		if( value === undefined ) {
-			return ls ? ls.getItem(key) : $.cookie(key);
+			return ls ? ls.getItem(key) : cookieGetter(key);
 		} else if ( value === null ) {
 			if( ls ) {
 				ls.removeItem(key);
 			} else {
-				$.removeCookie(key);
+				cookieRemover(key);
 			}
 		} else {
 			if( ls ) {
 				ls.setItem(key, value);
 			} else {
-				$.cookie(key, value, this.options.persist.cookie);
+				cookieSetter(key, value, this.options.persist.cookie);
 			}
 		}
 	},
@@ -207,7 +218,7 @@ $.ui.fancytree.registerExtension({
 			instOpts = this.options.persist;
 
 		// For 'auto' or 'cookie' mode, the cookie plugin must be available
-		_assert(instOpts.store === "localStore" || $.cookie, "Missing required plugin for 'persist' extension: jquery.cookie.js");
+		_assert(instOpts.store === "localStore" || cookieGetter, "Missing required plugin for 'persist' extension: js.cookie.js or jquery.cookie.js");
 
 		local.cookiePrefix = instOpts.cookiePrefix || ("fancytree-" + tree._id + "-");
 		local.storeActive = instOpts.types.indexOf(ACTIVE) >= 0;

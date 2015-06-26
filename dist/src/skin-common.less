@@ -277,11 +277,18 @@ span.fancytree-checkbox {
 }
 // Unselectable is dimmed, without hover effects
 .fancytree-unselectable {
-	span.fancytree-checkbox,
-	span.fancytree-checkbox:hover {
+	span.fancytree-checkbox {
 		opacity: 0.4;
 		filter: alpha(opacity=40);
+	}
+	span.fancytree-checkbox:hover {
 		.useSprite(0, 2);
+	}
+	&.fancytree-partsel span.fancytree-checkbox:hover {
+		.useSprite(4, 2);
+	}
+	&.fancytree-selected span.fancytree-checkbox:hover {
+		.useSprite(2, 2);
 	}
 }
 
