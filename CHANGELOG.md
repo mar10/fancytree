@@ -1,9 +1,11 @@
-# 2.10.1-0 / Unreleased
+# 2.10.2-0 / Unreleased
+
+# 2.10.1 / 2015-06-27
   * [Changed] Undo #340: Revert dist folder layout to v2.9.0, but add
     dist/skin-common.less
 
 # 2.10.0 / 2015-06-26
-  * [Changed] New dist folder layout: moved skin-* folders into src/ folder  
+  * [Changed] #340: New dist folder layout: moved skin-* folders into src/ folder  
     (**Note:** this change was reverted in v2.10.1)
   * [Improved] Update to jQuery UI 1.11.4, jQuery 1.11.3
   * [Improved] #340: add `dist/skin-common.less` to fix theme imports
