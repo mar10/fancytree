@@ -1,5 +1,12 @@
-# 2.10.0-0 / Unreleased
-  * [Changed] New dist folder layout: moved skin-* folders into src/ folder
+# 2.10.1-0 / Unreleased
+  * [Changed] Undo #340: Revert dist folder layout to v2.9.0, but add
+    dist/skin-common.less
+
+# 2.10.0 / 2015-06-26
+  * [Changed] New dist folder layout: moved skin-* folders into src/ folder  
+    (**Note:** this change was reverted in v2.10.1)
+  * [Improved] Update to jQuery UI 1.11.4, jQuery 1.11.3
+  * [Improved] #340: add `dist/skin-common.less` to fix theme imports
   * [Improved] #443 Support js-cookie (still compatible with jquery-cookie)
   * [Fixed] #415 selected and unselectable shows unchecked checkbox
   * [Fixed] #427 table + themeroller: apply color to TR
