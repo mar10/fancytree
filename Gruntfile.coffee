@@ -142,7 +142,7 @@ module.exports = (grunt) ->
                 expand: true # required for cwd
                 cwd: "src/"
                 src: [
-                    "skin-**/*.{css,gif,png,less}"
+                    "skin-**/*.{css,gif,md,png,less}"
                     "skin-common.less"
                     "*.txt"
                     ]
