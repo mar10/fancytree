@@ -1494,7 +1494,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			// If a topNode was passed, make sure that it is never scrolled
 			// outside the upper border
 			if(topNode){
-				_assert(topNode.isRoot() || $(topNode.span).is(":visible"), "topNode must be visible");
+				_assert(topNode.isRootNode() || $(topNode.span).is(":visible"), "topNode must be visible");
 				if( topNodeY < newScrollTop ){
 					newScrollTop = topNodeY - topOfs;
 					// this.debug("    scrollIntoView(), TOP newScrollTop=", newScrollTop);
@@ -2725,7 +2725,7 @@ $.extend(Fancytree.prototype,
 				// We got {foo: 'abc', children: [...]}
 				// Copy extra properties to tree.data.foo
 				_assert($.isArray(children.children), "source must contain (or be) an array of children");
-				_assert(node.isRoot(), "source may only be an object for root nodes");
+				_assert(node.isRootNode(), "source may only be an object for root nodes");
 				metaData = children;
 				children = children.children;
 				delete metaData.children;
@@ -2793,7 +2793,7 @@ $.extend(Fancytree.prototype,
 		// FT.debug("nodeRemoveChildMarkup()", node.toString());
 		// TODO: Unlink attr.ftnode to support GC
 		if(node.ul){
-			if( node.isRoot() ) {
+			if( node.isRootNode() ) {
 				$(node.ul).empty();
 			} else {
 				$(node.ul).remove();
