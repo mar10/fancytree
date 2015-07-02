@@ -2843,7 +2843,9 @@ $.extend(Fancytree.prototype,
 		} else{
 			node.children = null;
 		}
-		node.expanded = false;  // #449
+		if( !node.isRootNode() ) {
+			node.expanded = false;  // #449, #459
+		}
 		this.nodeRenderStatus(ctx);
 	},
 	/**Remove HTML markup for ctx.node and all its descendents.

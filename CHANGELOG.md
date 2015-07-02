@@ -1,4 +1,6 @@
 # 2.10.2-0 / Unreleased
+  * [Fixed] Add `dist/skin-custom-1` sample (again)
+  * [Fixed] #459 Don't collapse root folder when last node is removed
 
 # 2.10.1 / 2015-06-27
   * [Changed] Undo #340: Revert dist folder layout to v2.9.0, but add
