@@ -7,8 +7,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.10.1
- * @date 2015-06-27T22:07
+ * @version 2.10.2
+ * @date 2015-07-02T08:11
  */
 
 /** Core Fancytree module.
@@ -1494,7 +1494,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			// If a topNode was passed, make sure that it is never scrolled
 			// outside the upper border
 			if(topNode){
-				_assert(topNode.isRoot() || $(topNode.span).is(":visible"), "topNode must be visible");
+				_assert(topNode.isRootNode() || $(topNode.span).is(":visible"), "topNode must be visible");
 				if( topNodeY < newScrollTop ){
 					newScrollTop = topNodeY - topOfs;
 					// this.debug("    scrollIntoView(), TOP newScrollTop=", newScrollTop);
@@ -2725,7 +2725,7 @@ $.extend(Fancytree.prototype,
 				// We got {foo: 'abc', children: [...]}
 				// Copy extra properties to tree.data.foo
 				_assert($.isArray(children.children), "source must contain (or be) an array of children");
-				_assert(node.isRoot(), "source may only be an object for root nodes");
+				_assert(node.isRootNode(), "source may only be an object for root nodes");
 				metaData = children;
 				children = children.children;
 				delete metaData.children;
@@ -2793,7 +2793,7 @@ $.extend(Fancytree.prototype,
 		// FT.debug("nodeRemoveChildMarkup()", node.toString());
 		// TODO: Unlink attr.ftnode to support GC
 		if(node.ul){
-			if( node.isRoot() ) {
+			if( node.isRootNode() ) {
 				$(node.ul).empty();
 			} else {
 				$(node.ul).remove();
@@ -2843,7 +2843,9 @@ $.extend(Fancytree.prototype,
 		} else{
 			node.children = null;
 		}
-		node.expanded = false;  // #449
+		if( !node.isRootNode() ) {
+			node.expanded = false;  // #449, #459
+		}
 		this.nodeRenderStatus(ctx);
 	},
 	/**Remove HTML markup for ctx.node and all its descendents.
@@ -4077,7 +4079,7 @@ $.extend($.ui.fancytree,
 	/** @lends Fancytree_Static# */
 	{
 	/** @type {string} */
-	version: "2.10.1",      // Set to semver by 'grunt release'
+	version: "2.10.2",      // Set to semver by 'grunt release'
 	/** @type {string} */
 	buildType: "production", // Set to 'production' by 'grunt build'
 	/** @type {int} */
@@ -4439,8 +4441,8 @@ $.extend($.ui.fancytree,
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.10.1
- * @date 2015-06-27T22:07
+ * @version 2.10.2
+ * @date 2015-07-02T08:11
  */
 
 // To keep the global namespace clean, we wrap everything in a closure
@@ -4615,8 +4617,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.10.1
- * @date 2015-06-27T22:07
+ * @version 2.10.2
+ * @date 2015-07-02T08:11
  */
 
 ;(function($, window, document, undefined) {
@@ -5067,8 +5069,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.10.1
- * @date 2015-06-27T22:07
+ * @version 2.10.2
+ * @date 2015-07-02T08:11
  */
 
 ;(function($, window, document, undefined) {
@@ -5624,8 +5626,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.10.1
- * @date 2015-06-27T22:07
+ * @version 2.10.2
+ * @date 2015-07-02T08:11
  */
 
 ;(function($, window, document, undefined) {
@@ -5932,8 +5934,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.10.1
- * @date 2015-06-27T22:07
+ * @version 2.10.2
+ * @date 2015-07-02T08:11
  */
 
 ;(function($, window, document, undefined) {
@@ -6125,8 +6127,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.10.1
- * @date 2015-06-27T22:07
+ * @version 2.10.2
+ * @date 2015-07-02T08:11
  */
 
 ;(function($, window, document, undefined) {
@@ -6258,8 +6260,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.10.1
- * @date 2015-06-27T22:07
+ * @version 2.10.2
+ * @date 2015-07-02T08:11
  */
 
 ;(function($, window, document, undefined) {
@@ -6460,8 +6462,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.10.1
- * @date 2015-06-27T22:07
+ * @version 2.10.2
+ * @date 2015-07-02T08:11
  */
 
 ;(function($, window, document, undefined) {
@@ -6835,8 +6837,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.10.1
- * @date 2015-06-27T22:07
+ * @version 2.10.2
+ * @date 2015-07-02T08:11
  */
 
 ;(function($, window, document, undefined) {
@@ -7200,8 +7202,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.10.1
- * @date 2015-06-27T22:07
+ * @version 2.10.2
+ * @date 2015-07-02T08:11
  */
 
 ;(function($, window, document, undefined) {
@@ -7276,8 +7278,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.10.1
- * @date 2015-06-27T22:07
+ * @version 2.10.2
+ * @date 2015-07-02T08:11
  */
 
 ;(function($, window, document, undefined) {
