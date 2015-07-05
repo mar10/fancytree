@@ -1,4 +1,7 @@
-# 2.10.2-0 / Unreleased
+# 2.10.3-0 / Unreleased
+  * [Fixed] #411: ext-edit fails with ext-table, when edit was cancelled 
+
+# 2.10.2 / 2015-07-02
   * [Fixed] Add `dist/skin-custom-1` sample (again)
   * [Fixed] #459 Don't collapse root folder when last node is removed
 
