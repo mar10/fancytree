@@ -5,7 +5,7 @@
  ******************************************************************************/
 
 // Variables (defaults, may be overwritten by the including .less files)
-@fancy-use-sprites: true;      // false: suppress all background positions
+@fancy-use-sprites: true;      // false: suppress all background images (i.e. icons)
 @fancy-hide-connectors: true;  // false: show vertical connector lines
 
 @fancy-level-indent: 16px;
@@ -23,9 +23,14 @@
 // @fancy-line-ofs-top: (@fancy-line-height - @fancy-icon-height) / 2;
 
 @fancy-image-dir: ".";
+
+// Use 'url(...)' to link to the throbber image, or
+// use data-uri(...)' to inline the data in css instead:
 @fancy-loading-url: url("@{fancy-image-dir}/loading.gif");
-// Use 'data-uri(...)' to create inline image:
 // @fancy-loading-url: data-uri("@{fancy-image-dir}/loading.gif");
+
+// Set to `true` to use `data-uri(...)` instead of a `url(...)` link:
+@fancy-inline-sprites: false;
 
 
 //------------------------------------------------------------------------------
@@ -37,8 +42,11 @@
 .clearBgImage(@cond:true) when (@cond){
 	background-image: none;
 }
-.setBgImageUrl(@url) when (@fancy-use-sprites){
+.setBgImageUrl(@url) when (@fancy-use-sprites) and not (@fancy-inline-sprites) {
 	background-image: url("@{fancy-image-dir}/@{url}");
+}
+.setBgImageUrl(@url) when (@fancy-use-sprites) and (@fancy-inline-sprites) {
+	background-image: data-uri("@{fancy-image-dir}/@{url}");
 }
 .useSprite(@x, @y) when (@fancy-use-sprites){
 	.setBgPos(@x, @y);
@@ -382,7 +390,6 @@ span.fancytree-icon { // Default icon
 .fancytree-statusnode-wait span.fancytree-icon,
 .fancytree-statusnode-wait span.fancytree-icon:hover {
 	background-image: @fancy-loading-url;
-//  .setBgImageUrl(@fancy-loading-url);
 	.useSprite(0, 0);
 }
 
