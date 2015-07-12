@@ -87,7 +87,7 @@ $.ui.fancytree.registerExtension({
 		}
 
 		if( node.tr ){
-			span = $("td", node.tr).children("span.fancytree-checkbox").get(0);
+			span = $("td", node.tr).find("span.fancytree-checkbox").get(0);
 		}else{
 			span = $span.children("span.fancytree-checkbox").get(0);
 		}
