@@ -1835,7 +1835,7 @@ function Fancytree(widget) {
 
 	// Create root markup
 	$ul = $("<ul>", {
-		"class": "ui-fancytree fancytree-container"
+		"class": "ui-fancytree fancytree-container fancytree-plain"
 	}).appendTo(this.$div);
 	this.$container = $ul;
 	this.rootNode.ul = $ul[0];
