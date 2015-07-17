@@ -1,6 +1,7 @@
 # 2.11.0-0 / Unreleased
   * [Changed] #434: Use data-uris to create inline images
   * [Changed] #460: Use padding-left instead of margin for table indent
+  * [Changed] #465: Add `node` argument to the `toDict()` callback
   * [Fixed] #411: ext-edit fails with ext-table, when edit was cancelled
 
 # 2.10.2 / 2015-07-02

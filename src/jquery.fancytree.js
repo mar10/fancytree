@@ -1598,7 +1598,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	 * The result is compatible with node.addChildren().
 	 *
 	 * @param {boolean} [recursive=false] include child nodes
-	 * @param {function} [callback] callback(dict) is called for every node, in order to allow modifications
+	 * @param {function} [callback] callback(dict, node) is called for every node, in order to allow modifications
 	 * @returns {NodeData}
 	 */
 	toDict: function(recursive, callback) {
@@ -1618,7 +1618,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			}
 		}
 		if( callback ){
-			callback(dict);
+			callback(dict, self);
 		}
 		if( recursive ) {
 			if(this.hasChildren()){
