@@ -32,6 +32,11 @@
 // Set to `true` to use `data-uri(...)` instead of a `url(...)` link:
 @fancy-inline-sprites: false;
 
+@fancy-font-size: 10pt;
+@fancy-font-family: tahoma, arial, helvetica;
+@fancy-font-color: black;
+@fancy-font-color-dimm: silver;
+@fancy-font-error-color: red;
 
 //------------------------------------------------------------------------------
 // Mixins
@@ -89,8 +94,8 @@
  *----------------------------------------------------------------------------*/
 
 ul.fancytree-container {
-	font-family: tahoma, arial, helvetica;
-	font-size: 10pt; // font size should not be too big
+	font-family: @fancy-font-family;
+	font-size: @fancy-font-size;
 	white-space: nowrap;
 	padding: 3px;
 	margin: 0; // DT issue 201
@@ -413,14 +418,12 @@ span.fancytree-node {
 	min-height: @fancy-line-height;
 }
 span.fancytree-title {
-	color: black; // inherit doesn't work on IE
+	color: @fancy-font-color; // inherit doesn't work on IE
 	cursor: pointer;
 	display: inline-block; // Better alignment, when title contains <br>
 	vertical-align: top;
 	min-height: @fancy-line-height;
 	padding: 0 3px 0 3px; // Otherwise italic font will be outside right bounds
-	// padding-left: 3px;
-	// padding-right: 3px; // Otherwise italic font will be outside bounds
 	margin: @fancy-title-ofs-top 0 0 @fancy-icon-spacing;
 	// margin: 0px;
 	// margin-top: @fancy-line-ofs-top;
@@ -433,7 +436,7 @@ span.fancytree-title {
 //	border: 1px solid white; // Note: 'transparent' would not work in IE6
 }
 span.fancytree-node.fancytree-error span.fancytree-title {
-	color: red;
+	color: @fancy-font-error-color;
 }
 
 /*------------------------------------------------------------------------------
@@ -453,7 +456,7 @@ span.fancytree-drag-helper-img {
 // left: -16px;
 }
 div.fancytree-drag-helper.fancytree-drop-reject {
-	border-color: red;
+	border-color: @fancy-font-error-color;
 }
 div.fancytree-drop-accept span.fancytree-drag-helper-img {
 	.useSprite(2, 7);
@@ -578,7 +581,7 @@ table.fancytree-ext-columnview {
 
 .fancytree-ext-filter-dimm {
 	span.fancytree-node span.fancytree-title {
-		color: silver;
+		color: @fancy-font-color-dimm;
 		font-weight: lighter;
 	}
 	tr.fancytree-submatch span.fancytree-title,
@@ -599,7 +602,7 @@ table.fancytree-ext-columnview {
 	}
 	tr.fancytree-submatch span.fancytree-title,
 	span.fancytree-node.fancytree-submatch span.fancytree-title {
-		color: silver;
+		color: @fancy-font-color-dimm;
 		font-weight: lighter;
 	}
 	tr.fancytree-match span.fancytree-title,

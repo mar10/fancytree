@@ -17,13 +17,49 @@
 
 
 // local vars
-@fancy-my-icon-size: 16px;
+// @fancy-my-icon-size: 16px;
+
+//------------------------------------------------------------------------------
+// Original bootstrap colors 
+// See http://getbootstrap.com/css/#less-variables-colors and
+//     https://github.com/twbs/bootstrap/blob/master/less/variables.less
+@gray-base:              #000;
+@gray-darker:            lighten(@gray-base, 13.5%); // #222
+@gray-dark:              lighten(@gray-base, 20%);   // #333
+@gray:                   lighten(@gray-base, 33.5%); // #555
+@gray-light:             lighten(@gray-base, 46.7%); // #777
+@gray-lighter:           lighten(@gray-base, 93.5%); // #eee
+
+@brand-primary:         darken(#428bca, 6.5%); // #337ab7
+@brand-success:         #5cb85c;
+@brand-info:            #5bc0de;
+@brand-warning:         #f0ad4e;
+@brand-danger:          #d9534f;
+
+@border-radius-base:  4px;
+@border-radius-large: 6px;
+@border-radius-small: 3px;
+
+@text-color: @gray-dark;
+//** Default background color used for all tables.
+@table-bg:                      transparent;
+//** Background color used for `.table-striped`.
+@table-bg-accent:               #f9f9f9;
+//** Background color used for `.table-hover`.
+@table-bg-hover:                #f5f5f5;
+@table-bg-active:               @table-bg-hover;
+
+//** Border color for table and cell borders.
+@table-border-color:            #ddd;
+
+//------------------------------------------------------------------------------
 
 // Override the variable after the import. 
 // NOTE: Variables are always resolved as the last definition, even if it is 
 // after where it is used.
 @fancy-use-sprites: false;     // false: suppress all background images (i.e. icons)
 @fancy-hide-connectors: true;
+@fancy-loading-url: none;
 
 @fancy-line-height: 1em;       // height of a nodes selection bar including borders
 @fancy-node-v-spacing: 0px;    // gap between two node borders
@@ -36,6 +72,20 @@
 @fancy-node-border-radius: @border-radius-small;
 @fancy-node-outline-width: 1px;
 
+@fancy-font-color: @text-color;
+@fancy-font-size: 14px;
+
+@fancy-active-text: #fff;
+@fancy-active-color: @brand-primary;
+@fancy-select-color: @brand-success;
+@fancy-hover-color: @table-bg-hover;
+
+/*******************************************************************************
+ * Plain tree
+ * Modifier classes on <ul> container:
+ * table-hover                : Enable a light mouse hover effect
+ * fancytree-colorize-selected: Give selected (checked) rows a color
+ */
 ul.fancytree-container ul {
 	padding: 0 0 0 1.5em;
 	margin: 0;
@@ -44,143 +94,149 @@ ul.fancytree-container ul {
 .fancytree-container:focus {
 	outline: none; 
 }
- 
-/////
-// Original bootstrap colors (http://getbootstrap.com/css/#responsive-utilities)
-@gray-darker:  lighten(#000, 13.5%); // #222
-@gray-dark:    lighten(#000, 20%);   // #333
-@gray:         lighten(#000, 33.5%); // #555
-@gray-light:   lighten(#000, 60%);   // #999
-@gray-lighter: lighten(#000, 93.5%); // #eee
 
-@brand-primary: #428bca;
-@brand-success: #5cb85c;
-@brand-info:    #5bc0de;
-@brand-warning: #f0ad4e;
-@brand-danger:  #d9534f;
-
-@border-radius-base:  4px;
-@border-radius-large: 6px;
-@border-radius-small: 3px;
-/////////////
-
-span.fancytree-title {
-	border: @fancy-node-border-width solid transparent;  // avoid jumping, when a border is added on hover
-	border-radius: @border-radius-small;
-	outline-radius: @border-radius-small;
-//	padding-left: 8px;
-}
-// span.fancytree-title {
-// 	border-radius: @border-radius-small;
-// }
 // Inactive tree:
-span.fancytree-node.fancytree-selected span.fancytree-title { // selected nodes inside inactive tree
-	background-color: lighten(@brand-success, 10%);
-	border-color: lighten(@brand-success, 10%);
-}
-span.fancytree-node.fancytree-active span.fancytree-title { // active nodes inside inactive tree
-	background-color: lighten(@brand-primary, 10%);
-}
-span.fancytree-node.fancytree-active.fancytree-selected span.fancytree-title { // active nodes inside inactive tree
-	color: lighten(@brand-success, 10%);
-	// border-color: lighten(@brand-success, 10%);
-	// outline: 2px solid lighten(@brand-success, 10%);
-}
-// Active tree:
-.fancytree-container.fancytree-treefocus {
-	span.fancytree-title:hover {
-		background-color: lighten(@brand-primary, 42%);
+.fancytree-plain {
+	&.fancytree-colorize-selected {
+		span.fancytree-node.fancytree-selected,
+		span.fancytree-node.fancytree-selected span.fancytree-title { // selected nodes inside inactive tree
+			background-color: lighten(@fancy-select-color, 10%);
+			border-color: lighten(@fancy-select-color, 10%);
+			color: @fancy-active-text;
+		}
+		span.fancytree-node.fancytree-selected:hover span.fancytree-title {
+			background-color: lighten(@fancy-select-color, 5%);
+		}
+		span.fancytree-node.fancytree-active.fancytree-selected span.fancytree-title { // active nodes inside inactive tree
+			color: lighten(@fancy-select-color, 10%);
+		}
+		&.fancytree-treefocus {
+			span.fancytree-title:hover {
+				background-color: @fancy-hover-color;
+			}
+			span.fancytree-node.fancytree-selected span.fancytree-title {
+				background-color: @fancy-select-color;
+			}
+			span.fancytree-node.fancytree-selected:hover span.fancytree-title {
+				background-color: darken(@fancy-select-color, 5%);
+			}
+			span.fancytree-node.fancytree-active.fancytree-selected span.fancytree-title {
+				color: @fancy-select-color;
+			}
+		}
 	}
-	span.fancytree-node.fancytree-focused span.fancytree-title {
-		border-color: @brand-primary;
-	}
-	span.fancytree-node.fancytree-selected span.fancytree-title {
-		background-color: @brand-success;
-	}
-	span.fancytree-node.fancytree-active span.fancytree-title {
-		background-color: @brand-primary;
-		border-color: @brand-primary;
-	}
-	span.fancytree-node.fancytree-active.fancytree-selected span.fancytree-title {
-		color: @brand-success;
-		// border-color: @brand-success;
-		// outline: 2px solid @brand-success;
+
+	&.fancytree-container {  // adding this class to increase specificity, so we can override .fancytree-colorize-selected
+		span.fancytree-node {
+			margin-top: 2px;
+			margin-bottom: 2px;
+		}
+		span.fancytree-title {
+			border: @fancy-node-border-width solid transparent;  // avoid jumping, when a border is added on hover
+			border-radius: @border-radius-small;
+			outline-radius: @border-radius-small;
+		}
+		span.fancytree-title:hover {
+			background-color: @fancy-hover-color;
+		}
+		span.fancytree-node.fancytree-active span.fancytree-title { // active nodes inside inactive tree
+			background-color: lighten(@fancy-active-color, 10%);
+			color: @fancy-active-text;
+		}
+		span.fancytree-node.fancytree-active:hover span.fancytree-title {
+			background-color: lighten(@fancy-active-color, 5%);
+		}
+		span.fancytree-node.fancytree-active {
+			color: @fancy-active-text;
+		}
+
+		// Active tree:
+		&.fancytree-treefocus {
+			span.fancytree-node.fancytree-focused span.fancytree-title {
+				border-color: @brand-primary;
+			}
+			span.fancytree-node.fancytree-active span.fancytree-title {
+				background-color: @fancy-active-color;
+				border-color: @fancy-active-color;
+			}
+			span.fancytree-node.fancytree-active:hover span.fancytree-title {
+				background-color: darken(@fancy-active-color, 5%);
+			}
+		}
 	}
 }
 
 /*******************************************************************************
  * 'table' extension
+ * Modifier classes on <table>:
+ * table-hover                : Enable a light mouse hover effect
+ * fancytree-colorize-selected: Give selected (checked) rows a color
  */
-table.fancytree-ext-table tbody {
-	tr td {
-	  border: 1px solid @gray-lighter;
+table.fancytree-ext-table {
+	>tbody >tr >td span.fancytree-title {
+		border: none;
 	}
-	// span.fancytree-node,
-	// span.fancytree-node:hover { // undo standard tree css
-	// 	border: none;
-	// 	background: none;
-	// }
-	// // Title get's a white background, when hovered. Undo standard node formatting
-	// span.fancytree-title:hover {
-	//   border: none;
-	//   background: inherit;
-	//   background: transparent;
-	//   background: none;
-	//   filter: none;
-	// }
-	// dimmed, if inside inactive tree
-	tr.fancytree-selected {  
-		background-color: lighten(@brand-success, 10%);
-		span.fancytree-node {
-			background-color: lighten(@brand-success, 10%);
-		}
-		span.fancytree-title {
-			background-color: lighten(@brand-success, 10%); // green title, even when active
-		}
-	}
-	tr.fancytree-active {  // dimmed, if inside inactive tree
-		background-color: lighten(@brand-primary, 10%);
-		span.fancytree-node {
-			background-color: lighten(@brand-primary, 10%);
-		}
-	}
-}
 
-table.fancytree-ext-table.fancytree-treefocus tbody {
-	tr:hover  {
-		background-color: lighten(@brand-primary, 42%);
-	    // outline: 1px solid @brand-primary;
-	}
-	tr.fancytree-focused span.fancytree-title {
-		outline: 1px dotted @brand-primary;
-	}
-	tr.fancytree-active:hover,
-	tr.fancytree-selected:hover {
-		// background-color: #CBE8F6;
-	 //    outline: 1px solid #26A0DA;
-	}
-	tr.fancytree-selected {
-		background-color: @brand-success;
-		span.fancytree-node {
-			background-color: @brand-success;
+	// Give a separate color for selected (checked) rows
+	// Define *before* the .fancytree-active rules, because active color should
+	// override selected color.
+	&.fancytree-colorize-selected {
+		>tbody >tr.fancytree-selected >td {
+			// dimmed, if inside inactive tree
+			background-color: lighten(@fancy-select-color, 10%);
+			// white text for selected nodes
+			&,
+			span.fancytree-title {
+				color: @fancy-active-text;
+			}
 		}
+		&.fancytree-treefocus >tbody >tr.fancytree-selected >td {
+			background-color: @fancy-select-color;
+		}
+		&.table-hover >tbody >tr.fancytree-selected:hover >td { 
+			// dimmed, if inside inactive tree
+			background-color: lighten(@fancy-select-color, 5%);
+		}
+		&.fancytree-treefocus.table-hover >tbody >tr.fancytree-selected:hover >td {
+			background-color: darken(@fancy-select-color, 5%);
+		}
+		&.fancytree-treefocus.table-hover >tbody >tr.fancytree-selected.fancytree-active:hover >td,
+		&.table-hover >tbody >tr.fancytree-selected.fancytree-active:hover >td {
+			background-color: darken(@fancy-active-color, 5%);
+		}
+		>tbody >tr.fancytree-active.fancytree-selected  {
+			outline-width: 2px;
+			outline-offset: -2px;
+			outline-style: solid;
+			outline-color: lighten(@fancy-select-color, 10%);
+		}
+	}
+
+	// General tree (slightly dimmed, since we also define colors for inactive 
+	// mode here). 
+
+	&.fancytree-container >tbody >tr.fancytree-active >td {
+		background-color: lighten(@fancy-active-color, 10%);
+		// white text for selected nodes
+		&,
 		span.fancytree-title {
-			background-color: @brand-success; // green title, even when active
+			color: @fancy-active-text;
 		}
 	}
-	tr.fancytree-active {
-		background-color: @brand-primary;
-		span.fancytree-node {
-			background-color: @brand-primary;
+
+	// Reset to standard colors if tree has keyboard focus.
+	// We add .fancytree-container to increase specificity, so we can override
+	// .fancytree-colorize-selected defined above
+	
+	&.fancytree-treefocus.fancytree-container {
+		>tbody >tr.fancytree-focused span.fancytree-title {
+			outline: 1px dotted #000;
+		}
+		>tbody >tr.fancytree-active >td {
+			background-color: @fancy-active-color;
+		}
+		&.table-hover >tbody >tr.fancytree-active:hover >td {
+			background-color: darken(@fancy-active-color, 5%);
 		}
 	}
 }
-/*------------------------------------------------------------------------------
- * 'wide' extension
- *----------------------------------------------------------------------------*/
-ul.fancytree-container span.fancytree-node span.fancytree-title,
-ul.fancytree-ext-wide span.fancytree-node span.fancytree-title {
-/*	-moz-box-sizing: content-box; // bootstrap sets content box
-	-webkit-box-sizing: content-box;
-	box-sizing: content-box;
-*/}

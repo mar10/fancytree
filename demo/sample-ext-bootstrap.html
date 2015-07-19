@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta http-equiv="content-type" content="text/html; charset=utf-8">
 	<title>Fancytree - Example: Glyph Extension / Bootstrap Theme</title>
+
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
 <!--
-	<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.1/themes/base/jquery-ui.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 -->
+
 	<script src="//code.jquery.com/jquery-1.11.3.min.js" type="text/javascript"></script>
 	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js" type="text/javascript"></script>
 <!--
@@ -22,65 +24,110 @@
 	<script src="../src/jquery.fancytree.js" type="text/javascript"></script>
 	<script src="../src/jquery.fancytree.edit.js" type="text/javascript"></script>
 	<script src="../src/jquery.fancytree.glyph.js" type="text/javascript"></script>
+	<script src="../src/jquery.fancytree.table.js" type="text/javascript"></script>
 	<script src="../src/jquery.fancytree.wide.js" type="text/javascript"></script>
 
-	<!-- Start_Exclude: This block is not part of the sample code -->
+<!-- Start_Exclude: This block is not part of the sample code -->
 	<link href="../lib/prettify.css" rel="stylesheet">
 	<script src="../lib/prettify.js" type="text/javascript"></script>
 	<link href="../demo/sample.css" rel="stylesheet" type="text/css">
 	<script src="../demo/sample.js" type="text/javascript"></script>
 
+	<style type="text/css">
+		body {
+			padding: 15px;
+		}
+		ul.fancytree-container {
+			border: none;
+		}
+		/* Reduce bootstrap's default 'panel' padding: */
+		div#tree {
+			padding: 3px 5px;
+		}
+	</style>
+<!-- End_Exclude -->
+
 <style type="text/css">
-ul.fancytree-container {
-	/*font-size: 2em;*/
-}
-body {
-	margin: 15px;
-/*	font-family: sans-serif;
-	font-size: 1em;
-*/
-}
+	/* Define custom width and alignment of table columns */
+	#treetable {
+		table-layout: fixed;
+	}
+	#treetable tr td:nth-of-type(1) {
+		text-align: right;
+	}
+	#treetable tr td:nth-of-type(2) {
+		text-align: center;
+	}
+	#treetable tr td:nth-of-type(3) {
+		min-width: 100px;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
 </style>
-	<!-- End_Exclude -->
 
 
-	<!-- Add code to initialize the tree when the document is loaded: -->
+<!-- Add code to initialize the tree when the document is loaded: -->
 <script type="text/javascript">
+	glyph_opts = {
+		map: {
+			doc: "glyphicon glyphicon-file",
+			docOpen: "glyphicon glyphicon-file",
+			checkbox: "glyphicon glyphicon-unchecked",
+			checkboxSelected: "glyphicon glyphicon-check",
+			checkboxUnknown: "glyphicon glyphicon-share",
+			error: "glyphicon glyphicon-warning-sign",
+			expanderClosed: "glyphicon glyphicon-plus-sign",
+			expanderLazy: "glyphicon glyphicon-plus-sign",
+			// expanderLazy: "glyphicon glyphicon-expand",
+			expanderOpen: "glyphicon glyphicon-minus-sign",
+			// expanderOpen: "glyphicon glyphicon-collapse-down",
+			folder: "glyphicon glyphicon-folder-close",
+			folderOpen: "glyphicon glyphicon-folder-open",
+			loading: "glyphicon glyphicon-refresh"
+			// loading: "icon-spinner icon-spin"
+		}
+	};
 	$(function(){
 		// Initialize Fancytree
 		$("#tree").fancytree({
 			extensions: ["glyph", "edit", "wide"],
 			checkbox: true,
+			glyph: glyph_opts,
 			selectMode: 2,
+			source: {url: "ajax-tree-taxonomy.json", debugDelay: 1000},
 			toggleEffect: { effect: "drop", options: {direction: "left"}, duration: 400 },
-			glyph: {
-				map: {
-					doc: "glyphicon glyphicon-file",
-					docOpen: "glyphicon glyphicon-file",
-					checkbox: "glyphicon glyphicon-unchecked",
-					checkboxSelected: "glyphicon glyphicon-check",
-					checkboxUnknown: "glyphicon glyphicon-share",
-					error: "glyphicon glyphicon-warning-sign",
-					expanderClosed: "glyphicon glyphicon-plus-sign",
-					expanderLazy: "glyphicon glyphicon-plus-sign",
-					// expanderLazy: "glyphicon glyphicon-expand",
-					expanderOpen: "glyphicon glyphicon-minus-sign",
-					// expanderOpen: "glyphicon glyphicon-collapse-down",
-					folder: "glyphicon glyphicon-folder-close",
-					folderOpen: "glyphicon glyphicon-folder-open",
-					loading: "glyphicon glyphicon-refresh"
-					// loading: "icon-spinner icon-spin"
-				}
-			},
 			wide: {
 				iconWidth: "1em",     // Adjust this if @fancy-icon-width != "16px"
 				iconSpacing: "0.5em", // Adjust this if @fancy-icon-spacing != "3px"
 				levelOfs: "1.5em"     // Adjust this if ul padding != "16px"
 			},
-//			source: {url: "ajax-tree-plain.json", debugDelay: 1000},
+
+			lazyLoad: function(event, data) {
+				data.result = {url: "ajax-sub2.json", debugDelay: 1000};
+			}
+		});
+
+		$("#treetable").fancytree({
+			extensions: ["glyph", "table"],
+			checkbox: true,
+			glyph: glyph_opts,
 			source: {url: "ajax-tree-taxonomy.json", debugDelay: 1000},
-			lazyLoad: function(event, ctx) {
-				ctx.result = {url: "ajax-sub2.json", debugDelay: 1000};
+			table: {
+				checkboxColumnIdx: 1,
+				nodeColumnIdx: 2
+			},
+
+			activate: function(event, data) {
+			},
+			lazyLoad: function(event, data) {
+				data.result = {url: "ajax-sub2.json", debugDelay: 1000};
+			},
+			renderColumns: function(event, data) {
+				var node = data.node,
+					$tdList = $(node.tr).find(">td");
+				$tdList.eq(0).text(node.getIndexHier());
+				$tdList.eq(3).text(!!node.folder);
 			}
 		});
 	});
@@ -89,27 +136,6 @@ body {
 <!-- Start_Exclude: This block is not part of the sample code -->
 <script>
 $(function(){
-/*
-	// Adjust skinswitcher for current folder layout
-
-	$("#skinswitcher")
-		// .skinswitcher("option", "base", "../../src/")
-		.skinswitcher("addChoices", [
-			{name: "Bootstrap", value: "bootstrap", href: "skin-bootstrap/ui.fancytree.css"},
-			{name: "Awesome", value: "awesome", href: "skin-awesome/ui.fancytree.css"}
-			])
-		.skinswitcher("change", "bootstrap");
-
-	addSampleButton({
-		label: "Expand all",
-		newline: false,
-		code: function(){
-			$("#tree").fancytree("getTree").visit(function(node){
-				node.setExpanded(true);
-			});
-		}
-	});
-*/
 	$("#btnExpandAll").click(function(){
 		$("#tree").fancytree("getTree").visit(function(node){
 			node.setExpanded(true);
@@ -121,59 +147,100 @@ $(function(){
 		});
 	});
 
-	function setSize(event, ui){
-		$("#tree .fancytree-container").css("font-size", ui.value + "pt");
-		$("#curSize").text(ui.value + " pt");
-	}
-	$( "#fontSlider" ).slider({
-		min: 4,
-		max: 64,
-		value: 10,
-		change: setSize,
-		slide: setSize
-	 }).slider("value", 12);
+	$( "#fontSize" ).change(function(){
+		$("#tree .fancytree-container").css("font-size", $(this).prop("value") + "pt");
+	});//.prop("value", 12);
+
+	$("#plainTreeStyles").on("change", "input", function(e){
+		$("#tree ul").toggleClass($(this).data("class"), $(this).is(":checked"));
+	});
+	$("#bootstrapTableStyles").on("change", "input", function(e){
+		$("#treetable").toggleClass($(this).data("class"), $(this).is(":checked"));
+	});
 });
 </script>
 <!-- End_Exclude -->
 
 </head>
 
-<body class="NO_example">
-	<h1>Example: 'glyph' extension with bootstrap theme</h1>
-	<div class="description">
-		<p>
-			The 'glyph' extension adds <code>icon-...</code> classes to the
-			node's <code>span</code> tags, so scalable vector icons as provided by
-			<a href="http://fortawesome.github.io/Font-Awesome/" class="external" target="_blank">Font Awesome</a> or <a href="http://getbootstrap.com/components/" class="external" target="_blank">Bootstrap Glyphicons</a> can be used.
-		</p>
-		<p>
-			The theme defines some colors from bootstrap. To change it, run
-			<a href="https://github.com/mar10/fancytree/wiki/HowtoContribute">grunt dev</a> and edit the
-			<a href="https://github.com/mar10/fancytree/blob/master/src/skin-bootstrap/ui.fancytree.less" class="external" target="_blank">LESS definition</a>.
-		</p>
-		<p>
-			<b>Status</b>: alpha
-		</p>
+<body>
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h1>Example: Bootstrap theme</h1>
+		</div>
+		<div class="panel-body">
+			<p>
+				The 'glyph' extension adds <code>icon-...</code> classes to the
+				node's <code>span</code> tags, so scalable vector icons as provided by
+				<a href="http://fortawesome.github.io/Font-Awesome/" class="external" target="_blank">Font Awesome</a> or <a href="http://getbootstrap.com/components/" class="external" target="_blank">Bootstrap Glyphicons</a> can be used.
+			</p>
+			<p>
+				The theme defines some colors from bootstrap. To change it, run
+				<a href="https://github.com/mar10/fancytree/wiki/HowtoContribute">grunt dev</a> and edit the
+				<a href="https://github.com/mar10/fancytree/blob/master/src/skin-bootstrap/ui.fancytree.less" class="external" target="_blank">LESS definition</a>.
+			</p>
+			<p>
+				<b>Status</b>: alpha
+			</p>
+		</div>
 	</div>
-<!--
-	<div>
-		<label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
-	</div>
--->
-	<hr>
-	Font size: <span id="curSize"></span>
-	<div id="fontSlider"></div>
-	<hr>
-<!--
-	<p id="sampleButtons">
-	</p>
- -->
+
 	<p>
-		<button id="btnExpandAll" class="btn btn-sm btn-primary">Expand all</button>
-		<button id="btnCollapseAll" class="btn btn-sm btn-warning">Collapse all</button>
+		Font size: <span id="curSize"></span>
+		<input id="fontSize" type="number" min="4" max="48" value="10"> pt
 	</p>
-	<div id="tree">
+	
+	<h3> Plain tree </h3>
+
+	<p id="plainTreeStyles">
+		<b>Add container class:</b><br>
+<!--
+		<label><input type="checkbox" data-class="fancytree-colorize-hover"> fancytree-colorize-hover</label>
+-->
+		<label><input type="checkbox" data-class="fancytree-colorize-selected"> fancytree-colorize-selected</label>
+	</p>
+
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<b>Taxonomy</b>
+		</div>
+		<div id="tree" class="panel-body fancytree-colorize-hover">
+		</div>
+		<div class="panel-footer">
+			<button id="btnExpandAll" class="btn btn-xs btn-primary">Expand all</button>
+			<button id="btnCollapseAll" class="btn btn-xs btn-warning">Collapse all</button>
+		</div>
 	</div>
+
+	<h3> Table tree </h3>
+
+	<p id="bootstrapTableStyles">
+		<b>Add table class:</b><br>
+		<label><input type="checkbox" data-class="table-bordered"> table-bordered</label>
+		<label><input type="checkbox" data-class="table-condensed" checked="checked"> table-condensed</label>
+		<label><input type="checkbox" data-class="table-striped" checked="checked"> table-striped</label>
+		<label><input type="checkbox" data-class="table-hover" checked="checked"> table-hover</label>
+		<label><input type="checkbox" data-class="table-responsive"> table-responsive</label>
+		<label><input type="checkbox" data-class="fancytree-colorize-selected"> fancytree-colorize-selected</label>
+	</p>
+
+	<table id="treetable" class="table table-condensed table-hover table-striped">
+		<colgroup>
+			<col width="80px"></col>
+			<col width="30px"></col>
+			<col width="*"></col>
+			<col width="100px"></col>
+			<col width="100px"></col>
+			<col width="100px"></col>
+		</colgroup>
+		<thead>
+			<tr> <th></th> <th></th> <th>Classification</th> <th>Folder</th> <th></th> <th></th> </tr>
+		</thead>
+		<tbody>
+			<tr> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> </tr>
+		</tbody>
+	</table>
+
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
 	<hr>

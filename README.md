@@ -19,6 +19,7 @@ for details.
   * [Try the live demo](http://wwwendt.de/tech/fancytree/demo).
   * [Read the documentation](https://github.com/mar10/fancytree/wiki).
   * [Check the Q&A forum](https://groups.google.com/forum/#!forum/fancytree) or [Stackoverflow](http://stackoverflow.com/questions/tagged/fancytree) if you have questions.
+  * [Contribute](https://github.com/mar10/fancytree/wiki/HowtoContribute)
 
 
 ### Credits

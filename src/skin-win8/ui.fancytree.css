@@ -298,7 +298,7 @@ span.fancytree-node {
   min-height: 20px;
 }
 span.fancytree-title {
-  color: black;
+  color: #000000;
   cursor: pointer;
   display: inline-block;
   vertical-align: top;
@@ -313,7 +313,7 @@ span.fancytree-title {
   border-radius: 0px;
 }
 span.fancytree-node.fancytree-error span.fancytree-title {
-  color: red;
+  color: #ff0000;
 }
 /*------------------------------------------------------------------------------
  * Drag'n'drop support
@@ -326,7 +326,7 @@ div.fancytree-drag-helper a {
   opacity: 0.8;
 }
 div.fancytree-drag-helper.fancytree-drop-reject {
-  border-color: red;
+  border-color: #ff0000;
 }
 div.fancytree-drop-accept span.fancytree-drag-helper-img {
   background-position: -32px -112px;
@@ -422,7 +422,7 @@ table.fancytree-ext-columnview .fancytree-has-children span.fancytree-cv-right:h
  * 'filter' extension
  *----------------------------------------------------------------------------*/
 .fancytree-ext-filter-dimm span.fancytree-node span.fancytree-title {
-  color: silver;
+  color: #c0c0c0;
   font-weight: lighter;
 }
 .fancytree-ext-filter-dimm tr.fancytree-submatch span.fancytree-title,
@@ -441,7 +441,7 @@ table.fancytree-ext-columnview .fancytree-has-children span.fancytree-cv-right:h
 }
 .fancytree-ext-filter-hide tr.fancytree-submatch span.fancytree-title,
 .fancytree-ext-filter-hide span.fancytree-node.fancytree-submatch span.fancytree-title {
-  color: silver;
+  color: #c0c0c0;
   font-weight: lighter;
 }
 .fancytree-ext-filter-hide tr.fancytree-match span.fancytree-title,
