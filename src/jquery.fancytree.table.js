@@ -166,7 +166,7 @@ $.ui.fancytree.registerExtension({
 		// $.ui.fancytree.debug("*** nodeRender " + node + ", isRoot=" + isRootNode, "tr=" + node.tr, "hcp=" + ctx.hasCollapsedParents, "parent.tr=" + (node.parent && node.parent.tr));
 		if( !isRootNode ){
 			if(!node.tr){
-				if( ctx.hasCollapsedParents /*&& !node.parent.tr*/ ) {
+				if( ctx.hasCollapsedParents && !deep ) {
 					// #166: we assume that the parent will be (recursively) rendered
 					// later anyway.
 					node.debug("nodeRender ignored due to unrendered parent");

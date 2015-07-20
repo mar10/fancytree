@@ -5,7 +5,17 @@ jQuery(document).ready(function(){
 
 /*globals expect,module,ok,QUnit,start,stop,test */
 
-var $ = jQuery;
+var $ = jQuery,
+	treedata = [
+		{ key: "1", title: "item 1" },
+		{ key: "2", title: "item 2", children: [
+			{ key: "2_1", title: "item 2_1" },
+			{ key: "2_2", title: "item 2_2", children: [
+				{ key: "2_2_1", title: "item 2_2_1" },
+				{ key: "2_2_2", title: "item 2_2_2" }
+			] }
+		]}
+	];
 
 /*******************************************************************************
  * QUnit setup
@@ -46,18 +56,7 @@ test("makeVisible not rendered deep node", function () {
 	_setupAsync();
 	expect(5);
 
-	var treedata = [
-			{ key: "1", title: "item 1" },
-			{ key: "2", title: "item 2", children: [
-				{ key: "2_1", title: "item 2_1" },
-				{ key: "2_2", title: "item 2_2", children: [
-					{ key: "2_2_1", title: "item 2_2_1" },
-					{ key: "2_2_2", title: "item 2_2_2" }
-
-				] }
-			]}
-		],
-		node;
+	var node;
 
 	$("#tree").fancytree({
 		extensions: [ "table" ],
@@ -71,9 +70,40 @@ test("makeVisible not rendered deep node", function () {
 
 	node.makeVisible().done(function () {
 		ok(node.parent.isExpanded());
-		ok(node.tr); // rendered
+		ok(node.tr, node + " tr is rendered");
 
 		start();
+	});
+});
+
+test("render deep node", function () {
+	// _setupAsync();
+	QUnit.reset();
+	expect(11);
+
+	$("#tree").fancytree({
+		extensions: [ "table" ],
+		source: treedata
+	});
+
+	var node,
+		tree = $("#tree").fancytree("getTree");
+
+	node = _getNode("2_2_2");
+	ok(node);
+	ok(!node.parent.isExpanded());
+	ok(!node.tr, "not rendered yet");
+
+	tree.render();
+
+	ok(!node.parent.isExpanded());
+	ok(!node.tr, "not rendered yet");
+
+	tree.render(true, true);
+
+	tree.visit(function (node) {
+		// ok(node.parent.isExpanded(), node.parent + " is expanded");
+		ok(node.tr, node + " tr is rendered");
 	});
 });
 

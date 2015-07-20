@@ -2901,7 +2901,7 @@ $.extend(Fancytree.prototype,
 		 *   create markup
 		 * - node was rendered: exit fast
 		 * - children have been added
-		 * - childern have been removed
+		 * - children have been removed
 		 */
 		var childLI, childNode1, childNode2, i, l, next, subCtx,
 			node = ctx.node,

@@ -3,6 +3,7 @@
   * [Changed] #460: Use padding-left instead of margin for table indent
   * [Changed] #465: Add `node` argument to the `toDict()` callback
   * [Fixed] #411: ext-edit fails with ext-table, when edit was cancelled
+  * [Fixed] #463: ext-table: render(deep) does not work
 
 # 2.10.2 / 2015-07-02
   * [Fixed] Add `dist/skin-custom-1` sample (again)
