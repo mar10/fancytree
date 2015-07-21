@@ -22,6 +22,7 @@
 		class="skinswitcher">
 
 	<script src="../src/jquery.fancytree.js" type="text/javascript"></script>
+	<script src="../src/jquery.fancytree.dnd.js" type="text/javascript"></script>
 	<script src="../src/jquery.fancytree.edit.js" type="text/javascript"></script>
 	<script src="../src/jquery.fancytree.glyph.js" type="text/javascript"></script>
 	<script src="../src/jquery.fancytree.table.js" type="text/javascript"></script>
@@ -76,6 +77,8 @@
 			checkbox: "glyphicon glyphicon-unchecked",
 			checkboxSelected: "glyphicon glyphicon-check",
 			checkboxUnknown: "glyphicon glyphicon-share",
+			dragHelper: "glyphicon glyphicon-play",
+			dropMarker: "glyphicon glyphicon-arrow-right",
 			error: "glyphicon glyphicon-warning-sign",
 			expanderClosed: "glyphicon glyphicon-plus-sign",
 			expanderLazy: "glyphicon glyphicon-plus-sign",
@@ -85,14 +88,18 @@
 			folder: "glyphicon glyphicon-folder-close",
 			folderOpen: "glyphicon glyphicon-folder-open",
 			loading: "glyphicon glyphicon-refresh"
-			// loading: "icon-spinner icon-spin"
 		}
 	};
 	$(function(){
 		// Initialize Fancytree
 		$("#tree").fancytree({
-			extensions: ["glyph", "edit", "wide"],
+			extensions: ["dnd", "edit", "glyph", "wide"],
 			checkbox: true,
+			dnd: {
+				dragStart: function(node, data) { return true; },
+				dragEnter: function(node, data) { return false; },
+				dragDrop: function(node, data) { data.otherNode.copyTo(node, data.hitMode); }
+			},
 			glyph: glyph_opts,
 			selectMode: 2,
 			source: {url: "ajax-tree-taxonomy.json", debugDelay: 1000},
@@ -109,8 +116,13 @@
 		});
 
 		$("#treetable").fancytree({
-			extensions: ["glyph", "table"],
+			extensions: ["dnd", "glyph", "table"],
 			checkbox: true,
+			dnd: {
+				dragStart: function(node, data) { return true; },
+				dragEnter: function(node, data) { return true; },
+				dragDrop: function(node, data) { data.otherNode.copyTo(node, data.hitMode); }
+			},
 			glyph: glyph_opts,
 			source: {url: "ajax-tree-taxonomy.json", debugDelay: 1000},
 			table: {

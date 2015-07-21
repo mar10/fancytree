@@ -36,6 +36,16 @@
 @brand-warning:         #f0ad4e;
 @brand-danger:          #d9534f;
 
+@font-family-sans-serif:  "Helvetica Neue", Helvetica, Arial, sans-serif;
+@font-family-serif:       Georgia, "Times New Roman", Times, serif;
+//** Default monospace fonts for `<code>`, `<kbd>`, and `<pre>`.
+@font-family-monospace:   Menlo, Monaco, Consolas, "Courier New", monospace;
+@font-family-base:        @font-family-sans-serif;
+
+@font-size-base:          14px;
+@font-size-large:         ceil((@font-size-base * 1.25)); // ~18px
+@font-size-small:         ceil((@font-size-base * 0.85)); // ~12px
+
 @border-radius-base:  4px;
 @border-radius-large: 6px;
 @border-radius-small: 3px;
@@ -72,8 +82,11 @@
 @fancy-node-border-radius: @border-radius-small;
 @fancy-node-outline-width: 1px;
 
+@fancy-font-family: @font-family-base;
+@fancy-font-size: @font-size-base;
 @fancy-font-color: @text-color;
-@fancy-font-size: 14px;
+@fancy-font-color-dimm: @gray-dark;
+@fancy-font-error-color: @brand-danger;
 
 @fancy-active-text: #fff;
 @fancy-active-color: @brand-primary;
@@ -94,6 +107,81 @@ ul.fancytree-container ul {
 .fancytree-container:focus {
 	outline: none; 
 }
+
+// ------------------------------------------------------------------------------
+//  * Drag'n'drop support
+//  *----------------------------------------------------------------------------
+// div.fancytree-drag-helper {
+// }
+// div.fancytree-drag-helper a {
+// 	border: 1px solid gray;
+// 	background-color: white;
+// 	padding-left: 5px;
+// 	padding-right: 5px;
+// 	opacity: 0.8;
+// }
+// span.fancytree-drag-helper-img {
+// // position: relative;
+// // left: -16px;
+// }
+div.fancytree-drag-helper.fancytree-drop-reject,
+div.fancytree-drag-helper.fancytree-drop-reject span.fancytree-title
+{
+	color: @fancy-font-error-color;
+}
+// div.fancytree-drop-accept span.fancytree-drag-helper-img {
+// 	.useSprite(2, 7);
+// }
+// div.fancytree-drop-reject span.fancytree-drag-helper-img {
+// 	.useSprite(1, 7);
+// }
+
+// //--- Drop marker icon ---------------------------------------------------------
+// #fancytree-drop-marker {
+// 	width: 2 * @fancy-icon-width; // was 24px, but 32 should be correct
+// 	position: absolute;
+// 	.useSprite(0, 8);
+// 	margin: 0;
+// 	&.fancytree-drop-after,
+// 	&.fancytree-drop-before {
+// 		width: 4 * @fancy-icon-width; // 64px;
+// 		.useSprite(0, 9);
+// 	}
+// 	&.fancytree-drop-copy {
+// 		.useSprite(4, 8);
+// 	}
+// 	&.fancytree-drop-move {
+// 		.useSprite(2, 8);
+// 	}
+// }
+
+//--- Source node while dragging -----------------------------------------------
+
+span.fancytree-node.fancytree-drag-source {
+	background-color: @brand-info !important;
+	span.fancytree.title {
+		// outline: 1px solid @brand-info;
+		// color: @brand-primary;
+	}
+}
+
+//--- Target node while dragging cursor is over it -----------------------------
+
+span.fancytree-node.fancytree-drop-target {
+	&.fancytree-drop-accept span.fancytree.title {
+		// background-color: @brand-danger !important;
+		// outline: 1px solid @brand-success;
+		// color: white !important;
+	}
+	&.fancytree-drop-reject span.fancytree.title {
+		background-color: @brand-danger !important;
+		// outline: 1px solid @brand-danger;
+		// color: white !important;
+	}
+}
+
+
+
 
 // Inactive tree:
 .fancytree-plain {

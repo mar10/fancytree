@@ -19,7 +19,7 @@
  * Container and UL / LI
  *----------------------------------------------------------------------------*/
 ul.fancytree-container {
-  font-family: tahoma, arial, helvetica;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
   white-space: nowrap;
   padding: 3px;
@@ -178,7 +178,7 @@ span.fancytree-title {
   border-radius: 3px;
 }
 span.fancytree-node.fancytree-error span.fancytree-title {
-  color: #ff0000;
+  color: #d9534f;
 }
 /*------------------------------------------------------------------------------
  * Drag'n'drop support
@@ -191,7 +191,7 @@ div.fancytree-drag-helper a {
   opacity: 0.8;
 }
 div.fancytree-drag-helper.fancytree-drop-reject {
-  border-color: #ff0000;
+  border-color: #d9534f;
 }
 /*** Drop marker icon *********************************************************/
 #fancytree-drop-marker {
@@ -269,7 +269,7 @@ table.fancytree-ext-columnview .fancytree-has-children span.fancytree-cv-right {
  * 'filter' extension
  *----------------------------------------------------------------------------*/
 .fancytree-ext-filter-dimm span.fancytree-node span.fancytree-title {
-  color: #c0c0c0;
+  color: #333333;
   font-weight: lighter;
 }
 .fancytree-ext-filter-dimm tr.fancytree-submatch span.fancytree-title,
@@ -288,7 +288,7 @@ table.fancytree-ext-columnview .fancytree-has-children span.fancytree-cv-right {
 }
 .fancytree-ext-filter-hide tr.fancytree-submatch span.fancytree-title,
 .fancytree-ext-filter-hide span.fancytree-node.fancytree-submatch span.fancytree-title {
-  color: #c0c0c0;
+  color: #333333;
   font-weight: lighter;
 }
 .fancytree-ext-filter-hide tr.fancytree-match span.fancytree-title,
@@ -340,6 +340,16 @@ ul.fancytree-container ul {
 /* Prevent focus frame */
 .fancytree-container:focus {
   outline: none;
+}
+div.fancytree-drag-helper.fancytree-drop-reject,
+div.fancytree-drag-helper.fancytree-drop-reject span.fancytree-title {
+  color: #d9534f;
+}
+span.fancytree-node.fancytree-drag-source {
+  background-color: #5bc0de !important;
+}
+span.fancytree-node.fancytree-drop-target.fancytree-drop-reject span.fancytree.title {
+  background-color: #d9534f !important;
 }
 .fancytree-plain.fancytree-colorize-selected span.fancytree-node.fancytree-selected,
 .fancytree-plain.fancytree-colorize-selected span.fancytree-node.fancytree-selected span.fancytree-title {

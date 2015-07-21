@@ -3,6 +3,7 @@
   * [Changed] #434: Use data-uris to create inline images
   * [Changed] #460: Use padding-left instead of margin for table indent
   * [Improved] bootstrap theme and added table sample
+  * [Improved] #464: ext-dnd supports ext-glyph
   * [Fixed] #411: ext-edit fails with ext-table, when edit was cancelled
 
 # 2.10.2 / 2015-07-02
