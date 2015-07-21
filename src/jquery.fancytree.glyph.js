@@ -31,6 +31,11 @@ $.ui.fancytree.registerExtension({
 	// Default options for this extension.
 	options: {
 		map: {
+			// Samples from Font Awesome 3.2 
+			//   http://fortawesome.github.io/Font-Awesome/3.2.1/icons/
+			// See here for alternatives:
+			//   http://fortawesome.github.io/Font-Awesome/icons/
+			//   http://getbootstrap.com/components/
 			checkbox: "icon-check-empty",
 			checkboxSelected: "icon-check",
 			checkboxUnknown: "icon-check icon-muted",
@@ -38,11 +43,13 @@ $.ui.fancytree.registerExtension({
 			expanderClosed: "icon-caret-right",
 			expanderLazy: "icon-angle-right",
 			expanderOpen: "icon-caret-down",
-			doc: "icon-file-alt",
 			noExpander: "",
+			dragHelper: "icon-caret-right",
+			dropMarker: "icon-caret-right",
 			// Default node icons.
 			// (Use tree.options.iconClass(node) callback to define custom icons
 			// based on node data)
+			doc: "icon-file-alt",
 			docOpen: "icon-file-alt",
 			loading: "icon-refresh icon-spin",
 			folder: "icon-folder-close-alt",
@@ -87,7 +94,7 @@ $.ui.fancytree.registerExtension({
 		}
 
 		if( node.tr ){
-			span = $("td", node.tr).children("span.fancytree-checkbox").get(0);
+			span = $("td", node.tr).find("span.fancytree-checkbox").get(0);
 		}else{
 			span = $span.children("span.fancytree-checkbox").get(0);
 		}
