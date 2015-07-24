@@ -1,10 +1,11 @@
 # 2.11.0-0 / Unreleased
   * [Changed] Adding `fancytree-plain` class to container (if not table), allowing for more efficient css
   * [Changed] #434: Use data-uris to create inline images
-  * [Changed] #460: Use padding-left instead of margin for table indent
+  * [Changed] #460: Use padding-left instead of margin-left for table indent
   * [Changed] #465: Add `node` argument to the `toDict()` callback
   * [Improved] bootstrap theme and added table sample
   * [Improved] #464: ext-dnd supports ext-glyph
+  * [Improved] win8 theme jumpy hover effects
   * [Fixed] #411: ext-edit fails with ext-table, when edit was cancelled
   * [Fixed] #463: ext-table: render(deep) does not work
 

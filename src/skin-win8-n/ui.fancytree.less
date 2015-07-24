@@ -54,32 +54,33 @@
 /*******************************************************************************
  * Node titles
  */
-
-span.fancytree-node {
-	border: @fancy-node-border-width solid transparent;  // avoid jumping, when a border is added on hover
-}
-span.fancytree-node:hover {
-	background-color: #E5F3FB;
-	border-color: #70C0E7;
-}
-.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-focused {
-	border-color: #3399FF;
-//	outline: 1px solid #3399FF; 
-}
-span.fancytree-node.fancytree-active,
-span.fancytree-node.fancytree-selected { // active/selcted nodes inside inactive tree
-	background-color: #F7F7F7;
-	border-color: #DEDEDE;
-}
-.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-active,
-.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-selected,
-span.fancytree-node.fancytree-active:hover,
-span.fancytree-node.fancytree-selected:hover {
-	background-color: #CBE8F6;
-	border-color: #26A0DA;
-}
-.fancytree-node.fancytree-selected {
-	font-style: italic;
+.fancytree-plain  {
+	span.fancytree-node {
+		border: @fancy-node-border-width solid transparent;  // avoid jumping, when a border is added on hover
+	}
+	span.fancytree-node:hover {
+		background-color: #E5F3FB;
+		border-color: #70C0E7;
+	}
+	&.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-focused {
+		border-color: #3399FF;
+	//	outline: 1px solid #3399FF; 
+	}
+	span.fancytree-node.fancytree-active,
+	span.fancytree-node.fancytree-selected { // active/selcted nodes inside inactive tree
+		background-color: #F7F7F7;
+		border-color: #DEDEDE;
+	}
+	&.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-active,
+	&.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-selected,
+	span.fancytree-node.fancytree-active:hover,
+	span.fancytree-node.fancytree-selected:hover {
+		background-color: #CBE8F6;
+		border-color: #26A0DA;
+	}
+	.fancytree-node.fancytree-selected {
+		font-style: italic;
+	}
 }
 
 /*******************************************************************************
@@ -95,13 +96,13 @@ table.fancytree-ext-table tbody {
 		background: none;
 	}
 	// Title get's a white background, when hovered. Undo standard node formatting
-	span.fancytree-title:hover {
-	  border: none; //1px solid transparent;
-	  background: inherit;
-	  background: transparent;
-	  background: none;
-	  filter: none;
-	}
+	// span.fancytree-title:hover {
+	//   border: none; //1px solid transparent;
+	//   background: inherit;
+	//   background: transparent;
+	//   background: none;
+	//   filter: none;
+	// }
 	tr:hover  {
 		background-color: #E5F3FB;
 	    outline: 1px solid #70C0E7;

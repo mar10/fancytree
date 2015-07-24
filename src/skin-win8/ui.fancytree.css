@@ -318,13 +318,6 @@ span.fancytree-node.fancytree-error span.fancytree-title {
 /*------------------------------------------------------------------------------
  * Drag'n'drop support
  *----------------------------------------------------------------------------*/
-div.fancytree-drag-helper a {
-  border: 1px solid gray;
-  background-color: white;
-  padding-left: 5px;
-  padding-right: 5px;
-  opacity: 0.8;
-}
 div.fancytree-drag-helper.fancytree-drop-reject {
   border-color: #ff0000;
 }
@@ -360,12 +353,6 @@ span.fancytree-drag-source span.fancytree.title {
   color: gray;
 }
 /*** Target node while dragging cursor is over it *****************************/
-span.fancytree-drop-target.fancytree-drop-accept a {
-  background-color: #3169C6 !important;
-  color: white !important;
-  /* @ IE6 */
-  text-decoration: none;
-}
 /*------------------------------------------------------------------------------
  * 'table' extension
  *----------------------------------------------------------------------------*/
@@ -483,26 +470,26 @@ ul.fancytree-ext-wide span.fancytree-node span.fancytree-title {
 /*******************************************************************************
  * Node titles
  */
-span.fancytree-title {
+.fancytree-plain span.fancytree-title {
   border: 1px solid transparent;
 }
-.fancytree-container.fancytree-treefocus span.fancytree-focused span.fancytree-title {
+.fancytree-plain.fancytree-container.fancytree-treefocus span.fancytree-focused span.fancytree-title {
   border-color: #3399ff;
 }
-span.fancytree-active span.fancytree-title,
-span.fancytree-selected span.fancytree-title {
+.fancytree-plain span.fancytree-active span.fancytree-title,
+.fancytree-plain span.fancytree-selected span.fancytree-title {
   background-color: #f7f7f7;
   border-color: #dedede;
 }
-span.fancytree-node span.fancytree-selected span.fancytree-title {
+.fancytree-plain span.fancytree-node span.fancytree-selected span.fancytree-title {
   font-style: italic;
 }
-span.fancytree-node:hover span.fancytree-title {
+.fancytree-plain span.fancytree-node:hover span.fancytree-title {
   background-color: #eff9fe;
   border-color: #70c0e7;
 }
-.fancytree-container.fancytree-treefocus span.fancytree-active span.fancytree-title,
-.fancytree-container.fancytree-treefocus span.fancytree-selected span.fancytree-title {
+.fancytree-plain.fancytree-container.fancytree-treefocus span.fancytree-active span.fancytree-title,
+.fancytree-plain.fancytree-container.fancytree-treefocus span.fancytree-selected span.fancytree-title {
   background-color: #cbe8f6;
   border-color: #26a0da;
 }
@@ -516,13 +503,6 @@ table.fancytree-ext-table tbody span.fancytree-node,
 table.fancytree-ext-table tbody span.fancytree-node:hover {
   border: none;
   background: none;
-}
-table.fancytree-ext-table tbody span.fancytree-title:hover {
-  border: none;
-  background: inherit;
-  background: transparent;
-  background: none;
-  filter: none;
 }
 table.fancytree-ext-table tbody tr:hover {
   background-color: #E5F3FB;

@@ -166,12 +166,12 @@ var FancytreeOptions = {};
  * });
  *
  * @property {function} activate `data.node` was activated
- * @property {function} beforeActivate Return `false` to prevent default processing
- * @property {function} beforeExpand Return `false` to prevent default processing
- * @property {function} beforeSelect Return `false` to prevent default processing
+ * @property {function} beforeActivate `data.node` is about to tbe (de)activated. Current status is `data.node.isActive()`. Return `false` to prevent default processing
+ * @property {function} beforeExpand `data.node` is about to tbe collapsed/expanded. Current status is `data.node.isExpanded()`. Return `false` to prevent default processing
+ * @property {function} beforeSelect `data.node` is about to tbe (de)selected. Current status is `data.node.isSelected()`.Return `false` to prevent default processing
  * @property {function} blur `data.node` lost keyboard focus
  * @property {function} blurTree `data.tree` lost keyboard focus
- * @property {function} click `data.node` was clicked. `data.targetType` contains the region ("title", "expander", ...). Return `false` to prevent default processing, i.e. activating, etc.
+ * @property {function} click `data.node` was clicked. `data.targetType` contains the region ("title", "expander", ...). Return `false` to prevent default processing, i.e. activating, expanding, selecting, etc.
  * @property {function} collapse `data.node` was collapsed
  * @property {function} create Widget was created (called only once, even if re-initialized).
  * @property {function} createNode Allow tweaking and binding, after node was created for the first time (NOTE: this event is only available as callback, but not for bind())
@@ -185,7 +185,7 @@ var FancytreeOptions = {};
  * @property {function} keypress (currently unused)
  * @property {function} lazyLoad `data.node` is a lazy node that is expanded for the first time. The new child data must be returned in the `data.result` property (see `source` option for available formats).
  * @property {function} loadChildren Node data was loaded, i.e. `node.nodeLoadChildren()` finished
- * @property {function} loadError A load error occured. Return `false` to prevent default processing
+ * @property {function} loadError A load error occurred. Return `false` to prevent default processing
  * @property {function} postProcess Allows to modify the ajax response
  * @property {function} removeNode `data.node` was removed (NOTE: this event is only available as callback, but not for bind())
  * @property {function} renderColumns (used by table extension)

@@ -279,7 +279,7 @@ function FancytreeNode(parent, obj){
 	this.li = null;  // <li id='key' ftnode=this> tag
 	this.statusNodeType = null; // if this is a temp. node to display the status of its parent
 	this._isLoading = false;    // if this node itself is loading
-	this._error = null;         // {message: '...'} if a load error occured
+	this._error = null;         // {message: '...'} if a load error occurred
 	this.data = {};
 
 	// TODO: merge this code with node.toDict()
@@ -2358,7 +2358,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	 * Return all nodes as nested list of {@link NodeData}.
 	 *
 	 * @param {boolean} [includeRoot=false] Returns the hidden system root node (and its children)
-	 * @param {function} [callback(node)] Called for every node
+	 * @param {function} [callback] callback(dict, node) is called for every node, in order to allow modifications
 	 * @returns {Array | object}
 	 * @see FancytreeNode#toDict
 	 */
