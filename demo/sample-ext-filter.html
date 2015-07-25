@@ -33,9 +33,10 @@
 				url: "ajax-tree-local.json"
 			},
 			filter: {
-				autoApply: true,
-				// autoExpand: true,
-				mode: "hide"
+				autoApply: true, // Re-apply last filter if lazy data is loaded
+				counter: true, // Show a badge with number of matching child nodes near parent icons
+				hideExpandedCounter: true, // Hide counter badge, when parent is expanded
+				mode: "hide"  // "dimm": Grayout unmatched nodes, "hide": remove unmatched nodes
 			},
 			activate: function(event, data) {
 //				alert("activate " + data.node);
@@ -93,6 +94,17 @@
 		$("input#autoExpand").change(function(e){
 			tree.clearFilter();
 			$("input[name=search]").keyup();
+		});//.prop("checked", true);
+		$("input#counter").change(function(e){
+			tree.options.filter.counter = $(this).is(":checked");
+			tree.debug(tree.options.filter.counter)
+			tree.clearFilter();
+			$("input[name=search]").keyup();
+		}).prop("checked", true);
+		$("input#hideExpandedCounter").change(function(e){
+			tree.options.filter.hideExpandedCounter = $(this).is(":checked");
+			tree.clearFilter();
+			$("input[name=search]").keyup();
 		}).prop("checked", true);
 		$("input#leavesOnly").change(function(e){
 			// tree.options.filter.leavesOnly = $(this).is(":checked");
@@ -145,7 +157,7 @@
 	</div>
 	<p>
 		<label>Filter:</label>
-		<input name="search" placeholder="Filter...">
+		<input name="search" placeholder="Filter..." autocomplete="off">
 		<button id="btnResetSearch">&times;</button>
 		<span id="matches"></span>
 	</p>
@@ -161,6 +173,14 @@
 		<label for="autoExpand">
 			<input type="checkbox" id="autoExpand">
 			Auto expand
+		</label>
+		<label for="counter">
+			<input type="checkbox" id="counter">
+			Counter badges
+		</label>
+		<label for="hideExpandedCounter">
+			<input type="checkbox" id="hideExpandedCounter">
+			hideExpandedCounter
 		</label>
 		<label for="regex">
 			<input type="checkbox" id="regex">

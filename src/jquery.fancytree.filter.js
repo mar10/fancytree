@@ -56,7 +56,7 @@ $.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, bra
 	// Reset current filter
 	this.visit(function(node){
 		delete node.match;
-		delete node.subMatch;
+		node.subMatchCount = 0;
 	});
 	// Adjust node.hide, .match, .subMatch flags
 	this.visit(function(node){
@@ -64,7 +64,7 @@ $.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, bra
 			count++;
 			node.match = true;
 			node.visitParents(function(p){
-				p.subMatch = true;
+				p.subMatchCount += 1;
 				if( opts.autoExpand && !p.expanded ) {
 					p.setExpanded(true, {noAnimation: true, noEvents: true, scrollIntoView: false});
 					p._filterAutoExpanded = true;
@@ -78,7 +78,7 @@ $.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, bra
 			}
 		}
 	});
-	// Redraw
+	// Redraw whole tree
 	this.render();
 	return count;
 };
@@ -131,7 +131,11 @@ $.ui.fancytree._FancytreeClass.prototype.filterBranches = function(filter, opts)
 $.ui.fancytree._FancytreeClass.prototype.clearFilter = function(){
 	this.visit(function(node){
 		delete node.match;
-		delete node.subMatch;
+		delete node.subMatchCount;
+		if ( node.$subMatchBadge ) {
+			node.$subMatchBadge.remove();
+			delete node.$subMatchBadge;
+		}
 		if( node._filterAutoExpanded && node.expanded ) {
 			node.setExpanded(false, {noAnimation: true, noEvents: true, scrollIntoView: false});
 		}
@@ -149,7 +153,7 @@ $.ui.fancytree._FancytreeClass.prototype.clearFilter = function(){
  */
 $.ui.fancytree.registerExtension({
 	name: "filter",
-	version: "0.4.0",
+	version: "0.5.0",
 	// Default options for this extension.
 	options: {
 		autoApply: true, // re-apply last filter if lazy data is loaded
@@ -183,9 +187,6 @@ $.ui.fancytree.registerExtension({
 		}
 		$span
 			.toggleClass("fancytree-match", !!node.match)
-			.toggleClass("fancytree-submatch", !!node.subMatch)
-			.toggleClass("fancytree-hide", !(node.match || node.subMatch));
-
 		return res;
 	}
 });
