@@ -452,6 +452,25 @@ table.fancytree-ext-columnview .fancytree-has-children span.fancytree-cv-right:h
   color: black;
   font-weight: normal;
 }
+.fancytree-ext-filter span.fancytree-icon {
+  position: relative;
+}
+.fancytree-ext-filter span.fancytree-childcounter {
+  color: #fff;
+  background: #428BCA;
+  border: 1px solid gray;
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 10px;
+  height: 10px;
+  line-height: 1;
+  vertical-align: baseline;
+  border-radius: 10px;
+  padding: 2px;
+  text-align: center;
+  font-size: 9px;
+}
 /*------------------------------------------------------------------------------
  * 'wide' extension
  *----------------------------------------------------------------------------*/

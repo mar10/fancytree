@@ -31,7 +31,7 @@ $.ui.fancytree.registerExtension({
 	// Default options for this extension.
 	options: {
 		map: {
-			// Samples from Font Awesome 3.2 
+			// Samples from Font Awesome 3.2
 			//   http://fortawesome.github.io/Font-Awesome/3.2.1/icons/
 			// See here for alternatives:
 			//   http://fortawesome.github.io/Font-Awesome/icons/
