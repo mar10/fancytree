@@ -70,7 +70,7 @@ module.exports = (grunt) ->
                 # "lib/intro.js"
                 "src/jquery.fancytree.js"
                 "src/jquery.fancytree.childcounter.js"
-               "src/jquery.fancytree.clones.js"
+                "src/jquery.fancytree.clones.js"
 #                "src/jquery.fancytree.columnview.js"
                 "src/jquery.fancytree.dnd.js"
                 "src/jquery.fancytree.edit.js"
@@ -113,7 +113,7 @@ module.exports = (grunt) ->
                 "build/jquery.fancytree.persist.min.js"
                 "build/jquery.fancytree.table.min.js"
                 "build/jquery.fancytree.themeroller.min.js"
-                "build/jquery.fancytree.wide.js"
+                "build/jquery.fancytree.wide.min.js"
                 "lib/outro.js"
                 ]
             dest: "build/<%= pkg.name %>-all.min.js"
