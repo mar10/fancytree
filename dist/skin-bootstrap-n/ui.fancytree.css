@@ -163,7 +163,7 @@ span.fancytree-node {
   min-height: 1em;
 }
 span.fancytree-title {
-  color: black;
+  color: #000000;
   cursor: pointer;
   display: inline-block;
   vertical-align: top;
@@ -178,20 +178,13 @@ span.fancytree-title {
   border-radius: 0px;
 }
 span.fancytree-node.fancytree-error span.fancytree-title {
-  color: red;
+  color: #ff0000;
 }
 /*------------------------------------------------------------------------------
  * Drag'n'drop support
  *----------------------------------------------------------------------------*/
-div.fancytree-drag-helper a {
-  border: 1px solid gray;
-  background-color: white;
-  padding-left: 5px;
-  padding-right: 5px;
-  opacity: 0.8;
-}
 div.fancytree-drag-helper.fancytree-drop-reject {
-  border-color: red;
+  border-color: #ff0000;
 }
 /*** Drop marker icon *********************************************************/
 #fancytree-drop-marker {
@@ -211,12 +204,6 @@ span.fancytree-drag-source span.fancytree.title {
   color: gray;
 }
 /*** Target node while dragging cursor is over it *****************************/
-span.fancytree-drop-target.fancytree-drop-accept a {
-  background-color: #3169C6 !important;
-  color: white !important;
-  /* @ IE6 */
-  text-decoration: none;
-}
 /*------------------------------------------------------------------------------
  * 'table' extension
  *----------------------------------------------------------------------------*/
@@ -269,7 +256,7 @@ table.fancytree-ext-columnview .fancytree-has-children span.fancytree-cv-right {
  * 'filter' extension
  *----------------------------------------------------------------------------*/
 .fancytree-ext-filter-dimm span.fancytree-node span.fancytree-title {
-  color: silver;
+  color: #c0c0c0;
   font-weight: lighter;
 }
 .fancytree-ext-filter-dimm tr.fancytree-submatch span.fancytree-title,
@@ -288,13 +275,32 @@ table.fancytree-ext-columnview .fancytree-has-children span.fancytree-cv-right {
 }
 .fancytree-ext-filter-hide tr.fancytree-submatch span.fancytree-title,
 .fancytree-ext-filter-hide span.fancytree-node.fancytree-submatch span.fancytree-title {
-  color: silver;
+  color: #c0c0c0;
   font-weight: lighter;
 }
 .fancytree-ext-filter-hide tr.fancytree-match span.fancytree-title,
 .fancytree-ext-filter-hide span.fancytree-node.fancytree-match span.fancytree-title {
   color: black;
   font-weight: normal;
+}
+.fancytree-ext-filter span.fancytree-icon {
+  position: relative;
+}
+.fancytree-ext-filter span.fancytree-childcounter {
+  color: #fff;
+  background: #428BCA;
+  border: 1px solid gray;
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 10px;
+  height: 10px;
+  line-height: 1;
+  vertical-align: baseline;
+  border-radius: 10px;
+  padding: 2px;
+  text-align: center;
+  font-size: 9px;
 }
 /*------------------------------------------------------------------------------
  * 'wide' extension

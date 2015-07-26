@@ -278,7 +278,7 @@ span.fancytree-icon {
 .fancytree-loading span.fancytree-expander:hover,
 .fancytree-statusnode-wait span.fancytree-icon,
 .fancytree-statusnode-wait span.fancytree-icon:hover {
-  background-image: url("loading.gif");
+  background-image: url('data:image/gif;base64,R0lGODlhEAAQAKIFAAAAAAAApUJC/4SE/8bGxgAAAAAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQFCgAFACwAAAAAEAAQAAADKli63K4hPBZLJWTWhZ0QU7d8YTadxTCgosqa6CM6c1Eztw3rJZ83v1gjAQAh+QQFCgAFACwBAAIACwAHAAADFFgqUhEOrqZiGaNqhbf/BUGA4QgmACH5BAUKAAUALAIAAQAMAAUAAAMTWKoi+2OUVkKAcllFyHtW92lBAgAh+QQFCgAFACwEAAEACwAIAAADFlg6o16EFFaEcPHZx1UInfOFZDeSXwIAIfkEBQoABQAsBwABAAcACwAAAxRIVMxaYzQWZxPCYstZ4F83BWFDJgAh+QQFCgAFACwKAAIABQAMAAADFEhUrPxjQPlqEeJhy0J4XhF2H5MAACH5BAUKAAUALAcABAAIAAsAAAMUWKpEu+3JOQa1cwqh+QrBF4LilAAAIfkEBQoABQAsBAAHAAsABwAAAxRYukvE0MFJyxjV4hCYEAtXiN+SAAAh+QQFCgAFACwCAAoADAAFAAADEhhR3ExEOQeZbGM4KUTJE9NNCQAh+QQFCgAFACwBAAcACwAIAAADFhhR3K0uSglnqbYI4QhpWzEMhSeNTQIAIfkEBQoABQAsAgAEAAcACwAAAxMYUczaMC4ZKxMiYjtG7AVBRGICACH5BAUKAAUALAEAAgAFAAwAAAMTWBqhxa8t6ZQQ7tY9husbQThiAgA7');
   background-position: 0px 0px;
 }
 /* Status node icons */
@@ -297,7 +297,7 @@ span.fancytree-node {
   min-height: 16px;
 }
 span.fancytree-title {
-  color: black;
+  color: #000000;
   cursor: pointer;
   display: inline-block;
   vertical-align: top;
@@ -312,20 +312,13 @@ span.fancytree-title {
   border-radius: 0px;
 }
 span.fancytree-node.fancytree-error span.fancytree-title {
-  color: red;
+  color: #ff0000;
 }
 /*------------------------------------------------------------------------------
  * Drag'n'drop support
  *----------------------------------------------------------------------------*/
-div.fancytree-drag-helper a {
-  border: 1px solid gray;
-  background-color: white;
-  padding-left: 5px;
-  padding-right: 5px;
-  opacity: 0.8;
-}
 div.fancytree-drag-helper.fancytree-drop-reject {
-  border-color: red;
+  border-color: #ff0000;
 }
 div.fancytree-drop-accept span.fancytree-drag-helper-img {
   background-position: -32px -112px;
@@ -359,12 +352,6 @@ span.fancytree-drag-source span.fancytree.title {
   color: gray;
 }
 /*** Target node while dragging cursor is over it *****************************/
-span.fancytree-drop-target.fancytree-drop-accept a {
-  background-color: #3169C6 !important;
-  color: white !important;
-  /* @ IE6 */
-  text-decoration: none;
-}
 /*------------------------------------------------------------------------------
  * 'table' extension
  *----------------------------------------------------------------------------*/
@@ -421,7 +408,7 @@ table.fancytree-ext-columnview .fancytree-has-children span.fancytree-cv-right:h
  * 'filter' extension
  *----------------------------------------------------------------------------*/
 .fancytree-ext-filter-dimm span.fancytree-node span.fancytree-title {
-  color: silver;
+  color: #c0c0c0;
   font-weight: lighter;
 }
 .fancytree-ext-filter-dimm tr.fancytree-submatch span.fancytree-title,
@@ -440,13 +427,32 @@ table.fancytree-ext-columnview .fancytree-has-children span.fancytree-cv-right:h
 }
 .fancytree-ext-filter-hide tr.fancytree-submatch span.fancytree-title,
 .fancytree-ext-filter-hide span.fancytree-node.fancytree-submatch span.fancytree-title {
-  color: silver;
+  color: #c0c0c0;
   font-weight: lighter;
 }
 .fancytree-ext-filter-hide tr.fancytree-match span.fancytree-title,
 .fancytree-ext-filter-hide span.fancytree-node.fancytree-match span.fancytree-title {
   color: black;
   font-weight: normal;
+}
+.fancytree-ext-filter span.fancytree-icon {
+  position: relative;
+}
+.fancytree-ext-filter span.fancytree-childcounter {
+  color: #fff;
+  background: #428BCA;
+  border: 1px solid gray;
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 10px;
+  height: 10px;
+  line-height: 1;
+  vertical-align: baseline;
+  border-radius: 10px;
+  padding: 2px;
+  text-align: center;
+  font-size: 9px;
 }
 /*------------------------------------------------------------------------------
  * 'wide' extension

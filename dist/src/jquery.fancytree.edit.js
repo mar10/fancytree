@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.10.2
- * @date 2015-07-02T08:11
+ * @version 2.11.0
+ * @date 2015-07-26T10:22
  */
 
 ;(function($, window, document, undefined) {
@@ -43,7 +43,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editStart = function(){
 			node: node,
 			tree: tree,
 			options: tree.options,
-			isNew: $(node.span).hasClass("fancytree-edit-new"),
+			isNew: $(node[tree.statusClassPropName]).hasClass("fancytree-edit-new"),
 			orgTitle: node.title,
 			input: null,
 			dirty: false
@@ -121,7 +121,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editEnd = function(applyChanges, _e
 		$title = $(".fancytree-title", node.span),
 		$input = $title.find("input.fancytree-edit-input");
 
-	// eventData.isNew = $(node.span).hasClass("fancytree-edit-new");
+	// eventData.isNew = $(node[tree.statusClassPropName]).hasClass("fancytree-edit-new");
 
 	if( instOpts.trim ) {
 		$input.val($.trim($input.val()));
@@ -156,7 +156,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editEnd = function(applyChanges, _e
 
 	if( eventData.save ) {
 		node.setTitle( escapeHtml(newVal) );
-		// $(node.span).removeClass("fancytree-edit-new");
+		// $(node[tree.statusClassPropName]).removeClass("fancytree-edit-new");
 		node.setFocus();
 	}else{
 		if( eventData.isNew ) {
@@ -191,6 +191,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editEnd = function(applyChanges, _e
 */
 $.ui.fancytree._FancytreeNodeClass.prototype.editCreateNode = function(mode, init){
 	var newNode,
+		tree = this.tree,
 		self = this;
 
 	mode = mode || "child";
@@ -210,7 +211,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editCreateNode = function(mode, ini
 	}
 	newNode = this.addNode(init, mode);
 	newNode.makeVisible(/*{noAnimation: true}*/).done(function(){
-		$(newNode.span).addClass("fancytree-edit-new");
+		$(newNode[tree.statusClassPropName]).addClass("fancytree-edit-new");
 		self.tree.ext.edit.relatedNode = self;
 		newNode.editStart();
 	});

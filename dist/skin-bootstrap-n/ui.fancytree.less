@@ -22,12 +22,20 @@
 // Override the variable after the import. 
 // NOTE: Variables are always resolved as the last definition, even if it is 
 // after where it is used.
-@fancy-use-sprites: false;
+@fancy-use-sprites: false;  // false: suppress all background images (i.e. icons)
 @fancy-hide-connectors: true;
+
 @fancy-icon-width: 1em;
 @fancy-icon-height: 1em;
 @fancy-line-height: 1em;
 @fancy-icon-spacing: 0.5em;
+
+// Use 'data-uri(...)' to embed the image into CSS instead of linking to 'loading.gif':
+// @fancy-loading-url: data-uri("@{fancy-image-dir}/loading.gif");
+// Set to `true` to use `data-uri(...)` which will embed icons.gif into CSS 
+// instead of linking to that file:
+// @fancy-inline-sprites: true;
+
 
 ul.fancytree-container ul {
 	padding: 0 0 0 1.5em;

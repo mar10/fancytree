@@ -7,8 +7,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.10.2
- * @date 2015-07-02T08:11
+ * @version 2.11.0
+ * @date 2015-07-26T10:22
  */
 
 /** Core Fancytree module.
@@ -279,7 +279,7 @@ function FancytreeNode(parent, obj){
 	this.li = null;  // <li id='key' ftnode=this> tag
 	this.statusNodeType = null; // if this is a temp. node to display the status of its parent
 	this._isLoading = false;    // if this node itself is loading
-	this._error = null;         // {message: '...'} if a load error occured
+	this._error = null;         // {message: '...'} if a load error occurred
 	this.data = {};
 
 	// TODO: merge this code with node.toDict()
@@ -1598,7 +1598,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	 * The result is compatible with node.addChildren().
 	 *
 	 * @param {boolean} [recursive=false] include child nodes
-	 * @param {function} [callback] callback(dict) is called for every node, in order to allow modifications
+	 * @param {function} [callback] callback(dict, node) is called for every node, in order to allow modifications
 	 * @returns {NodeData}
 	 */
 	toDict: function(recursive, callback) {
@@ -1618,7 +1618,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			}
 		}
 		if( callback ){
-			callback(dict);
+			callback(dict, self);
 		}
 		if( recursive ) {
 			if(this.hasChildren()){
@@ -1835,7 +1835,7 @@ function Fancytree(widget) {
 
 	// Create root markup
 	$ul = $("<ul>", {
-		"class": "ui-fancytree fancytree-container"
+		"class": "ui-fancytree fancytree-container fancytree-plain"
 	}).appendTo(this.$div);
 	this.$container = $ul;
 	this.rootNode.ul = $ul[0];
@@ -2358,7 +2358,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	 * Return all nodes as nested list of {@link NodeData}.
 	 *
 	 * @param {boolean} [includeRoot=false] Returns the hidden system root node (and its children)
-	 * @param {function} [callback(node)] Called for every node
+	 * @param {function} [callback] callback(dict, node) is called for every node, in order to allow modifications
 	 * @returns {Array | object}
 	 * @see FancytreeNode#toDict
 	 */
@@ -2901,7 +2901,7 @@ $.extend(Fancytree.prototype,
 		 *   create markup
 		 * - node was rendered: exit fast
 		 * - children have been added
-		 * - childern have been removed
+		 * - children have been removed
 		 */
 		var childLI, childNode1, childNode2, i, l, next, subCtx,
 			node = ctx.node,
@@ -4079,7 +4079,7 @@ $.extend($.ui.fancytree,
 	/** @lends Fancytree_Static# */
 	{
 	/** @type {string} */
-	version: "2.10.2",      // Set to semver by 'grunt release'
+	version: "2.11.0",      // Set to semver by 'grunt release'
 	/** @type {string} */
 	buildType: "production", // Set to 'production' by 'grunt build'
 	/** @type {int} */

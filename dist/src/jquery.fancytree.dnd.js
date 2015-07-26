@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.10.2
- * @date 2015-07-02T08:11
+ * @version 2.11.0
+ * @date 2015-07-26T10:22
  */
 
 ;(function($, window, document, undefined) {
@@ -31,7 +31,9 @@ function offsetString(n){
  * Drag and drop support
  */
 function _initDragAndDrop(tree) {
-	var dnd = tree.options.dnd || null;
+	var dnd = tree.options.dnd || null,
+		glyph = tree.options.glyph || null;
+
 	// Register 'connectToFancytree' option with ui.draggable
 	if( dnd ) {
 		_registerDnd();
@@ -69,6 +71,12 @@ function _initDragAndDrop(tree) {
 
 				// Attach node reference to helper object
 				$helper.data("ftSourceNode", sourceNode);
+
+				// Support glyph symbols instead of icons
+				if( glyph ) {
+					$helper.find(".fancytree-drag-helper-img")
+						.addClass(glyph.map.dragHelper);
+				}
 				// we return an unconnected element, so `draggable` will add this
 				// to the parent specified as `appendTo` option
 				return $helper;
@@ -273,6 +281,7 @@ $.ui.fancytree.registerExtension({
 		var markerOffsetX = 0,
 			markerAt = "center",
 			instData = this._local,
+			glyph = this.options.glyph || null,
 			$source = sourceNode ? $(sourceNode.span) : null,
 			$target = $(targetNode.span);
 
@@ -282,6 +291,12 @@ $.ui.fancytree.registerExtension({
 				.css({"z-index": 1000})
 				.prependTo($(this.$div).parent());
 //                .prependTo("body");
+
+			if( glyph ) {
+				// instData.$dropMarker.addClass(glyph.map.dragHelper);
+				instData.$dropMarker
+					.addClass(glyph.map.dropMarker);
+			}
 		}
 //      this.$dropMarker.attr("class", hitMode);
 		if(hitMode === "after" || hitMode === "before" || hitMode === "over"){
@@ -291,8 +306,7 @@ $.ui.fancytree.registerExtension({
 
 			switch(hitMode){
 			case "before":
-				instData
-				.$dropMarker.removeClass("fancytree-drop-after fancytree-drop-over")
+				instData.$dropMarker.removeClass("fancytree-drop-after fancytree-drop-over")
 					.addClass("fancytree-drop-before");
 				markerAt = "top";
 				break;

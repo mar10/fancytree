@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.10.2
- * @date 2015-07-02T08:11
+ * @version 2.11.0
+ * @date 2015-07-26T10:22
  */
 
 ;(function($, window, document, undefined) {
@@ -56,7 +56,7 @@ $.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, bra
 	// Reset current filter
 	this.visit(function(node){
 		delete node.match;
-		delete node.subMatch;
+		node.subMatchCount = 0;
 	});
 	// Adjust node.hide, .match, .subMatch flags
 	this.visit(function(node){
@@ -64,7 +64,7 @@ $.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, bra
 			count++;
 			node.match = true;
 			node.visitParents(function(p){
-				p.subMatch = true;
+				p.subMatchCount += 1;
 				if( opts.autoExpand && !p.expanded ) {
 					p.setExpanded(true, {noAnimation: true, noEvents: true, scrollIntoView: false});
 					p._filterAutoExpanded = true;
@@ -78,7 +78,7 @@ $.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, bra
 			}
 		}
 	});
-	// Redraw
+	// Redraw whole tree
 	this.render();
 	return count;
 };
@@ -131,7 +131,11 @@ $.ui.fancytree._FancytreeClass.prototype.filterBranches = function(filter, opts)
 $.ui.fancytree._FancytreeClass.prototype.clearFilter = function(){
 	this.visit(function(node){
 		delete node.match;
-		delete node.subMatch;
+		delete node.subMatchCount;
+		if ( node.$subMatchBadge ) {
+			node.$subMatchBadge.remove();
+			delete node.$subMatchBadge;
+		}
 		if( node._filterAutoExpanded && node.expanded ) {
 			node.setExpanded(false, {noAnimation: true, noEvents: true, scrollIntoView: false});
 		}
@@ -149,11 +153,13 @@ $.ui.fancytree._FancytreeClass.prototype.clearFilter = function(){
  */
 $.ui.fancytree.registerExtension({
 	name: "filter",
-	version: "0.4.0",
+	version: "0.5.0",
 	// Default options for this extension.
 	options: {
-		autoApply: true, // re-apply last filter if lazy data is loaded
-		mode: "dimm"
+		autoApply: true, // Re-apply last filter if lazy data is loaded
+		counter: true, // Show a badge with number of matching child nodes near parent icons
+		hideExpandedCounter: true, // Hide counter badge, when parent is expanded
+		mode: "dimm"  // Grayout unmatched nodes (pass "hide" to remove unmatched node instead)
 	},
 	// treeInit: function(ctx){
 	// 	this._superApply(arguments);
@@ -167,6 +173,10 @@ $.ui.fancytree.registerExtension({
 	},
 	nodeSetExpanded: function(ctx, flag, callOpts) {
 		delete ctx.node._filterAutoExpanded;
+		// Make sure counter badge is displayed again, when node is beeing collapsed
+		if( !flag && ctx.options.filter.hideExpandedCounter && ctx.node.$subMatchBadge ) {
+			ctx.node.$subMatchBadge.show();
+		}
 		return this._superApply(arguments);
 	},
 	nodeRenderStatus: function(ctx) {
@@ -174,6 +184,7 @@ $.ui.fancytree.registerExtension({
 		var res,
 			node = ctx.node,
 			tree = ctx.tree,
+			opts = ctx.options.filter,
 			$span = $(node[tree.statusClassPropName]);
 
 		res = this._superApply(arguments);
@@ -183,9 +194,18 @@ $.ui.fancytree.registerExtension({
 		}
 		$span
 			.toggleClass("fancytree-match", !!node.match)
-			.toggleClass("fancytree-submatch", !!node.subMatch)
-			.toggleClass("fancytree-hide", !(node.match || node.subMatch));
-
+			.toggleClass("fancytree-submatch", !!node.subMatchCount)
+			.toggleClass("fancytree-hide", !(node.match || node.subMatchCount));
+		// Add/update counter badge
+		if( opts.counter && node.subMatchCount && (!node.isExpanded() || !opts.hideExpandedCounter) ) {
+			if( !node.$subMatchBadge ) {
+				node.$subMatchBadge = $("<span class='fancytree-childcounter'/>");
+				$("span.fancytree-icon", node.span).append(node.$subMatchBadge);
+			}
+			node.$subMatchBadge.show().text(node.subMatchCount);
+		} else if ( node.$subMatchBadge ) {
+			node.$subMatchBadge.hide();
+		}
 		return res;
 	}
 });

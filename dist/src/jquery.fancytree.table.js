@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.10.2
- * @date 2015-07-02T08:11
+ * @version 2.11.0
+ * @date 2015-07-26T10:22
  */
 
 ;(function($, window, document, undefined) {
@@ -166,7 +166,7 @@ $.ui.fancytree.registerExtension({
 		// $.ui.fancytree.debug("*** nodeRender " + node + ", isRoot=" + isRootNode, "tr=" + node.tr, "hcp=" + ctx.hasCollapsedParents, "parent.tr=" + (node.parent && node.parent.tr));
 		if( !isRootNode ){
 			if(!node.tr){
-				if( ctx.hasCollapsedParents /*&& !node.parent.tr*/ ) {
+				if( ctx.hasCollapsedParents && !deep ) {
 					// #166: we assume that the parent will be (recursively) rendered
 					// later anyway.
 					node.debug("nodeRender ignored due to unrendered parent");
@@ -292,7 +292,8 @@ $.ui.fancytree.registerExtension({
 		$(node.tr).removeClass("fancytree-node");
 		// indent
 		indent = (node.getLevel() - 1) * opts.table.indentation;
-		$(node.span).css({marginLeft: indent + "px"});
+		$(node.span).css({paddingLeft: indent + "px"});  // #460
+		// $(node.span).css({marginLeft: indent + "px"});
 	 },
 	/* Expand node, return Deferred.promise. */
 	nodeSetExpanded: function(ctx, flag, opts) {

@@ -7,8 +7,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.10.2
- * @date 2015-07-02T08:11
+ * @version 2.11.0
+ * @date 2015-07-26T10:22
  */
 
 /** Core Fancytree module.
@@ -279,7 +279,7 @@ function FancytreeNode(parent, obj){
 	this.li = null;  // <li id='key' ftnode=this> tag
 	this.statusNodeType = null; // if this is a temp. node to display the status of its parent
 	this._isLoading = false;    // if this node itself is loading
-	this._error = null;         // {message: '...'} if a load error occured
+	this._error = null;         // {message: '...'} if a load error occurred
 	this.data = {};
 
 	// TODO: merge this code with node.toDict()
@@ -1598,7 +1598,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	 * The result is compatible with node.addChildren().
 	 *
 	 * @param {boolean} [recursive=false] include child nodes
-	 * @param {function} [callback] callback(dict) is called for every node, in order to allow modifications
+	 * @param {function} [callback] callback(dict, node) is called for every node, in order to allow modifications
 	 * @returns {NodeData}
 	 */
 	toDict: function(recursive, callback) {
@@ -1618,7 +1618,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			}
 		}
 		if( callback ){
-			callback(dict);
+			callback(dict, self);
 		}
 		if( recursive ) {
 			if(this.hasChildren()){
@@ -1835,7 +1835,7 @@ function Fancytree(widget) {
 
 	// Create root markup
 	$ul = $("<ul>", {
-		"class": "ui-fancytree fancytree-container"
+		"class": "ui-fancytree fancytree-container fancytree-plain"
 	}).appendTo(this.$div);
 	this.$container = $ul;
 	this.rootNode.ul = $ul[0];
@@ -2358,7 +2358,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	 * Return all nodes as nested list of {@link NodeData}.
 	 *
 	 * @param {boolean} [includeRoot=false] Returns the hidden system root node (and its children)
-	 * @param {function} [callback(node)] Called for every node
+	 * @param {function} [callback] callback(dict, node) is called for every node, in order to allow modifications
 	 * @returns {Array | object}
 	 * @see FancytreeNode#toDict
 	 */
@@ -2901,7 +2901,7 @@ $.extend(Fancytree.prototype,
 		 *   create markup
 		 * - node was rendered: exit fast
 		 * - children have been added
-		 * - childern have been removed
+		 * - children have been removed
 		 */
 		var childLI, childNode1, childNode2, i, l, next, subCtx,
 			node = ctx.node,
@@ -4079,7 +4079,7 @@ $.extend($.ui.fancytree,
 	/** @lends Fancytree_Static# */
 	{
 	/** @type {string} */
-	version: "2.10.2",      // Set to semver by 'grunt release'
+	version: "2.11.0",      // Set to semver by 'grunt release'
 	/** @type {string} */
 	buildType: "production", // Set to 'production' by 'grunt build'
 	/** @type {int} */
@@ -4441,8 +4441,8 @@ $.extend($.ui.fancytree,
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.10.2
- * @date 2015-07-02T08:11
+ * @version 2.11.0
+ * @date 2015-07-26T10:22
  */
 
 // To keep the global namespace clean, we wrap everything in a closure
@@ -4617,8 +4617,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.10.2
- * @date 2015-07-02T08:11
+ * @version 2.11.0
+ * @date 2015-07-26T10:22
  */
 
 ;(function($, window, document, undefined) {
@@ -5069,8 +5069,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.10.2
- * @date 2015-07-02T08:11
+ * @version 2.11.0
+ * @date 2015-07-26T10:22
  */
 
 ;(function($, window, document, undefined) {
@@ -5091,7 +5091,9 @@ function offsetString(n){
  * Drag and drop support
  */
 function _initDragAndDrop(tree) {
-	var dnd = tree.options.dnd || null;
+	var dnd = tree.options.dnd || null,
+		glyph = tree.options.glyph || null;
+
 	// Register 'connectToFancytree' option with ui.draggable
 	if( dnd ) {
 		_registerDnd();
@@ -5129,6 +5131,12 @@ function _initDragAndDrop(tree) {
 
 				// Attach node reference to helper object
 				$helper.data("ftSourceNode", sourceNode);
+
+				// Support glyph symbols instead of icons
+				if( glyph ) {
+					$helper.find(".fancytree-drag-helper-img")
+						.addClass(glyph.map.dragHelper);
+				}
 				// we return an unconnected element, so `draggable` will add this
 				// to the parent specified as `appendTo` option
 				return $helper;
@@ -5333,6 +5341,7 @@ $.ui.fancytree.registerExtension({
 		var markerOffsetX = 0,
 			markerAt = "center",
 			instData = this._local,
+			glyph = this.options.glyph || null,
 			$source = sourceNode ? $(sourceNode.span) : null,
 			$target = $(targetNode.span);
 
@@ -5342,6 +5351,12 @@ $.ui.fancytree.registerExtension({
 				.css({"z-index": 1000})
 				.prependTo($(this.$div).parent());
 //                .prependTo("body");
+
+			if( glyph ) {
+				// instData.$dropMarker.addClass(glyph.map.dragHelper);
+				instData.$dropMarker
+					.addClass(glyph.map.dropMarker);
+			}
 		}
 //      this.$dropMarker.attr("class", hitMode);
 		if(hitMode === "after" || hitMode === "before" || hitMode === "over"){
@@ -5351,8 +5366,7 @@ $.ui.fancytree.registerExtension({
 
 			switch(hitMode){
 			case "before":
-				instData
-				.$dropMarker.removeClass("fancytree-drop-after fancytree-drop-over")
+				instData.$dropMarker.removeClass("fancytree-drop-after fancytree-drop-over")
 					.addClass("fancytree-drop-before");
 				markerAt = "top";
 				break;
@@ -5626,8 +5640,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.10.2
- * @date 2015-07-02T08:11
+ * @version 2.11.0
+ * @date 2015-07-26T10:22
  */
 
 ;(function($, window, document, undefined) {
@@ -5660,7 +5674,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editStart = function(){
 			node: node,
 			tree: tree,
 			options: tree.options,
-			isNew: $(node.span).hasClass("fancytree-edit-new"),
+			isNew: $(node[tree.statusClassPropName]).hasClass("fancytree-edit-new"),
 			orgTitle: node.title,
 			input: null,
 			dirty: false
@@ -5738,7 +5752,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editEnd = function(applyChanges, _e
 		$title = $(".fancytree-title", node.span),
 		$input = $title.find("input.fancytree-edit-input");
 
-	// eventData.isNew = $(node.span).hasClass("fancytree-edit-new");
+	// eventData.isNew = $(node[tree.statusClassPropName]).hasClass("fancytree-edit-new");
 
 	if( instOpts.trim ) {
 		$input.val($.trim($input.val()));
@@ -5773,7 +5787,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editEnd = function(applyChanges, _e
 
 	if( eventData.save ) {
 		node.setTitle( escapeHtml(newVal) );
-		// $(node.span).removeClass("fancytree-edit-new");
+		// $(node[tree.statusClassPropName]).removeClass("fancytree-edit-new");
 		node.setFocus();
 	}else{
 		if( eventData.isNew ) {
@@ -5808,6 +5822,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editEnd = function(applyChanges, _e
 */
 $.ui.fancytree._FancytreeNodeClass.prototype.editCreateNode = function(mode, init){
 	var newNode,
+		tree = this.tree,
 		self = this;
 
 	mode = mode || "child";
@@ -5827,7 +5842,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editCreateNode = function(mode, ini
 	}
 	newNode = this.addNode(init, mode);
 	newNode.makeVisible(/*{noAnimation: true}*/).done(function(){
-		$(newNode.span).addClass("fancytree-edit-new");
+		$(newNode[tree.statusClassPropName]).addClass("fancytree-edit-new");
 		self.tree.ext.edit.relatedNode = self;
 		newNode.editStart();
 	});
@@ -5934,8 +5949,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.10.2
- * @date 2015-07-02T08:11
+ * @version 2.11.0
+ * @date 2015-07-26T10:22
  */
 
 ;(function($, window, document, undefined) {
@@ -5981,7 +5996,7 @@ $.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, bra
 	// Reset current filter
 	this.visit(function(node){
 		delete node.match;
-		delete node.subMatch;
+		node.subMatchCount = 0;
 	});
 	// Adjust node.hide, .match, .subMatch flags
 	this.visit(function(node){
@@ -5989,7 +6004,7 @@ $.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, bra
 			count++;
 			node.match = true;
 			node.visitParents(function(p){
-				p.subMatch = true;
+				p.subMatchCount += 1;
 				if( opts.autoExpand && !p.expanded ) {
 					p.setExpanded(true, {noAnimation: true, noEvents: true, scrollIntoView: false});
 					p._filterAutoExpanded = true;
@@ -6003,7 +6018,7 @@ $.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, bra
 			}
 		}
 	});
-	// Redraw
+	// Redraw whole tree
 	this.render();
 	return count;
 };
@@ -6056,7 +6071,11 @@ $.ui.fancytree._FancytreeClass.prototype.filterBranches = function(filter, opts)
 $.ui.fancytree._FancytreeClass.prototype.clearFilter = function(){
 	this.visit(function(node){
 		delete node.match;
-		delete node.subMatch;
+		delete node.subMatchCount;
+		if ( node.$subMatchBadge ) {
+			node.$subMatchBadge.remove();
+			delete node.$subMatchBadge;
+		}
 		if( node._filterAutoExpanded && node.expanded ) {
 			node.setExpanded(false, {noAnimation: true, noEvents: true, scrollIntoView: false});
 		}
@@ -6074,11 +6093,13 @@ $.ui.fancytree._FancytreeClass.prototype.clearFilter = function(){
  */
 $.ui.fancytree.registerExtension({
 	name: "filter",
-	version: "0.4.0",
+	version: "0.5.0",
 	// Default options for this extension.
 	options: {
-		autoApply: true, // re-apply last filter if lazy data is loaded
-		mode: "dimm"
+		autoApply: true, // Re-apply last filter if lazy data is loaded
+		counter: true, // Show a badge with number of matching child nodes near parent icons
+		hideExpandedCounter: true, // Hide counter badge, when parent is expanded
+		mode: "dimm"  // Grayout unmatched nodes (pass "hide" to remove unmatched node instead)
 	},
 	// treeInit: function(ctx){
 	// 	this._superApply(arguments);
@@ -6092,6 +6113,10 @@ $.ui.fancytree.registerExtension({
 	},
 	nodeSetExpanded: function(ctx, flag, callOpts) {
 		delete ctx.node._filterAutoExpanded;
+		// Make sure counter badge is displayed again, when node is beeing collapsed
+		if( !flag && ctx.options.filter.hideExpandedCounter && ctx.node.$subMatchBadge ) {
+			ctx.node.$subMatchBadge.show();
+		}
 		return this._superApply(arguments);
 	},
 	nodeRenderStatus: function(ctx) {
@@ -6099,6 +6124,7 @@ $.ui.fancytree.registerExtension({
 		var res,
 			node = ctx.node,
 			tree = ctx.tree,
+			opts = ctx.options.filter,
 			$span = $(node[tree.statusClassPropName]);
 
 		res = this._superApply(arguments);
@@ -6108,9 +6134,18 @@ $.ui.fancytree.registerExtension({
 		}
 		$span
 			.toggleClass("fancytree-match", !!node.match)
-			.toggleClass("fancytree-submatch", !!node.subMatch)
-			.toggleClass("fancytree-hide", !(node.match || node.subMatch));
-
+			.toggleClass("fancytree-submatch", !!node.subMatchCount)
+			.toggleClass("fancytree-hide", !(node.match || node.subMatchCount));
+		// Add/update counter badge
+		if( opts.counter && node.subMatchCount && (!node.isExpanded() || !opts.hideExpandedCounter) ) {
+			if( !node.$subMatchBadge ) {
+				node.$subMatchBadge = $("<span class='fancytree-childcounter'/>");
+				$("span.fancytree-icon", node.span).append(node.$subMatchBadge);
+			}
+			node.$subMatchBadge.show().text(node.subMatchCount);
+		} else if ( node.$subMatchBadge ) {
+			node.$subMatchBadge.hide();
+		}
 		return res;
 	}
 });
@@ -6127,8 +6162,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.10.2
- * @date 2015-07-02T08:11
+ * @version 2.11.0
+ * @date 2015-07-26T10:22
  */
 
 ;(function($, window, document, undefined) {
@@ -6149,6 +6184,11 @@ $.ui.fancytree.registerExtension({
 	// Default options for this extension.
 	options: {
 		map: {
+			// Samples from Font Awesome 3.2
+			//   http://fortawesome.github.io/Font-Awesome/3.2.1/icons/
+			// See here for alternatives:
+			//   http://fortawesome.github.io/Font-Awesome/icons/
+			//   http://getbootstrap.com/components/
 			checkbox: "icon-check-empty",
 			checkboxSelected: "icon-check",
 			checkboxUnknown: "icon-check icon-muted",
@@ -6156,11 +6196,13 @@ $.ui.fancytree.registerExtension({
 			expanderClosed: "icon-caret-right",
 			expanderLazy: "icon-angle-right",
 			expanderOpen: "icon-caret-down",
-			doc: "icon-file-alt",
 			noExpander: "",
+			dragHelper: "icon-caret-right",
+			dropMarker: "icon-caret-right",
 			// Default node icons.
 			// (Use tree.options.iconClass(node) callback to define custom icons
 			// based on node data)
+			doc: "icon-file-alt",
 			docOpen: "icon-file-alt",
 			loading: "icon-refresh icon-spin",
 			folder: "icon-folder-close-alt",
@@ -6205,7 +6247,7 @@ $.ui.fancytree.registerExtension({
 		}
 
 		if( node.tr ){
-			span = $("td", node.tr).children("span.fancytree-checkbox").get(0);
+			span = $("td", node.tr).find("span.fancytree-checkbox").get(0);
 		}else{
 			span = $span.children("span.fancytree-checkbox").get(0);
 		}
@@ -6260,8 +6302,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.10.2
- * @date 2015-07-02T08:11
+ * @version 2.11.0
+ * @date 2015-07-26T10:22
  */
 
 ;(function($, window, document, undefined) {
@@ -6462,8 +6504,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.10.2
- * @date 2015-07-02T08:11
+ * @version 2.11.0
+ * @date 2015-07-26T10:22
  */
 
 ;(function($, window, document, undefined) {
@@ -6837,8 +6879,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.10.2
- * @date 2015-07-02T08:11
+ * @version 2.11.0
+ * @date 2015-07-26T10:22
  */
 
 ;(function($, window, document, undefined) {
@@ -6994,7 +7036,7 @@ $.ui.fancytree.registerExtension({
 		// $.ui.fancytree.debug("*** nodeRender " + node + ", isRoot=" + isRootNode, "tr=" + node.tr, "hcp=" + ctx.hasCollapsedParents, "parent.tr=" + (node.parent && node.parent.tr));
 		if( !isRootNode ){
 			if(!node.tr){
-				if( ctx.hasCollapsedParents /*&& !node.parent.tr*/ ) {
+				if( ctx.hasCollapsedParents && !deep ) {
 					// #166: we assume that the parent will be (recursively) rendered
 					// later anyway.
 					node.debug("nodeRender ignored due to unrendered parent");
@@ -7120,7 +7162,8 @@ $.ui.fancytree.registerExtension({
 		$(node.tr).removeClass("fancytree-node");
 		// indent
 		indent = (node.getLevel() - 1) * opts.table.indentation;
-		$(node.span).css({marginLeft: indent + "px"});
+		$(node.span).css({paddingLeft: indent + "px"});  // #460
+		// $(node.span).css({marginLeft: indent + "px"});
 	 },
 	/* Expand node, return Deferred.promise. */
 	nodeSetExpanded: function(ctx, flag, opts) {
@@ -7202,8 +7245,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.10.2
- * @date 2015-07-02T08:11
+ * @version 2.11.0
+ * @date 2015-07-26T10:22
  */
 
 ;(function($, window, document, undefined) {
@@ -7278,8 +7321,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.10.2
- * @date 2015-07-02T08:11
+ * @version 2.11.0
+ * @date 2015-07-26T10:22
  */
 
 ;(function($, window, document, undefined) {
