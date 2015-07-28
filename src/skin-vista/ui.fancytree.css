@@ -457,7 +457,7 @@ table.fancytree-ext-columnview .fancytree-has-children span.fancytree-cv-right:h
 }
 .fancytree-ext-filter span.fancytree-childcounter {
   color: #fff;
-  background: #428BCA;
+  background: #777;
   border: 1px solid gray;
   position: absolute;
   top: -6px;

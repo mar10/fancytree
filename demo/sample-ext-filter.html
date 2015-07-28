@@ -33,10 +33,12 @@
 				url: "ajax-tree-local.json"
 			},
 			filter: {
-				autoApply: true, // Re-apply last filter if lazy data is loaded
-				counter: true, // Show a badge with number of matching child nodes near parent icons
-				hideExpandedCounter: true, // Hide counter badge, when parent is expanded
-				mode: "hide"  // "dimm": Grayout unmatched nodes, "hide": remove unmatched nodes
+				autoApply: true,  // Re-apply last filter if lazy data is loaded
+				counter: true,  // Show a badge with number of matching child nodes near parent icons
+				fuzzy: false,  // Match single characters in order, e.g. 'fb' will match 'FooBar'
+				hideExpandedCounter: true,  // Hide counter badge, when parent is expanded
+				highlight: true,  // Highlight matches by wrapping inside <mark> tags
+				mode: "dimm"  // Grayout unmatched nodes (pass "hide" to remove unmatched node instead)
 			},
 			activate: function(event, data) {
 //				alert("activate " + data.node);
@@ -86,35 +88,31 @@
 			tree.clearFilter();
 		}).attr("disabled", true);
 
-		$("input#hideMode").change(function(e){
-			tree.options.filter.mode = $(this).is(":checked") ? "hide" : "dimm";
-			tree.clearFilter();
-			$("input[name=search]").keyup();
-		}).prop("checked", true);
-		$("input#autoExpand").change(function(e){
-			tree.clearFilter();
-			$("input[name=search]").keyup();
-		});//.prop("checked", true);
-		$("input#counter").change(function(e){
-			tree.options.filter.counter = $(this).is(":checked");
-			tree.debug(tree.options.filter.counter)
-			tree.clearFilter();
-			$("input[name=search]").keyup();
-		}).prop("checked", true);
-		$("input#hideExpandedCounter").change(function(e){
-			tree.options.filter.hideExpandedCounter = $(this).is(":checked");
-			tree.clearFilter();
-			$("input[name=search]").keyup();
-		}).prop("checked", true);
-		$("input#leavesOnly").change(function(e){
-			// tree.options.filter.leavesOnly = $(this).is(":checked");
-			tree.clearFilter();
-			$("input[name=search]").keyup();
-		});
-		$("input#regex").change(function(e){
+		$("fieldset input:checkbox").change(function(e){
+			var id = $(this).attr("id"),
+				flag = $(this).is(":checked");
+
+			switch( id ) {
+			case "autoExpand":
+			case "regex":
+			case "leavesOnly":
+				// Re-apply filter only
+				break;
+			case "hideMode":
+				tree.options.filter.mode = flag ? "hide" : "dimm";
+				break;
+			case "counter":
+			case "fuzzy":
+			case "hideExpandedCounter":
+			case "highlight":
+				tree.options.filter[id] = flag;
+				break;
+			}
 			tree.clearFilter();
 			$("input[name=search]").keyup();
 		});
+
+		$("#counter,#hideExpandedCounter,#highlight").prop("checked", true);
 
 		addSampleButton({
 			label: "Filter active branch",
@@ -161,7 +159,8 @@
 		<button id="btnResetSearch">&times;</button>
 		<span id="matches"></span>
 	</p>
-	<p>
+	<!-- Start_Exclude: This block is not part of the sample code -->
+	<fieldset>
 		<label for="hideMode">
 			<input type="checkbox" id="hideMode">
 			Hide unmatched nodes
@@ -182,13 +181,24 @@
 			<input type="checkbox" id="hideExpandedCounter">
 			hideExpandedCounter
 		</label>
+		<label for="fuzzy">
+			<input type="checkbox" id="fuzzy">
+			Fuzzy
+		</label>
+		<label for="highlight">
+			<input type="checkbox" id="highlight">
+			Highlight
+		</label>
 		<label for="regex">
 			<input type="checkbox" id="regex">
 			Regular expression
 		</label>
-	</p>
+	</fieldset>
+
 	<p id="sampleButtons">
 	</p>
+	<!-- End_Exclude -->
+
 	<!-- Add a <table> element where the tree should appear: -->
 	<div id="tree">
 	</div>
