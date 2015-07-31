@@ -347,6 +347,10 @@ ul.fancytree-container ul {
 .fancytree-container:focus {
   outline: none;
 }
+.fancytree-container .fancytree-active span.fancytree-title input,
+.fancytree-container.fancytree-colorize-selected .fancytree-selected span.fancytree-title input {
+  color: black;
+}
 div.fancytree-drag-helper.fancytree-drop-reject,
 div.fancytree-drag-helper.fancytree-drop-reject span.fancytree-title {
   color: #d9534f;

@@ -108,6 +108,12 @@ ul.fancytree-container ul {
 	outline: none; 
 }
 
+// Active and (optionally) selected nodes are white on colored bg. Undo this for input controls:
+.fancytree-container .fancytree-active span.fancytree-title input,
+.fancytree-container.fancytree-colorize-selected .fancytree-selected span.fancytree-title input  {
+  color: black;
+}
+
 // ------------------------------------------------------------------------------
 //  * Drag'n'drop support
 //  *----------------------------------------------------------------------------
@@ -179,9 +185,6 @@ span.fancytree-node.fancytree-drop-target {
 		// color: white !important;
 	}
 }
-
-
-
 
 // Inactive tree:
 .fancytree-plain {

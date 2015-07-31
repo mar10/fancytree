@@ -1,5 +1,6 @@
 # 2.11.1-0 / Unreleased
   * [Improved] Add `highlight` and `fuzzy` options to ext-filter
+  * [Fixed] #475 Font color while editing node title with bootstrap skin
 
 # 2.11.0 / 2015-07-26
   * [Changed] Adding `fancytree-plain` class to container (if not table), allowing for more efficient css
