@@ -27,7 +27,7 @@ function _getIcon(opts, type){
 
 $.ui.fancytree.registerExtension({
 	name: "glyph",
-	version: "0.2.0",
+	version: "0.3.0",
 	// Default options for this extension.
 	options: {
 		map: {
@@ -47,7 +47,7 @@ $.ui.fancytree.registerExtension({
 			dragHelper: "icon-caret-right",
 			dropMarker: "icon-caret-right",
 			// Default node icons.
-			// (Use tree.options.iconClass(node) callback to define custom icons
+			// (Use tree.options.iconClass callback to define custom icons
 			// based on node data)
 			doc: "icon-file-alt",
 			docOpen: "icon-file-alt",

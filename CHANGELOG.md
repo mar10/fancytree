@@ -1,4 +1,6 @@
 # 2.11.1-0 / Unreleased
+  * [Changed] Documented `iconClass` callback and changed signature from 
+    `iconClass(node)` to `iconClass(event, data)`
   * [Improved] Add `highlight` and `fuzzy` options to ext-filter
   * [Fixed] #475 Font color while editing node title with bootstrap skin
 

@@ -85,7 +85,7 @@ span.fancytree-radio,
 span.fancytree-custom-icon {
   margin-top: 2px;
 }
-/* Used by iconclass option */
+/* Used by iconclass option and iconClass callback: */
 span.fancytree-custom-icon {
   display: inline-block;
 }

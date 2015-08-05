@@ -81,10 +81,8 @@
 			dropMarker: "glyphicon glyphicon-arrow-right",
 			error: "glyphicon glyphicon-warning-sign",
 			expanderClosed: "glyphicon glyphicon-plus-sign",
-			expanderLazy: "glyphicon glyphicon-plus-sign",
-			// expanderLazy: "glyphicon glyphicon-expand",
-			expanderOpen: "glyphicon glyphicon-minus-sign",
-			// expanderOpen: "glyphicon glyphicon-collapse-down",
+			expanderLazy: "glyphicon glyphicon-plus-sign",  // glyphicon-expand
+			expanderOpen: "glyphicon glyphicon-minus-sign",  // glyphicon-collapse-down
 			folder: "glyphicon glyphicon-folder-close",
 			folderOpen: "glyphicon glyphicon-folder-open",
 			loading: "glyphicon glyphicon-refresh"
@@ -110,6 +108,11 @@
 				levelOfs: "1.5em"     // Adjust this if ul padding != "16px"
 			},
 
+			iconClass: function(event, data){
+				// if( data.node.isFolder() ) {
+				// 	return "glyphicon glyphicon-book";
+				// }
+			},
 			lazyLoad: function(event, data) {
 				data.result = {url: "ajax-sub2.json", debugDelay: 1000};
 			}

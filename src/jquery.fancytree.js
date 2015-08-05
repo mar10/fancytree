@@ -3102,8 +3102,8 @@ $.extend(Fancytree.prototype,
 				iconSrc = (iconSrc.charAt(0) === "/") ? iconSrc : ((opts.imagePath || "") + iconSrc);
 				ares.push("<img src='" + iconSrc + "' class='fancytree-icon' alt='' />");
 			} else {
-				// See if node.iconClass or opts.iconClass() define a class name
-				iconSpanClass = (opts.iconClass && opts.iconClass.call(tree, node, ctx)) || node.data.iconclass || null;
+				// See if node.iconclass or opts.iconClass() define a class name
+				iconSpanClass = (opts.iconClass && opts.iconClass.call(tree, {type: "iconClass"}, ctx)) || node.data.iconclass || null;
 				if( iconSpanClass ) {
 					ares.push("<span " + role + " class='fancytree-custom-icon " + iconSpanClass +  "'></span>");
 				} else {
