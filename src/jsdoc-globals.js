@@ -64,7 +64,7 @@ var EventData = {};
  * @property {Boolean} focus (Initialization only, but will not be stored  with the node.)
  * @property {Boolean} folder Folders have different default icons and honor the `clickFolderMode` option.
  * @property {Boolean} hideCheckbox Remove checkbox for this node.
- * @property {String} iconclass Class names added to the node icon markup to allow custom icons or glyphs (separate with space, e.g. `ui-icon ui-icon-heart`).
+ * @property {String} iconclass Class names added to the node icon markup to allow custom icons or glyphs (separate with space, e.g. "ui-icon ui-icon-heart").
  * @property {String} key Unique key for this node (auto-generated if omitted)
  * @property {Boolean} lazy Lazy folders call the `lazyLoad` on first expand to load their children.
  * @property {String} refKey (Reserved, used by 'clones' extension.)
@@ -180,7 +180,7 @@ var FancytreeOptions = {};
  * @property {function} expand `data.node` was expanded
  * @property {function} focus `data.node` received keyboard focus
  * @property {function} focusTree `data.tree` received keyboard focus
- * @property {function} iconClass Allows to override the class names added to the `data.node icon markup to define custom icons or glyphs (separate with space, e.g. `ui-icon ui-icon-heart`).
+ * @property {function} iconClass Allows to override the class names added to the `data.node` icon markup to define custom icons or glyphs (separate with space, e.g. "ui-icon ui-icon-heart").
  * @property {function} init Widget was (re-)initialized.
  * @property {function} keydown `data.node` received key. `event.which` contains the key. Return `false` to prevent default processing, i.e. navigation. Call `data.result = "preventNav";` to prevent navigation but still allow default handling inside embedded input controls.
  * @property {function} keypress (currently unused)
