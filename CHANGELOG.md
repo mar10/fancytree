@@ -1,10 +1,11 @@
-# 2.11.1-0 / Unreleased
+# 2.12.0 / Unreleased
   * [Changed] Documented `iconClass` callback and changed signature from 
     `iconClass(node)` to `iconClass(event, data)`
   * [Improved] Add `highlight` and `fuzzy` options to ext-filter
   * [Improved] Add `fireActivate` option to ext-persist (default: true)
   * [Fixed] #475 Font color while editing node title with bootstrap skin
   * [Fixed] #484 Glyph plugin: Missing margin-left for span.fancytree-custom-icon
+  * [Fixed] #486 node.render(true) moves the node to the end of the list
 
 # 2.11.0 / 2015-07-26
   * [Changed] Adding `fancytree-plain` class to container (if not table), allowing for more efficient css

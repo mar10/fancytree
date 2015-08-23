@@ -1370,6 +1370,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		return this.tree._callHook("nodeRender", this, force, deep);
 	},
 	/** Create HTML markup for the node's outer &lt;span> (expander, checkbox, icon, and title).
+	 * Implies {@link FancytreeNode#renderStatus}.
 	 * @see Fancytree_Hooks#nodeRenderTitle
 	 */
 	renderTitle: function() {
@@ -2911,7 +2912,8 @@ $.extend(Fancytree.prototype,
 			firstTime = false,
 			parent = node.parent,
 			isRootNode = !parent,
-			children = node.children;
+			children = node.children,
+			successorLi = null;
 		// FT.debug("nodeRender(" + !!force + ", " + !!deep + ")", node.toString());
 
 		if( ! isRootNode && ! parent.ul ) {
@@ -2924,7 +2926,10 @@ $.extend(Fancytree.prototype,
 		if( !isRootNode ){
 			// Discard markup on force-mode, or if it is not linked to parent <ul>
 			if(node.li && (force || (node.li.parentNode !== node.parent.ul) ) ){
-				if(node.li.parentNode !== node.parent.ul){
+				if( node.li.parentNode === node.parent.ul ){
+					// #486: store following node, so we can insert the new markup there later
+					successorLi = node.li.nextSibling;
+				}else{
 					// May happen, when a top-level node was dropped over another
 					this.debug("Unlinking " + node + " (must be child of " + node.parent + ")");
 				}
@@ -3033,8 +3038,12 @@ $.extend(Fancytree.prototype,
 			// Update element classes according to node state
 			// this.nodeRenderStatus(ctx);
 			// Finally add the whole structure to the DOM, so the browser can render
-			if(firstTime){
-				parent.ul.appendChild(node.li);
+			if( firstTime ){
+				// #486: successorLi is set, if we re-rendered (i.e. discarded)
+				// existing markup, which  we want to insert at the same position.
+				// (null is equivalent to append)
+//				parent.ul.appendChild(node.li);
+				parent.ul.insertBefore(node.li, successorLi);
 			}
 		}
 	},
