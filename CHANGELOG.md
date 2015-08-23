@@ -2,6 +2,7 @@
   * [Changed] Documented `iconClass` callback and changed signature from 
     `iconClass(node)` to `iconClass(event, data)`
   * [Improved] Add `highlight` and `fuzzy` options to ext-filter
+  * [Improved] Add `fireActivate` option to ext-persist (default: true)
   * [Fixed] #475 Font color while editing node title with bootstrap skin
 
 # 2.11.0 / 2015-07-26
