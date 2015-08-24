@@ -94,6 +94,7 @@
 			extensions: ["dnd", "edit", "glyph", "wide"],
 			checkbox: true,
 			dnd: {
+				focusOnClick: true,
 				dragStart: function(node, data) { return true; },
 				dragEnter: function(node, data) { return false; },
 				dragDrop: function(node, data) { data.otherNode.copyTo(node, data.hitMode); }
@@ -122,6 +123,7 @@
 			extensions: ["dnd", "edit", "glyph", "table"],
 			checkbox: true,
 			dnd: {
+				focusOnClick: true,
 				dragStart: function(node, data) { return true; },
 				dragEnter: function(node, data) { return true; },
 				dragDrop: function(node, data) { data.otherNode.copyTo(node, data.hitMode); }

@@ -116,12 +116,15 @@ $.ui.fancytree.registerExtension({
 		tree.ariaPropName = "tr";
 		this.nodeContainerAttrName = "tr";
 
+		// #489: make sure $container is set to <table>, even if ext-dnd is listed before ext-table
+		tree.$container = $table;
+
 		this._superApply(arguments);
 
 		// standard Fancytree created a root UL
 		$(tree.rootNode.ul).remove();
 		tree.rootNode.ul = null;
-		tree.$container = $table;
+//		tree.$container = $table;
 		// Add container to the TAB chain
 		this.$container.attr("tabindex", this.options.tabbable ? "0" : "-1");
 		if(this.options.aria){
