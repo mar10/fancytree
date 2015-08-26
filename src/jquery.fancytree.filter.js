@@ -152,9 +152,11 @@ $.ui.fancytree._FancytreeClass.prototype.filterBranches = function(filter, opts)
  */
 $.ui.fancytree._FancytreeClass.prototype.clearFilter = function(){
 	this.visit(function(node){
+		if( node.match ) {  // #491
+			$(">span.fancytree-title", node.span).html(node.title);
+		}
 		delete node.match;
 		delete node.subMatchCount;
-		$(">span.fancytree-title", node.span).html(node.title);
 		delete node.titleWithHighlight;
 		if ( node.$subMatchBadge ) {
 			node.$subMatchBadge.remove();

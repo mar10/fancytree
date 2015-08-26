@@ -3,6 +3,7 @@
     `iconClass(node)` to `iconClass(event, data)`
   * [Improved] Add `highlight` and `fuzzy` options to ext-filter
   * [Improved] Add `fireActivate` option to ext-persist (default: true)
+  * [Improved] clearFilter() performance #491
   * [Fixed] #475 Font color while editing node title with bootstrap skin
   * [Fixed] #484 Glyph plugin: Missing margin-left for span.fancytree-custom-icon
   * [Fixed] #486 node.render(true) moves the node to the end of the list
