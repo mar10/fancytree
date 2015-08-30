@@ -405,7 +405,7 @@ span.fancytree-node.fancytree-drop-target.fancytree-drop-reject span.fancytree.t
 .fancytree-plain.fancytree-container span.fancytree-node.fancytree-active:hover span.fancytree-title {
   background-color: #3c87c8;
 }
-.fancytree-plain.fancytree-container span.fancytree-node.fancytree-active {
+.fancytree-plain.fancytree-container.fancytree-ext-wide span.fancytree-node.fancytree-active {
   color: #ffffff;
 }
 .fancytree-plain.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-focused span.fancytree-title {

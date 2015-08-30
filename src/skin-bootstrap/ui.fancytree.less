@@ -237,7 +237,7 @@ span.fancytree-node.fancytree-drop-target {
 		span.fancytree-node.fancytree-active:hover span.fancytree-title {
 			background-color: lighten(@fancy-active-color, 5%);
 		}
-		span.fancytree-node.fancytree-active {
+		&.fancytree-ext-wide span.fancytree-node.fancytree-active { // in wide mode, icons of active nodes must be white-on-color
 			color: @fancy-active-text;
 		}
 
