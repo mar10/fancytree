@@ -5,7 +5,8 @@
 	<title>Test D'n'D - Fancytree</title>
 
 	<script src="//code.jquery.com/jquery-1.11.3.min.js" type="text/javascript"></script>
-	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js" type="text/javascript"></script>
+<!--	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js" type="text/javascript"></script> -->
+	<script src="//code.jquery.com/ui/1.10.4/jquery-ui.min.js" type="text/javascript"></script>
 
 	<link href="../src/skin-win7/ui.fancytree.css" rel="stylesheet" type="text/css">
 	<script src="../src/jquery.fancytree.js" type="text/javascript"></script>
@@ -83,6 +84,7 @@
 					revert: "invalid"
 				},
 				dragStart: function(node, data) {
+					console.log("dragStart", data, data.originalEvent.shiftKey);
 					if( data.originalEvent.shiftKey ){
 						console.log("dragStart with SHIFT");
 					}
@@ -100,14 +102,47 @@
 */
 				   return true;
 				},
+				initHelper: function(node, data) {
+					// Helper was just created: modify markup
+					var //event = data.originalEvent,
+						count = data.tree.getSelectedNodes().length;
+
+					if( !data.node.isSelected() ) {
+						count += 1;
+					}
+					if( count > 1 ) {
+						data.ui.helper.append($("<span class='fancytree-childcounter'/>")
+							.text("+" + (count - 1)));
+					}
+				},
+				updateHelper: function(node, data) {
+					// Mouse was moved or key pressed: update helper according to modifiers
+					var event = data.originalEvent,
+						copy = event.ctrlKey || event.altKey;
+
+					// NOTE: pressing modifier keys stops dragging in jQueryUI 1.11
+					// http://bugs.jqueryui.com/ticket/14461
+					data.dropMarker.toggleClass("fancytree-drop-copy", copy);
+					$(node.span).toggleClass("fancytree-drag-remove", !copy);
+					// data.dropMarker.toggleClass("fancytree-drop-move", !copy);
+				},
 				dragDrop: function(node, data) {
+					var sourceTopNodes,
+						event = data.originalEvent,
+						copy = event.ctrlKey || event.altKey;
+
 					if( !data.otherNode ){
-						// It's a non-tree draggable
-						var title = $(data.draggable.element).text() + " (" + (count)++ + ")";
+						// It's a non-tree draggable: insert a dummy node
+						var title = $(data.draggable.element).text() + " (" + (count++) + ")";
 						node.addNode({title: title}, data.hitMode);
 						return;
 					}
-					data.otherNode.moveTo(node, data.hitMode);
+					sourceTopNodes = data.otherNode.tree.getSelectedNodes(true);
+					if( copy ) {
+						data.otherNode.copyTo(node, data.hitMode);
+					}else{
+						data.otherNode.moveTo(node, data.hitMode);
+					}
 				}
 			}
 		});

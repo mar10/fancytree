@@ -1,3 +1,7 @@
+# 2.xx multi-dnd / unreleased
+  * [Added] New ext-dnd events `initHelper` and `updateHelper` to support modifier keys and multi-node dragging
+  * [Added] #146 sample for multi-node drag'n'drop
+
 # 2.10.0-0 / Unreleased
   * [Changed] New dist folder layout: moved skin-* folders into src/ folder
   * [Fixed] #415 selected and unselectable shows unchecked checkbox
