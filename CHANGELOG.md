@@ -8,6 +8,7 @@
   * [Fixed] #484 Glyph plugin: Missing margin-left for span.fancytree-custom-icon
   * [Fixed] #486 node.render(true) moves the node to the end of the list
   * [Fixed] #489 `focusOnClick` option is ignored for tables, if 'dnd' is listed after 'table' extension
+  * [Fixed] #495 Double clicking on expander with lazy-load causes assertion error
 
 # 2.11.0 / 2015-07-26
   * [Changed] Adding `fancytree-plain` class to container (if not table), allowing for more efficient css

@@ -2438,6 +2438,16 @@ $.extend(Fancytree.prototype,
 		// TODO: use switch
 		// TODO: make sure clicks on embedded <input> doesn't steal focus (see table sample)
 		if( targetType === "expander" ) {
+			if( node.isLoading() ) {
+				// #495: we probably got a click event while a lazy load is pending.
+				// The 'expanded' state is not yet set, so 'toggle' would expand
+				// and trigger lazyLoad again.
+				// It would be better to allow to collapse/expand the status node
+				// while loading (instead of ignoring), but that would require some
+				// more work.
+				node.debug("Got 2nd click while loading: ignored");
+				return;
+			}
 			// Clicking the expander icon always expands/collapses
 			this._callHook("nodeToggleExpanded", ctx);
 
