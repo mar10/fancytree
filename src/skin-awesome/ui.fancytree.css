@@ -214,12 +214,6 @@ span.fancytree-drag-source.fancytree-drag-remove {
   opacity: 0.15;
 }
 /*** Target node while dragging cursor is over it *****************************/
-span.fancytree-drop-target.fancytree-drop-accept {
-  outline: 1px dotted #5cb85c;
-}
-span.fancytree-drop-target.fancytree-drop-reject {
-  outline: 1px dotted #d9534f;
-}
 /*------------------------------------------------------------------------------
  * 'table' extension
  *----------------------------------------------------------------------------*/

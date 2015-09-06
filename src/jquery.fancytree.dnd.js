@@ -44,6 +44,7 @@ function _initDragAndDrop(tree) {
 			appendTo: tree.$container,
 //			appendTo: "body",
 			containment: false,
+//			containment: "parent",
 			delay: 0,
 			distance: 4,
 			revert: false,
@@ -207,7 +208,6 @@ function _registerDnd() {
 				eventType = event.type,
 				dropped = (eventType === "mouseup" && event.which === 1);
 
-			console.log("draggable.stop", arguments);
 			if(!dropped){
 				logObject = sourceNode || targetNode || $.ui.fancytree;
 				logObject.debug("Drag was cancelled");

@@ -1,6 +1,15 @@
 # 2.xx multi-dnd / unreleased
   * [Added] New ext-dnd events `initHelper` and `updateHelper` to support modifier keys and multi-node dragging
   * [Added] #146 sample for multi-node drag'n'drop
+  * [Added] Sample for modifier keys to control copy/move behavior while dragging
+  * TODO: disable auto-scroll by default: 
+          seems to have problems to calculate helper position, 
+          --> see here http://api.jqueryui.com/draggable/#event-drag
+              for a possible fix?
+          and enabling
+          scrolling would always require custom changes, like setting the container height?
+  * TODO: use containment: "parent" option?
+  * TODO: Revert always flies to top-left corner of container
 
 # 2.10.0-0 / Unreleased
   * [Changed] New dist folder layout: moved skin-* folders into src/ folder

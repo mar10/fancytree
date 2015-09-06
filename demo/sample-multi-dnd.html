@@ -30,28 +30,9 @@
 	}
 	/* Prevent scrolling while DND */
 	ul.fancytree-container {
-		position: inherit;
-	}
-	/* Fancytree extension 'table' */
-	table.fancytree-ext-table {
-		font-size: 80%;
-		width: 100%;
-	}
-	table.fancytree-ext-table tbody tr:nth-child(even){
-		background-color: #f4f4f8;
-	}
-	table.fancytree-ext-table tbody tr td {
-		border: 1px solid lightgray;
-	}
-
-	/* Fancytree extension 'columnview' */
-	table.fancytree-ext-columnview {
-		font-size: 80%;
-		border-collapse: collapse;
-		width: 100%;
-	}
-	table.fancytree-ext-columnview tbody tr[0] {
 		height: 200px;
+		overflow: auto;
+/*		position: inherit;*/
 	}
 </style>
 
@@ -76,18 +57,18 @@
 				preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
 				preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
 				autoExpandMS: 400,
+				refreshPositions: true,
 				draggable: {
-					//zIndex: 1000,
-					// appendTo: "body",
-					// helper: "clone",
-					scroll: false,
+					// appendTo: "body",  // We don't want to clip the helper inside container
+					// scroll: false,
+					containment: "parent",  // $("ul.fancytree-container"),
+					// cursorAt: { left: 5 },
 					revert: "invalid"
+					// revert: function(dropped) {
+					// 	return 
+					// }
 				},
 				dragStart: function(node, data) {
-					console.log("dragStart", data, data.originalEvent.shiftKey);
-					if( data.originalEvent.shiftKey ){
-						console.log("dragStart with SHIFT");
-					}
 					// allow dragging `node`:
 					return true;
 				},
@@ -146,124 +127,33 @@
 				}
 			}
 		});
-		$("#treetable").fancytree({
-			extensions: ["table", "dnd"],
-			checkbox: true,
-			source: {
-				url: "ajax-tree-plain.json"
-			},
-			activate: function(event, data) {
-			},
-			lazyLoad: function(event, data) {
-				data.result = {url: "ajax-sub2.json"}
-			},
-			renderColumns: function(event, data) {
-				var node = data.node,
-					$tdList = $(node.tr).find(">td");
-				$tdList.eq(1).text(node.key);
-				$tdList.eq(2).text(!!node.folder);
-			},
-			dnd: {
-				preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
-				preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
-				autoExpandMS: 400,
-				draggable: {
-					//zIndex: 1000,
-					// appendTo: "body",
-					// helper: "clone",
-					scroll: false,
-					revert: "invalid"
-				},
 
-				dragStart: function(node, data) {
-					return true;
-				},
-				dragEnter: function(node, data) {
-					// Prevent dropping a parent below another parent (only sort
-					// nodes under the same parent)
-/* 					if(node.parent !== data.otherNode.parent){
-						return false;
-					}
-					// Don't allow dropping *over* a node (would create a child)
-					return ["before", "after"];
-*/
-				   return true;
-				},
-				dragDrop: function(node, data) {
-					data.otherNode.moveTo(node, data.hitMode);
-				}
-			}
-		});
-		$("#columnview").fancytree({
-			extensions: ["columnview", "dnd"],
-			checkbox: true,
-			source: {
-				url: "ajax-tree-plain.json"
-			},
-			activate: function(event, data) {
-			},
-			lazyLoad: function(event, data) {
-				data.result = {url: "ajax-sub2.json"}
-			},
-			dnd: {
-				preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
-				preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
-				autoExpandMS: 400,
-				dragStart: function(node, data) {
-					return true;
-				},
-				dragEnter: function(node, data) {
-					// Prevent dropping a parent below another parent (only sort
-					// nodes under the same parent)
-/* 					if(node.parent !== data.otherNode.parent){
-						return false;
-					}
-					// Don't allow dropping *over* a node (would create a child)
-					return ["before", "after"];
-*/
-				   return true;
-				},
-				dragDrop: function(node, data) {
-					data.otherNode.moveTo(node, data.hitMode);
-				}
-			}
-		});
 		$(".draggable").draggable({
 			revert: true, //"invalid",
 			cursorAt: { top: -5, left: -5 },
 			connectToFancytree: true   // let Fancytree accept drag events
 		});
+
 		$(".droppable").droppable({
 			drop: function(event, ui){
 				var sourceNode = $(ui.helper).data("ftSourceNode");
 				alert("Dropped source node " + sourceNode);
 			}
 		});
-		// Adjust skinswitcher for current folder layout
-		// $("#skinswitcher")
-		// 	.skinswitcher("option", "base", "../../src/")
-		// 	.skinswitcher("addChoices", [
-		// 		{name: "Vista-less", value: "vista-less", href: "skin-vista/ui-fancytree.css"},
-		// 		{name: "Lion-less", value: "lion-less", href: "skin-lion/ui-fancytree.css"},
-		// 		{name: "Awesome", value: "awesome", href: "skin-awesome/ui-fancytree.css"},
-		// 		{name: "XP-less", value: "xp-less", href: "skin-xp/ui-fancytree.css"},
-		// 		{name: "Win7-less", value: "win7-less", href: "skin-win7/ui-fancytree.css"},
-		// 		{name: "Win8-less", value: "win8-less", href: "skin-win8/ui-fancytree.css"}
-		// 		])
-		// 	.skinswitcher("change", "win7-less");
-
 	});
 	</script>
 </head>
 <body class="example">
 	<h1>Example: extended drag'n'drop sample</h1>
 	<div class="description">
-		This sample features
+		This sample shows how to
 		<ul>
-		<li>drag'n'drop between different tree instances
-		<li>drag'n'drop between different tree types
-		<li>dragging multiple nodes
+		<li>implement drag'n'drop with multiple selected nodes
+		<li>allow modfier keys <kbd>Ctrl</kbd> or <kbd>Alt</kbd> to force copy
+		    instead of move operations
+		<li>
 		</ul>
+		<b>Note:</b> Due to <a href="http://bugs.jqueryui.com/ticket/14461">a draggable issue with modifier keys in jQuery UI 1.11</a>, this sample uses jQuery UI 1.10.
 	</div>
 	<p class="warning">
 		TODO: this is work in progress.
@@ -283,41 +173,6 @@
 	<p class="droppable">
 		Droppable.
 	</p>
-
-	<!-- Add a <table> element where the tree should appear: -->
-	<p class="description">
-		Table tree:
-	</p>
-	<table id="treetable">
-		<colgroup>
-		<col width="*"></col>
-		<col width="200px"></col>
-		<col width="100px"></col>
-		</colgroup>
-		<thead>
-			<tr> <th></th> <th>Key</th> <th>Folder</th> </tr>
-		</thead>
-		<tbody>
-		</tbody>
-	</table>
-
-	<!-- Add a <table> element where the tree should appear: -->
-	<p class="description">
-		Columnview tree:
-	</p>
-	<table id="columnview">
-		<colgroup>
-		<col width="300px"></col>
-		<col width="300px"></col>
-		<col width="300px"></col>
-		</colgroup>
-		<thead>
-			<tr> <th>1</th> <th>2</th> <th>3</th> </tr>
-		</thead>
-		<tbody>
-			<tr> <td>?</td> <td>?</td> <td>?</td> </tr>
-		</tbody>
-	</table>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
 	<hr>
