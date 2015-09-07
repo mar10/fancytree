@@ -1,8 +1,11 @@
 # 2.12.0 / Unreleased
   * [Changed] Documented `iconClass` callback and changed signature from 
     `iconClass(node)` to `iconClass(event, data)`
-  * [Improved] Add `highlight` and `fuzzy` options to ext-filter
-  * [Improved] Add `fireActivate` option to ext-persist (default: true)
+  * [Added] ext-dnd events `initHelper` and `updateHelper`
+  * [Added] #146 sample for multi-node drag'n'drop
+  * [Added] Sample for modifier keys to control copy/move behavior while dragging
+  * [Added] `highlight` and `fuzzy` options to ext-filter
+  * [Added] `fireActivate` option to ext-persist (default: true)
   * [Improved] clearFilter() performance #491
   * [Fixed] #475 Font color while editing node title with bootstrap skin
   * [Fixed] #484 Glyph plugin: Missing margin-left for span.fancytree-custom-icon
