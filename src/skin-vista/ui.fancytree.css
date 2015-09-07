@@ -334,13 +334,11 @@ span.fancytree-node.fancytree-error span.fancytree-title {
 /*------------------------------------------------------------------------------
  * Drag'n'drop support
  *----------------------------------------------------------------------------*/
-div.fancytree-drag-helper span.fancytree-childcounter {
+div.fancytree-drag-helper span.fancytree-childcounter,
+div.fancytree-drag-helper span.fancytree-dnd-modifier {
   color: #fff;
   background: #337ab7;
   border: 1px solid gray;
-  position: absolute;
-  top: -6px;
-  right: -6px;
   min-width: 10px;
   height: 10px;
   line-height: 1;
@@ -349,6 +347,16 @@ div.fancytree-drag-helper span.fancytree-childcounter {
   padding: 2px;
   text-align: center;
   font-size: 9px;
+}
+div.fancytree-drag-helper span.fancytree-childcounter {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+}
+div.fancytree-drag-helper span.fancytree-dnd-modifier {
+  background: #5cb85c;
+  border: none;
+  font-weight: bolder;
 }
 div.fancytree-drag-helper.fancytree-drop-accept span.fancytree-drag-helper-img {
   background-position: -32px -112px;

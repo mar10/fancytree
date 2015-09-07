@@ -30,8 +30,10 @@
 	}
 	/* Prevent scrolling while DND */
 	ul.fancytree-container {
+/*
 		height: 200px;
 		overflow: auto;
+*/
 /*		position: inherit;*/
 	}
 </style>
@@ -59,11 +61,11 @@
 				autoExpandMS: 400,
 				refreshPositions: true,
 				draggable: {
-					// appendTo: "body",  // We don't want to clip the helper inside container
+					appendTo: "body",  // We don't want to clip the helper inside container
 					// scroll: false,
-					containment: "parent",  // $("ul.fancytree-container"),
+					// containment: "parent",  // $("ul.fancytree-container"),
 					// cursorAt: { left: 5 },
-					revert: "invalid"
+					// revert: "invalid"
 					// revert: function(dropped) {
 					// 	return 
 					// }
@@ -73,71 +75,85 @@
 					return true;
 				},
 				dragEnter: function(node, data) {
-					// Prevent dropping a parent below another parent (only sort
-					// nodes under the same parent)
-/* 					if(node.parent !== data.otherNode.parent){
-						return false;
-					}
-					// Don't allow dropping *over* a node (would create a child)
-					return ["before", "after"];
-*/
 				   return true;
 				},
 				initHelper: function(node, data) {
 					// Helper was just created: modify markup
-					var //event = data.originalEvent,
-						count = data.tree.getSelectedNodes().length;
+					var helper = data.ui.helper,
+						sourceNodes = data.tree.getSelectedNodes();
 
-					if( !data.node.isSelected() ) {
-						count += 1;
+					// Store a list of active + all selected nodes
+					if( !node.isSelected() ) {
+						sourceNodes.unshift(node);
 					}
-					if( count > 1 ) {
-						data.ui.helper.append($("<span class='fancytree-childcounter'/>")
-							.text("+" + (count - 1)));
+					helper.data("sourceNodes", sourceNodes);
+					// Mark selected nodes also as drag source (active node is already)
+					$(".fancytree-active,.fancytree-selected", tree.$container)
+						.addClass("fancytree-drag-source");
+					// Add a counter badge to helper if dragging more than one node
+					if( sourceNodes.length > 1 ) {
+						helper.append($("<span class='fancytree-childcounter'/>")
+							.text("+" + (sourceNodes.length - 1)));
 					}
+					// Prepare an indicator for copy-mode
+					helper.prepend($("<span class='fancytree-dnd-modifier'/>")
+						.text("+").hide());
 				},
 				updateHelper: function(node, data) {
 					// Mouse was moved or key pressed: update helper according to modifiers
-					var event = data.originalEvent,
-						copy = event.ctrlKey || event.altKey;
 
 					// NOTE: pressing modifier keys stops dragging in jQueryUI 1.11
 					// http://bugs.jqueryui.com/ticket/14461
-					data.dropMarker.toggleClass("fancytree-drop-copy", copy);
-					$(node.span).toggleClass("fancytree-drag-remove", !copy);
-					// data.dropMarker.toggleClass("fancytree-drop-move", !copy);
+					var event = data.originalEvent,
+						tree = node.tree,
+						copyMode = event.ctrlKey || event.altKey;
+
+					// Adjust the drop marker icon
+//					data.dropMarker.toggleClass("fancytree-drop-copy", copyMode);
+					
+					// Show/hide the helper's copy indicator (+)
+					data.ui.helper.find(".fancytree-dnd-modifier").toggle(copyMode);
+					// tree.debug("1", $(".fancytree-active,.fancytree-selected", tree.$container).length)
+					// tree.debug("2", $(".fancytree-active,.fancytree-selected").length)
+					// Dim the source node(s) in move-mode
+					$(".fancytree-drag-source", tree.$container)
+						.toggleClass("fancytree-drag-remove", !copyMode);
+					// data.dropMarker.toggleClass("fancytree-drop-move", !copyMode);
 				},
 				dragDrop: function(node, data) {
-					var sourceTopNodes,
+					var sourceNodes = data.ui.helper.data("sourceNodes"),
 						event = data.originalEvent,
-						copy = event.ctrlKey || event.altKey;
+						copyMode = event.ctrlKey || event.altKey;
 
-					if( !data.otherNode ){
-						// It's a non-tree draggable: insert a dummy node
-						var title = $(data.draggable.element).text() + " (" + (count++) + ")";
-						node.addNode({title: title}, data.hitMode);
-						return;
-					}
-					sourceTopNodes = data.otherNode.tree.getSelectedNodes(true);
-					if( copy ) {
-						data.otherNode.copyTo(node, data.hitMode);
+					if( copyMode ) {
+						$.each(sourceNodes, function(i, o){
+							o.copyTo(node, data.hitMode, function(n){
+								delete n.key;
+								// n.selected = false;
+							});
+						});
 					}else{
-						data.otherNode.moveTo(node, data.hitMode);
+						$.each(sourceNodes, function(i, o){
+							o.moveTo(node, data.hitMode);
+						});
 					}
 				}
 			}
 		});
 
-		$(".draggable").draggable({
-			revert: true, //"invalid",
-			cursorAt: { top: -5, left: -5 },
-			connectToFancytree: true   // let Fancytree accept drag events
-		});
-
 		$(".droppable").droppable({
 			drop: function(event, ui){
-				var sourceNode = $(ui.helper).data("ftSourceNode");
-				alert("Dropped source node " + sourceNode);
+				var node = $(ui.helper).data("ftSourceNode"),
+					tree = node.tree,
+					copyMode = event.ctrlKey || event.altKey,
+					sourceNodes = ui.helper.data("sourceNodes");
+
+				if( !copyMode ) {
+					$.each(sourceNodes, function(i, o){
+						o.remove();
+					});
+				}
+				$(this).append((copyMode ? "Copied " : "Moved ") + sourceNodes.length + " nodes. ");
 			}
 		});
 	});
@@ -151,12 +167,11 @@
 		<li>implement drag'n'drop with multiple selected nodes
 		<li>allow modfier keys <kbd>Ctrl</kbd> or <kbd>Alt</kbd> to force copy
 		    instead of move operations
-		<li>
 		</ul>
 		<b>Note:</b> Due to <a href="http://bugs.jqueryui.com/ticket/14461">a draggable issue with modifier keys in jQuery UI 1.11</a>, this sample uses jQuery UI 1.10.
 	</div>
 	<p class="warning">
-		TODO: this is work in progress.
+		This is work in progress.
 	</p>
 	<div>
 		<label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
@@ -167,9 +182,6 @@
 	</p>
 	<div id="tree"></div>
 
-	<p class="draggable">
-		Draggable.
-	</p>
 	<p class="droppable">
 		Droppable.
 	</p>
