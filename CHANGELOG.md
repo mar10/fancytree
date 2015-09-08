@@ -7,6 +7,7 @@
   * [Added] `highlight` and `fuzzy` options to ext-filter
   * [Added] `fireActivate` option to ext-persist (default: true)
   * [Improved] clearFilter() performance #491
+  * [Improved] dnd registers global handlers to cancel on ESC and mousedown
   * [Fixed] #475 Font color while editing node title with bootstrap skin
   * [Fixed] #484 Glyph plugin: Missing margin-left for span.fancytree-custom-icon
   * [Fixed] #486 node.render(true) moves the node to the end of the list

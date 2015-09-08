@@ -287,23 +287,20 @@ $.ui.fancytree.registerExtension({
 		}
 		_initDragAndDrop(tree);
 	},
-	/* Override key handler in order to cancel dnd on escape.*/
-	nodeKeydown: function(ctx) {
-		var event = ctx.originalEvent;
-		if( event.which === $.ui.keyCode.ESCAPE) {
-			this._local._cancelDrag();
-		}
-		return this._superApply(arguments);
-	},
-	nodeClick: function(ctx) {
-		// if( ctx.options.dnd.dragStart ){
-		// 	ctx.tree.$container.focus();
-		// }
-		return this._superApply(arguments);
-	},
-	/* Add '+' icon and/or counter badge to helper, according to modifiers. */
-	_setHelperModifiers: function(helper) {
-	},
+	// /* Override key handler in order to cancel dnd on escape.*/
+	// nodeKeydown: function(ctx) {
+	// 	// var event = ctx.originalEvent;
+	// 	// if( event.which === $.ui.keyCode.ESCAPE) {
+	// 	// 	this._local._cancelDrag();
+	// 	// }
+	// 	return this._superApply(arguments);
+	// },
+	// nodeClick: function(ctx) {
+	// 	// if( ctx.options.dnd.dragStart ){
+	// 	// 	ctx.tree.$container.focus();
+	// 	// }
+	// 	return this._superApply(arguments);
+	// },
 	/* Display drop marker according to hitMode ('after', 'before', 'over', 'out', 'start', 'stop'). */
 	_setDndStatus: function(sourceNode, targetNode, helper, hitMode, accept) {
 		var markerOffsetX = 0,
@@ -428,6 +425,7 @@ $.ui.fancytree.registerExtension({
 			dnd = opts.dnd,
 			ctx = this._makeHookContext(node, event, {otherNode: otherNode, ui: ui, draggable: draggable}),
 			res = null,
+			that = this,
 			$nodeTag = $(node.span);
 
 		switch (eventName) {
@@ -447,6 +445,16 @@ $.ui.fancytree.registerExtension({
 					.hide();
 			} else {
 				$nodeTag.addClass("fancytree-drag-source");
+				// Register global handlers to allow cancel
+				$(document)
+					.on("keydown.fancytree-dnd,mousedown.fancytree-dnd", function(event){
+						node.tree.debug("dnd global event", event.type, event.which);
+						if( event.type === "keydown" && event.which === $.ui.keyCode.ESCAPE ) {
+							that.ext.dnd._cancelDrag();
+						} else if( event.type === "mousedown" ) {
+							that.ext.dnd._cancelDrag();
+						}
+					});
 			}
 			break;
 
@@ -558,6 +566,7 @@ $.ui.fancytree.registerExtension({
 
 		case "stop":
 			$nodeTag.removeClass("fancytree-drag-source");
+			$(document).off(".fancytree-dnd");
 			if(dnd.dragStop){
 				dnd.dragStop(node, ctx);
 			}
