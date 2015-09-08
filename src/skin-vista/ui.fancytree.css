@@ -337,6 +337,7 @@ span.fancytree-node.fancytree-error span.fancytree-title {
  *----------------------------------------------------------------------------*/
 div.fancytree-drag-helper span.fancytree-childcounter,
 div.fancytree-drag-helper span.fancytree-dnd-modifier {
+  display: inline-block;
   color: #fff;
   background: #337ab7;
   border: 1px solid gray;

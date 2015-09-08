@@ -2,6 +2,7 @@
   * [Changed] Documented `iconClass` callback and changed signature from 
     `iconClass(node)` to `iconClass(event, data)`
   * [Added] ext-dnd events `initHelper` and `updateHelper`
+  * [Added] ext-dnd option `smartRevert`
   * [Added] #146 sample for multi-node drag'n'drop
   * [Added] Sample for modifier keys to control copy/move behavior while dragging
   * [Added] `highlight` and `fuzzy` options to ext-filter

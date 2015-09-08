@@ -20,7 +20,13 @@
 /* *****************************************************************************
  * Private functions and variables
  */
-var didRegisterDnd = false;
+var didRegisterDnd = false,
+	classDropAccept = "fancytree-drop-accept",
+	classDropAfter = "fancytree-drop-after",
+	classDropBefore = "fancytree-drop-before",
+	classDropOver = "fancytree-drop-over",
+	classDropReject = "fancytree-drop-reject",
+	classDropTarget = "fancytree-drop-target";
 
 /* Convert number to string and prepend +/-; return empty string for 0.*/
 function offsetString(n){
@@ -211,9 +217,7 @@ function _registerDnd() {
 				draggable = $(this).data("ui-draggable") || $(this).data("draggable"),
 				sourceNode = ui.helper.data("ftSourceNode") || null,
 				targetNode = ui.helper.data("ftTargetNode") || null,
-//				mouseDownEvent = draggable._mouseDownEvent,
-				eventType = event.type,
-				dropped = (eventType === "mouseup" && event.which === 1);
+				dropped = (event.type === "mouseup" && event.which === 1);
 
 			if(!dropped){
 				logObject = sourceNode || targetNode || $.ui.fancytree;
@@ -251,6 +255,7 @@ $.ui.fancytree.registerExtension({
 		focusOnClick: false, // Focus, although draggable cancels mousedown event (#270)
 		preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
 		preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
+		smartRevert: true,   // set draggable.revert = true if drop was rejected
 		// Events (drag support)
 		dragStart: null,     // Callback(sourceNode, data), return true, to enable dnd
 		dragStop: null,      // Callback(sourceNode, data)
@@ -287,21 +292,7 @@ $.ui.fancytree.registerExtension({
 		}
 		_initDragAndDrop(tree);
 	},
-	// /* Override key handler in order to cancel dnd on escape.*/
-	// nodeKeydown: function(ctx) {
-	// 	// var event = ctx.originalEvent;
-	// 	// if( event.which === $.ui.keyCode.ESCAPE) {
-	// 	// 	this._local._cancelDrag();
-	// 	// }
-	// 	return this._superApply(arguments);
-	// },
-	// nodeClick: function(ctx) {
-	// 	// if( ctx.options.dnd.dragStart ){
-	// 	// 	ctx.tree.$container.focus();
-	// 	// }
-	// 	return this._superApply(arguments);
-	// },
-	/* Display drop marker according to hitMode ('after', 'before', 'over', 'out', 'start', 'stop'). */
+	/* Display drop marker according to hitMode ('after', 'before', 'over'). */
 	_setDndStatus: function(sourceNode, targetNode, helper, hitMode, accept) {
 		var markerOffsetX = 0,
 			markerAt = "center",
@@ -323,80 +314,46 @@ $.ui.fancytree.registerExtension({
 					.addClass(glyph.map.dropMarker);
 			}
 		}
-//      this.$dropMarker.attr("class", hitMode);
-		if(hitMode === "after" || hitMode === "before" || hitMode === "over"){
-//          $source && $source.addClass("fancytree-drag-source");
-
-//          $target.addClass("fancytree-drop-target");
-
+		if( hitMode === "after" || hitMode === "before" || hitMode === "over" ){
 			switch(hitMode){
 			case "before":
-				instData.$dropMarker.removeClass("fancytree-drop-after fancytree-drop-over")
-					.addClass("fancytree-drop-before");
 				markerAt = "top";
 				break;
 			case "after":
-				instData.$dropMarker.removeClass("fancytree-drop-before fancytree-drop-over")
-					.addClass("fancytree-drop-after");
 				markerAt = "bottom";
 				break;
 			default:
-				instData.$dropMarker.removeClass("fancytree-drop-after fancytree-drop-before")
-					.addClass("fancytree-drop-over");
-				$target.addClass("fancytree-drop-target");
 				markerOffsetX = 8;
 			}
 
 			instData.$dropMarker
+				.toggleClass(classDropAfter, hitMode === "after")
+				.toggleClass(classDropOver, hitMode === "over")
+				.toggleClass(classDropBefore, hitMode === "before")
 				.show()
 				.position($.ui.fancytree.fixPositionOptions({
 					my: "left" + offsetString(markerOffsetX) + " center",
 					at: "left " + markerAt,
 					of: $target
 					}));
-//          helper.addClass("fancytree-drop-hover");
 		} else {
-//          $source && $source.removeClass("fancytree-drag-source");
-			$target.removeClass("fancytree-drop-target");
 			instData.$dropMarker.hide();
-//          helper.removeClass("fancytree-drop-hover");
 		}
-		if(hitMode === "after"){
-			$target.addClass("fancytree-drop-after");
-		} else {
-			$target.removeClass("fancytree-drop-after");
+		if( $source ){
+			$source
+				.toggleClass(classDropAccept, accept === true)
+				.toggleClass(classDropReject, accept === false);
 		}
-		if(hitMode === "before"){
-			$target.addClass("fancytree-drop-before");
-		} else {
-			$target.removeClass("fancytree-drop-before");
-		}
-		if(accept === true){
-			if($source){
-				$source.addClass("fancytree-drop-accept");
-			}
-			$target.addClass("fancytree-drop-accept");
-			helper.addClass("fancytree-drop-accept");
-		}else{
-			if($source){
-				$source.removeClass("fancytree-drop-accept");
-			}
-			$target.removeClass("fancytree-drop-accept");
-			helper.removeClass("fancytree-drop-accept");
-		}
-		if(accept === false){
-			if($source){
-				$source.addClass("fancytree-drop-reject");
-			}
-			$target.addClass("fancytree-drop-reject");
-			helper.addClass("fancytree-drop-reject");
-		}else{
-			if($source){
-				$source.removeClass("fancytree-drop-reject");
-			}
-			$target.removeClass("fancytree-drop-reject");
-			helper.removeClass("fancytree-drop-reject");
-		}
+		$target
+			.toggleClass(classDropTarget, hitMode === "after" || hitMode === "before" || hitMode === "over")
+			.toggleClass(classDropAfter, hitMode === "after")
+			.toggleClass(classDropBefore, hitMode === "before")
+			.toggleClass(classDropAccept, accept === true)
+			.toggleClass(classDropReject, accept === false);
+
+		helper
+			.toggleClass(classDropAccept, accept === true)
+			.toggleClass(classDropReject, accept === false);
 	},
 
 	/*
@@ -419,7 +376,7 @@ $.ui.fancytree.registerExtension({
 		if(eventName !== "over"){
 			this.debug("tree.ext.dnd._onDragEvent(%s, %o, %o) - %o", eventName, node, otherNode, this);
 		}
-		var nodeOfs, relPos, relPos2,
+		var accept, nodeOfs, relPos, relPos2,
 			enterResponse, hitMode, r,
 			opts = this.options,
 			dnd = opts.dnd,
@@ -427,6 +384,10 @@ $.ui.fancytree.registerExtension({
 			res = null,
 			that = this,
 			$nodeTag = $(node.span);
+
+		if( dnd.smartRevert ) {
+			draggable.options.revert = "invalid";
+		}
 
 		switch (eventName) {
 
@@ -448,7 +409,7 @@ $.ui.fancytree.registerExtension({
 				// Register global handlers to allow cancel
 				$(document)
 					.on("keydown.fancytree-dnd,mousedown.fancytree-dnd", function(event){
-						node.tree.debug("dnd global event", event.type, event.which);
+						// node.tree.debug("dnd global event", event.type, event.which);
 						if( event.type === "keydown" && event.which === $.ui.keyCode.ESCAPE ) {
 							that.ext.dnd._cancelDrag();
 						} else if( event.type === "mousedown" ) {
@@ -542,7 +503,11 @@ $.ui.fancytree.registerExtension({
 				ctx.hitMode = hitMode;
 				res = dnd.dragOver(node, ctx);
 			}
-			this._local._setDndStatus(otherNode, node, ui.helper, hitMode, res!==false && hitMode !== null);
+			accept = (res !== false && hitMode !== null);
+			if( dnd.smartRevert ) {
+				draggable.options.revert = !accept;
+			}
+			this._local._setDndStatus(otherNode, node, ui.helper, hitMode, accept);
 			break;
 
 		case "drop":
