@@ -1769,21 +1769,24 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
  *
  * @param {Widget} widget
  *
- * @property {FancytreeOptions} options
- * @property {FancytreeNode} rootNode
- * @property {FancytreeNode} activeNode
- * @property {FancytreeNode} focusNode
- * @property {jQueryObject} $div
- * @property {object} widget
- * @property {object} ext
- * @property {object} data
- * @property {object} options
- * @property {string} _id
- * @property {string} statusClassPropName
- * @property {string} ariaPropName
- * @property {string} nodeContainerAttrName
- * @property {string} $container
- * @property {FancytreeNode} lastSelectedNode
+ * @property {string} _id Automatically generated unique tree instance ID, e.g. "1".
+ * @property {string} _ns Automatically generated unique tree namespace, e.g. ".fancytree-1".
+ * @property {FancytreeNode} activeNode Currently active node or null.
+ * @property {string} ariaPropName Property name of FancytreeNode that contains the element which will receive the aria attributes.
+ *     Typically "li", but "tr" for table extension.
+ * @property {jQueryObject} $container Outer &lt;ul> element (or &lt;table> element for ext-table).
+ * @property {jQueryObject} $div A jQuery object containing the element used to instantiate the tree widget (`widget.element`)
+ * @property {object} data Metadata, i.e. properties that may be passed to `source` in addition to a children array.
+ * @property {object} ext Hash of all active plugin instances.
+ * @property {FancytreeNode} focusNode Currently focused node or null.
+ * @property {FancytreeNode} lastSelectedNode Used to implement selectMode 1 (single select)
+ * @property {string} nodeContainerAttrName Property name of FancytreeNode that contains the outer element of single nodes.
+ *     Typically "li", but "tr" for table extension.
+ * @property {FancytreeOptions} options Current options, i.e. default options + options passed to constructor.
+ * @property {FancytreeNode} rootNode Invisible system root node.
+ * @property {string} statusClassPropName Property name of FancytreeNode that contains the element which will receive the status classes.
+ *     Typically "span", but "tr" for table extension.
+ * @property {object} widget Base widget instance.
  */
 function Fancytree(widget) {
 	this.widget = widget;
@@ -1806,7 +1809,9 @@ function Fancytree(widget) {
 	this.ext = {}; // Active extension instances
 	// allow to init tree.data.foo from <div data-foo=''>
 	this.data = _getElementDataAsDict(this.$div);
+	// TODO: use widget.uuid instead?
 	this._id = $.ui.fancytree._nextId++;
+	// TODO: use widget.eventNamespace instead?
 	this._ns = ".fancytree-" + this._id; // append for namespaced events
 	this.activeNode = null;
 	this.focusNode = null;
