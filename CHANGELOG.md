@@ -7,6 +7,7 @@
   * [Added] Sample for modifier keys to control copy/move behavior while dragging
   * [Added] `highlight` and `fuzzy` options to ext-filter
   * [Added] `fireActivate` option to ext-persist (default: true)
+  * [Added] #496 new methods tree.findFirst() / .findAll()
   * [Improved] clearFilter() performance #491
   * [Improved] dnd registers global handlers to cancel on ESC and mousedown
   * [Fixed] #475 Font color while editing node title with bootstrap skin

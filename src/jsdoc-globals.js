@@ -64,7 +64,11 @@ var EventData = {};
  * @property {Boolean} focus (Initialization only, but will not be stored  with the node.)
  * @property {Boolean} folder Folders have different default icons and honor the `clickFolderMode` option.
  * @property {Boolean} hideCheckbox Remove checkbox for this node.
- * @property {String} iconclass Class names added to the node icon markup to allow custom icons or glyphs (separate with space, e.g. "ui-icon ui-icon-heart").
+ * @property {Boolean|String} icon Boolean value overrides the tree option of the same name. 
+ *     A string value is used as `src` attribute for a &lt;img> tag.
+ * @property {String} iconclass Class names added to the node icon markup to allow 
+ *     custom icons or glyphs (separate with space, e.g. "ui-icon ui-icon-heart").
+ *     If specified, an additonal `fancytree-custom-icon` class is added instead of `fancytree-icon`.
  * @property {String} key Unique key for this node (auto-generated if omitted)
  * @property {Boolean} lazy Lazy folders call the `lazyLoad` on first expand to load their children.
  * @property {String} refKey (Reserved, used by 'clones' extension.)

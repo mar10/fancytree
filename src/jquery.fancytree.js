@@ -550,13 +550,14 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		this.warn("FancytreeNode.discard() is deprecated since 2014-02-16. Use .resetLazy() instead.");
 		return this.resetLazy();
 	},
+
 	// TODO: expand(flag)
-	/**Find all nodes that contain `match` in the title.
+
+	/**Find all nodes that match condition (excluding self).
 	 *
-	 * @param {string | function(node)} match string to search for, of a function that
-	 * returns `true` if a node is matched.
+	 * @param {string | function(node)} match title string to search for, or a 
+	 *     callback function that returns `true` if a node is matched.
 	 * @returns {FancytreeNode[]} array of nodes (may be empty)
-	 * @see FancytreeNode#findAll
 	 */
 	findAll: function(match) {
 		match = $.isFunction(match) ? match : _makeNodeTitleMatcher(match);
@@ -568,13 +569,12 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		});
 		return res;
 	},
-	/**Find first node that contains `match` in the title (not including self).
+	/**Find first node that matches condition (excluding self).
 	 *
-	 * @param {string | function(node)} match string to search for, of a function that
-	 * returns `true` if a node is matched.
+	 * @param {string | function(node)} match title string to search for, or a 
+	 *     callback function that returns `true` if a node is matched.
 	 * @returns {FancytreeNode} matching node or null
-	 * @example
-	 * <b>fat</b> text
+	 * @see FancytreeNode#findAll
 	 */
 	findFirst: function(match) {
 		match = $.isFunction(match) ? match : _makeNodeTitleMatcher(match);
@@ -2011,6 +2011,26 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	// TODO: enable()
 	// TODO: enableUpdate()
 
+	/**Find all nodes that matches condition.
+	 *
+	 * @param {string | function(node)} match title string to search for, or a 
+	 *     callback function that returns `true` if a node is matched.
+	 * @returns {FancytreeNode[]} array of nodes (may be empty)
+	 * @see FancytreeNode#findAll
+	 */
+	findAll: function(match) {
+		return this.rootNode.findAll(match);
+	},
+	/**Find first node that matches condition.
+	 *
+	 * @param {string | function(node)} match title string to search for, or a 
+	 *     callback function that returns `true` if a node is matched.
+	 * @returns {FancytreeNode} matching node or null
+	 * @see FancytreeNode#findFirst
+	 */
+	findFirst: function(match) {
+		return this.rootNode.findFirst(match);
+	},
 	/** Find the next visible node that starts with `match`, starting at `startNode`
 	 * and wrap-around at the end.
 	 *
