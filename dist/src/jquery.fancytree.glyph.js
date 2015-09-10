@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.11.0
- * @date 2015-07-26T10:22
+ * @version 2.12.0
+ * @date 2015-09-10T20:06
  */
 
 ;(function($, window, document, undefined) {
@@ -27,7 +27,7 @@ function _getIcon(opts, type){
 
 $.ui.fancytree.registerExtension({
 	name: "glyph",
-	version: "0.2.0",
+	version: "0.3.0",
 	// Default options for this extension.
 	options: {
 		map: {
@@ -47,7 +47,7 @@ $.ui.fancytree.registerExtension({
 			dragHelper: "icon-caret-right",
 			dropMarker: "icon-caret-right",
 			// Default node icons.
-			// (Use tree.options.iconClass(node) callback to define custom icons
+			// (Use tree.options.iconClass callback to define custom icons
 			// based on node data)
 			doc: "icon-file-alt",
 			docOpen: "icon-file-alt",

@@ -84,9 +84,10 @@ span.fancytree-radio,
 span.fancytree-custom-icon {
   margin-top: 0px;
 }
-/* Used by iconclass option */
+/* Used by iconclass option and iconClass callback: */
 span.fancytree-custom-icon {
   display: inline-block;
+  margin-left: 0.5em;
 }
 /* Used by 'icon' node option: */
 img.fancytree-icon {
@@ -183,8 +184,30 @@ span.fancytree-node.fancytree-error span.fancytree-title {
 /*------------------------------------------------------------------------------
  * Drag'n'drop support
  *----------------------------------------------------------------------------*/
-div.fancytree-drag-helper.fancytree-drop-reject {
-  border-color: #ff0000;
+div.fancytree-drag-helper span.fancytree-childcounter,
+div.fancytree-drag-helper span.fancytree-dnd-modifier {
+  display: inline-block;
+  color: #fff;
+  background: #337ab7;
+  border: 1px solid gray;
+  min-width: 10px;
+  height: 10px;
+  line-height: 1;
+  vertical-align: baseline;
+  border-radius: 10px;
+  padding: 2px;
+  text-align: center;
+  font-size: 9px;
+}
+div.fancytree-drag-helper span.fancytree-childcounter {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+}
+div.fancytree-drag-helper span.fancytree-dnd-modifier {
+  background: #5cb85c;
+  border: none;
+  font-weight: bolder;
 }
 /*** Drop marker icon *********************************************************/
 #fancytree-drop-marker {
@@ -197,11 +220,8 @@ div.fancytree-drag-helper.fancytree-drop-reject {
   width: 4em;
 }
 /*** Source node while dragging ***********************************************/
-span.fancytree-drag-source {
-  background-color: #e0e0e0;
-}
-span.fancytree-drag-source span.fancytree.title {
-  color: gray;
+span.fancytree-drag-source.fancytree-drag-remove {
+  opacity: 0.15;
 }
 /*** Target node while dragging cursor is over it *****************************/
 /*------------------------------------------------------------------------------
@@ -288,7 +308,7 @@ table.fancytree-ext-columnview .fancytree-has-children span.fancytree-cv-right {
 }
 .fancytree-ext-filter span.fancytree-childcounter {
   color: #fff;
-  background: #428BCA;
+  background: #777;
   border: 1px solid gray;
   position: absolute;
   top: -6px;

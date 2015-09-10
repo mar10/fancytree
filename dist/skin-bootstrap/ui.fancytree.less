@@ -30,11 +30,11 @@
 @gray-light:             lighten(@gray-base, 46.7%); // #777
 @gray-lighter:           lighten(@gray-base, 93.5%); // #eee
 
-@brand-primary:         darken(#428bca, 6.5%); // #337ab7
-@brand-success:         #5cb85c;
-@brand-info:            #5bc0de;
-@brand-warning:         #f0ad4e;
-@brand-danger:          #d9534f;
+@brand-primary:         darken(#428bca, 6.5%); // blue,  #337ab7
+@brand-success:         #5cb85c;  // green
+@brand-info:            #5bc0de;  // light blue
+@brand-warning:         #f0ad4e;  // orange
+@brand-danger:          #d9534f;  // red
 
 @font-family-sans-serif:  "Helvetica Neue", Helvetica, Arial, sans-serif;
 @font-family-serif:       Georgia, "Times New Roman", Times, serif;
@@ -106,6 +106,12 @@ ul.fancytree-container ul {
 /* Prevent focus frame */
 .fancytree-container:focus {
 	outline: none; 
+}
+
+// Active and (optionally) selected nodes are white on colored bg. Undo this for input controls:
+.fancytree-container .fancytree-active span.fancytree-title input,
+.fancytree-container.fancytree-colorize-selected .fancytree-selected span.fancytree-title input  {
+  color: black;
 }
 
 // ------------------------------------------------------------------------------
@@ -180,9 +186,6 @@ span.fancytree-node.fancytree-drop-target {
 	}
 }
 
-
-
-
 // Inactive tree:
 .fancytree-plain {
 	&.fancytree-colorize-selected {
@@ -234,7 +237,7 @@ span.fancytree-node.fancytree-drop-target {
 		span.fancytree-node.fancytree-active:hover span.fancytree-title {
 			background-color: lighten(@fancy-active-color, 5%);
 		}
-		span.fancytree-node.fancytree-active {
+		&.fancytree-ext-wide span.fancytree-node.fancytree-active { // in wide mode, icons of active nodes must be white-on-color
 			color: @fancy-active-text;
 		}
 

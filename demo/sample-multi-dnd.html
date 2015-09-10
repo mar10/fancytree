@@ -50,13 +50,13 @@
 					// prevent mouse-drags to select text ranges
 					// tree.debug("<span title> got event " + event.type);
 					event.preventDefault();
- 		TODO: disable auto-scroll by default: 
-          seems to have problems to calculate helper position, 
-          --> see here http://api.jqueryui.com/draggable/#event-drag
-              for a possible fix?
-          and enabling scrolling would always require custom changes, like 
-          setting the container height?
-  		TODO: Revert always flies to top-left corner of container
+		TODO: disable auto-scroll by default:
+		  seems to have problems to calculate helper position,
+		  --> see here http://api.jqueryui.com/draggable/#event-drag
+			  for a possible fix?
+		  and enabling scrolling would always require custom changes, like
+		  setting the container height?
+		TODO: Revert always flies to top-left corner of container
 		*/
 		// Attach the fancytree widget to an existing <div id="tree"> element
 		// and pass the tree options as an argument to the fancytree() function:
@@ -85,7 +85,7 @@
 					// cursorAt: { left: 5 },
 					revert: "invalid"
 					// revert: function(dropped) {
-					// 	return 
+					// 	return
 					// }
 				},
 				dragStart: function(node, data) {
@@ -128,7 +128,7 @@
 
 					// Adjust the drop marker icon
 //					data.dropMarker.toggleClass("fancytree-drop-copy", copyMode);
-					
+
 					// Show/hide the helper's copy indicator (+)
 					data.ui.helper.find(".fancytree-dnd-modifier").toggle(copyMode);
 					// tree.debug("1", $(".fancytree-active,.fancytree-selected", tree.$container).length)
@@ -185,7 +185,7 @@
 		<ul>
 		<li>implement drag'n'drop with multiple selected nodes
 		<li>allow modfier keys <kbd>Ctrl</kbd> or <kbd>Alt</kbd> to force copy
-		    instead of move operations
+			instead of move operations
 		</ul>
 		<b>Note:</b> Due to <a href="http://bugs.jqueryui.com/ticket/14461">a draggable issue with modifier keys in jQuery UI 1.11</a>, this sample uses jQuery UI 1.10.
 	</div>

@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.11.0
- * @date 2015-07-26T10:22
+ * @version 2.12.0
+ * @date 2015-09-10T20:06
  */
 
 ;(function($, window, document, undefined) {
@@ -28,19 +28,40 @@ function _escapeRegex(str){
 }
 
 $.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, branchMode, opts){
-	var leavesOnly, match, re,
+	var leavesOnly, match, re, re2,
 		count = 0,
-		hideMode = this.options.filter.mode === "hide";
+		filterOpts = this.options.filter,
+		hideMode = filterOpts.mode === "hide";
 
 	opts = opts || {};
 	leavesOnly = !!opts.leavesOnly && !branchMode;
 
 	// Default to 'match title substring (not case sensitive)'
 	if(typeof filter === "string"){
-		match = _escapeRegex(filter); // make sure a '.' is treated literally
+		// console.log("rex", filter.split('').join('\\w*').replace(/\W/, ""))
+		if( filterOpts.fuzzy ) {
+			// See https://codereview.stackexchange.com/questions/23899/faster-javascript-fuzzy-string-matching-function/23905#23905
+			// and http://www.quora.com/How-is-the-fuzzy-search-algorithm-in-Sublime-Text-designed
+			// and http://www.dustindiaz.com/autocomplete-fuzzy-matching
+			match = filter.split("").reduce(function(a, b) {
+				return a + "[^" + b + "]*" + b;
+			});
+		} else {
+			match = _escapeRegex(filter); // make sure a '.' is treated literally
+		}
 		re = new RegExp(".*" + match + ".*", "i");
+		re2 = new RegExp(filter, "gi");
 		filter = function(node){
-			return !!re.exec(node.title);
+			var res = !!re.test(node.title);
+			// node.debug("filter res", res, filterOpts.highlight)
+			if( res && filterOpts.highlight ) {
+				node.titleWithHighlight = node.title.replace(re2, function(s){
+					return "<mark>" + s + "</mark>";
+				});
+			// } else {
+			// 	delete node.titleWithHighlight;
+			}
+			return res;
 		};
 	}
 
@@ -56,9 +77,10 @@ $.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, bra
 	// Reset current filter
 	this.visit(function(node){
 		delete node.match;
+		delete node.titleWithHighlight;
 		node.subMatchCount = 0;
 	});
-	// Adjust node.hide, .match, .subMatch flags
+	// Adjust node.hide, .match, and .subMatchCount properties
 	this.visit(function(node){
 		if ((!leavesOnly || node.children == null) && filter(node)) {
 			count++;
@@ -130,8 +152,12 @@ $.ui.fancytree._FancytreeClass.prototype.filterBranches = function(filter, opts)
  */
 $.ui.fancytree._FancytreeClass.prototype.clearFilter = function(){
 	this.visit(function(node){
+		if( node.match ) {  // #491
+			$(">span.fancytree-title", node.span).html(node.title);
+		}
 		delete node.match;
 		delete node.subMatchCount;
+		delete node.titleWithHighlight;
 		if ( node.$subMatchBadge ) {
 			node.$subMatchBadge.remove();
 			delete node.$subMatchBadge;
@@ -153,14 +179,27 @@ $.ui.fancytree._FancytreeClass.prototype.clearFilter = function(){
  */
 $.ui.fancytree.registerExtension({
 	name: "filter",
-	version: "0.5.0",
+	version: "0.6.0",
 	// Default options for this extension.
 	options: {
-		autoApply: true, // Re-apply last filter if lazy data is loaded
-		counter: true, // Show a badge with number of matching child nodes near parent icons
-		hideExpandedCounter: true, // Hide counter badge, when parent is expanded
+		autoApply: true,  // Re-apply last filter if lazy data is loaded
+		counter: true,  // Show a badge with number of matching child nodes near parent icons
+		fuzzy: false,  // Match single characters in order, e.g. 'fb' will match 'FooBar'
+		hideExpandedCounter: true,  // Hide counter badge, when parent is expanded
+		highlight: true,  // Highlight matches by wrapping inside <mark> tags
 		mode: "dimm"  // Grayout unmatched nodes (pass "hide" to remove unmatched node instead)
 	},
+	// treeCreate: function(ctx){
+	// 	this._superApply(arguments);
+	// 	console.log("create")
+	// 	ctx.tree.options.renderTitle = function(event, data) {
+	// 		var node = data.node;
+	// 		console.log("create n", node.titleWithHighlight, data.tree.enableFilter)
+	// 		if( node.titleWithHighlight && node.tree.enableFilter ) {
+	// 			return node.titleWithHighlight;
+	// 		}
+	// 	}
+	// },
 	// treeInit: function(ctx){
 	// 	this._superApply(arguments);
 	// },
@@ -205,6 +244,12 @@ $.ui.fancytree.registerExtension({
 			node.$subMatchBadge.show().text(node.subMatchCount);
 		} else if ( node.$subMatchBadge ) {
 			node.$subMatchBadge.hide();
+		}
+		// node.debug("nodeRenderStatus", node.titleWithHighlight, node.title)
+		if( node.titleWithHighlight ) {
+			$("span.fancytree-title", node.span).html(node.titleWithHighlight);
+		} else {
+			$("span.fancytree-title", node.span).html(node.title);
 		}
 		return res;
 	}

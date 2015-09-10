@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.11.0
- * @date 2015-07-26T10:22
+ * @version 2.12.0
+ * @date 2015-09-10T20:06
  */
 
 ;(function($, window, document, undefined) {
@@ -116,12 +116,15 @@ $.ui.fancytree.registerExtension({
 		tree.ariaPropName = "tr";
 		this.nodeContainerAttrName = "tr";
 
+		// #489: make sure $container is set to <table>, even if ext-dnd is listed before ext-table
+		tree.$container = $table;
+
 		this._superApply(arguments);
 
 		// standard Fancytree created a root UL
 		$(tree.rootNode.ul).remove();
 		tree.rootNode.ul = null;
-		tree.$container = $table;
+//		tree.$container = $table;
 		// Add container to the TAB chain
 		this.$container.attr("tabindex", this.options.tabbable ? "0" : "-1");
 		if(this.options.aria){

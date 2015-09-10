@@ -11,8 +11,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.11.0
- * @date 2015-07-26T10:22
+ * @version 2.12.0
+ * @date 2015-09-10T20:06
  */
 
 ;(function($, window, document, undefined) {
@@ -164,6 +164,7 @@ $.ui.fancytree.registerExtension({
 			secure: false
 		},
 		expandLazy: false,     // true: recursively expand and load lazy nodes
+		fireActivate: true,    // false: suppress `activate` event after active node was restored
 		overrideSource: true,  // true: cookie takes precedence over `source` data attributes.
 		store: "auto",         // 'cookie': force cookie, 'local': force localStore, 'session': force sessionStore
 		types: "active expanded focus selected"
@@ -234,7 +235,8 @@ $.ui.fancytree.registerExtension({
 		// Bind init-handler to apply cookie state
 		tree.$div.bind("fancytreeinit", function(event){
 			var cookie, dfd, i, keyList, node,
-				prevFocus = local._data(local.cookiePrefix + FOCUS); // record this before node.setActive() overrides it;
+				prevFocus = local._data(local.cookiePrefix + FOCUS), // record this before node.setActive() overrides it;
+				noEvents = instOpts.fireActivate === false;
 
 			// tree.debug("document.cookie:", document.cookie);
 
@@ -288,7 +290,10 @@ $.ui.fancytree.registerExtension({
 							node.debug("persist: set active", cookie);
 							// We only want to set the focus if the container
 							// had the keyboard focus before
-							node.setActive(true, {noFocus: true});
+							node.setActive(true, {
+								noFocus: true,
+								noEvents: noEvents
+							});
 						}
 					}
 				}

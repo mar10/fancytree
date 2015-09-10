@@ -7,8 +7,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.11.0
- * @date 2015-07-26T10:22
+ * @version 2.12.0
+ * @date 2015-09-10T20:06
  */
 
 /** Core Fancytree module.
@@ -550,13 +550,14 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		this.warn("FancytreeNode.discard() is deprecated since 2014-02-16. Use .resetLazy() instead.");
 		return this.resetLazy();
 	},
+
 	// TODO: expand(flag)
-	/**Find all nodes that contain `match` in the title.
+
+	/**Find all nodes that match condition (excluding self).
 	 *
-	 * @param {string | function(node)} match string to search for, of a function that
-	 * returns `true` if a node is matched.
+	 * @param {string | function(node)} match title string to search for, or a
+	 *     callback function that returns `true` if a node is matched.
 	 * @returns {FancytreeNode[]} array of nodes (may be empty)
-	 * @see FancytreeNode#findAll
 	 */
 	findAll: function(match) {
 		match = $.isFunction(match) ? match : _makeNodeTitleMatcher(match);
@@ -568,13 +569,12 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		});
 		return res;
 	},
-	/**Find first node that contains `match` in the title (not including self).
+	/**Find first node that matches condition (excluding self).
 	 *
-	 * @param {string | function(node)} match string to search for, of a function that
-	 * returns `true` if a node is matched.
+	 * @param {string | function(node)} match title string to search for, or a
+	 *     callback function that returns `true` if a node is matched.
 	 * @returns {FancytreeNode} matching node or null
-	 * @example
-	 * <b>fat</b> text
+	 * @see FancytreeNode#findAll
 	 */
 	findFirst: function(match) {
 		match = $.isFunction(match) ? match : _makeNodeTitleMatcher(match);
@@ -1370,6 +1370,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		return this.tree._callHook("nodeRender", this, force, deep);
 	},
 	/** Create HTML markup for the node's outer &lt;span> (expander, checkbox, icon, and title).
+	 * Implies {@link FancytreeNode#renderStatus}.
 	 * @see Fancytree_Hooks#nodeRenderTitle
 	 */
 	renderTitle: function() {
@@ -1768,21 +1769,24 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
  *
  * @param {Widget} widget
  *
- * @property {FancytreeOptions} options
- * @property {FancytreeNode} rootNode
- * @property {FancytreeNode} activeNode
- * @property {FancytreeNode} focusNode
- * @property {jQueryObject} $div
- * @property {object} widget
- * @property {object} ext
- * @property {object} data
- * @property {object} options
- * @property {string} _id
- * @property {string} statusClassPropName
- * @property {string} ariaPropName
- * @property {string} nodeContainerAttrName
- * @property {string} $container
- * @property {FancytreeNode} lastSelectedNode
+ * @property {string} _id Automatically generated unique tree instance ID, e.g. "1".
+ * @property {string} _ns Automatically generated unique tree namespace, e.g. ".fancytree-1".
+ * @property {FancytreeNode} activeNode Currently active node or null.
+ * @property {string} ariaPropName Property name of FancytreeNode that contains the element which will receive the aria attributes.
+ *     Typically "li", but "tr" for table extension.
+ * @property {jQueryObject} $container Outer &lt;ul> element (or &lt;table> element for ext-table).
+ * @property {jQueryObject} $div A jQuery object containing the element used to instantiate the tree widget (`widget.element`)
+ * @property {object} data Metadata, i.e. properties that may be passed to `source` in addition to a children array.
+ * @property {object} ext Hash of all active plugin instances.
+ * @property {FancytreeNode} focusNode Currently focused node or null.
+ * @property {FancytreeNode} lastSelectedNode Used to implement selectMode 1 (single select)
+ * @property {string} nodeContainerAttrName Property name of FancytreeNode that contains the outer element of single nodes.
+ *     Typically "li", but "tr" for table extension.
+ * @property {FancytreeOptions} options Current options, i.e. default options + options passed to constructor.
+ * @property {FancytreeNode} rootNode Invisible system root node.
+ * @property {string} statusClassPropName Property name of FancytreeNode that contains the element which will receive the status classes.
+ *     Typically "span", but "tr" for table extension.
+ * @property {object} widget Base widget instance.
  */
 function Fancytree(widget) {
 	this.widget = widget;
@@ -1805,7 +1809,9 @@ function Fancytree(widget) {
 	this.ext = {}; // Active extension instances
 	// allow to init tree.data.foo from <div data-foo=''>
 	this.data = _getElementDataAsDict(this.$div);
+	// TODO: use widget.uuid instead?
 	this._id = $.ui.fancytree._nextId++;
+	// TODO: use widget.eventNamespace instead?
 	this._ns = ".fancytree-" + this._id; // append for namespaced events
 	this.activeNode = null;
 	this.focusNode = null;
@@ -2010,6 +2016,26 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	// TODO: enable()
 	// TODO: enableUpdate()
 
+	/**Find all nodes that matches condition.
+	 *
+	 * @param {string | function(node)} match title string to search for, or a
+	 *     callback function that returns `true` if a node is matched.
+	 * @returns {FancytreeNode[]} array of nodes (may be empty)
+	 * @see FancytreeNode#findAll
+	 */
+	findAll: function(match) {
+		return this.rootNode.findAll(match);
+	},
+	/**Find first node that matches condition.
+	 *
+	 * @param {string | function(node)} match title string to search for, or a
+	 *     callback function that returns `true` if a node is matched.
+	 * @returns {FancytreeNode} matching node or null
+	 * @see FancytreeNode#findFirst
+	 */
+	findFirst: function(match) {
+		return this.rootNode.findFirst(match);
+	},
 	/** Find the next visible node that starts with `match`, starting at `startNode`
 	 * and wrap-around at the end.
 	 *
@@ -2437,6 +2463,16 @@ $.extend(Fancytree.prototype,
 		// TODO: use switch
 		// TODO: make sure clicks on embedded <input> doesn't steal focus (see table sample)
 		if( targetType === "expander" ) {
+			if( node.isLoading() ) {
+				// #495: we probably got a click event while a lazy load is pending.
+				// The 'expanded' state is not yet set, so 'toggle' would expand
+				// and trigger lazyLoad again.
+				// It would be better to allow to collapse/expand the status node
+				// while loading (instead of ignoring), but that would require some
+				// more work.
+				node.debug("Got 2nd click while loading: ignored");
+				return;
+			}
 			// Clicking the expander icon always expands/collapses
 			this._callHook("nodeToggleExpanded", ctx);
 
@@ -2911,7 +2947,8 @@ $.extend(Fancytree.prototype,
 			firstTime = false,
 			parent = node.parent,
 			isRootNode = !parent,
-			children = node.children;
+			children = node.children,
+			successorLi = null;
 		// FT.debug("nodeRender(" + !!force + ", " + !!deep + ")", node.toString());
 
 		if( ! isRootNode && ! parent.ul ) {
@@ -2924,7 +2961,10 @@ $.extend(Fancytree.prototype,
 		if( !isRootNode ){
 			// Discard markup on force-mode, or if it is not linked to parent <ul>
 			if(node.li && (force || (node.li.parentNode !== node.parent.ul) ) ){
-				if(node.li.parentNode !== node.parent.ul){
+				if( node.li.parentNode === node.parent.ul ){
+					// #486: store following node, so we can insert the new markup there later
+					successorLi = node.li.nextSibling;
+				}else{
 					// May happen, when a top-level node was dropped over another
 					this.debug("Unlinking " + node + " (must be child of " + node.parent + ")");
 				}
@@ -3033,8 +3073,12 @@ $.extend(Fancytree.prototype,
 			// Update element classes according to node state
 			// this.nodeRenderStatus(ctx);
 			// Finally add the whole structure to the DOM, so the browser can render
-			if(firstTime){
-				parent.ul.appendChild(node.li);
+			if( firstTime ){
+				// #486: successorLi is set, if we re-rendered (i.e. discarded)
+				// existing markup, which  we want to insert at the same position.
+				// (null is equivalent to append)
+//				parent.ul.appendChild(node.li);
+				parent.ul.insertBefore(node.li, successorLi);
 			}
 		}
 	},
@@ -3102,8 +3146,8 @@ $.extend(Fancytree.prototype,
 				iconSrc = (iconSrc.charAt(0) === "/") ? iconSrc : ((opts.imagePath || "") + iconSrc);
 				ares.push("<img src='" + iconSrc + "' class='fancytree-icon' alt='' />");
 			} else {
-				// See if node.iconClass or opts.iconClass() define a class name
-				iconSpanClass = (opts.iconClass && opts.iconClass.call(tree, node, ctx)) || node.data.iconclass || null;
+				// See if node.iconclass or opts.iconClass() define a class name
+				iconSpanClass = (opts.iconClass && opts.iconClass.call(tree, {type: "iconClass"}, ctx)) || node.data.iconclass || null;
 				if( iconSpanClass ) {
 					ares.push("<span " + role + " class='fancytree-custom-icon " + iconSpanClass +  "'></span>");
 				} else {
@@ -4079,7 +4123,7 @@ $.extend($.ui.fancytree,
 	/** @lends Fancytree_Static# */
 	{
 	/** @type {string} */
-	version: "2.11.0",      // Set to semver by 'grunt release'
+	version: "2.12.0",      // Set to semver by 'grunt release'
 	/** @type {string} */
 	buildType: "production", // Set to 'production' by 'grunt build'
 	/** @type {int} */

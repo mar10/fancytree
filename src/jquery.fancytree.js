@@ -555,7 +555,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 
 	/**Find all nodes that match condition (excluding self).
 	 *
-	 * @param {string | function(node)} match title string to search for, or a 
+	 * @param {string | function(node)} match title string to search for, or a
 	 *     callback function that returns `true` if a node is matched.
 	 * @returns {FancytreeNode[]} array of nodes (may be empty)
 	 */
@@ -571,7 +571,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	},
 	/**Find first node that matches condition (excluding self).
 	 *
-	 * @param {string | function(node)} match title string to search for, or a 
+	 * @param {string | function(node)} match title string to search for, or a
 	 *     callback function that returns `true` if a node is matched.
 	 * @returns {FancytreeNode} matching node or null
 	 * @see FancytreeNode#findAll
@@ -2018,7 +2018,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 
 	/**Find all nodes that matches condition.
 	 *
-	 * @param {string | function(node)} match title string to search for, or a 
+	 * @param {string | function(node)} match title string to search for, or a
 	 *     callback function that returns `true` if a node is matched.
 	 * @returns {FancytreeNode[]} array of nodes (may be empty)
 	 * @see FancytreeNode#findAll
@@ -2028,7 +2028,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	},
 	/**Find first node that matches condition.
 	 *
-	 * @param {string | function(node)} match title string to search for, or a 
+	 * @param {string | function(node)} match title string to search for, or a
 	 *     callback function that returns `true` if a node is matched.
 	 * @returns {FancytreeNode} matching node or null
 	 * @see FancytreeNode#findFirst

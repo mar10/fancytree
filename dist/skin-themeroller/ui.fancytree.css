@@ -91,7 +91,7 @@ span.fancytree-drag-helper-img,
 	background-image: url("icons.gif");
 	background-position: 0 0;
 }
-/** Used by iconclass option */
+/** Used by iconclass option and iconClass callback: */
 span.fancytree-custom-icon {
 	display: inline-block;
 }
