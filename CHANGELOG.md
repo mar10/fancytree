@@ -1,4 +1,7 @@
-# 2.12.0 / Unreleased
+# 2.12.1-0 / Unreleased
+  *
+
+# 2.12.0 / 2015-09-10
   * [Changed] Documented `iconClass` callback and changed signature from 
     `iconClass(node)` to `iconClass(event, data)`
   * [Added] ext-dnd events `initHelper` and `updateHelper`
