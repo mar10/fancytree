@@ -1,5 +1,5 @@
 # 2.12.1-0 / Unreleased
-  *
+  * [Added] ext-filter methods node.isMatched() and tree.isFilterActive()
 
 # 2.12.0 / 2015-09-10
   * [Changed] Documented `iconClass` callback and changed signature from 

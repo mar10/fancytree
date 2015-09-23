@@ -117,7 +117,7 @@ $.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, bra
 $.ui.fancytree._FancytreeClass.prototype.filterNodes = function(filter, opts) {
 	if( typeof opts === "boolean" ) {
 		opts = { leavesOnly: opts };
-		this.warn("Fancytree.filterNodes() leavesOnly option is deprecated since 2015-04-20.");
+		this.warn("Fancytree.filterNodes() leavesOnly option is deprecated since 2.9.0 / 2015-04-19.");
 	}
 	return this._applyFilterImpl(filter, false, opts);
 };
@@ -126,7 +126,7 @@ $.ui.fancytree._FancytreeClass.prototype.filterNodes = function(filter, opts) {
  * @deprecated
  */
 $.ui.fancytree._FancytreeClass.prototype.applyFilter = function(filter){
-	this.warn("Fancytree.applyFilter() is deprecated since 2014-05-10. Use .filterNodes() instead.");
+	this.warn("Fancytree.applyFilter() is deprecated since 2.1.0 / 2014-05-29. Use .filterNodes() instead.");
 	return this.filterNodes.apply(this, arguments);
 };
 
@@ -174,12 +174,36 @@ $.ui.fancytree._FancytreeClass.prototype.clearFilter = function(){
 };
 
 
+/**
+ * [ext-filter] Return true if a filter is currently applied.
+ *
+ * @returns {Boolean} 
+ * @alias Fancytree#isFilterActive
+ * @requires jquery.fancytree.filter.js
+ */
+$.ui.fancytree._FancytreeClass.prototype.isFilterActive = function(){
+	return !!this.enableFilter;
+};
+
+
+/**
+ * [ext-filter] Return true if this node is matched by current filter (or no filter is active).
+ *
+ * @returns {Boolean} 
+ * @alias FancytreeNode#isMatched
+ * @requires jquery.fancytree.filter.js
+ */
+$.ui.fancytree._FancytreeNodeClass.prototype.isMatched = function(){
+	return !(this.tree.enableFilter && !this.match);
+};
+
+
 /*******************************************************************************
  * Extension code
  */
 $.ui.fancytree.registerExtension({
 	name: "filter",
-	version: "0.6.0",
+	version: "0.7.0",
 	// Default options for this extension.
 	options: {
 		autoApply: true,  // Re-apply last filter if lazy data is loaded
