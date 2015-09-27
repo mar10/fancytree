@@ -89,11 +89,14 @@ $(function(){
 		}
 	});
 	addSampleButton({
-		label: "Add sibling",
+		label: "Add sibling folder",
 		newline: false,
 		code: function(){
 			var node = $("#tree").fancytree("getActiveNode");
-			node.editCreateNode("after", "Node title");
+			node.editCreateNode("after", {
+				title: "Node title",
+				folder: true
+			});
 		}
 	});
 });
