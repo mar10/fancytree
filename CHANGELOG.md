@@ -1,5 +1,9 @@
 # 2.12.1-0 / Unreleased
-  *
+  * [Fixed] If a node is initalized as `lazy: true`, and `children: []`, 
+    treat it as 'loaded leaf node'.<br>
+    This is consistent with a lazy node that has no children property at all (i.e. 
+    `undefined`). This would issue a lazyLoad event and a resopnse of `[]` would
+    mark the node as leaf node.
 
 # 2.12.0 / 2015-09-10
   * [Changed] Documented `iconClass` callback and changed signature from 

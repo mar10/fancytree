@@ -324,10 +324,16 @@ function FancytreeNode(parent, obj){
 	}
 	// TODO: handle obj.focus = true
 	// Create child nodes
-	this.children = null;
 	cl = obj.children;
-	if(cl && cl.length){
-		this._setChildren(cl);
+	if( cl ){
+		if( cl.length ){
+			this._setChildren(cl);
+		} else {
+			// if an empty array was passed for a lazy node, keep it, in order to mark it 'loaded'
+			this.children = this.lazy ? [] : null;
+		}
+	} else {
+		this.children = null;
 	}
 	// Add to key/ref map (except for root node)
 //	if( parent ) {
@@ -2454,12 +2460,12 @@ $.extend(Fancytree.prototype,
 	 * @param {EventData} ctx
 	 */
 	nodeClick: function(ctx) {
-//      this.tree.logDebug("ftnode.onClick(" + event.type + "): ftnode:" + this + ", button:" + event.button + ", which: " + event.which);
 		var activate, expand,
 			// event = ctx.originalEvent,
 			targetType = ctx.targetType,
 			node = ctx.node;
 
+	    this.debug("ftnode.onClick(" + event.type + "): ftnode:" + this + ", button:" + event.button + ", which: " + event.which, ctx);
 		// TODO: use switch
 		// TODO: make sure clicks on embedded <input> doesn't steal focus (see table sample)
 		if( targetType === "expander" ) {
@@ -4047,6 +4053,7 @@ $.widget("ui.fancytree",
 				tree.phase = prevPhase;
 			}
 		}).on("click" + ns + " dblclick" + ns, function(event){
+			that.tree.debug("event(" + event + "): !");
 			if(opts.disabled){
 				return true;
 			}
@@ -4056,6 +4063,7 @@ $.widget("ui.fancytree",
 				tree = that.tree,
 				prevPhase = tree.phase;
 
+			that.tree.debug("event(" + event.type + "): node: ", node);
 			if( !node ){
 				return true;  // Allow bubbling of other events
 			}
