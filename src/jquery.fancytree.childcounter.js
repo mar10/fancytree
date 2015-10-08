@@ -41,7 +41,7 @@
 // --------------
 
 // New member functions can be added to the `Fancytree` class.
-// This function will be available for every tree instance.
+// This function will be available for every tree instance:
 //
 //     var tree = $("#tree").fancytree("getTree");
 //     tree.countSelected(false);
@@ -49,18 +49,39 @@
 $.ui.fancytree._FancytreeClass.prototype.countSelected = function(topOnly){
 	var tree = this,
 		treeOptions = tree.options;
+
 	return tree.getSelectedNodes(topOnly).length;
 };
 
 
 // The `FancytreeNode` class can also be easily extended. This would be called
 // like
+//     node.updateCounters();
 //
-//     node.toUpper();
+// We also add a docstring comment.
+/**
+ * [ext-childcounter] Update counter badges for `node` and its parents.
+ * @alias FancytreeNode#updateCounters
+ * @requires jquery.fancytree.childcounters.js
+ */
+$.ui.fancytree._FancytreeNodeClass.prototype.updateCounters = function(){
+	var node = this,
+		$badge = $("span.fancytree-childcounter", node.span),
+		extOpts = node.tree.options.childcounter,
+		count = node.countChildren(extOpts.deep);
 
-$.ui.fancytree._FancytreeNodeClass.prototype.toUpper = function(){
-	var node = this;
-	return node.setTitle(node.title.toUpperCase());
+	node.data.childCounter = count;
+	if( (count || !extOpts.hideZeros) && (!node.isExpanded() || !extOpts.hideExpanded) ) {
+		if( !$badge.length ) {
+			$badge = $("<span class='fancytree-childcounter'/>").appendTo($("span.fancytree-icon", node.span));
+		}
+		$badge.text(count);
+	} else {
+		$badge.remove();
+	}
+	if( extOpts.deep && !node.isTopLevel() && !node.isRoot() ) {
+		node.parent.updateCounters();
+	}
 };
 
 
@@ -158,15 +179,10 @@ $.ui.fancytree.registerExtension({
 
 // Overload the `renderTitle` hook, to append a counter badge
 	nodeRenderTitle: function(ctx, title) {
-		var node = ctx.node,
-			extOpts = ctx.options.childcounter,
-			count = (node.data.childCounter == null) ? node.countChildren(extOpts.deep) : +node.data.childCounter;
 // Let the base implementation render the title
 		this._superApply(arguments);
-// Append a counter badge
-		if( (count || ! extOpts.hideZeros) && (!node.isExpanded() || !extOpts.hideExpanded) ){
-			$("span.fancytree-icon", node.span).append($("<span class='fancytree-childcounter'/>").text(count));
-		}
+// Append a counter badge using the new FancytreeNode method that we defined above
+		ctx.node.updateCounters();
 	},
 // Overload the `setExpanded` hook, so the counters are updated
 	nodeSetExpanded: function(ctx, flag, opts) {
