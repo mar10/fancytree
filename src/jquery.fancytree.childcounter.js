@@ -58,9 +58,11 @@ $.ui.fancytree._FancytreeClass.prototype.countSelected = function(topOnly){
 // like
 //     node.updateCounters();
 //
-// We also add a docstring comment.
+// It is also good practice to add a docstring comment.
 /**
  * [ext-childcounter] Update counter badges for `node` and its parents.
+ * May be called in the `loadChildren` event, to update parents of lazy loaded
+ * nodes.
  * @alias FancytreeNode#updateCounters
  * @requires jquery.fancytree.childcounters.js
  */
@@ -179,10 +181,15 @@ $.ui.fancytree.registerExtension({
 
 // Overload the `renderTitle` hook, to append a counter badge
 	nodeRenderTitle: function(ctx, title) {
+		var node = ctx.node,
+			extOpts = ctx.options.childcounter,
+			count = (node.data.childCounter == null) ? node.countChildren(extOpts.deep) : +node.data.childCounter;
 // Let the base implementation render the title
 		this._superApply(arguments);
-// Append a counter badge using the new FancytreeNode method that we defined above
-		ctx.node.updateCounters();
+// Append a counter badge
+		if( (count || ! extOpts.hideZeros) && (!node.isExpanded() || !extOpts.hideExpanded) ){
+			$("span.fancytree-icon", node.span).append($("<span class='fancytree-childcounter'/>").text(count));
+		}
 	},
 // Overload the `setExpanded` hook, so the counters are updated
 	nodeSetExpanded: function(ctx, flag, opts) {

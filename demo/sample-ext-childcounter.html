@@ -37,6 +37,10 @@
 			},
 			lazyLoad: function(event, data) {
 				data.result = {url: "ajax-sub2.json"}
+			},
+			loadChildren: function(event, data) {
+				// update node and parent counters after lazy loading
+				data.node.updateCounters();
 			}
 		});
 	});
