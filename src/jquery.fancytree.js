@@ -180,19 +180,12 @@ function _makeResolveFunc(deferred, context){
 
 function _getElementDataAsDict($el){
 	// Evaluate 'data-NAME' attributes with special treatment for 'data-json'.
-	var lowerCaseAttr,
-		d = $.extend({}, $el.data()),
+	var d = $.extend({}, $el.data()),
 		json = d.json;
 
 	delete d.fancytree; // added to container by widget factory (old jQuery UI)
 	delete d.uiFancytree; // added to container by widget factory
-	// #500 convert data-hidecheckbox="true" --> node.hideCheckbox
-	for( lowerCaseAttr in NODE_ATTR_LOWERCASE_MAP ) {
-		if( d.hasOwnProperty(lowerCaseAttr) ) {
-			d[NODE_ATTR_LOWERCASE_MAP[lowerCaseAttr]] = d[lowerCaseAttr];
-			delete d[lowerCaseAttr];
-		}
-	}
+
 	if( json ) {
 		delete d.json;
 		// <li data-json='...'> is already returned as object (http://api.jquery.com/data/#data-html5)
@@ -4376,12 +4369,12 @@ $.extend($.ui.fancytree,
 	parseHtml: function($ul) {
 		// TODO: understand this:
 		/*jshint validthis:true */
-		var extraClasses, i, l, iPos, tmp, tmp2, classes, className,
+		var classes, className, extraClasses, i, iPos, l, tmp, tmp2,
 			$children = $ul.find(">li"),
 			children = [];
 
 		$children.each(function() {
-			var allData,
+			var allData, lowerCaseAttr,
 				$li = $(this),
 				$liSpan = $li.find(">span:first", this),
 				$liA = $liSpan.length ? null : $li.find(">a:first"),
@@ -4436,7 +4429,14 @@ $.extend($.ui.fancytree,
 			}
 			// Add <li data-NAME='...'> as node.data.NAME
 			allData = _getElementDataAsDict($li);
-			if(allData && !$.isEmptyObject(allData)) {
+			if( allData && !$.isEmptyObject(allData) ) {
+				// #507: convert data-hidecheckbox (lower case) to hideCheckbox
+				for( lowerCaseAttr in NODE_ATTR_LOWERCASE_MAP ) {
+					if( allData.hasOwnProperty(lowerCaseAttr) ) {
+						allData[NODE_ATTR_LOWERCASE_MAP[lowerCaseAttr]] = allData[lowerCaseAttr];
+						delete allData[lowerCaseAttr];
+					}
+				}
 				// #56: Allow to set special node.attributes from data-...
 				for(i=0, l=NODE_ATTRS.length; i<l; i++){
 					tmp = NODE_ATTRS[i];
