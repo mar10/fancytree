@@ -180,9 +180,19 @@ function _makeResolveFunc(deferred, context){
 
 function _getElementDataAsDict($el){
 	// Evaluate 'data-NAME' attributes with special treatment for 'data-json'.
-	var d = $.extend({}, $el.data()),
+	var lowerCaseAttr,
+		d = $.extend({}, $el.data()),
 		json = d.json;
-	delete d.fancytree; // added to container by widget factory
+
+	delete d.fancytree; // added to container by widget factory (old jQuery UI)
+	delete d.uiFancytree; // added to container by widget factory
+	// #500 convert data-hidecheckbox="true" --> node.hideCheckbox
+	for( lowerCaseAttr in NODE_ATTR_LOWERCASE_MAP ) {
+		if( d.hasOwnProperty(lowerCaseAttr) ) {
+			d[NODE_ATTR_LOWERCASE_MAP[lowerCaseAttr]] = d[lowerCaseAttr];
+			delete d[lowerCaseAttr];
+		}
+	}
 	if( json ) {
 		delete d.json;
 		// <li data-json='...'> is already returned as object (http://api.jquery.com/data/#data-html5)
@@ -208,7 +218,7 @@ function _makeNodeTitleStartMatcher(s){
 	};
 }
 
-var i,
+var i, attr,
 	FT = null, // initialized below
 	ENTITY_MAP = {"&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;", "/": "&#x2F;"},
 	IGNORE_KEYCODES = { 16: true, 17: true, 18: true },
@@ -232,11 +242,19 @@ var i,
 	//	Top-level Fancytree node attributes, that can be set by dict
 	NODE_ATTRS = "expanded extraClasses folder hideCheckbox key lazy refKey selected title tooltip unselectable".split(" "),
 	NODE_ATTR_MAP = {},
+	// Mapping of lowercase -> real name (because HTML5 data-... attribute only supports lowercase)
+	NODE_ATTR_LOWERCASE_MAP = {},
 	// Attribute names that should NOT be added to node.data
 	NONE_NODE_DATA_MAP = {"active": true, "children": true, "data": true, "focus": true};
 
 for(i=0; i<CLASS_ATTRS.length; i++){ CLASS_ATTR_MAP[CLASS_ATTRS[i]] = true; }
-for(i=0; i<NODE_ATTRS.length; i++){ NODE_ATTR_MAP[NODE_ATTRS[i]] = true; }
+for(i=0; i<NODE_ATTRS.length; i++) {
+	attr = NODE_ATTRS[i];
+	NODE_ATTR_MAP[attr] = true;
+	if( attr !== attr.toLowerCase() ) {
+		NODE_ATTR_LOWERCASE_MAP[attr.toLowerCase()] = attr;
+	}
+}
 
 
 /* *****************************************************************************

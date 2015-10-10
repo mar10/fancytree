@@ -6,7 +6,8 @@
     mark the node as leaf node.
   * [Added] ext-filter methods node.isMatched() and tree.isFilterActive()
   * [Added] CSS for ext-childcounter badges is now part of the themes
-  * [Added] ext-childcounter method `node.updateCounter()`
+  * [Added] ext-childcounter method node.updateCounter()`
+  * [Fixed] #507 data-hideCheckbox="true" 
 
 # 2.12.0 / 2015-09-10
   * [Changed] Documented `iconClass` callback and changed signature from 
