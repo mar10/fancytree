@@ -131,7 +131,7 @@ var TreePatch = {};
  * @property {Boolean} focusOnSelect Set focus when node is checked by a mouse click (default: false)
  * @property {Boolean} generateIds Add `id="..."` to node markup (default: false).
  * @property {Boolean} icons Display node icons  (default: true)
- * @property {String} idPrefix (default: "ft_")
+ * @property {String} idPrefix prefix used to generate node markup ID attributes (default: "ft_", requires generateIds to be set)
  * @property {String} imagePath Path to a folder containing icons (default: null, using 'skin/' subdirectory).
  * @property {Boolean} keyboard Support keyboard navigation (default: true).
  * @property {String} keyPathSeparator (default: "/")

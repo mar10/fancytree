@@ -188,6 +188,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editEnd = function(applyChanges, _e
 * @param {Object} [init] NodeData (or simple title string)
 * @alias FancytreeNode#editCreateNode
 * @requires jquery.fancytree.edit.js
+* @since 2.4
 */
 $.ui.fancytree._FancytreeNodeClass.prototype.editCreateNode = function(mode, init){
 	var newNode,

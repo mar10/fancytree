@@ -180,6 +180,7 @@ $.ui.fancytree._FancytreeClass.prototype.clearFilter = function(){
  * @returns {Boolean} 
  * @alias Fancytree#isFilterActive
  * @requires jquery.fancytree.filter.js
+ * @since 2.13
  */
 $.ui.fancytree._FancytreeClass.prototype.isFilterActive = function(){
 	return !!this.enableFilter;
@@ -192,6 +193,7 @@ $.ui.fancytree._FancytreeClass.prototype.isFilterActive = function(){
  * @returns {Boolean} 
  * @alias FancytreeNode#isMatched
  * @requires jquery.fancytree.filter.js
+ * @since 2.13
  */
 $.ui.fancytree._FancytreeNodeClass.prototype.isMatched = function(){
 	return !(this.tree.enableFilter && !this.match);

@@ -993,6 +993,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	},
 	/** Return true if this is the (invisible) system root node.
 	 * @returns {boolean}
+	 * @since 2.4
 	 */
 	isRootNode: function() {
 		return (this.tree.rootNode === this);
@@ -1012,6 +1013,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	},
 	/** Return true if this a top level node, i.e. a direct child of the (invisible) system root node.
 	 * @returns {boolean}
+	 * @since 2.4
 	 */
 	isTopLevel: function() {
 		return (this.tree.rootNode === this.parent);
@@ -1705,6 +1707,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	 *     its children only.
 	 * @param {boolean} [includeSelf=false]
 	 * @returns {$.Promise}
+	 * @since 2.4
 	 */
 	visitAndLoad: function(fn, includeSelf, _recursion) {
 		var dfd, res, loaders,
@@ -2039,6 +2042,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	 *     callback function that returns `true` if a node is matched.
 	 * @returns {FancytreeNode[]} array of nodes (may be empty)
 	 * @see FancytreeNode#findAll
+	 * @since 2.12
 	 */
 	findAll: function(match) {
 		return this.rootNode.findAll(match);
@@ -2049,6 +2053,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	 *     callback function that returns `true` if a node is matched.
 	 * @returns {FancytreeNode} matching node or null
 	 * @see FancytreeNode#findFirst
+	 * @since 2.12
 	 */
 	findFirst: function(match) {
 		return this.rootNode.findFirst(match);
@@ -3617,6 +3622,7 @@ $.extend(Fancytree.prototype,
 	 * @param status
 	 * @param message
 	 * @param details
+	 * @since 2.3
 	 */
 	nodeSetStatus: function(ctx, status, message, details) {
 		var node = ctx.node,
@@ -4283,7 +4289,7 @@ $.extend($.ui.fancytree,
 		}
 		return res;
 	},
-	/** Return a FancytreeNode instance from element.
+	/** Return a FancytreeNode instance from element, event, or jQuery object.
 	 *
 	 * @param {Element | jQueryObject | Event} el
 	 * @returns {FancytreeNode} matching node or null
@@ -4304,23 +4310,39 @@ $.extend($.ui.fancytree,
 		}
 		return null;
 	},
-	/* Return a Fancytree instance from element.
-	* TODO: this function could help to get around the data('fancytree') / data('ui-fancytree') problem
-	* @param {Element | jQueryObject | Event} el
-	* @returns {Fancytree} matching tree or null
-	* /
+	/** Return a Fancytree instance, from element, index, event, or jQueryObject.
+	 * 
+	 * @param {Element | jQueryObject | Event | integer | string} [el]
+	 * @returns {Fancytree} matching tree or null
+	 * @example
+	 * $.ui.fancytree.getTree();   // Get first Fancytree instance on page
+	 * $.ui.fancytree.getTree(1);  // Get second Fancytree instance on page
+	 * $.ui.fancytree.getTree("#tree"); // Get tree for this matching element 
+	 *
+	 * @since 2.13	 
+	 */
 	getTree: function(el){
-		if(el instanceof Fancytree){
+		var widget;
+
+		if( el instanceof Fancytree ) {
 			return el; // el already was a Fancytree
-		}else if(el.selector !== undefined){
-			el = el[0]; // el was a jQuery object: use the DOM element
-		}else if(el.originalEvent !== undefined){
-			el = el.target; // el was an Event
 		}
-		...
-		return null;
+		if( el === undefined ) {
+			el = 0;  // get first tree
+		}
+		if( typeof el === "number" ) {
+			el = $(".fancytree-container").eq(el); // el was an integer: return nth instance
+		} else if( typeof el === "string" ) {
+			el = $(el).eq(0); // el was a selector: use first match
+		} else if( el.selector !== undefined ) {
+			el = el.eq(0); // el was a jQuery object: use the first DOM element
+		} else if( el.originalEvent !== undefined ) {
+			el = $(el.target); // el was an Event
+		}
+		el = el.closest(":ui-fancytree");
+		widget = el.data("ui-fancytree") || el.data("fancytree"); // the latter is required by jQuery <= 1.8
+		return widget ? widget.tree : null;
 	},
-	*/
 	/** Write message to console if debugLevel >= 1
 	 * @param {string} msg
 	 */

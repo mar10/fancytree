@@ -74,27 +74,30 @@ test("Static members", function() {
 	if( $("#tree").is(":ui-fancytree") ){
 		$("#tree").fancytree("destroy");
 	}
-	expect(1);
+	expect(5);
 
 	ok($.isFunction($.ui.fancytree.debug), "ui.fancytree.debug function is defined");
-	// equal($(":ui-fancytree").length, 0, "no tree instance exists");
+	equal($(":ui-fancytree").length, 0, "no tree instance exists");
 	// equal($.ui.fancytree._nextId, 1, "next tree instance counter is 1");
+
+	equal($.ui.fancytree.getTree(), null, "getTree() no tree instance exists");
+	equal($.ui.fancytree.getTree(0), null, "getTree(0) no tree instance exists");
+	equal($.ui.fancytree.getTree(1), null, "getTree(0) no tree instance exists");
 });
 
 
 test("Create fancytree", function() {
-	tools.setupAsync();
-	expect(26);
+	expect(31);
 
-	var widget,
+	tools.setupAsync();
+
+	var tree, widget,
 		insideConstructor = true;
 
 	$("#tree").fancytree({
 		source: TEST_DATA,
 		generateIds: true, // for testing
 		create: function(event, data){
-			var tree, widget;
-
 			equal(event.type, "fancytreecreate", "receive `create` callback");
 			ok(insideConstructor, "running synchronously");
 			ok(!!data, "event data is empty");
@@ -143,8 +146,15 @@ test("Create fancytree", function() {
 	ok(!!widget.tree, "widget.tree is defined");
 //    equal(widget.tree._id, 1, "tree id is 1");
 
-	ok($("#tree").fancytree("getTree") === widget.tree, "$().fancytree('getTree')");
+	ok($("#tree").fancytree("getTree") === tree, "$().fancytree('getTree')");
 	ok($("#tree").fancytree("getActiveNode") === null, "$().fancytree('getActiveNode')");
+
+	equal($.ui.fancytree.getTree(), tree, "getTree() exists");
+	ok($.ui.fancytree.getTree(0) === tree, "getTree(0) exists");
+	ok($.ui.fancytree.getTree("#tree") === tree, "getTree('#tree') exists");
+
+	ok($.ui.fancytree.getTree(1) === null, "getTree(1) does not exist");
+	ok($.ui.fancytree.getTree("#foobar") === null, "getTree(#foobar) does not exist");
 
 	equal($("div#tree ul").length, 2, "collapsed choldren are NOT rendered");
 	equal($("div#tree li").length, TESTDATA_VISIBLENODES, "collapsed nodes are NOT rendered");

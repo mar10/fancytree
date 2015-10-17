@@ -4,6 +4,7 @@
     This is consistent with a lazy node that has no children property at all (i.e. 
     `undefined`). This would issue a lazyLoad event and a resopnse of `[]` would
     mark the node as leaf node.
+  * [Added] new function $.ui.fancytree.getTree()
   * [Added] ext-filter methods node.isMatched() and tree.isFilterActive()
   * [Added] CSS for ext-childcounter badges is now part of the themes
   * [Added] ext-childcounter method node.updateCounter()`
@@ -61,7 +62,6 @@
   * [Fixed] #449 After deleting last child, parent node remains expanded
   * [Fixed] #452 destroy not removing nodes with ext-table
   * [Fixed] #457 Autoscroll fails with lazyloading returning empty list
-  * [Improved] Update to jQuery UI 1.11.4, jQuery 1.11.3
 
 # 2.9.0 / 2015-04-19
   * [Changed] ext-filter: `tree.filterNodes(filter, opts)` now accept an `opts`
