@@ -372,7 +372,8 @@ $.ui.fancytree.registerExtension({
 				selNodes = selNodes.join(ctx.options.persist.cookieDelimiter);
 				local._data(local.cookiePrefix + SELECTED, selNodes);
 			} else {
-				local._appendKey(SELECTED, node.key, flag);
+				// beforeSelect can prevent the change - flag doesn't reflect the node.selected state
+				local._appendKey(SELECTED, node.key, node.selected);
 			}
 		}
 		return res;
