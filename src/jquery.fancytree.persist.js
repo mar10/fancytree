@@ -219,7 +219,8 @@ $.ui.fancytree.registerExtension({
 			instOpts = this.options.persist;
 
 		// For 'auto' or 'cookie' mode, the cookie plugin must be available
-		_assert(instOpts.store === "localStore" || cookieGetter, "Missing required plugin for 'persist' extension: js.cookie.js or jquery.cookie.js");
+		_assert((instOpts.store !== "auto" && instOpts.store !== "cookie") || cookieGetter,
+			"Missing required plugin for 'persist' extension: js.cookie.js or jquery.cookie.js");
 
 		local.cookiePrefix = instOpts.cookiePrefix || ("fancytree-" + tree._id + "-");
 		local.storeActive = instOpts.types.indexOf(ACTIVE) >= 0;
