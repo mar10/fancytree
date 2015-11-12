@@ -9,6 +9,9 @@
   * [Added] CSS for ext-childcounter badges is now part of the themes
   * [Added] ext-childcounter method node.updateCounter()`
   * [Fixed] #507 data-hideCheckbox="true" 
+  * [Fixed] #513 activeVisible option does not work on init
+  * [Fixed] #516 ExtPersist requires cookie.js even when not using cookies
+  * TODO: add requirements: https://github.com/mar10/fancytree/issues/209#issuecomment-155559253
 
 # 2.12.0 / 2015-09-10
   * [Changed] Documented `iconClass` callback and changed signature from 

@@ -3787,12 +3787,14 @@ $.extend(Fancytree.prototype,
 			$.error("Not implemented");
 		}
 
-		// $container.addClass("ui-widget ui-widget-content ui-corner-all");
 		// Trigger fancytreeinit after nodes have been loaded
 		dfd = this.nodeLoadChildren(rootCtx, source).done(function(){
 			tree.render();
 			if( ctx.options.selectMode === 3 ){
 				tree.rootNode.fixSelection3FromEndNodes();
+			}
+			if( tree.activeNode && tree.options.activeVisible ) {
+				tree.activeNode.makeVisible();
 			}
 			tree._triggerTreeEvent("init", null, { status: true });
 		}).fail(function(){
