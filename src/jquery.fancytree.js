@@ -3817,9 +3817,9 @@ $.extend(Fancytree.prototype,
 	treeSetFocus: function(ctx, flag, callOpts) {
 		flag = (flag !== false);
 
-		// this.debug("treeSetFocus(" + flag + "), callOpts: " + callOpts);
-		// this.debug("    focusNode: " + this.focusNode);
-		// this.debug("    activeNode: " + this.activeNode);
+		this.debug("treeSetFocus(" + flag + "), callOpts: " + callOpts, this.hasFocus());
+		this.debug("    focusNode: " + this.focusNode);
+		this.debug("    activeNode: " + this.activeNode);
 		if( flag !== this.hasFocus() ){
 			this._hasFocus = flag;
 			if( !flag && this.focusNode ) {
