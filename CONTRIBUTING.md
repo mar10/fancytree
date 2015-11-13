@@ -1,1 +1,2 @@
-Please have a look at the [Contributing Guidelines](https://github.com/mar10/fancytree/wiki/HowtoContribute).
+Please have a look at the 
+[Contributing Guidelines](https://github.com/mar10/fancytree/wiki/HowtoContribute#report-issues).
