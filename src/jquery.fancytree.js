@@ -1,6 +1,6 @@
 /*!
  * jquery.fancytree.js
- * Dynamic tree view control, with support for lazy loading of branches.
+ * Tree view control with support for lazy loading and much more.
  * https://github.com/mar10/fancytree/
  *
  * Copyright (c) 2008-2015, Martin Wendt (http://wwWendt.de)
@@ -2782,8 +2782,8 @@ $.extend(Fancytree.prototype,
 			if( $.isPlainObject(children) ){
 				// We got {foo: 'abc', children: [...]}
 				// Copy extra properties to tree.data.foo
-				_assert($.isArray(children.children), "source must contain (or be) an array of children");
-				_assert(node.isRootNode(), "source may only be an object for root nodes");
+				_assert(node.isRootNode(), "source may only be an object for root nodes (expecting an array of child objects otherwise)");
+				_assert($.isArray(children.children), "if an object is passed as source, it must contain a 'children' array (all other properties are added to 'tree.data')");
 				metaData = children;
 				children = children.children;
 				delete metaData.children;
@@ -3817,9 +3817,9 @@ $.extend(Fancytree.prototype,
 	treeSetFocus: function(ctx, flag, callOpts) {
 		flag = (flag !== false);
 
-		this.debug("treeSetFocus(" + flag + "), callOpts: " + callOpts, this.hasFocus());
-		this.debug("    focusNode: " + this.focusNode);
-		this.debug("    activeNode: " + this.activeNode);
+		// this.debug("treeSetFocus(" + flag + "), callOpts: " + callOpts, this.hasFocus());
+		// this.debug("    focusNode: " + this.focusNode);
+		// this.debug("    activeNode: " + this.activeNode);
 		if( flag !== this.hasFocus() ){
 			this._hasFocus = flag;
 			if( !flag && this.focusNode ) {
@@ -4072,7 +4072,7 @@ $.widget("ui.fancytree",
 				tree.phase = prevPhase;
 			}
 		}).on("click" + ns + " dblclick" + ns, function(event){
-			that.tree.debug("event(" + event + "): !");
+			// that.tree.debug("event(" + event + "): !");
 			if(opts.disabled){
 				return true;
 			}
@@ -4082,7 +4082,7 @@ $.widget("ui.fancytree",
 				tree = that.tree,
 				prevPhase = tree.phase;
 
-			that.tree.debug("event(" + event.type + "): node: ", node);
+			// that.tree.debug("event(" + event.type + "): node: ", node);
 			if( !node ){
 				return true;  // Allow bubbling of other events
 			}

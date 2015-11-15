@@ -1,6 +1,6 @@
 /*!
  * jquery.fancytree.js
- * Dynamic tree view control, with support for lazy loading of branches.
+ * Tree view control with support for lazy loading and much more.
  * https://github.com/mar10/fancytree/
  *
  * Copyright (c) 2008-2015, Martin Wendt (http://wwWendt.de)
