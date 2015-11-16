@@ -1,14 +1,14 @@
 /*!
  * jquery.fancytree.js
- * Dynamic tree view control, with support for lazy loading of branches.
+ * Tree view control with support for lazy loading and much more.
  * https://github.com/mar10/fancytree/
  *
  * Copyright (c) 2008-2015, Martin Wendt (http://wwWendt.de)
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.12.0
- * @date 2015-09-10T20:06
+ * @version 2.13.0
+ * @date 2015-11-16T07:33
  */
 
 /** Core Fancytree module.
@@ -182,7 +182,10 @@ function _getElementDataAsDict($el){
 	// Evaluate 'data-NAME' attributes with special treatment for 'data-json'.
 	var d = $.extend({}, $el.data()),
 		json = d.json;
-	delete d.fancytree; // added to container by widget factory
+
+	delete d.fancytree; // added to container by widget factory (old jQuery UI)
+	delete d.uiFancytree; // added to container by widget factory
+
 	if( json ) {
 		delete d.json;
 		// <li data-json='...'> is already returned as object (http://api.jquery.com/data/#data-html5)
@@ -208,7 +211,7 @@ function _makeNodeTitleStartMatcher(s){
 	};
 }
 
-var i,
+var i, attr,
 	FT = null, // initialized below
 	ENTITY_MAP = {"&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;", "/": "&#x2F;"},
 	IGNORE_KEYCODES = { 16: true, 17: true, 18: true },
@@ -232,11 +235,19 @@ var i,
 	//	Top-level Fancytree node attributes, that can be set by dict
 	NODE_ATTRS = "expanded extraClasses folder hideCheckbox key lazy refKey selected title tooltip unselectable".split(" "),
 	NODE_ATTR_MAP = {},
+	// Mapping of lowercase -> real name (because HTML5 data-... attribute only supports lowercase)
+	NODE_ATTR_LOWERCASE_MAP = {},
 	// Attribute names that should NOT be added to node.data
 	NONE_NODE_DATA_MAP = {"active": true, "children": true, "data": true, "focus": true};
 
 for(i=0; i<CLASS_ATTRS.length; i++){ CLASS_ATTR_MAP[CLASS_ATTRS[i]] = true; }
-for(i=0; i<NODE_ATTRS.length; i++){ NODE_ATTR_MAP[NODE_ATTRS[i]] = true; }
+for(i=0; i<NODE_ATTRS.length; i++) {
+	attr = NODE_ATTRS[i];
+	NODE_ATTR_MAP[attr] = true;
+	if( attr !== attr.toLowerCase() ) {
+		NODE_ATTR_LOWERCASE_MAP[attr.toLowerCase()] = attr;
+	}
+}
 
 
 /* *****************************************************************************
@@ -324,10 +335,16 @@ function FancytreeNode(parent, obj){
 	}
 	// TODO: handle obj.focus = true
 	// Create child nodes
-	this.children = null;
 	cl = obj.children;
-	if(cl && cl.length){
-		this._setChildren(cl);
+	if( cl ){
+		if( cl.length ){
+			this._setChildren(cl);
+		} else {
+			// if an empty array was passed for a lazy node, keep it, in order to mark it 'loaded'
+			this.children = this.lazy ? [] : null;
+		}
+	} else {
+		this.children = null;
 	}
 	// Add to key/ref map (except for root node)
 //	if( parent ) {
@@ -976,6 +993,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	},
 	/** Return true if this is the (invisible) system root node.
 	 * @returns {boolean}
+	 * @since 2.4
 	 */
 	isRootNode: function() {
 		return (this.tree.rootNode === this);
@@ -995,6 +1013,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	},
 	/** Return true if this a top level node, i.e. a direct child of the (invisible) system root node.
 	 * @returns {boolean}
+	 * @since 2.4
 	 */
 	isTopLevel: function() {
 		return (this.tree.rootNode === this.parent);
@@ -1688,6 +1707,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	 *     its children only.
 	 * @param {boolean} [includeSelf=false]
 	 * @returns {$.Promise}
+	 * @since 2.4
 	 */
 	visitAndLoad: function(fn, includeSelf, _recursion) {
 		var dfd, res, loaders,
@@ -2022,6 +2042,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	 *     callback function that returns `true` if a node is matched.
 	 * @returns {FancytreeNode[]} array of nodes (may be empty)
 	 * @see FancytreeNode#findAll
+	 * @since 2.12
 	 */
 	findAll: function(match) {
 		return this.rootNode.findAll(match);
@@ -2032,6 +2053,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	 *     callback function that returns `true` if a node is matched.
 	 * @returns {FancytreeNode} matching node or null
 	 * @see FancytreeNode#findFirst
+	 * @since 2.12
 	 */
 	findFirst: function(match) {
 		return this.rootNode.findFirst(match);
@@ -2454,12 +2476,12 @@ $.extend(Fancytree.prototype,
 	 * @param {EventData} ctx
 	 */
 	nodeClick: function(ctx) {
-//      this.tree.logDebug("ftnode.onClick(" + event.type + "): ftnode:" + this + ", button:" + event.button + ", which: " + event.which);
 		var activate, expand,
 			// event = ctx.originalEvent,
 			targetType = ctx.targetType,
 			node = ctx.node;
 
+//	    this.debug("ftnode.onClick(" + event.type + "): ftnode:" + this + ", button:" + event.button + ", which: " + event.which, ctx);
 		// TODO: use switch
 		// TODO: make sure clicks on embedded <input> doesn't steal focus (see table sample)
 		if( targetType === "expander" ) {
@@ -2760,8 +2782,8 @@ $.extend(Fancytree.prototype,
 			if( $.isPlainObject(children) ){
 				// We got {foo: 'abc', children: [...]}
 				// Copy extra properties to tree.data.foo
-				_assert($.isArray(children.children), "source must contain (or be) an array of children");
-				_assert(node.isRootNode(), "source may only be an object for root nodes");
+				_assert(node.isRootNode(), "source may only be an object for root nodes (expecting an array of child objects otherwise)");
+				_assert($.isArray(children.children), "if an object is passed as source, it must contain a 'children' array (all other properties are added to 'tree.data')");
 				metaData = children;
 				children = children.children;
 				delete metaData.children;
@@ -3600,6 +3622,7 @@ $.extend(Fancytree.prototype,
 	 * @param status
 	 * @param message
 	 * @param details
+	 * @since 2.3
 	 */
 	nodeSetStatus: function(ctx, status, message, details) {
 		var node = ctx.node,
@@ -3764,12 +3787,14 @@ $.extend(Fancytree.prototype,
 			$.error("Not implemented");
 		}
 
-		// $container.addClass("ui-widget ui-widget-content ui-corner-all");
 		// Trigger fancytreeinit after nodes have been loaded
 		dfd = this.nodeLoadChildren(rootCtx, source).done(function(){
 			tree.render();
 			if( ctx.options.selectMode === 3 ){
 				tree.rootNode.fixSelection3FromEndNodes();
+			}
+			if( tree.activeNode && tree.options.activeVisible ) {
+				tree.activeNode.makeVisible();
 			}
 			tree._triggerTreeEvent("init", null, { status: true });
 		}).fail(function(){
@@ -3792,7 +3817,7 @@ $.extend(Fancytree.prototype,
 	treeSetFocus: function(ctx, flag, callOpts) {
 		flag = (flag !== false);
 
-		// this.debug("treeSetFocus(" + flag + "), callOpts: " + callOpts);
+		// this.debug("treeSetFocus(" + flag + "), callOpts: " + callOpts, this.hasFocus());
 		// this.debug("    focusNode: " + this.focusNode);
 		// this.debug("    activeNode: " + this.activeNode);
 		if( flag !== this.hasFocus() ){
@@ -4047,6 +4072,7 @@ $.widget("ui.fancytree",
 				tree.phase = prevPhase;
 			}
 		}).on("click" + ns + " dblclick" + ns, function(event){
+			// that.tree.debug("event(" + event + "): !");
 			if(opts.disabled){
 				return true;
 			}
@@ -4056,6 +4082,7 @@ $.widget("ui.fancytree",
 				tree = that.tree,
 				prevPhase = tree.phase;
 
+			// that.tree.debug("event(" + event.type + "): node: ", node);
 			if( !node ){
 				return true;  // Allow bubbling of other events
 			}
@@ -4123,7 +4150,7 @@ $.extend($.ui.fancytree,
 	/** @lends Fancytree_Static# */
 	{
 	/** @type {string} */
-	version: "2.12.0",      // Set to semver by 'grunt release'
+	version: "2.13.0",      // Set to semver by 'grunt release'
 	/** @type {string} */
 	buildType: "production", // Set to 'production' by 'grunt build'
 	/** @type {int} */
@@ -4264,7 +4291,7 @@ $.extend($.ui.fancytree,
 		}
 		return res;
 	},
-	/** Return a FancytreeNode instance from element.
+	/** Return a FancytreeNode instance from element, event, or jQuery object.
 	 *
 	 * @param {Element | jQueryObject | Event} el
 	 * @returns {FancytreeNode} matching node or null
@@ -4285,23 +4312,39 @@ $.extend($.ui.fancytree,
 		}
 		return null;
 	},
-	/* Return a Fancytree instance from element.
-	* TODO: this function could help to get around the data('fancytree') / data('ui-fancytree') problem
-	* @param {Element | jQueryObject | Event} el
-	* @returns {Fancytree} matching tree or null
-	* /
+	/** Return a Fancytree instance, from element, index, event, or jQueryObject.
+	 *
+	 * @param {Element | jQueryObject | Event | integer | string} [el]
+	 * @returns {Fancytree} matching tree or null
+	 * @example
+	 * $.ui.fancytree.getTree();   // Get first Fancytree instance on page
+	 * $.ui.fancytree.getTree(1);  // Get second Fancytree instance on page
+	 * $.ui.fancytree.getTree("#tree"); // Get tree for this matching element
+	 *
+	 * @since 2.13
+	 */
 	getTree: function(el){
-		if(el instanceof Fancytree){
+		var widget;
+
+		if( el instanceof Fancytree ) {
 			return el; // el already was a Fancytree
-		}else if(el.selector !== undefined){
-			el = el[0]; // el was a jQuery object: use the DOM element
-		}else if(el.originalEvent !== undefined){
-			el = el.target; // el was an Event
 		}
-		...
-		return null;
+		if( el === undefined ) {
+			el = 0;  // get first tree
+		}
+		if( typeof el === "number" ) {
+			el = $(".fancytree-container").eq(el); // el was an integer: return nth instance
+		} else if( typeof el === "string" ) {
+			el = $(el).eq(0); // el was a selector: use first match
+		} else if( el.selector !== undefined ) {
+			el = el.eq(0); // el was a jQuery object: use the first DOM element
+		} else if( el.originalEvent !== undefined ) {
+			el = $(el.target); // el was an Event
+		}
+		el = el.closest(":ui-fancytree");
+		widget = el.data("ui-fancytree") || el.data("fancytree"); // the latter is required by jQuery <= 1.8
+		return widget ? widget.tree : null;
 	},
-	*/
 	/** Write message to console if debugLevel >= 1
 	 * @param {string} msg
 	 */
@@ -4350,12 +4393,12 @@ $.extend($.ui.fancytree,
 	parseHtml: function($ul) {
 		// TODO: understand this:
 		/*jshint validthis:true */
-		var extraClasses, i, l, iPos, tmp, tmp2, classes, className,
+		var classes, className, extraClasses, i, iPos, l, tmp, tmp2,
 			$children = $ul.find(">li"),
 			children = [];
 
 		$children.each(function() {
-			var allData,
+			var allData, lowerCaseAttr,
 				$li = $(this),
 				$liSpan = $li.find(">span:first", this),
 				$liA = $liSpan.length ? null : $li.find(">a:first"),
@@ -4410,7 +4453,14 @@ $.extend($.ui.fancytree,
 			}
 			// Add <li data-NAME='...'> as node.data.NAME
 			allData = _getElementDataAsDict($li);
-			if(allData && !$.isEmptyObject(allData)) {
+			if( allData && !$.isEmptyObject(allData) ) {
+				// #507: convert data-hidecheckbox (lower case) to hideCheckbox
+				for( lowerCaseAttr in NODE_ATTR_LOWERCASE_MAP ) {
+					if( allData.hasOwnProperty(lowerCaseAttr) ) {
+						allData[NODE_ATTR_LOWERCASE_MAP[lowerCaseAttr]] = allData[lowerCaseAttr];
+						delete allData[lowerCaseAttr];
+					}
+				}
 				// #56: Allow to set special node.attributes from data-...
 				for(i=0, l=NODE_ATTRS.length; i<l; i++){
 					tmp = NODE_ATTRS[i];

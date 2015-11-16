@@ -19,8 +19,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.12.0
- * @date 2015-09-10T20:06
+ * @version 2.13.0
+ * @date 2015-11-16T07:33
  */
 
 // To keep the global namespace clean, we wrap everything in a closure
@@ -41,7 +41,7 @@
 // --------------
 
 // New member functions can be added to the `Fancytree` class.
-// This function will be available for every tree instance.
+// This function will be available for every tree instance:
 //
 //     var tree = $("#tree").fancytree("getTree");
 //     tree.countSelected(false);
@@ -49,18 +49,41 @@
 $.ui.fancytree._FancytreeClass.prototype.countSelected = function(topOnly){
 	var tree = this,
 		treeOptions = tree.options;
+
 	return tree.getSelectedNodes(topOnly).length;
 };
 
 
 // The `FancytreeNode` class can also be easily extended. This would be called
 // like
+//     node.updateCounters();
 //
-//     node.toUpper();
+// It is also good practice to add a docstring comment.
+/**
+ * [ext-childcounter] Update counter badges for `node` and its parents.
+ * May be called in the `loadChildren` event, to update parents of lazy loaded
+ * nodes.
+ * @alias FancytreeNode#updateCounters
+ * @requires jquery.fancytree.childcounters.js
+ */
+$.ui.fancytree._FancytreeNodeClass.prototype.updateCounters = function(){
+	var node = this,
+		$badge = $("span.fancytree-childcounter", node.span),
+		extOpts = node.tree.options.childcounter,
+		count = node.countChildren(extOpts.deep);
 
-$.ui.fancytree._FancytreeNodeClass.prototype.toUpper = function(){
-	var node = this;
-	return node.setTitle(node.title.toUpperCase());
+	node.data.childCounter = count;
+	if( (count || !extOpts.hideZeros) && (!node.isExpanded() || !extOpts.hideExpanded) ) {
+		if( !$badge.length ) {
+			$badge = $("<span class='fancytree-childcounter'/>").appendTo($("span.fancytree-icon", node.span));
+		}
+		$badge.text(count);
+	} else {
+		$badge.remove();
+	}
+	if( extOpts.deep && !node.isTopLevel() && !node.isRoot() ) {
+		node.parent.updateCounters();
+	}
 };
 
 

@@ -177,7 +177,7 @@ $.ui.fancytree._FancytreeClass.prototype.clearFilter = function(){
 /**
  * [ext-filter] Return true if a filter is currently applied.
  *
- * @returns {Boolean} 
+ * @returns {Boolean}
  * @alias Fancytree#isFilterActive
  * @requires jquery.fancytree.filter.js
  * @since 2.13
@@ -190,7 +190,7 @@ $.ui.fancytree._FancytreeClass.prototype.isFilterActive = function(){
 /**
  * [ext-filter] Return true if this node is matched by current filter (or no filter is active).
  *
- * @returns {Boolean} 
+ * @returns {Boolean}
  * @alias FancytreeNode#isMatched
  * @requires jquery.fancytree.filter.js
  * @since 2.13

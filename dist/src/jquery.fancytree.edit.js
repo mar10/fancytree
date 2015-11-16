@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.12.0
- * @date 2015-09-10T20:06
+ * @version 2.13.0
+ * @date 2015-11-16T07:33
  */
 
 ;(function($, window, document, undefined) {
@@ -188,6 +188,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editEnd = function(applyChanges, _e
 * @param {Object} [init] NodeData (or simple title string)
 * @alias FancytreeNode#editCreateNode
 * @requires jquery.fancytree.edit.js
+* @since 2.4
 */
 $.ui.fancytree._FancytreeNodeClass.prototype.editCreateNode = function(mode, init){
 	var newNode,

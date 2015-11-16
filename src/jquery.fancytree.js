@@ -4313,15 +4313,15 @@ $.extend($.ui.fancytree,
 		return null;
 	},
 	/** Return a Fancytree instance, from element, index, event, or jQueryObject.
-	 * 
+	 *
 	 * @param {Element | jQueryObject | Event | integer | string} [el]
 	 * @returns {Fancytree} matching tree or null
 	 * @example
 	 * $.ui.fancytree.getTree();   // Get first Fancytree instance on page
 	 * $.ui.fancytree.getTree(1);  // Get second Fancytree instance on page
-	 * $.ui.fancytree.getTree("#tree"); // Get tree for this matching element 
+	 * $.ui.fancytree.getTree("#tree"); // Get tree for this matching element
 	 *
-	 * @since 2.13	 
+	 * @since 2.13
 	 */
 	getTree: function(el){
 		var widget;

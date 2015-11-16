@@ -11,8 +11,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.12.0
- * @date 2015-09-10T20:06
+ * @version 2.13.0
+ * @date 2015-11-16T07:33
  */
 
 ;(function($, window, document, undefined) {
@@ -219,7 +219,8 @@ $.ui.fancytree.registerExtension({
 			instOpts = this.options.persist;
 
 		// For 'auto' or 'cookie' mode, the cookie plugin must be available
-		_assert(instOpts.store === "localStore" || cookieGetter, "Missing required plugin for 'persist' extension: js.cookie.js or jquery.cookie.js");
+		_assert((instOpts.store !== "auto" && instOpts.store !== "cookie") || cookieGetter,
+			"Missing required plugin for 'persist' extension: js.cookie.js or jquery.cookie.js");
 
 		local.cookiePrefix = instOpts.cookiePrefix || ("fancytree-" + tree._id + "-");
 		local.storeActive = instOpts.types.indexOf(ACTIVE) >= 0;
@@ -372,7 +373,8 @@ $.ui.fancytree.registerExtension({
 				selNodes = selNodes.join(ctx.options.persist.cookieDelimiter);
 				local._data(local.cookiePrefix + SELECTED, selNodes);
 			} else {
-				local._appendKey(SELECTED, node.key, flag);
+				// beforeSelect can prevent the change - flag doesn't reflect the node.selected state
+				local._appendKey(SELECTED, node.key, node.selected);
 			}
 		}
 		return res;

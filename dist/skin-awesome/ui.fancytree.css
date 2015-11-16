@@ -303,9 +303,11 @@ table.fancytree-ext-columnview .fancytree-has-children span.fancytree-cv-right {
   color: black;
   font-weight: normal;
 }
+.fancytree-ext-childcounter span.fancytree-icon,
 .fancytree-ext-filter span.fancytree-icon {
   position: relative;
 }
+.fancytree-ext-childcounter span.fancytree-childcounter,
 .fancytree-ext-filter span.fancytree-childcounter {
   color: #fff;
   background: #777;
