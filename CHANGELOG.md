@@ -1,4 +1,7 @@
-# 2.12.1-0 / Unreleased
+# 2.13.1-0 / Unreleased
+  * 
+
+# 2.13 / 2015-11-16
   * [Changed] If a node is initalized as `lazy: true`, and `children: []`, 
     treat it as 'loaded leaf node'.<br>
     This is consistent with a lazy node that has no children property at all (i.e. 
@@ -6,7 +9,7 @@
     mark the node as leaf node.
   * [Added] new function $.ui.fancytree.getTree()
   * [Added] ext-filter methods node.isMatched() and tree.isFilterActive()
-  * [Added] CSS for ext-childcounter badges is now part of the themes
+  * [Added] CSS for ext-childcounter badges is now part of the standard themes
   * [Added] ext-childcounter method node.updateCounter()`
   * [Fixed] #507 data-hideCheckbox="true" 
   * [Fixed] #513 activeVisible option does not work on init
