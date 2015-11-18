@@ -238,7 +238,7 @@ $.ui.fancytree.registerExtension({
 			if ( !tree._triggerTreeEvent("beforeRestore", null, {}) ) {
 				return;
 			}
-			
+
 			var cookie, dfd, i, keyList, node,
 				prevFocus = local._data(local.cookiePrefix + FOCUS), // record this before node.setActive() overrides it;
 				noEvents = instOpts.fireActivate === false;
