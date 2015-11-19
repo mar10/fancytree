@@ -56,26 +56,35 @@ var EventData = {};
  * @name NodeData
  * @type {Object}
  *
- * @property {Boolean} active (Initialization only, but will not be stored  with the node.)
- * @property {NodeData[]} children Optional array of child nodes.
+ * @property {Boolean} active (Initialization only, but will not be stored with the node.)
+ * @property {NodeData[]} children Optional array of child nodes.<br>
+ *     Note that for <i>lazy</i> nodes, a value of null or undefined is interpreted as
+ *     <i>not yet loaded</i>; if an array is passed (even an empty one), the 
+ *     node is considered <i>loaded</i> which will effectively disable the 
+ *     lazy-behavior.
  * @property {object} data All unknown properties from constructor will be copied to `node.data`.
  * @property {Boolean} expanded Initial expansion state. Use `node.setExpanded()` or `node.isExpanded()` to access.
  * @property {String} extraClasses Class names added to the node markup (separate with space).
  * @property {Boolean} focus (Initialization only, but will not be stored  with the node.)
  * @property {Boolean} folder Folders have different default icons and honor the `clickFolderMode` option.
- * @property {Boolean} hideCheckbox Remove checkbox for this node.
- * @property {Boolean|String} icon Boolean value overrides the tree option of the same name.
- *     A string value is used as `src` attribute for a &lt;img> tag.
- * @property {String} iconclass Class names added to the node icon markup to allow
- *     custom icons or glyphs (separate with space, e.g. "ui-icon ui-icon-heart").
- *     If specified, an additonal `fancytree-custom-icon` class is added instead of `fancytree-icon`.
- * @property {String} key Unique key for this node (auto-generated if omitted)
+ * @property {Boolean} hideCheckbox Pass `true` to remove checkbox for this node.<br>
+ *     Note that selection via the API or initialization data is still possible.
+ * @property {Boolean|String} icon Define this node's icon.<br>
+ *     undefined: Use global tree option of the same name<br>
+ *     true: Use default icon, depending on `node.folder` and `node.expanded` status<br>
+ *     false: Hide icon<br>
+ *     String: A string value that contains a '/' or a '.' is used as `src` attribute for a &lt;img> tag.
+ *     (See also the global `imagePath` option.)<br>
+ *     Any other string value is used to generate custom tags, e.g. for "ui-icon ui-icon-heart":<br>
+ *     &lt;span class="fancytree-custom-icon ui-icon ui-icon-heart" />.
+ * @property {String} <del>iconclass</del> @deprecated use `icon` instead.
+ * @property {String} key Unique key for this node (auto-generated if omitted).
  * @property {Boolean} lazy Lazy folders call the `lazyLoad` on first expand to load their children.
  * @property {String} refKey (Reserved, used by 'clones' extension.)
  * @property {Boolean} selected Initial selection state. Use `node.setSelected()` or `node.isSelected()` to access.
  * @property {String} title Node text (may contain HTML tags). Use `node.setTitle()` to modify.
  * @property {String} tooltip Will be added as `title` attribute, thus enabling a tooltip.
- * @property {Boolean} unselectable Prevent selection using mouse or keyboard.
+ * @property {Boolean} unselectable Prevent (de-)selection using mouse or keyboard.
  * @property {any} OTHER Attributes other than listed above will be copied to `node.data`.
  *
  */
@@ -114,7 +123,7 @@ var TreePatch = {};
  * @description
  * Fancytree options (see also example)
  *
- * @example $("#tree").fancytree({source: "/myService"});
+ * @example $("#tree").fancytree({ source: { url: "/myService" } });
  *
  * @property {Boolean} activeVisible Make sure that the active node is always visible, i.e. its parents are expanded (default: true).
  * @property {object} ajax Default options for ajax requests
@@ -122,30 +131,35 @@ var TreePatch = {};
  * @property {Boolean} autoActivate Activate a node when focused with the keyboard (default: true)
  * @property {Boolean} autoCollapse Automatically collapse all siblings, when a node is expanded (default: false).
  * @property {Boolean} autoScroll Scroll node into visible area, when focused by keyboard (default: false).
- * @property {Boolean} checkbox Display checkboxes to allow selection (default: false)
+ * @property {Boolean} checkbox Display checkboxes to allow selection (default: false).<br>
+ *     Note that selection via the API or initialization data is still possible.
  * @property {Integer} clickFolderMode Defines what happens, when the user click a folder node.<br>1:activate, 2:expand, 3:activate and expand, 4:activate/dblclick expands  (default: 4)
- * @property {Integer} debugLevel  0..2 (null: use global setting $.ui.fancytree.debugInfo)
- * @property {function} defaultKey callback(node) is called for ner nodes without a key. Must return a new unique key. (default null: generates default keys like that: "_" + counter)
+ * @property {Integer} debugLevel 0..2 (null: use global setting $.ui.fancytree.debugInfo)
+ * @property {function} defaultKey callback(node) is called for new nodes without a key. Must return a new unique key. (default null: generates default keys like that: "_" + counter)
  * @property {Boolean} enableAspx Accept passing ajax data in a property named `d` (default: true).
  * @property {String[]} extensions List of active extensions (default: [])
  * @property {Boolean} focusOnSelect Set focus when node is checked by a mouse click (default: false)
  * @property {Boolean} generateIds Add `id="..."` to node markup (default: false).
- * @property {Boolean} icons Display node icons  (default: true)
+ * @property {Boolean|Function} icon Display node icons (default: true)<br>
+ *     true: use default icons, depending on `node.folder` and `node.expanded`<br>
+ *     false: hide icons<br>
+ *     function(node, data): callback returning true, false, or a string.
+ *	   See the node option of the same name for an explanation of possible string values.
+ * @property {Boolean} <del>icons</del> @deprecated use `icon` instead
  * @property {String} idPrefix prefix used to generate node markup ID attributes (default: "ft_", requires generateIds to be set)
  * @property {String} imagePath Path to a folder containing icons (default: null, using 'skin/' subdirectory).
  * @property {Boolean} keyboard Support keyboard navigation (default: true).
  * @property {String} keyPathSeparator (default: "/")
  * @property {Integer} minExpandLevel 2: top-level nodes are not collapsible (default: 1)
  * @property {Boolean} quicksearch navigate to next node by typing the first letters (default: false)
- * @property {object} scrollOfs: optional margins for node.scrollIntoView() (default: {top: 0, bottom: 0})
- * @property {jQuery} scrollParent: scrollable container for node.scrollIntoView() (default: $container)
+ * @property {object} scrollOfs optional margins for node.scrollIntoView() (default: {top: 0, bottom: 0})
+ * @property {jQuery} scrollParent scrollable container for node.scrollIntoView() (default: $container)
  * @property {Integer} selectMode 1:single, 2:multi, 3:multi-hier (default: 2)
  * @property {any} source Used to Initialize the tree.
  * @property {object} strings Translation table
  * @property {Boolean} tabbable Add tabindex='0' to container, so tree can be reached using TAB
  * @property {Boolean} titlesTabbable Add tabindex='0' to node title span, so it can receive keyboard focus
  * @property {object} toggleEffect Animation options, false:off (default: { effect: "blind", options: {direction: "vertical", scale: "box"}, duration: 200 })
- * @property {function} EVENT
  *
  */
 var FancytreeOptions = {};
@@ -184,7 +198,7 @@ var FancytreeOptions = {};
  * @property {function} expand `data.node` was expanded
  * @property {function} focus `data.node` received keyboard focus
  * @property {function} focusTree `data.tree` received keyboard focus
- * @property {function} iconClass Allows to override the class names added to the `data.node` icon markup to define custom icons or glyphs (separate with space, e.g. "ui-icon ui-icon-heart").
+ * @property {function} <del>iconClass</del> @deprecated use tree option `icon` instead.
  * @property {function} init Widget was (re-)initialized.
  * @property {function} keydown `data.node` received key. `event.which` contains the key. Return `false` to prevent default processing, i.e. navigation. Call `data.result = "preventNav";` to prevent navigation but still allow default handling inside embedded input controls.
  * @property {function} keypress (currently unused)

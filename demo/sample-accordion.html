@@ -57,7 +57,7 @@ ul.fancytree-container >li >.fancytree-node .fancytree-expander
 		// and pass the tree options as an argument to the fancytree() function:
 		$("#tree").fancytree({
 			autoCollapse: true,
-			icons: false,
+			icon: false,
 			renderNode: function(event, data){
 				if(data.node.getLevel() === 1){
 					$(data.node.span).addClass("ui-accordion-header");

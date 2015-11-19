@@ -31,8 +31,8 @@ span.fancytree-node.custom1 > span.fancytree-title {
 	font-family: "Audiowide";
 }
 span.fancytree-node.custom1 > span.fancytree-icon {
-	background-image: url("skin-custom/customDoc2.gif");
 	background-position: 0 0;
+	background-image: url("skin-custom/customDoc2.gif");
 }
 </style>
 
@@ -41,6 +41,7 @@ span.fancytree-node.custom1 > span.fancytree-icon {
 		$("#tree").fancytree({
 			// Image folder used for data.icon attribute.
 			imagePath: "skin-custom/",
+			// icon: false,
 			renderNode: function(event, data) {
 				// Optionally tweak data.node.span
 				var node = data.node;
@@ -65,7 +66,7 @@ span.fancytree-node.custom1 > span.fancytree-icon {
 				node.extraClasses = "custom1";
 				node.renderTitle();
 				node = tree.getNodeByKey("node_4.2");
-				node.data.icon = "customDoc1.gif";
+				node.icon = "customDoc1.gif";
 				node.renderTitle();
 			}
 		});
@@ -79,6 +80,8 @@ span.fancytree-node.custom1 > span.fancytree-icon {
 		Includes a custom CSS <i>after</i> the standard CSS to override theming.<br>
 		Some nodes have their <code>data.addClass</code> attribute set.<br>
 		Finally, the last two nodes use the <code>data.icon</code> attribute.
+		<br>
+		See also the <a href="https://github.com/mar10/fancytree/wiki/TutorialTheming">tutorial</a>.
 	</p>
 	<div>
 		<label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
@@ -102,7 +105,7 @@ span.fancytree-node.custom1 > span.fancytree-icon {
 				<ul>
 					<li data-icon="customDoc1.gif">Node with standard CSS, but custom icon
 					<li class="folder" data-icon="folder_docs.gif">Folder with standard CSS but custom icon
-					<li data-iconclass="ui-icon ui-icon-heart">'iconclass' is directly added to the image &lt;span>, so jQuery stock icons may be used
+					<li data-icon="ui-icon ui-icon-heart">'icon' is directly added to the image &lt;span>, so jQuery stock icons may be used
 				</ul>
 
 			<li class="folder expanded">Use 'data-json' attribute to define additional data

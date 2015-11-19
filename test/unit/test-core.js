@@ -205,6 +205,106 @@ test("Init node with custom data", function() {
 });
 
 
+test("Custom icons (node.icon)", function() {
+	tools.setupAsync();
+	expect(13);
+
+	var children = [
+			{key: "1", title: "node 1" },
+			{key: "2", title: "node 2", icon: true},
+			{key: "3", title: "node 3", icon: false},
+			{key: "4", title: "node 4", icon: "custom-class"},
+			{key: "5", title: "node 5", icon: "custom_icon.png"},
+			{key: "6", title: "node 6", iconClass: "custom-class"}
+		];
+
+	$("#tree").fancytree({
+		source: children,
+		generateIds: true,
+		init: function(event, data){
+			equal( tools.getNode("4").data.icon, undefined, "node.data.icon is not set");
+			equal( tools.getNode("4").icon, "custom-class", "node.icon is set");
+			equal( tools.getNode("5").icon, "custom_icon.png", "node.icon is set");
+
+			ok( $("#ft_1 span.fancytree-icon").length === 1, "icon span exists by default");
+			ok( $("#ft_2 span.fancytree-icon").length === 1, "icon: true shows icon");
+			ok( $("#ft_3 span.fancytree-icon").length === 0, "icon: false hides icon");
+			// custom class
+			ok( $("#ft_4 span.fancytree-custom-icon").length === 1, "custom icons have span.fancytree-custom-icon");
+			ok( $("#ft_4 span.fancytree-custom-icon").hasClass("custom-class"), "custom icons have custom class added");
+			ok( $("#ft_4 .fancytree-icon").length === 0, "custom icons don't have .fancytree-icon");
+			// custom image
+			ok( $("#ft_5 img.fancytree-icon").attr("src") === "custom_icon.png", "image icon <img> exists");
+			ok( $("#ft_5 span.fancytree-icon").length === 0, "image icon <span> not exists");
+			ok( $("#ft_5 .fancytree-custom-icon").length === 0, "image icons don't have .fancytree-custom-icon");
+			// auto-migration for iconClass
+			ok( $("#ft_6 span.fancytree-custom-icon").hasClass("custom-class"), "migration for deprecated iconClass");
+
+			start();
+		}
+	});
+});
+
+test("Custom icons (options.icon)", function() {
+	tools.setupAsync();
+	expect(16);
+
+	var children = [
+			{key: "1", title: "node 1" },
+			{key: "2", title: "node 2" },
+			{key: "3", title: "node 3" },
+			{key: "4", title: "node 4" },
+			{key: "5", title: "node 5" },
+			{key: "6", title: "node 6", icon: false },
+			{key: "7", title: "node 7", icon: false },
+			{key: "8", title: "node 8", icon: true },
+			{key: "9", title: "node 9", icon: true },
+			{key: "10", title: "node 10", icon: "custom-class-2" },
+			{key: "11", title: "node 11", icon: "custom-class-2" }
+		];
+
+	$("#tree").fancytree({
+		source: children,
+		generateIds: true,
+		icon: function(event, data){
+			switch( data.node.key ){
+			case "2": return true;
+			case "3": return false;
+			case "4": return "custom-class";
+			case "5": return "custom_icon.png";
+			case "7": return true;
+			case "9": return false;
+			case "11": return "custom-class";
+			}
+		},
+		init: function(event, data){
+			equal( tools.getNode("8").data.icon, undefined, "node.data.icon is not set");
+
+			ok( $("#ft_1 span.fancytree-icon").length === 1, "icon span exists by default ('undefined')");
+			ok( $("#ft_2 span.fancytree-icon").length === 1, "icon: true shows icon");
+			ok( $("#ft_3 span.fancytree-icon").length === 0, "icon: false hides icon");
+			// custom class
+			ok( $("#ft_4 span.fancytree-custom-icon").length === 1, "custom icons have span.fancytree-custom-icon");
+			ok( $("#ft_4 span.fancytree-custom-icon").hasClass("custom-class"), "custom icons have custom class added");
+			ok( $("#ft_4 .fancytree-icon").length === 0, "custom icons don't have .fancytree-icon");
+			// custom image
+			ok( $("#ft_5 img.fancytree-icon").attr("src") === "custom_icon.png", "image icon <img> exists");
+			ok( $("#ft_5 span.fancytree-icon").length === 0, "image icon <span> not exists");
+			ok( $("#ft_5 .fancytree-custom-icon").length === 0, "image icons don't have .fancytree-custom-icon");
+			// callback overrides node.icon
+			ok( $("#ft_6 span.fancytree-icon").length === 0, "icon hidden (node.icon=false, options.icon=undefined)");
+			ok( $("#ft_7 span.fancytree-icon").length === 1, "icon visible (node.icon=false, options.icon=true)");
+			ok( $("#ft_8 span.fancytree-icon").length === 1, "icon visible (node.icon=true, options.icon=undefined)");
+			ok( $("#ft_9 span.fancytree-icon").length === 0, "icon hidden (node.icon=true, options.icon=false)");
+			ok( $("#ft_10 span.fancytree-custom-icon").hasClass("custom-class-2"), "using custom-class-2 (node.icon='custom-class-2', options.icon=undefined)");
+			ok( $("#ft_11 span.fancytree-custom-icon").hasClass("custom-class"), "using custom-class (node.icon='custom-class-2', options.icon='custom-class')");
+
+			start();
+		}
+	});
+});
+
+
 /*******************************************************************************
  *
  */

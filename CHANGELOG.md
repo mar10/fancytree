@@ -1,7 +1,23 @@
-# 2.13.1-0 / Unreleased
+# 2.14.1-0 / Unreleased
   * 
 
-# 2.13 / 2015-11-16
+# 2.14.0 / 2015-11-16
+  * [CHANGED] #519 Refactored custom icon configuration:<br>
+    (see also the [theming tutorial](https://github.com/mar10/fancytree/wiki/TutorialTheming))
+
+    * [Added] `options.icon` option/callback.<br>
+      Valid values are true, false, a string containing a class name or image
+      url, or a callback returning that.
+    * [Changed] `node.icon` option. Valid values are true, false, or a string 
+      containing a class name or image url.<br>
+      This option existed before, but was stored in the `node.data.icon` namespace,
+      and did not accept class names.
+    * [Deprecated] `options.iconClass` callback: use `options.icon` instead
+    * [Deprecated] `options.icons`: use `options.icon` instead
+    * [Deprecated] `node.data.iconclass` option: use `node.icon` instead
+    * [Deprecated] `node.data.icon` option: use `node.icon` instead
+
+# 2.13.0 / 2015-11-16
   * [Changed] If a node is initalized as `lazy: true`, and `children: []`, 
     treat it as 'loaded leaf node'.<br>
     This is consistent with a lazy node that has no children property at all (i.e. 
@@ -30,7 +46,7 @@
   * [Fixed] #475 Font color while editing node title with bootstrap skin
   * [Fixed] #484 Glyph plugin: Missing margin-left for span.fancytree-custom-icon
   * [Fixed] #486 node.render(true) moves the node to the end of the list
-  * [Fixed] #489 `focusOnClick` option is ignored for tables, if 'dnd' is listed after 'table' extension
+  * [Fixed] #489 `focusOnClick` option is ignored for tables if 'dnd' is listed after 'table' extension
   * [Fixed] #495 Double clicking on expander with lazy-load causes assertion error
 
 # 2.11.0 / 2015-07-26
