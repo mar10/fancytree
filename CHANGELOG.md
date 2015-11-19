@@ -1,7 +1,4 @@
-# 2.14.1-0 / Unreleased
-  * 
-
-# 2.14.0 / 2015-11-16
+# 2.14.0-0 / Unreleased
   * [CHANGED] #519 Refactored custom icon configuration:<br>
     (see also the [theming tutorial](https://github.com/mar10/fancytree/wiki/TutorialTheming))
 
