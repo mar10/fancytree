@@ -234,7 +234,9 @@ test("Custom icons (node.icon)", function() {
 			ok( $("#ft_4 span.fancytree-custom-icon").hasClass("custom-class"), "custom icons have custom class added");
 			ok( $("#ft_4 .fancytree-icon").length === 0, "custom icons don't have .fancytree-icon");
 			// custom image
-			ok( $("#ft_5 img.fancytree-icon").attr("src") === "custom_icon.png", "image icon <img> exists");
+			// Note: IE <= 7 prepends the path to the src attribute, so we must test with indexOf:
+//			ok( $("#ft_5 img.fancytree-icon").attr("src") === "custom_icon.png", "image icon <img> exists");
+			ok( $("#ft_5 img.fancytree-icon").attr("src").indexOf("custom_icon.png") >= 0, "image icon <img> exists");
 			ok( $("#ft_5 span.fancytree-icon").length === 0, "image icon <span> not exists");
 			ok( $("#ft_5 .fancytree-custom-icon").length === 0, "image icons don't have .fancytree-custom-icon");
 			// auto-migration for iconClass
@@ -288,7 +290,9 @@ test("Custom icons (options.icon)", function() {
 			ok( $("#ft_4 span.fancytree-custom-icon").hasClass("custom-class"), "custom icons have custom class added");
 			ok( $("#ft_4 .fancytree-icon").length === 0, "custom icons don't have .fancytree-icon");
 			// custom image
-			ok( $("#ft_5 img.fancytree-icon").attr("src") === "custom_icon.png", "image icon <img> exists");
+			// Note: IE <= 7 prepends the path to the src attribute, so we must test with indexOf:
+//			ok( $("#ft_5 img.fancytree-icon").attr("src") === "custom_icon.png", "image icon <img> exists");
+			ok( $("#ft_5 img.fancytree-icon").attr("src").indexOf("custom_icon.png") >= 0, "image icon <img> exists");
 			ok( $("#ft_5 span.fancytree-icon").length === 0, "image icon <span> not exists");
 			ok( $("#ft_5 .fancytree-custom-icon").length === 0, "image icons don't have .fancytree-custom-icon");
 			// callback overrides node.icon
