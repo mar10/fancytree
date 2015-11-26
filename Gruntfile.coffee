@@ -242,6 +242,7 @@ module.exports = (grunt) ->
         ]
         develop: [ 
             "test/unit/test-core.html"
+            "test/unit/test-ext-filter.html"
             "test/unit/test-ext-table.html"
             "test/unit/test-ext-misc.html"
         ]
