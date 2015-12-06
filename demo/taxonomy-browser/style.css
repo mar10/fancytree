@@ -1,0 +1,26 @@
+body {
+	padding: 0 1em;
+}
+div.panel[role=tabpanel] {
+	border-top-width: 0;
+	border-top-right-radius: 0;
+	border-top-left-radius: 0;
+	padding: 3px;
+}
+/*
+#searchResultTree th:nth-child(1),
+#searchResultTree td:nth-child(1) {
+
+}
+*/
+#taxonTree {
+	padding-bottom: 20px;
+}
+#taxonTree .fancytree-container {
+	border: 1px solid #ccc;
+	border-radius: 3px;
+}
+.busy {
+	color: gray;
+	background-color: #eee;
+}
