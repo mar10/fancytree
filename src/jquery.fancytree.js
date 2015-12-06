@@ -2017,6 +2017,12 @@ Fancytree.prototype = /** @lends Fancytree# */{
 		}
 	},
    */
+	/** Remove alle nodes.
+	 * @since 2.14
+	 */
+	clear: function(source) {
+		this._callHook("treeClear", this);
+	},
    /** Return the number of nodes.
 	* @returns {integer}
 	*/
@@ -2299,6 +2305,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 			sep = this.options.keyPathSeparator,
 			self = this;
 
+		callback = callback || $.noop;
 		if(!$.isArray(keyPathList)){
 			keyPathList = [keyPathList];
 		}
@@ -2711,7 +2718,7 @@ $.extend(Fancytree.prototype,
 			source = new $.Deferred();
 			dfd.done(function (data, textStatus, jqXHR) {
 				var errorObj, res;
-				if(this.dataType === "json" && typeof data === "string"){
+				if((this.dataType === "json" || this.dataType === "jsonp") && typeof data === "string"){
 					$.error("Ajax request returned a string (did you get the JSON dataType wrong?).");
 				}
 				// postProcess is similar to the standard ajax dataFilter hook,

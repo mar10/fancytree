@@ -13,6 +13,7 @@
     * [Deprecated] `options.icons`: use `options.icon` instead
     * [Deprecated] `node.data.iconclass` option: use `node.icon` instead
     * [Deprecated] `node.data.icon` option: use `node.icon` instead
+  * [Added] `tree.clear()` method.
 
 # 2.13.0 / 2015-11-16
   * [Changed] If a node is initalized as `lazy: true`, and `children: []`, 
