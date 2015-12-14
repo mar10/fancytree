@@ -300,13 +300,20 @@ $.ui.fancytree.registerExtension({
 	 },
 	/* Expand node, return Deferred.promise. */
 	nodeSetExpanded: function(ctx, flag, opts) {
-		var dfd = new $.Deferred(),
+        // flag defaults to true
+        flag = (flag !== false);
+
+        if((ctx.node.expanded && flag) || (!ctx.node.expanded && !flag)) {
+            // Expanded state isn't changed - just call base implementation
+            return this._superApply(arguments);
+        }
+
+        var dfd = new $.Deferred(),
 			subOpts = $.extend({}, opts, {noEvents: true, noAnimation: true});
 
 		opts = opts || {};
 
 		function _afterExpand(ok) {
-			flag = (flag !== false);
 			setChildRowVisibility(ctx.node, flag);
 			if( ok ) {
 				if( flag && ctx.options.autoScroll && !opts.noAnimation && ctx.node.hasChildren() ) {
