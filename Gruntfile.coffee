@@ -218,6 +218,7 @@ module.exports = (grunt) ->
             "src/*.js"
             "3rd-party/**/jquery.fancytree.*.js"
             "test/unit/*.js"
+            "demo/**/*.js"
             ]
         afterConcat: [
             "<%= concat.core.dest %>"
@@ -349,7 +350,7 @@ module.exports = (grunt) ->
         jshint:
             options:
                 atBegin: true
-            files: ["src/*.js", "test/unit/*.js"]
+            files: ["src/*.js", "test/unit/*.js", "demo/**/*.js"]
             tasks: ["jshint:beforeConcat"]
 
     yabs:

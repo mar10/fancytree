@@ -18,6 +18,7 @@
 		init: "lion"
 	});
  */
+/*globals alert, prettyPrint */
 
 (function( $ ) {
 	var PLUGIN_NAME = "skinswitcher",
@@ -35,7 +36,7 @@
 					opts = $.extend({}, defaultOptions, options),
 					hrefs = [],
 					$link = null,
-					initialChoice = undefined;
+					initialChoice;
 				// $('').skinswitcher did not match a selector
 				if( !this.length ){
 					return this;
@@ -138,29 +139,31 @@
  * By Felix Kling
  */
 (function($) {
-	$.fn.clickToggle = function(func1, func2) {
-		var funcs = [func1, func2];
-		this.data('toggleclicked', 0);
-		this.click(function() {
-			var data = $(this).data();
-			var tc = data.toggleclicked;
-			$.proxy(funcs[tc], this)();
-			data.toggleclicked = (tc + 1) % 2;
-		});
-		return this;
+
+var _gaq = _gaq || [],
+	SAMPLE_BUTTON_DEFAULTS = {
+		id: undefined,
+		label: "Sample",
+		newline: true,
+		code: function(){ alert("not implemented"); }
 	};
-}(jQuery));
 
-
-SAMPLE_BUTTON_DEFAULTS = {
-	id: undefined,
-	label: "Sample",
-	newline: true,
-	code: function(){ alert("not implemented"); }
+$.fn.clickToggle = function(func1, func2) {
+	var funcs = [func1, func2];
+	this.data("toggleclicked", 0);
+	this.click(function() {
+		var data = $(this).data(),
+			tc = data.toggleclicked;
+		$.proxy(funcs[tc], this)();
+		data.toggleclicked = (tc + 1) % 2;
+	});
+	return this;
 };
-function addSampleButton(options)
-{
-	var opts = $.extend({}, SAMPLE_BUTTON_DEFAULTS, options),
+
+
+window.addSampleButton = function(options) {
+	var sourceCode,
+		opts = $.extend({}, SAMPLE_BUTTON_DEFAULTS, options),
 		$buttonBar = $("#sampleButtons"),
 		$container = $("<span />", {
 			"class": "sampleButtonContainer"
@@ -183,8 +186,8 @@ function addSampleButton(options)
 	.click(function(e){
 		try {
 			prettyPrint();
-		} catch (e) {
-			alert(e);
+		} catch (e2) {
+			alert(e2);
 		}
 		var $pre = $container.find("pre");
 		if($pre.is(":visible")){
@@ -195,7 +198,7 @@ function addSampleButton(options)
 		$pre.toggle("slow");
 		return false;
 	});
-	var sourceCode = "" + opts.code;
+	sourceCode = "" + opts.code;
 	// Remove outer function(){ CODE }
 //    sourceCode = sourceCode.match(/[]\{(.*)\}/);
 	sourceCode = sourceCode.substring(
@@ -220,12 +223,13 @@ function addSampleButton(options)
 		$.error("addSampleButton() needs a container with id #sampleButtons");
 	}
 	$container.appendTo($buttonBar);
-}
+};
 
 
-function initCodeSamples()
-{
-	var $source = $("#sourceCode");
+function initCodeSamples() {
+	var info,
+		$source = $("#sourceCode");
+
 	$("#codeExample").clickToggle(
 		function(){
 			$source.show("fast");
@@ -253,9 +257,9 @@ function initCodeSamples()
 		}
 	);
 	if(jQuery.ui){
-		var info = "Fancytree " + jQuery.ui.fancytree.version
-			+ ", jQuery UI " + jQuery.ui.version
-			+ ", jQuery " + jQuery.fn.jquery;
+		info = "Fancytree " + jQuery.ui.fancytree.version +
+			", jQuery UI " + jQuery.ui.version +
+			", jQuery " + jQuery.fn.jquery;
 /*
 		info += "\n<br>";
 		info += "document.compatMode: " + document.compatMode + "\n";
@@ -267,9 +271,6 @@ function initCodeSamples()
 	}
 }
 
-
-var _gaq = _gaq || [];
-
 $(function(){
 	// Log to Google Analytics, when not running locally
 	if ( document.URL.toLowerCase().indexOf("wwwendt.de/") >= 0 ) {
@@ -277,14 +278,14 @@ $(function(){
 		_gaq.push(["_trackPageview"]);
 
 		(function() {
-			var ga = document.createElement("script"); ga.type = "text/javascript"; ga.async = true;
-			ga.src = ("https:" == document.location.protocol ? "https://ssl" : "http://www") + ".google-analytics.com/ga.js";
-			var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(ga, s);
+			var s, ga = document.createElement("script"); ga.type = "text/javascript"; ga.async = true;
+			ga.src = ("https:" === document.location.protocol ? "https://ssl" : "http://www") + ".google-analytics.com/ga.js";
+			s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(ga, s);
 		})();
 	}
 
 	// Show some elements only, if (not) inside the Example Browser
-	if (top.location == self.location){
+	if (top.location === window.location){
 		$(".hideOutsideFS").hide();
 	}else{
 		$(".hideInsideFS").hide();
@@ -302,9 +303,11 @@ $(function(){
 				  {name: "Lion", value: "lion", href: "skin-lion/ui.fancytree.css"}
 				  ]
 //		init: "lion"
-	})
+	});
 	// .after($("<label><input name='cbWide' type='checkbox'>Wide</label>"));
 	// $("[name=cbWide]").on("change", function(e){
 	// 	$(".fancytree-container").toggleClass("fancytree-ext-wide", $(this).is(":checked"));
 	// });
 });
+
+}(jQuery));
