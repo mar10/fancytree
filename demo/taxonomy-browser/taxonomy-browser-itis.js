@@ -24,7 +24,7 @@ var taxonTree, searchResultTree,
 	timerMap = {},
 	tmplDetails, // = 
 	USER_AGENT = "Fancytree Taxonomy Browser/1.0",
-	GBIF_URL = "http://api.gbif.org/v1/",
+	ITIS_URL = "http://www.itis.gov/ITISWebService/jsonservice/",
 	glyphOpts = {
 		map: {
 			doc: "glyphicon glyphicon-file",
@@ -94,27 +94,41 @@ function _delay(tag, ms, callback) {
  */
 function _callItis(cmd, data) {
 	return $.ajax({
-		url: GBIF_URL + cmd,
+		url: ITIS_URL + cmd,
 		data: $.extend({
+			jsonp: "itis_data"
 		}, data),
 		cache: true,
 		headers: { "Api-User-Agent": USER_AGENT },
+		jsonpCallback: "itis_data",
 		dataType: "jsonp"
 	});
 }
 
+/** 
+ */
+// function countMatches(query) {
+// 	$("#tsnDetails").text("Loading TSN " + tsn + "...");
+// 	_callItis("getAnyMatchCount", {
+// 		srchKey: query
+// 	}).done(function(result){
+// 		console.log("updateTsnDetails", result);
+// 		$("#tsnDetails").html(tmplDetails(result));
+// 		updateControls();
+// 	});
+// }
+
 /**
  */
-function updateTsnDetails(key) {
+function updateTsnDetails(tsn) {
 	$("#tsnDetails").addClass("busy");
-	// $("#tsnDetails").text("Loading TSN " + key + "...");
-	$.bbq.pushState({key: key});
+	// $("#tsnDetails").text("Loading TSN " + tsn + "...");
+	$.bbq.pushState({tsn: tsn});
 
-	_callItis("species/" + key, {
-		// key: key
+	_callItis("getFullRecordFromTSN", {
+		tsn: tsn
 	}).done(function(result){
 		console.log("updateTsnDetails", result);
-		result._now = new Date().toString();
 		$("#tsnDetails")
 			.html(tmplDetails(result))
 			.removeClass("busy");
@@ -125,51 +139,40 @@ function updateTsnDetails(key) {
 
 /**
  */
-function updateBreadcrumb(key, loadTreeNodes) {
-
-	var $ol = $("ol.breadcrumb").addClass("busy"),
-		activeNode = taxonTree.getActiveNode();
-
-	if( activeNode && activeNode.key !== key ) {
-		activeNode.setActive(false); // deactivate, in case the new key is not found
-	}
-	$.when(
-		_callItis("species/" + key + "/parents"),
-		_callItis("species/" + key)
-	).done(function(parents, node){
-		// Both requests resolved (result format: [ data, statusText, jqXHR ])
-		var nodeList = parents[0],
-			keyList = [];
-
-		nodeList.push(node[0]);
-		// console.log("UB", nodeList);
-
+function updateBreadcrumb(tsn, loadTreeNodes) {
+	// var $ol = $("ol.breadcrumb").text("...");
+	var $ol = $("ol.breadcrumb").addClass("busy");
+	_callItis("getFullHierarchyFromTSN", {
+		tsn: tsn
+	}).done(function(result){
+		console.log("updateBreadcrumb", result);
+		// Convert to simpler format
+		var list = [];
 		// Display as <OL> list (for Bootstrap breadcrumbs)
 		$ol.empty().removeClass("busy");
-		$.each(nodeList, function(i, o){
-			var name = o.vernacularName || o.canonicalName;
-
-			keyList.push(o.key);
-			if( o.key === key ) {
+		$.each(result.hierarchyList, function(i, o){
+			if( o.parentTsn === tsn ) { return; } // skip direct children
+			list.push(o.tsn);
+			if( o.tsn === tsn ) {
 				$ol.append(
 					$("<li class='active'>").append(
 						$("<span>", {
-							text: name,
-							title: o.rank
+							text: o.taxonName,
+							title: o.rankName
 						})));
 			} else {
 				$ol.append(
 					$("<li>").append(
 						$("<a>", {
-							href: "#key=" + o.key,
-							text: name,
-							title: o.rank
+							href: "#tsn=" + o.tsn,
+							text: o.taxonName,
+							title: o.rankName
 						})));
 			}
 		});
 		if( loadTreeNodes ) {
-			// console.log("updateBreadcrumb - loadKeyPath", keyList);
-			taxonTree.loadKeyPath("/" + keyList.join("/"), function(node, status){
+			console.log("updateBreadcrumb - loadKeyPath", list);
+			taxonTree.loadKeyPath("/" + list.join("/"), function(node, status){
 				// console.log("... updateBreadcrumb - loadKeyPath", status, node);
 				switch( status ) {
 				case "loaded":
@@ -194,13 +197,13 @@ function search(query) {
 	// but empty result sets).
 	// When debugging, make sure cross domain requests are allowed.
 	searchResultTree.reload({
-		url: GBIF_URL + "species/search",
+		url: ITIS_URL + "searchForAnyMatchPaged",
 		data: {
-			q: query,
-			strict: "true",
-			// hl: true,
-			limit: 10,
-			offset: 0
+			// jsonp: "itis_data",
+			srchKey: query,
+			pageSize: 10,
+			pageNum: 1,
+			ascend: false
 		},
 		cache: true
 		// jsonpCallback: "itis_data",
@@ -228,16 +231,17 @@ $("#taxonTree").fancytree({
 	activeVisible: true,
 	source: {
 		// We could use getKingdomNames, but that returns an individual JSON format.
-		// getHierarchyDownFromTSN?key=0 seems to work as well and allows 
+		// getHierarchyDownFromTSN?tsn=0 seems to work as well and allows 
 		// unified parsing in postProcess.
-		// url: GBIF_URL + "getKingdomNames",
-		url: GBIF_URL + "species/search",
+		// url: ITIS_URL + "getKingdomNames",
+		url: ITIS_URL + "getHierarchyDownFromTSN",
 		data: {
-			rank: "kingdom"
-			// key: "1,10"
+			jsonp: "itis_data",
+			tsn: "0"
 		},
-		cache: true
-		// dataType: "jsonp"
+		cache: true,
+		jsonpCallback: "itis_data",
+		dataType: "jsonp"
 	},
 	init: function(event, data) {
 		updateControls();
@@ -245,25 +249,23 @@ $("#taxonTree").fancytree({
 	},
 	lazyLoad: function(event, data) {
 		data.result = {
-			url: GBIF_URL + "species/" + data.node.key + "/children",
-			cache: true
-			// dataType: "jsonp"
+			url: ITIS_URL + "getHierarchyDownFromTSN",
+			data: {
+				jsonp: "itis_data",
+				tsn: data.node.key
+			},
+			cache: true,
+			jsonpCallback: "itis_data",
+			dataType: "jsonp"
 		};
 	},
 	postProcess: function(event, data) {
 		var response = data.response;
 
-		data.node.info("SPP", response);
-		data.result = $.map(response.results, function(o){
-			if( data.node.isRoot() && o.key !== o.nubKey ) {
-				return;
-			}
-			return o && {title: o.vernacularName || o.canonicalName, key: o.key, nubKey: o.nubKey, folder: true, lazy: true};
+		data.node.info(response);
+		data.result = $.map(response.hierarchyList, function(o){
+			return o && {title: o.taxonName, key: o.tsn, folder: true, lazy: true};
 		});
-		if( response.offset + response.limit < response.count ) {
-			data.result.push({title: "(" + (response.count - response.offset - response.limit) + " more)" });
-		}
-		data.node.info("SPPR", data);
 	},
 	activate: function(event, data) {
 		$("#tsnDetails").addClass("busy"); //text("...");
@@ -288,18 +290,15 @@ $("#searchResultTree").fancytree({
 		var response = data.response;
 
 		data.node.info("pp", response);
-		data.result = $.map(response.results, function(o){
+		data.result = $.map(response.anyMatchList, function(o){
 			if( !o ) { return; }
-			var res = { title: o.canonicalName, key: o.key, author: o.authorship,
-						matchType: o.nameType };
-			res.commonNames = $.map(o.vernacularNames, function(o){
+			var res = { title: o.sciName, key: o.tsn, author: o.author,
+						matchType: o.matchType };
+			res.commonNames = $.map(o.commonNameList.commonNames, function(o){
 					return o && o.commonName ? {name: o.commonName, language: o.language} : undefined;
 				});
 			return res;
 		});
-		if( response.offset + response.limit < response.count ) {
-			data.result.push({title: "(" + (response.count - response.offset - response.limit) + " more)" });
-		}
 		// console.log("pp2", data.result)
 	},
 	renderColumns: function(event, data) {
@@ -330,10 +329,10 @@ searchResultTree = $.ui.fancytree.getTree("#searchResultTree");
 // Bind a callback that executes when document.location.hash changes.
 // (This code uses bbq: https://github.com/cowboy/jquery-bbq)
 $(window).bind( "hashchange", function(e) {
-	var key = $.bbq.getState( "key" );
-	console.log("bbq key", key);
-	if( key ) {
-		updateBreadcrumb(key, true);
+	var tsn = $.bbq.getState( "tsn" );
+	console.log("bbq tsn", tsn);
+	if( tsn ) {
+		updateBreadcrumb(tsn, true);
 	}
 }); // don't trigger now, since we need the the taxonTree root nodes to be loaded first
 

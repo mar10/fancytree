@@ -12,7 +12,7 @@ $(function(){
 	$("#btnJson1").click(function(e){
 		$.ajax({
 			// url: GBIF_URL + "enumeration/basic/Kingdom",
-			url: GBIF_URL + "species/ANIMALIA/children",
+			url: GBIF_URL + "species?rank=kingdom",
 			data: {
 				// rank: "kingdom"
 			},
