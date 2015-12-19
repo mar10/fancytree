@@ -233,7 +233,8 @@ $("#taxonTree").fancytree({
 		// url: GBIF_URL + "getKingdomNames",
 		url: GBIF_URL + "species/search",
 		data: {
-			rank: "kingdom"
+			rank: "kingdom",
+			limit: 200
 			// key: "1,10"
 		},
 		cache: true
@@ -246,6 +247,9 @@ $("#taxonTree").fancytree({
 	lazyLoad: function(event, data) {
 		data.result = {
 			url: GBIF_URL + "species/" + data.node.key + "/children",
+			data: {
+				limit: 200
+			},
 			cache: true
 			// dataType: "jsonp"
 		};
@@ -266,9 +270,10 @@ $("#taxonTree").fancytree({
 		data.node.info("SPPR", data);
 	},
 	activate: function(event, data) {
-		$("#tsnDetails").addClass("busy"); //text("...");
+		$("#tsnDetails").addClass("busy");
+		$("ol.breadcrumb").addClass("busy");
 		updateControls();
-		_delay("showDetails", 1000, function(){
+		_delay("showDetails", 500, function(){
 			updateTsnDetails(data.node.key);
 			updateBreadcrumb(data.node.key);
 		});
@@ -315,7 +320,7 @@ $("#searchResultTree").fancytree({
 		$tdList.eq(4).text(node.data.author);
 	},
 	activate: function(event, data) {
-		_delay("activateNode", 1000, function(){
+		_delay("activateNode", 500, function(){
 			updateTsnDetails(data.node.key);
 			updateBreadcrumb(data.node.key);
 		});

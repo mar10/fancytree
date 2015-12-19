@@ -22,5 +22,6 @@ div.panel[role=tabpanel] {
 }
 .busy {
 	color: gray;
-	background-color: #eee;
+	background-image: url("busy_bg_fff.png");
+	background-repeat: repeat;
 }

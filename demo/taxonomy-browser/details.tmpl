@@ -1,5 +1,11 @@
-<h3>{{#if vernacularName}} {{vernacularName}} {{else}} {{canonicalName}} {{/if}} <small>{{rank}}</small></h3>
+<h3>
+	{{#if vernacularName}} {{vernacularName}} {{else}} {{canonicalName}} {{/if}} 
+	{{#if isExtinct}} † {{/if}} 
+	<small>{{rank}}</small>
+</h3>
+<!-- 
 <h4>Taxonomy and Nomenclature</h4>
+ -->
 <dl>
 	<dt>Scientific Name</dt>
 		<dd>{{scientificName}}</dd>
@@ -51,11 +57,15 @@
 		<dd>todo</dd>
  -->
 </dl>
-GBIF Secretariat: GBIF Backbone Taxonomy, [YYYY-MM-DD]. 
-Accessed via http://www.gbif.org/dataset/{{datasetKey}} on {{_now}}
+<small>
+GBIF Secretariat: GBIF Backbone Taxonomy,  
+Accessed via <a href="http://www.gbif.org/dataset/{{datasetKey}}">http://www.gbif.org/dataset/{{datasetKey}}</a> on {{_now}}
 <p>
 Open <a href="http://www.gbif.org/species/{{key}}"target="_blank">Authorative Information on GBIF</a>.
 </p>
+</small>
+<!-- 
 <div class="body">
 	{{body}}
 </div>
+ -->
