@@ -1,4 +1,6 @@
-# 2.14.0-0 / Unreleased
+# 2.14.1-0 / Unreleased
+
+# 2.14.0-0 / 2015-12-19
   * [CHANGED] #519 Refactored custom icon configuration:<br>
     (see also the [theming tutorial](https://github.com/mar10/fancytree/wiki/TutorialTheming))
 
@@ -15,6 +17,7 @@
     * [Deprecated] `node.data.icon` option: use `node.icon` instead
 
   * [Added] `tree.clear()` method.
+  * [Added] #520 ext-persist: new event `beforeRestore`
   * [Fixed] #533 table-ext: nodeSetExpanded triggers redundant events
 
 # 2.13.0 / 2015-11-16

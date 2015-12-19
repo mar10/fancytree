@@ -143,7 +143,8 @@ var TreePatch = {};
  * @property {Boolean|Function} icon Display node icons (default: true)<br>
  *     true: use default icons, depending on `node.folder` and `node.expanded`<br>
  *     false: hide icons<br>
- *     function(node, data): callback returning true, false, or a string.
+ *     function(node, data): callback returning true, false, or a string.<br>
+ *     NOTE: changed with v2.14.
  *	   See the node option of the same name for an explanation of possible string values.
  * @property {Boolean} <del>icons</del> @deprecated use `icon` instead
  * @property {String} idPrefix prefix used to generate node markup ID attributes (default: "ft_", requires generateIds to be set)
@@ -186,6 +187,7 @@ var FancytreeOptions = {};
  * @property {function} activate `data.node` was activated
  * @property {function} beforeActivate `data.node` is about to tbe (de)activated. Current status is `data.node.isActive()`. Return `false` to prevent default processing
  * @property {function} beforeExpand `data.node` is about to tbe collapsed/expanded. Current status is `data.node.isExpanded()`. Return `false` to prevent default processing
+ * @property {function} beforeRestore ext-persist is about to restore the previous state. Return `false` to prevent default processing
  * @property {function} beforeSelect `data.node` is about to tbe (de)selected. Current status is `data.node.isSelected()`.Return `false` to prevent default processing
  * @property {function} blur `data.node` lost keyboard focus
  * @property {function} blurTree `data.tree` lost keyboard focus
