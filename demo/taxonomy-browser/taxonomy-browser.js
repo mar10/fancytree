@@ -46,9 +46,9 @@ var taxonTree, searchResultTree,
 
 // Load and compile handlebar templates
 
-$.get( "details.tmpl", function( data ) {
+$.get( "details.tmpl.html", function( data ) {
 	tmplDetails = Handlebars.compile(data);
-}, "html");
+});
 
 /** Update UI elements according to current status
  */
