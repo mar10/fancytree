@@ -25,6 +25,7 @@ var taxonTree, searchResultTree,
 	tmplDetails, // = 
 	USER_AGENT = "Fancytree Taxonomy Browser/1.0",
 	GBIF_URL = "http://api.gbif.org/v1/",
+	TAXONOMY_KEY = "d7dddbf4-2cf0-4f39-9b2a-bb099caae36c",  // GBIF backbone taxonomy
 	glyphOpts = {
 		map: {
 			doc: "glyphicon glyphicon-file",
@@ -66,6 +67,22 @@ function updateControls() {
 		.attr("disabled", query.length < 2);
 }
 
+/** 
+ */
+function appendStatusNodeMore(response, result) {
+	if( response.count != null && response.offset + response.limit < response.count ) {
+		result.push({
+			title: "(" + (response.count - response.offset - response.limit) + " more)",
+			statusNodeType: "more"
+			});
+	} else if( response.endOfRecords === false ) {
+		result.push({
+			title: "(more)",
+			statusNodeType: "more"
+			});
+	}
+}
+
 /**
  * Invoke callback after `ms` miliseconds.
  * Any pending action of this type is cancelled before.
@@ -92,7 +109,7 @@ function _delay(tag, ms, callback) {
 
 /**
  */
-function _callItis(cmd, data) {
+function _callWebservice(cmd, data) {
 	return $.ajax({
 		url: GBIF_URL + cmd,
 		data: $.extend({
@@ -105,17 +122,17 @@ function _callItis(cmd, data) {
 
 /**
  */
-function updateTsnDetails(key) {
-	$("#tsnDetails").addClass("busy");
-	// $("#tsnDetails").text("Loading TSN " + key + "...");
+function updateItemDetails(key) {
+	$("#itemDetails").addClass("busy");
+	// $("#itemDetails").text("Loading TSN " + key + "...");
 	$.bbq.pushState({key: key});
 
-	_callItis("species/" + key, {
+	_callWebservice("species/" + key, {
 		// key: key
 	}).done(function(result){
-		console.log("updateTsnDetails", result);
+		console.log("updateItemDetails", result);
 		result._now = new Date().toString();
-		$("#tsnDetails")
+		$("#itemDetails")
 			.html(tmplDetails(result))
 			.removeClass("busy");
 
@@ -134,23 +151,21 @@ function updateBreadcrumb(key, loadTreeNodes) {
 		activeNode.setActive(false); // deactivate, in case the new key is not found
 	}
 	$.when(
-		_callItis("species/" + key + "/parents"),
-		_callItis("species/" + key)
+		_callWebservice("species/" + key + "/parents"),
+		_callWebservice("species/" + key)
 	).done(function(parents, node){
 		// Both requests resolved (result format: [ data, statusText, jqXHR ])
 		var nodeList = parents[0],
 			keyList = [];
 
 		nodeList.push(node[0]);
-		// console.log("UB", nodeList);
 
 		// Display as <OL> list (for Bootstrap breadcrumbs)
 		$ol.empty().removeClass("busy");
 		$.each(nodeList, function(i, o){
 			var name = o.vernacularName || o.canonicalName;
-
 			keyList.push(o.key);
-			if( o.key === key ) {
+			if( "" + o.key === "" + key ) {
 				$ol.append(
 					$("<li class='active'>").append(
 						$("<span>", {
@@ -189,25 +204,25 @@ function updateBreadcrumb(key, loadTreeNodes) {
 function search(query) {
 	query = $.trim(query);
 	console.log("searching for '" + query + "'...");
-	// NOTE: 
-	// It seems that ITIS searches don't work with jsonp (always return valid
-	// but empty result sets).
-	// When debugging, make sure cross domain requests are allowed.
+	$("#searchResultTree").addClass("busy");
 	searchResultTree.reload({
-		url: GBIF_URL + "species/search",
+		// url: GBIF_URL + "species/match",  // Fuzzy matches scientific names against the GBIF Backbone Taxonomy
+		url: GBIF_URL + "species/search",  // Full text search of name usages covering the scientific and vernacular name, the species description, distribution and the entire classification across all name usages of all or some checklists
 		data: {
 			q: query,
-			strict: "true",
+			datasetKey: TAXONOMY_KEY,
+			// name: query,
+			// strict: "true",
 			// hl: true,
 			limit: 10,
 			offset: 0
 		},
 		cache: true
-		// jsonpCallback: "itis_data",
+		// headers: { "Api-User-Agent": USER_AGENT }
 		// dataType: "jsonp"
 	}).done(function(result){
 		// console.log("search returned", result);
-		// result.anyMatchList
+		$("#searchResultTree").removeClass("busy");
 		updateControls();
 	});
 }
@@ -227,16 +242,8 @@ $("#taxonTree").fancytree({
 	glyph: glyphOpts,
 	activeVisible: true,
 	source: {
-		// We could use getKingdomNames, but that returns an individual JSON format.
-		// getHierarchyDownFromTSN?key=0 seems to work as well and allows 
-		// unified parsing in postProcess.
-		// url: GBIF_URL + "getKingdomNames",
-		url: GBIF_URL + "species/search",
-		data: {
-			rank: "kingdom",
-			limit: 200
-			// key: "1,10"
-		},
+		url: GBIF_URL + "species/root/" + TAXONOMY_KEY,
+		data: {},
 		cache: true
 		// dataType: "jsonp"
 	},
@@ -257,24 +264,18 @@ $("#taxonTree").fancytree({
 	postProcess: function(event, data) {
 		var response = data.response;
 
-		data.node.info("SPP", response);
+		data.node.info("taxonTree postProcess", response);
 		data.result = $.map(response.results, function(o){
-			if( data.node.isRoot() && o.key !== o.nubKey ) {
-				return;
-			}
 			return o && {title: o.vernacularName || o.canonicalName, key: o.key, nubKey: o.nubKey, folder: true, lazy: true};
 		});
-		if( response.offset + response.limit < response.count ) {
-			data.result.push({title: "(" + (response.count - response.offset - response.limit) + " more)" });
-		}
-		data.node.info("SPPR", data);
+		appendStatusNodeMore(response, data.result);
 	},
 	activate: function(event, data) {
-		$("#tsnDetails").addClass("busy");
+		$("#itemDetails").addClass("busy");
 		$("ol.breadcrumb").addClass("busy");
 		updateControls();
 		_delay("showDetails", 500, function(){
-			updateTsnDetails(data.node.key);
+			updateItemDetails(data.node.key);
 			updateBreadcrumb(data.node.key);
 		});
 	}
@@ -292,20 +293,17 @@ $("#searchResultTree").fancytree({
 	postProcess: function(event, data) {
 		var response = data.response;
 
-		data.node.info("pp", response);
+		data.node.info("search postProcess", response);
 		data.result = $.map(response.results, function(o){
-			if( !o ) { return; }
+			// if( !o ) { return; }
 			var res = { title: o.canonicalName, key: o.key, author: o.authorship,
 						matchType: o.nameType };
 			res.commonNames = $.map(o.vernacularNames, function(o){
-					return o && o.commonName ? {name: o.commonName, language: o.language} : undefined;
+					return o.commonName ? {name: o.commonName, language: o.language} : undefined;
 				});
 			return res;
 		});
-		if( response.offset + response.limit < response.count ) {
-			data.result.push({title: "(" + (response.count - response.offset - response.limit) + " more)" });
-		}
-		// console.log("pp2", data.result)
+		appendStatusNodeMore(response, data.result);
 	},
 	renderColumns: function(event, data) {
 		var node = data.node,
@@ -314,14 +312,14 @@ $("#searchResultTree").fancytree({
 					return o.name;
 				}) : [];
 
-		$tdList.eq(0).text(node.key);
-		$tdList.eq(2).text(cnList.join(", "));
-		$tdList.eq(3).text(node.data.matchType);
-		$tdList.eq(4).text(node.data.author);
+		$tdList.eq(0).text(node.key).addClass("hidden-sm");
+		$tdList.eq(2).text(cnList.join(", ")).addClass("hidden-xs");
+		$tdList.eq(3).text(node.data.matchType).addClass("hidden-sm");
+		$tdList.eq(4).text(node.data.author).addClass("hidden-xs");
 	},
 	activate: function(event, data) {
 		_delay("activateNode", 500, function(){
-			updateTsnDetails(data.node.key);
+			updateItemDetails(data.node.key);
 			updateBreadcrumb(data.node.key);
 		});
 	}
@@ -342,7 +340,6 @@ $(window).bind( "hashchange", function(e) {
 	}
 }); // don't trigger now, since we need the the taxonTree root nodes to be loaded first
 
-
 $("input[name=query]").keyup(function(e){
 	var query = $.trim($(this).val());
 
@@ -354,6 +351,9 @@ $("input[name=query]").keyup(function(e){
 		$("#btnSearch").click();
 		return;
 	}
+	_delay("search", 500, function(){
+		$("#btnSearch").click();
+	});
 	$("#btnResetSearch").attr("disabled", query.length === 0);
 	$("#btnSearch").attr("disabled", query.length < 2);
 }).focus();
@@ -361,9 +361,9 @@ $("input[name=query]").keyup(function(e){
 $("#btnResetSearch").click(function(e){
 	$("#searchResultPane").collapse("hide");
 	$("input[name=query]").val("");
-	searchResultTree.clear();
-	// $("#btnSearch").attr("disabled", true);
-	// $(this).attr("disabled", true);
+	// TODO: use clear with v2.14
+	// searchResultTree.clear();
+	searchResultTree.getRootNode().removeChildren();
 	updateControls();
 });
 
@@ -378,6 +378,7 @@ $("#btnPin").click(function(event){
 	});
 	updateControls();
 });
+
 $("#btnUnpin").click(function(event){
 	taxonTree.clearFilter();
 	updateControls();
