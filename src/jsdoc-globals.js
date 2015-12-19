@@ -59,8 +59,8 @@ var EventData = {};
  * @property {Boolean} active (Initialization only, but will not be stored with the node.)
  * @property {NodeData[]} children Optional array of child nodes.<br>
  *     Note that for <i>lazy</i> nodes, a value of null or undefined is interpreted as
- *     <i>not yet loaded</i>; if an array is passed (even an empty one), the 
- *     node is considered <i>loaded</i> which will effectively disable the 
+ *     <i>not yet loaded</i>; if an array is passed (even an empty one), the
+ *     node is considered <i>loaded</i> which will effectively disable the
  *     lazy-behavior.
  * @property {object} data All unknown properties from constructor will be copied to `node.data`.
  * @property {Boolean} expanded Initial expansion state. Use `node.setExpanded()` or `node.isExpanded()` to access.

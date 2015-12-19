@@ -8,8 +8,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.13.0
- * @date 2015-11-16T07:33
+ * @version 2.14.0
+ * @date 2015-12-19T23:23
  */
 
 ;(function($, window, document, undefined) {
@@ -143,7 +143,7 @@ $.ui.fancytree.registerExtension({
 		}
 		this._local.measureUnit = iconWidthUnit;
 		this._local.levelOfs = parseFloat(levelOfs);
-		this._local.lineOfs = (1 + (ctx.options.checkbox ? 1 : 0) + (ctx.options.icons ? 1 : 0)) * (iconWidth + iconSpacing) + iconSpacing;
+		this._local.lineOfs = (1 + (ctx.options.checkbox ? 1 : 0) + (ctx.options.icon === false ? 0 : 1)) * (iconWidth + iconSpacing) + iconSpacing;
 		this._local.maxDepth = 10;
 
 		// Get/Set a unique Id on the container (if not already exists)

@@ -22,7 +22,7 @@
 
 var taxonTree, searchResultTree,
 	timerMap = {},
-	tmplDetails, // = 
+	tmplDetails, // =
 	USER_AGENT = "Fancytree Taxonomy Browser/1.0",
 	GBIF_URL = "http://api.gbif.org/v1/",
 	TAXONOMY_KEY = "d7dddbf4-2cf0-4f39-9b2a-bb099caae36c",  // GBIF backbone taxonomy
@@ -67,7 +67,7 @@ function updateControls() {
 		.attr("disabled", query.length < 2);
 }
 
-/** 
+/**
  */
 function appendStatusNodeMore(response, result) {
 	if( response.count != null && response.offset + response.limit < response.count ) {
@@ -94,15 +94,15 @@ function _delay(tag, ms, callback) {
 	tag = "" + (tag || "default");
 	if( timerMap[tag] != null ) {
 		clearTimeout(timerMap[tag]);
-        delete timerMap[tag];
-        // console.log("Cancel timer '" + tag + "'");
+		delete timerMap[tag];
+		// console.log("Cancel timer '" + tag + "'");
 	}
 	if( ms == null || callback == null ) {
 		return;
 	}
-    // console.log("Start timer '" + tag + "'");
+	// console.log("Start timer '" + tag + "'");
 	timerMap[tag] = setTimeout(function(){
-        // console.log("Execute timer '" + tag + "'");
+		// console.log("Execute timer '" + tag + "'");
 		callback.call(self);
 	}, +ms);
 }
@@ -199,7 +199,7 @@ function updateBreadcrumb(key, loadTreeNodes) {
 	});
 }
 
-/** 
+/**
  */
 function search(query) {
 	query = $.trim(query);

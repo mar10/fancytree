@@ -22,7 +22,7 @@
 
 var taxonTree, searchResultTree,
 	timerMap = {},
-	tmplDetails, // = 
+	tmplDetails, // =
 	USER_AGENT = "Fancytree Taxonomy Browser/1.0",
 	ITIS_URL = "http://www.itis.gov/ITISWebService/jsonservice/",
 	glyphOpts = {
@@ -77,15 +77,15 @@ function _delay(tag, ms, callback) {
 	tag = "" + (tag || "default");
 	if( timerMap[tag] != null ) {
 		clearTimeout(timerMap[tag]);
-        delete timerMap[tag];
-        // console.log("Cancel timer '" + tag + "'");
+		delete timerMap[tag];
+		// console.log("Cancel timer '" + tag + "'");
 	}
 	if( ms == null || callback == null ) {
 		return;
 	}
-    // console.log("Start timer '" + tag + "'");
+	// console.log("Start timer '" + tag + "'");
 	timerMap[tag] = setTimeout(function(){
-        // console.log("Execute timer '" + tag + "'");
+		// console.log("Execute timer '" + tag + "'");
 		callback.call(self);
 	}, +ms);
 }
@@ -105,7 +105,7 @@ function _callItis(cmd, data) {
 	});
 }
 
-/** 
+/**
  */
 // function countMatches(query) {
 // 	$("#tsnDetails").text("Loading TSN " + tsn + "...");
@@ -187,12 +187,12 @@ function updateBreadcrumb(tsn, loadTreeNodes) {
 	});
 }
 
-/** 
+/**
  */
 function search(query) {
 	query = $.trim(query);
 	console.log("searching for '" + query + "'...");
-	// NOTE: 
+	// NOTE:
 	// It seems that ITIS searches don't work with jsonp (always return valid
 	// but empty result sets).
 	// When debugging, make sure cross domain requests are allowed.
@@ -231,7 +231,7 @@ $("#taxonTree").fancytree({
 	activeVisible: true,
 	source: {
 		// We could use getKingdomNames, but that returns an individual JSON format.
-		// getHierarchyDownFromTSN?tsn=0 seems to work as well and allows 
+		// getHierarchyDownFromTSN?tsn=0 seems to work as well and allows
 		// unified parsing in postProcess.
 		// url: ITIS_URL + "getKingdomNames",
 		url: ITIS_URL + "getHierarchyDownFromTSN",

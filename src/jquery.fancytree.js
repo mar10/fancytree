@@ -3980,7 +3980,7 @@ $.widget("ui.fancytree",
 			// current extension becomes base for the next extension
 			base = extension;
 		}
-		// 
+		//
 		if( opts.icons !== undefined ) {  // 2015-11-16
 			if( opts.icon !== true ) {
 				$.error("'icons' tree option is deprecated since v2.14.0: use 'icon' only instead");

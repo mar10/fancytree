@@ -11,8 +11,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.13.0
- * @date 2015-11-16T07:33
+ * @version 2.14.0
+ * @date 2015-12-19T23:23
  */
 
 ;(function($, window, document, undefined) {
@@ -235,6 +235,10 @@ $.ui.fancytree.registerExtension({
 
 		// Bind init-handler to apply cookie state
 		tree.$div.bind("fancytreeinit", function(event){
+			if ( tree._triggerTreeEvent("beforeRestore", null, {}) === false ) {
+				return;
+			}
+
 			var cookie, dfd, i, keyList, node,
 				prevFocus = local._data(local.cookiePrefix + FOCUS), // record this before node.setActive() overrides it;
 				noEvents = instOpts.fireActivate === false;

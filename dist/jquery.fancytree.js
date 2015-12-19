@@ -7,8 +7,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.13.0
- * @date 2015-11-16T07:33
+ * @version 2.14.0
+ * @date 2015-12-19T23:23
  */
 
 /** Core Fancytree module.
@@ -213,6 +213,7 @@ function _makeNodeTitleStartMatcher(s){
 
 var i, attr,
 	FT = null, // initialized below
+	TEST_IMG = new RegExp(/\.|\//),  // strings are considered image urls if they conatin '.' or '/'
 	ENTITY_MAP = {"&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;", "/": "&#x2F;"},
 	IGNORE_KEYCODES = { 16: true, 17: true, 18: true },
 	SPECIAL_KEYCODES = {
@@ -233,7 +234,7 @@ var i, attr,
 	CLASS_ATTRS = "active expanded focus folder hideCheckbox lazy selected unselectable".split(" "),
 	CLASS_ATTR_MAP = {},
 	//	Top-level Fancytree node attributes, that can be set by dict
-	NODE_ATTRS = "expanded extraClasses folder hideCheckbox key lazy refKey selected title tooltip unselectable".split(" "),
+	NODE_ATTRS = "expanded extraClasses folder hideCheckbox icon key lazy refKey selected title tooltip unselectable".split(" "),
 	NODE_ATTR_MAP = {},
 	// Mapping of lowercase -> real name (because HTML5 data-... attribute only supports lowercase)
 	NODE_ATTR_LOWERCASE_MAP = {},
@@ -2016,6 +2017,12 @@ Fancytree.prototype = /** @lends Fancytree# */{
 		}
 	},
    */
+	/** Remove alle nodes.
+	 * @since 2.14
+	 */
+	clear: function(source) {
+		this._callHook("treeClear", this);
+	},
    /** Return the number of nodes.
 	* @returns {integer}
 	*/
@@ -2298,6 +2305,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 			sep = this.options.keyPathSeparator,
 			self = this;
 
+		callback = callback || $.noop;
 		if(!$.isArray(keyPathList)){
 			keyPathList = [keyPathList];
 		}
@@ -2710,7 +2718,7 @@ $.extend(Fancytree.prototype,
 			source = new $.Deferred();
 			dfd.done(function (data, textStatus, jqXHR) {
 				var errorObj, res;
-				if(this.dataType === "json" && typeof data === "string"){
+				if((this.dataType === "json" || this.dataType === "jsonp") && typeof data === "string"){
 					$.error("Ajax request returned a string (did you get the JSON dataType wrong?).");
 				}
 				// postProcess is similar to the standard ajax dataFilter hook,
@@ -3113,14 +3121,13 @@ $.extend(Fancytree.prototype,
 	 */
 	nodeRenderTitle: function(ctx, title) {
 		// set node connector images, links and text
-		var id, iconSpanClass, nodeTitle, role, tabindex, tooltip,
+		var id, icon, nodeTitle, role, tabindex, tooltip,
 			node = ctx.node,
 			tree = ctx.tree,
 			opts = ctx.options,
 			aria = opts.aria,
 			level = node.getLevel(),
-			ares = [],
-			iconSrc = node.data.icon;
+			ares = [];
 
 		if(title !== undefined){
 			node.title = title;
@@ -3130,8 +3137,7 @@ $.extend(Fancytree.prototype,
 			// node.render() will be called as the node becomes visible
 			return;
 		}
-		// connector (expanded, expandable or simple)
-		// TODO: optimize this if clause
+		// Connector (expanded, expandable or simple)
 		if( level < opts.minExpandLevel ) {
 			if( !node.lazy ) {
 				node.expanded = true;
@@ -3159,26 +3165,52 @@ $.extend(Fancytree.prototype,
 				ares.push("<span class='fancytree-checkbox'></span>");
 			}
 		}
-		// folder or doctype icon
-		role = aria ? " role='img'" : "";
-		if( iconSrc === true || (iconSrc !== false && opts.icons !== false) ) {
-			// opts.icons defines the default behavior, node.icon == true/false can override this
-			if ( iconSrc && typeof iconSrc === "string" ) {
-				// node.icon is an image url
-				iconSrc = (iconSrc.charAt(0) === "/") ? iconSrc : ((opts.imagePath || "") + iconSrc);
-				ares.push("<img src='" + iconSrc + "' class='fancytree-icon' alt='' />");
+		// Folder or doctype icon
+		if( node.data.iconClass !== undefined ) {  // 2015-11-16
+			// Handle / warn about backward compatibility
+			if( node.icon ) {
+				$.error("'iconClass' node option is deprecated since v2.14.0: use 'icon' only instead");
 			} else {
-				// See if node.iconclass or opts.iconClass() define a class name
-				iconSpanClass = (opts.iconClass && opts.iconClass.call(tree, {type: "iconClass"}, ctx)) || node.data.iconclass || null;
-				if( iconSpanClass ) {
-					ares.push("<span " + role + " class='fancytree-custom-icon " + iconSpanClass +  "'></span>");
-				} else {
-					ares.push("<span " + role + " class='fancytree-icon'></span>");
-				}
+				node.warn("'iconClass' node option is deprecated since v2.14.0: use 'icon' instead");
+				node.icon = node.data.iconClass;
 			}
 		}
-
-		// node title
+		// If opts.icon is a callback and returns something other than undefined, use that
+		// else if node.icon is a boolean or string, use that
+		// else if opts.icon is a boolean or string, use that
+		// else show standard icon (which may be different for folders or documents)
+		if( $.isFunction(opts.icon) ) {
+			icon = opts.icon.call(tree, {type: "icon"}, ctx);
+			if( icon == null ) {
+				icon = node.icon;
+			}
+		} else {
+			icon = (node.icon != null) ? node.icon : opts.icon;
+		}
+		if( icon == null ) {
+			icon = true;  // no icon option at all: show default icon
+		} else {
+			if( typeof icon !== "boolean" ) {
+				// icon is defined, but not true/false: must be a string
+				icon = "" + icon;
+			}
+		}
+		if( icon !== false ) {
+			role = aria ? " role='img'" : "";
+			if ( typeof icon === "string" ) {
+				if( TEST_IMG.test(icon) ) {
+					// node.icon is an image url. Prepend imagePath
+					icon = (icon.charAt(0) === "/") ? icon : ((opts.imagePath || "") + icon);
+					ares.push("<img src='" + icon + "' class='fancytree-icon' alt='' />");
+				} else {
+					ares.push("<span " + role + " class='fancytree-custom-icon " + icon +  "'></span>");
+				}
+			} else {
+				// standard icon: theme css will take care of this
+				ares.push("<span " + role + " class='fancytree-icon'></span>");
+			}
+		}
+		// Node title
 		nodeTitle = "";
 		if ( opts.renderTitle ){
 			nodeTitle = opts.renderTitle.call(tree, {type: "renderTitle"}, ctx) || "";
@@ -3881,7 +3913,7 @@ $.widget("ui.fancytree",
 		// toggleEffect: { effect: "slide", options: {direction: "up"}, duration: 200 },
 		toggleEffect: { effect: "blind", options: {direction: "vertical", scale: "box"}, duration: 200 },
 		generateIds: false,
-		icons: true,
+		icon: true,
 		idPrefix: "ft_",
 		focusOnSelect: false,
 		keyboard: true,
@@ -3926,7 +3958,8 @@ $.widget("ui.fancytree",
 			: this.element.find(">ul:first");
 		// Subclass Fancytree instance with all enabled extensions
 		var extension, extName, i,
-			extensions = this.options.extensions,
+			opts = this.options,
+			extensions = opts.extensions,
 			base = this.tree;
 
 		for(i=0; i<extensions.length; i++){
@@ -3946,6 +3979,23 @@ $.widget("ui.fancytree",
 			_subclassObject(this.tree, base, extension, extName);
 			// current extension becomes base for the next extension
 			base = extension;
+		}
+		//
+		if( opts.icons !== undefined ) {  // 2015-11-16
+			if( opts.icon !== true ) {
+				$.error("'icons' tree option is deprecated since v2.14.0: use 'icon' only instead");
+			} else {
+				this.tree.warn("'icons' tree option is deprecated since v2.14.0: use 'icon' instead");
+				opts.icon = opts.icons;
+			}
+		}
+		if( opts.iconClass !== undefined ) {  // 2015-11-16
+			if( opts.icon ) {
+				$.error("'iconClass' tree option is deprecated since v2.14.0: use 'icon' only instead");
+			} else {
+				this.tree.warn("'iconClass' tree option is deprecated since v2.14.0: use 'icon' instead");
+				opts.icon = opts.iconClass;
+			}
 		}
 		//
 		this.tree._callHook("treeCreate", this.tree);
@@ -3969,7 +4019,7 @@ $.widget("ui.fancytree",
 		switch( key ) {
 		case "aria":
 		case "checkbox":
-		case "icons":
+		case "icon":
 		case "minExpandLevel":
 		case "tabbable":
 //		case "nolink":
@@ -4150,7 +4200,7 @@ $.extend($.ui.fancytree,
 	/** @lends Fancytree_Static# */
 	{
 	/** @type {string} */
-	version: "2.13.0",      // Set to semver by 'grunt release'
+	version: "2.14.0",      // Set to semver by 'grunt release'
 	/** @type {string} */
 	buildType: "production", // Set to 'production' by 'grunt build'
 	/** @type {int} */

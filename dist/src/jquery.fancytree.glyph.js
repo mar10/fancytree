@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.13.0
- * @date 2015-11-16T07:33
+ * @version 2.14.0
+ * @date 2015-12-19T23:23
  */
 
 ;(function($, window, document, undefined) {
@@ -47,7 +47,7 @@ $.ui.fancytree.registerExtension({
 			dragHelper: "icon-caret-right",
 			dropMarker: "icon-caret-right",
 			// Default node icons.
-			// (Use tree.options.iconClass callback to define custom icons
+			// (Use tree.options.icon callback to define custom icons
 			// based on node data)
 			doc: "icon-file-alt",
 			docOpen: "icon-file-alt",
@@ -103,8 +103,8 @@ $.ui.fancytree.registerExtension({
 			span.className = "fancytree-checkbox " + map[icon];
 		}
 
-		// Icon (note that this does not match .fancytree-custom-icon, that might
-		// be set by opts.iconClass)
+		// Standard icon (note that this does not match .fancytree-custom-icon,
+		// that might be set by opts.icon callbacks)
 		span = $span.children("span.fancytree-icon").get(0);
 		if( span ){
 			if( node.folder ){

@@ -71,7 +71,7 @@ $(function(){
 		label: "Goto Homo Sapiens",
 		code: function(){
 			var tree = $("#taxonTree").fancytree("getTree");
-			
+
 			tree.loadKeyPath("/202423/914154/914156/158852/331030/914179/914181")
 					.done(function(node){
 						tree.getNodeByKey("914181").setActive();

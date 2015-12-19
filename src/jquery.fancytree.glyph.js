@@ -103,7 +103,7 @@ $.ui.fancytree.registerExtension({
 			span.className = "fancytree-checkbox " + map[icon];
 		}
 
-		// Standard icon (note that this does not match .fancytree-custom-icon, 
+		// Standard icon (note that this does not match .fancytree-custom-icon,
 		// that might be set by opts.icon callbacks)
 		span = $span.children("span.fancytree-icon").get(0);
 		if( span ){
