@@ -48,7 +48,7 @@ var taxonTree, searchResultTree,
 
 $.get( "details.tmpl", function( data ) {
 	tmplDetails = Handlebars.compile(data);
-});
+}, "html");
 
 /** Update UI elements according to current status
  */
