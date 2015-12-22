@@ -214,6 +214,7 @@ function _makeNodeTitleStartMatcher(s){
 var i, attr,
 	FT = null, // initialized below
 	TEST_IMG = new RegExp(/\.|\//),  // strings are considered image urls if they conatin '.' or '/'
+	RECURSIVE_REQUEST_ERROR = "$recursive_request",
 	ENTITY_MAP = {"&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;", "/": "&#x2F;"},
 	IGNORE_KEYCODES = { 16: true, 17: true, 18: true },
 	SPECIAL_KEYCODES = {
@@ -2684,22 +2685,27 @@ $.extend(Fancytree.prototype,
 	nodeLoadChildren: function(ctx, source) {
 		var ajax, delay, dfd,
 			tree = ctx.tree,
-			node = ctx.node;
+			node = ctx.node,
+			requestId = new Date().getTime();
 
 		if($.isFunction(source)){
 			source = source();
 		}
-		// TOTHINK: move to 'ajax' extension?
 		if(source.url){
+			if( node._requestId ) {
+				node.warn("Recursive load request #" + requestId + " while #" + node._requestId + " is pending.");
+			} else {
+				node.debug("Send load request #" + requestId);
+			}
 			// `source` is an Ajax options object
 			ajax = $.extend({}, ctx.options.ajax, source);
+			node._requestId = requestId;
 			if(ajax.debugDelay){
 				// simulate a slow server
 				delay = ajax.debugDelay;
 				if($.isArray(delay)){ // random delay range [min..max]
 					delay = delay[0] + Math.random() * (delay[1] - delay[0]);
 				}
-
 				node.debug("nodeLoadChildren waiting debug delay " + Math.round(delay) + "ms");
 				ajax.debugDelay = false;
 				dfd = $.Deferred(function (dfd) {
@@ -2718,8 +2724,18 @@ $.extend(Fancytree.prototype,
 			source = new $.Deferred();
 			dfd.done(function (data, textStatus, jqXHR) {
 				var errorObj, res;
+
 				if((this.dataType === "json" || this.dataType === "jsonp") && typeof data === "string"){
 					$.error("Ajax request returned a string (did you get the JSON dataType wrong?).");
+				}
+				if( node._requestId && node._requestId > requestId ) {
+					// The expected request time stamp is later than `requestId`
+					// (which was kept as as closure variable to this handler function)
+					// node.warn("Ignored load response for obsolete request #" + requestId + " (expected #" + node._requestId + ")");
+					source.rejectWith(this, [RECURSIVE_REQUEST_ERROR]);
+					return;
+				} else {
+					node.debug("Response returned for load request #" + requestId);
 				}
 				// postProcess is similar to the standard ajax dataFilter hook,
 				// but it is also called for JSONP
@@ -2760,15 +2776,19 @@ $.extend(Fancytree.prototype,
 		}
 		if($.isFunction(source.promise)){
 			// `source` is a deferred, i.e. ajax request
-			_assert(!node.isLoading(), "recursive load");
-			// node._isLoading = true;
+			// _assert(!node.isLoading(), "recursive load");
 			tree.nodeSetStatus(ctx, "loading");
 
 			source.done(function (children) {
 				tree.nodeSetStatus(ctx, "ok");
+				node._requestId = null;
 			}).fail(function(error){
 				var ctxErr;
-				if (error.node && error.error && error.message) {
+
+				if ( error === RECURSIVE_REQUEST_ERROR ) {
+					node.warn("Ignored response for obsolete load request #" + requestId + " (expected #" + node._requestId + ")");
+					return;
+				} else if (error.node && error.error && error.message) {
 					// error is already a context object
 					ctxErr = error;
 				} else {
@@ -2801,8 +2821,6 @@ $.extend(Fancytree.prototype,
 			node._setChildren(children);
 			// trigger fancytreeloadchildren
 			tree._triggerNodeEvent("loadChildren", node);
-		// }).always(function(){
-		// 	node._isLoading = false;
 		});
 	},
 	/** [Not Implemented]  */
