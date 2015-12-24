@@ -1,5 +1,6 @@
 # 2.14.1-0 / Unreleased
   * [Improved] #356: serialize load requests
+  * [Added] Helper class `glyphicon-spin` to allow rotating loading icon with bootstrap
 
 # 2.14.0-0 / 2015-12-19
   * [CHANGED] #519 Refactored custom icon configuration:<br>
