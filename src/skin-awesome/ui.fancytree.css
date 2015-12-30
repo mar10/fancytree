@@ -149,8 +149,8 @@ span.fancytree-icon {
 /* Folders */
 .fancytree-loading span.fancytree-expander,
 .fancytree-loading span.fancytree-expander:hover,
-.fancytree-statusnode-wait span.fancytree-icon,
-.fancytree-statusnode-wait span.fancytree-icon:hover {
+.fancytree-statusnode-loading span.fancytree-icon,
+.fancytree-statusnode-loading span.fancytree-icon:hover {
   background-image: url("loading.gif");
 }
 /* Status node icons */
