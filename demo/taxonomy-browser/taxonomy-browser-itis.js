@@ -40,7 +40,7 @@ var taxonTree, searchResultTree,
 			expanderOpen: "glyphicon glyphicon-minus-sign",  // glyphicon-collapse-down
 			folder: "glyphicon glyphicon-folder-close",
 			folderOpen: "glyphicon glyphicon-folder-open",
-			loading: "glyphicon glyphicon-refresh"
+			loading: "glyphicon glyphicon-refresh glyphicon-spin"
 		}
 	};
 

@@ -28,10 +28,9 @@
 	<link href="//cdn.jsdelivr.net/jquery.fancytree/2/skin-bootstrap/ui.fancytree.min.css"
 		rel="stylesheet" type="text/css">
 <!--
--->
 	<script src="//cdn.jsdelivr.net/jquery.fancytree/2/jquery.fancytree-all.min.js"
 		type="text/javascript"></script>
-<!--
+-->
 	<script src="../../src/jquery.fancytree.js" type="text/javascript"></script>
 	<script src="../../src/jquery.fancytree.edit.js" type="text/javascript"></script>
 	<script src="../../src/jquery.fancytree.filter.js" type="text/javascript"></script>
@@ -39,25 +38,26 @@
 	<script src="../../src/jquery.fancytree.table.js" type="text/javascript"></script>
 	<script src="../../src/jquery.fancytree.wide.js" type="text/javascript"></script>
 
-
-	<script src="details.tmpl" id="tmplDetails" type="text/x-handlebars-template"></script>
--->
-
 	<link href="style.css" rel="stylesheet" type="text/css">
 	<script src="taxonomy-browser.js" type="text/javascript"></script>
 </head>
 
 <body>
 	<div class="page-header">
-		<h1>Taxonomy Browser</h1>
+		<h1>Taxonomy Browser
+<!--
+		<small><a href="http://wwwendt.de/tech/fancytree/demo/taxonomy-browser/">home</a></small>
+-->
+		</h1>
 	</div>
 	<div class="panel panel-default">
 		<div class="panel-heading">
 			<h3 class="panel-title">Search <acronym title="Global Biodiversity Information Facility">GBIF</acronym></h3>
 		</div>
-		<div class="panel-body">
+		<div class="panel-body hidden-print">
 
-			<input type="text" name="query" id="query" autocorrect="off"
+			<input type="text" name="query" id="query" 
+				autocorrect="off" autocomplete="off"
 				placeholder="Enter Search Phrase">
 			<button id="btnResetSearch" class="btn btn-default btn-sm">&times;</button>
 			<button id="btnSearch" class="btn btn-default btn-sm">Search</button>
@@ -67,22 +67,58 @@
 					class="table table-striped table-hover table-condensed table-bordered">
 					<colgroup>
 					<col width="10em"></col>
+					<col width="10em"></col>
 					<col width="*"></col>
+					<col width="30em"></col>
+					<col width="30em"></col>
+					<col width="30em"></col>
+					<col width="30em"></col>
+					<col width="30em"></col>
 					<col width="10em"></col>
 					<col width="10em"></col>
-					<col width="250em"></col>
+					<col width="30em"></col>
+					<col width="30em"></col>
 					</colgroup>
 					<thead>
 						<tr>
-							<th class="hidden-sm">Key</th>
+							<th class="visible-lg">Key</th>
+							<th class="hidden-xs">Rank</th>
 							<th>Scientific Name</th>
-							<th class="hidden-xs">Common Names</th>
-							<th class="hidden-sm">Match Type</th>
-							<th class="hidden-xs">Author</th>
+							<th class="hidden-xs hidden-sm">Vernacular  Names</th>
+							<th class="hidden-xs hidden-sm">Canonical Name</th>
+							<th class="visible-lg">According to</th>
+							<th class="hidden-xs">Status</th>
+							<th class="hidden-xs">Name Type</th>
+							<th class="hidden-xs"># Occur.</th>
+							<th class="hidden-xs"># Desc.</th>
+							<th class="visible-lg">Author</th>
+							<th class="visible-lg">Published in</th>
+<!--
+							canonicalName
+							accordingTo
+							extinct
+							numDescendants
+							numOccurrences
+							publishedIn
+							synonym
+-->
 						</tr>
 					</thead>
 					<tbody>
-						<tr> <td class="hidden-xs"></td> <td></td> <td></td> <td></td> <td></td> </tr>
+						<tr>
+							<td class="visible-lg"/>
+							<td class="hidden-xs" />
+							<td/>
+							<td class="hidden-xs hidden-sm" />
+							<td class="hidden-xs hidden-sm" />
+							<td class="visible-lg" />
+							<td class="hidden-xs" />
+							<td class="hidden-xs" />
+							<td class="hidden-xs" />
+							<td class="hidden-xs" />
+							<td class="visible-lg" />
+							<td class="visible-lg" />
+						</tr>
 					</tbody>
 				</table>
 			</div>
@@ -100,35 +136,13 @@
 			</div>
 		</div>
 		<div class="col-md-8">
+			<!-- Breadcrumb -->
 			<ol class="breadcrumb">
 				<li class="active">Please select an element.</li>
 			</ol>
-			<!-- Nav tabs -->
-			<ul class="nav nav-tabs" role="tablist">
-				<li role="presentation" class="active">
-					<a href="#tabDetails" aria-controls="tabDetails" role="tab" data-toggle="tab">
-						Details</a></li>
-				<li role="presentation">
-					<a href="#tabWikipedia" aria-controls="tabWikipedia" role="tab" data-toggle="tab">
-						Wikipedia</a></li>
-				<li role="presentation">
-					<a href="#tabNCBI" aria-controls="tabNCBI" role="tab" data-toggle="tab">
-						Other</a></li>
-			</ul>
-			<!-- Tab panes -->
-			<div class="tab-content">
-				<div role="tabpanel" class="tab-pane active pane panel panel-default" id="tabDetails">
-					<div id="itemDetails">
-						No data to display.
-					</div>
-				</div>
-				<div role="tabpanel" class="tab-pane panel panel-default" id="tabWikipedia">
-					wiki
-				</div>
-				<div role="tabpanel" class="tab-pane panel panel-default" id="tabNCBI">
-					ncbi
-				</div>
-			</div>
+
+			<span id="tmplInfoPane">
+			</span>
 		</div>
 	</div>
 

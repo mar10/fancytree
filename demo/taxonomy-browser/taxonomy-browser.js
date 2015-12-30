@@ -20,9 +20,8 @@
  * Private functions and variables
  */
 
-var taxonTree, searchResultTree,
+var taxonTree, searchResultTree, tmplDetails, tmplInfoPane, tmplMedia,
 	timerMap = {},
-	tmplDetails, // =
 	USER_AGENT = "Fancytree Taxonomy Browser/1.0",
 	GBIF_URL = "http://api.gbif.org/v1/",
 	TAXONOMY_KEY = "d7dddbf4-2cf0-4f39-9b2a-bb099caae36c",  // GBIF backbone taxonomy
@@ -41,7 +40,7 @@ var taxonTree, searchResultTree,
 			expanderOpen: "glyphicon glyphicon-minus-sign",  // glyphicon-collapse-down
 			folder: "glyphicon glyphicon-folder-close",
 			folderOpen: "glyphicon glyphicon-folder-open",
-			loading: "glyphicon glyphicon-refresh"
+			loading: "glyphicon glyphicon-refresh glyphicon-spin"
 		}
 	};
 
@@ -49,6 +48,14 @@ var taxonTree, searchResultTree,
 
 $.get( "details.tmpl.html", function( data ) {
 	tmplDetails = Handlebars.compile(data);
+	Handlebars.registerPartial("tmplDetails", tmplDetails);
+});
+$.get( "media.tmpl.html", function( data ) {
+	tmplMedia = Handlebars.compile(data);
+	Handlebars.registerPartial("tmplMedia", tmplMedia);
+});
+$.get( "info-pane.tmpl.html", function( data ) {
+	tmplInfoPane = Handlebars.compile(data);
 });
 
 /** Update UI elements according to current status
@@ -72,13 +79,13 @@ function updateControls() {
 function appendStatusNodeMore(response, result) {
 	if( response.count != null && response.offset + response.limit < response.count ) {
 		result.push({
-			title: "(" + (response.count - response.offset - response.limit) + " more)",
-			statusNodeType: "more"
+			title: "<a href='#'>(" + (response.count - response.offset - response.limit) + " more)</a>",
+			statusNodeType: "paging"
 			});
 	} else if( response.endOfRecords === false ) {
 		result.push({
 			title: "(more)",
-			statusNodeType: "more"
+			statusNodeType: "paging"
 			});
 	}
 }
@@ -123,19 +130,56 @@ function _callWebservice(cmd, data) {
 /**
  */
 function updateItemDetails(key) {
-	$("#itemDetails").addClass("busy");
-	// $("#itemDetails").text("Loading TSN " + key + "...");
+	$("#tmplDetails").addClass("busy");
 	$.bbq.pushState({key: key});
 
-	_callWebservice("species/" + key, {
-		// key: key
-	}).done(function(result){
-		console.log("updateItemDetails", result);
-		result._now = new Date().toString();
-		$("#itemDetails")
-			.html(tmplDetails(result))
+	$.when(
+		_callWebservice("species/" + key),
+		_callWebservice("species/" + key + "/speciesProfiles"),
+		_callWebservice("species/" + key + "/synonyms"),
+		_callWebservice("species/" + key + "/descriptions"),
+		_callWebservice("species/" + key + "/media")
+
+	).done(function(species, profiles, synonyms, descriptions, media){
+		// Requests are resolved as: [ data, statusText, jqXHR ]
+		species = species[0];
+		profiles = profiles[0];
+		synonyms = synonyms[0];
+		descriptions = descriptions[0];
+		media = media[0];
+
+		var info = $.extend(species, {
+			profileList: profiles.results, // marine, extinct
+			profile: profiles.results.length === 1 ? profiles.results[0] : null, // marine, extinct
+			synonyms: synonyms.results,
+			descriptions: descriptions.results,
+			descriptionsByLang: {},
+			media: media.results,
+			now: new Date().toString()
+			});
+
+		$.each(info.descriptions, function(i, o){
+			if( !info.descriptionsByLang[o.language] ) {
+				info.descriptionsByLang[o.language] = [];
+			}
+			info.descriptionsByLang[o.language].push(o);
+		});
+
+		console.log("updateItemDetails", info);
+		$("#tmplDetails")
+			// .html(tmplDetails(info))
+			.removeClass("busy");
+		$("#tmplMedia")
+			// .html(tmplMedia(info))
+			.removeClass("busy");
+		$("#tmplInfoPane")
+			.html(tmplInfoPane(info))
 			.removeClass("busy");
 
+		$("[data-toggle='popover']").popover();
+		$(".carousel").carousel();
+		$("#mediaCounter").text("" + (media.results.length || ""));
+		// $("[data-toggle='collapse']").collapse();
 		updateControls();
 	});
 }
@@ -240,6 +284,7 @@ $("#taxonTree").fancytree({
 		mode: "hide"
 	},
 	glyph: glyphOpts,
+	autoCollapse: true,
 	activeVisible: true,
 	source: {
 		url: GBIF_URL + "species/root/" + TAXONOMY_KEY,
@@ -271,7 +316,7 @@ $("#taxonTree").fancytree({
 		appendStatusNodeMore(response, data.result);
 	},
 	activate: function(event, data) {
-		$("#itemDetails").addClass("busy");
+		$("#tmplDetails").addClass("busy");
 		$("ol.breadcrumb").addClass("busy");
 		updateControls();
 		_delay("showDetails", 500, function(){
@@ -288,34 +333,43 @@ $("#searchResultTree").fancytree({
 	minExpandLevel: 2,
 	icon: false,
 	table: {
-		nodeColumnIdx: 1
+		nodeColumnIdx: 2
 	},
 	postProcess: function(event, data) {
 		var response = data.response;
 
 		data.node.info("search postProcess", response);
 		data.result = $.map(response.results, function(o){
-			// if( !o ) { return; }
-			var res = { title: o.canonicalName, key: o.key, author: o.authorship,
-						matchType: o.nameType };
-			res.commonNames = $.map(o.vernacularNames, function(o){
-					return o.commonName ? {name: o.commonName, language: o.language} : undefined;
-				});
+			var res = $.extend({
+				title: o.scientificName,
+				key: o.key
+			}, o);
 			return res;
 		});
 		appendStatusNodeMore(response, data.result);
+		data.node.info("search postProcess 2", data.result);
 	},
 	renderColumns: function(event, data) {
-		var node = data.node,
+		var i,
+			node = data.node,
 			$tdList = $(node.tr).find(">td"),
-			cnList = node.data.commonNames ? $.map(node.data.commonNames, function(o){
-					return o.name;
+			cnList = node.data.vernacularNames ? $.map(node.data.vernacularNames, function(o){
+					return o.vernacularName;
 				}) : [];
 
-		$tdList.eq(0).text(node.key).addClass("hidden-sm");
-		$tdList.eq(2).text(cnList.join(", ")).addClass("hidden-xs");
-		$tdList.eq(3).text(node.data.matchType).addClass("hidden-sm");
-		$tdList.eq(4).text(node.data.author).addClass("hidden-xs");
+		i = 0;
+		$tdList.eq(i++).text(node.key);
+		$tdList.eq(i++).text(node.data.rank);
+		i++;  // #1: node.title = scientificName
+		$tdList.eq(i++).text(cnList.join(", "));
+		$tdList.eq(i++).text(node.data.canonicalName);
+		$tdList.eq(i++).text(node.data.accordingTo);
+		$tdList.eq(i++).text(node.data.taxonomicStatus);
+		$tdList.eq(i++).text(node.data.nameType);
+		$tdList.eq(i++).text(node.data.numOccurrences);
+		$tdList.eq(i++).text(node.data.numDescendants);
+		$tdList.eq(i++).text(node.data.authorship);
+		$tdList.eq(i++).text(node.data.publishedIn);
 	},
 	activate: function(event, data) {
 		_delay("activateNode", 500, function(){
@@ -341,7 +395,8 @@ $(window).bind( "hashchange", function(e) {
 }); // don't trigger now, since we need the the taxonTree root nodes to be loaded first
 
 $("input[name=query]").keyup(function(e){
-	var query = $.trim($(this).val());
+	var query = $.trim($(this).val()),
+		lastQuery = $(this).data("lastQuery");
 
 	if(e && e.which === $.ui.keyCode.ESCAPE || query === ""){
 		$("#btnResetSearch").click();
@@ -351,7 +406,12 @@ $("input[name=query]").keyup(function(e){
 		$("#btnSearch").click();
 		return;
 	}
-	_delay("search", 500, function(){
+	if( query === lastQuery || query.length < 2) {
+		console.log("Ignored query '" + query + "'");
+		return;
+	}
+	$(this).data("lastQuery", query);
+	_delay("search", 1, function(){
 		$("#btnSearch").click();
 	});
 	$("#btnResetSearch").attr("disabled", query.length === 0);
@@ -361,9 +421,7 @@ $("input[name=query]").keyup(function(e){
 $("#btnResetSearch").click(function(e){
 	$("#searchResultPane").collapse("hide");
 	$("input[name=query]").val("");
-	// TODO: use clear with v2.14
-	// searchResultTree.clear();
-	searchResultTree.getRootNode().removeChildren();
+	searchResultTree.clear();
 	updateControls();
 });
 

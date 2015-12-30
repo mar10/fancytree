@@ -71,10 +71,9 @@ $(function(){
 		label: "Goto Homo Sapiens",
 		code: function(){
 			var tree = $("#taxonTree").fancytree("getTree");
-
-			tree.loadKeyPath("/202423/914154/914156/158852/331030/914179/914181")
+			tree.loadKeyPath("/202423/914154/914156/158852/331030/914179/914181/179913/179916/179925/180089/943773/943778/943782/180090/943805/180091/180092")
 					.done(function(node){
-						tree.getNodeByKey("914181").setActive();
+						tree.getNodeByKey("180092").setActive();
 					});
 		}
 	});
@@ -87,6 +86,8 @@ $(function(){
 	<h1>Example: Accessing external Webservices</h1>
 	<div class="description">
 		This tree uses ...
+		See the <a href="http://wwwendt.de/tech/fancytree/demo/taxonomy-browser/">Taxonomy Browser</a>
+		for a more sophisticard example.
 	</div>
 	<div>
 		<label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
