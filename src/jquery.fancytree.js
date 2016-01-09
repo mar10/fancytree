@@ -878,6 +878,24 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		}
 		return null;
 	},
+	/**
+	 * Return an array of selected descendant nodes.
+	 * @param {boolean} [stopOnParents=false] only return the topmost selected
+	 *     node (useful with selectMode 3)
+	 * @returns {FancytreeNode[]}
+	 */
+	getSelectedNodes: function(stopOnParents) {
+		var nodeList = [];
+		this.visit(function(node){
+			if( node.selected ) {
+				nodeList.push(node);
+				if( stopOnParents === true ){
+					return "skip"; // stop processing this branch
+				}
+			}
+		});
+		return nodeList;
+	},
 	/** Return true if node has children. Return undefined if not sure, i.e. the node is lazy and not yet loaded).
 	 * @returns {boolean | undefined}
 	 */
@@ -2246,16 +2264,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	 * @returns {FancytreeNode[]}
 	 */
 	getSelectedNodes: function(stopOnParents) {
-		var nodeList = [];
-		this.rootNode.visit(function(node){
-			if( node.selected ) {
-				nodeList.push(node);
-				if( stopOnParents === true ){
-					return "skip"; // stop processing this branch
-				}
-			}
-		});
-		return nodeList;
+		return this.rootNode.getSelectedNodes(stopOnParents);
 	},
 	/** Return true if the tree control has keyboard focus
 	 * @returns {boolean}
