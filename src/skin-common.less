@@ -109,6 +109,9 @@ ul.fancytree-container {
 		padding: 0 0 0 @fancy-level-indent;
 		margin: 0;
 	}
+	ul>li:before { // #538
+		content: none;
+	}
 	li {
 		list-style-image: none;
 		list-style-position: outside;

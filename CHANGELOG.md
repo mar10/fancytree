@@ -10,6 +10,7 @@
   * [Added] #542 new method `node.getSelectedNodes()`
   * [Added] Helper class `glyphicon-spin` to allow rotating loading icon with bootstrap
   * [Improved] #356: serialize load requests
+  * [Improved] #538: Be more robust if site css defines custom li:before
   * [Improved] ext-table: Define table row templates in `<tbody>`
   * [Improved] ext-table: `<thead>` is now optional if `<tbody>` contains `<td>`s
 
