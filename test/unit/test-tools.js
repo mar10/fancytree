@@ -156,6 +156,30 @@ TOOLS.getNodeKeyArray = function(nodeArray){
 	return $.map(nodeArray, function(n){ return n.key; });
 };
 
+/** Generate a large hierarchy of nodes
+ */
+TOOLS.addGenericNodes = function(node, level1, level2, level3, callback) {
+	var d, f, i, j, k, key;
+
+	function _cb(parentNode, data, i, j, k) {
+		if( !callback || callback(data, i, j, j) !== false ) {
+			return parentNode.addChildren(data);
+		}
+	}
+
+	for(i=0; i<level1; i++) {
+		key = "" + (i+1);
+		f = _cb(node, {title: "Folder_" + key, key: key, folder: true}, i, 0, 0);
+		for (j=0; j<level2; j++) {
+			key = "" + (i+1) + "." + (j+1);
+			d = _cb(f, {title: "Node_" + key, key: key}, i, j, 0);
+			for (k=0; k<level3; k++) {
+				key = "" + (i+1) + "." + (j+1) + "." + (k+1);
+				_cb(d, {title: "Node_" + key, key: key}, i, j, k);
+			}
+		}
+	}
+};
 
 /** Fake an Ajax request, return a $.Promise. */
 TOOLS.fakeAjaxLoad = function(node, count, delay){

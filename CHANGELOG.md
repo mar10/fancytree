@@ -1,11 +1,20 @@
-# 2.14.1-0 / Unreleased
-  * [Improved] #356: serialize load requests
+# 2.15.0-0 / Unreleased
+  * [Changed] Renamed class `fancytree-statusnode-wait` to `fancytree-statusnode-loading`
+  * [Added] new event `renderStatusColumns`
+  * [Deprecated] ext-table option `customStatus`. Use `renderStatusColumns` instead
   * [Added] Helper class `glyphicon-spin` to allow rotating loading icon with bootstrap
+  * [Added] new mode `nodata` for use with node.setStatus()
+  * [Added] new method `node.addPagingNode()`
+  * [Added] new method `node.replaceWith()`
+  * [Added] #542 new method `node.getSelectedNodes()`
+  * `node.statusNodeType`
+  * [Improved] #356: serialize load requests
+  * [Improved] ext-table: Define table row templates in `<tbody>`
+  * [Improved] ext-table: `<thead>` is now optional if `<tbody>` contains `<td>`s
 
-# 2.14.0-0 / 2015-12-19
+# 2.14.0 / 2015-12-19
   * [CHANGED] #519 Refactored custom icon configuration:<br>
     (see also the [theming tutorial](https://github.com/mar10/fancytree/wiki/TutorialTheming))
-
     * [Added] `options.icon` option/callback.<br>
       Valid values are true, false, a string containing a class name or image
       url, or a callback returning that.
@@ -17,7 +26,6 @@
     * [Deprecated] `options.icons`: use `options.icon` instead
     * [Deprecated] `node.data.iconclass` option: use `node.icon` instead
     * [Deprecated] `node.data.icon` option: use `node.icon` instead
-
   * [Added] `tree.clear()` method.
   * [Added] #520 ext-persist: new event `beforeRestore`
   * [Fixed] #533 table-ext: nodeSetExpanded triggers redundant events
@@ -75,7 +83,7 @@
   * [Changed] Undo #340: Revert dist folder layout to v2.9.0, but add
     dist/skin-common.less
 
-# 2.10.0 / 2015-06-26
+# 2.10.0 / 2015-06-26 [YANKED]
   * [Changed] #340: New dist folder layout: moved skin-* folders into src/ folder  
     (**Note:** this change was reverted in v2.10.1)
   * [Improved] Update to jQuery UI 1.11.4, jQuery 1.11.3

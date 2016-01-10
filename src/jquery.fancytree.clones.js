@@ -365,7 +365,7 @@ $.ui.fancytree.registerExtension({
 
 //		ctx.tree.debug("clones.treeRegisterNode", add, node);
 
-		if( key === "_statusNode" ){
+		if( node.isStatusNode() ){
 			return this._superApply(arguments);
 		}
 

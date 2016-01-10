@@ -82,6 +82,7 @@ var EventData = {};
  * @property {Boolean} lazy Lazy folders call the `lazyLoad` on first expand to load their children.
  * @property {String} refKey (Reserved, used by 'clones' extension.)
  * @property {Boolean} selected Initial selection state. Use `node.setSelected()` or `node.isSelected()` to access.
+ * @property {String} statusNodeType If set, make this node a status node. Values: 'paging', 'error', 'nodata', 
  * @property {String} title Node text (may contain HTML tags). Use `node.setTitle()` to modify.
  * @property {String} tooltip Will be added as `title` attribute, thus enabling a tooltip.
  * @property {Boolean} unselectable Prevent (de-)selection using mouse or keyboard.
@@ -192,6 +193,7 @@ var FancytreeOptions = {};
  * @property {function} blur `data.node` lost keyboard focus
  * @property {function} blurTree `data.tree` lost keyboard focus
  * @property {function} click `data.node` was clicked. `data.targetType` contains the region ("title", "expander", ...). Return `false` to prevent default processing, i.e. activating, expanding, selecting, etc.
+ * @property {function} clickPaging `data.node` is a 'paging' status node and was activated. Use data.node.replaceWith() to load additional nodes.
  * @property {function} collapse `data.node` was collapsed
  * @property {function} create Widget was created (called only once, even if re-initialized).
  * @property {function} createNode Allow tweaking and binding, after node was created for the first time (NOTE: this event is only available as callback, but not for bind())
@@ -210,6 +212,7 @@ var FancytreeOptions = {};
  * @property {function} postProcess Allows to modify the ajax response
  * @property {function} removeNode `data.node` was removed (NOTE: this event is only available as callback, but not for bind())
  * @property {function} renderColumns (used by table extension)
+ * @property {function} renderStatusColumns (used by table extension)
  * @property {function} renderNode Allow tweaking after node state was rendered (NOTE: this event is only available as callback, but not for bind())
  * @property {function} renderTitle Allow replacing the `&lt;span class='fancytree-title'>` markup (NOTE: this event is only available as callback, but not for bind())
  * @property {function} restore ext-persist has expanded, selected, and activated the previous state

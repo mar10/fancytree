@@ -25,6 +25,8 @@ var taxonTree, searchResultTree, tmplDetails, tmplInfoPane, tmplMedia,
 	USER_AGENT = "Fancytree Taxonomy Browser/1.0",
 	GBIF_URL = "http://api.gbif.org/v1/",
 	TAXONOMY_KEY = "d7dddbf4-2cf0-4f39-9b2a-bb099caae36c",  // GBIF backbone taxonomy
+	SEARCH_PAGE_SIZE = 10,
+	CHILD_NODE_PAGE_SIZE = 200,
 	glyphOpts = {
 		map: {
 			doc: "glyphicon glyphicon-file",
@@ -72,22 +74,6 @@ function updateControls() {
 		.attr("disabled", query.length === 0);
 	$("#btnSearch")
 		.attr("disabled", query.length < 2);
-}
-
-/**
- */
-function appendStatusNodeMore(response, result) {
-	if( response.count != null && response.offset + response.limit < response.count ) {
-		result.push({
-			title: "<a href='#'>(" + (response.count - response.offset - response.limit) + " more)</a>",
-			statusNodeType: "paging"
-			});
-	} else if( response.endOfRecords === false ) {
-		result.push({
-			title: "(more)",
-			statusNodeType: "paging"
-			});
-	}
 }
 
 /**
@@ -248,8 +234,8 @@ function updateBreadcrumb(key, loadTreeNodes) {
 function search(query) {
 	query = $.trim(query);
 	console.log("searching for '" + query + "'...");
-	$("#searchResultTree").addClass("busy");
-	searchResultTree.reload({
+	// Store the source options for optional paging
+	searchResultTree.lastSourceOpts = {
 		// url: GBIF_URL + "species/match",  // Fuzzy matches scientific names against the GBIF Backbone Taxonomy
 		url: GBIF_URL + "species/search",  // Full text search of name usages covering the scientific and vernacular name, the species description, distribution and the entire classification across all name usages of all or some checklists
 		data: {
@@ -258,14 +244,19 @@ function search(query) {
 			// name: query,
 			// strict: "true",
 			// hl: true,
-			limit: 10,
+			limit: SEARCH_PAGE_SIZE,
 			offset: 0
 		},
 		cache: true
 		// headers: { "Api-User-Agent": USER_AGENT }
 		// dataType: "jsonp"
-	}).done(function(result){
+	};
+	$("#searchResultTree").addClass("busy");
+	searchResultTree.reload(searchResultTree.lastSourceOpts).done(function(result){
 		// console.log("search returned", result);
+		if( result.length < 1) {
+			searchResultTree.getRootNode().setStatus("nodata");
+		}
 		$("#searchResultTree").removeClass("busy");
 		updateControls();
 	});
@@ -300,11 +291,13 @@ $("#taxonTree").fancytree({
 		data.result = {
 			url: GBIF_URL + "species/" + data.node.key + "/children",
 			data: {
-				limit: 200
+				limit: CHILD_NODE_PAGE_SIZE
 			},
 			cache: true
 			// dataType: "jsonp"
 		};
+		// store this request options for later paging
+		data.node.lastSourceOpts = data.result;
 	},
 	postProcess: function(event, data) {
 		var response = data.response;
@@ -313,7 +306,16 @@ $("#taxonTree").fancytree({
 		data.result = $.map(response.results, function(o){
 			return o && {title: o.vernacularName || o.canonicalName, key: o.key, nubKey: o.nubKey, folder: true, lazy: true};
 		});
-		appendStatusNodeMore(response, data.result);
+		if( response.endOfRecords === false ) {
+			// Allow paging
+			data.result.push({
+				title: "(more)",
+				statusNodeType: "paging"
+				});
+		} else {
+			// No need to store the extra data
+			delete data.node.lastSourceOpts;
+		}
 	},
 	activate: function(event, data) {
 		$("#tmplDetails").addClass("busy");
@@ -323,6 +325,12 @@ $("#taxonTree").fancytree({
 			updateItemDetails(data.node.key);
 			updateBreadcrumb(data.node.key);
 		});
+	},
+	clickPaging: function(event, data) {
+		// Load the next page of results
+		var source = $.extend(true, {}, data.node.parent.lastSourceOpts);
+		source.data.offset = data.node.parent.countChildren() - 1;
+		data.node.replaceWith(source);
 	}
 });
 
@@ -346,7 +354,13 @@ $("#searchResultTree").fancytree({
 			}, o);
 			return res;
 		});
-		appendStatusNodeMore(response, data.result);
+		// Append paging link
+		if( response.count != null && response.offset + response.limit < response.count ) {
+			data.result.push({
+				title: "(" + (response.count - response.offset - response.limit) + " more)",
+				statusNodeType: "paging"
+				});
+		}
 		data.node.info("search postProcess 2", data.result);
 	},
 	renderColumns: function(event, data) {
@@ -372,10 +386,17 @@ $("#searchResultTree").fancytree({
 		$tdList.eq(i++).text(node.data.publishedIn);
 	},
 	activate: function(event, data) {
+		if( data.node.isStatusNode() ) { return; }
 		_delay("activateNode", 500, function(){
 			updateItemDetails(data.node.key);
 			updateBreadcrumb(data.node.key);
 		});
+	},
+	clickPaging: function(event, data) {
+		// Load the next page of results
+		var source = $.extend(true, {}, searchResultTree.lastSourceOpts);
+		source.data.offset = data.node.parent.countChildren() - 1;
+		data.node.replaceWith(source);
 	}
 });
 

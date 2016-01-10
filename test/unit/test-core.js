@@ -314,7 +314,7 @@ test("Custom icons (options.icon)", function() {
  */
 module("API");
 
-test("FancytreeNode class", function(assert) {
+test("FancytreeNode class methods", function(assert) {
 //  tools.setupAsync();
 	QUnit.reset();
 	if( $("#tree").is(":ui-fancytree") ){
@@ -479,7 +479,7 @@ test("FancytreeNode class", function(assert) {
 });
 
 
-test("Fancytree class", function() {
+test("Fancytree class methods", function() {
 //  tools.setupAsync();
 	QUnit.reset();
 	if( $("#tree").is(":ui-fancytree") ){
@@ -526,6 +526,7 @@ test("Fancytree class", function() {
 	equal(tree.getNodeByKey("10_2_1", node).key, "10_2_1", "getNodeByKey(.., root)");
 	equal(tree.getNodeByKey("10_1_1", node), null, "getNodeByKey(.., root) not found");
 
+	// tree.getSelectedNodes()
 	deepEqual(tools.getNodeKeyArray(tree.getSelectedNodes()), [], "getSelectedNodes() - empty");
 	deepEqual(tools.getNodeKeyArray(tree.getSelectedNodes(true)), [], "getSelectedNodes(true) - empty");
 	tools.getNode("10_2").setSelected();
@@ -539,10 +540,11 @@ test("Fancytree class", function() {
 //  reactivate: function(source) {
 //  reload: function(source) {
 //    render: function(force, deep) {
-
+	// tree.toString()
 	equal(tree.toString(), "<Fancytree(#" + tree._id + ")>", "toString()");
 	equal("" + tree, tree.toString(), "toString() implicit");
 
+	// tree.visit()
 	c = 0;
 	tree.visit(function(n){
 		c += 1;
@@ -566,6 +568,7 @@ test("Fancytree class", function() {
 		}
 	});
 	equal(c, 21, "visit() - skip branch");
+
 });
 
 
