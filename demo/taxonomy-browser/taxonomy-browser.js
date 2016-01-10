@@ -25,7 +25,7 @@ var taxonTree, searchResultTree, tmplDetails, tmplInfoPane, tmplMedia,
 	USER_AGENT = "Fancytree Taxonomy Browser/1.0",
 	GBIF_URL = "http://api.gbif.org/v1/",
 	TAXONOMY_KEY = "d7dddbf4-2cf0-4f39-9b2a-bb099caae36c",  // GBIF backbone taxonomy
-	SEARCH_PAGE_SIZE = 10,
+	SEARCH_PAGE_SIZE = 5,
 	CHILD_NODE_PAGE_SIZE = 200,
 	glyphOpts = {
 		map: {
@@ -258,6 +258,13 @@ function search(query) {
 			searchResultTree.getRootNode().setStatus("nodata");
 		}
 		$("#searchResultTree").removeClass("busy");
+
+		// https://github.com/tbasse/jquery-truncate
+		// SLOW!
+		// $("div.truncate").truncate({
+		// 	multiline: true
+		// });
+
 		updateControls();
 	});
 }
@@ -363,6 +370,11 @@ $("#searchResultTree").fancytree({
 		}
 		data.node.info("search postProcess 2", data.result);
 	},
+	// loadChildren: function(event, data) {
+	// 	$("#searchResultTree td div.cell").truncate({
+	// 		multiline: true
+	// 	});
+	// },
 	renderColumns: function(event, data) {
 		var i,
 			node = data.node,
@@ -372,18 +384,25 @@ $("#searchResultTree").fancytree({
 				}) : [];
 
 		i = 0;
+		function _setCell($cell, text){
+			$("<div class='truncate'>").attr("title", text).text(text).appendTo($cell);
+		}
 		$tdList.eq(i++).text(node.key);
 		$tdList.eq(i++).text(node.data.rank);
 		i++;  // #1: node.title = scientificName
-		$tdList.eq(i++).text(cnList.join(", "));
+		// $tdList.eq(i++).text(cnList.join(", "));
+		_setCell($tdList.eq(i++), cnList.join(", "));
 		$tdList.eq(i++).text(node.data.canonicalName);
-		$tdList.eq(i++).text(node.data.accordingTo);
+		// $tdList.eq(i++).text(node.data.accordingTo);
+		_setCell($tdList.eq(i++), node.data.accordingTo);
 		$tdList.eq(i++).text(node.data.taxonomicStatus);
 		$tdList.eq(i++).text(node.data.nameType);
 		$tdList.eq(i++).text(node.data.numOccurrences);
 		$tdList.eq(i++).text(node.data.numDescendants);
-		$tdList.eq(i++).text(node.data.authorship);
-		$tdList.eq(i++).text(node.data.publishedIn);
+		// $tdList.eq(i++).text(node.data.authorship);
+		_setCell($tdList.eq(i++), node.data.authorship);
+		// $tdList.eq(i++).text(node.data.publishedIn);
+		_setCell($tdList.eq(i++), node.data.publishedIn);
 	},
 	activate: function(event, data) {
 		if( data.node.isStatusNode() ) { return; }

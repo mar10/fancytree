@@ -2,12 +2,13 @@
   * [Changed] Renamed class `fancytree-statusnode-wait` to `fancytree-statusnode-loading`
   * [Added] new event `renderStatusColumns`
   * [Deprecated] ext-table option `customStatus`. Use `renderStatusColumns` instead
-  * [Added] Helper class `glyphicon-spin` to allow rotating loading icon with bootstrap
+  * [Added] new event `clickPaging`
   * [Added] new mode `nodata` for use with node.setStatus()
   * [Added] new method `node.addPagingNode()`
   * [Added] new method `node.replaceWith()`
-  * [Added] #542 new method `node.getSelectedNodes()`
   * `node.statusNodeType`
+  * [Added] #542 new method `node.getSelectedNodes()`
+  * [Added] Helper class `glyphicon-spin` to allow rotating loading icon with bootstrap
   * [Improved] #356: serialize load requests
   * [Improved] ext-table: Define table row templates in `<tbody>`
   * [Improved] ext-table: `<thead>` is now optional if `<tbody>` contains `<td>`s

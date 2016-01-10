@@ -14,9 +14,18 @@ body {
 	padding-bottom: 20px;
 }
 #taxonTree .fancytree-container {
-	border: 1px solid #ccc;
-	border-radius: 3px;
-	max-height: 600px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    max-height: 600px;
+}
+
+#searchResultTree  td > div.truncate {
+    max-height: 3em;
+    /*max-width: 100%;*/
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /*white-space: nowrap;*/
+    /*color: red;*/
 }
 
 /* Set to different containers while requests are pending:; */
