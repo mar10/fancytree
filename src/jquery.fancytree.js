@@ -51,7 +51,7 @@ function consoleApply(method, args){
 		} catch(e) {
 			// IE 8?
 			s = "";
-			for( i=0; i<args.length; i++){
+			for( i=0; i<args.length; i++ ) {
 				s += args[i];
 			}
 			fn(s);
@@ -2738,7 +2738,9 @@ $.extend(Fancytree.prototype,
 				tree.nodeSetExpanded(ctx, false);
 				break;
 			case "space":
-				if(opts.checkbox){
+				if( node.isPagingNode() ) {
+					tree._triggerNodeEvent("clickPaging", ctx, event);
+				} else if(opts.checkbox){
 					tree.nodeToggleSelected(ctx);
 				}else{
 					tree.nodeSetActive(ctx, true);
