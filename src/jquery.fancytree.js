@@ -278,7 +278,7 @@ for(i=0; i<NODE_ATTRS.length; i++) {
  * @property {string} extraClasses Addtional CSS classes, added to the node's `&lt;span>`
  * @property {boolean} folder Folder nodes have different default icons and click behavior.<br>
  *     Note: Also non-folders may have children.
- * @property {string} statusNodeType null or type of temporarily generated system node like 'loading', or 'error'.
+ * @property {string} statusNodeType null for standard nodes. Otherwise type of special system node: 'error', 'loading', 'nodata', or 'paging'.
  * @property {boolean} lazy True if this node is loaded on demand, i.e. on first expansion.
  * @property {boolean} selected Use isSelected(), setSelected() to access this property.
  * @property {string} tooltip Alternative description used as hover banner
