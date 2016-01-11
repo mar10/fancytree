@@ -34,6 +34,9 @@ ul.fancytree-container ul {
   padding: 0 0 0 16px;
   margin: 0;
 }
+ul.fancytree-container ul > li:before {
+  content: none;
+}
 ul.fancytree-container li {
   list-style-image: none;
   list-style-position: outside;
@@ -278,8 +281,8 @@ span.fancytree-icon {
 }
 .fancytree-loading span.fancytree-expander,
 .fancytree-loading span.fancytree-expander:hover,
-.fancytree-statusnode-wait span.fancytree-icon,
-.fancytree-statusnode-wait span.fancytree-icon:hover {
+.fancytree-statusnode-loading span.fancytree-icon,
+.fancytree-statusnode-loading span.fancytree-icon:hover {
   background-image: url('data:image/gif;base64,R0lGODlhEAAQAKIFAAAAAAAApUJC/4SE/8bGxgAAAAAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQFCgAFACwAAAAAEAAQAAADKli63K4hPBZLJWTWhZ0QU7d8YTadxTCgosqa6CM6c1Eztw3rJZ83v1gjAQAh+QQFCgAFACwBAAIACwAHAAADFFgqUhEOrqZiGaNqhbf/BUGA4QgmACH5BAUKAAUALAIAAQAMAAUAAAMTWKoi+2OUVkKAcllFyHtW92lBAgAh+QQFCgAFACwEAAEACwAIAAADFlg6o16EFFaEcPHZx1UInfOFZDeSXwIAIfkEBQoABQAsBwABAAcACwAAAxRIVMxaYzQWZxPCYstZ4F83BWFDJgAh+QQFCgAFACwKAAIABQAMAAADFEhUrPxjQPlqEeJhy0J4XhF2H5MAACH5BAUKAAUALAcABAAIAAsAAAMUWKpEu+3JOQa1cwqh+QrBF4LilAAAIfkEBQoABQAsBAAHAAsABwAAAxRYukvE0MFJyxjV4hCYEAtXiN+SAAAh+QQFCgAFACwCAAoADAAFAAADEhhR3ExEOQeZbGM4KUTJE9NNCQAh+QQFCgAFACwBAAcACwAIAAADFhhR3K0uSglnqbYI4QhpWzEMhSeNTQIAIfkEBQoABQAsAgAEAAcACwAAAxMYUczaMC4ZKxMiYjtG7AVBRGICACH5BAUKAAUALAEAAgAFAAwAAAMTWBqhxa8t6ZQQ7tY9husbQThiAgA7');
   background-position: 0px 0px;
 }

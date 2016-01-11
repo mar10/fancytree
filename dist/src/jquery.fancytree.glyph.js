@@ -4,13 +4,13 @@
  * Use glyph fonts as instead of icon sprites.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2015, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2016, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.14.0
- * @date 2015-12-19T23:23
+ * @version 2.15.0
+ * @date 2016-01-11T21:43
  */
 
 ;(function($, window, document, undefined) {
@@ -125,7 +125,7 @@ $.ui.fancytree.registerExtension({
 		if(node.parent){
 			span = $("span.fancytree-expander", node.span).get(0);
 		}else{
-			span = $(".fancytree-statusnode-wait, .fancytree-statusnode-error", node[this.nodeContainerAttrName])
+			span = $(".fancytree-statusnode-loading, .fancytree-statusnode-error", node[this.nodeContainerAttrName])
 				.find("span.fancytree-expander").get(0);
 		}
 		if( status === "loading"){

@@ -109,6 +109,9 @@ ul.fancytree-container {
 		padding: 0 0 0 @fancy-level-indent;
 		margin: 0;
 	}
+	ul>li:before { // #538
+		content: none;
+	}
 	li {
 		list-style-image: none;
 		list-style-position: outside;
@@ -394,8 +397,8 @@ span.fancytree-icon { // Default icon
 // 'Loading' status overrides all others
 .fancytree-loading span.fancytree-expander,
 .fancytree-loading span.fancytree-expander:hover,
-.fancytree-statusnode-wait span.fancytree-icon,
-.fancytree-statusnode-wait span.fancytree-icon:hover {
+.fancytree-statusnode-loading span.fancytree-icon,
+.fancytree-statusnode-loading span.fancytree-icon:hover {
 	background-image: @fancy-loading-url;
 	.useSprite(0, 0);
 }

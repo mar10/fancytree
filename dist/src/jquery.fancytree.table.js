@@ -4,13 +4,13 @@
  * Render tree as table (aka 'treegrid', 'tabletree').
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2015, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2016, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.14.0
- * @date 2015-12-19T23:23
+ * @version 2.15.0
+ * @date 2016-01-11T21:43
  */
 
 ;(function($, window, document, undefined) {
@@ -71,14 +71,24 @@ function findPrevRowNode(node){
 	return prev;
 }
 
+/* Render callback for 'wide' mode. */
+// function _renderStatusNodeWide(event, data) {
+// 	var node = data.node,
+// 		nodeColumnIdx = data.options.table.nodeColumnIdx,
+// 		$tdList = $(node.tr).find(">td");
+
+// 	$tdList.eq(nodeColumnIdx).attr("colspan", data.tree.columnCount);
+// 	$tdList.not(":eq(" + nodeColumnIdx + ")").remove();
+// }
+
 
 $.ui.fancytree.registerExtension({
 	name: "table",
-	version: "0.2.1",
+	version: "0.3.0",
 	// Default options for this extension.
 	options: {
 		checkboxColumnIdx: null, // render the checkboxes into the this column index (default: nodeColumnIdx)
-		customStatus: false,	 // true: generate renderColumns events for status nodes
+		// customStatus: false,	 // true: generate renderColumns events for status nodes
 		indentation: 16,         // indent every node level by 16px
 		nodeColumnIdx: 0         // render node expander, icon, and title to this column (default: #0)
 	},
@@ -86,30 +96,72 @@ $.ui.fancytree.registerExtension({
 	// `this`       : is this extension object
 	// `this._super`: the virtual function that was overriden (member of prev. extension or Fancytree)
 	treeInit: function(ctx){
-		var i, $row, tdRole,
+		var i, n, $row, $tbody,
 			tree = ctx.tree,
+			opts = ctx.options,
+			tableOpts = opts.table,
 			$table = tree.widget.element;
 
-		$table.addClass("fancytree-container fancytree-ext-table");
-		tree.tbody = $table.find("> tbody")[0];
-		tree.columnCount = $("thead >tr >th", $table).length;
-		$(tree.tbody).empty();
-
-		tree.rowFragment = document.createDocumentFragment();
-		$row = $("<tr />");
-		tdRole = "";
-		if(ctx.options.aria){
-			$row.attr("role", "row");
-			tdRole = " role='gridcell'";
-		}
-		for(i=0; i<tree.columnCount; i++) {
-			if(ctx.options.table.nodeColumnIdx === i){
-				$row.append("<td" + tdRole + "><span class='fancytree-node' /></td>");
-			}else{
-				$row.append("<td" + tdRole + " />");
+		if( tableOpts.customStatus != null ) {
+			if( opts.renderStatusColumns != null) {
+				$.error("The 'customStatus' option is deprecated since v2.15.0. Use 'renderStatusColumns' only instead.");
+			} else {
+				tree.warn("The 'customStatus' option is deprecated since v2.15.0. Use 'renderStatusColumns' instead.");
+				opts.renderStatusColumns = tableOpts.customStatus;
 			}
 		}
+		if( opts.renderStatusColumns ) {
+			if( opts.renderStatusColumns === true ) {
+				opts.renderStatusColumns = opts.renderColumns;
+			// } else if( opts.renderStatusColumns === "wide" ) {
+			// 	opts.renderStatusColumns = _renderStatusNodeWide;
+			}
+		}
+
+		$table.addClass("fancytree-container fancytree-ext-table");
+		tree.tbody = $table.find(">tbody")[0];
+		$tbody = $(tree.tbody);
+
+		// Prepare row templates:
+		// Determine column count from table header if any
+		tree.columnCount = $("thead >tr:last >th", $table).length;
+		// Read TR templates from tbody if any
+		$row = $tbody.children("tr:first");
+		if( $row.length ) {
+			n = $row.children("td").length;
+			if( tree.columnCount && n !== tree.columnCount ) {
+				tree.warn("Column count mismatch between thead (" + tree.columnCount + ") and tbody (" + n + "); using tbody.");
+				tree.columnCount = n;
+			}
+			$row = $row.clone();
+		} else {
+			// Only thead is defined: create default row markup
+			_assert(tree.columnCount >= 1, "Need either <thead> or <tbody> with <td> elements to determine column count.");
+			$row = $("<tr />");
+			for(i=0; i<tree.columnCount; i++) {
+				$row.append("<td />");
+			}
+		}
+		$row.find(">td").eq(tableOpts.nodeColumnIdx)
+			.html("<span class='fancytree-node' />");
+		if( opts.aria ) {
+			$row.attr("role", "row");
+			$row.find("td").attr("role", "gridcell");
+		}
+		tree.rowFragment = document.createDocumentFragment();
 		tree.rowFragment.appendChild($row.get(0));
+
+		// // If tbody contains a second row, use this as status node template
+		// $row = $tbody.children("tr:eq(1)");
+		// if( $row.length === 0 ) {
+		// 	tree.statusRowFragment = tree.rowFragment;
+		// } else {
+		// 	$row = $row.clone();
+		// 	tree.statusRowFragment = document.createDocumentFragment();
+		// 	tree.statusRowFragment.appendChild($row.get(0));
+		// }
+		//
+		$tbody.empty();
 
 		// Make sure that status classes are set on the node's <tr> elements
 		tree.statusClassPropName = "tr";
@@ -124,18 +176,15 @@ $.ui.fancytree.registerExtension({
 		// standard Fancytree created a root UL
 		$(tree.rootNode.ul).remove();
 		tree.rootNode.ul = null;
-//		tree.$container = $table;
+
 		// Add container to the TAB chain
-		this.$container.attr("tabindex", this.options.tabbable ? "0" : "-1");
-		if(this.options.aria){
+		this.$container.attr("tabindex", opts.tabbable ? "0" : "-1");
+		if(opts.aria) {
 			tree.$container
 				.attr("role", "treegrid")
 				.attr("aria-readonly", true);
 		}
 	},
-	/* Called by nodeRender to sync node order with tag order.*/
-//    nodeFixOrder: function(ctx) {
-//    },
 	nodeRemoveChildMarkup: function(ctx) {
 		var node = ctx.node;
 //		node.debug("nodeRemoveChildMarkup()");
@@ -176,7 +225,11 @@ $.ui.fancytree.registerExtension({
 					return;
 				}
 				// Create new <tr> after previous row
+				// if( node.isStatusNode() ) {
+				// 	newRow = tree.statusRowFragment.firstChild.cloneNode(true);
+				// } else {
 				newRow = tree.rowFragment.firstChild.cloneNode(true);
+				// }
 				prevNode = findPrevRowNode(node);
 				// $.ui.fancytree.debug("*** nodeRender " + node + ": prev: " + prevNode.key);
 				_assert(prevNode);
@@ -264,26 +317,33 @@ $.ui.fancytree.registerExtension({
 		// }
 	},
 	nodeRenderTitle: function(ctx, title) {
-		var $cb,
+		var $cb, res,
 			node = ctx.node,
-			opts = ctx.options;
+			opts = ctx.options,
+			isStatusNode = node.isStatusNode();
 
-		this._superApply(arguments);
+		res = this._superApply(arguments);
+
+		if( node.isRootNode() ) {
+			return res;
+		}
 		// Move checkbox to custom column
-		if(opts.checkbox && opts.table.checkboxColumnIdx != null ){
-			$cb = $("span.fancytree-checkbox", node.span).detach();
+		if(opts.checkbox && !isStatusNode && opts.table.checkboxColumnIdx != null ){
+			$cb = $("span.fancytree-checkbox", node.span); //.detach();
 			$(node.tr).find("td").eq(+opts.table.checkboxColumnIdx).html($cb);
 		}
 		// Update element classes according to node state
-		if( ! node.isRoot() ){
-			this.nodeRenderStatus(ctx);
-		}
-		if( !opts.table.customStatus && node.isStatusNode() ) {
-			// default rendering for status node: leave other cells empty
+		this.nodeRenderStatus(ctx);
+
+		if( isStatusNode ) {
+			if( opts.renderStatusColumns ) {
+				// Let user code write column content
+				opts.renderStatusColumns.call(ctx.tree, {type: "renderStatusColumns"}, ctx);
+			} // else: default rendering for status node: leave other cells empty
 		} else if ( opts.renderColumns ) {
-			// Let user code write column content
 			opts.renderColumns.call(ctx.tree, {type: "renderColumns"}, ctx);
 		}
+		return res;
 	},
 	nodeRenderStatus: function(ctx) {
 		var indent,

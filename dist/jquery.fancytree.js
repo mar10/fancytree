@@ -3,12 +3,12 @@
  * Tree view control with support for lazy loading and much more.
  * https://github.com/mar10/fancytree/
  *
- * Copyright (c) 2008-2015, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2016, Martin Wendt (http://wwWendt.de)
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.14.0
- * @date 2015-12-19T23:23
+ * @version 2.15.0
+ * @date 2016-01-11T21:43
  */
 
 /** Core Fancytree module.
@@ -51,7 +51,7 @@ function consoleApply(method, args){
 		} catch(e) {
 			// IE 8?
 			s = "";
-			for( i=0; i<args.length; i++){
+			for( i=0; i<args.length; i++ ) {
 				s += args[i];
 			}
 			fn(s);
@@ -214,6 +214,7 @@ function _makeNodeTitleStartMatcher(s){
 var i, attr,
 	FT = null, // initialized below
 	TEST_IMG = new RegExp(/\.|\//),  // strings are considered image urls if they conatin '.' or '/'
+	RECURSIVE_REQUEST_ERROR = "$recursive_request",
 	ENTITY_MAP = {"&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;", "/": "&#x2F;"},
 	IGNORE_KEYCODES = { 16: true, 17: true, 18: true },
 	SPECIAL_KEYCODES = {
@@ -234,7 +235,7 @@ var i, attr,
 	CLASS_ATTRS = "active expanded focus folder hideCheckbox lazy selected unselectable".split(" "),
 	CLASS_ATTR_MAP = {},
 	//	Top-level Fancytree node attributes, that can be set by dict
-	NODE_ATTRS = "expanded extraClasses folder hideCheckbox icon key lazy refKey selected title tooltip unselectable".split(" "),
+	NODE_ATTRS = "expanded extraClasses folder hideCheckbox icon key lazy refKey selected statusNodeType title tooltip unselectable".split(" "),
 	NODE_ATTR_MAP = {},
 	// Mapping of lowercase -> real name (because HTML5 data-... attribute only supports lowercase)
 	NODE_ATTR_LOWERCASE_MAP = {},
@@ -277,7 +278,7 @@ for(i=0; i<NODE_ATTRS.length; i++) {
  * @property {string} extraClasses Addtional CSS classes, added to the node's `&lt;span>`
  * @property {boolean} folder Folder nodes have different default icons and click behavior.<br>
  *     Note: Also non-folders may have children.
- * @property {string} statusNodeType null or type of temporarily generated system node like 'loading', or 'error'.
+ * @property {string} statusNodeType null for standard nodes. Otherwise type of special system node: 'error', 'loading', 'nodata', or 'paging'.
  * @property {boolean} lazy True if this node is loaded on demand, i.e. on first expansion.
  * @property {boolean} selected Use isSelected(), setSelected() to access this property.
  * @property {string} tooltip Alternative description used as hover banner
@@ -455,6 +456,35 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			return this.addChildren(node);
 		}
 		_assert(false, "Invalid mode: " + mode);
+	},
+	/**Add child status nodes that indicate 'More...', etc.
+	 *
+	 * This also maintains the node's `partload` property.
+	 * @param {boolean|object} node optional node definition. Pass `false` to remove all paging nodes.
+	 * @param {string} [mode='child'] 'child'|firstChild'
+	 * @since 2.15
+	 */
+	addPagingNode: function(node, mode){
+		var i, n;
+
+		mode = mode || "child";
+		if( node === false ) {
+			for(i=this.children.length-1; i >= 0; i--) {
+				n = this.children[i];
+				if( n.statusNodeType === "paging" ) {
+					this.removeChild(n);
+				}
+			}
+			this.partload = false;
+			return;
+		}
+		node = $.extend({
+			title: this.tree.options.strings.moreData,
+			statusNodeType: "paging",
+			icon: false
+		}, node);
+		this.partload = true;
+		return this.addNode(node, mode);
 	},
 	/**
 	 * Append new node after this.
@@ -877,6 +907,24 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		}
 		return null;
 	},
+	/**
+	 * Return an array of selected descendant nodes.
+	 * @param {boolean} [stopOnParents=false] only return the topmost selected
+	 *     node (useful with selectMode 3)
+	 * @returns {FancytreeNode[]}
+	 */
+	getSelectedNodes: function(stopOnParents) {
+		var nodeList = [];
+		this.visit(function(node){
+			if( node.selected ) {
+				nodeList.push(node);
+				if( stopOnParents === true ){
+					return "skip"; // stop processing this branch
+				}
+			}
+		});
+		return nodeList;
+	},
 	/** Return true if node has children. Return undefined if not sure, i.e. the node is lazy and not yet loaded).
 	 * @returns {boolean | undefined}
 	 */
@@ -992,6 +1040,13 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	isRoot: function() {
 		return this.isRootNode();
 	},
+	/** (experimental) Return true if this is partially loaded.
+	 * @returns {boolean}
+	 * @since 2.15
+	 */
+	isPartload: function() {
+		return !!this.partload;
+	},
 	/** Return true if this is the (invisible) system root node.
 	 * @returns {boolean}
 	 * @since 2.4
@@ -1006,11 +1061,18 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		return !!this.selected;
 	},
 	/** Return true if this node is a temporarily generated system node like
-	 * 'loading', or 'error' (node.statusNodeType contains the type).
+	 * 'loading', 'paging', or 'error' (node.statusNodeType contains the type).
 	 * @returns {boolean}
 	 */
 	isStatusNode: function() {
 		return !!this.statusNodeType;
+	},
+	/** Return true if this node is a status node of type 'paging'.
+	 * @returns {boolean}
+	 * @since 2.15
+	 */
+	isPagingNode: function() {
+		return this.statusNodeType === "paging";
 	},
 	/** Return true if this a top level node, i.e. a direct child of the (invisible) system root node.
 	 * @returns {boolean}
@@ -1133,9 +1195,9 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		if(this === targetNode){
 			return;
 		}else if( !this.parent  ){
-			throw "Cannot move system root";
+			$.error("Cannot move system root");
 		}else if( targetParent.isDescendantOf(this) ){
-			throw "Cannot move a node to its own descendant";
+			$.error("Cannot move a node to its own descendant");
 		}
 		// Unlink this node from current parent
 		if( this.parent.children.length === 1 ) {
@@ -1175,7 +1237,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 				targetParent.children.splice(pos+1, 0, this);
 				break;
 			default:
-				throw "Invalid mode " + mode;
+				$.error("Invalid mode " + mode);
 			}
 		} else {
 			targetParent.children = [ this ];
@@ -1403,6 +1465,42 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		return this.tree._callHook("nodeRenderStatus", this);
 	},
 	/**
+	 * (experimental) Replace this node with `source`.
+	 * @since 2.15
+	 */
+	replaceWith: function(source) {
+		var res,
+			parent = this.parent,
+			pos = $.inArray(this, parent.children),
+			that = this;
+
+		_assert( this.isPagingNode(), "replaceWith() currently requires a paging status node" );
+
+		res = this.tree._callHook("nodeLoadChildren", this, source);
+		res.done(function(data){
+			// New nodes are currently children of `this`.
+			var children = that.children;
+			// Prepend newly loaded child nodes to `this`
+			// Move new children after self
+			for( i=0; i<children.length; i++ ) {
+				children[i].parent = parent;
+			}
+			parent.children.splice.apply(parent.children, [pos + 1, 0].concat(children));
+
+			// Remove self
+			that.children = null;
+			that.remove();
+			// Redraw new nodes
+			parent.render();
+			// TODO: set node.partload = false if this was tha last paging node?
+			// parent.addPagingNode(false);
+		}).fail(function(){
+			that.setExpanded();
+		});
+		return res;
+		// $.error("Not implemented: replaceWith()");
+	},
+	/**
 	 * Remove all children, collapse, and set the lazy-flag, so that the lazyLoad
 	 * event is triggered on next expand.
 	 */
@@ -1442,7 +1540,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			}, ms);
 			break;
 		default:
-			throw "Invalid mode " + mode;
+			$.error("Invalid mode " + mode);
 		}
 //        this.tree.debug("setTimeout(%s, %s): %s", mode, ms, this.tree.timer);
 	},
@@ -1571,8 +1669,8 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	setSelected: function(flag){
 		return this.tree._callHook("nodeSetSelected", this, flag);
 	},
-	/**Mark a lazy node as 'error', 'loading', or 'ok'.
-	 * @param {string} status 'error', 'ok'
+	/**Mark a lazy node as 'error', 'loading', 'nodata', or 'ok'.
+	 * @param {string} status 'error'|'empty'|'ok'
 	 * @param {string} [message]
 	 * @param {string} [details]
 	 */
@@ -1981,7 +2079,15 @@ Fancytree.prototype = /** @lends Fancytree# */{
 		}
 		return node;
 	},
-	/** (experimental)
+	/** (experimental) Add child status nodes that indicate 'More...', ....
+	 * @param {boolean|object} node optional node definition. Pass `false` to remove all paging nodes.
+	 * @param {string} [mode='append'] 'child'|firstChild'
+	 * @since 2.15
+	 */
+	addPagingNode: function(node, mode){
+		return this.rootNode.addPagingNode(node, mode);
+	},
+	/** (experimental) Modify existing data model.
 	 *
 	 * @param {Array} patchList array of [key, NodePatch] arrays
 	 * @returns {$.Promise} resolved, when all patches have been applied
@@ -2245,16 +2351,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	 * @returns {FancytreeNode[]}
 	 */
 	getSelectedNodes: function(stopOnParents) {
-		var nodeList = [];
-		this.rootNode.visit(function(node){
-			if( node.selected ) {
-				nodeList.push(node);
-				if( stopOnParents === true ){
-					return "skip"; // stop processing this branch
-				}
-			}
-		});
-		return nodeList;
+		return this.rootNode.getSelectedNodes(stopOnParents);
 	},
 	/** Return true if the tree control has keyboard focus
 	 * @returns {boolean}
@@ -2372,7 +2469,9 @@ Fancytree.prototype = /** @lends Fancytree# */{
 		// Return a promise that is resolved, when ALL paths were loaded
 		return $.when.apply($, deferredList).promise();
 	},
-	/** Re-fire beforeActivate and activate events. */
+	/** Re-fire beforeActivate and activate events.
+	 * @param [setFocus=false]
+	 */
 	reactivate: function(setFocus) {
 		var res,
 			node = this.activeNode;
@@ -2396,7 +2495,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 		return this._callHook("treeLoad", this, source);
 	},
 	/**Render tree (i.e. create DOM elements for all top-level nodes).
-	 * @param {boolean} [force=false] create DOM elemnts, even is parent is collapsed
+	 * @param {boolean} [force=false] create DOM elemnts, even if parent is collapsed
 	 * @param {boolean} [deep=false]
 	 */
 	render: function(force, deep) {
@@ -2639,7 +2738,9 @@ $.extend(Fancytree.prototype,
 				tree.nodeSetExpanded(ctx, false);
 				break;
 			case "space":
-				if(opts.checkbox){
+				if( node.isPagingNode() ) {
+					tree._triggerNodeEvent("clickPaging", ctx, event);
+				} else if(opts.checkbox){
 					tree.nodeToggleSelected(ctx);
 				}else{
 					tree.nodeSetActive(ctx, true);
@@ -2684,22 +2785,27 @@ $.extend(Fancytree.prototype,
 	nodeLoadChildren: function(ctx, source) {
 		var ajax, delay, dfd,
 			tree = ctx.tree,
-			node = ctx.node;
+			node = ctx.node,
+			requestId = new Date().getTime();
 
 		if($.isFunction(source)){
 			source = source();
 		}
-		// TOTHINK: move to 'ajax' extension?
 		if(source.url){
+			if( node._requestId ) {
+				node.warn("Recursive load request #" + requestId + " while #" + node._requestId + " is pending.");
+			// } else {
+			// 	node.debug("Send load request #" + requestId);
+			}
 			// `source` is an Ajax options object
 			ajax = $.extend({}, ctx.options.ajax, source);
+			node._requestId = requestId;
 			if(ajax.debugDelay){
 				// simulate a slow server
 				delay = ajax.debugDelay;
 				if($.isArray(delay)){ // random delay range [min..max]
 					delay = delay[0] + Math.random() * (delay[1] - delay[0]);
 				}
-
 				node.debug("nodeLoadChildren waiting debug delay " + Math.round(delay) + "ms");
 				ajax.debugDelay = false;
 				dfd = $.Deferred(function (dfd) {
@@ -2718,8 +2824,18 @@ $.extend(Fancytree.prototype,
 			source = new $.Deferred();
 			dfd.done(function (data, textStatus, jqXHR) {
 				var errorObj, res;
+
 				if((this.dataType === "json" || this.dataType === "jsonp") && typeof data === "string"){
 					$.error("Ajax request returned a string (did you get the JSON dataType wrong?).");
+				}
+				if( node._requestId && node._requestId > requestId ) {
+					// The expected request time stamp is later than `requestId`
+					// (which was kept as as closure variable to this handler function)
+					// node.warn("Ignored load response for obsolete request #" + requestId + " (expected #" + node._requestId + ")");
+					source.rejectWith(this, [RECURSIVE_REQUEST_ERROR]);
+					return;
+				// } else {
+				// 	node.debug("Response returned for load request #" + requestId);
 				}
 				// postProcess is similar to the standard ajax dataFilter hook,
 				// but it is also called for JSONP
@@ -2760,15 +2876,19 @@ $.extend(Fancytree.prototype,
 		}
 		if($.isFunction(source.promise)){
 			// `source` is a deferred, i.e. ajax request
-			_assert(!node.isLoading(), "recursive load");
-			// node._isLoading = true;
+			// _assert(!node.isLoading(), "recursive load");
 			tree.nodeSetStatus(ctx, "loading");
 
 			source.done(function (children) {
 				tree.nodeSetStatus(ctx, "ok");
+				node._requestId = null;
 			}).fail(function(error){
 				var ctxErr;
-				if (error.node && error.error && error.message) {
+
+				if ( error === RECURSIVE_REQUEST_ERROR ) {
+					node.warn("Ignored response for obsolete load request #" + requestId + " (expected #" + node._requestId + ")");
+					return;
+				} else if (error.node && error.error && error.message) {
 					// error is already a context object
 					ctxErr = error;
 				} else {
@@ -2801,8 +2921,6 @@ $.extend(Fancytree.prototype,
 			node._setChildren(children);
 			// trigger fancytreeloadchildren
 			tree._triggerNodeEvent("loadChildren", node);
-		// }).always(function(){
-		// 	node._isLoading = false;
 		});
 	},
 	/** [Not Implemented]  */
@@ -3299,6 +3417,9 @@ $.extend(Fancytree.prototype,
 		if( node.lazy && node.children == null ){
 			cnList.push(cn.lazy);
 		}
+		if( node.partload ){
+			cnList.push(cn.partload);
+		}
 		if( node.partsel ){
 			cnList.push(cn.partsel);
 		}
@@ -3310,6 +3431,9 @@ $.extend(Fancytree.prototype,
 		}
 		if( node._error ){
 			cnList.push(cn.error);
+		}
+		if( node.statusNodeType ) {
+			cnList.push(cn.statusNodePrefix + node.statusNodeType);
 		}
 		if( node.selected ){
 			cnList.push(cn.selected);
@@ -3648,7 +3772,7 @@ $.extend(Fancytree.prototype,
 		tree.lastSelectedNode = flag ? node : null;
 		tree._triggerNodeEvent("select", ctx);
 	},
-	/** Show node status (ok, loading, error) using styles and a dummy child node.
+	/** Show node status (ok, loading, error, nodata) using styles and a dummy child node.
 	 *
 	 * @param {EventData} ctx
 	 * @param status
@@ -3659,7 +3783,6 @@ $.extend(Fancytree.prototype,
 	nodeSetStatus: function(ctx, status, message, details) {
 		var node = ctx.node,
 			tree = ctx.tree;
-			// cn = ctx.options._classNames;
 
 		function _clearStatusNode() {
 			// Remove dedicated dummy node, if any
@@ -3686,10 +3809,8 @@ $.extend(Fancytree.prototype,
 			var firstChild = ( node.children ? node.children[0] : null );
 			if ( firstChild && firstChild.isStatusNode() ) {
 				$.extend(firstChild, data);
-				// tree._callHook("nodeRender", firstChild);
 				tree._callHook("nodeRenderTitle", firstChild);
 			} else {
-				data.key = "_statusNode";
 				node._setChildren([data]);
 				node.children[0].statusNodeType = type;
 				tree.render();
@@ -3700,18 +3821,15 @@ $.extend(Fancytree.prototype,
 		switch( status ){
 		case "ok":
 			_clearStatusNode();
-			// $(node.span).removeClass(cn.loading).removeClass(cn.error);
 			node._isLoading = false;
 			node._error = null;
 			node.renderStatus();
 			break;
 		case "loading":
-			// $(node.span).removeClass(cn.error).addClass(cn.loading);
 			if( !node.parent ) {
 				_setStatusNode({
 					title: tree.options.strings.loading + (message ? " (" + message + ") " : ""),
-					tooltip: details,
-					extraClasses: "fancytree-statusnode-wait"
+					tooltip: details
 				}, status);
 			}
 			node._isLoading = true;
@@ -3719,14 +3837,21 @@ $.extend(Fancytree.prototype,
 			node.renderStatus();
 			break;
 		case "error":
-			// $(node.span).removeClass(cn.loading).addClass(cn.error);
 			_setStatusNode({
 				title: tree.options.strings.loadError + (message ? " (" + message + ") " : ""),
-				tooltip: details,
-				extraClasses: "fancytree-statusnode-error"
+				tooltip: details
 			}, status);
 			node._isLoading = false;
 			node._error = { message: message, details: details };
+			node.renderStatus();
+			break;
+		case "nodata":
+			_setStatusNode({
+				title: tree.options.strings.noData,
+				tooltip: details
+			}, status);
+			node._isLoading = false;
+			node._error = null;
 			node.renderStatus();
 			break;
 		default:
@@ -3925,7 +4050,9 @@ $.widget("ui.fancytree",
 		selectMode: 2,
 		strings: {
 			loading: "Loading&#8230;",
-			loadError: "Load error!"
+			loadError: "Load error!",
+			moreData: "More&#8230;",
+			noData: "No data."
 		},
 		tabbable: true,
 		titlesTabbable: false,
@@ -3940,11 +4067,13 @@ $.widget("ui.fancytree",
 			expanded: "fancytree-expanded",
 			lazy: "fancytree-lazy",
 			focused: "fancytree-focused",
+			partload: "fancytree-partload",
 			partsel: "fancytree-partsel",
 			unselectable: "fancytree-unselectable",
 			lastsib: "fancytree-lastsib",
 			loading: "fancytree-loading",
-			error: "fancytree-error"
+			error: "fancytree-error",
+			statusNodePrefix: "fancytree-statusnode-"
 		},
 		// events
 		lazyLoad: null,
@@ -4137,12 +4266,15 @@ $.widget("ui.fancytree",
 				return true;  // Allow bubbling of other events
 			}
 			ctx = tree._makeHookContext(node, event);
-//			that.tree.debug("event(" + event.type + "): node: ", node);
+			// that.tree.debug("event(" + event.type + "): node: ", node);
 			try {
 				tree.phase = "userEvent";
 				switch(event.type) {
 				case "click":
 					ctx.targetType = et.type;
+					if( node.isPagingNode() ) {
+						return tree._triggerNodeEvent("clickPaging", ctx, event) === true;
+					}
 					return ( tree._triggerNodeEvent("click", ctx, event) === false ) ? false : tree._callHook("nodeClick", ctx);
 				case "dblclick":
 					ctx.targetType = et.type;
@@ -4200,7 +4332,7 @@ $.extend($.ui.fancytree,
 	/** @lends Fancytree_Static# */
 	{
 	/** @type {string} */
-	version: "2.14.0",      // Set to semver by 'grunt release'
+	version: "2.15.0",      // Set to semver by 'grunt release'
 	/** @type {string} */
 	buildType: "production", // Set to 'production' by 'grunt build'
 	/** @type {int} */

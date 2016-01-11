@@ -34,6 +34,9 @@ ul.fancytree-container ul {
   padding: 0 0 0 16px;
   margin: 0;
 }
+ul.fancytree-container ul > li:before {
+  content: none;
+}
 ul.fancytree-container li {
   list-style-image: none;
   list-style-position: outside;
@@ -149,8 +152,8 @@ span.fancytree-icon {
 /* Folders */
 .fancytree-loading span.fancytree-expander,
 .fancytree-loading span.fancytree-expander:hover,
-.fancytree-statusnode-wait span.fancytree-icon,
-.fancytree-statusnode-wait span.fancytree-icon:hover {
+.fancytree-statusnode-loading span.fancytree-icon,
+.fancytree-statusnode-loading span.fancytree-icon:hover {
   background-image: none;
 }
 /* Status node icons */
@@ -373,6 +376,31 @@ ul.fancytree-container ul {
 .fancytree-container .fancytree-active span.fancytree-title input,
 .fancytree-container.fancytree-colorize-selected .fancytree-selected span.fancytree-title input {
   color: black;
+}
+/* Helper to allow spinning loader icon with bootstrap */
+.glyphicon-spin {
+  -webkit-animation: spin 1000ms infinite linear;
+  animation: spin 1000ms infinite linear;
+}
+@-webkit-keyframes spin, {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+@keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
 }
 div.fancytree-drag-helper.fancytree-drop-reject,
 div.fancytree-drag-helper.fancytree-drop-reject span.fancytree-title {

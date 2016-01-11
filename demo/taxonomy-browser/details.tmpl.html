@@ -41,9 +41,9 @@
 				{{#each media}}
 				<li class="media">
 					<div class="media-left">
-					    <a href="{{this.identifier}}">
-					      <img class="media-object" src="{{this.identifier}}" alt="{{this.title}}">
-					    </a>
+						<a href="{{this.identifier}}">
+						  <img class="media-object" src="{{this.identifier}}" alt="{{this.title}}">
+						</a>
 					</div>
 					<div class="media-body">
 						<h4 class="media-heading">{{this.title}}</h4>
@@ -60,7 +60,7 @@
 			{{else}}
 				No media available.
 			{{/if}}
-<!-- 
+<!--
 			{{#if media}}
 				<div class="row">
 				{{#each media}}
@@ -78,19 +78,19 @@
 				No media.
 			{{/if}}
  -->
- 		</div>
+		</div>
 	</div>
 
-<!-- 
+<!--
 	<h4>Media</h4>
 
 	{{#if media}}
 	<div class="media">
 		{{#each media}}
 		<div class="media-left">
-		    <a class="pull-left" href="{{this.identifier}}" target="_blank">
-		      <img class="media-object" src="{{this.identifier}}" alt="{{this.title}}">
-		    </a>
+			<a class="pull-left" href="{{this.identifier}}" target="_blank">
+			  <img class="media-object" src="{{this.identifier}}" alt="{{this.title}}">
+			</a>
 		</div>
 		<div class="media-body">
 			<h4 class="media-heading">{{this.title}}</h4>
@@ -110,9 +110,9 @@
 		<ul>
 			{{#each descriptions}}
 				<li>
-					<a tabindex="0" role="button" 
+					<a tabindex="0" role="button"
 						data-toggle="popover" data-trigger="focus" data-placement="top"
-						title="{{this.type}} {{this.source}}" 
+						title="{{this.type}} {{this.source}}"
 						data-content="{{this.description}}">
 						{{this.type}} {{this.source}}
 					</a>
@@ -138,25 +138,25 @@
 					id="tabDesc{{@key}}">
 
 					<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-					  
+
 					{{#each this}}
 					  <div class="panel panel-default">
-					    <div class="panel-heading" role="tab" id="heading{{@../key}}{{@index}}">
-					      <h4 class="panel-title">
-					        <a role="button" data-toggle="collapse" data-parent="#accordion" 
-					          href="#collapse{{@../key}}{{@index}}" aria-controls="collapse{{@../key}}{{@index}}"
-					          aria-expanded="{{#if @first}}true{{else}}false{{/if}}" >
-					          {{this.type}} <small>({{this.source}})</small>
-					        </a>
-					      </h4>
-					    </div>
-					    <div id="collapse{{@../key}}{{@index}}" 
-					      class="panel-collapse collapse {{#if @first}}in{{/if}}" 
-					      role="tabpanel" aria-labelledby="heading{{@../key}}{{@index}}">
-					      <div class="panel-body">
-					        {{this.description}}
-					      </div>
-					    </div>
+						<div class="panel-heading" role="tab" id="heading{{@../key}}{{@index}}">
+						  <h4 class="panel-title">
+							<a role="button" data-toggle="collapse" data-parent="#accordion"
+							  href="#collapse{{@../key}}{{@index}}" aria-controls="collapse{{@../key}}{{@index}}"
+							  aria-expanded="{{#if @first}}true{{else}}false{{/if}}" >
+							  {{this.type}} <small>({{this.source}})</small>
+							</a>
+						  </h4>
+						</div>
+						<div id="collapse{{@../key}}{{@index}}"
+						  class="panel-collapse collapse {{#if @first}}in{{/if}}"
+						  role="tabpanel" aria-labelledby="heading{{@../key}}{{@index}}">
+						  <div class="panel-body">
+							{{this.description}}
+						  </div>
+						</div>
 					  </div>
 					{{/each}}
 					</div>
@@ -165,25 +165,25 @@
 		</div>
 <!--
 		<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-		  
+
 		{{#each descriptions}}
 		  <div class="panel panel-default">
-		    <div class="panel-heading" role="tab" id="heading{{@index}}">
-		      <h4 class="panel-title">
-		        <a role="button" data-toggle="collapse" data-parent="#accordion" 
-		          href="#collapse{{@index}}" aria-controls="collapse{{@index}}"
-		          aria-expanded="{{#if @first}}true{{else}}false{{/if}}" >
-		          <span class="badge">{{this.language}}</span> {{this.type}} <small>({{this.source}})</small>
-		        </a>
-		      </h4>
-		    </div>
-		    <div id="collapse{{@index}}" 
-		      class="panel-collapse collapse {{#if @first}}in{{/if}}" 
-		      role="tabpanel" aria-labelledby="heading{{@index}}">
-		      <div class="panel-body">
-		        {{this.description}}
-		      </div>
-		    </div>
+			<div class="panel-heading" role="tab" id="heading{{@index}}">
+			  <h4 class="panel-title">
+				<a role="button" data-toggle="collapse" data-parent="#accordion"
+				  href="#collapse{{@index}}" aria-controls="collapse{{@index}}"
+				  aria-expanded="{{#if @first}}true{{else}}false{{/if}}" >
+				  <span class="badge">{{this.language}}</span> {{this.type}} <small>({{this.source}})</small>
+				</a>
+			  </h4>
+			</div>
+			<div id="collapse{{@index}}"
+			  class="panel-collapse collapse {{#if @first}}in{{/if}}"
+			  role="tabpanel" aria-labelledby="heading{{@index}}">
+			  <div class="panel-body">
+				{{this.description}}
+			  </div>
+			</div>
 		  </div>
 		{{/each}}
 		</div>
