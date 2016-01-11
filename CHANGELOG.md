@@ -1,4 +1,6 @@
-# 2.15.0-0 / Unreleased
+# 2.15.1-0 / Unreleased
+
+# 2.15.0 / 2015-01-11
   * [Changed] Renamed class `fancytree-statusnode-wait` to `fancytree-statusnode-loading`
   * [Added] new event `renderStatusColumns`
   * [Deprecated] ext-table option `customStatus`. Use `renderStatusColumns` instead
