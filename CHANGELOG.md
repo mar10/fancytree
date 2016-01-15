@@ -1,4 +1,5 @@
 # 2.15.1-0 / Unreleased
+  * Update to jQuery 1.12.0
 
 # 2.15.0 / 2015-01-11
   * [Changed] Renamed class `fancytree-statusnode-wait` to `fancytree-statusnode-loading`
@@ -8,7 +9,7 @@
   * [Added] new mode `nodata` for use with node.setStatus()
   * [Added] new method `node.addPagingNode()`
   * [Added] new method `node.replaceWith()`
-  * `node.statusNodeType`
+  * [Added] new type 'paging' for `node.statusNodeType`
   * [Added] #542 new method `node.getSelectedNodes()`
   * [Added] Helper class `glyphicon-spin` to allow rotating loading icon with bootstrap
   * [Improved] #356: serialize load requests
