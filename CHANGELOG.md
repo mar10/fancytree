@@ -1,5 +1,6 @@
 # 2.15.1-0 / Unreleased
   * Update to jQuery 1.12.0
+  * Add LICENSE.txt to dist
 
 # 2.15.0 / 2015-01-11
   * [Changed] Renamed class `fancytree-statusnode-wait` to `fancytree-statusnode-loading`

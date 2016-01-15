@@ -162,7 +162,7 @@ module.exports = (grunt) ->
                 dest: "build/src/"
             }, {
                 # src: ["*.txt", "*.md"]
-                src: ["MIT-LICENSE.txt"]
+                src: ["LICENSE.txt"]
                 dest: "build/"
             }]
         dist: # copy build folder to dist
