@@ -90,6 +90,8 @@ span.fancytree-custom-icon {
 }
 /* Used by icon option: */
 span.fancytree-custom-icon {
+  width: 32px;
+  height: 32px;
   display: inline-block;
   margin-left: 6px;
   background-position: 0px 0px;

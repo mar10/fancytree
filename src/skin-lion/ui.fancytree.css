@@ -96,6 +96,8 @@ span.fancytree-custom-icon {
 }
 /* Used by icon option: */
 span.fancytree-custom-icon {
+  width: 16px;
+  height: 16px;
   display: inline-block;
   margin-left: 3px;
   background-position: 0px 0px;
