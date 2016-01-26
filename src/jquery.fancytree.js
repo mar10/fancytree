@@ -2123,7 +2123,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 		}
 	},
    */
-	/** Remove alle nodes.
+	/** Remove all nodes.
 	 * @since 2.14
 	 */
 	clear: function(source) {
