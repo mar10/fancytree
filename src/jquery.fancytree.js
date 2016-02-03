@@ -3095,11 +3095,7 @@ $.extend(Fancytree.prototype,
 		 * - children have been added
 		 * - children have been removed
 		 * - rendering has been paused: exit fast
-		 */
-
-	    if(tree.renderingPaused) {
-	        return;
-	    }
+		 */	    
 
 		var childLI, childNode1, childNode2, i, l, next, subCtx,
 			node = ctx.node,
@@ -3111,7 +3107,11 @@ $.extend(Fancytree.prototype,
 			isRootNode = !parent,
 			children = node.children,
 			successorLi = null;
-		// FT.debug("nodeRender(" + !!force + ", " + !!deep + ")", node.toString());
+	    // FT.debug("nodeRender(" + !!force + ", " + !!deep + ")", node.toString());
+
+		if (tree.renderingPaused) {
+		    return;
+		}
 
 		if( ! isRootNode && ! parent.ul ) {
 			// Calling node.collapse on a deep, unrendered node
