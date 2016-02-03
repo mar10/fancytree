@@ -1899,6 +1899,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
  * @property {object} ext Hash of all active plugin instances.
  * @property {FancytreeNode} focusNode Currently focused node or null.
  * @property {FancytreeNode} lastSelectedNode Used to implement selectMode 1 (single select)
+ * @property {boolean} renderingPaused Is true when rendering of nodes is paused. Is false by default.
  * @property {string} nodeContainerAttrName Property name of FancytreeNode that contains the outer element of single nodes.
  *     Typically "li", but "tr" for table extension.
  * @property {FancytreeOptions} options Current options, i.e. default options + options passed to constructor.
@@ -1939,6 +1940,7 @@ function Fancytree(widget) {
 	this.systemFocusElement = null;
 	this.lastQuicksearchTerm = "";
 	this.lastQuicksearchTime = 0;
+	this.renderingPaused = false;
 
 	this.statusClassPropName = "span";
 	this.ariaPropName = "li";
@@ -2500,6 +2502,12 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	 */
 	render: function(force, deep) {
 		return this.rootNode.render(force, deep);
+	},
+    /** Switch to enable/disable automatic node rendering.
+	 * @param {boolean} false disables automatic node rendering when node changes occur, true enables it again
+	 */
+	setRenderingPaused: function (renderingPaused) {
+	    this.renderingPaused = renderingPaused;
 	},
 	// TODO: selectKey: function(key, select)
 	// TODO: serializeArray: function(stopOnParents)
@@ -3086,7 +3094,13 @@ $.extend(Fancytree.prototype,
 		 * - node was rendered: exit fast
 		 * - children have been added
 		 * - children have been removed
+		 * - rendering has been paused: exit fast
 		 */
+
+	    if(tree.renderingPaused) {
+	        return;
+	    }
+
 		var childLI, childNode1, childNode2, i, l, next, subCtx,
 			node = ctx.node,
 			tree = ctx.tree,
@@ -3247,6 +3261,10 @@ $.extend(Fancytree.prototype,
 			level = node.getLevel(),
 			ares = [];
 
+		if(tree.renderingPaused) {
+		    return;
+		}
+
 		if(title !== undefined){
 			node.title = title;
 		}
@@ -3365,6 +3383,10 @@ $.extend(Fancytree.prototype,
 			cn = opts._classNames,
 			cnList = [],
 			statusElem = node[tree.statusClassPropName];
+
+		if(tree.renderingPaused) {
+		    return;
+		}
 
 		if( !statusElem ){
 			// if this function is called for an unrendered node, ignore it (will be updated on nect render anyway)
