@@ -271,6 +271,20 @@ $.ui.fancytree._FancytreeNodeClass.prototype.reRegister = function(key, refKey){
 
 
 /**
+ * [ext-clones] Define a refKey for an existing node.
+ * @param {string} refKey
+ * @returns {boolean}
+ *
+ * @alias FancytreeNode#setRefKey
+ * @requires jquery.fancytree.clones.js
+ * @since 2.16
+ */
+$.ui.fancytree._FancytreeNodeClass.prototype.setRefKey = function(refKey){
+	return this.reRegister(null, refKey);
+};
+
+
+/**
  * [ext-clones] Return all nodes with a given refKey (null if not found).
  * @param {string} refKey
  * @param {FancytreeNode} [rootNode] optionally restrict results to descendants of this node

@@ -1,4 +1,5 @@
 # 2.15.1-0 / Unreleased
+  * [Added] [ext-clones] new method node.setRefKey(refKey)
   * Update to jQuery 1.12.0
   * Add LICENSE.txt to dist
 
@@ -267,7 +268,7 @@
 
 # 2.0.0-9 / 2014-04-02
   * [Added] New helper method $.ui.fancytree.escapeHtml().
-  * [Added] [ext-clones] new method node,reRegister(key, refKey)
+  * [Added] [ext-clones] new method node.reRegister(key, refKey)
   * [Added] Support for bower.
   * [Added] dist/ folder to repository
   * [Improved] [ext-edit] handles `<`, `>`, ...
