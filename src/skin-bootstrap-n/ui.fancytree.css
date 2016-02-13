@@ -369,6 +369,9 @@ ul.fancytree-container ul {
 .fancytree-container:focus {
   outline: none;
 }
+.fancytree-container span.fancytree-statusnode-error span.fancytree-expander {
+  color: #ff0000;
+}
 /* Helper to allow spinning loader icon with bootstrap */
 .glyphicon-spin {
   -webkit-animation: spin 1000ms infinite linear;

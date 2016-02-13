@@ -2897,7 +2897,11 @@ $.extend(Fancytree.prototype,
 						args: Array.prototype.slice.call(arguments),
 						message: error ? (error.message || error.toString()) : ""
 					});
+					if( ctxErr.message === "[object Object]" ) {
+						ctxErr.message = "";
+					}
 				}
+				node.warn("Load children failed (" + ctxErr.message + ")", ctxErr);
 				if( tree._triggerNodeEvent("loadError", ctxErr, null) !== false ) {
 					tree.nodeSetStatus(ctx, "error", ctxErr.message, ctxErr.details);
 				}
@@ -3809,6 +3813,7 @@ $.extend(Fancytree.prototype,
 			var firstChild = ( node.children ? node.children[0] : null );
 			if ( firstChild && firstChild.isStatusNode() ) {
 				$.extend(firstChild, data);
+				firstChild.statusNodeType = type;
 				tree._callHook("nodeRenderTitle", firstChild);
 			} else {
 				node._setChildren([data]);
@@ -3828,7 +3833,7 @@ $.extend(Fancytree.prototype,
 		case "loading":
 			if( !node.parent ) {
 				_setStatusNode({
-					title: tree.options.strings.loading + (message ? " (" + message + ") " : ""),
+					title: tree.options.strings.loading + (message ? " (" + message + ")" : ""),
 					tooltip: details
 				}, status);
 			}
@@ -3838,7 +3843,7 @@ $.extend(Fancytree.prototype,
 			break;
 		case "error":
 			_setStatusNode({
-				title: tree.options.strings.loadError + (message ? " (" + message + ") " : ""),
+				title: tree.options.strings.loadError + (message ? " (" + message + ")" : ""),
 				tooltip: details
 			}, status);
 			node._isLoading = false;

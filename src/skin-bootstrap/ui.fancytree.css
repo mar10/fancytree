@@ -379,6 +379,9 @@ ul.fancytree-container ul {
 .fancytree-container.fancytree-colorize-selected .fancytree-selected span.fancytree-title input {
   color: black;
 }
+.fancytree-container span.fancytree-statusnode-error span.fancytree-expander {
+  color: #d9534f;
+}
 /* Helper to allow spinning loader icon with bootstrap */
 .glyphicon-spin {
   -webkit-animation: spin 1000ms infinite linear;
