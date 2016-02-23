@@ -308,9 +308,10 @@ module.exports = (grunt) ->
         #         "build/<%= pkg.name %>-all.min.js": ["<%= concat.all.dest %>"]
 
         custom:
-            options:
+            options:  # see https://github.com/gruntjs/grunt-contrib-uglify/issues/366
                 report: "min"
-                preserveComments: "some"
+                # preserveComments: "some"
+                preserveComments: /(?:^!|@(?:license|preserve|cc_on))/
             files: [
               {
                   src: ["**/jquery.fancytree*.js", "!*.min.js"]
