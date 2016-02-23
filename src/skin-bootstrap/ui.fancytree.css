@@ -387,7 +387,7 @@ ul.fancytree-container ul {
   -webkit-animation: spin 1000ms infinite linear;
   animation: spin 1000ms infinite linear;
 }
-@-webkit-keyframes spin, {
+@-webkit-keyframes spin {
   0% {
     -webkit-transform: rotate(0deg);
     transform: rotate(0deg);
@@ -421,7 +421,7 @@ span.fancytree-node.fancytree-drop-target.fancytree-drop-reject span.fancytree.t
 .fancytree-plain.fancytree-colorize-selected span.fancytree-node.fancytree-selected span.fancytree-title {
   background-color: #80c780;
   border-color: #80c780;
-  color: #ffffff;
+  color: #fff;
 }
 .fancytree-plain.fancytree-colorize-selected span.fancytree-node.fancytree-selected:hover span.fancytree-title {
   background-color: #6ec06e;
@@ -455,13 +455,13 @@ span.fancytree-node.fancytree-drop-target.fancytree-drop-reject span.fancytree.t
 }
 .fancytree-plain.fancytree-container span.fancytree-node.fancytree-active span.fancytree-title {
   background-color: #5094ce;
-  color: #ffffff;
+  color: #fff;
 }
 .fancytree-plain.fancytree-container span.fancytree-node.fancytree-active:hover span.fancytree-title {
   background-color: #3c87c8;
 }
 .fancytree-plain.fancytree-container.fancytree-ext-wide span.fancytree-node.fancytree-active {
-  color: #ffffff;
+  color: #fff;
 }
 .fancytree-plain.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-focused span.fancytree-title {
   border-color: #337ab7;
@@ -487,7 +487,7 @@ table.fancytree-ext-table.fancytree-colorize-selected > tbody > tr.fancytree-sel
 }
 table.fancytree-ext-table.fancytree-colorize-selected > tbody > tr.fancytree-selected > td,
 table.fancytree-ext-table.fancytree-colorize-selected > tbody > tr.fancytree-selected > td span.fancytree-title {
-  color: #ffffff;
+  color: #fff;
 }
 table.fancytree-ext-table.fancytree-colorize-selected.fancytree-treefocus > tbody > tr.fancytree-selected > td {
   background-color: #5cb85c;
@@ -513,7 +513,7 @@ table.fancytree-ext-table.fancytree-container > tbody > tr.fancytree-active > td
 }
 table.fancytree-ext-table.fancytree-container > tbody > tr.fancytree-active > td,
 table.fancytree-ext-table.fancytree-container > tbody > tr.fancytree-active > td span.fancytree-title {
-  color: #ffffff;
+  color: #fff;
 }
 table.fancytree-ext-table.fancytree-treefocus.fancytree-container > tbody > tr.fancytree-focused span.fancytree-title {
   outline: 1px dotted #000;
