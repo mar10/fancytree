@@ -33,107 +33,6 @@ function offsetString(n){
 	return n === 0 ? "" : (( n > 0 ) ? ("+" + n) : ("" + n));
 }
 
-/* *****************************************************************************
- * Drag and drop support
- */
-function _initDragAndDrop(tree) {
-	var dnd = tree.options.dnd || null,
-		glyph = tree.options.glyph || null;
-
-	// Register 'connectToFancytree' option with ui.draggable
-	if( dnd ) {
-		_registerDnd();
-	}
-	// Attach ui.draggable to this Fancytree instance
-	if(dnd && dnd.dragStart ) {
-		tree.widget.element.draggable($.extend({
-			addClasses: false,
-			// DT issue 244: helper should be child of scrollParent:
-			appendTo: tree.$container,
-//			appendTo: "body",
-			containment: false,
-//			containment: "parent",
-			delay: 0,
-			distance: 4,
-			revert: false,
-			scroll: true, // to disable, also set css 'position: inherit' on ul.fancytree-container
-			scrollSpeed: 7,
-			scrollSensitivity: 10,
-			// Delegate draggable.start, drag, and stop events to our handler
-			connectToFancytree: true,
-			// Let source tree create the helper element
-			helper: function(event) {
-				var $helper, $nodeTag, opts,
-					sourceNode = $.ui.fancytree.getNode(event.target);
-
-				if(!sourceNode){
-					// #405, DT issue 211: might happen, if dragging a table *header*
-					return "<div>ERROR?: helper requested but sourceNode not found</div>";
-				}
-				opts = sourceNode.tree.options.dnd;
-				$nodeTag = $(sourceNode.span);
-				// Only event and node argument is available
-				$helper = $("<div class='fancytree-drag-helper'><span class='fancytree-drag-helper-img' /></div>")
-					.css({zIndex: 3, position: "relative"}) // so it appears above ext-wide selection bar
-					.append($nodeTag.find("span.fancytree-title").clone());
-
-				// Attach node reference to helper object
-				$helper.data("ftSourceNode", sourceNode);
-
-				// Support glyph symbols instead of icons
-				if( glyph ) {
-					$helper.find(".fancytree-drag-helper-img")
-						.addClass(glyph.map.dragHelper);
-				}
-				// Allow to modify the helper, e.g. to add multi-node-drag feedback
-				if( opts.initHelper ) {
-					opts.initHelper.call(sourceNode.tree, sourceNode, {
-						node: sourceNode,
-						tree: sourceNode.tree,
-						originalEvent: event,
-						ui: { helper: $helper }
-					});
-				}
-				// We return an unconnected element, so `draggable` will add this
-				// to the parent specified as `appendTo` option
-				return $helper;
-			},
-			start: function(event, ui) {
-				var sourceNode = ui.helper.data("ftSourceNode");
-				return !!sourceNode; // Abort dragging if no node could be found
-			}
-		}, tree.options.dnd.draggable));
-	}
-	// Attach ui.droppable to this Fancytree instance
-	if(dnd && dnd.dragDrop) {
-		tree.widget.element.droppable($.extend({
-			addClasses: false,
-			tolerance: "intersect",
-			greedy: false
-/*
-			activate: function(event, ui) {
-				tree.debug("droppable - activate", event, ui, this);
-			},
-			create: function(event, ui) {
-				tree.debug("droppable - create", event, ui);
-			},
-			deactivate: function(event, ui) {
-				tree.debug("droppable - deactivate", event, ui);
-			},
-			drop: function(event, ui) {
-				tree.debug("droppable - drop", event, ui);
-			},
-			out: function(event, ui) {
-				tree.debug("droppable - out", event, ui);
-			},
-			over: function(event, ui) {
-				tree.debug("droppable - over", event, ui);
-			}
-*/
-		}, tree.options.dnd.droppable));
-	}
-}
-
 //--- Extend ui.draggable event handling --------------------------------------
 
 function _registerDnd() {
@@ -236,6 +135,108 @@ function _registerDnd() {
 	});
 
 	didRegisterDnd = true;
+}
+
+
+/* *****************************************************************************
+ * Drag and drop support
+ */
+function _initDragAndDrop(tree) {
+	var dnd = tree.options.dnd || null,
+		glyph = tree.options.glyph || null;
+
+	// Register 'connectToFancytree' option with ui.draggable
+	if( dnd ) {
+		_registerDnd();
+	}
+	// Attach ui.draggable to this Fancytree instance
+	if(dnd && dnd.dragStart ) {
+		tree.widget.element.draggable($.extend({
+			addClasses: false,
+			// DT issue 244: helper should be child of scrollParent:
+			appendTo: tree.$container,
+//			appendTo: "body",
+			containment: false,
+//			containment: "parent",
+			delay: 0,
+			distance: 4,
+			revert: false,
+			scroll: true, // to disable, also set css 'position: inherit' on ul.fancytree-container
+			scrollSpeed: 7,
+			scrollSensitivity: 10,
+			// Delegate draggable.start, drag, and stop events to our handler
+			connectToFancytree: true,
+			// Let source tree create the helper element
+			helper: function(event) {
+				var $helper, $nodeTag, opts,
+					sourceNode = $.ui.fancytree.getNode(event.target);
+
+				if(!sourceNode){
+					// #405, DT issue 211: might happen, if dragging a table *header*
+					return "<div>ERROR?: helper requested but sourceNode not found</div>";
+				}
+				opts = sourceNode.tree.options.dnd;
+				$nodeTag = $(sourceNode.span);
+				// Only event and node argument is available
+				$helper = $("<div class='fancytree-drag-helper'><span class='fancytree-drag-helper-img' /></div>")
+					.css({zIndex: 3, position: "relative"}) // so it appears above ext-wide selection bar
+					.append($nodeTag.find("span.fancytree-title").clone());
+
+				// Attach node reference to helper object
+				$helper.data("ftSourceNode", sourceNode);
+
+				// Support glyph symbols instead of icons
+				if( glyph ) {
+					$helper.find(".fancytree-drag-helper-img")
+						.addClass(glyph.map.dragHelper);
+				}
+				// Allow to modify the helper, e.g. to add multi-node-drag feedback
+				if( opts.initHelper ) {
+					opts.initHelper.call(sourceNode.tree, sourceNode, {
+						node: sourceNode,
+						tree: sourceNode.tree,
+						originalEvent: event,
+						ui: { helper: $helper }
+					});
+				}
+				// We return an unconnected element, so `draggable` will add this
+				// to the parent specified as `appendTo` option
+				return $helper;
+			},
+			start: function(event, ui) {
+				var sourceNode = ui.helper.data("ftSourceNode");
+				return !!sourceNode; // Abort dragging if no node could be found
+			}
+		}, tree.options.dnd.draggable));
+	}
+	// Attach ui.droppable to this Fancytree instance
+	if(dnd && dnd.dragDrop) {
+		tree.widget.element.droppable($.extend({
+			addClasses: false,
+			tolerance: "intersect",
+			greedy: false
+/*
+			activate: function(event, ui) {
+				tree.debug("droppable - activate", event, ui, this);
+			},
+			create: function(event, ui) {
+				tree.debug("droppable - create", event, ui);
+			},
+			deactivate: function(event, ui) {
+				tree.debug("droppable - deactivate", event, ui);
+			},
+			drop: function(event, ui) {
+				tree.debug("droppable - drop", event, ui);
+			},
+			out: function(event, ui) {
+				tree.debug("droppable - out", event, ui);
+			},
+			over: function(event, ui) {
+				tree.debug("droppable - over", event, ui);
+			}
+*/
+		}, tree.options.dnd.droppable));
+	}
 }
 
 
