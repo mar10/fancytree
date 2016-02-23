@@ -24,18 +24,6 @@ module.exports = (grunt) ->
                 "  * Copyright (c) <%= grunt.template.today('yyyy') %> <%= pkg.author.name %>;" +
                 " Licensed <%= _.pluck(pkg.licenses, 'type').join(', ') %> */\n"
 
-    checkrepo:
-      beforeBump:
-          tag:
-              eq: "<%= pkg.version %>" # Check if highest repo tag == pkg.version
-#          tagged: false # Require last commit (HEAD) to be tagged
-          clean: true # // Require repo to be clean (no unstaged changes)
-      beforeRelease:
-          tag:
-              lt: "<%= pkg.version %>" # Check if highest repo tag is lower than pkg.version
-#          tagged: false # Require last commit (HEAD) to be tagged
-          clean: true # // Require repo to be clean (no unstaged changes)
-
     clean:
         build:
             src: [ "build" ]
@@ -177,6 +165,12 @@ module.exports = (grunt) ->
             src: ["**/*.fancytree.css", "!*.min.css"]
             dest: "build/"
             ext: ".fancytree.min.css"
+
+    devUpdate:
+        main:
+            options:
+                reportUpdated: true
+                updateType: 'prompt'  # 'report'
 
     docco:
         docs:
@@ -422,7 +416,6 @@ module.exports = (grunt) ->
       ]
   
   grunt.registerTask "make_release", [
-      # "checkrepo:beforeRelease"
       "exec:tabfix"
       "build"
       "clean:dist"
@@ -430,8 +423,6 @@ module.exports = (grunt) ->
       "clean:build"
       "replace:release"
       # "compress:dist"
-      # "tagrelease"
-      # "bumpup:prerelease"
       ]
 
   grunt.registerTask "upload", [
