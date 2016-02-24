@@ -189,19 +189,19 @@ module.exports = (grunt) ->
             cmd: "pyftpsync --progress upload . ftp://www.wwwendt.de/tech/fancytree --delete-unmatched --omit build,node_modules,.*,_*  -x"
 #            cmd: "pyftpsync --progress upload . ftp://www.wwwendt.de/tech/fancytree --omit build,node_modules,.*,_*  -x"
 
-    htmllint:
-        all: ["demo/**/*.html", "doc/**/*.html", "test/**/*.html"]
+    # htmllint:
+    #     all: ["demo/**/*.html", "doc/**/*.html", "test/**/*.html"]
 
-    jsdoc:
-        build:
-            src: ["src/*.js", "doc/README.md", "doc/jsdoctest.js"]
-            options:
-                destination: "doc/jsdoc_new"
-#                template: "bin/jsdoc3-moogle",
-#                template: "node_modules/ink-docstrap/template",
-                template: "../docstrap/template",
-                configure: "doc/jsdoc.conf.json"
-                verbose: true
+#     jsdoc:
+#         build:
+#             src: ["src/*.js", "doc/README.md", "doc/jsdoctest.js"]
+#             options:
+#                 destination: "doc/jsdoc_new"
+# #                template: "bin/jsdoc3-moogle",
+# #                template: "node_modules/ink-docstrap/template",
+#                 template: "../docstrap/template",
+#                 configure: "doc/jsdoc.conf.json"
+#                 verbose: true
 
     jshint:
         options:
@@ -384,6 +384,7 @@ module.exports = (grunt) ->
   grunt.registerTask "test", [
       "jshint:beforeConcat",
       # "csslint",
+      # "htmllint",
       "qunit:develop"
   ]
 
@@ -400,7 +401,7 @@ module.exports = (grunt) ->
   grunt.registerTask "build", [
       "less:development"
       "test"
-      "jsdoc:build"
+      # "jsdoc:build"
       "docco:docs"
       "clean:build"
       "copy:build"
