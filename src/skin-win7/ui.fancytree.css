@@ -387,6 +387,7 @@ table.fancytree-ext-table {
 }
 table.fancytree-ext-table span.fancytree-node {
   display: inline-block;
+  box-sizing: border-box;
 }
 /*------------------------------------------------------------------------------
  * 'columnview' extension
