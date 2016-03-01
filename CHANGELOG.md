@@ -1,7 +1,9 @@
 # 2.15.1-0 / Unreleased
   * [Added] [ext-clones] new method node.setRefKey(refKey)
   * [Improved] load error reporting
-  * [Improved]  #562 Node span tag leaks outside table cell
+  * [Fixed] #562 Node span tag leaks outside table cell
+  * [Fixed] #563 `tree.reactivate(false)` sets fancytree-treefocus and `tree.reactivate(true)` 
+    doesn't set keyboard focus
   * Updated to jQuery 1.12.0
   * Updated grunt devDependencies
   * Added LICENSE.txt to dist

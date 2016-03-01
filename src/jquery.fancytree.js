@@ -2469,7 +2469,10 @@ Fancytree.prototype = /** @lends Fancytree# */{
 		// Return a promise that is resolved, when ALL paths were loaded
 		return $.when.apply($, deferredList).promise();
 	},
-	/** Re-fire beforeActivate and activate events.
+	/** Re-fire beforeActivate, activate, and (optional) focus events.
+	 * Calling this method in the `init` event, will activate the node that
+	 * was marked 'active' in the source data, and optionally set the keyboard 
+	 * focus.
 	 * @param [setFocus=false]
 	 */
 	reactivate: function(setFocus) {
@@ -2480,7 +2483,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 			return _getResolvedPromise();
 		}
 		this.activeNode = null; // Force re-activating
-		res = node.setActive();
+		res = node.setActive(true, {noFocus: true});
 		if( setFocus ){
 			node.setFocus();
 		}
@@ -3724,7 +3727,19 @@ $.extend(Fancytree.prototype,
 			}
 			node.makeVisible({scrollIntoView: false});
 			tree.focusNode = node;
-//			node.debug("FOCUS...");
+			// node.debug("FOCUS...");
+			// try {
+			// 	activeElement = $( document.activeElement );
+			// 	node.debug("activeElement", activeElement);
+			// } catch (e) {
+			// 	tree.warn("Could not determine active element");
+			// }
+			if( tree.options.titlesTabbable ) {
+				$(node.span).find(".fancytree-title").focus();
+			} else {
+				$(tree.$container).focus();
+			}
+
 //			$(node.span).find(".fancytree-title").focus();
 			this._triggerNodeEvent("focus", ctx);
 //          if(ctx.options.autoActivate){
@@ -3979,7 +3994,7 @@ $.extend(Fancytree.prototype,
 	treeSetFocus: function(ctx, flag, callOpts) {
 		flag = (flag !== false);
 
-		// this.debug("treeSetFocus(" + flag + "), callOpts: " + callOpts, this.hasFocus());
+		// this.debug("treeSetFocus(" + flag + "), callOpts: ", callOpts, this.hasFocus());
 		// this.debug("    focusNode: " + this.focusNode);
 		// this.debug("    activeNode: " + this.activeNode);
 		if( flag !== this.hasFocus() ){
