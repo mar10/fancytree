@@ -4,7 +4,7 @@
   * [Fixed] #562 Node span tag leaks outside table cell
   * [Fixed] #563 `tree.reactivate(false)` sets fancytree-treefocus and `tree.reactivate(true)` 
     doesn't set keyboard focus
-  * Updated to jQuery 1.12.0
+  * Updated to jQuery 1.12.1
   * Updated grunt devDependencies
   * Add jQuery 3.0 beta to test suite
   * Added LICENSE.txt to dist
