@@ -6,6 +6,7 @@
     doesn't set keyboard focus
   * Updated to jQuery 1.12.0
   * Updated grunt devDependencies
+  * Add jQuery 3.0 beta to test suite
   * Added LICENSE.txt to dist
 
 # 2.15.0 / 2015-01-11
