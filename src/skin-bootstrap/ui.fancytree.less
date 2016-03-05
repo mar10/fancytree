@@ -217,6 +217,16 @@ span.fancytree-node.fancytree-drop-target {
 	}
 }
 
+span.fancytree-expander {
+	color: #999;  // colpased expander is gray
+}
+.fancytree-expanded span.fancytree-expander {
+	color: @fancy-font-color;
+}
+span.fancytree-node span.fancytree-expander:hover {
+	color: cyan;
+}
+
 // Inactive tree:
 .fancytree-plain {
 	&.fancytree-colorize-selected {

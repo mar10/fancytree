@@ -172,6 +172,18 @@ span.fancytree-expander {
 .fancytree-exp-edl span.fancytree-expander:hover {
   background-position: -48px -96px;
 }
+/* Fade out expanders, when container is not hovered or active */
+.fancytree-fade-expander span.fancytree-expander {
+  transition: opacity 1.5s;
+  opacity: 0;
+}
+.fancytree-fade-expander:hover span.fancytree-expander,
+.fancytree-fade-expander.fancytree-treefocus span.fancytree-expander,
+.fancytree-fade-expander .fancytree-treefocus span.fancytree-expander,
+.fancytree-fade-expander [class*='fancytree-statusnode-'] span.fancytree-expander {
+  transition: opacity 0.6s;
+  opacity: 1;
+}
 /*------------------------------------------------------------------------------
  * Checkbox icon
  *----------------------------------------------------------------------------*/

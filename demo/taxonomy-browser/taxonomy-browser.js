@@ -37,9 +37,9 @@ var taxonTree, searchResultTree, tmplDetails, tmplInfoPane, tmplMedia,
 			dragHelper: "glyphicon glyphicon-play",
 			dropMarker: "glyphicon glyphicon-arrow-right",
 			error: "glyphicon glyphicon-warning-sign",
-			expanderClosed: "glyphicon glyphicon-plus-sign",
-			expanderLazy: "glyphicon glyphicon-plus-sign",  // glyphicon-expand
-			expanderOpen: "glyphicon glyphicon-minus-sign",  // glyphicon-collapse-down
+			expanderClosed: "glyphicon glyphicon-menu-right",
+			expanderLazy: "glyphicon glyphicon-menu-right",  // glyphicon-plus-sign
+			expanderOpen: "glyphicon glyphicon-menu-down",  // glyphicon-collapse-down
 			folder: "glyphicon glyphicon-folder-close",
 			folderOpen: "glyphicon glyphicon-folder-open",
 			loading: "glyphicon glyphicon-refresh glyphicon-spin"

@@ -277,6 +277,21 @@ span.fancytree-expander {
 	.useSprite(3, 6);
 }
 
+/* Fade out expanders, when container is not hovered or active */
+.fancytree-fade-expander {
+	span.fancytree-expander {
+		transition: opacity 1.5s;
+		opacity: 0;
+	}
+	&:hover span.fancytree-expander,
+	&.fancytree-treefocus span.fancytree-expander,
+	.fancytree-treefocus span.fancytree-expander,
+	[class*='fancytree-statusnode-'] span.fancytree-expander {
+		transition: opacity 0.6s;
+		opacity: 1;
+	}
+}
+
 /*------------------------------------------------------------------------------
  * Checkbox icon
  *----------------------------------------------------------------------------*/

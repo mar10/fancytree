@@ -15,8 +15,8 @@
 	<link href="../src/skin-awesome/ui.fancytree.css" rel="stylesheet" type="text/css" class="skinswitcher">
 	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
 -->
-	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
-	<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js" type="text/javascript"></script>
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" type="text/javascript"></script>
 
 	<link href="../src/skin-bootstrap/ui.fancytree.css" rel="stylesheet" type="text/css"
 		class="skinswitcher">
@@ -80,9 +80,9 @@
 			dragHelper: "glyphicon glyphicon-play",
 			dropMarker: "glyphicon glyphicon-arrow-right",
 			error: "glyphicon glyphicon-warning-sign",
-			expanderClosed: "glyphicon glyphicon-plus-sign",
-			expanderLazy: "glyphicon glyphicon-plus-sign",  // glyphicon-expand
-			expanderOpen: "glyphicon glyphicon-minus-sign",  // glyphicon-collapse-down
+			expanderClosed: "glyphicon glyphicon-menu-right",
+			expanderLazy: "glyphicon glyphicon-menu-right",  // glyphicon-plus-sign
+			expanderOpen: "glyphicon glyphicon-menu-down",  // glyphicon-collapse-down
 			folder: "glyphicon glyphicon-folder-close",
 			folderOpen: "glyphicon glyphicon-folder-open",
 			loading: "glyphicon glyphicon-refresh glyphicon-spin"
@@ -221,7 +221,7 @@ $(function(){
 		<div class="panel-heading">
 			<b>Taxonomy</b>
 		</div>
-		<div id="tree" class="panel-body fancytree-colorize-hover">
+		<div id="tree" class="panel-body fancytree-colorize-hover fancytree-fade-expander">
 		</div>
 		<div class="panel-footer">
 			<button id="btnExpandAll" class="btn btn-xs btn-primary">Expand all</button>
@@ -241,7 +241,7 @@ $(function(){
 		<label><input type="checkbox" data-class="fancytree-colorize-selected"> fancytree-colorize-selected</label>
 	</p>
 
-	<table id="treetable" class="table table-condensed table-hover table-striped">
+	<table id="treetable" class="table table-condensed table-hover table-striped fancytree-fade-expander">
 		<colgroup>
 			<col width="80px"></col>
 			<col width="30px"></col>

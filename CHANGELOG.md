@@ -1,6 +1,8 @@
 # 2.15.1-0 / Unreleased
   * [Added] [ext-clones] new method node.setRefKey(refKey)
+  * [Added] modifier class `.fancytree-fade-expander` to be set on container
   * [Improved] load error reporting
+  * [Improved] bootstrap theme icons and style (samples use bootstrap 3.3)
   * [Fixed] #562 Node span tag leaks outside table cell
   * [Fixed] #563 `tree.reactivate(false)` sets fancytree-treefocus and `tree.reactivate(true)` 
     doesn't set keyboard focus
