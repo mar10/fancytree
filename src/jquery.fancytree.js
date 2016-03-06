@@ -2792,7 +2792,8 @@ $.extend(Fancytree.prototype,
 			requestId = new Date().getTime();
 
 		if($.isFunction(source)){
-			source = source();
+			source = source.call(tree, {type: "source"}, ctx);
+			_assert(!$.isFunction(source), "source callback must not return another function");
 		}
 		if(source.url){
 			if( node._requestId ) {

@@ -3,6 +3,8 @@
   * [Added] modifier class `.fancytree-fade-expander` to be set on container
   * [Improved] load error reporting
   * [Improved] bootstrap theme icons and style (samples use bootstrap 3.3)
+  * [Improved] status node don't have icons
+  * [Improved] pass data to source callback
   * [Fixed] #562 Node span tag leaks outside table cell
   * [Fixed] #563 `tree.reactivate(false)` sets fancytree-treefocus and `tree.reactivate(true)` 
     doesn't set keyboard focus
