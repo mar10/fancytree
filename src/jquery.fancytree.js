@@ -3849,6 +3849,7 @@ $.extend(Fancytree.prototype,
 			if( !node.parent ) {
 				_setStatusNode({
 					title: tree.options.strings.loading + (message ? " (" + message + ")" : ""),
+					icon: false,
 					tooltip: details
 				}, status);
 			}
@@ -3859,6 +3860,7 @@ $.extend(Fancytree.prototype,
 		case "error":
 			_setStatusNode({
 				title: tree.options.strings.loadError + (message ? " (" + message + ")" : ""),
+				icon: false,
 				tooltip: details
 			}, status);
 			node._isLoading = false;
@@ -3868,6 +3870,7 @@ $.extend(Fancytree.prototype,
 		case "nodata":
 			_setStatusNode({
 				title: tree.options.strings.noData,
+				icon: false,
 				tooltip: details
 			}, status);
 			node._isLoading = false;
