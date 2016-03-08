@@ -82,7 +82,7 @@ function updateControls() {
  */
 function _delay(tag, ms, callback) {
 	/*jshint -W040:true */
-	var self = this;
+	var that = this;
 
 	tag = "" + (tag || "default");
 	if( timerMap[tag] != null ) {
@@ -96,7 +96,7 @@ function _delay(tag, ms, callback) {
 	// console.log("Start timer '" + tag + "'");
 	timerMap[tag] = setTimeout(function(){
 		// console.log("Execute timer '" + tag + "'");
-		callback.call(self);
+		callback.call(that);
 	}, +ms);
 }
 
@@ -215,13 +215,14 @@ function updateBreadcrumb(key, loadTreeNodes) {
 		if( loadTreeNodes ) {
 			// console.log("updateBreadcrumb - loadKeyPath", keyList);
 			taxonTree.loadKeyPath("/" + keyList.join("/"), function(node, status){
-				// console.log("... updateBreadcrumb - loadKeyPath", status, node);
+				// console.log("... updateBreadcrumb - loadKeyPath " + node.title + ": " + status);
 				switch( status ) {
 				case "loaded":
 					node.makeVisible();
 					break;
 				case "ok":
 					node.setActive();
+					// node.makeVisible();
 					break;
 				}
 			});
@@ -284,6 +285,7 @@ $("#taxonTree").fancytree({
 	glyph: glyphOpts,
 	autoCollapse: true,
 	activeVisible: true,
+	autoScroll: true,
 	source: {
 		url: GBIF_URL + "species/root/" + TAXONOMY_KEY,
 		data: {},

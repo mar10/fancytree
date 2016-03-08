@@ -1579,7 +1579,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			topNode = opts.topNode || null,
 			newScrollTop = null;
 
-		// this.debug("scrollIntoView(), scrollTop=", scrollTop, opts.scrollOfs);
+		// this.debug("scrollIntoView(), scrollTop=" + scrollTop, opts.scrollOfs);
 //		_assert($(this.span).is(":visible"), "scrollIntoView node is invisible"); // otherwise we cannot calc offsets
 		if( !$(this.span).is(":visible") ) {
 			// We cannot calc offsets for hidden elements
@@ -1592,37 +1592,38 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			$animateTarget = $("html,body");
 
 		} else {
-			_assert($container[0] !== document && $container[0] !== document.body, "scrollParent should be an simple element or `window`, not document or body.");
+			_assert($container[0] !== document && $container[0] !== document.body,
+				"scrollParent should be a simple element or `window`, not document or body.");
 
 			containerOffsetTop = $container.offset().top,
 			nodeY = $(this.span).offset().top - containerOffsetTop + scrollTop; // relative to scroll parent
-			topNodeY = topNode ? $(topNode.span).offset().top - containerOffsetTop  + scrollTop : 0;
+			topNodeY = topNode ? $(topNode.span).offset().top - containerOffsetTop + scrollTop : 0;
 			horzScrollbarHeight = Math.max(0, ($container.innerHeight() - $container[0].clientHeight));
 			containerHeight -= horzScrollbarHeight;
 		}
 
-		// this.debug("    scrollIntoView(), nodeY=", nodeY, "containerHeight=", containerHeight);
+		// this.debug("    scrollIntoView(), nodeY=" + nodeY + ", containerHeight=" + containerHeight);
 		if( nodeY < (scrollTop + topOfs) ){
 			// Node is above visible container area
 			newScrollTop = nodeY - topOfs;
-			// this.debug("    scrollIntoView(), UPPER newScrollTop=", newScrollTop);
+			// this.debug("    scrollIntoView(), UPPER newScrollTop=" + newScrollTop);
 
 		}else if((nodeY + nodeHeight) > (scrollTop + containerHeight - bottomOfs)){
 			newScrollTop = nodeY + nodeHeight - containerHeight + bottomOfs;
-			// this.debug("    scrollIntoView(), LOWER newScrollTop=", newScrollTop);
+			// this.debug("    scrollIntoView(), LOWER newScrollTop=" + newScrollTop);
 			// If a topNode was passed, make sure that it is never scrolled
 			// outside the upper border
 			if(topNode){
 				_assert(topNode.isRootNode() || $(topNode.span).is(":visible"), "topNode must be visible");
 				if( topNodeY < newScrollTop ){
 					newScrollTop = topNodeY - topOfs;
-					// this.debug("    scrollIntoView(), TOP newScrollTop=", newScrollTop);
+					// this.debug("    scrollIntoView(), TOP newScrollTop=" + newScrollTop);
 				}
 			}
 		}
 
 		if(newScrollTop !== null){
-			// this.debug("    scrollIntoView(), SET newScrollTop=", newScrollTop);
+			// this.debug("    scrollIntoView(), SET newScrollTop=" + newScrollTop);
 			if(opts.effects){
 				opts.effects.complete = function(){
 					dfd.resolveWith(that);

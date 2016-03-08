@@ -72,7 +72,7 @@ function updateControls() {
  */
 function _delay(tag, ms, callback) {
 	/*jshint -W040:true */
-	var self = this;
+	var that = this;
 
 	tag = "" + (tag || "default");
 	if( timerMap[tag] != null ) {
@@ -86,7 +86,7 @@ function _delay(tag, ms, callback) {
 	// console.log("Start timer '" + tag + "'");
 	timerMap[tag] = setTimeout(function(){
 		// console.log("Execute timer '" + tag + "'");
-		callback.call(self);
+		callback.call(that);
 	}, +ms);
 }
 
