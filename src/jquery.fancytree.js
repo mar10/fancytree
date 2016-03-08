@@ -2845,7 +2845,13 @@ $.extend(Fancytree.prototype,
 				// postProcess is similar to the standard ajax dataFilter hook,
 				// but it is also called for JSONP
 				if( ctx.options.postProcess ){
-					res = tree._triggerNodeEvent("postProcess", ctx, ctx.originalEvent, {response: data, error: null, dataType: this.dataType});
+					try {
+						res = tree._triggerNodeEvent("postProcess", ctx, ctx.originalEvent, {
+							response: data, error: null, dataType: this.dataType
+						});
+					} catch(e) {
+						res = { error: e, message: "" + e, details: "postProcess failed"};
+					}
 					if( res.error ) {
 						errorObj = $.isPlainObject(res.error) ? res.error : {message: res.error};
 						errorObj = tree._makeHookContext(node, null, errorObj);

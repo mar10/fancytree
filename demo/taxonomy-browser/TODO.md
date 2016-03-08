@@ -10,6 +10,7 @@
 
   - Search could be improved.
     - restrict search row height to 1 em
+    - DOWN key in search box should focus first result entry
     - After clicking a link, we should jump to the details?
  	  - Result should be collapsibel without dismissing the query?
 
