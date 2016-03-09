@@ -3,11 +3,13 @@
   * [Added] modifier class `.fancytree-fade-expander` to be set on container
   * [Improved] load error reporting
   * [Improved] bootstrap theme icons and style (samples use bootstrap 3.3)
-  * [Improved] status node don't have icons
-  * [Improved] pass data to source callback
+  * [Improved] status nodes don't have icons
+  * [Improved] pass data argument to `source` callback
+  * [Improved] Handle exceptions inside `postProcess`
   * [Fixed] #562 Node span tag leaks outside table cell
   * [Fixed] #563 `tree.reactivate(false)` sets fancytree-treefocus and `tree.reactivate(true)` 
     doesn't set keyboard focus
+  * [Fixed] #569 node.navigate does not return a Promise object
   * Updated to jQuery 1.12.1
   * Updated grunt devDependencies
   * Add jQuery 3.0 beta to test suite

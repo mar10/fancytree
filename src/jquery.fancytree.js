@@ -1334,7 +1334,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	// 	console.timeEnd("navigate")
 	// },
 	navigate: function(where, activate) {
-		var i, parents,
+		var i, parents, res,
 			handled = true,
 			KC = $.ui.keyCode,
 			sib = null;
@@ -1356,23 +1356,23 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		switch( where ) {
 			case KC.BACKSPACE:
 				if( this.parent && this.parent.parent ) {
-					_goto(this.parent);
+					res = _goto(this.parent);
 				}
 				break;
 			case KC.LEFT:
 				if( this.expanded ) {
 					this.setExpanded(false);
-					_goto(this);
+					res = _goto(this);
 				} else if( this.parent && this.parent.parent ) {
-					_goto(this.parent);
+					res = _goto(this.parent);
 				}
 				break;
 			case KC.RIGHT:
 				if( !this.expanded && (this.children || this.lazy) ) {
 					this.setExpanded();
-					_goto(this);
+					res = _goto(this);
 				} else if( this.children && this.children.length ) {
-					_goto(this.children[0]);
+					res = _goto(this.children[0]);
 				}
 				break;
 			case KC.UP:
@@ -1387,7 +1387,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 				if( !sib && this.parent && this.parent.parent ){
 					sib = this.parent;
 				}
-				_goto(sib);
+				res = _goto(sib);
 				break;
 			case KC.DOWN:
 				if( this.expanded && this.children && this.children.length ) {
@@ -1403,11 +1403,12 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 						if( sib ){ break; }
 					}
 				}
-				_goto(sib);
+				res = _goto(sib);
 				break;
 			default:
 				handled = false;
 		}
+		return res || _getResolvedPromise();
 	},
 	/**
 	 * Remove this node (not allowed for system root).
