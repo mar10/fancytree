@@ -4014,6 +4014,8 @@ $.extend(Fancytree.prototype,
 			if( !flag && this.focusNode ) {
 				// Node also looses focus if widget blurs
 				this.focusNode.setFocus(false);
+			} else if ( flag && (!callOpts || !callOpts.calledByNode) ) {
+				$(this.$container).focus();
 			}
 			this.$container.toggleClass("fancytree-treefocus", flag);
 			this._triggerTreeEvent(flag ? "focusTree" : "blurTree");
