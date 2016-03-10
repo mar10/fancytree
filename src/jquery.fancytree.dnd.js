@@ -378,7 +378,7 @@ $.ui.fancytree.registerExtension({
 		if(eventName !== "over"){
 			this.debug("tree.ext.dnd._onDragEvent(%s, %o, %o) - %o", eventName, node, otherNode, this);
 		}
-		var accept, nodeOfs, relPos, relPos2,
+		var accept, nodeOfs, parentRect, rect, relPos, relPos2,
 			enterResponse, hitMode, r,
 			opts = this.options,
 			dnd = opts.dnd,
@@ -407,6 +407,13 @@ $.ui.fancytree.registerExtension({
 				ui.helper.trigger("mouseup")
 					.hide();
 			} else {
+				if( dnd.smartRevert ) {
+					// #567: fix revert position
+					rect = node.li.getBoundingClientRect();
+					parentRect = $(draggable.options.appendTo)[0].getBoundingClientRect();
+					draggable.originalPosition.left = Math.max(0, rect.left - parentRect.left);
+					draggable.originalPosition.top = Math.max(0, rect.top - parentRect.top);
+				}
 				$nodeTag.addClass("fancytree-drag-source");
 				// Register global handlers to allow cancel
 				$(document)
