@@ -1,11 +1,14 @@
 # 2.15.1-0 / Unreleased
-  * [Added] [ext-clones] new method node.setRefKey(refKey)
+  * [Added] ext-clones: new method node.setRefKey(refKey)
   * [Added] modifier class `.fancytree-fade-expander` to be set on container
+  * [Added] ext-dnd: `.dragExpand()` callback to prevent auto-expand
   * [Improved] load error reporting
   * [Improved] bootstrap theme icons and style (samples use bootstrap 3.3)
   * [Improved] status nodes don't have icons
   * [Improved] pass data argument to `source` callback
   * [Improved] Handle exceptions inside `postProcess`
+  * [Improved] #568 ext-dnd: Auto-expanding of collapsed nodes should also work 
+    when dropping is not allowed
   * [Fixed] #562 Node span tag leaks outside table cell
   * [Fixed] #563 `tree.reactivate(false)` sets fancytree-treefocus and `tree.reactivate(true)` 
     doesn't set keyboard focus

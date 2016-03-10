@@ -246,7 +246,7 @@ function _initDragAndDrop(tree) {
 
 $.ui.fancytree.registerExtension({
 	name: "dnd",
-	version: "0.2.0",
+	version: "0.3.0",
 	// Default options for this extension.
 	options: {
 		// Make tree nodes accept draggables
@@ -263,10 +263,11 @@ $.ui.fancytree.registerExtension({
 		initHelper: null,    // Callback(sourceNode, data)
 		updateHelper: null,  // Callback(sourceNode, data)
 		// Events (drop support)
-		dragEnter: null,  // Callback(targetNode, data)
-		dragOver: null,   // Callback(targetNode, data)
-		dragDrop: null,   // Callback(targetNode, data)
-		dragLeave: null   // Callback(targetNode, data)
+		dragEnter: null,     // Callback(targetNode, data)
+		dragOver: null,      // Callback(targetNode, data)
+		dragExpand: null,    // Callback(targetNode, data), return false to prevent autoExpand
+		dragDrop: null,      // Callback(targetNode, data)
+		dragLeave: null      // Callback(targetNode, data)
 	},
 
 	treeInit: function(ctx){
@@ -496,7 +497,11 @@ $.ui.fancytree.registerExtension({
 				ui.helper.data("hitMode", hitMode);
 			}
 			// Auto-expand node (only when 'over' the node, not 'before', or 'after')
-			if(hitMode === "over" && dnd.autoExpandMS && node.hasChildren() !== false && !node.expanded) {
+			if(hitMode !== "before" && hitMode !== "after" && dnd.autoExpandMS &&
+				node.hasChildren() !== false && !node.expanded &&
+				(!dnd.dragExpand || dnd.dragExpand(node, ctx) !== false)
+				) {
+				// TODO: maybe add a callback `dragExpand()` here to allow more control
 				node.scheduleAction("expand", dnd.autoExpandMS);
 			}
 			if(hitMode && dnd.dragOver){
