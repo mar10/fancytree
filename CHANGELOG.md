@@ -10,6 +10,7 @@
   * [Improved] #568 ext-dnd: Auto-expanding of collapsed nodes should also work 
     when dropping is not allowed
   * [Improved] #567 ext-dnd: fix revert position
+  * [Improved] #565 ext-dnd: fix intermediate display of wrong icon (sending 'over' after 'enter')
   * [Fixed] #562 Node span tag leaks outside table cell
   * [Fixed] #563 `tree.reactivate(false)` sets fancytree-treefocus and `tree.reactivate(true)` 
     doesn't set keyboard focus

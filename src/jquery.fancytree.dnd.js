@@ -106,6 +106,7 @@ function _registerDnd() {
 				}else{
 					// Entering this node first time
 					targetNode.tree.ext.dnd._onDragEvent("enter", targetNode, sourceNode, event, ui, draggable);
+					targetNode.tree.ext.dnd._onDragEvent("over", targetNode, sourceNode, event, ui, draggable);
 				}
 			}
 			// else go ahead with standard event handling
