@@ -21,7 +21,7 @@
   * Add jQuery 3.0 beta to test suite
   * Added LICENSE.txt to dist
 
-# 2.15.0 / 2015-01-11
+# 2.15.0 / 2016-01-11
   * [Changed] Renamed class `fancytree-statusnode-wait` to `fancytree-statusnode-loading`
   * [Added] new event `renderStatusColumns`
   * [Deprecated] ext-table option `customStatus`. Use `renderStatusColumns` instead
