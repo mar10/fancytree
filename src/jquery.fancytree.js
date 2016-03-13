@@ -3736,17 +3736,16 @@ $.extend(Fancytree.prototype,
 			}
 			node.makeVisible({scrollIntoView: false});
 			tree.focusNode = node;
-			// node.debug("FOCUS...");
-			// try {
-			// 	activeElement = $( document.activeElement );
-			// 	node.debug("activeElement", activeElement);
-			// } catch (e) {
-			// 	tree.warn("Could not determine active element");
-			// }
 			if( tree.options.titlesTabbable ) {
 				$(node.span).find(".fancytree-title").focus();
 			} else {
-				$(tree.$container).focus();
+				// We cannot set KB focus to a node, so use the tree container
+				// #563, #570: IE scrolls on every call to .focus(), if the container
+				// is partially outside the viewport. So do it only, when absolutely
+				// neccessary:
+				if( $(document.activeElement).closest(".fancytree-container").length === 0 ) {
+					$(tree.$container).focus();
+				}
 			}
 
 //			$(node.span).find(".fancytree-title").focus();
