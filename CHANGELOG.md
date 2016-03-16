@@ -1,4 +1,7 @@
 # 2.15.1-0 / Unreleased
+  *
+
+# 2.16.0 / 2016-03-16
   * [Added] ext-clones: new method node.setRefKey(refKey)
   * [Added] modifier class `.fancytree-fade-expander` to be set on container
   * [Added] ext-dnd: `.dragExpand()` callback to prevent auto-expand
