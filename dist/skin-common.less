@@ -178,6 +178,8 @@ span.fancytree-custom-icon {
 }
 /* Used by icon option: */
 span.fancytree-custom-icon {
+	width: @fancy-icon-width;
+	height: @fancy-icon-height;
 	display: inline-block;
 	margin-left: @fancy-icon-spacing;
 	.setBgPos(0, 0);
@@ -273,6 +275,21 @@ span.fancytree-expander {
 .fancytree-exp-el span.fancytree-expander:hover,  
 .fancytree-exp-edl span.fancytree-expander:hover {
 	.useSprite(3, 6);
+}
+
+/* Fade out expanders, when container is not hovered or active */
+.fancytree-fade-expander {
+	span.fancytree-expander {
+		transition: opacity 1.5s;
+		opacity: 0;
+	}
+	&:hover span.fancytree-expander,
+	&.fancytree-treefocus span.fancytree-expander,
+	.fancytree-treefocus span.fancytree-expander,
+	[class*='fancytree-statusnode-'] span.fancytree-expander {
+		transition: opacity 0.6s;
+		opacity: 1;
+	}
 }
 
 /*------------------------------------------------------------------------------
@@ -537,7 +554,8 @@ span.fancytree-drop-reject {
 table.fancytree-ext-table {
 	border-collapse: collapse;
 	span.fancytree-node {
-		display: inline-block; // #117
+		display: inline-block;  // #117
+		box-sizing: border-box;  // #562
 	}
 }
 

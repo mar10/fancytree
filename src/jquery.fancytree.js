@@ -2473,7 +2473,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	},
 	/** Re-fire beforeActivate, activate, and (optional) focus events.
 	 * Calling this method in the `init` event, will activate the node that
-	 * was marked 'active' in the source data, and optionally set the keyboard 
+	 * was marked 'active' in the source data, and optionally set the keyboard
 	 * focus.
 	 * @param [setFocus=false]
 	 */

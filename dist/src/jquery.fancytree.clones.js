@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.15.0
- * @date 2016-01-11T21:43
+ * @version 2.16.0
+ * @date 2016-03-16T08:09
  */
 
 ;(function($, window, document, undefined) {
@@ -267,6 +267,20 @@ $.ui.fancytree._FancytreeNodeClass.prototype.reRegister = function(key, refKey){
 		modified = true;
 	}
 	return modified;
+};
+
+
+/**
+ * [ext-clones] Define a refKey for an existing node.
+ * @param {string} refKey
+ * @returns {boolean}
+ *
+ * @alias FancytreeNode#setRefKey
+ * @requires jquery.fancytree.clones.js
+ * @since 2.16
+ */
+$.ui.fancytree._FancytreeNodeClass.prototype.setRefKey = function(refKey){
+	return this.reRegister(null, refKey);
 };
 
 

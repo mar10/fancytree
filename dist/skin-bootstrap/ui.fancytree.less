@@ -114,12 +114,17 @@ ul.fancytree-container ul {
   color: black;
 }
 
+// Error status node
+.fancytree-container span.fancytree-statusnode-error span.fancytree-expander  {
+	color: @fancy-font-error-color;
+}
+
 /* Helper to allow spinning loader icon with bootstrap */
 .glyphicon-spin {
     -webkit-animation: spin 1000ms infinite linear;
     animation: spin 1000ms infinite linear;
 }
-@-webkit-keyframes spin, {
+@-webkit-keyframes spin {
     0% {
         -webkit-transform: rotate(0deg);
         transform: rotate(0deg);
@@ -210,6 +215,16 @@ span.fancytree-node.fancytree-drop-target {
 		// outline: 1px solid @brand-danger;
 		// color: white !important;
 	}
+}
+
+span.fancytree-expander {
+	color: #999;  // colpased expander is gray
+}
+.fancytree-expanded span.fancytree-expander {
+	color: @fancy-font-color;
+}
+span.fancytree-node span.fancytree-expander:hover {
+	color: cyan;
 }
 
 // Inactive tree:

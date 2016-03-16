@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.15.0
- * @date 2016-01-11T21:43
+ * @version 2.16.0
+ * @date 2016-03-16T08:09
  */
 
 ;(function($, window, document, undefined) {
@@ -27,7 +27,7 @@ function _getIcon(opts, type){
 
 $.ui.fancytree.registerExtension({
 	name: "glyph",
-	version: "0.3.0",
+	version: "0.4.0",
 	// Default options for this extension.
 	options: {
 		map: {
@@ -63,24 +63,23 @@ $.ui.fancytree.registerExtension({
 		tree.$container.addClass("fancytree-ext-glyph");
 	},
 	nodeRenderStatus: function(ctx) {
-		var icon, span,
+		var icon, res, span,
 			node = ctx.node,
 			$span = $(node.span),
 			opts = ctx.options.glyph,
-			// callback = opts.icon,
-			map = opts.map
-			// $span = $(node.span)
-			;
+			map = opts.map;
 
-		this._superApply(arguments);
+		res = this._superApply(arguments);
 
 		if( node.isRoot() ){
-			return;
+			return res;
 		}
 		span = $span.children("span.fancytree-expander").get(0);
 		if( span ){
-			if( node.isLoading() ){
-				icon = "loading";
+			// if( node.isLoading() ){
+				// icon = "loading";
+			if( node.statusNodeType ){
+				icon = node.statusNodeType; // loading, error
 			}else if( node.expanded ){
 				icon = "expanderOpen";
 			}else if( node.isUndefined() ){
@@ -114,13 +113,14 @@ $.ui.fancytree.registerExtension({
 			}
 			span.className = "fancytree-icon " + icon;
 		}
+		return res;
 	},
 	nodeSetStatus: function(ctx, status, message, details) {
-		var span,
+		var res, span,
 			opts = ctx.options.glyph,
 			node = ctx.node;
 
-		this._superApply(arguments);
+		res = this._superApply(arguments);
 
 		if(node.parent){
 			span = $("span.fancytree-expander", node.span).get(0);
@@ -128,12 +128,12 @@ $.ui.fancytree.registerExtension({
 			span = $(".fancytree-statusnode-loading, .fancytree-statusnode-error", node[this.nodeContainerAttrName])
 				.find("span.fancytree-expander").get(0);
 		}
-		if( status === "loading"){
-			// $("span.fancytree-expander", ctx.node.span).addClass(_getIcon(opts, "loading"));
+		if( status === "loading" ){
 			span.className = "fancytree-expander " + _getIcon(opts, "loading");
-		}else if( status === "error"){
+		}else if( status === "error" ){
 			span.className = "fancytree-expander " + _getIcon(opts, "error");
 		}
+		return res;
 	}
 });
 }(jQuery, window, document));
