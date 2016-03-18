@@ -158,7 +158,8 @@ var TreePatch = {};
  * @property {jQuery} scrollParent scrollable container for node.scrollIntoView() (default: $container)
  * @property {Integer} selectMode 1:single, 2:multi, 3:multi-hier (default: 2)
  * @property {any} source Used to Initialize the tree.
- * @property {object} strings Translation table
+ * @property {object} strings Translation table<br>
+ *    		default: <code>{loading: "Loading&#8230;", loadError: "Load error!", moreData: "More&#8230;", noData: "No data."}</code>
  * @property {boolean} tabbable Add tabindex='0' to container, so tree can be reached using TAB
  * @property {boolean} titlesTabbable Add tabindex='0' to node title span, so it can receive keyboard focus
  * @property {object} toggleEffect Animation options, false:off (default: { effect: "blind", options: {direction: "vertical", scale: "box"}, duration: 200 })
