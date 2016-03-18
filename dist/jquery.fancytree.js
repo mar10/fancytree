@@ -7,8 +7,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.16.0
- * @date 2016-03-16T08:09
+ * @version 2.16.1
+ * @date 2016-03-18T22:15
  */
 
 /** Core Fancytree module.
@@ -2812,7 +2812,7 @@ $.extend(Fancytree.prototype,
 				if($.isArray(delay)){ // random delay range [min..max]
 					delay = delay[0] + Math.random() * (delay[1] - delay[0]);
 				}
-				node.debug("nodeLoadChildren waiting debug delay " + Math.round(delay) + "ms");
+				node.warn("nodeLoadChildren waiting debugDelay " + Math.round(delay) + " ms ...");
 				ajax.debugDelay = false;
 				dfd = $.Deferred(function (dfd) {
 					setTimeout(function () {
@@ -3857,7 +3857,8 @@ $.extend(Fancytree.prototype,
 			if( !node.parent ) {
 				_setStatusNode({
 					title: tree.options.strings.loading + (message ? " (" + message + ")" : ""),
-					icon: false,
+					// icon: true,  // needed for 'loding' icon
+					checkbox: false,
 					tooltip: details
 				}, status);
 			}
@@ -3868,7 +3869,8 @@ $.extend(Fancytree.prototype,
 		case "error":
 			_setStatusNode({
 				title: tree.options.strings.loadError + (message ? " (" + message + ")" : ""),
-				icon: false,
+				// icon: false,
+				checkbox: false,
 				tooltip: details
 			}, status);
 			node._isLoading = false;
@@ -3878,7 +3880,8 @@ $.extend(Fancytree.prototype,
 		case "nodata":
 			_setStatusNode({
 				title: tree.options.strings.noData,
-				icon: false,
+				// icon: false,
+				checkbox: false,
 				tooltip: details
 			}, status);
 			node._isLoading = false;
@@ -4365,7 +4368,7 @@ $.extend($.ui.fancytree,
 	/** @lends Fancytree_Static# */
 	{
 	/** @type {string} */
-	version: "2.16.0",      // Set to semver by 'grunt release'
+	version: "2.16.1",      // Set to semver by 'grunt release'
 	/** @type {string} */
 	buildType: "production", // Set to 'production' by 'grunt build'
 	/** @type {int} */
