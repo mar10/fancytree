@@ -2812,7 +2812,7 @@ $.extend(Fancytree.prototype,
 				if($.isArray(delay)){ // random delay range [min..max]
 					delay = delay[0] + Math.random() * (delay[1] - delay[0]);
 				}
-				node.debug("nodeLoadChildren waiting debug delay " + Math.round(delay) + "ms");
+				node.warn("nodeLoadChildren waiting debugDelay " + Math.round(delay) + " ms ...");
 				ajax.debugDelay = false;
 				dfd = $.Deferred(function (dfd) {
 					setTimeout(function () {
@@ -3857,7 +3857,8 @@ $.extend(Fancytree.prototype,
 			if( !node.parent ) {
 				_setStatusNode({
 					title: tree.options.strings.loading + (message ? " (" + message + ")" : ""),
-					icon: false,
+					// icon: true,  // needed for 'loding' icon
+					checkbox: false,
 					tooltip: details
 				}, status);
 			}
@@ -3868,7 +3869,8 @@ $.extend(Fancytree.prototype,
 		case "error":
 			_setStatusNode({
 				title: tree.options.strings.loadError + (message ? " (" + message + ")" : ""),
-				icon: false,
+				// icon: false,
+				checkbox: false,
 				tooltip: details
 			}, status);
 			node._isLoading = false;
@@ -3878,7 +3880,8 @@ $.extend(Fancytree.prototype,
 		case "nodata":
 			_setStatusNode({
 				title: tree.options.strings.noData,
-				icon: false,
+				// icon: false,
+				checkbox: false,
 				tooltip: details
 			}, status);
 			node._isLoading = false;

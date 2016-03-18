@@ -1,5 +1,8 @@
-# 2.15.1-0 / Unreleased
-  *
+# 2.16.2-0 / Unreleased
+  * 
+
+# 2.16.1 / 2016-03-18
+  * [Fixed] #575 missing loading icon in non-bootstrap themes
 
 # 2.16.0 / 2016-03-16
   * [Added] ext-clones: new method node.setRefKey(refKey)
