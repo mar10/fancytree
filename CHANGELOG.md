@@ -1,8 +1,10 @@
 # 2.16.2-0 / Unreleased
-  * 
+  * Update to jQuery UI 1.11.4
 
 # 2.16.1 / 2016-03-18
-  * [Fixed] #575 missing loading icon in non-bootstrap themes
+  * [Added] ext-glyph: new icon for 'nodata' status nodes
+  * [Fixed] #575 missing loading icon in non-bootstrap themes.<br>
+    Glyph themes now display status images in icon span (was expander span before).
 
 # 2.16.0 / 2016-03-16
   * [Added] ext-clones: new method node.setRefKey(refKey)
