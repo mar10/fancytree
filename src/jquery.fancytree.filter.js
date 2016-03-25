@@ -22,13 +22,15 @@
  * Private functions and variables
  */
 
+var KEY_NoData = "__not_found__";
+
 function _escapeRegex(str){
 	/*jshint regexdash:true */
 	return (str + "").replace(/([.?*+\^\$\[\]\\(){}|-])/g, "\\$1");
 }
 
 $.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, branchMode, opts){
-	var leavesOnly, match, re, re2,
+	var leavesOnly, match, statusNode, re, re2,
 		count = 0,
 		filterOpts = this.options.filter,
 		hideMode = filterOpts.mode === "hide";
@@ -110,6 +112,24 @@ $.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, bra
 			}
 		}
 	});
+	if( count === 0 && filterOpts.nodata ) {
+		statusNode = filterOpts.nodata;	
+		if( $.isFunction(statusNode) ) {
+			statusNode = statusNode();
+		}
+		if( statusNode === true ) {
+			statusNode = {};
+		} else if( typeof statusNode === "string" ) {
+			statusNode = { title: statusNode };
+		}
+		statusNode = $.extend({
+			statusNodeType: "nodata",
+			key: KEY_NoData,
+			title: this.options.strings.noData
+		}, statusNode);
+
+		this.getRootNode().addNode(statusNode).match = true;
+	}
 	// Redraw whole tree
 	this.render();
 	return count;
@@ -161,6 +181,10 @@ $.ui.fancytree._FancytreeClass.prototype.filterBranches = function(filter, opts)
  * @requires jquery.fancytree.filter.js
  */
 $.ui.fancytree._FancytreeClass.prototype.clearFilter = function(){
+	var statusNode = this.getRootNode()._findDirectChild(KEY_NoData);
+	if( statusNode ) {
+		statusNode.remove();
+	}
 	this.visit(function(node){
 		if( node.match ) {  // #491
 			$(">span.fancytree-title", node.span).html(node.title);
@@ -223,22 +247,9 @@ $.ui.fancytree.registerExtension({
 		fuzzy: false,  // Match single characters in order, e.g. 'fb' will match 'FooBar'
 		hideExpandedCounter: true,  // Hide counter badge, when parent is expanded
 		highlight: true,  // Highlight matches by wrapping inside <mark> tags
+		nodata: true,  // Display a 'no data' status node if result is empty
 		mode: "dimm"  // Grayout unmatched nodes (pass "hide" to remove unmatched node instead)
 	},
-	// treeCreate: function(ctx){
-	// 	this._superApply(arguments);
-	// 	console.log("create")
-	// 	ctx.tree.options.renderTitle = function(event, data) {
-	// 		var node = data.node;
-	// 		console.log("create n", node.titleWithHighlight, data.tree.enableFilter)
-	// 		if( node.titleWithHighlight && node.tree.enableFilter ) {
-	// 			return node.titleWithHighlight;
-	// 		}
-	// 	}
-	// },
-	// treeInit: function(ctx){
-	// 	this._superApply(arguments);
-	// },
 	nodeLoadChildren: function(ctx, source) {
 		return this._superApply(arguments).done(function() {
 			if( ctx.tree.enableFilter && ctx.tree.lastFilterArgs && ctx.options.filter.autoApply ) {
