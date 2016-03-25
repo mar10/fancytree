@@ -275,7 +275,7 @@ $.ui.fancytree.registerExtension({
 		if( opts.counter && node.subMatchCount && (!node.isExpanded() || !opts.hideExpandedCounter) ) {
 			if( !node.$subMatchBadge ) {
 				node.$subMatchBadge = $("<span class='fancytree-childcounter'/>");
-				$("span.fancytree-icon", node.span).append(node.$subMatchBadge);
+				$("span.fancytree-icon, span.fancytree-custom-icon", node.span).append(node.$subMatchBadge);
 			}
 			node.$subMatchBadge.show().text(node.subMatchCount);
 		} else if ( node.$subMatchBadge ) {
