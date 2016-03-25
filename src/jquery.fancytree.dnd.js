@@ -376,9 +376,9 @@ $.ui.fancytree.registerExtension({
 	 *     _onDragEvent("stop", sourceNode, null, event, ui, draggable);
 	 */
 	_onDragEvent: function(eventName, node, otherNode, event, ui, draggable) {
-		if(eventName !== "over"){
-			this.debug("tree.ext.dnd._onDragEvent(%s, %o, %o) - %o", eventName, node, otherNode, this);
-		}
+		// if(eventName !== "over"){
+		// 	this.debug("tree.ext.dnd._onDragEvent(%s, %o, %o) - %o", eventName, node, otherNode, this);
+		// }
 		var accept, nodeOfs, parentRect, rect, relPos, relPos2,
 			enterResponse, hitMode, r,
 			opts = this.options,
@@ -453,7 +453,7 @@ $.ui.fancytree.registerExtension({
 				};
 			}
 			ui.helper.data("enterResponse", res);
-			this.debug("helper.enterResponse: %o", res);
+			// this.debug("helper.enterResponse: %o", res);
 			break;
 
 		case "over":
