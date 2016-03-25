@@ -1,4 +1,7 @@
 # 2.16.2-0 / Unreleased
+  * [Added] ext-filter: matcher-callback for `tree.filterNodes()` may now return 
+    `"branch"` and `"skip"`
+  * [Fixed] ext-filter: branch mode honors `autoExpand: true`
   * Update to jQuery UI 1.11.4
 
 # 2.16.1 / 2016-03-18

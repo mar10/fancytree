@@ -82,7 +82,13 @@ $.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, bra
 	});
 	// Adjust node.hide, .match, and .subMatchCount properties
 	this.visit(function(node){
-		if ((!leavesOnly || node.children == null) && filter(node)) {
+		if ( leavesOnly && node.children != null ) {
+			return;
+		}
+		var res = filter(node);
+		if( res === "skip" ) {
+			return "skip";
+		} else if( res ) {
 			count++;
 			node.match = true;
 			node.visitParents(function(p){
@@ -92,10 +98,14 @@ $.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, bra
 					p._filterAutoExpanded = true;
 				}
 			});
-			if( branchMode ) {
+			if( branchMode || res === "branch" ) {
 				node.visit(function(p){
 					p.match = true;
 				});
+				if( opts.autoExpand && !node.expanded ) {
+					node.setExpanded(true, {noAnimation: true, noEvents: true, scrollIntoView: false});
+					node._filterAutoExpanded = true;
+				}
 				return "skip";
 			}
 		}
