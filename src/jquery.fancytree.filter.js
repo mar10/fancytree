@@ -22,7 +22,7 @@
  * Private functions and variables
  */
 
-var KEY_NoData = "__not_found__";
+var KeyNoData = "__not_found__";
 
 function _escapeRegex(str){
 	/*jshint regexdash:true */
@@ -82,6 +82,11 @@ $.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, bra
 		delete node.titleWithHighlight;
 		node.subMatchCount = 0;
 	});
+	statusNode = this.getRootNode()._findDirectChild(KeyNoData);
+	if( statusNode ) {
+		statusNode.remove();
+	}
+
 	// Adjust node.hide, .match, and .subMatchCount properties
 	this.visit(function(node){
 		if ( leavesOnly && node.children != null ) {
@@ -89,6 +94,9 @@ $.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, bra
 		}
 		var res = filter(node);
 		if( res === "skip" ) {
+			node.visit(function(c){
+				c.match = false;
+			}, true);
 			return "skip";
 		} else if( res ) {
 			count++;
@@ -101,8 +109,8 @@ $.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, bra
 				}
 			});
 			if( branchMode || res === "branch" ) {
-				node.visit(function(p){
-					p.match = true;
+				node.visit(function(c){
+					c.match = true;
 				});
 				if( opts.autoExpand && !node.expanded ) {
 					node.setExpanded(true, {noAnimation: true, noEvents: true, scrollIntoView: false});
@@ -124,7 +132,7 @@ $.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, bra
 		}
 		statusNode = $.extend({
 			statusNodeType: "nodata",
-			key: KEY_NoData,
+			key: KeyNoData,
 			title: this.options.strings.noData
 		}, statusNode);
 
@@ -181,7 +189,7 @@ $.ui.fancytree._FancytreeClass.prototype.filterBranches = function(filter, opts)
  * @requires jquery.fancytree.filter.js
  */
 $.ui.fancytree._FancytreeClass.prototype.clearFilter = function(){
-	var statusNode = this.getRootNode()._findDirectChild(KEY_NoData);
+	var statusNode = this.getRootNode()._findDirectChild(KeyNoData);
 	if( statusNode ) {
 		statusNode.remove();
 	}
