@@ -3,6 +3,7 @@
     `"branch"` and `"skip"`
   * [Added] ext-filter: new option`nodata` allows to configure a status node for
     empty results
+  * [Added] New option `mode='firstChild'` for `node.moveTo()`
   * [Fixed] ext-filter: branch mode honors `autoExpand: true`
   * Update to jQuery UI 1.11.4
 
