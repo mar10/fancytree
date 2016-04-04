@@ -88,7 +88,12 @@ var OPT_LIST = [
 //	{name: "strings", value: {loading: "Loading&#8230;",
 //							  loadError: "Load error!"},
 //	 hint: "Translations"},
-	{name: "tabbable", value: true,
+
+//	{name: "tabbable", value: true,
+//	 hint: "Whole tree behaves as one single control"},
+ 	{name: "tabindex", value: [{name: "tabbable", value: "0"},
+ 							   {name: "focusable", value: "-1"},
+ 							   {name: "off", value: ""}],
 	 hint: "Whole tree behaves as one single control"},
 	{name: "titlesTabbable", value: false,
 	 hint: "Node titles can receive keyboard focus"}

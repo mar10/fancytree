@@ -70,7 +70,7 @@ $(function(){
 		autoScroll: true,
 		clickFolderMode: 3, // expand with single click
 		minExpandLevel: 2,
-		tabbable: false, // we don't want the focus frame
+		tabindex: "-1", // we don't want the focus frame
 		// scrollParent: null, // use $container
 		focus: function(event, data) {
 			var node = data.node;

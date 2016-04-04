@@ -178,7 +178,9 @@ $.ui.fancytree.registerExtension({
 		tree.rootNode.ul = null;
 
 		// Add container to the TAB chain
-		this.$container.attr("tabindex", opts.tabbable ? "0" : "-1");
+		// #577: Allow to set tabindex to "0", "-1" and ""
+		this.$container.attr("tabindex", opts.tabindex);
+		// this.$container.attr("tabindex", opts.tabbable ? "0" : "-1");
 		if(opts.aria) {
 			tree.$container
 				.attr("role", "treegrid")

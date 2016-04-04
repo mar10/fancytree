@@ -160,7 +160,11 @@ var TreePatch = {};
  * @property {any} source Used to Initialize the tree.
  * @property {object} strings Translation table<br>
  *    		default: <code>{loading: "Loading&#8230;", loadError: "Load error!", moreData: "More&#8230;", noData: "No data."}</code>
- * @property {boolean} tabbable Add tabindex='0' to container, so tree can be reached using TAB
+ * @property {boolean} <del>tabbable</del> @deprecated use `tabindex` instead
+ * @property {string} tabindex Add tabindex attribute to container, so tree can be reached using TAB (default: "0")<br>
+ *     "0": Tree control can be reached using TAB keys<br>
+ *     "-1": Tree control cannot be reached using TAB keys, but may receive keyboard focusable using mouse clicks or Javascript<br>
+ *     "": Tree control is not tabbable nor may it receive keyboard focus.
  * @property {boolean} titlesTabbable Add tabindex='0' to node title span, so it can receive keyboard focus
  * @property {object} toggleEffect Animation options, false:off (default: { effect: "blind", options: {direction: "vertical", scale: "box"}, duration: 200 })
  *

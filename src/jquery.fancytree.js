@@ -1980,7 +1980,9 @@ function Fancytree(widget) {
 	}
 	// Add container to the TAB chain
 	// See http://www.w3.org/TR/wai-aria-practices/#focus_activedescendant
-	this.$container.attr("tabindex", this.options.tabbable ? "0" : "-1");
+	// #577: Allow to set tabindex to "0", "-1" and ""
+	this.$container.attr("tabindex", this.options.tabindex);
+	// this.$container.attr("tabindex", this.options.tabbable ? "0" : "-1");
 	if(this.options.aria){
 		this.$container
 			.attr("role", "tree")
@@ -4098,7 +4100,8 @@ $.widget("ui.fancytree",
 			moreData: "More&#8230;",
 			noData: "No data."
 		},
-		tabbable: true,
+		// tabbable: true,  // @deprecated
+		tabindex: "0",
 		titlesTabbable: false,
 		_classNames: {
 			node: "fancytree-node",
@@ -4170,6 +4173,10 @@ $.widget("ui.fancytree",
 				opts.icon = opts.iconClass;
 			}
 		}
+		if( opts.tabbable !== undefined ) {  // 2016-04-04
+			opts.tabindex = opts.tabbable ? "0" : "-1";
+			this.tree.warn("'tabbable' tree option is deprecated since v2.17.0: use 'tabindex='" + opts.tabindex + "' instead");
+		}
 		//
 		this.tree._callHook("treeCreate", this.tree);
 		// Note: 'fancytreecreate' event is fired by widget base class
@@ -4194,7 +4201,8 @@ $.widget("ui.fancytree",
 		case "checkbox":
 		case "icon":
 		case "minExpandLevel":
-		case "tabbable":
+		// case "tabbable":
+		case "tabindex":
 //		case "nolink":
 			this.tree._callHook("treeCreate", this.tree);
 			rerender = true;

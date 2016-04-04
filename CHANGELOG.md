@@ -3,7 +3,10 @@
     `"branch"` and `"skip"`
   * [Added] ext-filter: new option`nodata` allows to configure a status node for
     empty results
+  * [Added] tree option `.tabindex`, default is "0". Pass "" to resolve #577.
+  * [Deprecated] tree option `.tabbable`. Use `.tabindex` instead
   * [Added] New option `mode='firstChild'` for `node.moveTo()`
+  * [Added] New option `digits=<int>` for `node.getIndexHier()`
   * [Fixed] ext-filter: branch mode honors `autoExpand: true`
   * Update to jQuery UI 1.11.4
 
