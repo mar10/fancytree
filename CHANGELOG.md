@@ -3,6 +3,7 @@
     `"branch"` and `"skip"`
   * [Added] ext-filter: new option`nodata` allows to configure a status node for
     empty results
+  * [Added] `digits` argument to `node.getIndexHier(separator, digits)`.
   * [Added] tree option `.tabindex`, default is "0". Pass "" to resolve #577.
   * [Deprecated] tree option `.tabbable`. Use `.tabindex` instead
   * [Added] New option `mode='firstChild'` for `node.moveTo()`

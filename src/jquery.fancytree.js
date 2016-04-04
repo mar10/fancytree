@@ -809,13 +809,21 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		return $.inArray(this, this.parent.children); // indexOf doesn't work in IE7
 	},
 	/** Return the hierarchical child index (1-based, e.g. '3.2.4').
+	 * @param {string} [separator="."]
+	 * @param {int} [digits=1]
 	 * @returns {string}
 	 */
-	getIndexHier: function(separator) {
+	getIndexHier: function(separator, digits) {
 		separator = separator || ".";
-		var res = [];
+		var s,
+			res = [];
 		$.each(this.getParentList(false, true), function(i, o){
-			res.push(o.getIndex() + 1);
+			s = "" + (o.getIndex() + 1);
+			if( digits ){
+				// prepend leading zeroes
+				s = ("0000000" + s).substr(-digits);
+			}
+			res.push(s);
 		});
 		return res.join(separator);
 	},
