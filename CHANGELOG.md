@@ -1,11 +1,12 @@
 # 2.16.2-0 / Unreleased
+  * [Added]  `node.addClass()`, `.removeClass()`, and `.toggleClass()`
   * [Added] ext-filter: matcher-callback for `tree.filterNodes()` may now return 
     `"branch"` and `"skip"`
   * [Added] ext-filter: new option`nodata` allows to configure a status node for
     empty results
   * [Added] `digits` argument to `node.getIndexHier(separator, digits)`.
   * [Added] tree option `.tabindex`, default is "0". Pass "" to resolve #577.
-  * [Deprecated] tree option `.tabbable`. Use `.tabindex` instead
+  * [DEPRECATED] tree option `.tabbable`. Use `.tabindex` instead
   * [Added] New option `mode='firstChild'` for `node.moveTo()`
   * [Added] New option `digits=<int>` for `node.getIndexHier()`
   * [Fixed] ext-filter: branch mode honors `autoExpand: true`
@@ -42,7 +43,7 @@
 # 2.15.0 / 2016-01-11
   * [Changed] Renamed class `fancytree-statusnode-wait` to `fancytree-statusnode-loading`
   * [Added] new event `renderStatusColumns`
-  * [Deprecated] ext-table option `customStatus`. Use `renderStatusColumns` instead
+  * [DEPRECATED] ext-table option `customStatus`. Use `renderStatusColumns` instead
   * [Added] new event `clickPaging`
   * [Added] new mode `nodata` for use with node.setStatus()
   * [Added] new method `node.addPagingNode()`
@@ -65,10 +66,10 @@
       containing a class name or image url.<br>
       This option existed before, but was stored in the `node.data.icon` namespace,
       and did not accept class names.
-    * [Deprecated] `options.iconClass` callback: use `options.icon` instead
-    * [Deprecated] `options.icons`: use `options.icon` instead
-    * [Deprecated] `node.data.iconclass` option: use `node.icon` instead
-    * [Deprecated] `node.data.icon` option: use `node.icon` instead
+    * [DEPRECATED] `options.iconClass` callback: use `options.icon` instead
+    * [DEPRECATED] `options.icons`: use `options.icon` instead
+    * [DEPRECATED] `node.data.iconclass` option: use `node.icon` instead
+    * [DEPRECATED] `node.data.icon` option: use `node.icon` instead
   * [Added] `tree.clear()` method.
   * [Added] #520 ext-persist: new event `beforeRestore`
   * [Fixed] #533 table-ext: nodeSetExpanded triggers redundant events
@@ -223,7 +224,7 @@
   * [Fixed] #316 Fix hasChildren() when children = []
   * [Fixed] #237 ajax LoadError not updated in StatusNode with Table ext
   * [Fixed] #295 loadKeyPath with multiple paths
-  * [Deprecated] node.isRoot(). Use node.isRootNode() instead
+  * [DEPRECATED] node.isRoot(). Use node.isRootNode() instead
 
 # 2.3.0 / 2014-08-17
   * [CHANGED] renamed (undocumented) event 'loaderror' to 'loadError'
@@ -262,8 +263,8 @@
   * [Fixed] #235: D'n'd helper is displaced, when window is scrolled
   * [Fixed] #241: fromDict() does not update node title
   * [Fixed] relative custom imagePath option
-  * [Deprecated] [ext-filter] Use filterNodes() instead of applyFilter()
-  * [Deprecated] [ext-filter] 'leavesOnly' option removed (see filterNodes())
+  * [DEPRECATED] [ext-filter] Use filterNodes() instead of applyFilter()
+  * [DEPRECATED] [ext-filter] 'leavesOnly' option removed (see filterNodes())
 
 
 # 2.0.0 / 2014-05-01

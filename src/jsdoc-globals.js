@@ -64,7 +64,8 @@ var EventData = {};
  *     lazy-behavior.
  * @property {object} data All unknown properties from constructor will be copied to `node.data`.
  * @property {boolean} expanded Initial expansion state. Use `node.setExpanded()` or `node.isExpanded()` to access.
- * @property {string} extraClasses Class names added to the node markup (separate with space).
+ * @property {string} extraClasses Class names added to the node markup (separate with space).<br>
+ *     Note: use `node.add/remove/toggleClass()` to modify.
  * @property {boolean} focus (Initialization only, but will not be stored  with the node.)
  * @property {boolean} folder Folders have different default icons and honor the `clickFolderMode` option.
  * @property {boolean} hideCheckbox Pass `true` to remove checkbox for this node.<br>
