@@ -59,7 +59,12 @@
 					],
 			beforeOpen: function(event, ui) {
 				var node = $.ui.fancytree.getNode(ui.target);
-//                node.setFocus();
+				// Modify menu entries depending on node status
+				$("#tree").contextmenu("enableEntry", "paste", node.isFolder());
+				// Show/hide single entries
+//        		$("#tree").contextmenu("showEntry", "cut", false);
+
+				// Activate node on right-click
 				node.setActive();
 			},
 			select: function(event, ui) {
