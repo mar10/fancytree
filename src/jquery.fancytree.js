@@ -3228,7 +3228,7 @@ $.extend(Fancytree.prototype,
 					// TODO: why doesn't this work:
 //					node.li.role = "treeitem";
 //                    $(node.li).attr("role", "treeitem")
-//                    .attr("aria-labelledby", "ftal_" + node.key);
+//                    .attr("aria-labelledby", "ftal_" + opts.idPrefix + node.key);
 				}
 				if( node.key && opts.generateIds ){
 					node.li.id = opts.idPrefix + node.key;
@@ -3236,7 +3236,7 @@ $.extend(Fancytree.prototype,
 				node.span = document.createElement("span");
 				node.span.className = "fancytree-node";
 				if(aria){
-					$(node.span).attr("aria-labelledby", "ftal_" + node.key);
+					$(node.span).attr("aria-labelledby", "ftal_" + opts.idPrefix + node.key);
 				}
 				node.li.appendChild(node.span);
 
@@ -3433,7 +3433,7 @@ $.extend(Fancytree.prototype,
 		}
 		if(!nodeTitle){
 			tooltip = node.tooltip ? " title='" + FT.escapeHtml(node.tooltip) + "'" : "";
-			id = aria ? " id='ftal_" + node.key + "'" : "";
+			id = aria ? " id='ftal_" + opts.idPrefix + node.key + "'" : "";
 			role = aria ? " role='treeitem'" : "";
 			tabindex = opts.titlesTabbable ? " tabindex='0'" : "";
 
