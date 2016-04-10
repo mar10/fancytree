@@ -397,6 +397,7 @@ module.exports = (grunt) ->
       grunt.registerTask "travis", ["test", "sauce"]
 
   grunt.registerTask "default", ["test"]
+  grunt.registerTask "ci", ["test"]  # Called by 'npm test'
 
   grunt.registerTask "build", [
       "less:development"

@@ -10,6 +10,7 @@
   * [Added] New option `mode='firstChild'` for `node.moveTo()`
   * [Added] New option `digits=<int>` for `node.getIndexHier()`
   * [Fixed] ext-filter: branch mode honors `autoExpand: true`
+  * [Fixed] #584: aria-labelledby ids not unique
   * Update to jQuery UI 1.11.4
 
 # 2.16.1 / 2016-03-18
