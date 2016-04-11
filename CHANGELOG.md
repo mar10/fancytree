@@ -1,4 +1,7 @@
-# 2.16.2-0 / Unreleased
+# 2.17.0-0 / Unreleased
+  *
+
+# 2.17.0 / 2016-04-11
   * [Added]  `node.addClass()`, `.removeClass()`, and `.toggleClass()`
   * [Added] ext-filter: matcher-callback for `tree.filterNodes()` may now return 
     `"branch"` and `"skip"`
