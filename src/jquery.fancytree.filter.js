@@ -121,7 +121,7 @@ $.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, bra
 		}
 	});
 	if( count === 0 && filterOpts.nodata ) {
-		statusNode = filterOpts.nodata;	
+		statusNode = filterOpts.nodata;
 		if( $.isFunction(statusNode) ) {
 			statusNode = statusNode();
 		}

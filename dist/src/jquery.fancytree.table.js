@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.16.1
- * @date 2016-03-18T22:15
+ * @version 2.17.0
+ * @date 2016-04-11T20:10
  */
 
 ;(function($, window, document, undefined) {
@@ -178,7 +178,9 @@ $.ui.fancytree.registerExtension({
 		tree.rootNode.ul = null;
 
 		// Add container to the TAB chain
-		this.$container.attr("tabindex", opts.tabbable ? "0" : "-1");
+		// #577: Allow to set tabindex to "0", "-1" and ""
+		this.$container.attr("tabindex", opts.tabindex);
+		// this.$container.attr("tabindex", opts.tabbable ? "0" : "-1");
 		if(opts.aria) {
 			tree.$container
 				.attr("role", "treegrid")
