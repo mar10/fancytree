@@ -609,6 +609,14 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		this.warn("FancytreeNode.discard() is deprecated since 2014-02-16. Use .resetLazy() instead.");
 		return this.resetLazy();
 	},
+	/** Remove DOM elements for all descendents. May be called on .collapse event 
+	 * to keep the DOM small.
+	 * @param {boolean} [includeSelf=false]
+	 */
+	discardMarkup: function(includeSelf){
+		var fn = includeSelf ? "nodeRemoveMarkup" : "nodeRemoveChildMarkup";
+		this.tree._callHook(fn, this);
+	},
 
 	// TODO: expand(flag)
 

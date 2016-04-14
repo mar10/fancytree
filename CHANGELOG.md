@@ -1,5 +1,5 @@
 # 2.17.0-0 / Unreleased
-  *
+  * [Added] #586 node.discardMarkup()
 
 # 2.17.0 / 2016-04-11
   * [Added]  `node.addClass()`, `.removeClass()`, and `.toggleClass()`
