@@ -70,7 +70,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editStart = function(){
 	$input = $("<input />", {
 		"class": "fancytree-edit-input",
 		type: "text",
-		value: unescapeHtml(eventData.orgTitle)
+		value: tree.options.escapeTitles ? eventData.orgTitle : unescapeHtml(eventData.orgTitle)
 	});
 	local.eventData.input = $input;
 	if ( instOpts.adjustWidthOfs != null ) {
@@ -155,8 +155,8 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editEnd = function(applyChanges, _e
 	$(document).off(".fancytree-edit");
 
 	if( eventData.save ) {
-		node.setTitle( escapeHtml(newVal) );
-		// $(node[tree.statusClassPropName]).removeClass("fancytree-edit-new");
+		// # 171: escape user input (not required if global escaping is on)
+		node.setTitle( tree.options.escapeTitles ? newVal : escapeHtml(newVal) );
 		node.setFocus();
 	}else{
 		if( eventData.isNew ) {

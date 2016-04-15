@@ -30,6 +30,48 @@ if ( $.ui && $.ui.fancytree ) {
  * Private functions and variables
  */
 
+var i, attr,
+	FT = null, // initialized below
+	TEST_IMG = new RegExp(/\.|\//),  // strings are considered image urls if they conatin '.' or '/'
+	REX_HTML = /[&<>"'\/]/g,
+	RECURSIVE_REQUEST_ERROR = "$recursive_request",
+	ENTITY_MAP = {"&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;", "/": "&#x2F;"},
+	IGNORE_KEYCODES = { 16: true, 17: true, 18: true },
+	SPECIAL_KEYCODES = {
+		8: "backspace", 9: "tab", 10: "return", 13: "return",
+		// 16: null, 17: null, 18: null, // ignore shift, ctrl, alt
+		19: "pause", 20: "capslock", 27: "esc", 32: "space", 33: "pageup",
+		34: "pagedown", 35: "end", 36: "home", 37: "left", 38: "up",
+		39: "right", 40: "down", 45: "insert", 46: "del", 59: ";", 61: "=",
+		96: "0", 97: "1", 98: "2", 99: "3", 100: "4", 101: "5", 102: "6",
+		103: "7", 104: "8", 105: "9", 106: "*", 107: "+", 109: "-", 110: ".",
+		111: "/", 112: "f1", 113: "f2", 114: "f3", 115: "f4", 116: "f5",
+		117: "f6", 118: "f7", 119: "f8", 120: "f9", 121: "f10", 122: "f11",
+		123: "f12", 144: "numlock", 145: "scroll", 173: "-", 186: ";", 187: "=",
+		188: ",", 189: "-", 190: ".", 191: "/", 192: "`", 219: "[", 220: "\\",
+		221: "]", 222: "'"},
+	MOUSE_BUTTONS = { 0: "", 1: "left", 2: "middle", 3: "right" },
+	//boolean attributes that can be set with equivalent class names in the LI tags
+	CLASS_ATTRS = "active expanded focus folder hideCheckbox lazy selected unselectable".split(" "),
+	CLASS_ATTR_MAP = {},
+	//	Top-level Fancytree node attributes, that can be set by dict
+	NODE_ATTRS = "expanded extraClasses folder hideCheckbox icon key lazy refKey selected statusNodeType title tooltip unselectable".split(" "),
+	NODE_ATTR_MAP = {},
+	// Mapping of lowercase -> real name (because HTML5 data-... attribute only supports lowercase)
+	NODE_ATTR_LOWERCASE_MAP = {},
+	// Attribute names that should NOT be added to node.data
+	NONE_NODE_DATA_MAP = {"active": true, "children": true, "data": true, "focus": true};
+
+for(i=0; i<CLASS_ATTRS.length; i++){ CLASS_ATTR_MAP[CLASS_ATTRS[i]] = true; }
+for(i=0; i<NODE_ATTRS.length; i++) {
+	attr = NODE_ATTRS[i];
+	NODE_ATTR_MAP[attr] = true;
+	if( attr !== attr.toLowerCase() ) {
+		NODE_ATTR_LOWERCASE_MAP[attr.toLowerCase()] = attr;
+	}
+}
+
+
 function _assert(cond, msg){
 	// TODO: see qunit.js extractStacktrace()
 	if(!cond){
@@ -195,6 +237,13 @@ function _getElementDataAsDict($el){
 }
 
 
+function _escapeHtml(s){
+	return ("" + s).replace(REX_HTML, function (s) {
+		return ENTITY_MAP[s];
+	});
+}
+
+
 // TODO: use currying
 function _makeNodeTitleMatcher(s){
 	s = s.toLowerCase();
@@ -209,46 +258,6 @@ function _makeNodeTitleStartMatcher(s){
 	return function(node){
 		return reMatch.test(node.title);
 	};
-}
-
-var i, attr,
-	FT = null, // initialized below
-	TEST_IMG = new RegExp(/\.|\//),  // strings are considered image urls if they conatin '.' or '/'
-	RECURSIVE_REQUEST_ERROR = "$recursive_request",
-	ENTITY_MAP = {"&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;", "/": "&#x2F;"},
-	IGNORE_KEYCODES = { 16: true, 17: true, 18: true },
-	SPECIAL_KEYCODES = {
-		8: "backspace", 9: "tab", 10: "return", 13: "return",
-		// 16: null, 17: null, 18: null, // ignore shift, ctrl, alt
-		19: "pause", 20: "capslock", 27: "esc", 32: "space", 33: "pageup",
-		34: "pagedown", 35: "end", 36: "home", 37: "left", 38: "up",
-		39: "right", 40: "down", 45: "insert", 46: "del", 59: ";", 61: "=",
-		96: "0", 97: "1", 98: "2", 99: "3", 100: "4", 101: "5", 102: "6",
-		103: "7", 104: "8", 105: "9", 106: "*", 107: "+", 109: "-", 110: ".",
-		111: "/", 112: "f1", 113: "f2", 114: "f3", 115: "f4", 116: "f5",
-		117: "f6", 118: "f7", 119: "f8", 120: "f9", 121: "f10", 122: "f11",
-		123: "f12", 144: "numlock", 145: "scroll", 173: "-", 186: ";", 187: "=",
-		188: ",", 189: "-", 190: ".", 191: "/", 192: "`", 219: "[", 220: "\\",
-		221: "]", 222: "'"},
-	MOUSE_BUTTONS = { 0: "", 1: "left", 2: "middle", 3: "right" },
-	//boolean attributes that can be set with equivalent class names in the LI tags
-	CLASS_ATTRS = "active expanded focus folder hideCheckbox lazy selected unselectable".split(" "),
-	CLASS_ATTR_MAP = {},
-	//	Top-level Fancytree node attributes, that can be set by dict
-	NODE_ATTRS = "expanded extraClasses folder hideCheckbox icon key lazy refKey selected statusNodeType title tooltip unselectable".split(" "),
-	NODE_ATTR_MAP = {},
-	// Mapping of lowercase -> real name (because HTML5 data-... attribute only supports lowercase)
-	NODE_ATTR_LOWERCASE_MAP = {},
-	// Attribute names that should NOT be added to node.data
-	NONE_NODE_DATA_MAP = {"active": true, "children": true, "data": true, "focus": true};
-
-for(i=0; i<CLASS_ATTRS.length; i++){ CLASS_ATTR_MAP[CLASS_ATTRS[i]] = true; }
-for(i=0; i<NODE_ATTRS.length; i++) {
-	attr = NODE_ATTRS[i];
-	NODE_ATTR_MAP[attr] = true;
-	if( attr !== attr.toLowerCase() ) {
-		NODE_ATTR_LOWERCASE_MAP[attr.toLowerCase()] = attr;
-	}
 }
 
 
@@ -3440,12 +3449,15 @@ $.extend(Fancytree.prototype,
 			nodeTitle = opts.renderTitle.call(tree, {type: "renderTitle"}, ctx) || "";
 		}
 		if(!nodeTitle){
-			tooltip = node.tooltip ? " title='" + FT.escapeHtml(node.tooltip) + "'" : "";
+			tooltip = node.tooltip ? " title='" + _escapeHtml(node.tooltip) + "'" : "";
 			id = aria ? " id='ftal_" + opts.idPrefix + node.key + "'" : "";
 			role = aria ? " role='treeitem'" : "";
 			tabindex = opts.titlesTabbable ? " tabindex='0'" : "";
 
-			nodeTitle = "<span " + role + " class='fancytree-title'" + id + tooltip + tabindex + ">" + node.title + "</span>";
+			nodeTitle = "<span " + role + " class='fancytree-title'" +
+				id + tooltip + tabindex + ">" +
+				(opts.escapeTitles ? _escapeHtml(node.title) : node.title) +
+				"</span>";
 		}
 		ares.push(nodeTitle);
 		// Note: this will trigger focusout, if node had the focus
@@ -4158,6 +4170,7 @@ $.widget("ui.fancytree",
 		debugLevel: null, // 0..2 (null: use global setting $.ui.fancytree.debugInfo)
 		disabled: false, // TODO: required anymore?
 		enableAspx: true, // TODO: document
+		escapeTitles: false,
 		extensions: [],
 		// fx: { height: "toggle", duration: 200 },
 		// toggleEffect: { effect: "drop", options: {direction: "left"}, duration: 200 },
@@ -4533,11 +4546,7 @@ $.extend($.ui.fancytree,
 	 * @param {string} s
 	 * @returns {string}
 	 */
-	escapeHtml: function(s){
-		return ("" + s).replace(/[&<>"'\/]/g, function (s) {
-			return ENTITY_MAP[s];
-		});
-	},
+	escapeHtml: _escapeHtml,
 	/** Make jQuery.position() arguments backwards compatible, i.e. if
 	 * jQuery UI version <= 1.8, convert
 	 *   { my: "left+3 center", at: "left bottom", of: $target }

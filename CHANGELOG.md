@@ -1,5 +1,7 @@
 # 2.17.0-0 / Unreleased
-  * [Added] #586 node.discardMarkup()
+  * [Added] #586 node.discardMarkup() (useful in  the `collapsed` event)
+  * [Added] #171 new option `.escapeTitles`
+  * [Fixed] #515 Html tags included in filter results
 
 # 2.17.0 / 2016-04-11
   * [Added]  `node.addClass()`, `.removeClass()`, and `.toggleClass()`
