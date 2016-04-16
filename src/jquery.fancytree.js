@@ -4300,6 +4300,9 @@ $.widget("ui.fancytree",
 			this.tree._callHook("treeCreate", this.tree);
 			rerender = true;
 			break;
+		case "escapeTitles":
+			rerender = true;
+			break;
 		case "source":
 			callDefault = false;
 			this.tree._callHook("treeLoad", this.tree, value);
