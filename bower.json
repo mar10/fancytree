@@ -3,8 +3,9 @@
   "description": "Fancytree is a JavaScript tree view plugin for jQuery with support for persistence, keyboard, checkboxes, drag'n'drop, and lazy loading.",
   "version": "2.17.1-0",
   "main": [
-    "dist/jquery.fancytree-all.min.js"
+    "dist/jquery.fancytree-all.js"
   ],
+  "moduleType": "globals",
   "license": "MIT",
   "ignore": [
     "**/.*",
@@ -17,7 +18,6 @@
     "/lib",
     "/src",
     "/test",
-    "bower.json",
     "CONTRIBUTING.md",
     "fancytree.jquery.json",
     "Gruntfile.coffee",
