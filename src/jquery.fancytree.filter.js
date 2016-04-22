@@ -201,18 +201,24 @@ $.ui.fancytree._FancytreeClass.prototype.filterBranches = function(filter, opts)
  * @requires jquery.fancytree.filter.js
  */
 $.ui.fancytree._FancytreeClass.prototype.clearFilter = function(){
-	var statusNode = this.getRootNode()._findDirectChild(KeyNoData),
-		escapeTitles = this.options.escapeTitles;
+	var $title,
+		statusNode = this.getRootNode()._findDirectChild(KeyNoData),
+		escapeTitles = this.options.escapeTitles,
+		enhanceTitle = this.options.enhanceTitle;
 
 	if( statusNode ) {
 		statusNode.remove();
 	}
 	this.visit(function(node){
 		if( node.match ) {  // #491
+			$title = $(">span.fancytree-title", node.span);
 			if( escapeTitles ) {
-				$(">span.fancytree-title", node.span).text(node.title);
+				$title.text(node.title);
 			} else {
-				$(">span.fancytree-title", node.span).html(node.title);
+				$title.html(node.title);
+			}
+			if( enhanceTitle ) {
+				enhanceTitle({type: "enhanceTitle"}, {node: node, $title: $title});
 			}
 		}
 		delete node.match;
@@ -274,7 +280,9 @@ $.ui.fancytree.registerExtension({
 		hideExpandedCounter: true,  // Hide counter badge, when parent is expanded
 		highlight: true,  // Highlight matches by wrapping inside <mark> tags
 		nodata: true,  // Display a 'no data' status node if result is empty
-		mode: "dimm"  // Grayout unmatched nodes (pass "hide" to remove unmatched node instead)
+		mode: "dimm",  // Grayout unmatched nodes (pass "hide" to remove unmatched node instead)
+		// events
+		enhanceTitle: null
 	},
 	nodeLoadChildren: function(ctx, source) {
 		return this._superApply(arguments).done(function() {
@@ -297,7 +305,9 @@ $.ui.fancytree.registerExtension({
 			node = ctx.node,
 			tree = ctx.tree,
 			opts = ctx.options.filter,
+			$title = $("span.fancytree-title", node.span),
 			$span = $(node[tree.statusClassPropName]),
+			enhanceTitle = ctx.options.enhanceTitle,
 			escapeTitles = ctx.options.escapeTitles;
 
 		res = this._superApply(arguments);
@@ -321,11 +331,14 @@ $.ui.fancytree.registerExtension({
 		}
 		// node.debug("nodeRenderStatus", node.titleWithHighlight, node.title)
 		if( node.titleWithHighlight ) {
-			$("span.fancytree-title", node.span).html(node.titleWithHighlight);
+			$title.html(node.titleWithHighlight);
 		} else if ( escapeTitles ) {
-			$("span.fancytree-title", node.span).text(node.title);
+			$title.text(node.title);
 		} else {
-			$("span.fancytree-title", node.span).html(node.title);
+			$title.html(node.title);
+		}
+		if( enhanceTitle ) {
+			enhanceTitle({type: "enhanceTitle"}, {node: node, $title: $title});
 		}
 		return res;
 	}

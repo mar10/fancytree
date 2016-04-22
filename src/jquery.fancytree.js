@@ -3465,6 +3465,10 @@ $.extend(Fancytree.prototype,
 		node.span.innerHTML = ares.join("");
 		// Update CSS classes
 		this.nodeRenderStatus(ctx);
+		if ( opts.enhanceTitle ){
+			ctx.$title = $(">span.fancytree-title", node.span);
+			nodeTitle = opts.enhanceTitle.call(tree, {type: "enhanceTitle"}, ctx) || "";
+		}
 	},
 	/** Update element classes according to node state.
 	 * @param {EventData} ctx
