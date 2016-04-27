@@ -1,8 +1,9 @@
-# 2.17.0-0 / Unreleased
+# 2.18.0-0 / Unreleased
   * [Added] #586 node.discardMarkup() (useful in  the `collapsed` event)
   * [Added] #171 new option `.escapeTitles`
   * [Added] new callback `.enhanceTitle()`
   * [Fixed] #515 Html tags included in filter results
+  * [Fixed] #593 ext-dnd revert position fails for tables
 
 # 2.17.0 / 2016-04-11
   * [Added]  `node.addClass()`, `.removeClass()`, and `.toggleClass()`
