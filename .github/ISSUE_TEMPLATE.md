@@ -15,7 +15,8 @@ then remove all unneeded lines from this issue report.
   1. ...
   2. ...
 
-(Could you set up a jsFiddle or Plunkr?)
+Could you set up a jsFiddle (http://jsfiddle.net/mar10/KcxRd/) or
+Plunker (http://plnkr.co/edit/8sdy3r?p=preview) ?
 
 
 ### Environment
