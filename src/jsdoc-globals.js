@@ -193,10 +193,10 @@ var FancytreeOptions = {};
  * });
  *
  * @property {function} activate `data.node` was activated
- * @property {function} beforeActivate `data.node` is about to tbe (de)activated. Current status is `data.node.isActive()`. Return `false` to prevent default processing
- * @property {function} beforeExpand `data.node` is about to tbe collapsed/expanded. Current status is `data.node.isExpanded()`. Return `false` to prevent default processing
+ * @property {function} beforeActivate `data.node` is about to be (de)activated. Current status is `data.node.isActive()`. Return `false` to prevent default processing
+ * @property {function} beforeExpand `data.node` is about to be collapsed/expanded. Current status is `data.node.isExpanded()`. Return `false` to prevent default processing
  * @property {function} beforeRestore ext-persist is about to restore the previous state. Return `false` to prevent default processing
- * @property {function} beforeSelect `data.node` is about to tbe (de)selected. Current status is `data.node.isSelected()`.Return `false` to prevent default processing
+ * @property {function} beforeSelect `data.node` is about to be (de)selected. Current status is `data.node.isSelected()`.Return `false` to prevent default processing
  * @property {function} blur `data.node` lost keyboard focus
  * @property {function} blurTree `data.tree` lost keyboard focus
  * @property {function} click `data.node` was clicked. `data.targetType` contains the region ("title", "expander", ...). Return `false` to prevent default processing, i.e. activating, expanding, selecting, etc.
