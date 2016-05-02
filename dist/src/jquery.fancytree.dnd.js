@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.17.0
- * @date 2016-04-11T20:10
+ * @version 2.18.0
+ * @date 2016-05-02T19:34
  */
 
 ;(function($, window, document, undefined) {
@@ -409,8 +409,9 @@ $.ui.fancytree.registerExtension({
 					.hide();
 			} else {
 				if( dnd.smartRevert ) {
-					// #567: fix revert position
-					rect = node.li.getBoundingClientRect();
+					// #567, #593: fix revert position
+					// rect = node.li.getBoundingClientRect();
+					rect = node[ctx.tree.nodeContainerAttrName].getBoundingClientRect();
 					parentRect = $(draggable.options.appendTo)[0].getBoundingClientRect();
 					draggable.originalPosition.left = Math.max(0, rect.left - parentRect.left);
 					draggable.originalPosition.top = Math.max(0, rect.top - parentRect.top);
