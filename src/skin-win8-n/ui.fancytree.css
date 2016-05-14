@@ -515,7 +515,7 @@ ul.fancytree-ext-wide span.fancytree-node span.fancytree-title {
   position: absolute;
   z-index: 1;
   left: 0px;
-  width: 100%;
+  min-width: 100%;
   margin-left: 0;
   margin-right: 0;
   -webkit-box-sizing: border-box;
