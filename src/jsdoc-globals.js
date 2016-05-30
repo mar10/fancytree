@@ -196,7 +196,7 @@ var FancytreeOptions = {};
  * @property {function} beforeActivate `data.node` is about to be (de)activated. Current status is `data.node.isActive()`. Return `false` to prevent default processing
  * @property {function} beforeExpand `data.node` is about to be collapsed/expanded. Current status is `data.node.isExpanded()`. Return `false` to prevent default processing
  * @property {function} beforeRestore ext-persist is about to restore the previous state. Return `false` to prevent default processing
- * @property {function} beforeSelect `data.node` is about to be (de)selected. Current status is `data.node.isSelected()`.Return `false` to prevent default processing
+ * @property {function} beforeSelect `data.node` is about to be (de)selected. Current status is `data.node.isSelected()`. Return `false` to prevent default processing
  * @property {function} blur `data.node` lost keyboard focus
  * @property {function} blurTree `data.tree` lost keyboard focus
  * @property {function} click `data.node` was clicked. `data.targetType` contains the region ("title", "expander", ...). Return `false` to prevent default processing, i.e. activating, expanding, selecting, etc.
@@ -224,7 +224,7 @@ var FancytreeOptions = {};
  * @property {function} renderNode Allow tweaking after node state was rendered (NOTE: this event is only available as callback, but not for bind())
  * @property {function} renderTitle Allow replacing the `&lt;span class='fancytree-title'>` markup (NOTE: this event is only available as callback, but not for bind())
  * @property {function} restore ext-persist has expanded, selected, and activated the previous state
- * @property {function} select `data.node` was selected
+ * @property {function} select `data.node` was (de)selected. Current status is `data.node.isSelected()`
  *
  */
 var FancytreeEvents = {};
