@@ -58,8 +58,8 @@ ul.fancytree-container li.fancytree-lastsib {
   opacity: 0.5;
   background-color: silver;
 }
-.fancytree-connectors ul.fancytree-container li {
-  background-image: url("data:image/gif;base64,R0lGODlhEAAQAPcAAAAAAIAAAACAAICAAAAAgIAAgACAgMDAwMDcwKbK8P///6Wlpf/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////78KCgpICAgP8AAAD/AP//AAAA//8A/wD//////yH5BAEAAP4ALAAAAAAQABAAAAgpAP0JFHhvoMGDCBMiLKiwocOBDB9KXDixosGIFidizPhwI8eGHj8KDAgAOw==");
+ul.fancytree-connectors.fancytree-container li {
+  background-image: url('data:image/gif;base64,R0lGODlhEAAQAPcAAAAAAIAAAACAAICAAAAAgIAAgACAgMDAwMDcwKbK8P///6Wlpf/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////78KCgpICAgP8AAAD/AP//AAAA//8A/wD//////yH5BAEAAP4ALAAAAAAQABAAAAgpAP0JFHhvoMGDCBMiLKiwocOBDB9KXDixosGIFidizPhwI8eGHj8KDAgAOw==');
   background-position: 0 0;
 }
 ul.fancytree-container li.fancytree-lastsib {
@@ -129,6 +129,10 @@ span.fancytree-expander {
 .fancytree-exp-nl span.fancytree-expander {
   background-image: none;
   cursor: default;
+}
+.fancytree-connectors .fancytree-exp-n span.fancytree-expander,
+.fancytree-connectors .fancytree-exp-nl span.fancytree-expander {
+  margin-top: 0;
 }
 /* Fade out expanders, when container is not hovered or active */
 .fancytree-fade-expander span.fancytree-expander {
@@ -450,7 +454,7 @@ span.fancytree-node span.fancytree-expander:hover {
 .fancytree-plain.fancytree-colorize-selected span.fancytree-node.fancytree-selected span.fancytree-title {
   background-color: #80c780;
   border-color: #80c780;
-  color: #fff;
+  color: #ffffff;
 }
 .fancytree-plain.fancytree-colorize-selected span.fancytree-node.fancytree-selected:hover span.fancytree-title {
   background-color: #6ec06e;
@@ -484,13 +488,13 @@ span.fancytree-node span.fancytree-expander:hover {
 }
 .fancytree-plain.fancytree-container span.fancytree-node.fancytree-active span.fancytree-title {
   background-color: #5094ce;
-  color: #fff;
+  color: #ffffff;
 }
 .fancytree-plain.fancytree-container span.fancytree-node.fancytree-active:hover span.fancytree-title {
   background-color: #3c87c8;
 }
 .fancytree-plain.fancytree-container.fancytree-ext-wide span.fancytree-node.fancytree-active {
-  color: #fff;
+  color: #ffffff;
 }
 .fancytree-plain.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-focused span.fancytree-title {
   border-color: #337ab7;
@@ -516,7 +520,7 @@ table.fancytree-ext-table.fancytree-colorize-selected > tbody > tr.fancytree-sel
 }
 table.fancytree-ext-table.fancytree-colorize-selected > tbody > tr.fancytree-selected > td,
 table.fancytree-ext-table.fancytree-colorize-selected > tbody > tr.fancytree-selected > td span.fancytree-title {
-  color: #fff;
+  color: #ffffff;
 }
 table.fancytree-ext-table.fancytree-colorize-selected.fancytree-treefocus > tbody > tr.fancytree-selected > td {
   background-color: #5cb85c;
@@ -542,7 +546,7 @@ table.fancytree-ext-table.fancytree-container > tbody > tr.fancytree-active > td
 }
 table.fancytree-ext-table.fancytree-container > tbody > tr.fancytree-active > td,
 table.fancytree-ext-table.fancytree-container > tbody > tr.fancytree-active > td span.fancytree-title {
-  color: #fff;
+  color: #ffffff;
 }
 table.fancytree-ext-table.fancytree-treefocus.fancytree-container > tbody > tr.fancytree-focused span.fancytree-title {
   outline: 1px dotted #000;

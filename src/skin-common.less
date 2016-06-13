@@ -141,13 +141,11 @@ ul.fancytree-container {
 	background-color: silver;
 }
 
-.fancytree-connectors {
-	ul.fancytree-container {
-		li {
-			// Use 'data-uri(...)' to embed the image into CSS instead of linking to 'loading.gif':
-			background-image: data-uri("@{fancy-image-dir}/vline.gif");
-			background-position: 0 0;
-		}
+ul.fancytree-connectors.fancytree-container {
+	li {
+		// Use 'data-uri(...)' to embed the image into CSS instead of linking to 'loading.gif':
+		background-image: data-uri("@{fancy-image-dir}/vline.gif");
+		background-position: 0 0;
 	}
 }
 
@@ -244,6 +242,7 @@ span.fancytree-expander {
 	.fancytree-exp-n span.fancytree-expander, 
 	.fancytree-exp-nl span.fancytree-expander {
 		.setBgImageUrl("icons.gif");
+		margin-top: 0;
 	}
 	.fancytree-exp-n span.fancytree-expander,       // End-node, not last sibling
 	.fancytree-exp-n span.fancytree-expander:hover {

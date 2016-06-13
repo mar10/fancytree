@@ -303,6 +303,9 @@ $(function(){
 				  {name: "Lion", value: "lion", href: "skin-lion/ui.fancytree.css"}
 				  ]
 //		init: "lion"
+	}) .after($("<label><input name='cbConnectors' type='checkbox'>Connectors</label>"));
+	$("input[name=cbConnectors]").on("change", function(e){
+		$(".fancytree-container").toggleClass("fancytree-connectors", $(this).is(":checked"));
 	});
 	// .after($("<label><input name='cbWide' type='checkbox'>Wide</label>"));
 	// $("[name=cbWide]").on("change", function(e){
