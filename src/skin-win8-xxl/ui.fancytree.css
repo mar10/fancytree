@@ -54,12 +54,19 @@ ul.fancytree-container li {
 ul.fancytree-container li.fancytree-lastsib {
   background-image: none;
 }
-ul.fancytree-no-connector > li {
-  background-image: none;
-}
 .ui-fancytree-disabled ul.fancytree-container {
   opacity: 0.5;
   background-color: silver;
+}
+.fancytree-connectors ul.fancytree-container li {
+  background-image: url("data:image/gif;base64,R0lGODlhEAAQAPcAAAAAAIAAAACAAICAAAAAgIAAgACAgMDAwMDcwKbK8P///6Wlpf/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////78KCgpICAgP8AAAD/AP//AAAA//8A/wD//////yH5BAEAAP4ALAAAAAAQABAAAAgpAP0JFHhvoMGDCBMiLKiwocOBDB9KXDixosGIFidizPhwI8eGHj8KDAgAOw==");
+  background-position: 0 0;
+}
+ul.fancytree-container li.fancytree-lastsib {
+  background-image: none;
+}
+ul.fancytree-no-connector > li {
+  background-image: none;
 }
 /*------------------------------------------------------------------------------
  * Common icon definitions
@@ -124,12 +131,16 @@ span.fancytree-expander {
   background-image: none;
   cursor: default;
 }
-.fancytree-exp-n span.fancytree-expander,
-.fancytree-exp-n span.fancytree-expander:hover {
+.fancytree-connectors .fancytree-exp-n span.fancytree-expander,
+.fancytree-connectors .fancytree-exp-nl span.fancytree-expander {
+  background-image: url("icons.gif");
+}
+.fancytree-connectors .fancytree-exp-n span.fancytree-expander,
+.fancytree-connectors .fancytree-exp-n span.fancytree-expander:hover {
   background-position: 0px -128px;
 }
-.fancytree-exp-nl span.fancytree-expander,
-.fancytree-exp-nl span.fancytree-expander:hover {
+.fancytree-connectors .fancytree-exp-nl span.fancytree-expander,
+.fancytree-connectors .fancytree-exp-nl span.fancytree-expander:hover {
   background-position: -32px -128px;
 }
 .fancytree-exp-c span.fancytree-expander {

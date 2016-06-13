@@ -1,3 +1,7 @@
+# connectors-branch / Unmerged
+  * [Added] modifier class `.fancytree-connectors` to be set on container
+  * [Changed] skin-xp now requires to add class `.fancytree-connectors` to container
+
 # 2.18.1-0 / Unreleased
   * 
 
