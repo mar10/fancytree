@@ -4310,6 +4310,7 @@ $.widget("ui.fancytree",
 		case "source":
 			callDefault = false;
 			this.tree._callHook("treeLoad", this.tree, value);
+			rerender = true;
 			break;
 		}
 		this.tree.debug("set option " + key + "=" + value + " <" + typeof(value) + ">");
