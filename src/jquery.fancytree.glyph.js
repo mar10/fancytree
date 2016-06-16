@@ -130,7 +130,9 @@ $.ui.fancytree.registerExtension({
 			}else{ //
 				span = $(".fancytree-statusnode-" + status, node[this.nodeContainerAttrName])
 					.find("span.fancytree-icon").get(0);
-				span.className = "fancytree-icon " + _getIcon(opts, status);
+				if( span ) {
+				    span.className = "fancytree-icon " + _getIcon(opts, status);
+				}
 			}
 		}
 		return res;
