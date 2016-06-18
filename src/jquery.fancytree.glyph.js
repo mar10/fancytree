@@ -126,7 +126,9 @@ $.ui.fancytree.registerExtension({
 		if( status === "error" || status === "loading" || status === "nodata" ){
 			if(node.parent){
 				span = $("span.fancytree-expander", node.span).get(0);
-				span.className = "fancytree-expander " + _getIcon(opts, status);
+				if( span ) {
+				    span.className = "fancytree-expander " + _getIcon(opts, status);
+				}
 			}else{ //
 				span = $(".fancytree-statusnode-" + status, node[this.nodeContainerAttrName])
 					.find("span.fancytree-icon").get(0);
