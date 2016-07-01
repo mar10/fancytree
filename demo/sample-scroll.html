@@ -70,9 +70,6 @@ $.fn.scrollTo = function( target, options, callback ){
 			init: function(event, data) {
 				data.tree.getFirstChild().setFocus();
 			},
-			focus: function(event, data){
-				data.node.scrollIntoView(true);
-			},
 			// expand: function(event, data){
 			// 	// scroll down to last node, but keep current node visible
 			// 	data.node.getLastChild().scrollIntoView(true, {topNode: data.node});
