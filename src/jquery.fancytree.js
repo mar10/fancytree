@@ -1386,7 +1386,8 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		// Navigate to node
 		function _goto(n){
 			if( n ){
-				try { n.makeVisible(); } catch(e) {} // #272
+				// setFocus/setActive will scroll later (if autoScroll is specified)
+				try { n.makeVisible({scrollIntoView: false}); } catch(e) {} // #272
 				// Node may still be hidden by a filter
 				if( ! $(n.span).is(":visible") ) {
 					n.debug("Navigate: skipping hidden node");
