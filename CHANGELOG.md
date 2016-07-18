@@ -1,5 +1,6 @@
 # 2.18.1-0 / Unreleased
   * [Fixed] #604 Set `source` option does not update tree
+  * [Improved] #611 Keyboard navigation honors autoScroll option
 
 # 2.18.0 / 2016-05-02
   * [Added] #586 node.discardMarkup() (useful in  the `collapsed` event)
