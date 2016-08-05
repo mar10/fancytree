@@ -214,6 +214,10 @@ $.ui.fancytree.registerExtension({
 			opts = ctx.options,
 			isRootNode = !node.parent;
 
+		if( tree._enableUpdate === false ) {
+			// $.ui.fancytree.debug("*** nodeRender _enableUpdate: false");
+			return;
+		}
 		if( !_recursive ){
 			ctx.hasCollapsedParents = node.parent && !node.parent.expanded;
 		}

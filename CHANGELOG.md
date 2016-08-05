@@ -1,4 +1,6 @@
-# 2.18.1-0 / Unreleased
+# 2.19.0-0 / Unreleased
+  * [Added] #607 tree.enableUpdate() to temporarily disable rendering to improve 
+    performance on bulk updates
   * [Added] modifier class `.fancytree-connectors` to be set on container<br>
     Note: Experimental! Not required for skin-xp and not compatible with ext-table
   * [Fixed] #604 Set `source` option does not update tree
