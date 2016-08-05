@@ -161,7 +161,7 @@ var TreePatch = {};
  * @property {Integer} selectMode 1:single, 2:multi, 3:multi-hier (default: 2)
  * @property {any} source Used to Initialize the tree.
  * @property {object} strings Translation table<br>
- *    		default: <code>{loading: "Loading&#8230;", loadError: "Load error!", moreData: "More&#8230;", noData: "No data."}</code>
+ *     default: <code>{loading: "Loading&#8230;", loadError: "Load error!", moreData: "More&#8230;", noData: "No data."}</code>
  * @property {boolean} <del>tabbable</del> @deprecated use `tabindex` instead
  * @property {string} tabindex Add tabindex attribute to container, so tree can be reached using TAB (default: "0")<br>
  *     "0": Tree control can be reached using TAB keys<br>
