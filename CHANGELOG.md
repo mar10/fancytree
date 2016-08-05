@@ -1,8 +1,6 @@
-# connectors-branch / Unmerged
+# 2.18.1-0 / Unreleased
   * [Added] modifier class `.fancytree-connectors` to be set on container<br>
     Note: Experimental! Not required for skin-xp and not compatible with ext-table
-
-# 2.18.1-0 / Unreleased
   * [Fixed] #604 Set `source` option does not update tree
   * [Fixed] #621 Cannot focus embedded input controls
   * [Improved] #611 Keyboard navigation honors autoScroll option

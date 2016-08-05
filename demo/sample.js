@@ -27,8 +27,10 @@
 			// skinPattern: "^(\W/skin-)().css$",
 			// mode: "combo", // {String} mode 'combo' or 'radio'
 			base: "",
-			choices: []
-			// extraChoices: []
+			choices: [],
+			// extraChoices: [],
+			// Events:
+			change: $.noop
 		},
 		methods = {
 			init: function(options) {
@@ -70,9 +72,10 @@
 					$combo
 						.empty()
 						.skinswitcher("addChoices", opts.choices)
-						.change(function(){
+						.change(function(event){
 							var choice = $(":selected", this).data("choice");
 							$("link." + PLUGIN_NAME).attr("href", opts.base + choice.href);
+							opts.change(choice);
 						});
 					// Find out initial selection
 					if(opts.init){
@@ -82,6 +85,7 @@
 						// decouple this call to prevent IE6 exception
 						setTimeout(function(){
 							$combo.val(initialChoice.value);
+							opts.change(initialChoice);
 						}, 100);
 					}
 				});
@@ -301,16 +305,16 @@ $(function(){
 				  {name: "Win8-N", value: "win8n", href: "skin-win8-n/ui.fancytree.css"},
 				  {name: "Win8 xxl", value: "win8xxl", href: "skin-win8-xxl/ui.fancytree.css"},
 				  {name: "Lion", value: "lion", href: "skin-lion/ui.fancytree.css"}
-				  ]
-//		init: "lion"
-	}) .after($("<label><input name='cbConnectors' type='checkbox'>Connectors</label>"));
+				  ],
+		change: function(choice) {
+			// console.log("choice: " + choice.value)
+			$("#connectorsSwitch").toggle(choice.value === "win8");
+		}
+	}).after($("<label id='connectorsSwitch'><input name='cbConnectors' type='checkbox'>Connectors</label>"));
+
 	$("input[name=cbConnectors]").on("change", function(e){
 		$(".fancytree-container").toggleClass("fancytree-connectors", $(this).is(":checked"));
 	});
-	// .after($("<label><input name='cbWide' type='checkbox'>Wide</label>"));
-	// $("[name=cbWide]").on("change", function(e){
-	// 	$(".fancytree-container").toggleClass("fancytree-ext-wide", $(this).is(":checked"));
-	// });
 });
 
 }(jQuery));
