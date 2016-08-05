@@ -1144,13 +1144,14 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		return this.load(discard);
 	},
 	/**
-	 * Load all children of a lazy node if neccessary. The *expanded* state is maintained.
-	 * @param {boolean} [forceReload=false] Pass true to discard any existing nodes before.
+	 * Load all children of a lazy node if neccessary. The <i>expanded</i> state is maintained.
+	 * @param {boolean} [forceReload=false] Pass true to discard any existing nodes before. Otherwise this method does nothing if the node was already loaded.
 	 * @returns {$.Promise}
 	 */
 	load: function(forceReload) {
 		var res, source,
-			that = this;
+			that = this,
+			wasExpanded = this.isExpanded();
 
 		_assert( this.isLazy(), "load() requires a lazy node" );
 		// _assert( forceReload || this.isUndefined(), "Pass forceReload=true to re-load a lazy node" );
@@ -1168,9 +1169,14 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		}
 		_assert(typeof source !== "boolean", "lazyLoad event must return source in data.result");
 		res = this.tree._callHook("nodeLoadChildren", this, source);
-		if( this.expanded ) {
+		if( wasExpanded ) {
+			this.expanded = true;
 			res.always(function(){
 				that.render();
+			});
+		} else {
+			res.always(function(){
+				that.renderStatus();  // fix expander icon to 'loaded'
 			});
 		}
 		return res;

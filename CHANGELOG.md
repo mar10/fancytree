@@ -2,6 +2,7 @@
   * [Added] modifier class `.fancytree-connectors` to be set on container<br>
     Note: Experimental! Not required for skin-xp and not compatible with ext-table
   * [Fixed] #604 Set `source` option does not update tree
+  * [Fixed] #609 node.load(true); doesn't maintain expanded
   * [Fixed] #621 Cannot focus embedded input controls
   * [Improved] #611 Keyboard navigation honors autoScroll option
 
