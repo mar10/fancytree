@@ -3820,10 +3820,13 @@ $.extend(Fancytree.prototype,
 		// ctx.node.debug("nodeSetFocus(" + flag + ")");
 		var ctx2,
 			tree = ctx.tree,
-			node = ctx.node;
+			node = ctx.node,
+			// et = ctx.originalEvent && ctx.originalEvent.type,
+			isInput = ctx.originalEvent ? $(ctx.originalEvent.target).is(":input") : false;
 
 		flag = (flag !== false);
 
+		// (node || tree).debug("nodeSetFocus(" + flag + "), event: " + et + ", isInput: "+ isInput);
 		// Blur previous node if any
 		if(tree.focusNode){
 			if(tree.focusNode === node && flag){
@@ -3844,7 +3847,9 @@ $.extend(Fancytree.prototype,
 			node.makeVisible({scrollIntoView: false});
 			tree.focusNode = node;
 			if( tree.options.titlesTabbable ) {
-				$(node.span).find(".fancytree-title").focus();
+				if( !isInput ) { // #621
+					$(node.span).find(".fancytree-title").focus();
+				}
 			} else {
 				// We cannot set KB focus to a node, so use the tree container
 				// #563, #570: IE scrolls on every call to .focus(), if the container
@@ -4366,7 +4371,8 @@ $.widget("ui.fancytree",
 			// tree.treeOnFocusInOut.call(tree, event);
 			if(node){
 				// For example clicking into an <input> that is part of a node
-				tree._callHook("nodeSetFocus", node, flag);
+				tree._callHook("nodeSetFocus", tree._makeHookContext(node, event), flag);
+				// tree._callHook("nodeSetFocus", node, flag);
 			}else{
 				tree._callHook("treeSetFocus", tree, flag);
 			}

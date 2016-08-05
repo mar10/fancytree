@@ -1,5 +1,6 @@
 # 2.18.1-0 / Unreleased
   * [Fixed] #604 Set `source` option does not update tree
+  * [Fixed] #621 Cannot focus embedded input controls
   * [Improved] #611 Keyboard navigation honors autoScroll option
 
 # 2.18.0 / 2016-05-02
