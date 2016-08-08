@@ -46,6 +46,16 @@ $(function(){
 			},
 			beforeClose: function(event, data){
 				// Return false to prevent cancel/save (data.input is available)
+				console.log(event.type, event, data);
+				if( data.originalEvent.type === "mousedown" ) {
+					// We could prevent the mouse click from generating a blur event
+					// (which would then again close the editor) and return `false` to keep
+					// the editor open:
+//                  data.originalEvent.preventDefault();
+//                  return false;
+					// Or go on with closing the editor, but discard any changes:
+//                  data.save = false;
+				}
 			},
 			save: function(event, data){
 				// Save data.input.val() or return false to keep editor open

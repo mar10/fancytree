@@ -3,6 +3,7 @@
     performance on bulk updates
   * [Added] modifier class `.fancytree-connectors` to be set on container<br>
     Note: Experimental! Not required for skin-xp and not compatible with ext-table
+  * [Added] #623 ext-edit: `data.originalEvent` is now passed to `beforeClose`
   * [Fixed] #604 Set `source` option does not update tree
   * [Fixed] #609 node.load(true); doesn't maintain expanded
   * [Fixed] #621 Cannot focus embedded input controls

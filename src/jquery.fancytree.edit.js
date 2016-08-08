@@ -121,14 +121,13 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editEnd = function(applyChanges, _e
 		$title = $(".fancytree-title", node.span),
 		$input = $title.find("input.fancytree-edit-input");
 
-	// eventData.isNew = $(node[tree.statusClassPropName]).hasClass("fancytree-edit-new");
-
 	if( instOpts.trim ) {
 		$input.val($.trim($input.val()));
 	}
 	newVal = $input.val();
-	// eventData.dirty = $input.hasClass("fancytree-edit-dirty") || ;
+
 	eventData.dirty = ( newVal !== node.title );
+	eventData.originalEvent = _event;
 
 	// Find out, if saving is required
 	if( applyChanges === false ) {
@@ -253,7 +252,7 @@ $.ui.fancytree.registerExtension({
 		adjustWidthOfs: 4,   // null: don't adjust input size to content
 		allowEmpty: false,   // Prevent empty input
 		inputCss: {minWidth: "3em"},
-		triggerCancel: ["esc", "tab", "click"],
+		// triggerCancel: ["esc", "tab", "click"],
 		// triggerStart: ["f2", "dblclick", "shift+click", "mac+enter"],
 		triggerStart: ["f2", "shift+click", "mac+enter"],
 		trim: true,          // Trim whitespace before save
