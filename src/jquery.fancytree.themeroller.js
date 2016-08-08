@@ -24,7 +24,7 @@
  */
 $.ui.fancytree.registerExtension({
 	name: "themeroller",
-	version: "0.0.1",
+	version: "@VERSION",
 	// Default options for this extension.
 	options: {
 		activeClass: "ui-state-active",

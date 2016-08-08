@@ -7,6 +7,7 @@
   * [Fixed] #609 node.load(true); doesn't maintain expanded
   * [Fixed] #621 Cannot focus embedded input controls
   * [Improved] #611 Keyboard navigation honors autoScroll option
+  * Extensions inherit main version number
 
 # 2.18.0 / 2016-05-02
   * [Added] #586 node.discardMarkup() (useful in  the `collapsed` event)

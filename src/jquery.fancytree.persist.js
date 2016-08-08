@@ -151,7 +151,7 @@ $.ui.fancytree._FancytreeClass.prototype.getPersistData = function(){
  */
 $.ui.fancytree.registerExtension({
 	name: "persist",
-	version: "0.3.0",
+	version: "@VERSION",
 	// Default options for this extension.
 	options: {
 		cookieDelimiter: "~",

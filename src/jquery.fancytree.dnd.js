@@ -247,7 +247,7 @@ function _initDragAndDrop(tree) {
 
 $.ui.fancytree.registerExtension({
 	name: "dnd",
-	version: "0.3.0",
+	version: "@VERSION",
 	// Default options for this extension.
 	options: {
 		// Make tree nodes accept draggables

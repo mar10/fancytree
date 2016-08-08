@@ -271,7 +271,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.isMatched = function(){
  */
 $.ui.fancytree.registerExtension({
 	name: "filter",
-	version: "0.7.0",
+	version: "@VERSION",
 	// Default options for this extension.
 	options: {
 		autoApply: true,  // Re-apply last filter if lazy data is loaded

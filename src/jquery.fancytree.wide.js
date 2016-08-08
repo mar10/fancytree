@@ -107,7 +107,7 @@ function renderLevelCss(containerId, depth, levelOfs, lineOfs, measureUnit) {
  */
 $.ui.fancytree.registerExtension({
 	name: "wide",
-	version: "0.0.3",
+	version: "@VERSION",
 	// Default options for this extension.
 	options: {
 		iconWidth: null,  // Adjust this if @fancy-icon-width != "16px"

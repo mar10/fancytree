@@ -27,7 +27,7 @@ function _getIcon(opts, type){
 
 $.ui.fancytree.registerExtension({
 	name: "glyph",
-	version: "0.4.0",
+	version: "@VERSION",
 	// Default options for this extension.
 	options: {
 		map: {
