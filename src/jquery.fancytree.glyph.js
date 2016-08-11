@@ -127,13 +127,13 @@ $.ui.fancytree.registerExtension({
 			if(node.parent){
 				span = $("span.fancytree-expander", node.span).get(0);
 				if( span ) {
-				    span.className = "fancytree-expander " + _getIcon(opts, status);
+					span.className = "fancytree-expander " + _getIcon(opts, status);
 				}
 			}else{ //
 				span = $(".fancytree-statusnode-" + status, node[this.nodeContainerAttrName])
 					.find("span.fancytree-icon").get(0);
 				if( span ) {
-				    span.className = "fancytree-icon " + _getIcon(opts, status);
+					span.className = "fancytree-icon " + _getIcon(opts, status);
 				}
 			}
 		}

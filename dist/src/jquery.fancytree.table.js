@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.18.0
- * @date 2016-05-02T19:34
+ * @version 2.19.0
+ * @date 2016-08-11T15:51
  */
 
 ;(function($, window, document, undefined) {
@@ -84,7 +84,7 @@ function findPrevRowNode(node){
 
 $.ui.fancytree.registerExtension({
 	name: "table",
-	version: "0.3.0",
+	version: "2.19.0",
 	// Default options for this extension.
 	options: {
 		checkboxColumnIdx: null, // render the checkboxes into the this column index (default: nodeColumnIdx)
@@ -214,6 +214,10 @@ $.ui.fancytree.registerExtension({
 			opts = ctx.options,
 			isRootNode = !node.parent;
 
+		if( tree._enableUpdate === false ) {
+			// $.ui.fancytree.debug("*** nodeRender _enableUpdate: false");
+			return;
+		}
 		if( !_recursive ){
 			ctx.hasCollapsedParents = node.parent && !node.parent.expanded;
 		}

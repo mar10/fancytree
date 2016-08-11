@@ -7,8 +7,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.18.0
- * @date 2016-05-02T19:34
+ * @version 2.19.0
+ * @date 2016-08-11T15:51
  */
 
 /** Core Fancytree module.
@@ -626,9 +626,6 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		var fn = includeSelf ? "nodeRemoveMarkup" : "nodeRemoveChildMarkup";
 		this.tree._callHook(fn, this);
 	},
-
-	// TODO: expand(flag)
-
 	/**Find all nodes that match condition (excluding self).
 	 *
 	 * @param {string | function(node)} match title string to search for, or a
@@ -1144,13 +1141,14 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		return this.load(discard);
 	},
 	/**
-	 * Load all children of a lazy node if neccessary. The *expanded* state is maintained.
-	 * @param {boolean} [forceReload=false] Pass true to discard any existing nodes before.
+	 * Load all children of a lazy node if neccessary. The <i>expanded</i> state is maintained.
+	 * @param {boolean} [forceReload=false] Pass true to discard any existing nodes before. Otherwise this method does nothing if the node was already loaded.
 	 * @returns {$.Promise}
 	 */
 	load: function(forceReload) {
 		var res, source,
-			that = this;
+			that = this,
+			wasExpanded = this.isExpanded();
 
 		_assert( this.isLazy(), "load() requires a lazy node" );
 		// _assert( forceReload || this.isUndefined(), "Pass forceReload=true to re-load a lazy node" );
@@ -1168,9 +1166,14 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		}
 		_assert(typeof source !== "boolean", "lazyLoad event must return source in data.result");
 		res = this.tree._callHook("nodeLoadChildren", this, source);
-		if( this.expanded ) {
+		if( wasExpanded ) {
+			this.expanded = true;
 			res.always(function(){
 				that.render();
+			});
+		} else {
+			res.always(function(){
+				that.renderStatus();  // fix expander icon to 'loaded'
 			});
 		}
 		return res;
@@ -1386,7 +1389,8 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		// Navigate to node
 		function _goto(n){
 			if( n ){
-				try { n.makeVisible(); } catch(e) {} // #272
+				// setFocus/setActive will scroll later (if autoScroll is specified)
+				try { n.makeVisible({scrollIntoView: false}); } catch(e) {} // #272
 				// Node may still be hidden by a filter
 				if( ! $(n.span).is(":visible") ) {
 					n.debug("Navigate: skipping hidden node");
@@ -2034,6 +2038,8 @@ function Fancytree(widget) {
 	this.activeNode = null;
 	this.focusNode = null;
 	this._hasFocus = null;
+	this._enableUpdate = true;
+	// this._dirtyRoots = null;
 	this.lastSelectedNode = null;
 	this.systemFocusElement = null;
 	this.lastQuicksearchTerm = "";
@@ -2248,8 +2254,29 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	},
 	// TODO: disable()
 	// TODO: enable()
-	// TODO: enableUpdate()
-
+	/** Temporarily suppress rendering to improve performance on bulk-updates.
+	 *
+	 * @param {boolean} flag
+	 * @returns {boolean} previous status
+	 * @since 2.19
+	 */
+	enableUpdate: function(flag) {
+		flag = ( flag !== false );
+		/* jshint -W018 */  // Confusing use of '!'
+		if ( !!this._enableUpdate === !!flag ) {
+			return flag;
+		}
+		/* jshint +W018 */
+		this._enableUpdate = flag;
+		if ( flag ) {
+			this.debug("enableUpdate(true): redraw ", this._dirtyRoots);
+			this.render();
+		} else {
+		// 	this._dirtyRoots = null;
+			this.debug("enableUpdate(false)...");
+		}
+		return !flag; // return previous value
+	},
 	/**Find all nodes that matches condition.
 	 *
 	 * @param {string | function(node)} match title string to search for, or a
@@ -3214,6 +3241,10 @@ $.extend(Fancytree.prototype,
 			successorLi = null;
 		// FT.debug("nodeRender(" + !!force + ", " + !!deep + ")", node.toString());
 
+		if( tree._enableUpdate === false ) {
+			// tree.debug("no render", tree._enableUpdate);
+			return;
+		}
 		if( ! isRootNode && ! parent.ul ) {
 			// Calling node.collapse on a deep, unrendered node
 			return;
@@ -3365,7 +3396,7 @@ $.extend(Fancytree.prototype,
 		if(title !== undefined){
 			node.title = title;
 		}
-		if(!node.span){
+		if ( !node.span || tree._enableUpdate === false ) {
 			// Silently bail out if node was not rendered yet, assuming
 			// node.render() will be called as the node becomes visible
 			return;
@@ -3488,7 +3519,7 @@ $.extend(Fancytree.prototype,
 			cnList = [],
 			statusElem = node[tree.statusClassPropName];
 
-		if( !statusElem ){
+		if( !statusElem || tree._enableUpdate === false ){
 			// if this function is called for an unrendered node, ignore it (will be updated on nect render anyway)
 			return;
 		}
@@ -3819,10 +3850,13 @@ $.extend(Fancytree.prototype,
 		// ctx.node.debug("nodeSetFocus(" + flag + ")");
 		var ctx2,
 			tree = ctx.tree,
-			node = ctx.node;
+			node = ctx.node,
+			// et = ctx.originalEvent && ctx.originalEvent.type,
+			isInput = ctx.originalEvent ? $(ctx.originalEvent.target).is(":input") : false;
 
 		flag = (flag !== false);
 
+		// (node || tree).debug("nodeSetFocus(" + flag + "), event: " + et + ", isInput: "+ isInput);
 		// Blur previous node if any
 		if(tree.focusNode){
 			if(tree.focusNode === node && flag){
@@ -3843,7 +3877,9 @@ $.extend(Fancytree.prototype,
 			node.makeVisible({scrollIntoView: false});
 			tree.focusNode = node;
 			if( tree.options.titlesTabbable ) {
-				$(node.span).find(".fancytree-title").focus();
+				if( !isInput ) { // #621
+					$(node.span).find(".fancytree-title").focus();
+				}
 			} else {
 				// We cannot set KB focus to a node, so use the tree container
 				// #563, #570: IE scrolls on every call to .focus(), if the container
@@ -4310,6 +4346,7 @@ $.widget("ui.fancytree",
 		case "source":
 			callDefault = false;
 			this.tree._callHook("treeLoad", this.tree, value);
+			rerender = true;
 			break;
 		}
 		this.tree.debug("set option " + key + "=" + value + " <" + typeof(value) + ">");
@@ -4364,7 +4401,8 @@ $.widget("ui.fancytree",
 			// tree.treeOnFocusInOut.call(tree, event);
 			if(node){
 				// For example clicking into an <input> that is part of a node
-				tree._callHook("nodeSetFocus", node, flag);
+				tree._callHook("nodeSetFocus", tree._makeHookContext(node, event), flag);
+				// tree._callHook("nodeSetFocus", node, flag);
 			}else{
 				tree._callHook("treeSetFocus", tree, flag);
 			}
@@ -4484,7 +4522,7 @@ $.extend($.ui.fancytree,
 	/** @lends Fancytree_Static# */
 	{
 	/** @type {string} */
-	version: "2.18.0",      // Set to semver by 'grunt release'
+	version: "2.19.0",      // Set to semver by 'grunt release'
 	/** @type {string} */
 	buildType: "production", // Set to 'production' by 'grunt build'
 	/** @type {int} */

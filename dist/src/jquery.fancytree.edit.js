@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.18.0
- * @date 2016-05-02T19:34
+ * @version 2.19.0
+ * @date 2016-08-11T15:51
  */
 
 ;(function($, window, document, undefined) {
@@ -121,14 +121,13 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editEnd = function(applyChanges, _e
 		$title = $(".fancytree-title", node.span),
 		$input = $title.find("input.fancytree-edit-input");
 
-	// eventData.isNew = $(node[tree.statusClassPropName]).hasClass("fancytree-edit-new");
-
 	if( instOpts.trim ) {
 		$input.val($.trim($input.val()));
 	}
 	newVal = $input.val();
-	// eventData.dirty = $input.hasClass("fancytree-edit-dirty") || ;
+
 	eventData.dirty = ( newVal !== node.title );
+	eventData.originalEvent = _event;
 
 	// Find out, if saving is required
 	if( applyChanges === false ) {
@@ -247,13 +246,13 @@ $.ui.fancytree._FancytreeNodeClass.prototype.isEditing = function(){
  */
 $.ui.fancytree.registerExtension({
 	name: "edit",
-	version: "0.2.0",
+	version: "2.19.0",
 	// Default options for this extension.
 	options: {
 		adjustWidthOfs: 4,   // null: don't adjust input size to content
 		allowEmpty: false,   // Prevent empty input
 		inputCss: {minWidth: "3em"},
-		triggerCancel: ["esc", "tab", "click"],
+		// triggerCancel: ["esc", "tab", "click"],
 		// triggerStart: ["f2", "dblclick", "shift+click", "mac+enter"],
 		triggerStart: ["f2", "shift+click", "mac+enter"],
 		trim: true,          // Trim whitespace before save
