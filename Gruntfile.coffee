@@ -351,7 +351,7 @@ module.exports = (grunt) ->
     yabs:
         release:
             common: # defaults for all tools
-              manifests: ['package.json', 'bower.json', 'fancytree.jquery.json']
+              manifests: ['package.json', 'bower.json']
             # The following tools are run in order:
             run_test: { tasks: ['test'] }
             check: { branch: ['master'], canPush: true, clean: true, cmpVersion: 'gte' }

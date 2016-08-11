@@ -1,4 +1,6 @@
-# 2.19.0-0 / Unreleased
+# 2.19.1-0 / Unreleased
+
+# 2.19.0 / 2016-08-11
   * [Added] #607 tree.enableUpdate() to temporarily disable rendering to improve 
     performance on bulk updates
   * [Added] modifier class `.fancytree-connectors` to be set on container<br>
