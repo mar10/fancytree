@@ -22,7 +22,7 @@ module.exports = (grunt) ->
                 # "<%= grunt.template.today('yyyy-mm-dd HH:mm') %>\n" +
                 "<%= pkg.homepage ? '  * ' + pkg.homepage + '\\n' : '' %>" +
                 "  * Copyright (c) <%= grunt.template.today('yyyy') %> <%= pkg.author.name %>;" +
-                " Licensed <%= _.pluck(pkg.licenses, 'type').join(', ') %> */\n"
+                " Licensed <%= _.map(pkg.licenses, 'type').join(', ') %> */\n"
 
     clean:
         build:
