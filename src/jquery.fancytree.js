@@ -1525,6 +1525,8 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	},
 	/**
 	 * (experimental) Replace this node with `source`.
+	 * (Currently only available for paging nodes.)
+	 * @param {NodeData[]} source List of child node definitions
 	 * @since 2.15
 	 */
 	replaceWith: function(source) {
