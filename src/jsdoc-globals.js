@@ -217,8 +217,13 @@ var FancytreeOptions = {};
  * @property {function} lazyLoad `data.node` is a lazy node that is expanded for the first time. The new child data must be returned in the `data.result` property (see `source` option for available formats).
  * @property {function} loadChildren Node data was loaded, i.e. `node.nodeLoadChildren()` finished
  * @property {function} loadError A load error occurred. Return `false` to prevent default processing
+ * @property {function} modifyChild A <i>child</i> of `data.node` was added, removed, or otherwise modified<br>
+ *     `data.operation` contains 'add', 'remove', 'rename', 'move', 'sort', 'data'<br>
+ *     `data.childNode` contains the new, deleted, or modified child node if applicable<br>
+ *     Note that this event is not necessarily fired for each single deleted or added node, when a hierarchy. was modified.<br>
+ *     This event is only available as callback, but not for bind().
  * @property {function} postProcess Allows to modify the ajax response
- * @property {function} removeNode `data.node` was removed (NOTE: this event is only available as callback, but not for bind())
+ * @property {function} <del>removeNode</del> @deprecated use `modifyChild` with operation: 'remove' instead.
  * @property {function} renderColumns (used by table extension)
  * @property {function} renderStatusColumns (used by table extension)
  * @property {function} renderNode Allow tweaking after node state was rendered (NOTE: this event is only available as callback, but not for bind())
