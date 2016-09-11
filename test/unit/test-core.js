@@ -725,6 +725,54 @@ test(".click() to select a node", function() {
 	$("#tree #ft_2 span.fancytree-checkbox").click();
 });
 
+
+QUnit.test("'modifyChild' event", function(assert) {
+	assert.expect(3);
+
+	$("#tree").fancytree({
+		source: TEST_DATA,
+		modifyChild: function(event, data) {
+			var msg = (data.node.isRoot() ? "root" : data.node.key) + "." +
+				event.type + "(" + data.operation + ", " +
+				(data.childNode ? data.childNode.key : null) + ")";
+
+			if( data.operation === "custom1" ) {
+				assert.equal(data.foo, "bar", "pass custom args");
+			}
+			tools.appendEvent(msg);
+		}
+	});
+	var tree = tools.getTree();
+
+	tree.getNodeByKey("2").setTitle("New title");
+	tree.getNodeByKey("2").addChildren({title: "New child", key: "2.1"});
+	tree.getNodeByKey("3").remove();
+	// move beneath same parent: modify('move')
+	tree.getNodeByKey("4").moveTo(tree.getNodeByKey("2"), "before");
+	// move to another parent: remove+add
+	tree.getNodeByKey("4").moveTo(tree.getNodeByKey("2.1"), "after");
+	// sortChildren: sort
+	tree.getNodeByKey("2").sortChildren();
+	// custom trigger
+	tree.getNodeByKey("10").triggerModifyChild("data", tree.getNodeByKey("10_1"));
+	assert.throws(function(){
+		tree.getNodeByKey("10").triggerModifyChild("data", tree.getNodeByKey("2"));
+	}, "raise error if childNode is invalid");
+	tree.getNodeByKey("5").triggerModify("custom1", {foo: "bar"});
+
+	deepEqual(tools.EVENT_SEQUENCE,
+			["root.modifyChild(rename, 2)",
+			 "2.modifyChild(add, 2.1)",
+			 "root.modifyChild(remove, 3)",
+			 "root.modifyChild(move, 4)",
+			 "root.modifyChild(remove, 4)",
+			 "2.modifyChild(add, 4)",
+			 "2.modifyChild(sort, null)",
+			 "10.modifyChild(data, 10_1)",
+			 "root.modifyChild(custom1, 5)"
+			 ], "event sequence");
+});
+
 /*******************************************************************************
  * Lazy loading
  */

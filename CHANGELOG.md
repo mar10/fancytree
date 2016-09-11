@@ -1,4 +1,9 @@
-# 2.19.1-0 / Unreleased
+# 2.20.0-0 / Unreleased
+  * [Added] #419 `modifyChild` event. This event is also a good place to 
+    implement auto sorting (#559)
+  * [Added] #419 node.triggerModifyChild() and node.triggerModify()
+  * [DEPRECATED] `removeNode` event. Listen for `modifyChild` with operation
+    'remove' instead (which is fired on the parent).
 
 # 2.19.0 / 2016-08-11
   * [Added] #607 tree.enableUpdate() to temporarily disable rendering to improve 

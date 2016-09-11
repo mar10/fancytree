@@ -133,6 +133,10 @@
 			loadError: function(event, data) {
 				logEvent(event, data);
 			},
+			modifyChild: function(event, data) {
+				logEvent(event, data, "operation=" + data.operation +
+					", child=" + data.childNode);
+			},
 			postProcess: function(event, data) {
 				logEvent(event, data);
 				// either modify the ajax response directly
@@ -140,10 +144,10 @@
 				// or setup and return a new response object
 //				data.result = [{title: "set by postProcess"}];
 			},
-			removeNode: function(event, data) {
-				// Optionally release resources
-				logEvent(event, data);
-			},
+			// removeNode: function(event, data) {  // replaced by modifyChild since 2.20
+			// 	// Optionally release resources
+			// 	logEvent(event, data);
+			// },
 			renderNode: function(event, data) {
 				// Optionally tweak data.node.span
 //              $(data.node.span).text(">>" + data.node.title);

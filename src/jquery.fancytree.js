@@ -437,6 +437,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		if( this.tree.options.selectMode === 3 ){
 			this.fixSelection3FromEndNodes();
 		}
+		this.triggerModifyChild("add", nodeList.length === 1 ? nodeList[0] : null);
 		return firstNode;
 	},
 	/**
@@ -1246,6 +1247,9 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		}else if( targetParent.isDescendantOf(this) ){
 			$.error("Cannot move a node to its own descendant");
 		}
+		if( targetParent !== prevParent ) {
+			prevParent.triggerModifyChild("remove", this);
+		}
 		// Unlink this node from current parent
 		if( this.parent.children.length === 1 ) {
 			if( this.parent === targetParent ){
@@ -1305,6 +1309,12 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		// Let caller modify the nodes
 		if( map ){
 			targetNode.visit(map, true);
+		}
+		if( targetParent === prevParent ) {
+			targetParent.triggerModifyChild("move", this);
+		} else {
+			// prevParent.triggerModifyChild("remove", this);
+			targetParent.triggerModifyChild("add", this);
 		}
 		// Handle cross-tree moves
 		if( this.tree !== targetNode.tree ) {
@@ -1745,6 +1755,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	setTitle: function(title){
 		this.title = title;
 		this.renderTitle();
+		this.triggerModify("rename");
 	},
 	/**Sort child list by title.
 	 * @param {function} [cmp] custom compare function(a, b) that returns -1, 0, or 1 (defaults to sort by title).
@@ -1773,6 +1784,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		if( deep !== "$norender$" ){
 			this.render();
 		}
+		this.triggerModifyChild("sort");
 	},
 	/** Convert node (or whole branch) into a plain object.
 	 *
@@ -1869,6 +1881,40 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	},
 	toString: function() {
 		return "<FancytreeNode(#" + this.key + ", '" + this.title + "')>";
+	},
+	/**
+	 * Trigger `modifyChild` event on a parent to signal that a child was modified.
+	 * @param {string} operation Type of change: 'add', 'remove', 'rename', 'move', 'data', ...
+	 * @param {FancytreeNode} [childNode] 
+	 * @param {object} [extra] 
+	 */
+	triggerModifyChild: function(operation, childNode, extra){
+		var data,
+			modifyChild = this.tree.options.modifyChild;
+
+		if ( modifyChild ){
+			if( childNode && childNode.parent !== this ) {
+				$.error("childNode " + childNode + " is not a child of " + this);
+			}
+			data = {
+				node: this,
+				tree: this.tree,
+				operation: operation,
+				childNode: childNode || null
+			};
+			if( extra ) {
+				$.extend(data, extra);
+			}
+			modifyChild({type: "modifyChild"}, data);
+		}
+	},
+	/**
+	 * Trigger `modifyChild` event on node.parent(!).
+	 * @param {string} operation Type of change: 'add', 'remove', 'rename', 'move', 'data', ...
+	 * @param {object} [extra] 
+	 */
+	triggerModify: function(operation, extra){
+		this.parent.triggerModifyChild(operation, this, extra);
 	},
 	/** Call fn(node) for all child nodes.<br>
 	 * Stop iteration, if fn() returns false. Skip current branch, if fn() returns "skip".<br>
@@ -2027,7 +2073,10 @@ function Fancytree(widget) {
 			$.error("The 'loaderror' event was renamed since 2014-07-03. Use 'loadError' (with uppercase E) instead.");
 		}
 		if( this.options.fx !== undefined ) {
-			FT.warn("The 'fx' options was replaced by 'toggleEffect' since 2014-11-30.");
+			FT.warn("The 'fx' option was replaced by 'toggleEffect' since 2014-11-30.");
+		}
+		if( this.options.removeNode !== undefined ) {
+			$.error("The 'removeNode' event was replaced by 'modifyChild' since 2.20 (2016-09-10).");
 		}
 	}
 	this.ext = {}; // Active extension instances
@@ -3080,7 +3129,7 @@ $.extend(Fancytree.prototype,
 	nodeRemoveChild: function(ctx, childNode) {
 		var idx,
 			node = ctx.node,
-			opts = ctx.options,
+			// opts = ctx.options,
 			subCtx = $.extend({}, ctx, {node: childNode}),
 			children = node.children;
 
@@ -3101,14 +3150,13 @@ $.extend(Fancytree.prototype,
 		this.nodeRemoveChildren(subCtx);
 		idx = $.inArray(childNode, children);
 		_assert(idx >= 0, "invalid child");
+		// Notify listeners
+		node.triggerModifyChild("remove", childNode);
 		// Unlink to support GC
 		childNode.visit(function(n){
 			n.parent = null;
 		}, true);
 		this._callHook("treeRegisterNode", this, false, childNode);
-		if ( opts.removeNode ){
-			opts.removeNode.call(ctx.tree, {type: "removeNode"}, subCtx);
-		}
 		// remove from child list
 		children.splice(idx, 1);
 	},
@@ -3139,8 +3187,8 @@ $.extend(Fancytree.prototype,
 		var subCtx,
 			tree = ctx.tree,
 			node = ctx.node,
-			children = node.children,
-			opts = ctx.options;
+			children = node.children;
+			// opts = ctx.options;
 
 		// FT.debug("nodeRemoveChildren()", node.toString());
 		if(!children){
@@ -3157,13 +3205,10 @@ $.extend(Fancytree.prototype,
 		// Unlink children to support GC
 		// TODO: also delete this.children (not possible using visit())
 		subCtx = $.extend({}, ctx);
+		node.triggerModifyChild("remove", null);
 		node.visit(function(n){
 			n.parent = null;
 			tree._callHook("treeRegisterNode", tree, false, n);
-			if ( opts.removeNode ){
-				subCtx.node = n;
-				opts.removeNode.call(ctx.tree, {type: "removeNode"}, subCtx);
-			}
 		});
 		if( node.lazy ){
 			// 'undefined' would be interpreted as 'not yet loaded' for lazy nodes
