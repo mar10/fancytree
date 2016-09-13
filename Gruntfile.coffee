@@ -289,6 +289,9 @@ module.exports = (grunt) ->
                   { browserName: "safari", version: "9", platform: "OS X 10.11" }
                 ]
                 testname: "fancytree qunit tests"
+                statusCheckAttempts: 180
+                recordVideo: false
+                videoUploadOnPass: false
 
     uglify:
         # build:
