@@ -1,8 +1,6 @@
 jQuery(document).ready(function(){
-// jQUnit defines:
-// asyncTest,deepEqual,equal,expect,module,notDeepEqual,notEqual,notStrictEqual,ok,QUnit,raises,start,stop,strictEqual,test
 
-/*globals TEST_TOOLS,expect,module,ok,QUnit,test */
+/*globals TEST_TOOLS, QUnit */
 
 var $ = jQuery,
 	// Use tools from test-tools.js
@@ -28,7 +26,6 @@ QUnit.done(function( details ) {
 
 
 function _resetEmptyTree(options){
-	QUnit.reset();
 	// destroy all trees
 	$(":ui-fancytree").fancytree("destroy");
 
@@ -43,13 +40,6 @@ function _resetEmptyTree(options){
 	return $tree.fancytree("getTree");
 }
 
-
-/* Execute callback immediately and log timing as test result.
- * This function should be called inside a test() function.
- */
-function benchmark(testName, count, callback) {
-	tools.makeBenchWrapper(testName, count, callback).call();
-}
 
 //$.ui.fancytree._FancytreeNodeClass.prototype.addChildren
 //    = profileWrapper($.ui.fancytree._FancytreeNodeClass.prototype.addChildren);
@@ -86,11 +76,11 @@ function addNodes(node, level1, level2, level3, forceUpdate) {
 
 //*****************************************************************************
 
-module("API");
+QUnit.module("API");
 
-test("Trigger events", function(assert) {
-	expect(3);
-	benchmark("10000 createNode DOM events (widget._trigger())", 10000, function() {
+QUnit.test("Trigger events", function(assert) {
+	assert.expect(3);
+	tools.benchmark(assert, "10000 createNode DOM events (widget._trigger())", 10000, function() {
 		var i,
 			tree = _resetEmptyTree({
 				createNode: function(event, data){}
@@ -100,7 +90,7 @@ test("Trigger events", function(assert) {
 			tree._triggerNodeEvent.call(tree, "createNode", node);
 		}
 	});
-	benchmark("10000 createNode callback events (options.createNode() defined)", 10000, function() {
+	tools.benchmark(assert, "10000 createNode callback events (options.createNode() defined)", 10000, function() {
 		var i,
 			tree = _resetEmptyTree({
 				createNode: function(event, data){}
@@ -111,9 +101,10 @@ test("Trigger events", function(assert) {
 			}
 		}
 	});
-	benchmark("10000 createNode callback events (options.createNode() undefined)", 10000, function() {
+	tools.benchmark(assert, "10000 createNode callback events (options.createNode() undefined)", 10000, function() {
 		var i,
 			tree = _resetEmptyTree({});
+
 		for(i=0; i<10000; i++){
 			if(tree.options.createNode){
 				tree.options.createNode.call(tree, {}, {});
@@ -125,51 +116,51 @@ test("Trigger events", function(assert) {
 
 //*****************************************************************************
 
-module("Standard tree");
+QUnit.module("Standard tree");
 
-test("Add nodes using API to collapsed node (no rendering)", function(assert) {
-	expect(3);
+QUnit.test("Add nodes using API to collapsed node (no rendering)", function(assert) {
+	assert.expect(3);
 
 	var tree = _resetEmptyTree();
 
-	benchmark("1000 nodes flat", 1000, function() {
+	tools.benchmark(assert, "1000 nodes flat", 1000, function() {
 		var node = tree.getNodeByKey("root");
 		addNodes(node, 1000, 0, 0);
 	});
 
 	tree = _resetEmptyTree();
-	benchmark("1000 nodes deep (10x10x10)", 1000, function() {
+	tools.benchmark(assert, "1000 nodes deep (10x10x10)", 1000, function() {
 		var node = tree.getNodeByKey("root");
 		addNodes(node, 10, 10, 10);
 	});
 
 	tree = _resetEmptyTree({aria: true});
-	benchmark("1000 nodes deep (10x10x10) with ARIA", 1000, function() {
+	tools.benchmark(assert, "1000 nodes deep (10x10x10) with ARIA", 1000, function() {
 		var node = tree.getNodeByKey("root");
 		addNodes(node, 10, 10, 10);
 	});
 });
 
 
-test("Create and render hidden nodes, but don't make visible (i.e. don't expand)", function(assert) {
-	expect(3);
+QUnit.test("Create and render hidden nodes, but don't make visible (i.e. don't expand)", function(assert) {
+	assert.expect(3);
 
 	var tree = _resetEmptyTree();
-	benchmark("1000 nodes flat and force render(deep=true)", 1000, function() {
+	tools.benchmark(assert, "1000 nodes flat and force render(deep=true)", 1000, function() {
 		var node = tree.getNodeByKey("root");
 		addNodes(node, 1000, 0, 0);
 		tree.render(true, true);
 	});
 
 	tree = _resetEmptyTree();
-	benchmark("1000 nodes deep (10x10x10) and force render(deep=true)", 1000, function() {
+	tools.benchmark(assert, "1000 nodes deep (10x10x10) and force render(deep=true)", 1000, function() {
 		var node = tree.getNodeByKey("root");
 		addNodes(node, 10, 10, 10);
 		tree.render(true, true);
 	});
 
 	tree = _resetEmptyTree({aria: true});
-	benchmark("1000 nodes deep (10x10x10) and force render(deep=true) with ARIA", 1000, function() {
+	tools.benchmark(assert, "1000 nodes deep (10x10x10) and force render(deep=true) with ARIA", 1000, function() {
 		var node = tree.getNodeByKey("root");
 		addNodes(node, 10, 10, 10);
 		tree.render(true, true);
@@ -177,13 +168,13 @@ test("Create and render hidden nodes, but don't make visible (i.e. don't expand)
 });
 
 
-test("Expand 1000 nodes deep (with 10 top level nodes, triggers expand -> render and display)", function(assert) {
-	expect(5);
+QUnit.test("Expand 1000 nodes deep (with 10 top level nodes, triggers expand -> render and display)", function(assert) {
+	assert.expect(5);
 
 	var tree = _resetEmptyTree(),
 		node = tree.getNodeByKey("root"),
 		done = assert.async(),
-		timer = new tools.AsyncTimer("1000 deep (10x10x10) with expand", 1000);
+		timer = new tools.AsyncTimer(assert, "1000 deep (10x10x10) with expand", 1000);
 
 	addNodes(node, 10, 10, 10);
 	timer.subtime("addNodes");
@@ -204,13 +195,13 @@ test("Expand 1000 nodes deep (with 10 top level nodes, triggers expand -> render
 });
 
 
-test("Expand 1000 top level nodes (triggers expand -> render and display)", function(assert) {
-	expect(2);
+QUnit.test("Expand 1000 top level nodes (triggers expand -> render and display)", function(assert) {
+	assert.expect(2);
 
 	var tree = _resetEmptyTree(),
 		node = tree.getNodeByKey("root"),
 		done = assert.async(),
-		timer = new tools.AsyncTimer("1000 top level nodes flat with expand", 1000);
+		timer = new tools.AsyncTimer(assert, "1000 top level nodes flat with expand", 1000);
 
 	addNodes(node, 1000, 0, 0);
 	timer.subtime("addNodes");
@@ -222,8 +213,8 @@ test("Expand 1000 top level nodes (triggers expand -> render and display)", func
 });
 
 
-test("Expand 1000 top level nodes with ARIA and checkboxes (triggers expand -> render and display)", function(assert) {
-	expect(2);
+QUnit.test("Expand 1000 top level nodes with ARIA and checkboxes (triggers expand -> render and display)", function(assert) {
+	assert.expect(2);
 
 	var tree = _resetEmptyTree({
 			aria: true,
@@ -231,7 +222,7 @@ test("Expand 1000 top level nodes with ARIA and checkboxes (triggers expand -> r
 		}),
 		done = assert.async(),
 		node = tree.getNodeByKey("root"),
-		timer = new tools.AsyncTimer("1000 top level nodes flat with expand", 1000);
+		timer = new tools.AsyncTimer(assert, "1000 top level nodes flat with expand", 1000);
 
 	addNodes(node, 1000, 0, 0);
 	timer.subtime("addNodes");
@@ -246,7 +237,7 @@ test("Expand 1000 top level nodes with ARIA and checkboxes (triggers expand -> r
 /* *****************************************************************************
  *
  */
-module("Table tree");
+QUnit.module("Table tree");
 
 function _renderTable(assert, options) {
 	var node, timer, tree, $tree,
@@ -290,9 +281,9 @@ function _renderTable(assert, options) {
 
 	tree = $tree.fancytree("getTree");
 	node = tree.getNodeByKey("root");
-	timer = new tools.AsyncTimer(totalCount + " nodes", totalCount);
-	// timer = new tools.AsyncTimer(totalCount + " nodes flat and expand", totalCount);
-//    var timer = new AsyncTimer("1000 nodes (10 x 10 x 10) and force render(deep=true)");
+	timer = new tools.AsyncTimer(assert, totalCount + " nodes", totalCount);
+	// timer = new tools.AsyncTimer(assert, totalCount + " nodes flat and expand", totalCount);
+//    var timer = new AsyncTimer(assert, "1000 nodes (10 x 10 x 10) and force render(deep=true)");
 
 	if( opts.expandBefore ) {
 		node.addChildren({title: "dummy (to make root expandable)"});
@@ -317,7 +308,7 @@ function _renderTable(assert, options) {
 }
 
 
-test("tabletree (6 columns): render collapsed", function(assert) {
+QUnit.test("tabletree (6 columns): render collapsed", function(assert) {
 	_renderTable(assert, {
 		count: 1000,
 		forceUpdate: true,
@@ -327,7 +318,7 @@ test("tabletree (6 columns): render collapsed", function(assert) {
 });
 
 
-test("tabletree (6 columns): render, then expand", function(assert) {
+QUnit.test("tabletree (6 columns): render, then expand", function(assert) {
 	_renderTable(assert, {
 		count: 1000,
 		forceUpdate: false,
@@ -337,7 +328,7 @@ test("tabletree (6 columns): render, then expand", function(assert) {
 });
 
 
-test("tabletree (6 columns): render while expanded", function(assert) {
+QUnit.test("tabletree (6 columns): render while expanded", function(assert) {
 	_renderTable(assert, {
 		count: 100,
 		forceUpdate: true,
@@ -347,7 +338,7 @@ test("tabletree (6 columns): render while expanded", function(assert) {
 });
 
 
-test("tabletree (6 columns): render while expanded with enableUpdate(false)", function(assert) {
+QUnit.test("tabletree (6 columns): render while expanded with enableUpdate(false)", function(assert) {
 	_renderTable(assert, {
 		count: 100,
 		forceUpdate: false,
@@ -361,16 +352,16 @@ test("tabletree (6 columns): render while expanded with enableUpdate(false)", fu
  *
  */
 
-module("Configuration and Summary");
-test("", function() {
-	expect(5);
-	QUnit.reset();
+QUnit.module("Configuration and Summary");
+QUnit.test("", function(assert) {
+	assert.expect(5);
 
-	ok(true, "Fancytree v" + $.ui.fancytree.version);
-	ok(true, "jQuery UI " + jQuery.ui.version);
-	ok(true, "jQuery " + jQuery.fn.jquery);
-	ok(true, "Browser: " + tools.getBrowserInfo());
-	ok(true, "Cumulated test time: " + tools.TOTAL_ELAP + " milliseconds");
+	assert.ok(true, "Fancytree v" + $.ui.fancytree.version);
+	assert.ok(true, "jQuery UI " + jQuery.ui.version);
+	assert.ok(true, "jQuery " + jQuery.fn.jquery);
+	assert.ok(true, "Browser: " + tools.getBrowserInfo());
+	assert.ok(true, "Cumulated test time: " + tools.TOTAL_ELAP + " milliseconds");
 });
+// tools.createInfoSection();
 // ---
 });

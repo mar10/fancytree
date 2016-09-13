@@ -1,10 +1,9 @@
 jQuery(document).ready(function(){
-// jQUnit defines:
-// asyncTest,deepEqual,equal,expect,module,notDeepEqual,notEqual,notStrictEqual,ok,QUnit,raises,start,stop,strictEqual,test
 
-/*globals asyncTest,expect,module,ok,QUnit,start,test */
+/*globals QUnit, TEST_TOOLS */
 
-var $ = jQuery;
+var $ = jQuery,
+	tools = TEST_TOOLS;
 
 /* *****************************************************************************
  * QUnit setup
@@ -23,13 +22,15 @@ QUnit.done(function( details ) {
 //Silence, please
 $.ui.fancytree.debugLevel = 1;
 
+// Create an Info section (will be expanded when tests are completed)
+tools.createInfoSection();
+
 
 /* *****************************************************************************
  * Tool functions
  */
 
 function _resetEmptyTree(options){
-	QUnit.reset();
 	// destroy all trees
 	$(":ui-fancytree").fancytree("destroy");
 
@@ -40,20 +41,6 @@ function _resetEmptyTree(options){
 	}, options);
 	$tree.fancytree(opts);
 	return $tree.fancytree("getTree");
-}
-
-
-/** Helper to reset environment for asynchronous Fancytree tests. */
-function _getBrowserInfo(){
-	var n = navigator.appName,
-		ua = navigator.userAgent,
-		tem,
-		m = ua.match(/(opera|chrome|safari|firefox|msie)\/?\s*(\.?\d+(\.\d+)*)/i);
-	if(m && (tem = ua.match(/version\/([\.\d]+)/i)) !== null){
-		m[2]= tem[1];
-	}
-	m = m ? [m[1], m[2]] : [n, navigator.appVersion, "-?"];
-	return m.join(", ");
 }
 
 
@@ -88,14 +75,15 @@ function addNodes(node, level1, level2, level3, forceUpdate) {
 
 //*****************************************************************************
 
-module("Standard tree");
+QUnit.module("Standard tree");
 
-asyncTest("Repeat 1000 times: create-render-remove 1000 nodes", function() {
-	expect(1);
+QUnit.test("Repeat 1000 times: create-render-remove 1000 nodes", function(assert) {
+	assert.expect(1);
 	var id,
 		COUNT = 1000, //1000,   // loops
-		DELAY = 100,    // wait 500 ms
-		i = 0;
+		DELAY = 100,  // wait 500 ms
+		i = 0,
+		done = assert.async();
 
 	id = setInterval(function(){
 
@@ -114,27 +102,11 @@ asyncTest("Repeat 1000 times: create-render-remove 1000 nodes", function() {
 		i++;
 		if( i >= COUNT){
 			clearInterval(id);
-			ok(true, "DONE");
-			start();
+			assert.ok(true, "DONE");
+			done();
 		}
 	}, DELAY);
 });
 
-
-/* *****************************************************************************
- *
- */
-
-module("Configuration and Summary");
-test("", function() {
-	expect(5);
-	QUnit.reset();
-
-	ok(true, "Fancytree v" + $.ui.fancytree.version);
-	ok(true, "jQuery UI " + jQuery.ui.version);
-	ok(true, "jQuery " + jQuery.fn.jquery);
-	ok(true, "Browser: " + _getBrowserInfo());
-//	ok(true, "Cumulated test time: " + TOTAL_ELAP + " milliseconds");
-});
 // ---
 });

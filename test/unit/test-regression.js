@@ -4,10 +4,7 @@
 
 jQuery(document).ready(function(){
 
-// jQUnit defines:
-// asyncTest,deepEqual,equal,expect,module,notDeepEqual,notEqual,notStrictEqual,ok,QUnit,raises,start,stop,strictEqual,test
-
-/*globals TEST_TOOLS,expect,module,ok,start,test */
+/*globals QUnit, TEST_TOOLS */
 
 var $ = jQuery,
 	// Use tools from test-tools.js
@@ -29,19 +26,21 @@ $.ui.fancytree.debugLevel = 1;
 /*******************************************************************************
  * Module
  */
-module("Issues");
+QUnit.module("Issues");
 
 // TODO: this fixture doesn't really make sense, it is rather meynt as an example...
-test("issue310: Loading animation never ends using lazy read on empty folder", function() {
-	tools.setupAsync();
-	expect(1);
+QUnit.test("issue310: Loading animation never ends using lazy read on empty folder", function(assert) {
+	tools.setup(assert);
+	assert.expect(1);
+
+	var done = assert.async();
 
 	$("#tree").fancytree({
 		source: [{title: "lazy folder", key: "1", folder: true, lazy: true}],
 		lazyLoad: function(event, data){
-			ok(true, "got `lazyLoad` event");
+			assert.ok(true, "got `lazyLoad` event");
 			data.result = [];
-			start();
+			done();
 		}
 	});
 	var node = $("#tree").fancytree("getTree").getNodeByKey("1");

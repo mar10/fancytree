@@ -1,10 +1,7 @@
 jQuery(document).ready(function(){
 
-// jQUnit defines:
-// asyncTest,deepEqual,equal,expect,module,notDeepEqual,notEqual,notStrictEqual,ok,QUnit,raises,start,stop,strictEqual,test
-
 /*jshint unused:false */
-/*globals TEST_TOOLS,deepEqual,equal,expect,module,ok,start,test */
+/*globals TEST_TOOLS, QUnit */
 
 var TEST_DATA, TESTDATA_NODES, TESTDATA_TOPNODES, TESTDATA_VISIBLENODES,
 	$ = jQuery,
@@ -71,11 +68,11 @@ $.ui.fancytree.debugLevel = 1;
 /*******************************************************************************
  *
  */
-module("clones");
+QUnit.module("clones");
 
-test("sync load", function() {
-	tools.setupAsync();
-	expect(16);
+QUnit.test("sync load", function(assert) {
+	tools.setup(assert);
+	assert.expect(16);
 
 	$("#tree").fancytree({
 		extensions: ["clones"],
@@ -88,40 +85,38 @@ test("sync load", function() {
 	var node, nodeList,
 		tree = tools.getTree();
 
-	ok($.isPlainObject(tree.keyMap), "has keyMap");
-	deepEqual(tree.refMap,  {"rk_1": ["20_1_1", "20_2_1"], "rk_2": ["id_11b7cb44"]}, "has refMap");
+	assert.ok($.isPlainObject(tree.keyMap), "has keyMap");
+	assert.deepEqual(tree.refMap,  {"rk_1": ["20_1_1", "20_2_1"], "rk_2": ["id_11b7cb44"]}, "has refMap");
 
-	equal(tools.getNode("10_1_1").refKey, undefined, "no default refKey");
+	assert.equal(tools.getNode("10_1_1").refKey, undefined, "no default refKey");
 
-	equal(tools.getNode("20_1_1").refKey, "rk_1", "set refKey");
-	equal(tools.getNode("20_2_1").refKey, "rk_1", "set refKey 2");
+	assert.equal(tools.getNode("20_1_1").refKey, "rk_1", "set refKey");
+	assert.equal(tools.getNode("20_2_1").refKey, "rk_1", "set refKey 2");
 
-	equal(tools.getNode("10_1_1").isClone(), false, "isClone() non-clone detected");
-	equal(tools.getNode("20_1_1").isClone(), true, "isClone() 1 detected");
-	equal(tools.getNode("20_2_1").isClone(), true, "isClone() 2 detected");
+	assert.equal(tools.getNode("10_1_1").isClone(), false, "isClone() non-clone detected");
+	assert.equal(tools.getNode("20_1_1").isClone(), true, "isClone() 1 detected");
+	assert.equal(tools.getNode("20_2_1").isClone(), true, "isClone() 2 detected");
 
 	nodeList = tree.getNodesByRef("rk_1");
-	equal(nodeList.length, 2, "tree.getNodesByRef()");
-	deepEqual(tools.getNodeKeyArray(nodeList), ["20_1_1", "20_2_1"], "tree.getNodesByRef() finds all clones");
+	assert.equal(nodeList.length, 2, "tree.getNodesByRef()");
+	assert.deepEqual(tools.getNodeKeyArray(nodeList), ["20_1_1", "20_2_1"], "tree.getNodesByRef() finds all clones");
 
 	nodeList = tree.getNodesByRef("rk_1", tools.getNode("10"));
-	equal(nodeList, null, "tree.getNodesByRef() restrict to branch: miss");
+	assert.equal(nodeList, null, "tree.getNodesByRef() restrict to branch: miss");
 	nodeList = tree.getNodesByRef("rk_1", tools.getNode("20"));
-	equal(nodeList.length, 2, "tree.getNodesByRef() restrict to branch: hit");
+	assert.equal(nodeList.length, 2, "tree.getNodesByRef() restrict to branch: hit");
 
 	nodeList = tree.getNodesByRef("rk_2");
-	equal(nodeList.length, 1, "also single refKeys are stored in refMap");
+	assert.equal(nodeList.length, 1, "also single refKeys are stored in refMap");
 	node = tools.getNodeKeyArray(nodeList[0]);
-	equal(node.key, "id_11b7cb44", "generate predictable unique default keys");
+	assert.equal(node.key, "id_11b7cb44", "generate predictable unique default keys");
 
 	nodeList = tools.getNode("20_1_1").getCloneList();
-	deepEqual(tools.getNodeKeyArray(nodeList), ["20_2_1"], "node.getCloneList() 1 detected");
+	assert.deepEqual(tools.getNodeKeyArray(nodeList), ["20_2_1"], "node.getCloneList() 1 detected");
 	nodeList = tools.getNode("20_1_1").getCloneList(true);
-	deepEqual(tools.getNodeKeyArray(nodeList), ["20_1_1", "20_2_1"], "node.getCloneList(true) 2 detected");
+	assert.deepEqual(tools.getNodeKeyArray(nodeList), ["20_1_1", "20_2_1"], "node.getCloneList(true) 2 detected");
 
 	nodeList = tools.getNode("20_1_1").getCloneList();
-
-	start();
 });
 
 

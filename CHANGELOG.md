@@ -4,6 +4,7 @@
   * [Added] #419 node.triggerModifyChild() and node.triggerModify()
   * [DEPRECATED] `removeNode` event. Listen for `modifyChild` with operation
     'remove' instead (which is fired on the parent).
+  * Use QUnit 2.0
 
 # 2.19.0 / 2016-08-11
   * [Added] #607 tree.enableUpdate() to temporarily disable rendering to improve 

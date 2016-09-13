@@ -1,16 +1,14 @@
 ;(function($, window, document, undefined) {
 
-// jQUnit defines:
-// asyncTest,deepEqual,equal,expect,module,notDeepEqual,notEqual,notStrictEqual,ok,QUnit,raises,start,stop,strictEqual,test
-
-/*globals expect,module,ok,QUnit,start,stop,test */
+/*globals QUnit */
 
 var TOOLS = {},
 	log = [];
 
 window.TEST_TOOLS = TOOLS;
 
-TOOLS.EVENT_SEQUENCE = [];
+// TOOLS.EVENT_SEQUENCE = [];
+TOOLS.EVENT_SEQUENCE = "<deprecated: use assert.EVENT_SEQUENCE instead>";
 TOOLS.TOTAL_ELAP = 0;
 
 
@@ -23,6 +21,7 @@ TOOLS.initQUnit = function() {
 	QUnit.done(function (testResults) {
 	  var details, i, len,
 		tests = [];
+
 	  for(i = 0, len = log.length; i < len; i++) {
 		details = log[i];
 		tests.push({
@@ -58,26 +57,23 @@ TOOLS.initQUnit = function() {
 
 TOOLS.createInfoSection = function() {
 	// Create the first informational section
-	module("Test Environment Information");
+	QUnit.module("Test Environment Information");
 
-	test("Version info", function() {
-		QUnit.reset();
-		if( $("#tree").is(":ui-fancytree") ){
-			$("#tree").fancytree("destroy");
-		}
-		expect(5);
+	QUnit.test("Version info", function(assert) {
+		TOOLS.setup(assert);
+		assert.expect(5);
 
-		ok(true, "Fancytree v" + $.ui.fancytree.version + ", buildType='" + $.ui.fancytree.buildType + "'");
-		ok(true, "jQuery UI " + jQuery.ui.version + " (uiBackCompat=" + $.uiBackCompat + ")");
-		ok(true, "jQuery " + jQuery.fn.jquery);
+		assert.ok(true, "Fancytree v" + $.ui.fancytree.version + ", buildType='" + $.ui.fancytree.buildType + "'");
+		assert.ok(true, "jQuery UI " + jQuery.ui.version + " (uiBackCompat=" + $.uiBackCompat + ")");
+		assert.ok(true, "jQuery " + jQuery.fn.jquery);
 		var doctype = document.documentElement.previousSibling,
 			doctypeSid = doctype.systemId,
 			doctypePid = doctype.publicId;
-		ok(true, "DOCTYPE " + doctypePid + " " + doctypeSid);
-	//    ok(true, "DOCTYPE 2 " + window.document.doctype);
+		assert.ok(true, "DOCTYPE " + doctypePid + " " + doctypeSid);
+	//    assert.ok(true, "DOCTYPE 2 " + window.document.doctype);
 
-		ok(true, "Browser: " + TOOLS.getBrowserInfo());
-	//    ok(true, "Cumulated test time: " + TOTAL_ELAP + " milliseconds");
+		assert.ok(true, "Browser: " + TOOLS.getBrowserInfo());
+	//    assert.ok(true, "Cumulated test time: " + TOTAL_ELAP + " milliseconds");
 	});
 };
 
@@ -94,20 +90,37 @@ TOOLS.createInfoSection = function() {
 
 
 /** Helper to reset environment for asynchronous Fancytree tests. */
-TOOLS.appendEvent = function(res) {
-	TOOLS.EVENT_SEQUENCE.push(res);
+TOOLS.appendEvent = function(assert, msg) {
+	if( !assert || !assert.deepEqual ) { $.error("assert must be passed"); }
+	if( typeof msg !== "string" ) { $.error("msg must be a string"); }
+	if( !assert.EVENT_SEQUENCE ) { $.error("TOOLS.setup() was not called"); }
+	assert.EVENT_SEQUENCE.push(msg);
 };
 
 
-/** Helper to reset environment for asynchronous Fancytree tests. */
-TOOLS.setupAsync = function() {
-	QUnit.reset();
+/** Helper to reset environment for ynchronous Fancytree tests. */
+TOOLS.setup = function(assert) {
+	if( !assert ) { $.error("Need assert arg"); }
+	if( assert.EVENT_SEQUENCE ) { $.error("Duplicate setup()"); }
+	assert.EVENT_SEQUENCE = [];
 	if( $("#tree").is(":ui-fancytree") ){
 		$("#tree").fancytree("destroy");
 	}
-	TOOLS.EVENT_SEQUENCE = [];
-	stop();
 };
+
+
+// /** Helper to reset environment for asynchronous Fancytree tests. */
+// TOOLS.setupAsync = function(assert) {
+// 	if( !assert ) { $.error("Need assert arg"); }
+// 	if( assert.EVENT_SEQUENCE ) { $.error("Duplicate setup()"); }
+// 	assert.EVENT_SEQUENCE = [];
+// 	// QUnit.reset();
+// 	if( $("#tree").is(":ui-fancytree") ){
+// 		$("#tree").fancytree("destroy");
+// 	}
+// 	TOOLS.EVENT_SEQUENCE = [];
+// 	stop();
+// };
 
 
 /** Return an info string of current browser. */
@@ -116,6 +129,7 @@ TOOLS.getBrowserInfo = function() {
 		ua = navigator.userAgent,
 		tem,
 		m = ua.match(/(opera|chrome|safari|firefox|msie)\/?\s*(\.?\d+(\.\d+)*)/i);
+
 	if(m && (tem = ua.match(/version\/([\.\d]+)/i)) !== null){
 		m[2]= tem[1];
 	}
@@ -133,7 +147,7 @@ TOOLS.getNode = function(key){
 
 
 /** Get current Fancytree. */
-TOOLS.getTree = function(key){
+TOOLS.getTree = function(){
 	return $("#tree").fancytree("getTree");
 };
 
@@ -257,20 +271,29 @@ TOOLS.formatNumber = function(num) {
 };
 
 
-TOOLS.makeBenchWrapper = function(testName, count, callback) {
+TOOLS.makeBenchWrapper = function(assert, testName, count, callback) {
 	return function() {
 		var elap,
 			start = +new Date();
+
 //        callback.apply(this, arguments);
 		callback.call();
 		elap = +new Date() - start;
 		if( count && elap ){
-			ok(true, testName + " took " + elap + " milliseconds, " + TOOLS.formatNumber(1000 * count / elap) + " items/sec");
+			assert.ok(true, testName + " took " + elap + " milliseconds, " + TOOLS.formatNumber(1000 * count / elap) + " items/sec");
 		}else{
-			ok(true, testName + " took " + elap + " milliseconds");
+			assert.ok(true, testName + " took " + elap + " milliseconds");
 		}
 		TOOLS.TOTAL_ELAP += elap;
 	};
+};
+
+
+/* Execute callback immediately and log timing as test result.
+ * This function should be called inside a test() function.
+ */
+TOOLS.benchmark = function(assert, testName, count, callback) {
+	TOOLS.makeBenchWrapper(assert, testName, count, callback).call();
 };
 
 
@@ -278,7 +301,9 @@ TOOLS.makeBenchWrapper = function(testName, count, callback) {
  * AsyncTimer
  */
 
-function AsyncTimer(name, count, start){
+function AsyncTimer(assert, name, count, start){
+	this.assert = assert;
+	this.done = null;
 	this.name = "AsyncTimer(" + name + ")";
 	this.stamp = null;
 	this.count = count;
@@ -292,7 +317,7 @@ AsyncTimer.prototype = {
 		/*jshint expr:true */
 		window.console && window.console.time && window.console.time(this.name);
 		// halt QUnit
-		stop();
+		// this.done = this.assert.async();
 		this.stamp = +new Date();
 	},
 	stop: function(){
@@ -300,17 +325,17 @@ AsyncTimer.prototype = {
 		window.console && window.console.timeEnd && window.console.timeEnd(this.name);
 		var elap = +new Date() - this.stamp;
 		if( this.count && elap ){
-			ok(true, this.name + " took " + elap + " milliseconds, " + TOOLS.formatNumber(1000.0 * this.count / elap) + " items/sec");
+			this.assert.ok(true, this.name + " took " + elap + " milliseconds, " + TOOLS.formatNumber(1000.0 * this.count / elap) + " items/sec");
 		}else{
-			ok(true, this.name + " took " + elap + " milliseconds");
+			this.assert.ok(true, this.name + " took " + elap + " milliseconds");
 		}
 		TOOLS.TOTAL_ELAP += elap;
 		// Continue QUnit
-		start();
+		// this.done();
 	},
 	subtime: function(info){
 		var elap = +new Date() - this.stamp;
-		ok(true, "... " + this.name + " until '" + info + "' took " + elap + " milliseconds");
+ 		this.assert.ok(true, "... " + this.name + " until '" + info + "' took " + elap + " milliseconds");
 	}
 };
 

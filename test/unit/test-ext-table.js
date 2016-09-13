@@ -1,11 +1,9 @@
 jQuery(document).ready(function(){
 
-// jQUnit defines:
-// asyncTest,deepEqual,equal,expect,module,notDeepEqual,notEqual,notStrictEqual,ok,QUnit,raises,start,stop,strictEqual,test
-
-/*globals expect,module,ok,QUnit,start,stop,test */
+/*globals QUnit, TEST_TOOLS */
 
 var $ = jQuery,
+	tools = TEST_TOOLS,
 	treedata = [
 		{ key: "1", title: "item 1" },
 		{ key: "2", title: "item 2", children: [
@@ -32,15 +30,6 @@ QUnit.log(function(data) {
  * Tool functions
  */
 
-/** Helper to reset environment for asynchronous Fancytree tests. */
-function _setupAsync(){
-	QUnit.reset();
-	if( $("#tree").is(":ui-fancytree") ){
-		$("#tree").fancytree("destroy");
-	}
-	stop();
-}
-
 /** Get FancytreeNode from current tree. */
 function _getNode(key){
 	return $("#tree").fancytree("getTree").getNodeByKey(key);
@@ -50,13 +39,14 @@ function _getNode(key){
 /*******************************************************************************
  *
  */
-module("Table ext");
+QUnit.module("Table ext");
 
-test("makeVisible not rendered deep node", function () {
-	_setupAsync();
-	expect(5);
+QUnit.test("makeVisible not rendered deep node", function(assert) {
+	var node,
+		done = assert.async();
 
-	var node;
+	tools.setup(assert);
+	assert.expect(5);
 
 	$("#tree").fancytree({
 		extensions: [ "table" ],
@@ -64,22 +54,21 @@ test("makeVisible not rendered deep node", function () {
 	});
 
 	node = _getNode("2_2_2");
-	ok(node);
-	ok(!node.parent.isExpanded());
-	ok(!node.tr); // not rendered yet
+	assert.ok(node);
+	assert.ok(!node.parent.isExpanded());
+	assert.ok(!node.tr); // not rendered yet
 
-	node.makeVisible().done(function () {
-		ok(node.parent.isExpanded());
-		ok(node.tr, node + " tr is rendered");
+	node.makeVisible().done(function() {
+		assert.ok(node.parent.isExpanded());
+		assert.ok(node.tr, node + " tr is rendered");
 
-		start();
+		done();
 	});
 });
 
-test("render deep node", function () {
-	// _setupAsync();
-	QUnit.reset();
-	expect(11);
+QUnit.test("render deep node", function(assert) {
+	tools.setup(assert);
+	assert.expect(11);
 
 	$("#tree").fancytree({
 		extensions: [ "table" ],
@@ -90,20 +79,20 @@ test("render deep node", function () {
 		tree = $("#tree").fancytree("getTree");
 
 	node = _getNode("2_2_2");
-	ok(node);
-	ok(!node.parent.isExpanded());
-	ok(!node.tr, "not rendered yet");
+	assert.ok(node);
+	assert.ok(!node.parent.isExpanded());
+	assert.ok(!node.tr, "not rendered yet");
 
 	tree.render();
 
-	ok(!node.parent.isExpanded());
-	ok(!node.tr, "not rendered yet");
+	assert.ok(!node.parent.isExpanded());
+	assert.ok(!node.tr, "not rendered yet");
 
 	tree.render(true, true);
 
 	tree.visit(function (node) {
 		// ok(node.parent.isExpanded(), node.parent + " is expanded");
-		ok(node.tr, node + " tr is rendered");
+		assert.ok(node.tr, node + " tr is rendered");
 	});
 });
 
