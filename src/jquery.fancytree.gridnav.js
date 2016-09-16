@@ -30,6 +30,7 @@ var	KC = $.ui.keyCode,
 	NAV_KEYS = {
 		"text": [KC.UP, KC.DOWN],
 		"checkbox": [KC.UP, KC.DOWN, KC.LEFT, KC.RIGHT],
+		"link": [KC.UP, KC.DOWN, KC.LEFT, KC.RIGHT],
 		"radiobutton": [KC.UP, KC.DOWN, KC.LEFT, KC.RIGHT],
 		"select-one": [KC.LEFT, KC.RIGHT],
 		"select-multiple": [KC.LEFT, KC.RIGHT]
@@ -100,7 +101,7 @@ function findNeighbourTd($target, keyCode){
 				// Find adjacent cell in the same column
 				$tdNext = findTdAtColIdx($tr, colIdx);
 				// Skip cells that don't conatain a focusable element
-				if( $tdNext && $tdNext.find(":input").length ) {
+				if( $tdNext && $tdNext.find(":input,a").length ) {
 					break;
 				}
 			}
@@ -175,17 +176,20 @@ $.ui.fancytree.registerExtension({
 			event = ctx.originalEvent,
 			$target = $(event.target);
 
-		// jQuery
-		inputType = $target.is(":input:enabled") ? $target.prop("type") : null;
-//		ctx.tree.debug("ext-gridnav nodeKeydown", event, inputType);
+		if( $target.is(":input:enabled") ) {
+			inputType = $target.prop("type");
+		} else if( $target.is("a") ) {
+			inputType = "link";
+		}
+		// ctx.tree.debug("ext-gridnav nodeKeydown", event, inputType);
 
 		if( inputType && opts.handleCursorKeys ){
 			handleKeys = NAV_KEYS[inputType];
 			if( handleKeys && $.inArray(event.which, handleKeys) >= 0 ){
 				$td = findNeighbourTd($target, event.which);
-				// ctx.node.debug("ignore keydown in input", event.which, handleKeys);
 				if( $td && $td.length ) {
-					$td.find(":input:enabled").focus();
+					// ctx.node.debug("ignore keydown in input", event.which, handleKeys);
+					$td.find(":input:enabled,a").focus();
 					// Prevent Fancytree default navigation
 					return false;
 				}
