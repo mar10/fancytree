@@ -4,6 +4,7 @@
   * [Added] #419 node.triggerModifyChild() and node.triggerModify()
   * [DEPRECATED] `removeNode` event. Listen for `modifyChild` with operation
     'remove' instead (which is fired on the parent).
+  * [Fixed] #576 `loadKeyPath()` sometimes gets the root wrong
   * [Fixed] #632 Tabbing is not working if there is an anchor tag in treeview
   * Use QUnit 2.0
 

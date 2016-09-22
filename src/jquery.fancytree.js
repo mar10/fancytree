@@ -2640,7 +2640,9 @@ Fancytree.prototype = /** @lends Fancytree# */{
 		}
 		for(key in loadMap){
 			node = root._findDirectChild(key);
-//            alert("loadKeyPath: lazy node(" + key + ") = " + node);
+			if (node == null) {  // #576
+				node = self.getNodeByKey(key);
+			}
 			dfd = new $.Deferred();
 			deferredList.push(dfd);
 			__lazyload(key, node, dfd);
