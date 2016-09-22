@@ -65,8 +65,8 @@ $.ui.fancytree.debugLevel = 1;
 QUnit.module("Initialization");
 
 QUnit.test("Static members", function(assert) {
-    tools.setup(assert);
-    assert.expect(5);
+	tools.setup(assert);
+	assert.expect(5);
 
 	assert.ok($.isFunction($.ui.fancytree.debug), "ui.fancytree.debug function is defined");
 	assert.equal($(":ui-fancytree").length, 0, "no tree instance exists");
@@ -80,7 +80,7 @@ QUnit.test("Static members", function(assert) {
 
 QUnit.test("Create Fancytree", function(assert) {
 	tools.setup(assert);
-    assert.expect(13);
+	assert.expect(13);
 
 	var tree, widget,
 		insideConstructor = true;
@@ -118,7 +118,7 @@ QUnit.test("Create Fancytree", function(assert) {
 
 QUnit.test("Create Fancytree - init", function(assert) {
 	tools.setup(assert);
-    assert.expect(19);
+	assert.expect(19);
 
 	var tree, widget,
 		done = assert.async(),
@@ -174,7 +174,7 @@ QUnit.test("Create Fancytree - init", function(assert) {
 
 QUnit.test("Init node status from source", function(assert) {
 	tools.setup(assert);
-    assert.expect(3);
+	assert.expect(3);
 
 	var done = assert.async();
 
@@ -201,7 +201,7 @@ QUnit.test("Init node status from source", function(assert) {
 
 QUnit.test("Init node with custom data", function(assert) {
 	tools.setup(assert);
-    assert.expect(2);
+	assert.expect(2);
 
 	var done = assert.async();
 
@@ -224,7 +224,7 @@ QUnit.test("Init node with custom data", function(assert) {
 
 QUnit.test("Custom icons (node.icon)", function(assert) {
 	tools.setup(assert);
-    assert.expect(13);
+	assert.expect(13);
 
 	var done = assert.async();
 
@@ -268,7 +268,7 @@ QUnit.test("Custom icons (node.icon)", function(assert) {
 
 QUnit.test("Custom icons (options.icon)", function(assert) {
 	tools.setup(assert);
-    assert.expect(16);
+	assert.expect(16);
 
 	var done = assert.async();
 
@@ -337,7 +337,7 @@ QUnit.module("API");
 
 QUnit.test("FancytreeNode class methods", function(assert) {
 	tools.setup(assert);
-    assert.expect(39);
+	assert.expect(39);
 
 	$("#tree").fancytree({
 		source: TEST_DATA
@@ -499,7 +499,7 @@ QUnit.test("FancytreeNode class methods", function(assert) {
 
 QUnit.test("Fancytree class methods", function(assert) {
 	tools.setup(assert);
-    assert.expect(14);
+	assert.expect(14);
 
 	$("#tree").fancytree({
 		source: TEST_DATA
@@ -593,7 +593,7 @@ QUnit.module("Asynchronous API");
 
 QUnit.test("trigger async expand", function(assert) {
 	tools.setup(assert);
-    assert.expect(4);
+	assert.expect(4);
 
 	var done = assert.async();
 
@@ -615,7 +615,7 @@ QUnit.test("trigger async expand", function(assert) {
 
 QUnit.test("makeVisible not rendered deep node", function(assert) {
 	tools.setup(assert);
-    assert.expect(5);
+	assert.expect(5);
 
 	var done = assert.async();
 
@@ -644,7 +644,7 @@ QUnit.module("events");
 
 QUnit.test(".click() to expand a folder", function(assert) {
 	tools.setup(assert);
-    assert.expect(8);
+	assert.expect(8);
 
 	var done = assert.async();
 
@@ -671,7 +671,7 @@ QUnit.test(".click() to expand a folder", function(assert) {
 
 QUnit.test(".click() to activate a node", function(assert) {
 	tools.setup(assert);
-    assert.expect(8);
+	assert.expect(8);
 
 	var done = assert.async();
 
@@ -698,7 +698,7 @@ QUnit.test(".click() to activate a node", function(assert) {
 
 QUnit.test(".click() to activate a folder (clickFolderMode 3 triggers expand)", function(assert) {
 	tools.setup(assert);
-    assert.expect(4);
+	assert.expect(4);
 
 	var done = assert.async(),
 		sequence = 1;
@@ -727,7 +727,7 @@ QUnit.test(".click() to activate a folder (clickFolderMode 3 triggers expand)", 
 
 QUnit.test(".click() to select a node", function(assert) {
 	tools.setup(assert);
-    assert.expect(8);
+	assert.expect(8);
 
 	var done = assert.async();
 
@@ -808,7 +808,7 @@ QUnit.module("lazy loading");
 
 QUnit.test("Using ajax options for `source`; .click() expands a lazy folder", function(assert) {
 	tools.setup(assert);
-    assert.expect(19);
+	assert.expect(19);
 
 	var done = assert.async(),
 		sequence = 1,
@@ -865,7 +865,7 @@ QUnit.test("Using ajax options for `source`; .click() expands a lazy folder", fu
 
 QUnit.test("Using $.ajax promise for `source`; .click() expands a lazy folder", function(assert) {
 	tools.setup(assert);
-    assert.expect(12);
+	assert.expect(12);
 
 	var done = assert.async(),
 		sequence = 1,
@@ -918,7 +918,7 @@ QUnit.module("add children & patches");
 
 QUnit.test("add children", function(assert) {
 	tools.setup(assert);
-    assert.expect(15);
+	assert.expect(15);
 
 	var done = assert.async(),
 		childList = [
@@ -970,7 +970,7 @@ QUnit.test("add children", function(assert) {
 
 QUnit.test("apply patch", function(assert) {
 	tools.setup(assert);
-    assert.expect(19);
+	assert.expect(19);
 
 	var done = assert.async(),
 		patchList = [
@@ -1045,7 +1045,7 @@ QUnit.module("keypath");
 
 QUnit.test("loadKeyPath (allready loaded)", function(assert) {
 	tools.setup(assert);
-    assert.expect(1);
+	assert.expect(1);
 
 	var done = assert.async();
 
@@ -1070,7 +1070,7 @@ QUnit.test("loadKeyPath (allready loaded)", function(assert) {
 
 QUnit.test("loadKeyPath (lazy nodes)", function(assert) {
 	tools.setup(assert);
-    assert.expect(1);
+	assert.expect(1);
 
 	var done = assert.async();
 
@@ -1101,7 +1101,7 @@ QUnit.test("loadKeyPath (lazy nodes)", function(assert) {
 
 QUnit.test("loadKeyPath (multiple lazy nodes with expand)", function(assert) {
 	tools.setup(assert);
-    assert.expect(7);
+	assert.expect(7);
 
 	var done = assert.async();
 

@@ -33,12 +33,17 @@ TOOLS.initQUnit = function() {
 		});
 	  }
 	  testResults.tests = tests;
-	  /*jshint camelcase:false*/ // jscs: disable
-	  window.global_test_results = testResults; // used by saucelabs
-	  /*jshint camelcase:true*/ // jscs: enable
 
 	  // Expand first section when all tests are run
 	  $("ol#qunit-tests > li:first > ol").show("slow");
+
+	  // Maybe deferring this fixes sporadic erros in saucelabs tests for
+	  // FF 48 on Win8?
+	  setTimeout(function(){
+		  /*jshint camelcase:false*/ // jscs: disable
+		  window.global_test_results = testResults; // used by saucelabs
+		  /*jshint camelcase:true*/ // jscs: enable
+	  }, 1000);
 	});
 
 	// See https://github.com/axemclion/grunt-saucelabs
@@ -46,6 +51,8 @@ TOOLS.initQUnit = function() {
 	  QUnit.log(function(details){
 		if (!details.result) {
 		  details.name = testDetails.name;
+
+
 		  log.push(details);
 		}
 	  });
@@ -335,7 +342,7 @@ AsyncTimer.prototype = {
 	},
 	subtime: function(info){
 		var elap = +new Date() - this.stamp;
- 		this.assert.ok(true, "... " + this.name + " until '" + info + "' took " + elap + " milliseconds");
+		this.assert.ok(true, "... " + this.name + " until '" + info + "' took " + elap + " milliseconds");
 	}
 };
 

@@ -1885,8 +1885,8 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	/**
 	 * Trigger `modifyChild` event on a parent to signal that a child was modified.
 	 * @param {string} operation Type of change: 'add', 'remove', 'rename', 'move', 'data', ...
-	 * @param {FancytreeNode} [childNode] 
-	 * @param {object} [extra] 
+	 * @param {FancytreeNode} [childNode]
+	 * @param {object} [extra]
 	 */
 	triggerModifyChild: function(operation, childNode, extra){
 		var data,
@@ -1911,7 +1911,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	/**
 	 * Trigger `modifyChild` event on node.parent(!).
 	 * @param {string} operation Type of change: 'add', 'remove', 'rename', 'move', 'data', ...
-	 * @param {object} [extra] 
+	 * @param {object} [extra]
 	 */
 	triggerModify: function(operation, extra){
 		this.parent.triggerModifyChild(operation, this, extra);
