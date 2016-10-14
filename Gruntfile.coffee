@@ -17,59 +17,37 @@ module.exports = (grunt) ->
 
     # Project metadata, used by the <banner> directive.
     meta:
-      banner: "/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - " +
-              "<%= grunt.template.today('yyyy-mm-dd HH:mm') %>\n" +
-              "<%= pkg.homepage ? '  * ' + pkg.homepage + '\\n' : '' %>" +
-              "  * Copyright (c) <%= grunt.template.today('yyyy') %> <%= pkg.author.name %>;" +
-              " Licensed <%= _.pluck(pkg.licenses, 'type').join(', ') %> */\n"
-    bumpup:
-        options:
-            dateformat: "YYYY-MM-DD HH:mm"
-            normalize: true
-            updateProps: 
-                pkg: "package.json"
-        files: ["package.json", "bower.json", "fancytree.jquery.json"]
-
-    checkrepo:
-      beforeBump:
-          tag:
-              eq: "<%= pkg.version %>" # Check if highest repo tag == pkg.version
-  #        tagged: false # Require last commit (HEAD) to be tagged
-          clean: true # // Require repo to be clean (no unstaged changes)
-      beforeRelease:
-          tag:
-              lt: "<%= pkg.version %>" # Check if highest repo tag is lower than pkg.version
-#          tagged: false # Require last commit (HEAD) to be tagged
-          clean: true # // Require repo to be clean (no unstaged changes)
-
-    # compare_size:
-    #     files:
-    #         "jquery.ui-contextmenu.min.js"
-    #         "jquery.ui-contextmenu.js"
-    #     options:
-    #         compress:
-    #             gz: function (fileContents)
-    #                 return require("gzip-js").zip(fileContents, {}).length;
+        # banner: "/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - " +
+        banner: "/*! <%= pkg.title || pkg.name %> - @VERSION - @DATE\n" +
+                # "<%= grunt.template.today('yyyy-mm-dd HH:mm') %>\n" +
+                "<%= pkg.homepage ? '  * ' + pkg.homepage + '\\n' : '' %>" +
+                "  * Copyright (c) <%= grunt.template.today('yyyy') %> <%= pkg.author.name %>;" +
+                " Licensed <%= _.map(pkg.licenses, 'type').join(', ') %> */\n"
 
     clean:
         build:
-            noWrite: true
             src: [ "build" ]
+        dist:
+            src: [ "dist" ]
+        extMin:
+            src: [ "build/jquery.fancytree.*.min.js" ]
 
-    compress:
-        build:
-            options:
-                archive: "dist/<%= pkg.name %>-<%= pkg.version %>.zip"
-            files: [
-                {expand: true, cwd: "build/", src: ["**/*"], dest: ""}
-                ]
+    # compress:
+    #     dist:
+    #         options:
+    #             archive: "archive/<%= pkg.name %>-<%= pkg.version %>.zip"
+    #         files: [
+    #             {expand: true, cwd: "dist/", src: ["**/*"], dest: ""}
+    #             ]
 
     concat:
         core:
             options:
                 stripBanners: true
             src: ["<banner:meta.banner>"
+                  # "lib/intro.js"
                   "src/<%= pkg.name %>.js"
+                  # "lib/outro.js"
                   ]
             dest: "build/<%= pkg.name %>.js"
         all:
@@ -77,18 +55,56 @@ module.exports = (grunt) ->
                 stripBanners: true
             src: [
                 "<%= meta.banner %>"
+                # "lib/intro.js"
                 "src/jquery.fancytree.js"
+                "src/jquery.fancytree.childcounter.js"
+                "src/jquery.fancytree.clones.js"
 #                "src/jquery.fancytree.columnview.js"
                 "src/jquery.fancytree.dnd.js"
                 "src/jquery.fancytree.edit.js"
                 "src/jquery.fancytree.filter.js"
+                "src/jquery.fancytree.glyph.js"
                 "src/jquery.fancytree.gridnav.js"
 #                "src/jquery.fancytree.menu.js"
                 "src/jquery.fancytree.persist.js"
                 "src/jquery.fancytree.table.js"
                 "src/jquery.fancytree.themeroller.js"
+                "src/jquery.fancytree.wide.js"
+                # "lib/outro.js"
                 ]
             dest: "build/<%= pkg.name %>-all.js"
+        custom:
+            options:
+                banner: "<%= meta.banner %>"
+                stripBanners: true
+                process: (src, fspec) -> 
+                  # Remove all comments, including /*! ... */
+                  src = src.replace(/\/\*(.|\n)*\*\//g, "")
+                  if /fancytree..+.min.js/.test(fspec)
+                    # If it is an extension:
+                    # Prepend a one-liner instead
+                    fspec = fspec.substr(6) # strip 'build/'
+                    src = "\n/*! Extension '" + fspec + "' */" + src
+                  return src
+            src: [
+                "lib/intro.js"
+                "build/jquery.fancytree.min.js"
+                "build/jquery.fancytree.childcounter.min.js"
+                "build/jquery.fancytree.clones.min.js"
+#                "build/jquery.fancytree.columnview.min.js"
+                "build/jquery.fancytree.dnd.min.js"
+                "build/jquery.fancytree.edit.min.js"
+                "build/jquery.fancytree.filter.min.js"
+                "build/jquery.fancytree.glyph.min.js"
+                "build/jquery.fancytree.gridnav.min.js"
+#                "build/jquery.fancytree.menu.min.js"
+                "build/jquery.fancytree.persist.min.js"
+                "build/jquery.fancytree.table.min.js"
+                "build/jquery.fancytree.themeroller.min.js"
+                "build/jquery.fancytree.wide.min.js"
+                "lib/outro.js"
+                ]
+            dest: "build/<%= pkg.name %>-all.min.js"
 
     connect:
         forever:
@@ -96,7 +112,7 @@ module.exports = (grunt) ->
                 port: 8080
                 base: "./"
                 keepalive: true
-        dev: # pass on, so subsequent tastks (like watch) can start
+        dev: # pass on, so subsequent tasks (like watch) can start
             options:
                 port: 8080
                 base: "./"
@@ -109,40 +125,56 @@ module.exports = (grunt) ->
                 keepalive: false
 
     copy:
-        build:
+        build: # copy production files to build folder
             files: [{
-                    expand: true # required for cwd
-                    cwd: "src/"
-                    src: ["skin-**/*.{css,gif,png}", "*.txt"]
-                    dest: "build/"
-                }, {
-                    src: ["*.txt", "*.md"]
-                    dest: "build/"
-                }]
-
-  #   csslint:
-  # #      options:
-  # #              csslintrc: ".csslintrc"
-  #       strict:
-  #           options:
-  #               import: 2
-  #           src: ["src/**/*.css"]
+                expand: true # required for cwd
+                cwd: "src/"
+                src: [
+                    "skin-**/*.{css,gif,md,png,less}"
+                    "skin-common.less"
+                    "*.txt"
+                    ]
+                dest: "build/"
+            }, {
+                expand: true
+                cwd: "src/"
+                src: [
+                    "jquery.*.js"
+                    ]
+                # src: [
+                #   "skin-**/*.{css,gif,png,less,md}"
+                #   "*.txt"
+                #   "jquery.*.js"
+                #   "skin-common.less"
+                #   ]
+                dest: "build/src/"
+            }, {
+                # src: ["*.txt", "*.md"]
+                src: ["LICENSE.txt"]
+                dest: "build/"
+            }]
+        dist: # copy build folder to dist
+            files: [{expand: true, cwd: "build/", src: ["**"], dest: "dist/"}]
 
     cssmin:
+        options:
+          report: "min"
         build:
-            report: "min"
             expand: true
             cwd: "build/"
             src: ["**/*.fancytree.css", "!*.min.css"]
             dest: "build/"
             ext: ".fancytree.min.css"
 
+    devUpdate:
+        main:
+            options:
+                reportUpdated: true
+                updateType: 'prompt'  # 'report'
+
     docco:
         docs:
-#            expand: true
-#            cwd: "src/"
             src: ["src/jquery.fancytree.childcounter.js"]
-#            dest: "doc/annotated-src/"
             options:
                 output: "doc/annotated-src"
 
@@ -157,29 +189,30 @@ module.exports = (grunt) ->
             cmd: "pyftpsync --progress upload . ftp://www.wwwendt.de/tech/fancytree --delete-unmatched --omit build,node_modules,.*,_*  -x"
 #            cmd: "pyftpsync --progress upload . ftp://www.wwwendt.de/tech/fancytree --omit build,node_modules,.*,_*  -x"
 
-    htmllint:
-        all: ["demo/**/*.html", "doc/**/*.html", "test/**/*.html"]
+    # htmllint:
+    #     all: ["demo/**/*.html", "doc/**/*.html", "test/**/*.html"]
 
-    jsdoc:
-        build:
-            src: ["src/*.js", "doc/README.md", "doc/jsdoctest.js"]
-            options:
-                destination: "doc/jsdoc_new"
-#                template: "bin/jsdoc3-moogle",
-#                template: "node_modules/ink-docstrap/template",
-                template: "../docstrap/template",
-                configure: "doc/jsdoc.conf.json"
-                verbose: true
+#     jsdoc:
+#         build:
+#             src: ["src/*.js", "doc/README.md", "doc/jsdoctest.js"]
+#             options:
+#                 destination: "doc/jsdoc_new"
+# #                template: "bin/jsdoc3-moogle",
+# #                template: "node_modules/ink-docstrap/template",
+#                 template: "../docstrap/template",
+#                 configure: "doc/jsdoc.conf.json"
+#                 verbose: true
 
     jshint:
         options:
             # Linting according to http://contribute.jquery.org/style-guide/js/
             jshintrc: ".jshintrc"
         beforeConcat: [
-            "Gruntfile.js"
+            # "Gruntfile.js"
             "src/*.js"
             "3rd-party/**/jquery.fancytree.*.js"
             "test/unit/*.js"
+            "demo/**/*.js"
             ]
         afterConcat: [
             "<%= concat.core.dest %>"
@@ -199,106 +232,146 @@ module.exports = (grunt) ->
             ]
 
     qunit:
-        build: [ "test/unit/test-core-build.html" ]
-        develop: [ "test/unit/test-core.html" ]
+        build: [ 
+            "test/unit/test-core-build.html" 
+        ]
+        develop: [ 
+            "test/unit/test-core.html"
+            "test/unit/test-ext-filter.html"
+            "test/unit/test-ext-table.html"
+            "test/unit/test-ext-misc.html"
+        ]
 
     replace: # grunt-text-replace
-# //            bump : {
-# //                src : ["src/jquery.fancytree.js"],
-# //                overwrite : true,
-# //                replacements : [ {
-# //                    from : /version:\s*\"[0-9\.\-]+\"/,
-# //                    to : "version: \"<%= pkg.version %>\""
-# //                },{
-# //                    from : /@version\s*[0-9\.\-]+/,
-# //                    to : "@version <%= pkg.version %>"
-# //                },{
-# //                    from : /@date\s*[0-9T\.\-\:]+/,
-# //                    to : "@date <%= grunt.template.today('yyyy-mm-dd\"T\"HH:MM') %>"
-# //                } ]
-# //            },
-        build:
-            src: ["build/*.js"]
+        production:
+            src: ["build/**/*.js"]
             overwrite : true
             replacements: [ {
-                # from : /version:\s*\"[0-9\.\-]+\"/g
-                from : /version:\s*\"development\"/g
-                to : "version: \"<%= pkg.version %>\""
-            },{
-                from : /@version\s*DEVELOPMENT/g
-                to : "@version <%= pkg.version %>"
-            },{
-                from : /@date\s*DEVELOPMENT/g
-                to : "@date <%= grunt.template.today('yyyy-mm-dd\"T\"HH:MM') %>"
+                from : /@DATE/g
+                to : "<%= grunt.template.today('yyyy-mm-dd\"T\"HH:MM') %>"
             },{
                 from : /buildType:\s*\"[a-zA-Z]+\"/g
-                to : "buildType: \"release\""
+                to : "buildType: \"production\""
             },{
                 from : /debugLevel:\s*[0-9]/g
                 to : "debugLevel: 1"
             } ]
+        release:
+            src: ["dist/**/*.js"]
+            overwrite : true
+            replacements: [ {
+                from : /@VERSION/g
+                to : "<%= pkg.version %>"
+            } ]
 
     "saucelabs-qunit":
-      all:
-        options:
-          urls: ["http://localhost:9999/test/unit/test-core.html"]
-          
-          tunnelTimeout: 5
-          build: process.env.TRAVIS_JOB_ID
-          concurrency: 3
-          browsers: [
-            { browserName: "chrome", platform: "Windows 7" }
-            { browserName: "firefox", platform: "Windows 7" }
-            { browserName: "firefox", platform: "Windows XP" }
-            { browserName: "firefox", platform: "Linux" }
-            { browserName: "internet explorer", version: "6", platform: "Windows XP" }
-            { browserName: "internet explorer", version: "7", platform: "Windows XP" }
-            { browserName: "internet explorer", version: "8", platform: "Windows XP" }
-            { browserName: "internet explorer", version: "9", platform: "Windows 7" }
-            { browserName: "internet explorer", version: "10", platform: "Windows 8" }
-            { browserName: "internet explorer", version: "11", platform: "Windows 8.1" }
-            { browserName: "safari", platform: "OS X 10.8" }
-          ]
-          testname: "fancytree qunit tests"
-
-    tagrelease:
-        file: "package.json"
-        commit:  true
-        message: "Tagging the %version% release."
-        prefix:  "v"
-        annotate: true
+        all:
+            options:
+                urls: ["http://localhost:9999/test/unit/test-core.html"]
+                # tunnelTimeout: 5
+                build: process.env.TRAVIS_JOB_ID
+                # concurrency: 3
+                throttled: 5
+                browsers: [
+                  { browserName: "chrome", platform: "Windows 8.1" }
+                  { browserName: "firefox", platform: "Windows 8.1" }
+                  { browserName: "firefox", platform: "Linux" }
+                  { browserName: "internet explorer", version: "6", platform: "Windows XP" }
+                  { browserName: "internet explorer", version: "7", platform: "Windows XP" }
+                  { browserName: "internet explorer", version: "8", platform: "Windows 7" }
+                  { browserName: "internet explorer", version: "9", platform: "Windows 7" }
+                  { browserName: "internet explorer", version: "10", platform: "Windows 8" }
+                  { browserName: "internet explorer", version: "11", platform: "Windows 8.1" }
+                  { browserName: "microsoftedge", platform: "Windows 10" }
+                  { browserName: "safari", version: "6", platform: "OS X 10.8" }
+                  { browserName: "safari", version: "7", platform: "OS X 10.9" }
+                  { browserName: "safari", version: "8", platform: "OS X 10.10" }
+                  { browserName: "safari", version: "9", platform: "OS X 10.11" }
+                ]
+                testname: "fancytree qunit tests"
+                # statusCheckAttempts: 180
+                recordVideo: false
+                videoUploadOnPass: false
 
     uglify:
-        build:
-            options:
-                banner: "<%= meta.banner %>"
-                report: "min"
-#                , expand: true
-#                , cwd: "build/"
-                sourceMap: 
-                    (path) -> path.replace(/.js/, ".js.map")
-                sourceMappingURL: 
-                    (path) -> path.replace(/^build\//, "") + ".map"
-#                  , sourceMapIn: function(path) { return path.replace(/^build\//, "")}
-#                  , sourceMapRoot: "/" //function(path) { return path.replace(/^build\//, "")}
-                sourceMapPrefix: 1 # strip 'build/' from paths
+        # build:
+        #     options:
+        #         banner: "<%= meta.banner %>"
+        #         # preserveComments: "some"
+        #         report: "min"
+        #         sourceMap: 
+        #             (path) -> path.replace(/.js/, ".js.map")
+        #         sourceMappingURL: 
+        #             (path) -> path.replace(/^build\//, "") + ".map"
+        #         sourceMapPrefix: 1 # strip 'build/' from paths
 
-            files:
-                "build/<%= pkg.name %>.min.js": ["<%= concat.core.dest %>"],
-                "build/<%= pkg.name %>-all.min.js": ["<%= concat.all.dest %>"]
+        #     files:
+        #         "build/<%= pkg.name %>.min.js": ["<%= concat.core.dest %>"],
+        #         "build/<%= pkg.name %>-all.min.js": ["<%= concat.all.dest %>"]
+
+        custom:
+            options:  # see https://github.com/gruntjs/grunt-contrib-uglify/issues/366
+                report: "min"
+                # preserveComments: "some"
+                preserveComments: /(?:^!|@(?:license|preserve|cc_on))/
+            files: [
+              {
+                  src: ["**/jquery.fancytree*.js", "!*.min.js"]
+                  cwd: "src/"
+                  dest: "build/"
+                  expand: true
+                  rename: (dest, src) ->
+                      folder = src.substring(0, src.lastIndexOf("/"))
+                      filename = src.substring(src.lastIndexOf("/"), src.length)
+                      filename  = filename.substring(0, filename.lastIndexOf("."))
+                      return dest + folder + filename + ".min.js"
+              }
+              ]
+        # map_all:
+        #     options:
+        #         compress: false
+        #         mangle: false
+        #         sourceMap: true
+        #         preserveComments: 'all'
+        #     files: [
+        #       {
+        #           src: 'build/jquery.fancytree-all.min.js'
+        #           dest: 'build/jquery.fancytree-all.min.js.map'
+        #       }
+        #       ]
 
     watch:
-        # options:
-        #     atBegin: true
         less:
             files: "src/**/*.less"
             tasks: ["less:development"]
         jshint:
-            atBegin: true
-            files: "src/*.js"
+            options:
+                atBegin: true
+            files: ["src/*.js", "test/unit/*.js", "demo/**/*.js"]
             tasks: ["jshint:beforeConcat"]
 
+    yabs:
+        release:
+            common: # defaults for all tools
+              manifests: ['package.json', 'bower.json']
+            # The following tools are run in order:
+            run_test: { tasks: ['test'] }
+            check: { branch: ['master'], canPush: true, clean: true, cmpVersion: 'gte' }
+            bump: {} # 'bump' also uses the increment mode `yabs:release:MODE`
+            run_build: { tasks: ['make_release'] }
+            commit: { add: '.' }
+            tag: {}
+            push: { tags: true, useFollowTags: true },
+            githubRelease:
+              repo: 'mar10/fancytree'
+              draft: false
+            npmPublish: {}
+            bump_develop: { inc: 'prepatch' }
+            commit_develop: { message: 'Bump prerelease ({%= version %}) [ci skip]' }
+            push_develop: {}
+
   # ----------------------------------------------------------------------------
+
 
   # Load "grunt*" dependencies
 
@@ -309,9 +382,11 @@ module.exports = (grunt) ->
 
   grunt.registerTask "server", ["connect:forever"]
   grunt.registerTask "dev", ["connect:dev", "watch"]
+  grunt.registerTask "tabfix", ["exec:tabfix"]
   grunt.registerTask "test", [
       "jshint:beforeConcat",
       # "csslint",
+      # "htmllint",
       "qunit:develop"
   ]
 
@@ -322,31 +397,39 @@ module.exports = (grunt) ->
       grunt.registerTask "travis", ["test"]
   else
       grunt.registerTask "travis", ["test", "sauce"]
-  
+
   grunt.registerTask "default", ["test"]
+  grunt.registerTask "ci", ["test"]  # Called by 'npm test'
+
   grunt.registerTask "build", [
-      "exec:tabfix"
+      "less:development"
       "test"
-      "jsdoc:build"
+      # "jsdoc:build"
       "docco:docs"
       "clean:build"
       "copy:build"
-      "concat"
       "cssmin:build"
-      "replace:build"
+      "concat:core"
+      "concat:all"
+      "uglify:custom"
+      "concat:custom"
+      "clean:extMin"
+      "replace:production"
       "jshint:afterConcat"
-      "uglify"
+      # "uglify:build"
       "qunit:build"
-      "compress:build"
-      # "compare_size"
-      # "clean:build"
       ]
-  grunt.registerTask "release", [
-      "checkrepo:beforeRelease"
+  
+  grunt.registerTask "make_release", [
+      "exec:tabfix"
       "build"
-      "tagrelease"
-      "bumpup:prerelease"
+      "clean:dist"
+      "copy:dist"
+      "clean:build"
+      "replace:release"
+      # "compress:dist"
       ]
+
   grunt.registerTask "upload", [
       "build"
       "exec:upload"

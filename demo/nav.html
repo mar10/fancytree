@@ -32,14 +32,14 @@ ul.fancytree-container {
 	width: 100%;
 	background-color: transparent;
 }
-span.fancytree-title {
+span.fancytree-node span.fancytree-title {
 	color: white;
 	text-decoration: none;
 }
 span.fancytree-focused span.fancytree-title {
 	outline-color: white;
 }
-span.fancytree-title:hover,
+span.fancytree-node:hover span.fancytree-title,
 span.fancytree-active span.fancytree-title,
 span.fancytree-active.fancytree-focused span.fancytree-title,
 .fancytree-treefocus span.fancytree-title:hover,
@@ -61,40 +61,64 @@ span.external span.fancytree-title:after {
 </style>
 
 <script type="text/javascript">
-	$(function(){
-		// --- Initialize sample trees
-		$("#tree").fancytree({
+$(function(){
+	// --- Initialize sample trees
+	$("#tree").fancytree({
+		autoActivate: false, // we use scheduleAction()
+		autoCollapse: true,
 //			autoFocus: true,
-			minExpandLevel: 2,
-			clickFolderMode: 3, // expand with single click
-			autoActivate: false,
-			autoCollapse: true,
-			autoScroll: true,
-			tabbable: false, // we don't want the focus frame
-			focus: function(e, data) {
-				var node = data.node;
-				// Auto-activate focused node after 1 second
-				if(node.data.href){
-					node.scheduleAction("activate", 1000);
-				}
-			},
-			blur: function(e, data) {
-				data.node.scheduleAction("cancel");
-			},
-			activate: function(e, data){
-				var node = data.node;
-				if(node.data.href){
-					window.open(node.data.href, node.data.target);
-				}
-			},
-			click: function(e, data){ // allow re-loads
-				var node = data.node;
-				if(node.isActive() && node.data.href){
-					data.tree.reactivate();
-				}
+		autoScroll: true,
+		clickFolderMode: 3, // expand with single click
+		minExpandLevel: 2,
+		tabindex: "-1", // we don't want the focus frame
+		// scrollParent: null, // use $container
+		focus: function(event, data) {
+			var node = data.node;
+			// Auto-activate focused node after 1 second
+			if(node.data.href){
+				node.scheduleAction("activate", 1000);
+			}
+		},
+		blur: function(event, data) {
+			data.node.scheduleAction("cancel");
+		},
+		activate: function(event, data){
+			var node = data.node,
+				orgEvent = data.originalEvent || {};
+
+			if(node.data.href){
+				window.open(node.data.href, (orgEvent.ctrlKey || orgEvent.metaKey) ? "_blank" : node.data.target);
+			}
+			if( window.parent &&  parent.history && parent.history.pushState ) {
+				// Add #HREF to URL without actually loading content
+				parent.history.pushState({title: node.title}, "", "#" + (node.data.href || ""));
+			}
+		},
+		click: function(event, data){ // allow re-loads
+			var node = data.node,
+				orgEvent = data.originalEvent;
+
+			if(node.isActive() && node.data.href){
+				// data.tree.reactivate();
+				window.open(node.data.href, (orgEvent.ctrlKey || orgEvent.metaKey) ? "_blank" : node.data.target);
+			}
+		}
+	});
+	// On page load, activate node if node.data.href matches the url#href
+	var tree = $(":ui-fancytree").fancytree("getTree"),
+		frameHash = window.parent && window.parent.location.hash;
+
+	if( frameHash ) {
+		frameHash = frameHash.replace("#", "");
+		tree.visit(function(n) {
+			if( n.data.href && n.data.href === frameHash ) {
+				n.setActive();
+				return false; // done: break traversal
 			}
 		});
-	});
+	}
+});
+
 </script>
 
 </head>
@@ -112,6 +136,8 @@ span.external span.fancytree-title:after {
 		<ul>
 			<li><a target="content" href="welcome.html">Welcome</a>
 			<li><a target="content" href="sample-default.html">Default options</a>
+			<li><a target="content" href="sample-multi-ext.html">Complex demo</a>
+			<li><a target="content" href="sample-ext-bootstrap.html">Bootstrap</a>
 			<li><a target="content" href="sample-source.html">Initialization</a>
 			<li><a target="content" href="sample-events.html">Event handling</a>
 			<li><a target="content" href="sample-configurator.html">Option configurator</a>
@@ -120,30 +146,35 @@ span.external span.fancytree-title:after {
 			<li><a target="content" href="sample-select.html">Checkbox &amp; select</a>
 			<li><a target="content" href="sample-theming.html">Theming</a>
 			<li><a target="content" href="sample-form.html">Embed in forms</a>
+			<li class="external"><a target="_blank" href="http://wwwendt.de/tech/fancytree/demo/taxonomy-browser/">Taxonomy Browser</a>
 			<li class="folder">Extensions
 				<ul>
-				<li><a target="content" href="sample-multi-ext.html">Grid Editor</a>
-				<li><a target="content" href="sample-ext-awesome.html">Awesome</a>
 				<li><a target="content" href="sample-ext-childcounter.html">Child counter</a>
+				<li><a target="content" href="sample-ext-clones.html">Clones</a>
 				<li><a target="content" href="sample-ext-columnview.html">Column view</a>
 				<li><a target="content" href="sample-ext-menu.html">Context menu</a>
 				<li><a target="content" href="sample-ext-dnd.html">Drag'n'drop</a>
-				<li><a target="content" href="sample-ext-edit.html">Inline edit</a>
 				<li><a target="content" href="sample-ext-filter.html">Filter</a>
+				<li><a target="content" href="sample-ext-bootstrap.html">Glyph fonts</a>
+				<li><a target="content" href="sample-ext-edit.html">Inline edit</a>
 				<li class="external"><a target="_blank" href="sample-ext-persist.html">Persist</a>
 				<li><a target="content" href="sample-ext-table.html">Table</a>
-				<li><a target="content" href="sample-ext-themeroller.html">Themeroller</a>
+				<li><a target="content" href="sample-ext-themeroller.html">ThemeRoller</a>
+				<li><a target="content" href="sample-ext-wide.html">Wide</a>
 				</ul>
 			<li class="folder">Tweaks
 				<ul>
 				<li><a target="content" href="sample-accordion.html">Accordion</a>
 				<li><a target="content" href="sample-3rd-ui-contextmenu.html">ui-contextmenu</a>
 				<li><a target="content" href="sample-3rd-contextmenu-abs.html">Context menu (ABS), Copy/paste</a>
+				<li><a target="content" href="sample-ext-awesome.html">font-awesome</a>
 				<li><a target="content" href="sample-load-errors.html">Lazy load errors handling</a>
 				<li><a target="content" href="sample-rtl.html">RTL</a>
 				<li><a target="content" href="sample-form.html">Embed in forms</a>
 				<li><a target="content" href="sample-multiline.html">Large nodes</a>
+				<li><a target="content" href="sample-multi-dnd.html">Drag multiple nodes</a>
 				<li><a target="content" href="sample-scroll.html">Smart scrolling</a>
+				<li><a target="content" href="sample-webservice.html">Webservice</a>
 				<li><a target="content" href="../test/test-ext-keyboard.html">Keyboard nav.</a>
 				</ul>
 			<li class="folder">Test
@@ -152,7 +183,9 @@ span.external span.fancytree-title:after {
 				<li class="external"><a target="_blank" href="../test/unit/test-suite.html">Suite</a>
 				<li><a target="content" href="../test/test-ext-dnd.html">Drag'n'drop</a>
 				<li class="external"><a target="_blank" href="../test/unit/test-bench.html">Benchmarks</a>
+<!--
 				<li><a target="content" href="sample-pyserver.html">Local server</a>
+ -->
 				<li class="folder">DTD
 					<ul>
 					<li><a target="content" href="../test/doctypes/doctype-none.html">No DTD</a>

@@ -3,8 +3,8 @@
 <head>
 	<title></title>
 	<meta charset="utf-8" />
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js" type="text/javascript"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.js" type="text/javascript"></script>
+	<script src="//code.jquery.com/jquery-1.12.1.js" type="text/javascript"></script>
+	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js" type="text/javascript"></script>
 
 	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet" type="text/css">
 	<script src="../src/jquery.fancytree.js" type="text/javascript"></script>
@@ -88,7 +88,7 @@
 						 {title: "Lazy1", folder: true, lazy: true }
 						 ],
 //				checkbox: true,
-//				icons: false,
+//				icon: false,
 //                activeVisible: true,
 				dnd: {
 					preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
@@ -134,10 +134,10 @@
 						}
 					}
 				},
-				activate: function(e, data) {
+				activate: function(event, data) {
 	//				alert("activate " + data.node);
 				},
-				lazyload: function(e, data) {
+				lazyLoad: function(event, data) {
 //                    data.result = {url: "fancytree-master/demo/ajax-sub2.json"}
 					data.result = {url: "unit/ajax-sub2.json"}
 				}
@@ -148,7 +148,7 @@
 			$("#fancytree2").fancytree({
 				extensions: ["dnd"],
 				selectMode: 2, // multi-select
-				icons: false,
+				icon: false,
 //                source: "#sourceItems",
 				dnd: {
 					preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.

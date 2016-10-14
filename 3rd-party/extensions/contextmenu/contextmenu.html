@@ -4,14 +4,17 @@
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 	<title>Fancytree - 3rd Party Example: Context menu</title>
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js" type="text/javascript"></script>
+	<script src="//code.jquery.com/jquery-1.12.1.min.js" type="text/javascript"></script>
+	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js" type="text/javascript"></script>
 
 	<link href="../../../src/skin-win7/ui.fancytree.css" rel="stylesheet" type="text/css">
 	<script src="../../../src/jquery.fancytree.js" type="text/javascript"></script>
 
-	<link rel="stylesheet" href="css/jquery.contextMenu.css" type="text/css" />
-	<script src="js/jquery.contextMenu-1.6.5.js" type="text/javascript"></script>
+	<link rel="stylesheet"
+		href="//cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.2.3/jquery.contextMenu.min.css" />
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.2.3/jquery.contextMenu.min.js">
+	</script>
+
 	<script src="js/jquery.fancytree.contextMenu.js" type="text/javascript"></script>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
@@ -67,7 +70,7 @@
 					$('#selected-action').text('Selected action "' + action + '" on node ' + node);
 				}
 			},
-			lazyload: function(e, data) {
+			lazyLoad: function(event, data) {
 				data.result = { url: '../../ajax-sub2.json' }
 			}
 		});
@@ -86,15 +89,15 @@
    </p>
     <p>
     The extension in turn integrates the  
-    <a href="http://medialize.github.io/jQuery-contextMenu/" target="_blank" class="external">jQuery contextMenu plugin</a>
+    <a href="https://github.com/swisnl/jQuery-contextMenu/" target="_blank" class="external">jQuery contextMenu plugin</a>
     by Rodney Rehm (please report bugs there).
    </p>
 </div>
-
+<!--
 <div>
  <label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
 </div>
-
+-->
 <!-- Tree wrapper -->
 <div id="tree"></div>
 

@@ -4,8 +4,8 @@
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 	<title>Fancytree - Configurator</title>
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js" type="text/javascript"></script>
+	<script src="//code.jquery.com/jquery-1.12.1.min.js" type="text/javascript"></script>
+	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js" type="text/javascript"></script>
 
 	<link href="../src/skin-win7/ui.fancytree.css" rel="stylesheet" type="text/css"">
 	<script src="../src/jquery.fancytree.js" type="text/javascript"></script>
@@ -59,6 +59,10 @@ var OPT_LIST = [
 	 hint: "0:quiet, 1:normal, 2:debug"},
 	{name: "disabled", value: false,
 	 hint: "Disable control"},
+	{name: "focusOnSelect", value: false,
+	 hint: "Set focus when node is checked by a mouse click"},
+	{name: "escapeTitles", value: false,
+	 hint: "Escape `node.title` content for display"},
 //	{name: "fx", value: null,
 //	 hint: 'Animations, e.g. null or { height: "toggle", duration: 200 }'},
 	{name: "generateIds", value: false,
@@ -77,6 +81,8 @@ var OPT_LIST = [
 //     hint: "Use <span> instead of <a> tags for all nodes"},
 //	{name: "persist", value: false,
 //	 hint: "Persist expand-status to a cookie"},
+	{name: "quicksearch", value: false,
+	 hint: "Navigate to next node by typing the first letters."},
 	{name: "selectMode", value: [{name: "single", value: 1},
 								 {name: "multi", value: 2, selected: true},
 								 {name: "multi-hier", value: 3}],
@@ -84,7 +90,12 @@ var OPT_LIST = [
 //	{name: "strings", value: {loading: "Loading&#8230;",
 //							  loadError: "Load error!"},
 //	 hint: "Translations"},
-	{name: "tabbable", value: true,
+
+//	{name: "tabbable", value: true,
+//	 hint: "Whole tree behaves as one single control"},
+	{name: "tabindex", value: [{name: "tabbable", value: "0"},
+							   {name: "focusable", value: "-1"},
+							   {name: "off", value: ""}],
 	 hint: "Whole tree behaves as one single control"},
 	{name: "titlesTabbable", value: false,
 	 hint: "Node titles can receive keyboard focus"}
@@ -99,7 +110,7 @@ $(function(){
 		source: {
 			url: "ajax-tree-plain.json"
 		},
-		lazyload: function(e, data) {
+		lazyLoad: function(event, data) {
 			data.result = {url: "ajax-sub2.json"}
 		}
 	});

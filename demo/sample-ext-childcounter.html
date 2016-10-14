@@ -5,8 +5,8 @@
 	<title>Fancytree - Example: childcounter</title>
 
 	<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.1/themes/base/jquery-ui.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.js" type="text/javascript"></script>
+	<script src="//code.jquery.com/jquery-1.12.1.min.js" type="text/javascript"></script>
+	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js" type="text/javascript"></script>
 
 	<link href="../src/skin-win7/ui.fancytree.css" rel="stylesheet" type="text/css">
 	<script src="../src/jquery.fancytree.js" type="text/javascript"></script>
@@ -20,25 +20,6 @@
 	<!-- End_Exclude -->
 
 <style type="text/css">
-
-
-span.fancytree-icon {
-	position: relative;
-}
-span.fancytree-childcounter {
-	color:#800;
-/*	background:#8ee; */
-/*	border: 1px solid gray; */
-	position: absolute;
-	top: -6px;
-	right: -6px;
-	min-width:10px;
-	height: 10px;
-	border-radius: 50%;
-	padding: 2px;
-	text-align: center;
-	font-size: 9px;
-}
 </style>
 
 <!-- Add code to initialize the tree when the document is loaded: -->
@@ -54,8 +35,12 @@ span.fancytree-childcounter {
 				hideZeros: true,
 				hideExpanded: true
 			},
-			lazyload: function(e, data) {
+			lazyLoad: function(event, data) {
 				data.result = {url: "ajax-sub2.json"}
+			},
+			loadChildren: function(event, data) {
+				// update node and parent counters after lazy loading
+				data.node.updateCounters();
 			}
 		});
 	});
@@ -73,12 +58,12 @@ span.fancytree-childcounter {
 			Fanytree's the general extension concept:
 			<br>
 			See the
-			<a class="external" href="../doc/annotated-src/src/jquery.fancytree.childcounter.html">annotated source</a>
+			<a class="external" href="../doc/annotated-src/jquery.fancytree.childcounter.html">annotated source</a>
 			to learn how to write a Fancytree extension.<br>
 			Click the [View source code] link below, to see how an extension is used.
 		</p>
 		<p>
-			<b>Status</b>: pre-alpha
+			<b>Status</b>: beta
 		</p>
 	</div>
 

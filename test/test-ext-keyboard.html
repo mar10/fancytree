@@ -4,8 +4,8 @@
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 	<title>Test Keyboard - Fancytree</title>
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js" type="text/javascript"></script>
+	<script src="//code.jquery.com/jquery-1.12.1.min.js" type="text/javascript"></script>
+	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js" type="text/javascript"></script>
 
 <style type="text/css">
 	/* custom alignment (set by 'renderColumns'' event) */
@@ -30,7 +30,7 @@
 	<!-- End_Exclude -->
 
 <script type="text/javascript">
-SORUCE = [
+SOURCE = [
 	{title: "node 1", folder: true, expanded: true, children: [
 		{title: "node 1.1"},
 		{title: "node 1.2"}
@@ -45,8 +45,8 @@ $(function(){
 	$("#plainTree").fancytree({
 		checkbox: true,
 //		aria: true,
-		source: SORUCE,
-		lazyload: function(e, data) {
+		source: SOURCE,
+		lazyLoad: function(event, data) {
 			data.result = {url: "../demo/ajax-sub2.json"};
 		}
 	});
@@ -65,12 +65,12 @@ $(function(){
 			handleCursorKeys: true,  // Allow UP/DOWN in inputs to move to prev/next node
 			// titlesTabbable: true     // Add all node titles to TAB chain
 		},
-		source: SORUCE,
+		source: SOURCE,
 		titlesTabbable: true,     // Add all node titles to TAB chain
-		lazyload: function(e, data) {
+		lazyLoad: function(event, data) {
 			data.result = {url: "../demo/ajax-sub2.json"};
 		},
-		renderColumns: function(e, data) {
+		renderColumns: function(event, data) {
 			var node = data.node,
 				$select = $("<select>"),
 				$tdList = $(node.tr).find(">td");
@@ -91,11 +91,11 @@ $(function(){
 
 	$("#inputTree").fancytree({
 		checkbox: true,
-		source: SORUCE,
-		lazyload: function(e, data) {
+		source: SOURCE,
+		lazyLoad: function(event, data) {
 			data.result = {url: "../demo/ajax-sub2.json"};
 		},
-		createNode: function(e, data) {
+		createNode: function(event, data) {
 			// add fake <input/> to the nodes
 			var $input = $("<input/>").val(data.node.title);
 
@@ -104,28 +104,28 @@ $(function(){
 				// .attr("tabindex", "0")
 				;
 		},
-		activate: function(e, data){
+		activate: function(event, data){
 			var node = data.node;
 
 			// Set focus to embedded input
 			$("span.fancytree-title :input", node.span).focus();
 		},
-		keydown: function(e, data){
+		keydown: function(event, data){
 			var KC = $.ui.keyCode;
 
-			if( $(e.originalEvent.target).is(":input") ){
+			if( $(event.originalEvent.target).is(":input") ){
 
 				// When inside an input, let the control handle the keys
 				data.result = "preventNav";
 
 				// But do the tree navigation on Ctrl + NAV_KEY
-				switch( e.which ){
+				switch( event.which ){
 					case KC.LEFT:
 					case KC.RIGHT:
 					case KC.BACKSPACE:
 					case KC.SPACE:
 						if( e.shiftKey ){
-							data.node.navigate(e.which);
+							data.node.navigate(event.which);
 						}
 				}
 			}

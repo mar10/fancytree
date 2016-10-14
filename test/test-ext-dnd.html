@@ -4,8 +4,8 @@
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 	<title>Test D'n'D - Fancytree</title>
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js" type="text/javascript"></script>
+	<script src="//code.jquery.com/jquery-1.12.1.min.js" type="text/javascript"></script>
+	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js" type="text/javascript"></script>
 
 	<link href="../src/skin-win7/ui.fancytree.css" rel="stylesheet" type="text/css">
 	<script src="../src/jquery.fancytree.js" type="text/javascript"></script>
@@ -26,6 +26,10 @@
 		border: 1px solid green;
 		padding: 3px;
 		background-color: silver;
+	}
+	/* Prevent scrolling while DND */
+	ul.fancytree-container {
+		position: inherit;
 	}
 	/* Fancytree extension 'table' */
 	table.fancytree-ext-table {
@@ -52,26 +56,35 @@
 
 <script type="text/javascript">
 	$(function(){
+		var count = 1;
 		// Attach the fancytree widget to an existing <div id="tree"> element
 		// and pass the tree options as an argument to the fancytree() function:
 		$("#tree").fancytree({
 			extensions: ["dnd"],
 			checkbox: true,
+//			debugLevel: 1,
 			source: {
 				url: "unit/ajax-tree-plain.json"
 			},
-			activate: function(e, data) {
+			activate: function(event, data) {
 			},
-			lazyload: function(e, data) {
+			lazyLoad: function(event, data) {
 				data.result = {url: "unit/ajax-sub2.json"}
 			},
 			dnd: {
 				preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
 				preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
 				autoExpandMS: 400,
+				draggable: {
+					//zIndex: 1000,
+					// appendTo: "body",
+					// helper: "clone",
+					scroll: false,
+					revert: "invalid"
+				},
 				dragStart: function(node, data) {
 					if( data.originalEvent.shiftKey ){
-						console.log("dragSttart with SHIFT");
+						console.log("dragStart with SHIFT");
 					}
 					// allow dragging `node`:
 					return true;
@@ -90,7 +103,8 @@
 				dragDrop: function(node, data) {
 					if( !data.otherNode ){
 						// It's a non-tree draggable
-						alert("dropped " + $(data.draggable.element).text());
+						var title = $(data.draggable.element).text() + " (" + (count)++ + ")";
+						node.addNode({title: title}, data.hitMode);
 						return;
 					}
 					data.otherNode.moveTo(node, data.hitMode);
@@ -103,12 +117,12 @@
 			source: {
 				url: "unit/ajax-tree-plain.json"
 			},
-			activate: function(e, data) {
+			activate: function(event, data) {
 			},
-			lazyload: function(e, data) {
+			lazyLoad: function(event, data) {
 				data.result = {url: "unit/ajax-sub2.json"}
 			},
-			renderColumns: function(e, data) {
+			renderColumns: function(event, data) {
 				var node = data.node,
 					$tdList = $(node.tr).find(">td");
 				$tdList.eq(1).text(node.key);
@@ -118,6 +132,14 @@
 				preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
 				preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
 				autoExpandMS: 400,
+				draggable: {
+					//zIndex: 1000,
+					// appendTo: "body",
+					// helper: "clone",
+					scroll: false,
+					revert: "invalid"
+				},
+
 				dragStart: function(node, data) {
 					return true;
 				},
@@ -143,9 +165,9 @@
 			source: {
 				url: "unit/ajax-tree-plain.json"
 			},
-			activate: function(e, data) {
+			activate: function(event, data) {
 			},
-			lazyload: function(e, data) {
+			lazyLoad: function(event, data) {
 				data.result = {url: "unit/ajax-sub2.json"}
 			},
 			dnd: {

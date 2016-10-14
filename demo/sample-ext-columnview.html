@@ -4,8 +4,8 @@
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 	<title>Fancytree - Example: columnview</title>
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js" type="text/javascript"></script>
+	<script src="//code.jquery.com/jquery-1.12.1.min.js" type="text/javascript"></script>
+	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js" type="text/javascript"></script>
 
 	<link href="../src/skin-lion/ui.fancytree.css" rel="stylesheet" type="text/css">
 	<script src="../src/jquery.fancytree.js" type="text/javascript"></script>
@@ -23,6 +23,26 @@
 		border-collapse: collapse;
 		width: 100%;
 	}
+	table.fancytree-container tbody tr td{
+		max-width: 300px; /* width does not work */
+	}
+	span.fancytree-node{
+		white-space: nowrap; /* prevent long lines to wrap */
+		overflow: hidden;
+		-o-text-overflow: ellipsis;
+		-ms-text-overflow: ellipsis;
+		text-overflow: ellipsis;
+/*
+		display: inline;
+		overflow-wrap: break-word;
+		word-wrap: break-word;
+		word-break: break-all;
+*/
+	}
+	span.fancytree-title{
+		display: inline; /* prevent long lines to start with a break after the icon */
+	}
+
 	span.selTag{
 		border: 1px outset #dec;
 		display: inline-block;
@@ -58,13 +78,13 @@
 			source: {
 				url: "ajax-tree-plain.json"
 			},
-			lazyload: function(e, data) {
+			lazyLoad: function(event, data) {
 				data.result = {url: "ajax-sub2.json"};
 			},
-			activate: function(e, data) {
+			activate: function(event, data) {
 				$("td#preview").text("activate " + data.node);
 			},
-			select: function(e, data) {
+			select: function(event, data) {
 				// create a tag, when node is selected
 				var node = data.node;
 				$("span#tag-" + node.key).remove();

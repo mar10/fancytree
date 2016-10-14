@@ -4,13 +4,13 @@
  * Render tree like a Mac Finder's column view.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2014, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2016, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version DEVELOPMENT
- * @date DEVELOPMENT
+ * @version @VERSION
+ * @date @DATE
  */
 
 ;(function($, window, document, undefined) {
@@ -41,7 +41,7 @@ function _assert(cond, msg){
  */
 $.ui.fancytree.registerExtension({
 	name: "columnview",
-	version: "0.0.1",
+	version: "@VERSION",
 	// Default options for this extension.
 	options: {
 	},
@@ -57,7 +57,7 @@ $.ui.fancytree.registerExtension({
 		tree.tr = $("tbody tr", $table)[0];
 		tree.columnCount = $(">td", tree.tr).length;
 		// Perform default behavior
-		this._super(ctx);
+		this._superApply(arguments);
 		// Standard Fancytree created a root <ul>. Now move this into first table cell
 		$ul = $(tree.rootNode.ul);
 		$tdFirst = $(">td", tree.tr).eq(0);
@@ -74,11 +74,11 @@ $.ui.fancytree.registerExtension({
 		// Force some required options
 		tree.widget.options.autoCollapse = true;
 //      tree.widget.options.autoActivate = true;
-		tree.widget.options.fx = false;
+		tree.widget.options.toggleEffect = false;
 		tree.widget.options.clickFolderMode = 1;
 
 		// Make sure that only active path is expanded when a node is activated:
-		$table.bind("fancytreeactivate", function(e, data){
+		$table.bind("fancytreeactivate", function(event, data){
 			var i, tdList,
 				node = data.node,
 				tree = data.tree,
@@ -97,23 +97,24 @@ $.ui.fancytree.registerExtension({
 				node.setExpanded();
 			}
 		// Adjust keyboard behaviour:
-		}).bind("fancytreekeydown", function(e, data){
-			var next = null;
-			switch(e.which){
+		}).bind("fancytreekeydown", function(event, data){
+			var next = null,
+				node = data.node || data.tree.getFirstChild();
+			switch(event.which){
 			case $.ui.keyCode.DOWN:
-				next = data.node.getNextSibling();
+				next = node.getNextSibling();
 				if( next ){
 					next.setFocus();
 				}
 				return false;
 			case $.ui.keyCode.LEFT:
-				next = data.node.getParent();
+				next = node.getParent();
 				if( next ){
 					next.setFocus();
 				}
 				return false;
 			case $.ui.keyCode.UP:
-				next = data.node.getPrevSibling();
+				next = node.getPrevSibling();
 				if( next ){
 					next.setFocus();
 				}
@@ -123,7 +124,7 @@ $.ui.fancytree.registerExtension({
 	},
 	nodeRender: function(ctx, force, deep, collapsed, _recursive) {
 		// Render standard nested <ul> - <li> hierarchy
-		this._super(ctx, force, deep, collapsed, _recursive);
+		this._superApply(arguments);
 		// Remove expander and add a trailing triangle instead
 		var level, $tdChild, $ul,
 			tree = ctx.tree,

@@ -28,7 +28,7 @@
 		version: "1.0",
                 hotkeys: { },
 		treeInit: function(ctx) {
-			this._super(ctx);
+			this._superApply(arguments);
                         initHotkeys(this, ctx.options.hotkeys);
 		}
 	});

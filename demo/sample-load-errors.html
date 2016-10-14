@@ -33,10 +33,10 @@
 			{ key: "custom-error", title: "Custom error while lazy loading", lazy: true }
 		];
 
-		function lazyload(e, data) {
+		function lazyLoad(event, data) {
 			switch (data.node.key) {
 				case "ajax":
-					data.result = { url: "ajax-sub2.json" };
+					data.result = { url: "ajax-sub2.json" /*, debugDelay: 5000*/ };
 					break;
 				case "custom":
 					data.result = $.Deferred(function (dfd) {
@@ -63,42 +63,42 @@
 			}
 		}
 
-		function loaderror(e,data) {
+		function loadError(e,data) {
 			var error = data.error;
 			if (error.status && error.statusText) {
 				data.message = "Ajax error: " + data.message;
 				data.details = "Ajax error: " + error.statusText + ", status code = " + error.status;
 			} else {
 				data.message = "Custom error: " + data.message;
-				data.details = "An error occured during loading: " + error;
+				data.details = "An error occurred during loading: " + error;
 			}
 		}
 
 		$("#tree1").fancytree({
 			source: source,
 			ajax: { debugDelay: 1000 },
-			lazyload: lazyload
+			lazyLoad: lazyLoad
 		});
 
 		$("#tree2").fancytree({
 			source: source,
 			ajax: { debugDelay: 1000 },
-			lazyload: lazyload,
-			loaderror: loaderror
+			lazyLoad: lazyLoad,
+			loadError: loadError
 		});
 
 		$("#table1").fancytree({
 			source: source,
 			ajax: { debugDelay: 1000 },
-			lazyload: lazyload,
+			lazyLoad: lazyLoad,
 			extensions: ["table"]
 		});
 
 		$("#table2").fancytree({
 			source: source,
 			ajax: { debugDelay: 1000 },
-			lazyload: lazyload,
-			loaderror: loaderror,
+			lazyLoad: lazyLoad,
+			loadError: loadError,
 			extensions: ["table"]
 		});
 	});
@@ -118,19 +118,19 @@
 	<!-- End_Exclude -->
 
 	<div>
-		<label>No 'loaderror' handler:</label>
+		<label>No 'loadError' handler:</label>
 		<div id="tree1"></div>
 	</div>
 	<br/>
 
 	<div>
-		<label>'loaderror' handler is specified:</label>
+		<label>'loadError' handler is specified:</label>
 		<div id="tree2"></div>
 	</div>
 	<br/>
 
 	<div>
-		<label>No 'loaderror' handler (table extension):</label>
+		<label>No 'loadError' handler (table extension):</label>
 		<table id="table1" style="width:100%">
 			<thead style="display: none"><tr><th></th></tr>
 			</thead>
@@ -140,7 +140,7 @@
 	<br/>
 
 	<div>
-		<label>'loaderror' handler is specified (table extension):</label>
+		<label>'loadError' handler is specified (table extension):</label>
 		<table id="table2" style="width:100%">
 			<thead style="display: none"><tr><th></th></tr>
 			</thead>

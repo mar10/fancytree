@@ -6,8 +6,8 @@
 
 	<!--
 	<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.1/themes/base/jquery-ui.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.js" type="text/javascript"></script>
+	<script src="//code.jquery.com/jquery-1.12.1.min.js" type="text/javascript"></script>
+	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js" type="text/javascript"></script>
 	<script src="../src/jquery.fancytree.childcounter.js" type="text/javascript"></script>
 	<script src="../src/jquery.fancytree.childcounter2.js" type="text/javascript"></script>
 	-->
@@ -56,9 +56,8 @@ $(function(){
 			name: "sampleExt1",
 			version: "1.0.0",
 			options: {
-				opt1: true,
+				opt1: true
 			},
-			name: "sampleExt1",
 
 			treeInit: function(ctx){
 				var tree = this, // same as ctx.tree,
@@ -67,7 +66,7 @@ $(function(){
 
 				this.debug("sampleExt1.treeInit start...");
 				if( CNT++ > 3 ) $.error("recursion");
-				this._super(ctx);
+				this._superApply(arguments);
 				this.debug("sampleExt1.treeInit done.");
 			}
 		});
@@ -81,7 +80,6 @@ $(function(){
 			options: {
 				opt1: true,
 			},
-			name: "sampleExt2",
 
 			treeInit: function(ctx){
 				var tree = this, // same as ctx.tree,
@@ -89,7 +87,7 @@ $(function(){
 					extOpts = ctx.options.sampleExt2;
 
 				this.debug("sampleExt2.treeInit start...");
-				this._super(ctx);
+				this._superApply(arguments);
 				this.debug("sampleExt2.treeInit done.");
 			}
 		});
@@ -108,7 +106,7 @@ $(function(){
 		sampleExt2: {
 			opt1: "set by tree (2)"
 		},
-		lazyload: function(e, data) {
+		lazyLoad: function(event, data) {
 			data.result = {url: "ajax-sub2.json"}
 		}
 	});

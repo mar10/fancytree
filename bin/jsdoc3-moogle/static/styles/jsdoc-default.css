@@ -264,7 +264,7 @@ h6
 	font-weight: bold;
 }
 
-.params .params thead tr, .props .props thead tr, , .methods .methods thead tr
+.params .params thead tr, .props .props thead tr, .methods .methods thead tr
 {
 	background-color: #fff;
 	font-weight: bold;
@@ -276,6 +276,8 @@ h6
 {
 	background-color: #ddd;
 }
+
+/* MODIFIED */
 
 .showHover
 {
@@ -291,4 +293,15 @@ tr:hover .showHover
 
 .disabled {
 	color: #454545;
+}
+
+table.methods tbody tr {
+	cursor: pointer;
+}
+table.methods tbody tr:hover {
+	background-color: seashell;
+}
+
+nav {
+	margin-left: -250px; /* prevent GitHub logo to overlap TOC links */
 }

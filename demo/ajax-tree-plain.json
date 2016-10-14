@@ -17,7 +17,9 @@
 	]},
 	{"key": "20", "title": "Simple node with active children (expand)", "expanded": true, "children": [
 		{"key": "20_1", "title": "Sub-item 2.1", "children": [
-			{"key": "20_1_1", "title": "Sub-item 2.1.1"},
+			{"key": "20_1_1", "title": "Sub-item 2.1.1", "children": [
+				{"key": "20_1_1_1", "title": "Sub-item 2.1.1.1"}
+			]},
 			{"key": "20_1_2", "title": "Sub-item 2.1.2"}
 		]},
 		{"key": "20_2", "title": "Sub-item 2.2", "children": [

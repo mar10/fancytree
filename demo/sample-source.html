@@ -19,29 +19,29 @@
 
 	<script type="text/javascript">
 	$(function(){
-		var DT = $.ui.fancytree;
-		$.ui.fancytree.debug("Using fancytree " + $.ui.fancytree.version);
+		var FT = $.ui.fancytree;
+		FT.debug("Using fancytree " + FT.version);
 		// attach to all instances
 		$("#tree, #tree3").fancytree({
 			checkbox: true,
 			selectMode: 1,
-			activate: function(e, data){
+			activate: function(event, data){
 				var node = data.node;
-				$.ui.fancytree.debug("activate: e=", e, ", data=", data);
+				FT.debug("activate: event=", event, ", data=", data);
 				if(!$.isEmptyObject(node.data)){
 					alert("custom node data: " + JSON.stringify(node.data));
 				}
 			},
-			lazyload: function(e, data){
-				data.result = {url: "unit/ajax-sub2.json"};
+			lazyLoad: function(event, data){
+				data.result = {url: "ajax-sub2.json"};
 			}
-		}).bind("fancytreeactivate", function(e, data){
-			$.ui.fancytree.debug("fancytreeactivate: e=", e, ", data=", data);
+		}).bind("fancytreeactivate", function(event, data){
+			$.ui.fancytree.debug("fancytreeactivate: event=", event, ", data=", data);
 			return false;
 //          $(this).fancytree("debug", "fancytreeactivate");
 		});
-		var tree = $("div:ui-fancytree").data("fancytree").getTree();
-		DT.debug("Test ':ui-fancytree' expression " + $("div:ui-fancytree").length);
+		var tree = $("div:ui-fancytree").data("ui-fancytree").getTree();
+		FT.debug("Test ':ui-fancytree' expression " + $("div:ui-fancytree").length);
 
 		/* Load tree from Ajax JSON
 		 */
@@ -49,7 +49,7 @@
 			source: {
 				url: "ajax-tree-plain.json"
 			},
-			lazyload: function(e, data){
+			lazyLoad: function(event, data){
 				// we can't return values from an event handler, so we
 				// pass the result as `data`attribute.
 //              data.result = {url: "unit/ajax-sub2.json"};
@@ -60,16 +60,16 @@
 			}
 		});
 		// call methods on multiple instances
-		$("div:ui-fancytree").fancytree("foo", "after init");
+//		$("div:ui-fancytree").fancytree("foo", "after init");
 		//
 		$("button").button();
-		$("button#destroy").click(function(e){
+		$("button#destroy").click(function(event){
 			$(":ui-fancytree").fancytree("destroy");
 		});
-		$("button#init").click(function(e){
+		$("button#init").click(function(event){
 			$(".sampletree").fancytree();
 		});
-		$("button#reload").click(function(e){
+		$("button#reload").click(function(event){
 			tree.reload([
 				{title: "node1"},
 				{title: "node2"}
@@ -77,14 +77,14 @@
 					alert("reloaded");
 				});
 		});
-		$("button#expand").click(function(e){
-			tree.getNodeByKey("id3").toggleExpand().done(function(){
+		$("button#expand").click(function(event){
+			tree.getNodeByKey("id3").toggleExpanded().done(function(){
 				alert("expanded " + this);
 			}).fail(function(errMsg){
 				alert("failed to expand " + this + ": " + errMsg);
 			});
 		});
-		$("button#setSource").click(function(e){
+		$("button#setSource").click(function(event){
 			$(".sampletree").fancytree("option", "source", [
 				{title: "node1"}
 			]);

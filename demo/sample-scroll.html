@@ -4,8 +4,8 @@
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 	<title>Fancytree - Example: Scrolling</title>
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js" type="text/javascript"></script>
+	<script src="//code.jquery.com/jquery-1.12.1.min.js" type="text/javascript"></script>
+	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js" type="text/javascript"></script>
 	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet" type="text/css">
 
 	<script src="../src/jquery.fancytree.js" type="text/javascript"></script>
@@ -64,18 +64,15 @@ $.fn.scrollTo = function( target, options, callback ){
 			source: {
 				url: "../test/unit/ajax-tree-plain.json"
 			},
-			lazyload: function(event, data) {
+			lazyLoad: function(event, data) {
 				data.result = {url: "../test/unit/ajax-sub2.json"}
 			},
 			init: function(event, data) {
 				data.tree.getFirstChild().setFocus();
 			},
-			focus: function(event, data){
-				data.node.scrollIntoView(true);
-			},
 			// expand: function(event, data){
 			// 	// scroll down to last node, but keep current node visible
-			// 	data.node.getLastChild().scrollIntoView(true, data.node);
+			// 	data.node.getLastChild().scrollIntoView(true, {topNode: data.node});
 			// }
 		});
 	});

@@ -2,15 +2,14 @@
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
-	<title>Dynatree - Example</title>
+	<title>Fancytree - Example</title>
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js" type="text/javascript"></script>
+	<script src="//code.jquery.com/jquery-1.12.1.min.js" type="text/javascript"></script>
+	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js" type="text/javascript"></script>
 	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet" type="text/css">
 
 	<script src="../src/jquery.fancytree.js" type="text/javascript"></script>
-	<script src="../src/jquery.fancytree.dnd.js" type="text/javascript"></script>
-	<script src="../src/jquery.fancytree.table.js" type="text/javascript"></script>
+	<script src="../src/jquery.fancytree.wide.js" type="text/javascript"></script>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
 	<link href="../lib/prettify.css" rel="stylesheet">
@@ -20,42 +19,72 @@
 	<!-- End_Exclude -->
 
 <style>
-	span.ws-wrap span.dynatree-title { white-space: normal; }
-	span.ws-nowrap span.dynatree-title { white-space: nowrap; }
-	span.ws-pre span.dynatree-title { white-space: pre; }
+/*
+	ul.fancytree-container {
+		position: relative;
+	}
+*/
+
+/*
+	span {
+		position: relative;
+		-webkit-box-sizing: border-box;
+		-moz-box-sizing: border-box;
+		box-sizing: border-box;
+	}
+*/
+/*
+	span.fancytree-node {
+		-moz-display: flex;
+		-webkit-display: flex;
+		-ms-display: flex;
+		display: flex;
+	}
+*/
+	span.ws-wrap span.fancytree-title {
+		white-space: normal;
+	}
+	span.ws-nowrap span.fancytree-title { white-space: nowrap; }
+	span.ws-pre span.fancytree-title { white-space: pre; }
+
 </style>
 <script type="text/javascript">
 	function drawCanvas() {
-		var canvas = document.getElementById("canvas1");
-		if(canvas && canvas.getContext) {
-			canvas = canvas.getContext("2d");
-			var lingrad = canvas.createLinearGradient( 0, 0, 0, 150 );
+		var canvas = document.getElementById("canvas1"),
+			ctx = canvas && canvas.getContext("2d");
+		if(ctx) {
+			var lingrad = ctx.createLinearGradient( 0, 0, 0, 150 );
 			lingrad.addColorStop( 0, "#0099cc" );
 			lingrad.addColorStop( 0.5, "#fff" );
 			lingrad.addColorStop( 0.5, "#99cc00");
 			lingrad.addColorStop( 1, "#0099ff");
-			canvas.fillStyle = lingrad;
-			canvas.fillRect(0, 0, 400 ,100 );
-			canvas.fillStyle = "rgb(200,0,0)";
-			canvas.fillRect( 10, 10, 55, 55 );
+			ctx.fillStyle = lingrad;
+			ctx.fillRect(0, 0, 400 ,100 );
+			ctx.fillStyle = "rgb(200,0,0)";
+			ctx.fillRect( 10, 10, 55, 55 );
 		}
 	}
 
 	$(function(){
-		// Initialize the tree inside the <div>element.
-		// The tree structure is read from the contained <ul> tag.
 		$("#tree").fancytree({
-			activate: function(node) {
-				$("#echoActive").text(node.title);
-				if(node.key === "canvasNode1") {
-					drawCanvas();
+//			extensions: ["wide"],
+			// canvas and video child nodes do not exist before the parent is
+			// expanded, so we trigger rendering on demand
+			expand: function(event, data) {
+				var node = data.node;
+				switch( node.key ) {
+				case "videoParent1":
+					var video = document.getElementById("video1");
+					video.play();
+					break;
+				case "canvasParent1":
+				setTimeout(drawCanvas, 1000);
+					// drawCanvas();
+					break;
 				}
-			},
-			deactivate: function(node) {
-				$("#echoSelected").text("-");
 			}
 		});
-		// Dynatree renders nodes 'lazily', i.e. when they are first expanded.
+		// Fancytree renders nodes 'lazily', i.e. when they are first expanded.
 		// So we to use live event binding for embedded elements.
 		$("#tree").on("click", "#btn1", function(){
 			alert("Thank you for clicking.");
@@ -68,15 +97,68 @@
 	<h1>Example: formatted and multi-line titles</h1>
 	<p class="description">
 		This example shows how multi-line and non-text contents is displayed.
-		<br>
-		The 'noLink' node-option is used for single nodes to make the form and
-		HTML5 elements clickable.
 	</p>
 
 	<div id="tree">
 		<ul>
 			<li>Using some <b>bold</b> markup in the text (&lt;li&gt; tag only).
 			<li><span>Using some <b>bold</b> markup in the text (&lt;li&gt;&lt;span&gt; tag).</span>
+
+			<li class="folder">Long line (nowrap)
+				<ul>
+					<li><span>
+					Lorem ipsum dolor sit amet, consectetuer sadipscing elitr, sed
+					diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
+					sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
+					Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit
+					amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
+					nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
+					sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
+					Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+					Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
+					tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+					At vero eos et accusam et justo duo dolores et ea rebum.
+					Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+					</span>
+					<li>Node 2
+				</ul>
+
+			<li class="folder">Long line (wrapping)
+				<ul>
+					<li class="ws-wrap"><span>
+					Lorem ipsum dolor sit amet, consectetuer sadipscing elitr, sed
+					diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
+					sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
+					Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit
+					amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
+					nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
+					sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
+					Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+					Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
+					tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+					At vero eos et accusam et justo duo dolores et ea rebum.
+					Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+					</span>
+					<li>Node 2
+				</ul>
+
+			<li class="folder">Long line (pre formatted)
+				<ul>
+					<li class="ws-pre"><span>Lorem ipsum dolor sit amet, consectetuer sadipscing elitr, sed
+diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
+sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
+Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit
+amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
+nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
+sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
+Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
+tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+At vero eos et accusam et justo duo dolores et ea rebum.
+Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+					</span>
+					<li>Node 2
+				</ul>
 
 			<li class="folder">Long paragraph, with H3, P, and BR
 				<ul>
@@ -103,66 +185,9 @@
 					<li>Node 2
 				</ul>
 
-			<li class="folder">Long line (nowrap)
-				<ul>
-					<li class="noLink"><span>
-					Lorem ipsum dolor sit amet, consectetuer sadipscing elitr, sed
-					diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
-					sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
-					Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit
-					amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-					nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
-					sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
-					Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-					Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
-					tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
-					At vero eos et accusam et justo duo dolores et ea rebum.
-					Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-					</span>
-					<li>Node 2
-				</ul>
-
-			<li class="folder">Long line (wrapping)
-				<ul>
-					<li class="noLink" data="addClass: 'ws-wrap'"><span>
-					Lorem ipsum dolor sit amet, consectetuer sadipscing elitr, sed
-					diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
-					sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
-					Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit
-					amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-					nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
-					sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
-					Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-					Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
-					tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
-					At vero eos et accusam et justo duo dolores et ea rebum.
-					Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-					</span>
-					<li>Node 2
-				</ul>
-
-			<li class="folder">Long line (pre formatted)
-				<ul>
-					<li class="noLink" data="addClass: 'ws-pre'"><span>
-					Lorem ipsum dolor sit amet, consectetuer sadipscing elitr, sed
-					diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
-					sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
-					Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit
-					amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-					nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
-					sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
-					Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-					Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
-					tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
-					At vero eos et accusam et justo duo dolores et ea rebum.
-					Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-					</span>
-					<li>Node 2
-				</ul>
-
 			<li class="folder">Long text using BR and P
 				<ul>
-					<li class="noLink"><span>
+					<li><span>
 					<p>
 					Lorem ipsum dolor sit amet, consectetuer sadipscing elitr, sed <br>
 					diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,  <br>
@@ -189,13 +214,13 @@
 
 			<li class="folder">Form elements
 				<ul>
-					<li class="noLink"><span>
+					<li><span>
 						Name: <input type="text" name="name2" />
 						</span>
-					<li class="noLink"><span>
+					<li><span>
 						Comment:<br><textarea name="comment2"></textarea>
 						</span>
-					<li class="noLink" data="icon: false"><span>
+					<li data-icon="false"><span>
 						<input type="radio" id="rb1_1" name="rb1" value="v1" checked>
 						  <label for="rb1_1">Foo</label>
 						<input type="radio" id="rb1_2" name="rb1" value="v2">
@@ -203,49 +228,33 @@
 						<input type="radio" id="rb1_3" name="rb1" value="v3">
 						  <label for="rb1_3">Baz</label>
 						</span>
-					<li class="noLink"><span>
+					<li><span>
 						<button id="btn1" value="123">Click me</button>
 						</span>
 				</ul>
 
-			<li class="folder">Canvas
+			<li id="videoParent1" class="folder">Video
 				<ul>
-					<li class="noLink" id="canvasNode1" data="icon: false"><span>
-						Click below to draw:<br>
+					<li id="videoNode1" data-icon="false"><span>
+						<video id="video1" src="http://simpl.info/video/video/chrome.mp4"
+							controls="controls">
+						  Your browser does not support the <code>video</code> element.
+						</video>
+						</span>
+				</ul>
+<!--
+			<li id="canvasParent1" class="folder">Canvas
+				<ul>
+					<li id="canvasNode1" data-icon="false"><span>
 						<canvas id="canvas1" width="400" height="100">
 						Your browser does not support the <code>canvas</code> element.
 						</canvas>
 						</span>
 				</ul>
-
-			<li class="folder">Video
-				<ul>
-					<li class="noLink"><span>
-						<video src="http://www.w3schools.com/html5/movie.ogg"
-							controls="controls"
-							NO_autoplay
-							>
-						  Your browser does not support the <code>video</code> element.
-						</video>
-						</span>
-				</ul>
-
-			<li class="folder">Audio
-				<ul>
-					<li class="noLink"><span>
-						<audio src="http://developer.mozilla.org/@api/deki/files/2926/=AudioTest_(1).ogg"
-							controls="controls"
-							NO_autoplay>
-						  Your browser does not support the <code>audio</code> element.
-						</audio>
-					</span>
-				</ul>
-
+-->
 			<li>item3
 		</ul>
 	</div>
-
-	<div>Active node: <span id="echoActive">-</span></div>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
 	<hr>

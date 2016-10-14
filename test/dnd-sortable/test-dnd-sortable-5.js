@@ -27,7 +27,7 @@ $(document).ready(function(){
 				 {title: "Lazy1", folder: true, lazy: true }
 				 ],
 //		checkbox: true,
-//		icons: false,
+//		icon: false,
 //        activeVisible: true,
 		dnd: {
 			preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
@@ -106,10 +106,10 @@ $(document).ready(function(){
 */
 			}
 		},
-		activate: function(e, data) {
+		activate: function(event, data) {
 //				alert("activate " + data.node);
 		},
-		lazyload: function(e, data) {
+		lazyLoad: function(event, data) {
 			data.result = {url: "test-dnd-sortabble-subfolders.json", debugDelay: 1000};
 		}
 	});
@@ -119,7 +119,7 @@ $(document).ready(function(){
 	$("#fancytree2").fancytree({
 		extensions: ["dnd"],
 		selectMode: 2, // multi-select
-		icons: false,
+		icon: false,
 //                source: "#sourceItems",
 		dnd: {
 			preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.

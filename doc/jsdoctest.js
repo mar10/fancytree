@@ -1,14 +1,14 @@
 /*!
  * jquery.fancytree.js
- * Dynamic tree view control, with support for lazy loading of branches.
+ * Tree view control with support for lazy loading and much more.
  * https://github.com/mar10/fancytree/
  *
- * Copyright (c) 2006-2014, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2016, Martin Wendt (http://wwWendt.de)
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version DEVELOPMENT
- * @date DEVELOPMENT
+ * @version @VERSION
+ * @date @DATE
  */
 
 /** Core TestJSDocFancytree module.
@@ -148,7 +148,7 @@ $.extend($.moogle.myWidget,
 	/** @lends moogle.myWidget */
 	{
 	/** @type {string} */
-	version: "development",
+	version: "@VERSION",
 	/** Add TestJSDocFancytree extension definition to the list of globally available extensions.
 	 * @param {object} definition
 	 */

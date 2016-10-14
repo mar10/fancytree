@@ -4,8 +4,8 @@
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 	<title>Test Table - Fancytree</title>
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js" type="text/javascript"></script>
+	<script src="//code.jquery.com/jquery-1.12.1.min.js" type="text/javascript"></script>
+	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js" type="text/javascript"></script>
 
 <style type="text/css">
 	/* Set alternating row colors (define BEFORE standard css). */
@@ -36,7 +36,7 @@
 	<!-- End_Exclude -->
 
 <script type="text/javascript">
-SORUCE = [
+SOURCE = [
 	{title: "node 1", folder: true, expanded: true, children: [
 		{title: "node 1.1"},
 		{title: "node 1.2"},
@@ -68,27 +68,32 @@ SORUCE = [
 			},
 			table: {
 				indentation: 20,      // indent 20px per node level
-				nodeColumnIdx: 2,     // render the node title into the 2nd column
-				checkboxColumnIdx: 0  // render the checkboxes into the 1st column
+				nodeColumnIdx: 2,     // render the node title into the 3rd column
+				checkboxColumnIdx: 1  // render the checkboxes into the 2nd column
 			},
 			// source: {
 			// 	url: "../demo/ajax-tree-plain.json"
 			// },
 			// source: [{title: "1", folder: true}],
-			source: {foo: "bar", children: [{title: "1", folder: true}]},
+			source: {foo: "bar", children: SOURCE},
 			titlesTabbable: true,     // Add all node titles to TAB chain
-			init: function(e, data) {
-				alert("init: " + data.tree.data.foo);
+			init: function(event, data) {
+				// alert("init: " + data.tree.data.foo);
 			},
-			lazyload: function(e, data) {
+			lazyLoad: function(event, data) {
 				data.result = {url: "../demo/ajax-sub2.json"};
 			},
-			renderColumns: function(e, data) {
+			renderColumns: function(event, data) {
 				var node = data.node,
 					$tdList = $(node.tr).find(">td");
-				// (index #0 is rendered by fancytree by adding the checkbox)
-				$tdList.eq(1).text(node.getIndexHier()).addClass("alignRight");
+				$tdList.eq(0).text(node.getIndexHier()).addClass("alignRight");
+				// (index #1 is rendered by fancytree by adding the checkbox)
 				// (index #2 is rendered by fancytree)
+				if( node.isFolder() ) {
+					$tdList.eq(2)
+						.prop("colspan", 5)
+						.nextAll().remove();
+				}
 				// $tdList.eq(3).text(node.key);
 				$tdList.eq(3).html("<input type='input' name='col1' value='" + node.key + "'>");
 				$tdList.eq(4).html("<input type='input' name='col2' value='" + node.key + "'>");
@@ -119,7 +124,7 @@ SORUCE = [
 				return;
 			}
 			// Pass text as filter string (will be matched as substring in the node title)
-			var n = tree.applyFilter(match);
+			var n = tree.filterNodes(match);
 			$("#btnResetSearch").attr("disabled", false);
 			$("span#matches").text("(" + n + " matches)");
 		}).focus();
@@ -147,7 +152,7 @@ SORUCE = [
 		});
 		$("#btnRemoveIcon").click(function(e){
 			var node = tree.getActiveNode();
-			node.data.icon = false;
+			node.icon = false;
 			// node.render();
 			node.renderTitle();
 		});
@@ -209,7 +214,7 @@ SORUCE = [
 		<col width="30px"></col>
 		</colgroup>
 		<thead>
-			<tr> <th></th> <th>#</th> <th></th> <th>Ed1</th> <th>Ed2</th> <th>Rb1</th> <th>Rb2</th> </tr>
+			<tr> <th>#</th> <th></th> <th></th> <th>Ed1</th> <th>Ed2</th> <th>Rb1</th> <th>Rb2</th> </tr>
 		</thead>
 		<tbody>
 		</tbody>

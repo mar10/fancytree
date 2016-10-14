@@ -61,7 +61,7 @@
 			actions: {}
 		},
 		treeInit: function(ctx) {
-			this._super(ctx);
+			this._superApply(arguments);
 			initContextMenu(ctx.tree,
                       ctx.options.contextMenu.selector || "fancytree-title",
                       ctx.options.contextMenu.menu,
