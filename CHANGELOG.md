@@ -6,6 +6,7 @@
     'remove' instead (which is fired on the parent).
   * [Fixed] #576 `loadKeyPath()` sometimes gets the root wrong
   * [Fixed] #632 Tabbing is not working if there is an anchor tag in treeview
+  * [Fixed] #643 Exceptions in ext-filter if expression contains special chars
   * Use QUnit 2.0
 
 # 2.19.0 / 2016-08-11

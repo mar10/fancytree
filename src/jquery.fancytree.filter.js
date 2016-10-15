@@ -38,7 +38,7 @@ function extractHtmlText(s){
 }
 
 $.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, branchMode, opts){
-	var leavesOnly, match, statusNode, re, re2,
+	var leavesOnly, match, statusNode, re, reHighlight,
 		count = 0,
 		treeOpts = this.options,
 		escapeTitles = treeOpts.escapeTitles,
@@ -62,7 +62,7 @@ $.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, bra
 			match = _escapeRegex(filter); // make sure a '.' is treated literally
 		}
 		re = new RegExp(".*" + match + ".*", "i");
-		re2 = new RegExp(filter, "gi");
+		reHighlight = new RegExp(_escapeRegex(filter), "gi");
 		filter = function(node){
 			var display,
 				text = escapeTitles ? node.title : extractHtmlText(node.title),
@@ -70,7 +70,7 @@ $.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, bra
 
 			if( res && filterOpts.highlight ) {
 				display = escapeTitles ? escapeHtml(node.title) : text;
-				node.titleWithHighlight = display.replace(re2, function(s){
+				node.titleWithHighlight = display.replace(reHighlight, function(s){
 					return "<mark>" + s + "</mark>";
 				});
 				// node.debug("filter", escapeTitles, text, node.titleWithHighlight);
@@ -132,7 +132,7 @@ $.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, bra
 			}
 		}
 	});
-	if( count === 0 && filterOpts.nodata ) {
+	if( count === 0 && filterOpts.nodata && hideMode ) {
 		statusNode = filterOpts.nodata;
 		if( $.isFunction(statusNode) ) {
 			statusNode = statusNode();
