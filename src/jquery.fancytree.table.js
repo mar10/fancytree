@@ -96,7 +96,7 @@ $.ui.fancytree.registerExtension({
 	// `this`       : is this extension object
 	// `this._super`: the virtual function that was overriden (member of prev. extension or Fancytree)
 	treeInit: function(ctx){
-		var i, n, $row, $tbody,
+		var i, columnCount, n, $row, $tbody,
 			tree = ctx.tree,
 			opts = ctx.options,
 			tableOpts = opts.table,
@@ -124,21 +124,21 @@ $.ui.fancytree.registerExtension({
 
 		// Prepare row templates:
 		// Determine column count from table header if any
-		tree.columnCount = $("thead >tr:last >th", $table).length;
+		columnCount = $("thead >tr:last >th", $table).length;
 		// Read TR templates from tbody if any
 		$row = $tbody.children("tr:first");
 		if( $row.length ) {
 			n = $row.children("td").length;
-			if( tree.columnCount && n !== tree.columnCount ) {
-				tree.warn("Column count mismatch between thead (" + tree.columnCount + ") and tbody (" + n + "); using tbody.");
-				tree.columnCount = n;
+			if( columnCount && n !== columnCount ) {
+				tree.warn("Column count mismatch between thead (" + columnCount + ") and tbody (" + n + "): using tbody.");
+				columnCount = n;
 			}
 			$row = $row.clone();
 		} else {
 			// Only thead is defined: create default row markup
-			_assert(tree.columnCount >= 1, "Need either <thead> or <tbody> with <td> elements to determine column count.");
+			_assert(columnCount >= 1, "Need either <thead> or <tbody> with <td> elements to determine column count.");
 			$row = $("<tr />");
-			for(i=0; i<tree.columnCount; i++) {
+			for(i=0; i<columnCount; i++) {
 				$row.append("<td />");
 			}
 		}
@@ -223,7 +223,10 @@ $.ui.fancytree.registerExtension({
 		}
 		// $.ui.fancytree.debug("*** nodeRender " + node + ", isRoot=" + isRootNode, "tr=" + node.tr, "hcp=" + ctx.hasCollapsedParents, "parent.tr=" + (node.parent && node.parent.tr));
 		if( !isRootNode ){
-			if(!node.tr){
+			if( node.tr && force ) {
+				this.nodeRemoveMarkup(ctx);
+			}
+			if( !node.tr ) {
 				if( ctx.hasCollapsedParents && !deep ) {
 					// #166: we assume that the parent will be (recursively) rendered
 					// later anyway.

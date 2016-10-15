@@ -7,6 +7,8 @@
   * [Fixed] #576 `loadKeyPath()` sometimes gets the root wrong
   * [Fixed] #632 Tabbing is not working if there is an anchor tag in treeview
   * [Fixed] #643 Exceptions in ext-filter if expression contains special chars
+  * [Fixed] #644 New nodes created with ext-edit, are hidden in filtered trees
+  * [Fixed] #647 ext-table: tree.render(true) does not discard existing markup 
   * Use QUnit 2.0
 
 # 2.19.0 / 2016-08-11
