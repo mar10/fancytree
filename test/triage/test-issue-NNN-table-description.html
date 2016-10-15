@@ -4,36 +4,37 @@
 	<meta http-equiv="content-type" content="text/html; charset=utf-8">
 	<title>Test Case (ext-table) | Fancytree</title>
 
-	<!-- Include latest jQuery and Fancytree from CDN ... -->
+	<!-- Include assets from CDN, using latest stable version -->
+	<!-- (Sample file runs stand-alone, but requires an internet conenction.) -->
+
 	<link href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" rel="stylesheet">
-	<script src="https://code.jquery.com/jquery-1.12.1.js" type="text/javascript"></script>
-	<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js" type="text/javascript"></script>
+	<script src="https://code.jquery.com/jquery-1.12.1.js"></script>
+	<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 
 	<link href="https://cdn.jsdelivr.net/jquery.fancytree/2/skin-win8/ui.fancytree.min.css"
-		rel="stylesheet" type="text/css">
-	<script src="https://cdn.jsdelivr.net/jquery.fancytree/2/jquery.fancytree-all.min.js"
-		type="text/javascript"></script>
+		rel="stylesheet">
+	<script src="https://cdn.jsdelivr.net/jquery.fancytree/2/jquery.fancytree-all.min.js"></script>
 
-	<!-- ... or include from own asset folders: -->
+	<!-- Include assets from local project folder -->
+	<!-- (Sample uses current code and runs without an internet conenction) -->
 <!--
-	<script src="../../lib/jquery.js" type="text/javascript"></script>
-	<script src="../../lib/jquery-ui.custom.js" type="text/javascript"></script>
+	<script src="../../lib/jquery.js"></script>
+	<script src="../../lib/jquery-ui.custom.js"></script>
 
-	<link href="../../src/skin-win8/ui.fancytree.css" rel="stylesheet" type="text/css">
-	<script src="../../src/jquery.fancytree.js" type="text/javascript"></script>
-	<script src="../../src/jquery.fancytree.gridnav.js" type="text/javascript"></script>
-	<script src="../../src/jquery.fancytree.table.js" type="text/javascript"></script>
-
-	<script src="../../src/jquery.fancytree.childcounter.js" type="text/javascript"></script>
-	<script src="../../src/jquery.fancytree.clones.js" type="text/javascript"></script>
-	<script src="../../src/jquery.fancytree.columnview.js" type="text/javascript"></script>
-	<script src="../../src/jquery.fancytree.dnd.js" type="text/javascript"></script>
-	<script src="../../src/jquery.fancytree.edit.js" type="text/javascript"></script>
-	<script src="../../src/jquery.fancytree.filter.js" type="text/javascript"></script>
-	<script src="../../src/jquery.fancytree.glyph.js" type="text/javascript"></script>
-	<script src="../../src/jquery.fancytree.persist.js" type="text/javascript"></script>
-	<script src="../../src/jquery.fancytree.themeroller.js" type="text/javascript"></script>
-	<script src="../../src/jquery.fancytree.wide.js" type="text/javascript"></script>
+	<link href="../../src/skin-win8/ui.fancytree.css" rel="stylesheet">
+	<script src="../../src/jquery.fancytree.js"></script>
+	<script src="../../src/jquery.fancytree.childcounter.js"></script>
+	<script src="../../src/jquery.fancytree.clones.js"></script>
+	<script src="../../src/jquery.fancytree.columnview.js"></script>
+	<script src="../../src/jquery.fancytree.dnd.js"></script>
+	<script src="../../src/jquery.fancytree.edit.js"></script>
+	<script src="../../src/jquery.fancytree.filter.js"></script>
+	<script src="../../src/jquery.fancytree.glyph.js"></script>
+	<script src="../../src/jquery.fancytree.persist.js"></script>
+	<script src="../../src/jquery.fancytree.gridnav.js"></script>
+	<script src="../../src/jquery.fancytree.table.js"></script>
+	<script src="../../src/jquery.fancytree.themeroller.js"></script>
+	<script src="../../src/jquery.fancytree.wide.js"></script>
 -->
 <style type="text/css">
 #tree {

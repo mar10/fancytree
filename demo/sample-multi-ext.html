@@ -40,6 +40,9 @@
 	td.alignRight {
 	   text-align: right;
 	}
+	td.alignCenter {
+	   text-align: center;
+	}
 	td input[type=input] {
 		width: 40px;
 	}
@@ -48,12 +51,12 @@
 <script type="text/javascript">
 var SOURCE = [
 		{title: "node 1", folder: true, expanded: true, children: [
-			{title: "node 1.1"},
-			{title: "node 1.2"}
+			{title: "node 1.1", foo: "a"},
+			{title: "node 1.2", foo: "b"}
 		 ]},
 		{title: "node 2", folder: true, expanded: false, children: [
-			{title: "node 2.1"},
-			{title: "node 2.2"}
+			{title: "node 2.1", foo: "c"},
+			{title: "node 2.2", foo: "d"}
 		 ]}
 	],
 	CLIPBOARD = null;
@@ -106,27 +109,34 @@ $(function(){
 		lazyLoad: function(event, data) {
 			data.result = {url: "../demo/ajax-sub2.json"};
 		},
-		renderColumns: function(event, data) {
+		createNode: function(event, data) {
 			var node = data.node,
-				$select = $("<select />"),
 				$tdList = $(node.tr).find(">td");
 
-			// (Index #0 is rendered by fancytree by adding the checkbox)
-			$tdList.eq(1).text(node.getIndexHier()).addClass("alignRight");
-			// Index #2 is rendered by fancytree, but we make the title cell
-			// span the remaining columns if it is a folder:
+			// Span the remaining columns if it's a folder.
+			// We can do this in createNode instead of renderColumns, because
+			// the `isFolder` status is unlikely to change later
 			if( node.isFolder() ) {
 				$tdList.eq(2)
 					.prop("colspan", 6)
 					.nextAll().remove();
 			}
-			$tdList.eq(3).html("<input type='input' value='" + "" + "'>");
-			$tdList.eq(4).html("<input type='input' value='" + "" + "'>");
-			$tdList.eq(5).html("<input type='checkbox' value='" + "" + "'>");
-			$tdList.eq(6).html("<input type='checkbox' value='" + "" + "'>");
-			$("<option />", {text: "a", value: "a"}).appendTo($select);
-			$("<option />", {text: "b"}).appendTo($select);
-			$tdList.eq(7).html($select);
+		},
+		renderColumns: function(event, data) {
+			var node = data.node,
+				$tdList = $(node.tr).find(">td");
+
+			// (Index #0 is rendered by fancytree by adding the checkbox)
+			// Set column #1 info from node data:
+			$tdList.eq(1).text(node.getIndexHier());
+			// (Index #2 is rendered by fancytree)
+			// Set column #3 info from node data:
+			$tdList.eq(3).find("input").val(node.key);
+			$tdList.eq(4).find("input").val(node.data.foo);
+
+			// Static markup (more efficiently defined as html row template):
+			// $tdList.eq(3).html("<input type='input' value='" + "" + "'>");
+			// ...
 		}
 	}).on("nodeCommand", function(event, data){
 		// Custom event handler that is triggered by keydown-handler and
@@ -355,6 +365,22 @@ $(function(){
 			<tr> <th></th> <th>#</th> <th></th> <th>Ed1</th> <th>Ed2</th> <th>Rb1</th> <th>Rb2</th> <th>Cb</th></tr>
 		</thead>
 		<tbody>
+			<!-- Define a row template for all invariant markup: -->
+			<tr>
+				<td class="alignCenter"></td>
+				<td></td>
+				<td></td>
+				<td><input name="input1" type="input"></td>
+				<td><input name="input2" type="input"></td>
+				<td class="alignCenter"><input name="cb1" type="checkbox"></td>
+				<td class="alignCenter"><input name="cb2" type="checkbox"></td>
+				<td>
+					<select name="sel1" id="">
+						<option value="a">A</option>
+						<option value="b">B</option>
+					</select>
+				</td>
+			</tr>
 		</tbody>
 	</table>
 
