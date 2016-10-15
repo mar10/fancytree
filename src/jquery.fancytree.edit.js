@@ -210,6 +210,13 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editCreateNode = function(mode, ini
 		return;
 	}
 	newNode = this.addNode(init, mode);
+	
+	// #644: Don't filter new nodes.
+	newNode.match = true;
+	$(newNode[tree.statusClassPropName])
+		.removeClass("fancytree-hide")
+		.addClass("fancytree-match");
+	
 	newNode.makeVisible(/*{noAnimation: true}*/).done(function(){
 		$(newNode[tree.statusClassPropName]).addClass("fancytree-edit-new");
 		self.tree.ext.edit.relatedNode = self;
