@@ -199,12 +199,12 @@ var FancytreeOptions = {};
  * @property {function} beforeSelect `data.node` is about to be (de)selected. Current status is `data.node.isSelected()`. Return `false` to prevent default processing
  * @property {function} blur `data.node` lost keyboard focus
  * @property {function} blurTree `data.tree` lost keyboard focus
- * @property {function} click `data.node` was clicked. `data.targetType` contains the region ("title", "expander", ...). Return `false` to prevent default processing, i.e. activating, expanding, selecting, etc.
+ * @property {function} click `data.node` was clicked. `data.targetType` contains the region ("checkbox", "expander", "icon", "prefix", "title"). Return `false` to prevent default processing, i.e. activating, expanding, selecting, etc.
  * @property {function} clickPaging `data.node` is a 'paging' status node and was activated. Use data.node.replaceWith() to load additional nodes.
  * @property {function} collapse `data.node` was collapsed
  * @property {function} create Widget was created (called only once, even if re-initialized).
  * @property {function} createNode Allow tweaking and binding, after node was created for the first time (NOTE: this event is only available as callback, but not for bind())
- * @property {function} dblclick `data.node` was double-clicked. `data.targetType` contains the region ("title", "expander", ...). Return `false` to prevent default processing, i.e. expanding, etc.
+ * @property {function} dblclick `data.node` was double-clicked. `data.targetType` contains the region ("checkbox", "expander", "icon", "prefix", "title"). Return `false` to prevent default processing, i.e. expanding, etc.
  * @property {function} deactivate `data.node` was deactivated
  * @property {function} enhanceTitle Allow extending the `&lt;span class='fancytree-title'>` markup, for example by adding badges, ... (NOTE: this event is only available as callback, but not for bind())
  * @property {function} expand `data.node` was expanded

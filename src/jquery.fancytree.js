@@ -3240,7 +3240,7 @@ $.extend(Fancytree.prototype,
 	 * Create `&lt;li>&lt;span>..&lt;/span> .. &lt;/li>` tags for this node.
 	 *
 	 * This method takes care that all HTML markup is created that is required
-	 * to display this node in it's current state.
+	 * to display this node in its current state.
 	 *
 	 * Call this method to create new nodes, or after the strucuture
 	 * was changed (e.g. after moving this node or adding/removing children)
