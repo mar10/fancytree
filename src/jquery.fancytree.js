@@ -1714,7 +1714,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 
 	/**Activate this node.
 	 * @param {boolean} [flag=true] pass false to deactivate
-	 * @param {object} [opts] additional options. Defaults to {noEvents: false}
+	 * @param {object} [opts] additional options. Defaults to {noEvents: false, noFocus: false}
 	 * @returns {$.Promise}
 	 */
 	setActive: function(flag, opts){
