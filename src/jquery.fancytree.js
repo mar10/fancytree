@@ -1714,7 +1714,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 
 	/**Activate this node.
 	 * @param {boolean} [flag=true] pass false to deactivate
-	 * @param {object} [opts] additional options. Defaults to {noEvents: false}
+	 * @param {object} [opts] additional options. Defaults to {noEvents: false, noFocus: false}
 	 * @returns {$.Promise}
 	 */
 	setActive: function(flag, opts){
@@ -3713,8 +3713,8 @@ $.extend(Fancytree.prototype,
 				_assert(tree.activeNode === null, "deactivate was out of sync?");
 			}
 			if(opts.activeVisible){
-				// tree.nodeMakeVisible(ctx);
-				node.makeVisible({scrollIntoView: false}); // nodeSetFocus will scroll
+				// If no focus is set (noFocus: true) and there is no focused node, this node is made visible.
+				node.makeVisible({scrollIntoView: noFocus && tree.focusNode == null});
 			}
 			tree.activeNode = node;
 			tree.nodeRenderStatus(ctx);
