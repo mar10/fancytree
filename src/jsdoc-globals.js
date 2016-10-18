@@ -85,7 +85,8 @@ var EventData = {};
  * @property {boolean} selected Initial selection state. Use `node.setSelected()` or `node.isSelected()` to access.
  * @property {string} statusNodeType If set, make this node a status node. Values: 'error', 'loading', 'nodata', 'paging'.
  * @property {string} title Node text (may contain HTML tags). Use `node.setTitle()` to modify.
- * @property {string} tooltip Will be added as `title` attribute, thus enabling a tooltip.
+ * @property {string} tooltip Will be added as `title` attribute, thus enabling a tooltip.<br>
+ *	   See also the global `tree.tooltip` option.
  * @property {boolean} unselectable Prevent (de-)selection using mouse or keyboard.
  * @property {any} OTHER Attributes other than listed above will be copied to `node.data`.
  *
@@ -143,11 +144,11 @@ var TreePatch = {};
  * @property {string[]} extensions List of active extensions (default: [])
  * @property {boolean} focusOnSelect Set focus when node is checked by a mouse click (default: false)
  * @property {boolean} generateIds Add `id="..."` to node markup (default: false).
- * @property {boolean|Function} icon Display node icons (default: true)<br>
+ * @property {boolean|function} icon Display node icons (default: true)<br>
  *     true: use default icons, depending on `node.folder` and `node.expanded`<br>
  *     false: hide icons<br>
  *     function(node, data): callback returning true, false, or a string.<br>
- *     NOTE: changed with v2.14.
+ *     NOTE: changed with v2.14.<br>
  *	   See the node option of the same name for an explanation of possible string values.
  * @property {boolean} <del>icons</del> @deprecated use `icon` instead
  * @property {string} idPrefix prefix used to generate node markup ID attributes (default: "ft_", requires generateIds to be set)
@@ -169,7 +170,12 @@ var TreePatch = {};
  *     "": Tree control is not tabbable nor may it receive keyboard focus.
  * @property {boolean} titlesTabbable Add tabindex='0' to node title span, so it can receive keyboard focus
  * @property {object} toggleEffect Animation options, false:off (default: { effect: "blind", options: {direction: "vertical", scale: "box"}, duration: 200 })
- *
+ * @property {boolean|function} tooltip Add a `title` attribute to the node markup, thus enabling a tooltip (default: false).<br>
+ *	   false: No automatic tooltip (but still honor `node.tooltip` attribute)<br>
+ *     true:  Copy `node.title` as tooltip<br>
+ *     function:  A callback(node)<br>
+ *	   Note: If a node has the `node.tooltip` attribute set, this will take precedence.<br>
+ *	   Note: If a separate tooltip widget is used, it may be more efficient to use that widget API instead, instead of duplicating tree markup. (<a href="http://api.jqueryui.com/tooltip/#option-content">For example jQuery UI Tooltip</a>.)
  */
 var FancytreeOptions = {};
 

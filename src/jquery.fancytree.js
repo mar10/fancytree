@@ -34,6 +34,7 @@ var i, attr,
 	FT = null, // initialized below
 	TEST_IMG = new RegExp(/\.|\//),  // strings are considered image urls if they conatin '.' or '/'
 	REX_HTML = /[&<>"'\/]/g,
+	REX_TOOLTIP = /[<>"'\/]/g,
 	RECURSIVE_REQUEST_ERROR = "$recursive_request",
 	ENTITY_MAP = {"&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;", "/": "&#x2F;"},
 	IGNORE_KEYCODES = { 16: true, 17: true, 18: true },
@@ -238,7 +239,14 @@ function _getElementDataAsDict($el){
 
 
 function _escapeHtml(s){
-	return ("" + s).replace(REX_HTML, function (s) {
+	return ("" + s).replace(REX_HTML, function(s) {
+		return ENTITY_MAP[s];
+	});
+}
+
+
+function _escapeTooltip(s){
+	return ("" + s).replace(REX_TOOLTIP, function(s) {
 		return ENTITY_MAP[s];
 	});
 }
@@ -291,7 +299,7 @@ function _makeNodeTitleStartMatcher(s){
  * @property {string} statusNodeType null for standard nodes. Otherwise type of special system node: 'error', 'loading', 'nodata', or 'paging'.
  * @property {boolean} lazy True if this node is loaded on demand, i.e. on first expansion.
  * @property {boolean} selected Use isSelected(), setSelected() to access this property.
- * @property {string} tooltip Alternative description used as hover banner
+ * @property {string} tooltip Alternative description used as hover popup
  */
 function FancytreeNode(parent, obj){
 	var i, l, name, cl;
@@ -3528,8 +3536,13 @@ $.extend(Fancytree.prototype,
 		if ( opts.renderTitle ){
 			nodeTitle = opts.renderTitle.call(tree, {type: "renderTitle"}, ctx) || "";
 		}
-		if(!nodeTitle){
-			tooltip = node.tooltip ? " title='" + _escapeHtml(node.tooltip) + "'" : "";
+		if ( !nodeTitle ) {
+			if( node.tooltip ) {
+				tooltip = node.tooltip;
+			} else if ( opts.tooltip ) {
+				tooltip = opts.tooltip === true ? node.title : opts.tooltip.call(tree, node);
+			}
+			tooltip = tooltip ? " title='" + _escapeTooltip(tooltip) + "'" : "";
 			id = aria ? " id='ftal_" + opts.idPrefix + node.key + "'" : "";
 			role = aria ? " role='treeitem'" : "";
 			tabindex = opts.titlesTabbable ? " tabindex='0'" : "";
@@ -4390,6 +4403,7 @@ $.widget("ui.fancytree",
 			rerender = true;
 			break;
 		case "escapeTitles":
+		case "tooltip":
 			rerender = true;
 			break;
 		case "source":
