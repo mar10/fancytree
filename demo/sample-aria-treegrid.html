@@ -2,13 +2,14 @@
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
-	<title>Fancytree - WAI-ARIA Tree View</title>
+	<title>Fancytree - WAI-ARIA Tree Grid</title>
 
 	<script src="../lib/jquery.js"></script>
 	<script src="../lib/jquery-ui.custom.js"></script>
 
 	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet">
 	<script src="../src/jquery.fancytree.js"></script>
+	<script src="../src/jquery.fancytree.table.js"></script>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
 	<link href="../lib/prettify.css" rel="stylesheet">
@@ -18,40 +19,45 @@
 	<!-- End_Exclude -->
 
 	<style type="text/css">
+/*		table.fancytree-container {
+			width: 90%;
+		}*/
 	</style>
 
 	<script type="text/javascript">
 		$(function(){
-			$("#tree").fancytree({
+			$("#treegrid").fancytree({
+				extensions: ["table"],
 				aria: true,
 				quicksearch: true,
-				source: {url: "ajax-tree-products.json"}
+				source: {url: "ajax-tree-products.json"},
+				table: { },
+				renderColumns: function(event, data) {
+					var node = data.node,
+						$tdList = $(node.tr).find(">td");
+					$tdList.eq(1).text(node.getIndexHier());
+				}
 			});
 		});
 	</script>
 </head>
 
 <body class="example">
-	<h1>Example: WAI-ARIA Tree View</h1>
+	<h1>Example: WAI-ARIA Tree Grid</h1>
 	<div class="description">
 	<p>		
-		This Fancytree Tree View has 
-		<a href="https://www.w3.org/TR/wai-aria-practices/#TreeView">WAI-ARIA</a> 
+		This Fancytree Tree Grid has 
+		<a href="https://www.w3.org/TR/wai-aria-practices/#TreeGrid">WAI-ARIA</a> 
 		enabled.<br>
 		<strong>Note that this is work in progress.</strong>
 	</p>
 	<p>		
-		See also the <a href="sample-aria-treegrid.html">ARIA Tree Grid example</a>.
+		See also the <a href="sample-aria.html">ARIA Tree View example</a>.
 	</p>
 	</div>
 	
-	<div>
+	<div role="application">
 		<label for="lblBefore">Text 1<input type="text" id="lblBefore"></label>
-
-		<div id="tree">
-		</div>
-
-		<hr>
 
 		<table id="treegrid">
 			<colgroup>

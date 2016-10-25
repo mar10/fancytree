@@ -1,3 +1,7 @@
+# 2.20.1 / aria branch / Unreleased
+  * [Improved] WAI-ARIA support
+  * [Improved] Set focus to first node on first tab-in
+
 # 2.20.0-0 / Unreleased
   * [Added] #419 `modifyChild` event. This event is also a good place to 
     implement auto sorting (#559)

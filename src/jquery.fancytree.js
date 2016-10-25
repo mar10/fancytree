@@ -3329,10 +3329,12 @@ $.extend(Fancytree.prototype,
 				firstTime = true;
 				node.li = document.createElement("li");
 				node.li.ftnode = node;
+
+				// We set role 'treeitem' to the title span instead
 				if(aria){
 					// TODO: why doesn't this work:
-//					node.li.role = "treeitem";
-//                    $(node.li).attr("role", "treeitem")
+					// node.li.role = "treeitem";
+                   $(node.li).attr("role", "treeitem");
 //                    .attr("aria-labelledby", "ftal_" + opts.idPrefix + node.key);
 				}
 				if( node.key && opts.generateIds ){
@@ -3341,7 +3343,8 @@ $.extend(Fancytree.prototype,
 				node.span = document.createElement("span");
 				node.span.className = "fancytree-node";
 				if(aria){
-					$(node.span).attr("aria-labelledby", "ftal_" + opts.idPrefix + node.key);
+					$(node.li).attr("aria-labelledby", "ftal_" + opts.idPrefix + node.key);
+					// $(node.span).attr("aria-labelledby", "ftal_" + opts.idPrefix + node.key);
 				}
 				node.li.appendChild(node.span);
 
@@ -3544,7 +3547,8 @@ $.extend(Fancytree.prototype,
 			}
 			tooltip = tooltip ? " title='" + _escapeTooltip(tooltip) + "'" : "";
 			id = aria ? " id='ftal_" + opts.idPrefix + node.key + "'" : "";
-			role = aria ? " role='treeitem'" : "";
+			role = "";
+			// role = aria ? " role='treeitem'" : "";
 			tabindex = opts.titlesTabbable ? " tabindex='0'" : "";
 
 			nodeTitle = "<span " + role + " class='fancytree-title'" +
@@ -3575,8 +3579,8 @@ $.extend(Fancytree.prototype,
 			hasChildren = node.hasChildren(),
 			isLastSib = node.isLastSibling(),
 			aria = opts.aria,
-//            $ariaElem = aria ? $(node[tree.ariaPropName]) : null,
-			$ariaElem = $(node.span).find(".fancytree-title"),
+            $ariaElem = aria ? $(node[tree.ariaPropName]) : null,
+			// $ariaElem = $(node.span).find(".fancytree-title"),
 			cn = opts._classNames,
 			cnList = [],
 			statusElem = node[tree.statusClassPropName];
@@ -3598,26 +3602,22 @@ $.extend(Fancytree.prototype,
 		if( tree.focusNode === node ){
 			cnList.push(cn.focused);
 			if(aria){
-//              $(">span.fancytree-title", statusElem).attr("tabindex", "0");
-//                $(">span.fancytree-title", statusElem).attr("tabindex", "-1");
-				// TODO: is this the right element for this attribute?
-				$ariaElem
-					.attr("aria-activedescendant", true);
-//					.attr("tabindex", "-1");
+				$ariaElem.attr("aria-activedescendant", true);
 			}
 		}else if(aria){
-//			$(">span.fancytree-title", statusElem).attr("tabindex", "-1");
-			$ariaElem
-				.removeAttr("aria-activedescendant");
-//				.removeAttr("tabindex");
+			$ariaElem.removeAttr("aria-activedescendant");
 		}
 		if( node.expanded ){
 			cnList.push(cn.expanded);
 			if(aria){
 				$ariaElem.attr("aria-expanded", true);
 			}
-		}else if(aria){
-			$ariaElem.removeAttr("aria-expanded");
+		}else if( aria ){
+			if( hasChildren ) {
+				$ariaElem.attr("aria-expanded", false);
+			} else {
+				$ariaElem.removeAttr("aria-expanded");
+			}
 		}
 		if( node.folder ){
 			cnList.push(cn.folder);
@@ -4225,6 +4225,9 @@ $.extend(Fancytree.prototype,
 			}
 			this.$container.toggleClass("fancytree-treefocus", flag);
 			this._triggerTreeEvent(flag ? "focusTree" : "blurTree");
+			if( flag && !this.activeNode ) {
+				this.getFirstChild() && this.getFirstChild().setFocus();
+			}
 		}
 	}
 });
