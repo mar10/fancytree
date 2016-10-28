@@ -94,15 +94,15 @@ var SOURCE = [
 		  ];
 		  // Lazy sub nodes
 		  var SOURCE_2 = [
-			  {title: "Lazy Folder 1", folder: true, expanded: true,
+			  {title: "Lazy Folder 3.1", folder: true, expanded: true,
 				  children: [
-					  {title: "Lazy Sub-item 1.1", selected: false,
+					  {title: "Lazy Sub-item 3.1.1", selected: false, refKey: "rk311",
 						  children: [
-									  {title: "Sub-item 2.1.1"},
-									  {title: "Sub-item 2.1.2", selected: false}
+									  {title: "Sub-item 3.1.1.1", refKey: "rk3111"},
+									  {title: "Sub-item 3.1.1.2", refKey: "rk3112", selected: false}
 								  ]
 						  },
-					  {title: "Sub-item 2.2"}
+					  {title: "Sub-item 3.1.2"}
 				  ]
 			  }
 		  ];
@@ -116,7 +116,8 @@ var SOURCE = [
 				highlightClones: true
 			},
 			lazyLoad: function(e, data) {
-				data.result = {url: "ajax-sub2.json"}
+				// data.result = {url: "ajax-sub2.json"}
+				data.result = SOURCE_2
 			},
 			activate: function(e, data){
 				var clones = data.node.getCloneList();
