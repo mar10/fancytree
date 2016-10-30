@@ -3601,11 +3601,11 @@ $.extend(Fancytree.prototype,
 		}
 		if( tree.focusNode === node ){
 			cnList.push(cn.focused);
-			if(aria){
-				$ariaElem.attr("aria-activedescendant", true);
-			}
+			// if(aria){
+			// 	$ariaElem.attr("aria-activedescendant", true);
+			// }
 		}else if(aria){
-			$ariaElem.removeAttr("aria-activedescendant");
+			// $ariaElem.removeAttr("aria-activedescendant");
 		}
 		if( node.expanded ){
 			cnList.push(cn.expanded);
@@ -3913,6 +3913,7 @@ $.extend(Fancytree.prototype,
 		var ctx2,
 			tree = ctx.tree,
 			node = ctx.node,
+			opts = tree.options,
 			// et = ctx.originalEvent && ctx.originalEvent.type,
 			isInput = ctx.originalEvent ? $(ctx.originalEvent.target).is(":input") : false;
 
@@ -3938,7 +3939,7 @@ $.extend(Fancytree.prototype,
 			}
 			node.makeVisible({scrollIntoView: false});
 			tree.focusNode = node;
-			if( tree.options.titlesTabbable ) {
+			if( opts.titlesTabbable ) {
 				if( !isInput ) { // #621
 					$(node.span).find(".fancytree-title").focus();
 				}
@@ -3951,13 +3952,17 @@ $.extend(Fancytree.prototype,
 					$(tree.$container).focus();
 				}
 			}
+			if( opts.aria ){
+				$(tree.$container).attr("aria-activedescendant", 
+					"ftal_" + opts.idPrefix + node.key);
 
+			}
 //			$(node.span).find(".fancytree-title").focus();
 			this._triggerNodeEvent("focus", ctx);
-//          if(ctx.options.autoActivate){
+//          if( opts.autoActivate ){
 //              tree.nodeSetActive(ctx, true);
 //          }
-			if(ctx.options.autoScroll){
+			if( opts.autoScroll ){
 				node.scrollIntoView();
 			}
 			this._callHook("nodeRenderStatus", ctx);
