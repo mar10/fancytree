@@ -11,6 +11,7 @@
   * [Fixed] #643 Exceptions in ext-filter if expression contains special chars
   * [Fixed] #644 New nodes created with ext-edit, are hidden in filtered trees
   * [Fixed] #647 ext-table: tree.render(true) does not discard existing markup 
+  * [Fixed] #658 ext-filter does not work with ext-edit `editCreateNode()`
   * Use QUnit 2.0
 
 # 2.19.0 / 2016-08-11
