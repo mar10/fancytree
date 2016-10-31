@@ -330,15 +330,17 @@ $.ui.fancytree.registerExtension({
 			node.$subMatchBadge.hide();
 		}
 		// node.debug("nodeRenderStatus", node.titleWithHighlight, node.title)
-		if( node.titleWithHighlight ) {
-			$title.html(node.titleWithHighlight);
-		} else if ( escapeTitles ) {
-			$title.text(node.title);
-		} else {
-			$title.html(node.title);
-		}
-		if( enhanceTitle ) {
-			enhanceTitle({type: "enhanceTitle"}, {node: node, $title: $title});
+		if( !node.isEditing || !node.isEditing()){
+			if( node.titleWithHighlight ) {
+				$title.html(node.titleWithHighlight);
+			} else if ( escapeTitles ) {
+				$title.text(node.title);
+			} else {
+				$title.html(node.title);
+			}
+			if( enhanceTitle ) {
+				enhanceTitle({type: "enhanceTitle"}, {node: node, $title: $title});
+			}
 		}
 		return res;
 	}
