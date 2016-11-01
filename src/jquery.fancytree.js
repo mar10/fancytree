@@ -2321,11 +2321,11 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	 */
 	enableUpdate: function(flag) {
 		flag = ( flag !== false );
-		/* jshint -W018 */  // Confusing use of '!'
+		/*jshint -W018 */  // Confusing use of '!'
 		if ( !!this._enableUpdate === !!flag ) {
 			return flag;
 		}
-		/* jshint +W018 */
+		/*jshint +W018 */ 
 		this._enableUpdate = flag;
 		if ( flag ) {
 			this.debug("enableUpdate(true): redraw ", this._dirtyRoots);
@@ -3953,9 +3953,8 @@ $.extend(Fancytree.prototype,
 				}
 			}
 			if( opts.aria ){
-				$(tree.$container).attr("aria-activedescendant", 
+				$(tree.$container).attr("aria-activedescendant",
 					"ftal_" + opts.idPrefix + node.key);
-
 			}
 //			$(node.span).find(".fancytree-title").focus();
 			this._triggerNodeEvent("focus", ctx);
