@@ -2151,9 +2151,10 @@ function Fancytree(widget) {
 	this.$container.attr("tabindex", this.options.tabindex);
 	// this.$container.attr("tabindex", this.options.tabbable ? "0" : "-1");
 	if(this.options.aria){
-		this.$container
-			.attr("role", "tree")
-			.attr("aria-multiselectable", true);
+		this.$container.attr("role", "tree");
+		if( this.options.selectMode !== 1 ) {
+			this.$container.attr("aria-multiselectable", true);
+		}
 	}
 }
 
