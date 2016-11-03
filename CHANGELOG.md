@@ -1,3 +1,12 @@
+# 2.20.1 / aria branch / Unreleased
+  * [Fix] #659  handling of function keys, when quicksearch is on
+  * [Improved] #656 WAI-ARIA support
+    - Set focus to first node on first tab-in
+    - Support [home] and [end] keys
+    - Set aria-activedescendant on container to active ID
+    - Set aria-multiselectable on container if selectMode != 1
+    - Set aria-treeitem, -selected, -expanded, on title span instead `<li>`
+
 # 2.20.0-0 / Unreleased
   * [Added] #419 `modifyChild` event. This event is also a good place to 
     implement auto sorting (#559)

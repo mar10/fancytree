@@ -1393,11 +1393,6 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	 * @param {boolean} [activate=true]
 	 * @returns {$.Promise}
 	 */
-	// navigate: function(where, activate) {
-	// 	console.time("navigate")
-	// 	this._navigate(where, activate)
-	// 	console.timeEnd("navigate")
-	// },
 	navigate: function(where, activate) {
 		var i, parents, res,
 			handled = true,
@@ -1423,6 +1418,24 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			case KC.BACKSPACE:
 				if( this.parent && this.parent.parent ) {
 					res = _goto(this.parent);
+				}
+				break;
+			case KC.HOME:
+				this.tree.visit(function(n){  // goto first visible node
+					if( $(n.span).is(":visible") ) {
+						res = _goto(n);
+						return false;
+					}
+				});
+				break;
+			case KC.END:
+				this.tree.visit(function(n){  // goto last visible node
+					if( $(n.span).is(":visible") ) {
+						res = n;
+					}
+				});
+				if( res ) {
+					res = _goto(res);
 				}
 				break;
 			case KC.LEFT:
@@ -2138,9 +2151,10 @@ function Fancytree(widget) {
 	this.$container.attr("tabindex", this.options.tabindex);
 	// this.$container.attr("tabindex", this.options.tabbable ? "0" : "-1");
 	if(this.options.aria){
-		this.$container
-			.attr("role", "tree")
-			.attr("aria-multiselectable", true);
+		this.$container.attr("role", "tree");
+		if( this.options.selectMode !== 1 ) {
+			this.$container.attr("aria-multiselectable", true);
+		}
 	}
 }
 
@@ -2321,11 +2335,11 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	 */
 	enableUpdate: function(flag) {
 		flag = ( flag !== false );
-		/* jshint -W018 */  // Confusing use of '!'
+		/*jshint -W018 */  // Confusing use of '!'
 		if ( !!this._enableUpdate === !!flag ) {
 			return flag;
 		}
-		/* jshint +W018 */
+		/*jshint +W018 */ 
 		this._enableUpdate = flag;
 		if ( flag ) {
 			this.debug("enableUpdate(true): redraw ", this._dirtyRoots);
@@ -2892,8 +2906,8 @@ $.extend(Fancytree.prototype,
 			handled = true,
 			activate = !(event.ctrlKey || !opts.autoActivate );
 
-//		(node || FT).debug("ftnode.nodeKeydown(" + event.type + "): ftnode:" + this + ", charCode:" + event.charCode + ", keyCode: " + event.keyCode + ", which: " + event.which);
-//		FT.debug("eventToString", which, '"' + String.fromCharCode(which) + '"', '"' + FT.eventToString(event) + '"');
+		// (node || FT).debug("ftnode.nodeKeydown(" + event.type + "): ftnode:" + this + ", charCode:" + event.charCode + ", keyCode: " + event.keyCode + ", which: " + event.which);
+		// FT.debug("eventToString", which, '"' + String.fromCharCode(which) + '"', '"' + FT.eventToString(event) + '"');
 
 		// Set focus to active (or first node) if no other node has the focus yet
 		if( !node ){
@@ -2905,7 +2919,9 @@ $.extend(Fancytree.prototype,
 			}
 		}
 
-		if( opts.quicksearch && clean && /\w/.test(whichChar) && !$target.is(":input:enabled") ) {
+		if( opts.quicksearch && clean && /\w/.test(whichChar) &&
+				!SPECIAL_KEYCODES[which] &&  // #659
+				!$target.is(":input:enabled") ) {
 			// Allow to search for longer streaks if typed in quickly
 			stamp = new Date().getTime();
 			if( stamp - tree.lastQuicksearchTime > 500 ) {
@@ -2941,12 +2957,14 @@ $.extend(Fancytree.prototype,
 			case "return":
 				tree.nodeSetActive(ctx, true);
 				break;
+			case "home":
+			case "end":
 			case "backspace":
 			case "left":
 			case "right":
 			case "up":
 			case "down":
-				res = node.navigate(event.which, activate);
+				res = node.navigate(event.which, activate, true);
 				break;
 			default:
 				handled = false;
@@ -3329,11 +3347,13 @@ $.extend(Fancytree.prototype,
 				firstTime = true;
 				node.li = document.createElement("li");
 				node.li.ftnode = node;
+
+				// We set role 'treeitem' to the title span instead
 				if(aria){
-					// TODO: why doesn't this work:
-//					node.li.role = "treeitem";
-//                    $(node.li).attr("role", "treeitem")
-//                    .attr("aria-labelledby", "ftal_" + opts.idPrefix + node.key);
+					// TODO: why does the next line don't work:
+					// node.li.role = "treeitem";
+                    // $(node.li).attr("role", "treeitem");
+                    // .attr("aria-labelledby", "ftal_" + opts.idPrefix + node.key);
 				}
 				if( node.key && opts.generateIds ){
 					node.li.id = opts.idPrefix + node.key;
@@ -3341,7 +3361,8 @@ $.extend(Fancytree.prototype,
 				node.span = document.createElement("span");
 				node.span.className = "fancytree-node";
 				if(aria){
-					$(node.span).attr("aria-labelledby", "ftal_" + opts.idPrefix + node.key);
+					$(node.li).attr("aria-labelledby", "ftal_" + opts.idPrefix + node.key);
+					// $(node.span).attr("aria-labelledby", "ftal_" + opts.idPrefix + node.key);
 				}
 				node.li.appendChild(node.span);
 
@@ -3544,6 +3565,7 @@ $.extend(Fancytree.prototype,
 			}
 			tooltip = tooltip ? " title='" + _escapeTooltip(tooltip) + "'" : "";
 			id = aria ? " id='ftal_" + opts.idPrefix + node.key + "'" : "";
+			// role = "";
 			role = aria ? " role='treeitem'" : "";
 			tabindex = opts.titlesTabbable ? " tabindex='0'" : "";
 
@@ -3575,7 +3597,7 @@ $.extend(Fancytree.prototype,
 			hasChildren = node.hasChildren(),
 			isLastSib = node.isLastSibling(),
 			aria = opts.aria,
-//            $ariaElem = aria ? $(node[tree.ariaPropName]) : null,
+            // $ariaElem = aria ? $(node[tree.ariaPropName]) : null,
 			$ariaElem = $(node.span).find(".fancytree-title"),
 			cn = opts._classNames,
 			cnList = [],
@@ -3597,27 +3619,23 @@ $.extend(Fancytree.prototype,
 		}
 		if( tree.focusNode === node ){
 			cnList.push(cn.focused);
-			if(aria){
-//              $(">span.fancytree-title", statusElem).attr("tabindex", "0");
-//                $(">span.fancytree-title", statusElem).attr("tabindex", "-1");
-				// TODO: is this the right element for this attribute?
-				$ariaElem
-					.attr("aria-activedescendant", true);
-//					.attr("tabindex", "-1");
-			}
+			// if(aria){
+			// 	$ariaElem.attr("aria-activedescendant", true);
+			// }
 		}else if(aria){
-//			$(">span.fancytree-title", statusElem).attr("tabindex", "-1");
-			$ariaElem
-				.removeAttr("aria-activedescendant");
-//				.removeAttr("tabindex");
+			// $ariaElem.removeAttr("aria-activedescendant");
 		}
 		if( node.expanded ){
 			cnList.push(cn.expanded);
 			if(aria){
 				$ariaElem.attr("aria-expanded", true);
 			}
-		}else if(aria){
-			$ariaElem.removeAttr("aria-expanded");
+		}else if( aria ){
+			if( hasChildren ) {
+				$ariaElem.attr("aria-expanded", false);
+			} else {
+				$ariaElem.removeAttr("aria-expanded");
+			}
 		}
 		if( node.folder ){
 			cnList.push(cn.folder);
@@ -3913,6 +3931,7 @@ $.extend(Fancytree.prototype,
 		var ctx2,
 			tree = ctx.tree,
 			node = ctx.node,
+			opts = tree.options,
 			// et = ctx.originalEvent && ctx.originalEvent.type,
 			isInput = ctx.originalEvent ? $(ctx.originalEvent.target).is(":input") : false;
 
@@ -3938,7 +3957,7 @@ $.extend(Fancytree.prototype,
 			}
 			node.makeVisible({scrollIntoView: false});
 			tree.focusNode = node;
-			if( tree.options.titlesTabbable ) {
+			if( opts.titlesTabbable ) {
 				if( !isInput ) { // #621
 					$(node.span).find(".fancytree-title").focus();
 				}
@@ -3951,13 +3970,16 @@ $.extend(Fancytree.prototype,
 					$(tree.$container).focus();
 				}
 			}
-
+			if( opts.aria ){
+				$(tree.$container).attr("aria-activedescendant",
+					"ftal_" + opts.idPrefix + node.key);
+			}
 //			$(node.span).find(".fancytree-title").focus();
 			this._triggerNodeEvent("focus", ctx);
-//          if(ctx.options.autoActivate){
+//          if( opts.autoActivate ){
 //              tree.nodeSetActive(ctx, true);
 //          }
-			if(ctx.options.autoScroll){
+			if( opts.autoScroll ){
 				node.scrollIntoView();
 			}
 			this._callHook("nodeRenderStatus", ctx);
@@ -4225,6 +4247,9 @@ $.extend(Fancytree.prototype,
 			}
 			this.$container.toggleClass("fancytree-treefocus", flag);
 			this._triggerTreeEvent(flag ? "focusTree" : "blurTree");
+			if( flag && !this.activeNode ) {
+				this.getFirstChild() && this.getFirstChild().setFocus();
+			}
 		}
 	}
 });

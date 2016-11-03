@@ -2,6 +2,8 @@ jQuery(document).ready(function(){
 
 /*globals TEST_TOOLS, QUnit */
 
+/* jshint -W081 */  // Ignore 'W081: Too many var statements'
+
 var TEST_DATA, TESTDATA_NODES, TESTDATA_TOPNODES, TESTDATA_VISIBLENODES,
 	$ = jQuery,
 	// Use tools from test-tools.js
