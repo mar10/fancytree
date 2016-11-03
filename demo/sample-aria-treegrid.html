@@ -32,6 +32,15 @@
 				quicksearch: true,
 				source: {url: "ajax-tree-products.json"},
 				table: { },
+				keydown: function(event, data) {
+					switch( $.ui.fancytree.eventToString(event) ) {
+						case "*": // 106: numpad '*': WAI-ARIA: expands all siblings at the current node's level.
+							$.each(data.node.parent.children, function(i, node){
+								node.setExpanded({noAnimation: true, noEvents: true});
+							});
+							break;
+					};
+				},
 				renderColumns: function(event, data) {
 					var node = data.node,
 						$tdList = $(node.tr).find(">td");
@@ -49,7 +58,8 @@
 		This Fancytree Tree Grid has 
 		<a href="https://www.w3.org/TR/wai-aria-practices/#TreeGrid">WAI-ARIA</a> 
 		enabled.<br>
-		<strong>Note that this is work in progress.</strong>
+		<strong>Note:</strong> please <a href="https://github.com/mar10/fancytree/issues/655">provide feedback</a> 
+		if you have suggestions for improvement.
 	</p>
 	<p>		
 		See also the <a href="sample-aria.html">ARIA Tree View example</a>.
