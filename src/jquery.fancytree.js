@@ -2918,7 +2918,9 @@ $.extend(Fancytree.prototype,
 			}
 		}
 
-		if( opts.quicksearch && clean && /\w/.test(whichChar) && !$target.is(":input:enabled") ) {
+		if( opts.quicksearch && clean && /\w/.test(whichChar) &&
+				!SPECIAL_KEYCODES[which] &&  // #659
+				!$target.is(":input:enabled") ) {
 			// Allow to search for longer streaks if typed in quickly
 			stamp = new Date().getTime();
 			if( stamp - tree.lastQuicksearchTime > 500 ) {
