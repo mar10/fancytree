@@ -3349,10 +3349,10 @@ $.extend(Fancytree.prototype,
 
 				// We set role 'treeitem' to the title span instead
 				if(aria){
-					// TODO: why doesn't this work:
+					// TODO: why does the next line don't work:
 					// node.li.role = "treeitem";
-                   $(node.li).attr("role", "treeitem");
-//                    .attr("aria-labelledby", "ftal_" + opts.idPrefix + node.key);
+                    // $(node.li).attr("role", "treeitem");
+                    // .attr("aria-labelledby", "ftal_" + opts.idPrefix + node.key);
 				}
 				if( node.key && opts.generateIds ){
 					node.li.id = opts.idPrefix + node.key;
@@ -3564,8 +3564,8 @@ $.extend(Fancytree.prototype,
 			}
 			tooltip = tooltip ? " title='" + _escapeTooltip(tooltip) + "'" : "";
 			id = aria ? " id='ftal_" + opts.idPrefix + node.key + "'" : "";
-			role = "";
-			// role = aria ? " role='treeitem'" : "";
+			// role = "";
+			role = aria ? " role='treeitem'" : "";
 			tabindex = opts.titlesTabbable ? " tabindex='0'" : "";
 
 			nodeTitle = "<span " + role + " class='fancytree-title'" +
@@ -3596,8 +3596,8 @@ $.extend(Fancytree.prototype,
 			hasChildren = node.hasChildren(),
 			isLastSib = node.isLastSibling(),
 			aria = opts.aria,
-            $ariaElem = aria ? $(node[tree.ariaPropName]) : null,
-			// $ariaElem = $(node.span).find(".fancytree-title"),
+            // $ariaElem = aria ? $(node[tree.ariaPropName]) : null,
+			$ariaElem = $(node.span).find(".fancytree-title"),
 			cn = opts._classNames,
 			cnList = [],
 			statusElem = node[tree.statusClassPropName];

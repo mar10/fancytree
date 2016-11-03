@@ -24,6 +24,8 @@
 		$(function(){
 			$("#tree").fancytree({
 				aria: true,
+				// selectMode: 1,
+				checkbox: true,
 				quicksearch: true,
 				source: { url: "ajax-tree-products.json" },
 				keydown: function(event, data) {
