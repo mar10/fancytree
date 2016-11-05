@@ -1,12 +1,3 @@
-# 2.20.1 / aria branch / Unreleased
-  * [Fix] #659  handling of function keys, when quicksearch is on
-  * [Improved] #656 WAI-ARIA support
-    - Set focus to first node on first tab-in
-    - Support [home] and [end] keys
-    - Set aria-activedescendant on container to active ID
-    - Set aria-multiselectable on container if selectMode != 1
-    - Set aria-treeitem, -selected, -expanded, on title span instead `<li>`
-
 # 2.20.0-0 / Unreleased
   * [Added] #419 `modifyChild` event. This event is also a good place to 
     implement auto sorting (#559)
@@ -15,12 +6,20 @@
   * [Added] #620 improved tooltip escaping to allow newlines
   * [DEPRECATED] `removeNode` event. Listen for `modifyChild` with operation
     'remove' instead (which is fired on the parent).
+  * [Improved] #656 WAI-ARIA support
+    - Set focus to first node on first tab-in
+    - Support [home] and [end] keys
+    - Set aria-activedescendant on container to active ID
+    - Set aria-multiselectable on container if selectMode != 1
+    - Set aria-treeitem, -selected, -expanded, on title span instead `<li>`
   * [Fixed] #576 `loadKeyPath()` sometimes gets the root wrong
+  * [Fixed] #615 Drag & drop helper icons lose indentation with table extension
   * [Fixed] #632 Tabbing is not working if there is an anchor tag in treeview
   * [Fixed] #643 Exceptions in ext-filter if expression contains special chars
   * [Fixed] #644 New nodes created with ext-edit, are hidden in filtered trees
   * [Fixed] #647 ext-table: tree.render(true) does not discard existing markup 
   * [Fixed] #658 ext-filter does not work with ext-edit `editCreateNode()`
+  * [Fixed] #659 handling of function keys, when quicksearch is on
   * Use QUnit 2.0
 
 # 2.19.0 / 2016-08-11
