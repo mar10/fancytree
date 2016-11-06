@@ -2,6 +2,7 @@
   * [Added] #419 `modifyChild` event. This event is also a good place to 
     implement auto sorting (#559)
   * [Added] #419 node.triggerModifyChild() and node.triggerModify()
+  * [Added] #595 add custom node filter to `generateFormElements()`
   * [Added] #610 `tree.tooltip` option allows automatic or custom tooltips
   * [Added] #620 improved tooltip escaping to allow newlines
   * [DEPRECATED] `removeNode` event. Listen for `modifyChild` with operation

@@ -2339,7 +2339,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 		if ( !!this._enableUpdate === !!flag ) {
 			return flag;
 		}
-		/*jshint +W018 */ 
+		/*jshint +W018 */
 		this._enableUpdate = flag;
 		if ( flag ) {
 			this.debug("enableUpdate(true): redraw ", this._dirtyRoots);
@@ -2447,12 +2447,21 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	 * In selectMode 3 only the topmost selected nodes are considered, unless
 	 * `opts.stopOnParents: false` is passed.
 	 *
-	 * @param {boolean | string} [selected=true] Pass false to disable, pass a string to overide the field name (default: 'ft_ID[]')
-	 * @param {boolean | string} [active=true] Pass false to disable, pass a string to overide the field name (default: 'ft_ID_active')
-	 * @param {object} [opts] default { stopOnParents: true }
+	 * @example
+	 * // Generate input elements for active and selected nodes
+	 * tree.generateFormElements();
+	 * // Generate input elements selected nodes, using a custom `name` attribute
+	 * tree.generateFormElements("cust_sel", false);
+	 * // Generate input elements using a custom filter
+	 * tree.generateFormElements(true, true, { filter: function(node) {
+	 *     return node.isSelected() && node.data.yes;
+	 * }});
+	 *
+	 * @param {boolean | string} [selected=true] Pass false to disable, pass a string to override the field name (default: 'ft_ID[]')
+	 * @param {boolean | string} [active=true] Pass false to disable, pass a string to override the field name (default: 'ft_ID_active')
+	 * @param {object} [opts] default { filter: null, stopOnParents: true }
 	 */
 	generateFormElements: function(selected, active, opts) {
-		// TODO: test case
 		opts = opts || {};
 
 		var nodeList,
@@ -2469,17 +2478,6 @@ Fancytree.prototype = /** @lends Fancytree# */{
 				id: id
 			}).hide().insertAfter(this.$container);
 		}
-		if(selected !== false){
-			nodeList = this.getSelectedNodes(stopOnParents);
-			$.each(nodeList, function(idx, node){
-				$result.append($("<input>", {
-					type: "checkbox",
-					name: selectedName,
-					value: node.key,
-					checked: true
-				}));
-			});
-		}
 		if(active !== false && this.activeNode){
 			$result.append($("<input>", {
 				type: "radio",
@@ -2487,6 +2485,28 @@ Fancytree.prototype = /** @lends Fancytree# */{
 				value: this.activeNode.key,
 				checked: true
 			}));
+		}
+		function _appender( node ) {
+			$result.append($("<input>", {
+				type: "checkbox",
+				name: selectedName,
+				value: node.key,
+				checked: true
+			}));
+		}
+		if ( opts.filter ) {
+			this.visit(function(node) {
+				var res = opts.filter(node);
+				if( res === "skip" ) { return res; }
+				if ( res !== false ) {
+					_appender(node);
+				}
+			});
+		} else if ( selected !== false ) {
+			nodeList = this.getSelectedNodes(stopOnParents);
+			$.each(nodeList, function(idx, node) {
+				_appender(node);
+			});
 		}
 	},
 	/**
@@ -3352,8 +3372,8 @@ $.extend(Fancytree.prototype,
 				if(aria){
 					// TODO: why does the next line don't work:
 					// node.li.role = "treeitem";
-                    // $(node.li).attr("role", "treeitem");
-                    // .attr("aria-labelledby", "ftal_" + opts.idPrefix + node.key);
+					// $(node.li).attr("role", "treeitem");
+					// .attr("aria-labelledby", "ftal_" + opts.idPrefix + node.key);
 				}
 				if( node.key && opts.generateIds ){
 					node.li.id = opts.idPrefix + node.key;
@@ -3597,7 +3617,7 @@ $.extend(Fancytree.prototype,
 			hasChildren = node.hasChildren(),
 			isLastSib = node.isLastSibling(),
 			aria = opts.aria,
-            // $ariaElem = aria ? $(node[tree.ariaPropName]) : null,
+			// $ariaElem = aria ? $(node[tree.ariaPropName]) : null,
 			$ariaElem = $(node.span).find(".fancytree-title"),
 			cn = opts._classNames,
 			cnList = [],
