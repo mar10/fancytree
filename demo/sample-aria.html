@@ -29,10 +29,12 @@
 				quicksearch: true,
 				source: { url: "ajax-tree-products.json" },
 				keydown: function(event, data) {
+					// WAI-ARIA suggests that numpad '*' expands all siblings at
+					// the current node's level.
 					switch( $.ui.fancytree.eventToString(event) ) {
-						case "*": // 106: numpad '*': WAI-ARIA: expands all siblings at the current node's level.
+						case "*":
 							$.each(data.node.parent.children, function(i, node){
-								node.setExpanded({noAnimation: true, noEvents: true});
+								node.setExpanded({noAnimation: true});
 							});
 							break;
 					};
@@ -45,37 +47,25 @@
 <body class="example">
 	<h1>Example: WAI-ARIA Tree View</h1>
 	<div class="description">
-	<p>		
-		This Fancytree Tree View has 
-		<a href="https://www.w3.org/TR/wai-aria-practices/#TreeView">WAI-ARIA</a> 
-		enabled.<br>
-		<strong>Note:</strong> please <a href="https://github.com/mar10/fancytree/issues/656">provide feedback</a> 
-		if you have suggestions for improvement.
-	</p>
-	<p>		
-		See also the <a href="sample-aria-treegrid.html">ARIA Tree Grid example</a>.
-	</p>
+		<p>
+			This Fancytree Tree View has
+			<a href="https://www.w3.org/TR/wai-aria-practices/#TreeView">WAI-ARIA</a>
+			enabled.<br>
+			<strong>Note:</strong> please
+			<a href="https://github.com/mar10/fancytree/issues/656">provide feedback</a>
+			if you have suggestions for improvement.
+		</p>
+		<p>
+			See also the <a href="sample-aria-treegrid.html">ARIA Tree Grid example</a>.
+		</p>
 	</div>
-	
+
 	<div>
 		<label for="lblBefore">Text 1<input type="text" id="lblBefore"></label>
 
 		<div id="tree">
 		</div>
 
-		<hr>
-
-		<table id="treegrid">
-			<colgroup>
-			<col width="400px"></col>
-			<col width="100px"></col>
-			</colgroup>
-			<thead>
-				<tr> <th>Item</th> <th>Index</th> </tr>
-			</thead>
-			<tbody>
-			</tbody>
-		</table>
 		<label for="lblAfter">Text 2</label><input type="text" id="lblAfter">
 	</div>
 
