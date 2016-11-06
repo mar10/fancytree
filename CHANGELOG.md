@@ -13,6 +13,7 @@
     - Set aria-activedescendant on container to active ID
     - Set aria-multiselectable on container if selectMode != 1
     - Set aria-treeitem, -selected, -expanded, on title span instead `<li>`
+  * [Fixed] #528 autoCollapse option blocks filter's autoExpand option
   * [Fixed] #576 `loadKeyPath()` sometimes gets the root wrong
   * [Fixed] #615 Drag & drop helper icons lose indentation with table extension
   * [Fixed] #632 Tabbing is not working if there is an anchor tag in treeview
