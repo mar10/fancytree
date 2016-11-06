@@ -233,7 +233,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editCreateNode = function(mode, ini
  * @requires jquery.fancytree.edit.js
  */
 $.ui.fancytree._FancytreeClass.prototype.isEditing = function(){
-	return this.ext.edit.currentNode;
+	return this.ext.edit ? this.ext.edit.currentNode : null;
 };
 
 
@@ -244,7 +244,7 @@ $.ui.fancytree._FancytreeClass.prototype.isEditing = function(){
  * @requires jquery.fancytree.edit.js
  */
 $.ui.fancytree._FancytreeNodeClass.prototype.isEditing = function(){
-	return this.tree.ext.edit.currentNode === this;
+	return this.tree.ext.edit ? this.tree.ext.edit.currentNode === this : false;
 };
 
 
