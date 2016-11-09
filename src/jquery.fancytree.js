@@ -4017,7 +4017,7 @@ $.extend(Fancytree.prototype,
 		// flag defaults to true
 		flag = (flag !== false);
 
-		node.debug("nodeSetSelected(" + flag + ")", ctx);
+		// node.debug("nodeSetSelected(" + flag + ")", ctx);
 		if( node.unselectable){
 			return;
 		}

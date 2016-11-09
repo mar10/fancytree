@@ -7,6 +7,7 @@
   * [Added] #620 improved tooltip escaping to allow newlines
   * [DEPRECATED] `removeNode` event. Listen for `modifyChild` with operation
     'remove' instead (which is fired on the parent).
+  * [Improved] #230 themeroller theme compatible with ext-filter
   * [Improved] #656 WAI-ARIA support
     - Set focus to first node on first tab-in
     - Support [home] and [end] keys
