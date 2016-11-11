@@ -27,11 +27,12 @@ $.ui.fancytree.registerExtension({
 	version: "@VERSION",
 	// Default options for this extension.
 	options: {
-		activeClass: "ui-state-active",
+		activeClass: "ui-state-active",      // Class added to active node
 		// activeClass: "ui-state-highlight",
-		focusClass: "ui-state-focus",
-		hoverClass: "ui-state-hover",
-		selectedClass: "ui-state-highlight"
+		addClass: "ui-corner-all",           // Class added to all nodes
+		focusClass: "ui-state-focus",        // Class added to focused node
+		hoverClass: "ui-state-hover",        // Class added to hovered node
+		selectedClass: "ui-state-highlight"  // Class added to selected nodes
 		// selectedClass: "ui-state-active"
 	},
 
@@ -53,8 +54,8 @@ $.ui.fancytree.registerExtension({
 			var node = $.ui.fancytree.getNode(event.target),
 				flag = (event.type === "mouseenter");
 
-			// node.debug("hover: " + flag);
-			$(node.tr ? node.tr : node.span).toggleClass(opts.hoverClass + " ui-corner-all", flag);
+			$(node.tr ? node.tr : node.span)
+				.toggleClass(opts.hoverClass + " " + opts.addClass, flag);
 		});
 	},
 	treeDestroy: function(ctx){
@@ -90,6 +91,8 @@ $.ui.fancytree.registerExtension({
 		$el.toggleClass(opts.activeClass, classes[opts.activeClass]);
 		$el.toggleClass(opts.focusClass, classes[opts.focusClass]);
 		$el.toggleClass(opts.selectedClass, classes[opts.selectedClass]);
+		// Additional classes (e.g. 'ui-corner-all')
+		$el.addClass(opts.addClass);
 	}
 });
 }(jQuery, window, document));

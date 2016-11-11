@@ -1,5 +1,5 @@
 /*!
- * Fancytree "Themeroller" skin.
+ * Fancytree "ThemeRoller" skin.
  * This file should be included after a jQuery Themeroller style sheet.
  * It is meant to be used together with the ext-themeroller extension.
  *
@@ -548,3 +548,6 @@ ul.fancytree-ext-wide span.fancytree-node span.fancytree-title {
 /*******************************************************************************
  * 'table' extension
  */
+table.fancytree-ext-table tbody tr td {
+  border: 1px solid transparent;
+}

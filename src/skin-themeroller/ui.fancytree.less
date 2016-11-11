@@ -1,5 +1,5 @@
 /*!
- * Fancytree "Themeroller" skin.
+ * Fancytree "ThemeRoller" skin.
  * This file should be included after a jQuery Themeroller style sheet.
  * It is meant to be used together with the ext-themeroller extension.
  *
@@ -35,11 +35,6 @@
 @fancy-node-outline-width: 1px;
 
 
-// @fancy-icon-width: 16px;
-// @fancy-icon-height: 16px;
-// @fancy-line-height: 16px;
-// @fancy-icon-spacing: 3px;
-
 // Use 'data-uri(...)' to embed the image into CSS instead of linking to 'loading.gif':
 @fancy-loading-url: data-uri("@{fancy-image-dir}/loading.gif");
 // Set to `true` to use `data-uri(...)` which will embed icons.gif into CSS 
@@ -53,73 +48,13 @@
 	span.fancytree-node {
 		border: @fancy-node-border-width solid transparent;  // avoid jumping, when a border is added on hover
 	}
-	// span.fancytree-title {
-	// 	border: @fancy-node-border-width solid transparent;  // avoid jumping, when a border is added on hover
-	// }
-	// &.fancytree-container.fancytree-treefocus span.fancytree-focused span.fancytree-title {
-	// 	border-color: #3399ff;
-	// }
-	// span.fancytree-active span.fancytree-title,
-	// span.fancytree-selected span.fancytree-title { // active/selcted nodes inside inactive tree
-	// 	background-color: #f7f7f7;
-	// 	border-color: #dedede;
-	// }
-	// span.fancytree-node span.fancytree-selected span.fancytree-title {
-	// 	font-style: italic;
-	// }
-	// span.fancytree-node:hover span.fancytree-title {
-	// 	background-color: #eff9fe; // hover is always colored, even if tree is unfocused
-	// 	border-color: #70c0e7;
-	// }
-	// &.fancytree-container.fancytree-treefocus {
-	// 	span.fancytree-active span.fancytree-title,
-	// 	span.fancytree-selected span.fancytree-title {
-	// 		background-color: #cbe8f6;
-	// 		// border-color: #26a0da;
-	// 	}
-	// }
 }
 
 /*******************************************************************************
  * 'table' extension
  */
 table.fancytree-ext-table tbody {
-	// tr td {
-	//   border: 1px solid #EDEDED;
-	// }
-	// span.fancytree-node,
-	// span.fancytree-node:hover { // undo standard tree css
-	// 	border: none;
-	// 	background: none;
-	// }
-	// tr:hover  {
-	// 	background-color: #E5F3FB;
-	//     outline: 1px solid #70C0E7;
-	// }
-	// tr.fancytree-focused span.fancytree-title {
-	//   outline: 1px dotted black;
-	// }
-
-	// tr.fancytree-active:hover,
-	// tr.fancytree-selected:hover {
-	// 	background-color: #CBE8F6;
-	//     outline: 1px solid #26A0DA;
-	// }
-	// tr.fancytree-active {  // dimmed, if inside inactive tree
-	// 	background-color: #F7F7F7;
-	//     outline: 1px solid #DEDEDE;
-	// }
-	// tr.fancytree-selected {  // dimmed, if inside inactive tree
-	// 	background-color: #F7F7F7;
-	// }
-}
-
-table.fancytree-ext-table.fancytree-treefocus tbody {
-	// tr.fancytree-active {
-	// 	background-color: #CBE8F6;
-	//     outline: 1px solid #26A0DA;
-	// }
-	// tr.fancytree-selected {
-	// 	background-color: #CBE8F6;
-	// }
+	tr td {
+	  border: 1px solid transparent;
+	}
 }
