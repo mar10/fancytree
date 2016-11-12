@@ -1,6 +1,8 @@
 # 2.20.0-0 / Unreleased
   * [Added] #419 `modifyChild` event. This event is also a good place to 
     implement auto sorting (#559)
+  * [Added] #297 filter option 'hideExpanders' to remove expanders if all child 
+    nodes are hidden by filter
   * [Added] #419 node.triggerModifyChild() and node.triggerModify()
   * [Added] #595 add custom node filter to `generateFormElements()`
   * [Added] #610 `tree.tooltip` option allows automatic or custom tooltips
