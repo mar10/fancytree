@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+	<title>Test Case | Fancytree</title>
+
+	<!-- Include latest jQuery and Fancytree from CDN ... -->
+<!--
+	<link href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" rel="stylesheet">
+	<script src="https://code.jquery.com/jquery-1.12.1.js"></script>
+	<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+
+	<link href="https://cdn.jsdelivr.net/jquery.fancytree/2/skin-win8/ui.fancytree.min.css"
+		rel="stylesheet">
+	<script src="https://cdn.jsdelivr.net/jquery.fancytree/2/jquery.fancytree-all.min.js"></script>
+
+-->
+	<!-- ... or include from own asset folders: -->
+	<script src="../../lib/jquery.js"></script>
+	<script src="../../lib/jquery-ui.custom.js"></script>
+
+	<link href="../../src/skin-lion/ui.fancytree.css" rel="stylesheet">
+	<script src="../../src/jquery.fancytree.js"></script>
+	<script src="../../src/jquery.fancytree.childcounter.js"></script>
+	<script src="../../src/jquery.fancytree.clones.js"></script>
+	<script src="../../src/jquery.fancytree.columnview.js"></script>
+	<script src="../../src/jquery.fancytree.dnd.js"></script>
+	<script src="../../src/jquery.fancytree.edit.js"></script>
+	<script src="../../src/jquery.fancytree.filter.js"></script>
+	<script src="../../src/jquery.fancytree.glyph.js"></script>
+	<script src="../../src/jquery.fancytree.gridnav.js"></script>
+	<script src="../../src/jquery.fancytree.persist.js"></script>
+	<script src="../../src/jquery.fancytree.table.js"></script>
+	<script src="../../src/jquery.fancytree.themeroller.js"></script>
+	<script src="../../src/jquery.fancytree.wide.js"></script>
+
+<style type="text/css">
+/*	.fancytree-ext-filter-hide-expanders .fancytree-match .fancytree-expander {
+		visibility: hidden;
+	}
+	.fancytree-ext-filter-hide-expanders .fancytree-submatch .fancytree-expander {
+		visibility: visible;
+	}*/
+</style>
+
+
+<script type="text/javascript">
+
+$(function(){
+	// Initialize Fancytree
+	$("#tree").fancytree({
+		extensions: ["filter"],
+		source: { url: "sample2.json" },
+		autoCollapse: true,
+		checkbox: true,
+		quicksearch: true,
+		filter: {
+			autoApply: true,  // Re-apply last filter if lazy data is loaded
+			counter: true,  // Show a badge with number of matching child nodes near parent icons
+			fuzzy: false,  // Match single characters in order, e.g. 'fb' will match 'FooBar'
+			hideExpandedCounter: true,  // Hide counter badge, when parent is expanded
+			hideExpanders: true,        // Hide expanders if all child nodes are hidden by filter
+			highlight: true,  // Highlight matches by wrapping inside <mark> tags
+			mode: "hide",  // Grayout unmatched nodes (pass "hide" to remove unmatched node instead)
+			nodata: true  // Display a 'no data' status node if result is empty
+		},
+		init: function(event, data) {
+		},
+		lazyLoad: function(event, data) {
+			data.result = { url: "sample_sub.json", debugDelay: 5000 };
+		},
+		loadChildren: function(event, data) {
+			// data.node.fixSelection3FromEndNodes();
+		}
+	});
+	var tree = $("#tree").fancytree("getTree");
+
+	/*
+	 * Event handlers for our little demo interface
+	 */
+	$("input[name=search]").keyup(function(e){
+		var n,
+			tree = $.ui.fancytree.getTree(),
+			opts = {
+				autoExpand: $("#autoExpand").is(":checked"),
+				leavesOnly: $("#leavesOnly").is(":checked")
+			},
+			filterFunc = $("#branchMode").is(":checked") ? tree.filterBranches : tree.filterNodes,
+			match = $(this).val();
+
+		if(e && e.which === $.ui.keyCode.ESCAPE || $.trim(match) === ""){
+			$("button#btnResetSearch").click();
+			return;
+		}
+		if($("#regex").is(":checked")) {
+			// Pass function to perform match
+			n = filterFunc.call(tree, function(node) {
+				return new RegExp(match, "i").test(node.title);
+			}, opts);
+		} else {
+			// Pass a string to perform case insensitive matching
+			n = filterFunc.call(tree, match, opts);
+		}
+		$("button#btnResetSearch").attr("disabled", false);
+		$("span#matches").text("(" + n + " matches)");
+	}).focus();
+
+	$("fieldset input:checkbox").change(function(e){
+		var id = $(this).attr("id"),
+			flag = $(this).is(":checked");
+
+		switch( id ) {
+		case "autoExpand":
+		case "branchMode":
+		case "leavesOnly":
+		case "regex":
+			// Re-apply filter only
+			break;
+		case "hideMode":
+			tree.options.filter.mode = flag ? "hide" : "dimm";
+			break;
+		case "counter":
+		case "fuzzy":
+		case "hideExpandedCounter":
+		case "hideExpanders":
+		case "highlight":
+		case "nodata":
+			tree.options.filter[id] = flag;
+			break;
+		}
+		tree.clearFilter();
+		$("input[name=search]").keyup();
+	});
+
+	$("button#btnResetSearch").click(function(e){
+		$("input[name=search]").val("");
+		$("span#matches").text("");
+		$.ui.fancytree.getTree().clearFilter();
+	}).attr("disabled", true);
+
+	$("#button1").click(function(event){
+		var tree = $.ui.fancytree.getTree(),
+			node = tree.getActiveNode();
+
+		// tree.filterNodes("tem");
+		// tree.filterNodes("2.1(y");
+		tree.filterBranches("folder");
+	});
+});
+</script>
+
+</head>
+
+<body class="example">
+	<h1>Testcase for issue #NNN</h1>
+
+	<p class="description">
+		(TODO: optionally add a short description here...)
+	</p>
+
+	<button id="button1">Test 1</button>
+	<p>
+		<label>Filter:</label>
+		<input name="search" placeholder="Filter..." autocomplete="off">
+		<button id="btnResetSearch">&times;</button>
+		<span id="matches"></span>
+	</p>
+
+	<fieldset>
+		<legend>Options</legend>
+		<label for="regex">
+			<input type="checkbox" id="regex">
+			Regular expression
+		</label>
+		<br>
+		<label for="hideMode">
+			<input type="checkbox" id="hideMode">
+			Hide unmatched nodes
+		</label>
+		<label for="branchMode">
+			<input type="checkbox" id="branchMode">
+			Match whole branch
+		</label>
+		<label for="autoExpand">
+			<input type="checkbox" id="autoExpand" checked="checked">
+			Auto expand
+		</label>
+		<label for="leavesOnly">
+			<input type="checkbox" id="leavesOnly">
+			Leaves only
+		</label>
+		<br>
+		<label for="counter">
+			<input type="checkbox" id="counter" checked="checked">
+			Counter badges
+		</label>
+		<label for="fuzzy">
+			<input type="checkbox" id="fuzzy">
+			Fuzzy
+		</label>
+		<label for="hideExpandedCounter">
+			<input type="checkbox" id="hideExpandedCounter" checked="checked">
+			hideExpandedCounter
+		</label>
+		<label for="hideExpanders">
+			<input type="checkbox" id="hideExpanders" checked="checked">
+			hideExpanders
+		</label>
+		<label for="highlight">
+			<input type="checkbox" id="highlight" checked="checked">
+			Highlight
+		</label>
+		<label for="nodata">
+			<input type="checkbox" id="nodata" checked="checked">
+			nodata
+		</label>
+	</fieldset>
+
+	<hr>
+
+	<div id="tree">
+	</div>
+</body>
+</html>

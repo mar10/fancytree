@@ -2,20 +2,18 @@
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
-	<title>Fancytree - Example: Themeroller</title>
+	<title>Fancytree - Example: ThemeRoller</title>
 
-	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/start/jquery-ui.css" />
 	<script src="//code.jquery.com/jquery-1.12.1.min.js"></script>
 	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
 	<link href="../src/skin-themeroller/ui.fancytree.css" rel="stylesheet">
 
 	<script src="../src/jquery.fancytree.js"></script>
 	<script src="../src/jquery.fancytree.columnview.js"></script>
-	<script src="../src/jquery.fancytree.dnd.js"></script>
 	<script src="../src/jquery.fancytree.table.js"></script>
 	<script src="../src/jquery.fancytree.themeroller.js"></script>
-	<!--
-	-->
+
 	<!-- Start_Exclude: This block is not part of the sample code -->
 	<link href="../lib/prettify.css" rel="stylesheet">
 	<script src="../lib/prettify.js"></script>
@@ -24,26 +22,34 @@
 
 	<script src="../lib/Super-Theme-Switcher/jquery.themeswitcher.js"></script>
 
-<style type="text/css">
-	ul.fancytree-container,
-	table.fancytree-container{
-		font-size: 0.8em;
-	}
-</style>
+	<style type="text/css">
+		ul.fancytree-container,
+		table.fancytree-container{
+			font-size: 0.8em;
+		}
+	</style>
 
+	<script type="text/javascript">
+		$(function(){
+			$("#switcher").themeswitcher({
+				jqueryuiversion: "1.12.1",
+				imgpath: "../lib/Super-Theme-Switcher/images/",
+				loadTheme: "base",
+				additionalthemes: [{
+					title: "Base",
+					name: "base",
+					icon: "theme_90_base.png"
+				}]
+			});
+		});
+	</script>
 	<!-- End_Exclude -->
+
 <style type="text/css">
 	/* Fancytree extension 'table' */
 	table.fancytree-ext-table {
 		width: 100%;
 	}
-	table.fancytree-ext-table tbody tr:nth-child(even){
-		background-color: #f4f4f8;
-	}
-	table.fancytree-ext-table tbody tr td {
-		border: 1px solid lightgray;
-	}
-
 	/* Fancytree extension 'columnview' */
 	table.fancytree-ext-columnview {
 		border-collapse: collapse;
@@ -57,18 +63,15 @@
 <!-- Add code to initialize the tree when the document is loaded: -->
 <script type="text/javascript">
 	$(function(){
-		<!-- Start_Exclude: This block is not part of the sample code -->
-		$("#switcher").themeswitcher({
-			jqueryuiversion: "1",
-			imgpath: "../lib/Super-Theme-Switcher/images/",
-			loadTheme: "Smoothness"
-		});
-		<!-- End_Exclude -->
 		// Attach the fancytree widget to an existing <div id="tree"> element
 		// and pass the tree options as an argument to the fancytree() function:
 		$("#tree").fancytree({
 			extensions: ["themeroller"],
 			checkbox: true,
+			themeroller: {
+				addClass: ""  // no rounded corners
+				// selectedClass: "ui-state-active"
+			},
 			source: [
 				{title: "Node 1"},
 				{title: "Node 2",
@@ -83,6 +86,10 @@
 		$("#treetable").fancytree({
 			extensions: ["table", "themeroller"],
 			checkbox: true,
+			themeroller: {
+				// addClass: "",
+				// selectedClass: "ui-state-active"
+			},
 			source: {
 				url: "ajax-tree-plain.json"
 			},
@@ -117,11 +124,11 @@
 	<h1>Example: 'themeroller' extension</h1>
 	<div class="description">
 		<p>
-			Allow to apply <a href="http://jqueryui.com/themeroller/" target="_blank">jQuery Themeroller</a>
+			Allow to apply <a href="http://jqueryui.com/themeroller/" target="_blank">jQuery ThemeRoller</a>
 			styles.
 		</p>
 		<p>
-			<b>Status</b>: pre-alpha
+			<b>Status</b>: beta
 		</p>
 	</div>
 
