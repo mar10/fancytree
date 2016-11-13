@@ -37,22 +37,20 @@ function extractHtmlText(s){
 	return s;
 }
 
-$.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, branchMode, opts){
-	var leavesOnly, match, statusNode, re, reHighlight,
+$.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, branchMode, _opts){
+	var match, statusNode, re, reHighlight,
 		count = 0,
 		treeOpts = this.options,
 		escapeTitles = treeOpts.escapeTitles,
-		filterOpts = treeOpts.filter,
 		prevAutoCollapse = treeOpts.autoCollapse,
-		hideMode = filterOpts.mode === "hide";
-
-	opts = opts || {};
-	leavesOnly = !!opts.leavesOnly && !branchMode;
+		opts = $.extend({}, treeOpts.filter, _opts),
+		hideMode = opts.mode === "hide",
+		leavesOnly = !!opts.leavesOnly && !branchMode;
 
 	// Default to 'match title substring (not case sensitive)'
 	if(typeof filter === "string"){
 		// console.log("rex", filter.split('').join('\\w*').replace(/\W/, ""))
-		if( filterOpts.fuzzy ) {
+		if( opts.fuzzy ) {
 			// See https://codereview.stackexchange.com/questions/23899/faster-javascript-fuzzy-string-matching-function/23905#23905
 			// and http://www.quora.com/How-is-the-fuzzy-search-algorithm-in-Sublime-Text-designed
 			// and http://www.dustindiaz.com/autocomplete-fuzzy-matching
@@ -69,7 +67,7 @@ $.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, bra
 				text = escapeTitles ? node.title : extractHtmlText(node.title),
 				res = !!re.test(text);
 
-			if( res && filterOpts.highlight ) {
+			if( res && opts.highlight ) {
 				display = escapeTitles ? escapeHtml(node.title) : text;
 				node.titleWithHighlight = display.replace(reHighlight, function(s){
 					return "<mark>" + s + "</mark>";
@@ -89,7 +87,7 @@ $.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, bra
 	} else {
 		this.$div.addClass("fancytree-ext-filter-dimm");
 	}
-	this.$div.toggleClass("fancytree-ext-filter-hide-expanders", !!filterOpts.hideExpanders);
+	this.$div.toggleClass("fancytree-ext-filter-hide-expanders", !!opts.hideExpanders);
 	// Reset current filter
 	this.visit(function(node){
 		delete node.match;
@@ -139,8 +137,8 @@ $.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, bra
 	});
 	treeOpts.autoCollapse = prevAutoCollapse;
 
-	if( count === 0 && filterOpts.nodata && hideMode ) {
-		statusNode = filterOpts.nodata;
+	if( count === 0 && opts.nodata && hideMode ) {
+		statusNode = opts.nodata;
 		if( $.isFunction(statusNode) ) {
 			statusNode = statusNode();
 		}
@@ -174,7 +172,7 @@ $.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, bra
 $.ui.fancytree._FancytreeClass.prototype.filterNodes = function(filter, opts) {
 	if( typeof opts === "boolean" ) {
 		opts = { leavesOnly: opts };
-		this.warn("Fancytree.filterNodes() leavesOnly option is deprecated since 2.9.0 / 2015-04-19.");
+		this.warn("Fancytree.filterNodes() leavesOnly option is deprecated since 2.9.0 / 2015-04-19. Use opts.leavesOnly instead.");
 	}
 	return this._applyFilterImpl(filter, false, opts);
 };
@@ -281,14 +279,16 @@ $.ui.fancytree.registerExtension({
 	version: "@VERSION",
 	// Default options for this extension.
 	options: {
-		autoApply: true,  // Re-apply last filter if lazy data is loaded
-		counter: true,    // Show a badge with number of matching child nodes near parent icons
-		fuzzy: false,     // Match single characters in order, e.g. 'fb' will match 'FooBar'
+		autoApply: true,   // Re-apply last filter if lazy data is loaded
+		autoExpand: false, // Expand all branches that contain matches while filtered
+		counter: true,     // Show a badge with number of matching child nodes near parent icons
+		fuzzy: false,      // Match single characters in order, e.g. 'fb' will match 'FooBar'
 		hideExpandedCounter: true,  // Hide counter badge if parent is expanded
 		hideExpanders: true,        // Hide expanders if all child nodes are hidden by filter
-		highlight: true,  // Highlight matches by wrapping inside <mark> tags
-		nodata: true,     // Display a 'no data' status node if result is empty
-		mode: "dimm"      // Grayout unmatched nodes (pass "hide" to remove unmatched node instead)
+		highlight: true,   // Highlight matches by wrapping inside <mark> tags
+		leavesOnly: false, // Match end nodes only
+		nodata: true,      // Display a 'no data' status node if result is empty
+		mode: "dimm"       // Grayout unmatched nodes (pass "hide" to remove unmatched node instead)
 	},
 	nodeLoadChildren: function(ctx, source) {
 		return this._superApply(arguments).done(function() {

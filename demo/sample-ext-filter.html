@@ -33,14 +33,16 @@
 				url: "ajax-tree-local.json"
 			},
 			filter: {
-				autoApply: true,  // Re-apply last filter if lazy data is loaded
-				counter: true,    // Show a badge with number of matching child nodes near parent icons
-				fuzzy: false,     // Match single characters in order, e.g. 'fb' will match 'FooBar'
+				autoApply: true,   // Re-apply last filter if lazy data is loaded
+				autoExpand: false, // Expand all branches that contain matches while filtered
+				counter: true,     // Show a badge with number of matching child nodes near parent icons
+				fuzzy: false,      // Match single characters in order, e.g. 'fb' will match 'FooBar'
 				hideExpandedCounter: true,  // Hide counter badge if parent is expanded
 				hideExpanders: true,        // Hide expanders if all child nodes are hidden by filter
-				highlight: true,  // Highlight matches by wrapping inside <mark> tags
-				nodata: true,     // Display a 'no data' status node if result is empty
-				mode: "dimm"      // Grayout unmatched nodes (pass "hide" to remove unmatched node instead)
+				highlight: true,   // Highlight matches by wrapping inside <mark> tags
+				leavesOnly: false, // Match end nodes only
+				nodata: true,      // Display a 'no data' status node if result is empty
+				mode: "dimm"       // Grayout unmatched nodes (pass "hide" to remove unmatched node instead)
 			},
 			activate: function(event, data) {
 //				alert("activate " + data.node);
@@ -62,12 +64,15 @@
 		$("input[name=search]").keyup(function(e){
 			var n,
 				tree = $.ui.fancytree.getTree(),
-				opts = {
-					autoExpand: $("#autoExpand").is(":checked"),
-					leavesOnly: $("#leavesOnly").is(":checked")
-				},
+				args = "autoApply autoExpand counter fuzzy hideExpandedCounter hideExpanders highlight leavesOnly nodata".split(" "),
+				opts = {},
 				filterFunc = $("#branchMode").is(":checked") ? tree.filterBranches : tree.filterNodes,
 				match = $(this).val();
+
+			$.each(args, function(i, o) {
+				opts[o] = $("#" + o).is(":checked");
+			});
+			opts.mode = $("#hideMode").is(":checked") ? "hide" : "dimm";
 
 			if(e && e.which === $.ui.keyCode.ESCAPE || $.trim(match) === ""){
 				$("button#btnResetSearch").click();
@@ -93,33 +98,9 @@
 		}).attr("disabled", true);
 
 		$("fieldset input:checkbox").change(function(e){
-			var id = $(this).attr("id"),
-				flag = $(this).is(":checked");
-
-			switch( id ) {
-			case "autoExpand":
-			case "branchMode":
-			case "leavesOnly":
-			case "regex":
-				// Re-apply filter only
-				break;
-			case "hideMode":
-				tree.options.filter.mode = flag ? "hide" : "dimm";
-				break;
-			case "counter":
-			case "fuzzy":
-			case "hideExpandedCounter":
-			case "hideExpanders":
-			case "highlight":
-			case "nodata":
-				tree.options.filter[id] = flag;
-				break;
-			}
 			tree.clearFilter();
 			$("input[name=search]").keyup();
 		});
-
-		// $("#counter,#hideExpandedCounter,#highlight").prop("checked", true);
 
 		addSampleButton({
 			label: "Filter active branch",

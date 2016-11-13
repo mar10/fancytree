@@ -1,8 +1,6 @@
 # 2.20.0-0 / Unreleased
   * [Added] #419 `modifyChild` event. This event is also a good place to 
     implement auto sorting (#559)
-  * [Added] #297 filter option 'hideExpanders' to remove expanders if all child 
-    nodes are hidden by filter
   * [Added] #419 node.triggerModifyChild() and node.triggerModify()
   * [Added] #595 add custom node filter to `generateFormElements()`
   * [Added] #610 `tree.tooltip` option allows automatic or custom tooltips
@@ -10,6 +8,11 @@
   * [DEPRECATED] `removeNode` event. Listen for `modifyChild` with operation
     'remove' instead (which is fired on the parent).
   * [Improved] ThemeRoller theme
+  * [Improved] ext-filter
+    - #297 add filter option 'hideExpanders' to remove expanders if all child 
+      nodes are hidden by filter
+    - Filter options and the `opts` argument of `filterNodes()` / `filterBranches()`
+      have been unified.
   * [Improved] #656 WAI-ARIA support
     - Set focus to first node on first tab-in
     - Support [home] and [end] keys
