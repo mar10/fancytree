@@ -106,33 +106,30 @@ $.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, bra
 		if ( leavesOnly && node.children != null ) {
 			return;
 		}
-		var res = filter(node);
+		var res = filter(node),
+			matchedByBranch = false;
 
 		if( res === "skip" ) {
 			node.visit(function(c){
 				c.match = false;
 			}, true);
 			return "skip";
-		} else if( res ) {
+		}
+		if( !res && (branchMode || res === "branch") && node.parent.match ) {
+			res = true;
+			matchedByBranch = true;
+		}
+		if( res ) {
 			count++;
 			node.match = true;
 			node.visitParents(function(p){
 				p.subMatchCount += 1;
-				if( opts.autoExpand && !p.expanded ) {
+				// Expand match (unless this is no real match, but only a node in a matched branch)
+				if( opts.autoExpand && !matchedByBranch && !p.expanded ) {
 					p.setExpanded(true, {noAnimation: true, noEvents: true, scrollIntoView: false});
 					p._filterAutoExpanded = true;
 				}
 			});
-			if( branchMode || res === "branch" ) {
-				node.visit(function(c){
-					c.match = true;
-				});
-				if( opts.autoExpand && !node.expanded ) {
-					node.setExpanded(true, {noAnimation: true, noEvents: true, scrollIntoView: false});
-					node._filterAutoExpanded = true;
-				}
-				return "skip";
-			}
 		}
 	});
 	treeOpts.autoCollapse = prevAutoCollapse;
@@ -284,7 +281,7 @@ $.ui.fancytree.registerExtension({
 		counter: true,     // Show a badge with number of matching child nodes near parent icons
 		fuzzy: false,      // Match single characters in order, e.g. 'fb' will match 'FooBar'
 		hideExpandedCounter: true,  // Hide counter badge if parent is expanded
-		hideExpanders: true,        // Hide expanders if all child nodes are hidden by filter
+		hideExpanders: false,       // Hide expanders if all child nodes are hidden by filter
 		highlight: true,   // Highlight matches by wrapping inside <mark> tags
 		leavesOnly: false, // Match end nodes only
 		nodata: true,      // Display a 'no data' status node if result is empty

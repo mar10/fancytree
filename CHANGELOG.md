@@ -13,21 +13,22 @@
       nodes are hidden by filter
     - Filter options and the `opts` argument of `filterNodes()` / `filterBranches()`
       have been unified.
+    - [Fixed] #230 themeroller theme compatible with ext-filter
+    - [Fixed] #528 autoCollapse option blocks filter's autoExpand option
+    - [Fixed] #529 Filter: Mark matching nodes even if parent was matched in branch mode
+    - [Fixed] #643 Exceptions in ext-filter if expression contains special chars
+    - [Fixed] #658 ext-filter does not work with ext-edit `editCreateNode()`
   * [Improved] #656 WAI-ARIA support
     - Set focus to first node on first tab-in
     - Support [home] and [end] keys
     - Set aria-activedescendant on container to active ID
     - Set aria-multiselectable on container if selectMode != 1
     - Set aria-treeitem, -selected, -expanded, on title span instead `<li>`
-  * [Fixed] #230 themeroller theme compatible with ext-filter
-  * [Fixed] #528 autoCollapse option blocks filter's autoExpand option
   * [Fixed] #576 `loadKeyPath()` sometimes gets the root wrong
   * [Fixed] #615 Drag & drop helper icons lose indentation with table extension
   * [Fixed] #632 Tabbing is not working if there is an anchor tag in treeview
-  * [Fixed] #643 Exceptions in ext-filter if expression contains special chars
   * [Fixed] #644 New nodes created with ext-edit, are hidden in filtered trees
   * [Fixed] #647 ext-table: tree.render(true) does not discard existing markup 
-  * [Fixed] #658 ext-filter does not work with ext-edit `editCreateNode()`
   * [Fixed] #659 handling of function keys, when quicksearch is on
   * Use QUnit 2.0
 
