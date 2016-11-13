@@ -1,4 +1,6 @@
-# 2.20.0-0 / Unreleased
+# 2.20.1-0 / Unreleased
+
+# 2.20.0 / 2016-11-13
   * [Added] #419 `modifyChild` event. This event is also a good place to 
     implement auto sorting (#559)
   * [Added] #419 node.triggerModifyChild() and node.triggerModify()
