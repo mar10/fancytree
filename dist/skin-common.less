@@ -665,6 +665,17 @@ table.fancytree-ext-columnview {
 		font-weight: normal;
 	}
 }
+/* Hide expanders if all child nodes are hidden by filter */
+.fancytree-ext-filter-hide-expanders {
+	tr.fancytree-match span.fancytree-expander,
+	span.fancytree-node.fancytree-match span.fancytree-expander {
+		visibility: hidden;
+	}
+	tr.fancytree-submatch span.fancytree-expander,
+	span.fancytree-node.fancytree-submatch span.fancytree-expander {
+		visibility: visible;
+	}
+}
 
 .fancytree-ext-childcounter,
 .fancytree-ext-filter {

@@ -19,8 +19,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.19.0
- * @date 2016-08-11T15:51
+ * @version 2.20.0
+ * @date 2016-11-13"P"17:49
  */
 
 // To keep the global namespace clean, we wrap everything in a closure
@@ -103,8 +103,8 @@ $.ui.fancytree.prototype.widgetMethod1 = function(arg1){
 // A full blown extension, extension is available for all trees and can be
 // enabled like so (see also the [live demo](http://wwwendt.de/tech/fancytree/demo/sample-ext-childcounter.html)):
 //
-//    <script src="../src/jquery.fancytree.js" type="text/javascript"></script>
-//    <script src="../src/jquery.fancytree.childcounter.js" type="text/javascript"></script>
+//    <script src="../src/jquery.fancytree.js"></script>
+//    <script src="../src/jquery.fancytree.childcounter.js"></script>
 //    ...
 //
 //     $("#tree").fancytree({
@@ -122,7 +122,7 @@ $.ui.fancytree.registerExtension({
 // Every extension must be registered by a unique name.
 	name: "childcounter",
 // Version information should be compliant with [semver](http://semver.org)
-	version: "2.19.0",
+	version: "2.20.0",
 
 // Extension specific options and their defaults.
 // This options will be available as `tree.options.childcounter.hideExpanded`
