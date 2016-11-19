@@ -566,6 +566,36 @@ span.fancytree-drop-reject {
 
 
 /*------------------------------------------------------------------------------
+ * 'rtl' option
+ *----------------------------------------------------------------------------*/
+ 
+.fancytree-container.fancytree-rtl {
+	.fancytree-title {
+		/*unicode-bidi: bidi-override;*/ /* optional: reverse title letters */
+	}
+	span.fancytree-connector,
+	span.fancytree-expander,
+	span.fancytree-icon,
+	span.fancytree-drag-helper-img,
+	#fancytree-drop-marker {
+		background-image: url("icons-rtl.gif");
+	}
+	.fancytree-exp-n span.fancytree-expander, 
+	.fancytree-exp-nl span.fancytree-expander {
+		background-image: none;
+	}
+}
+ul.fancytree-container.fancytree-rtl {
+	ul {
+		padding: 0 16px 0 0;
+	}
+	&.fancytree-connectors li {
+		background-position: right 0;
+		background-image: url("vline-rtl.gif");
+	}
+}
+
+/*------------------------------------------------------------------------------
  * 'table' extension
  *----------------------------------------------------------------------------*/
 

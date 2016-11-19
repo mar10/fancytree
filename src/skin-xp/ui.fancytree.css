@@ -402,6 +402,31 @@ span.fancytree-drag-source.fancytree-drag-remove {
 }
 /*** Target node while dragging cursor is over it *****************************/
 /*------------------------------------------------------------------------------
+ * 'rtl' option
+ *----------------------------------------------------------------------------*/
+.fancytree-container.fancytree-rtl .fancytree-title {
+  /*unicode-bidi: bidi-override;*/
+  /* optional: reverse title letters */
+}
+.fancytree-container.fancytree-rtl span.fancytree-connector,
+.fancytree-container.fancytree-rtl span.fancytree-expander,
+.fancytree-container.fancytree-rtl span.fancytree-icon,
+.fancytree-container.fancytree-rtl span.fancytree-drag-helper-img,
+.fancytree-container.fancytree-rtl #fancytree-drop-marker {
+  background-image: url("icons-rtl.gif");
+}
+.fancytree-container.fancytree-rtl .fancytree-exp-n span.fancytree-expander,
+.fancytree-container.fancytree-rtl .fancytree-exp-nl span.fancytree-expander {
+  background-image: none;
+}
+ul.fancytree-container.fancytree-rtl ul {
+  padding: 0 16px 0 0;
+}
+ul.fancytree-container.fancytree-rtl.fancytree-connectors li {
+  background-position: right 0;
+  background-image: url("vline-rtl.gif");
+}
+/*------------------------------------------------------------------------------
  * 'table' extension
  *----------------------------------------------------------------------------*/
 table.fancytree-ext-table {
@@ -552,6 +577,18 @@ ul.fancytree-ext-wide span.fancytree-node span.fancytree-title {
 ul.fancytree-container li {
   background-image: url("data:image/gif;base64,R0lGODlhEAAQAPcAAAAAAIAAAACAAICAAAAAgIAAgACAgMDAwMDcwKbK8P///6Wlpf/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////78KCgpICAgP8AAAD/AP//AAAA//8A/wD//////yH5BAEAAP4ALAAAAAAQABAAAAgpAP0JFHhvoMGDCBMiLKiwocOBDB9KXDixosGIFidizPhwI8eGHj8KDAgAOw==");
   background-position: 0 0;
+}
+ul.fancytree-container.fancytree-rtl li {
+  background-position: right 0;
+  background-image: url("vline-rtl.gif");
+}
+ul.fancytree-container.fancytree-rtl .fancytree-exp-n span.fancytree-expander {
+  background-image: url("icons-rtl.gif");
+  background-position: 0px -64px;
+}
+ul.fancytree-container.fancytree-rtl .fancytree-exp-nl span.fancytree-expander {
+  background-image: url("icons-rtl.gif");
+  background-position: -16px -64px;
 }
 ul.fancytree-container li.fancytree-lastsib {
   background-image: none;
