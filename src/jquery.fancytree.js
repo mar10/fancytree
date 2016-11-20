@@ -4191,7 +4191,7 @@ $.extend(Fancytree.prototype,
 	 * @param {object} [source] optional new source (use last data otherwise)
 	 */
 	treeLoad: function(ctx, source) {
-		var type, $ul,
+		var metaData, type, $ul,
 			tree = ctx.tree,
 			$container = ctx.widget.element,
 			dfd,
@@ -4214,11 +4214,20 @@ $.extend(Fancytree.prototype,
 				this.data = $.extend(this.data, _getElementDataAsDict($ul));
 				break;
 			case "json":
-	//            $().addClass("ui-helper-hidden");
 				source = $.parseJSON($container.text());
-				if(source.children){
-					if(source.title){tree.title = source.title;}
+				// $container already contains the <ul>, but we remove the plain (json) text
+				// $container.empty();
+				$container.contents().filter(function(){
+					return (this.nodeType === 3);
+				}).remove();
+				if( $.isPlainObject(source) ){
+					// We got {foo: 'abc', children: [...]}
+					// Copy extra properties to tree.data.foo
+					_assert($.isArray(source.children), "if an object is passed as source, it must contain a 'children' array (all other properties are added to 'tree.data')");
+					metaData = source;
 					source = source.children;
+					delete metaData.children;
+					$.extend(tree.data, metaData);
 				}
 				break;
 			default:
