@@ -1,6 +1,8 @@
 # 2.20.1-0 / Unreleased
   * [Added] `rtl` option for right-to-left script support
   * [Added] hook `treeSetOption` allows extensions to update on option changes.
+  * [Improved] better support for initializing from embedded JSON using the 
+    `data-type="json"` attribute
 
 # 2.20.0 / 2016-11-13
   * [Added] #419 `modifyChild` event. This event is also a good place to 

@@ -308,7 +308,7 @@ $(function(){
 				  ],
 		change: function(choice) {
 			// console.log("choice: " + choice.value)
-			$("#connectorsSwitch").toggle(choice.value === "win8");
+			$("#connectorsSwitch").toggle(choice.value !== "xp");
 		}
 	}).after($("<label id='connectorsSwitch'><input name='cbConnectors' type='checkbox'>Connectors</label>"));
 

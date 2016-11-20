@@ -7,7 +7,7 @@
 	<script src="//code.jquery.com/jquery-1.12.1.min.js"></script>
 	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
 
-	<link href="../src/skin-win7/ui.fancytree.css" rel="stylesheet">
+	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet">
 	<script src="../src/jquery.fancytree.js"></script>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
@@ -21,7 +21,7 @@
 </style>
 
 <script type="text/javascript">
-	var treeData = [
+	var SOURCE = [
 		{title: "item1 with key and tooltip", tooltip: "Look, a tool tip!" },
 		{title: "item2: selected on init", selected: true },
 		{title: "Folder", folder: true, key: "id3",
@@ -66,7 +66,7 @@
 		$("#tree1").fancytree({
 			checkbox: true,
 			selectMode: 1,
-			source: treeData,
+			source: SOURCE,
 			activate: function(event, data) {
 				$("#echoActive1").text(data.node.title);
 			},
@@ -89,7 +89,7 @@
 		$("#tree2").fancytree({
 			checkbox: true,
 			selectMode: 2,
-			source: treeData,
+			source: SOURCE,
 			select: function(event, data) {
 				// Display list of selected nodes
 				var selNodes = data.tree.getSelectedNodes();
@@ -120,7 +120,7 @@
 		$("#tree3").fancytree({
 			checkbox: true,
 			selectMode: 3,
-			source: treeData,
+			source: SOURCE,
 			lazyLoad: function(event, ctx) {
 				ctx.result = {url: "ajax-sub2.json", debugDelay: 1000};
 			},
@@ -153,7 +153,7 @@
 				}
 			},
 			// The following options are only required, if we have more than one tree on one page:
-//				initId: "treeData",
+//				initId: "SOURCE",
 			cookieId: "fancytree-Cb3",
 			idPrefix: "fancytree-Cb3-"
 		});
@@ -161,7 +161,7 @@
 		$("#tree4").fancytree({
 			checkbox: false,
 			selectMode: 2,
-			source: treeData,
+			source: SOURCE,
 			beforeSelect: function(event, data) {
 				if( data.node.folder ){
 					return false;
@@ -191,7 +191,7 @@
 				}
 			},
 			// The following options are only required, if we have more than one tree on one page:
-//			initId: "treeData",
+//			initId: "SOURCE",
 			cookieId: "fancytree-Cb4",
 			idPrefix: "fancytree-Cb4-"
 		});
@@ -219,7 +219,14 @@
 </head>
 
 <body class="example">
-	<h1>Example: Selection and checkbox</h1>
+	<h1>Example: Selection and Checkboxes</h1>
+
+	<p class="description">
+		Use different select modes for the tree and distinct nodes.
+	</p>
+	<div>
+		<label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
+	</div>
 
 	<!-- Tree #1 -->
 
@@ -233,9 +240,6 @@
 		considered bad input data and <b>not</b> fixed automatically (only on
 		the first click).
 	</p>
-	<div>
-		<label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
-	</div>
 	<div id="tree1" class="fancytree-radio">
 	</div>
 	<div>Active node: <span id="echoActive1">-</span></div>

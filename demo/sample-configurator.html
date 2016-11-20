@@ -7,25 +7,46 @@
 	<script src="//code.jquery.com/jquery-1.12.1.min.js"></script>
 	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
 
-	<link href="../src/skin-win7/ui.fancytree.css" rel="stylesheet"">
+	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet"">
 	<script src="../src/jquery.fancytree.js"></script>
 	<script src="../lib/jquery.configurator.js"></script>
 
+	<!-- Start_Exclude: This block is not part of the sample code -->
 	<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?autoload=true&amp;skin=sunburst"></script>
 <!--
 	<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?autoload=true&amp;skin=sons-of-obsidian"></script>
  -->
-	<!-- Start_Exclude: This block is not part of the sample code -->
 	<link href="sample.css" rel="stylesheet">
 	<script src="sample.js"></script>
 	<!-- End_Exclude -->
 
 <style type="text/css">
-	div#tree{
-		width: 400px;
+	fieldset {
+		border: 1px solid;
+		padding: 2px;
+		margin-left: 8px;
+	}
+	fieldset.tree {
 		float: left;
 	}
-	div#options li{
+	div#tree{
+		width: 400px;
+	}
+	ul.fancytree-container {
+		border: none;
+	}
+	fieldset.options {
+	}
+	div#options {
+		padding: 2px;
+		margin: 2px;
+	}
+	div#options ul {
+		padding: 4px;
+		margin: 0px;
+		font-size: 90%;
+	}
+	div#options ul li {
 		list-style-type: none;
 	}
 </style>
@@ -35,22 +56,22 @@
 
 var OPT_LIST = [
 	{name: "activeVisible", value: true,
-	 hint: "Make sure, active nodes are visible (expanded)."},
+	 hint: "Make sure, active nodes are visible (expanded)"},
 	{name: "aria", value: false,
-	 hint: "Enable WAI-ARIA support."},
+	 hint: "Enable WAI-ARIA support"},
 	{name: "autoActivate", value: true,
-	 hint: "Automatically activate a node when it is focused using keyboard."},
-		{name: "autoCollapse", value: false,
-		 hint: "Automatically collapse all siblings, when a node is expanded."},
+	 hint: "Automatically activate a node when it is focused using keyboard"},
+	{name: "autoCollapse", value: false,
+	 hint: "Automatically collapse all siblings, when a node is expanded"},
 	{name: "autoScroll", value: false,
-	 hint: "Automatically scroll nodes into visible area."},
+	 hint: "Automatically scroll nodes into visible area"},
 	{name: "clickFolderMode", value: [{name: "activate", value: 1},
 									  {name: "expand", value: 2},
 									  {name: "activate and expand", value: 3},
 									  {name: "activate (dblclick expands)", value: 4, selected: true}],
 	 hint: "1:activate, 2:expand, 3:activate and expand, 4:activate (dblclick expands)"},
 	{name: "checkbox", value: false,
-	 hint: "Show checkboxes."},
+	 hint: "Show checkboxes"},
 	{name: "debugLevel", value: [{name: "quiet", value: 0},
 								 {name: "normal", value: 1},
 								 {name: "debug", value: 2}],
@@ -64,19 +85,19 @@ var OPT_LIST = [
 	{name: "generateIds", value: false,
 	 hint: "Generate id attributes like <span id='fancytree-id-KEY'>"},
 	{name: "idPrefix", value: "ft_",
-	 hint: "Used to generate node id´s like <span id='fancytree-id-<key>'>."},
+	 hint: "Used to generate node id´s like <span id='fancytree-id-<key>'>"},
 	{name: "icon", value: true,
-	 hint: "Display node icons."},
+	 hint: "Display node icons"},
 	{name: "keyboard", value: true,
-	 hint: "Support keyboard navigation."},
+	 hint: "Support keyboard navigation"},
 	{name: "keyPathSeparator", value: "/",
-	 hint: "Used by node.getKeyPath() and tree.loadKeyPath()."},
+	 hint: "Used by node.getKeyPath() and tree.loadKeyPath()"},
 	{name: "minExpandLevel", value: 1,
 	 hint: "1: root node is not collapsible"},
 	{name: "quicksearch", value: false,
-	 hint: "Navigate to next node by typing the first letters."},
+	 hint: "Navigate to next node by typing the first letters"},
 	{name: "rtl", value: false,
-	 hint: "Enable RTL (right-to-left) mode."},
+	 hint: "Enable RTL (right-to-left) mode"},
 	{name: "selectMode", value: [{name: "single", value: 1},
 								 {name: "multi", value: 2, selected: true},
 								 {name: "multi-hier", value: 3}],
@@ -104,6 +125,7 @@ $(function(){
 			data.result = {url: "ajax-sub2.json"}
 		}
 	});
+	// Attach configurator plugin
 	$("#tree").configurator({
 		pluginName: "fancytree",
 		optionTarget: "div#options",
@@ -128,19 +150,19 @@ $(function(){
 </head>
 
 <body class="example">
-	<h1>Fancytree option configurator</h1>
+	<h1>Fancytree Option Configurator</h1>
 	<div class="description">
-		This sample shows, how titles could displayed as aligned columns.
+		Live preview of some Fancytree options.
 	</div>
-	<p class="warning">
-		TODO: this is work in progress.
-	</p>
 	<div>
 		<label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
 	</div>
 	<p>
-		<div id="tree"> </div>
-		<fieldset>
+		<fieldset class="tree">
+			<legend>Fancytree</legend>
+			<div id="tree"> </div>
+		</fieldset>
+		<fieldset class="options">
 			<legend>Fancytree options</legend>
 			<div id="options">OPTIONS</div>
 		</fieldset>

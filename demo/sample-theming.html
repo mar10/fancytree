@@ -9,7 +9,7 @@
 	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
 
 	<!-- Include the basic stylesheet: -->
-	<link href="../src/skin-win7/ui.fancytree.css" rel="stylesheet">
+	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet">
 	<!-- Include jQueryUI theme -->
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/start/jquery-ui.css" />
 	<!-- Add som custom fonts -->
@@ -58,6 +58,11 @@ span.fancytree-node.custom1 > span.fancytree-icon {
 				}
 			}
 		});
+	});
+</script>
+<!-- Start_Exclude: This block is not part of the sample code -->
+<script>
+	$(function(){
 		addSampleButton({
 			label: "Set icons",
 			code: function(){
@@ -72,20 +77,25 @@ span.fancytree-node.custom1 > span.fancytree-icon {
 		});
 	});
 </script>
+<!-- End_Exclude -->
 </head>
 
 <body class="example">
 	<h1>Example: Theming</h1>
 	<p class="description">
-		Includes a custom CSS <i>after</i> the standard CSS to override theming.<br>
+		Include a custom CSS <i>after</i> the standard CSS to override theming.<br>
 		Some nodes have their <code>data.addClass</code> attribute set.<br>
 		Finally, the last two nodes use the <code>data.icon</code> attribute.
 		<br>
-		See also the <a href="https://github.com/mar10/fancytree/wiki/TutorialTheming">tutorial</a>.
+		See the <a href="https://github.com/mar10/fancytree/wiki/TutorialTheming" 
+			target="_blank" class="external">Theming Tutorial</a>
+		for details.
 	</p>
 	<div>
 		<label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
 	</div>
+	<p id="sampleButtons">
+	</p>
 
 	<div id="tree">
 		<ul>
@@ -123,8 +133,6 @@ span.fancytree-node.custom1 > span.fancytree-icon {
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
 	<hr>
-	<p id="sampleButtons">
-	</p>
 	<p class="sample-links  no_code">
 		<a class="hideInsideFS" href="https://github.com/mar10/fancytree/">Fancytree project home</a>
 		<a class="hideOutsideFS" href="#">Link to this page</a>
