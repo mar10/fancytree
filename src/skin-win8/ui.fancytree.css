@@ -419,12 +419,20 @@ span.fancytree-drag-source.fancytree-drag-remove {
 .fancytree-container.fancytree-rtl .fancytree-exp-nl span.fancytree-expander {
   background-image: none;
 }
+.fancytree-container.fancytree-rtl.fancytree-connectors .fancytree-exp-n span.fancytree-expander,
+.fancytree-container.fancytree-rtl.fancytree-connectors .fancytree-exp-nl span.fancytree-expander {
+  background-image: url("icons-rtl.gif");
+}
 ul.fancytree-container.fancytree-rtl ul {
   padding: 0 16px 0 0;
 }
 ul.fancytree-container.fancytree-rtl.fancytree-connectors li {
   background-position: right 0;
   background-image: url("vline-rtl.gif");
+}
+ul.fancytree-container.fancytree-rtl li.fancytree-lastsib,
+ul.fancytree-container.fancytree-rtl.fancytree-no-connector > li {
+  background-image: none;
 }
 /*------------------------------------------------------------------------------
  * 'table' extension
