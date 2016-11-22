@@ -333,7 +333,7 @@ $.ui.fancytree.registerExtension({
 			node.$subMatchBadge.hide();
 		}
 		// node.debug("nodeRenderStatus", node.titleWithHighlight, node.title)
-		if( !node.isEditing || !node.isEditing()){
+		if( !node.isEditing || !node.isEditing.call(node)){
 			if( node.titleWithHighlight ) {
 				$title.html(node.titleWithHighlight);
 			} else if ( escapeTitles ) {

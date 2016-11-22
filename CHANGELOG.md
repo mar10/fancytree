@@ -1,4 +1,5 @@
 # 2.20.1-0 / Unreleased
+  * [Fixed] corner case of #658 when ext-edit is loaded, but inactive
   * [Added] `rtl` option for right-to-left script support
   * [Added] hook `treeSetOption` allows extensions to update on option changes.
   * [Improved] better support for initializing from embedded JSON using the 
