@@ -1,5 +1,7 @@
 # 2.20.1-0 / Unreleased
   * [Added] `rtl` option for right-to-left script support
+  * [Added] ext-dnd5 for native HTML5 drag'n'drop support
+  * [Added] Add $.ui.fancytree.overrideMethod()
   * [Added] hook `treeSetOption` allows extensions to update on option changes.
   * [Improved] better support for initializing from embedded JSON using the 
     `data-type="json"` attribute
