@@ -1,7 +1,7 @@
 /*!
  * jquery.fancytree.dnd.js
  *
- * Drag-and-drop support.
+ * Drag-and-drop support (jQuery UI draggable/droppable).
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
  * Copyright (c) 2008-2016, Martin Wendt (http://wwWendt.de)
