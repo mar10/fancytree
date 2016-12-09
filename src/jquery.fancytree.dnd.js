@@ -512,7 +512,6 @@ $.ui.fancytree.registerExtension({
 				node.hasChildren() !== false && !node.expanded &&
 				(!dnd.dragExpand || dnd.dragExpand(node, ctx) !== false)
 				) {
-				// TODO: maybe add a callback `dragExpand()` here to allow more control
 				node.scheduleAction("expand", dnd.autoExpandMS);
 			}
 			if(hitMode && dnd.dragOver){
