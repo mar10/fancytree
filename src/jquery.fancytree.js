@@ -673,7 +673,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	_changeSelectStatusAttrs: function (state) {
 		var changed = false;
 
-                if(this.unselectable == undefined || !this.unselectable) {
+                if(this.unselectable === undefined || !this.unselectable) {
 
                     switch(state){
                     case false:
