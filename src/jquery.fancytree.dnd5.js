@@ -340,7 +340,9 @@ $.ui.fancytree.registerExtension({
 
 					$(node.span).removeClass(classDropAccept + " " + classDropReject);
 					// Note: this event is fired BEFORE the dragleave event
-					// of the previous element! (Safari 10, ...)
+					// of the previous element!
+					// https://www.w3.org/Bugs/Public/show_bug.cgi?id=19041
+					// TODO: maybe handle this on the $container level?
 					// But this seems to work:
 					setTimeout(function(){
 						node.info("DELAYED " + e.type, e.target, DRAG_ENTER_RESPONSE);						
@@ -387,7 +389,8 @@ $.ui.fancytree.registerExtension({
 					return allowDrop;
 
 				case "dragleave":
-					// TODO: can't reset here, because dragleave may be triggered AFTER next dragenter (Safari)?
+					// TODO: can't reset here, because dragleave may be triggered
+					// AFTER next dragenter (Safari)?
 					// DRAG_ENTER_RESPONSE = null;
 					node.info(e.type, data);
 					node.scheduleAction("cancel");
