@@ -3,12 +3,16 @@
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 	<title>Fancytree - Example: Drag'n'drop</title>
+	<script src="../lib/jquery.js"></script>
+	<script src="../lib/jquery-ui.custom.js"></script>
+<!--
 	<script src="//code.jquery.com/jquery-1.12.1.js"></script>
 	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+-->
 
 	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet">
 	<script src="../src/jquery.fancytree.js"></script>
-	<script src="../src/jquery.fancytree.dnd.js"></script>
+	<script src="../src/jquery.fancytree.dnd5.js"></script>
 	<script src="../src/jquery.fancytree.edit.js"></script>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
@@ -35,6 +39,27 @@
 	#droppableSample.drophover {
 		border: 1px solid green;
 	}
+	#droppableSample.drophover {
+		border: 1px solid green;
+	}
+	span.drag-source {
+		border: 1px solid grey;
+		border-radius: 3px;
+		padding: 2px;
+		background-color: silver
+	}
+
+	span.fancytree-node.fancytree-drag-source {
+		/*border: 1px dotted grey;*/
+		opacity: 0.4;
+	}
+	span.fancytree-node.fancytree-drop-accept {
+		border: 1px dotted green;
+	}
+	span.fancytree-node.fancytree-drop-reject {
+		border: 1px dotted red;
+	}
+
 </style>
 <!-- Add code to initialize the tree when the document is loaded: -->
 <script type="text/javascript">
@@ -42,29 +67,32 @@
 		// Attach the fancytree widget to an existing <div id="tree"> element
 		// and pass the tree options as an argument to the fancytree() function:
 		$("#tree").fancytree({
-			extensions: ["dnd", "edit"],
+			extensions: ["dnd5", "edit"],
 			// titlesTabbable: true,
 			source: {
 				url: "ajax-tree-fs.json"
 			},
-			dnd: {
+			dnd5: {
+				acceptForeignNodes: true, 
+				acceptNonNodes: true, 
 				autoExpandMS: 400,
-				focusOnClick: true,
+				// focusOnClick: true,
 				preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
 				preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
 				dragStart: function(node, data) {
-					/** This function MUST be defined to enable dragging for the tree.
-					 *  Return false to cancel dragging of node.
+					/* This function MUST be defined to enable dragging for the tree.
+					 * Return false to cancel dragging of node.
 					 */
+					node.debug(data);
 					return true;
 				},
 				dragEnter: function(node, data) {
-					/** data.otherNode may be null for non-fancytree droppables.
-					 *  Return false to disallow dropping on node. In this case
-					 *  dragOver and dragLeave are not called.
-					 *  Return 'over', 'before, or 'after' to force a hitMode.
-					 *  Return ['before', 'after'] to restrict available hitModes.
-					 *  Any other return value will calc the hitMode from the cursor position.
+					/* data.otherNode may be null for non-fancytree droppables.
+					 * Return false to disallow dropping on node. In this case
+					 * dragOver and dragLeave are not called.
+					 * Return 'over', 'before, or 'after' to force a hitMode.
+					 * Return ['before', 'after'] to restrict available hitModes.
+					 * Any other return value will calc the hitMode from the cursor position.
 					 */
 					// Prevent dropping a parent below another parent (only sort
 					// nodes under the same parent)
@@ -77,10 +105,29 @@
 				   return true;
 				},
 				dragDrop: function(node, data) {
-					/** This function MUST be defined to enable dropping of items on
-					 *  the tree.
+					/* This function MUST be defined to enable dropping of items on
+					 * the tree.
 					 */
-					data.otherNode.moveTo(node, data.hitMode);
+					var transfer = data.dataTransfer;
+
+					node.debug("drop", data);
+					if( data.otherNode ) {
+						// Drop another Fancytree node from same frame
+						// (maybe from another tree however)
+						var sameTree = (data.otherNode.tree === data.tree);
+
+						data.otherNode.moveTo(node, data.hitMode);
+					} else if( data.otherNodeData ) {
+						// Drop Fancytree node from different frame
+						node.addChild(data.otherNodeData, data.hitMode);
+					} else {
+						// Drop a non-node
+						transfer.effect = "copy";
+						node.addNode({
+							title: transfer.getData("text/plain")
+						}, data.hitMode);
+					}
+					node.setExpanded();
 				}
 			},
 			activate: function(event, data) {
@@ -94,23 +141,20 @@
 </script>
 </head>
 <body class="example">
-	<h1>Example: 'dnd' extension</h1>
+	<h1>Example: 'dnd5' extension</h1>
 	<div class="description">
 		<p>
-			jQuery UI based Drag-and-Drop support:
+			Native Drag-and-Drop support:
 		</p>
 		<ul>
-			<li>Support drag-and-drop of tree nodes (inside the same or between
+			<li>Support drag and drop of tree nodes (inside the same or between
 				different trees).</li>
-			<li>Behave like a standard jQuery UI draggable, i.e. allow
-				dropping of nodes on standard droppables.</li>
-			<li>Behave like a standard jQuery UI droppable, i.e. allow
-				dropping of standard draggables.</li>
+			<li>Support drag and drop between different frames, browser tabs, 
+			    windows, or desktop.</li>
+			<li>Requires IE 9 or later.</li>
 		</ul>
 		<p>
-			<b>Note:</b> Consider using the <a href="sample_ext_dnd5.html">
-				<i>native</i> drag-and-drop</a>A> extension instead.<br>
-			<b>Status</b>: production.
+			<b>Status</b>: experimental.
 			<b>Details:</b>
 			<a href="https://github.com/mar10/fancytree/wiki/ExtDnd"
 				target="_blank" class="external">ext-dnd</a>.
@@ -121,6 +165,15 @@
 		<label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
 	</div>
 
+	<p>
+		<span class="drag-source" draggable="true" 
+			ondragstart="event.dataTransfer.setData('text/plain', 'Drag me');">
+			Drag me</span>
+		<br>
+		<label>Drop here:
+			<input type="text" class="drag-taget" placeholder="Drop here">
+		</label>
+	</p>
 	<!-- Add a <table> element where the tree should appear: -->
 	<div id="tree">
 	</div>
