@@ -1,4 +1,4 @@
-# 2.20.1-0 / Unreleased
+# 2.21.0-0 / Unreleased
   * [Added] `rtl` option for right-to-left script support
   * [Added] ext-dnd5 for native HTML5 drag'n'drop support
   * [Added] Add $.ui.fancytree.overrideMethod()
@@ -7,6 +7,7 @@
     `data-type="json"` attribute
   * [Fixed] corner case of #658 when ext-edit is loaded, but inactive
   * [Fixed] #396 Don't load 'loading.gif' for glyph skins
+  * [Fixed] #675 ext-table: node.render(false) puts first node at end
 
 # 2.20.0 / 2016-11-13
   * [Added] #419 `modifyChild` event. This event is also a good place to 
