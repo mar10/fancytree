@@ -248,7 +248,8 @@ module.exports = (grunt) ->
             overwrite : true
             replacements: [ {
                 from : /@DATE/g
-                to : "<%= grunt.template.today('yyyy-mm-dd\"T\"HH:MM') %>"
+                # https://github.com/felixge/node-dateformat
+                to : "<%= grunt.template.today('isoUtcDateTime') %>"
             },{
                 from : /buildType:\s*\"[a-zA-Z]+\"/g
                 to : "buildType: \"production\""

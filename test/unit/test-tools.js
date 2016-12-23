@@ -37,13 +37,17 @@ TOOLS.initQUnit = function() {
 	  // Expand first section when all tests are run
 	  $("ol#qunit-tests > li:first > ol").show("slow");
 
+	  /*jshint camelcase:false*/ // jscs: disable
+	  window.global_test_results = testResults; // used by saucelabs
+	  /*jshint camelcase:true*/ // jscs: enable
+
 	  // Maybe deferring this fixes sporadic erros in saucelabs tests for
 	  // FF 48 on Win8?
-	  setTimeout(function(){
-		  /*jshint camelcase:false*/ // jscs: disable
-		  window.global_test_results = testResults; // used by saucelabs
-		  /*jshint camelcase:true*/ // jscs: enable
-	  }, 1000);
+	  // setTimeout(function(){
+		 //  jshint camelcase:false // jscs: disable
+		 //  window.global_test_results = testResults; // used by saucelabs
+		 //  /*jshint camelcase:true*/ // jscs: enable
+	  // }, 1000);
 	});
 
 	// See https://github.com/axemclion/grunt-saucelabs

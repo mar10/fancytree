@@ -42,6 +42,20 @@ ul.fancytree-container {
 		background-image: data-uri("@{fancy-image-dir}/vline.gif");
 		background-position: 0 0;
 	}
+	&.fancytree-rtl {
+		li {
+			background-position: right 0;
+			background-image: url("vline-rtl.gif");
+		}
+		.fancytree-exp-n span.fancytree-expander {
+			background-image: url("icons-rtl.gif");
+			.useSprite(0, 4);
+		}
+		.fancytree-exp-nl span.fancytree-expander {
+			background-image: url("icons-rtl.gif");
+			.useSprite(1, 4);
+		}
+	}
 	// Suppress lines for last child node
 	li.fancytree-lastsib {
 		background-image: none;

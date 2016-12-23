@@ -566,6 +566,46 @@ span.fancytree-drop-reject {
 
 
 /*------------------------------------------------------------------------------
+ * 'rtl' option
+ *----------------------------------------------------------------------------*/
+ 
+.fancytree-container.fancytree-rtl {
+	.fancytree-title {
+		/*unicode-bidi: bidi-override;*/ /* optional: reverse title letters */
+	}
+	span.fancytree-connector,
+	span.fancytree-expander,
+	span.fancytree-icon,
+	span.fancytree-drag-helper-img,
+	#fancytree-drop-marker {
+		background-image: url("icons-rtl.gif");
+	}
+	.fancytree-exp-n span.fancytree-expander, 
+	.fancytree-exp-nl span.fancytree-expander {
+		background-image: none;
+	}
+	&.fancytree-connectors .fancytree-exp-n span.fancytree-expander, 
+	&.fancytree-connectors .fancytree-exp-nl span.fancytree-expander {
+		background-image: url("icons-rtl.gif");
+	}
+}
+ul.fancytree-container.fancytree-rtl {
+	ul {
+		padding: 0 16px 0 0;
+	}
+	&.fancytree-connectors li {
+		background-position: right 0;
+		background-image: url("@{fancy-image-dir}/vline-rtl.gif");
+	}
+	// Suppress lines for last child node
+	li.fancytree-lastsib,
+	// Suppress lines if level is fixed expanded (option minExpandLevel) 
+	&.fancytree-no-connector > li {
+		background-image: none;
+	}
+}
+
+/*------------------------------------------------------------------------------
  * 'table' extension
  *----------------------------------------------------------------------------*/
 
@@ -663,6 +703,17 @@ table.fancytree-ext-columnview {
 	span.fancytree-node.fancytree-match span.fancytree-title {
 		color: black;
 		font-weight: normal;
+	}
+}
+/* Hide expanders if all child nodes are hidden by filter */
+.fancytree-ext-filter-hide-expanders {
+	tr.fancytree-match span.fancytree-expander,
+	span.fancytree-node.fancytree-match span.fancytree-expander {
+		visibility: hidden;
+	}
+	tr.fancytree-submatch span.fancytree-expander,
+	span.fancytree-node.fancytree-submatch span.fancytree-expander {
+		visibility: visible;
 	}
 }
 

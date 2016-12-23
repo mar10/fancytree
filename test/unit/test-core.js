@@ -2,6 +2,8 @@ jQuery(document).ready(function(){
 
 /*globals TEST_TOOLS, QUnit */
 
+/* jshint -W081 */  // Ignore 'W081: Too many var statements'
+
 var TEST_DATA, TESTDATA_NODES, TESTDATA_TOPNODES, TESTDATA_VISIBLENODES,
 	$ = jQuery,
 	// Use tools from test-tools.js
@@ -799,6 +801,146 @@ QUnit.test("'modifyChild' event", function(assert) {
 			 "10.modifyChild(data, 10_1)",
 			 "root.modifyChild(custom1, 5)"
 			 ], "event sequence");
+});
+
+/*******************************************************************************
+ * Lazy loading
+ */
+QUnit.module("generateFormElements()");
+
+QUnit.test("multi select", function(assert) {
+	tools.setup(assert);
+	assert.expect(22);
+
+	var $result, tree;
+
+	$("#tree").fancytree({
+		source: TEST_DATA,
+		generateIds: true
+	});
+	tree = $.ui.fancytree.getTree();
+
+	$result = $("#fancytree_result_" + tree._id);
+	assert.equal($result.length, 0, "result <div> not yet created");
+
+	tree.generateFormElements();
+	$result = $("#fancytree_result_" + tree._id);
+	assert.equal($result.length, 1, "result <div> created");
+	assert.equal($result.is(":visible"), false, "result is hidden");
+	assert.equal($result.find("input").length, 0, "initial result is empty");
+
+	tools.getNode("10_1").setActive();
+
+	tools.getNode("10").setSelected();
+	tools.getNode("10_1").setSelected();
+	tools.getNode("10_1_1").setSelected();
+	tools.getNode("10_1_2").setSelected();
+
+	tree.generateFormElements();
+
+	assert.equal($result.find("input[type=radio]").length, 1,
+		"one radio input element created for active node");
+	assert.equal($result.find("input[type=radio]").attr("name"), "ft_" + tree._id + "_active",
+		"radio input name is 'ft_TREEID_active'");
+	assert.equal($result.find("input[type=radio]").attr("value"), "10_1",
+		"radio input value is set to node key");
+	assert.equal($result.find("input[type=radio]").attr("checked"), "checked",
+		"radio input is checked");
+
+	assert.equal($result.find("input[type=checkbox]").length, 4,
+		"multiple checkbox input elements created for selected nodes");
+	assert.equal($result.find("input[name=ft_" + tree._id + "\\[\\]]").length, 4,
+		"checkboxes name is 'ft_TREEID[]'");
+	assert.equal($result.find("input[type=checkbox][value=10_1]").length, 1,
+		"checkboxes value is set to node keys");
+	assert.equal($result.find("input[type=checkbox]:checked").length, 4,
+		"checkboxes are checked");
+
+	tree.generateFormElements(false, true);
+
+	assert.equal($result.find("input[type=radio]").length, 1,
+		"only active node created");
+	assert.equal($result.find("input[type=checkbox]").length, 0,
+		"disable generation of selcted nodes");
+
+	tree.generateFormElements(true, false);
+
+	assert.equal($result.find("input[type=radio]").length, 0,
+		"disable generation of active node");
+	assert.equal($result.find("input[type=checkbox]").length, 4,
+		"only selected nodes created");
+
+	tree.generateFormElements("cust_sel", "cust_act");
+
+	assert.equal($result.find("input[name=cust_act]").length, 1,
+		"custom name for active node");
+	assert.equal($result.find("input[name=cust_sel]").length, 4,
+		"custom name for selected nodes");
+
+	tree.generateFormElements(true, true, {stopOnParents: true});
+
+	assert.equal($result.find("input[type=checkbox]").length, 4,
+		"stopOnParents ignored for selectMode 2");
+
+	tree.generateFormElements(true, true, {
+		filter: function(node) {
+			return true;
+		}
+	});
+	assert.equal($result.find("input[type=checkbox]").length, TESTDATA_NODES,
+		"filter => true: generate all nodes");
+
+	tree.generateFormElements(true, true, {
+		filter: function(node) {
+			return node.isSelected();
+		}
+	});
+	assert.equal($result.find("input[type=checkbox]").length, 4,
+		"filter => isSelected(): generate selected nodes");
+
+	tree.generateFormElements(true, true, {
+		filter: function(node) {
+			return node.isActive();
+		}
+	});
+	assert.equal($result.find("input[type=checkbox]").length, 1,
+		"filter => isActive(): generate selected nodes");
+});
+
+QUnit.test("selectMode: 3", function(assert) {
+	tools.setup(assert);
+	assert.expect(4);
+
+	var $result, tree;
+
+	$("#tree").fancytree({
+		source: TEST_DATA,
+		selectMode: 3,
+		generateIds: true
+	});
+	tree = $.ui.fancytree.getTree();
+
+	tools.getNode("10_1").setActive();
+
+	tools.getNode("10").setSelected();
+	tools.getNode("10_1").setSelected();
+	tools.getNode("10_1_1").setSelected();
+	tools.getNode("10_1_2").setSelected();
+
+	tree.generateFormElements();
+	$result = $("#fancytree_result_" + tree._id);
+
+	assert.equal($result.find("input[type=radio]").length, 1,
+		"generation of active node");
+	assert.equal($result.find("input[type=checkbox]").length, 1,
+		"stopOnParents: only top node created");
+
+	tree.generateFormElements(true, true, {stopOnParents: false});
+
+	assert.equal($result.find("input[type=radio]").length, 1,
+		"generation of active node");
+	assert.equal($result.find("input[type=checkbox]").length, 7,
+		"stopOnParents: false: all nodes created");
 });
 
 /*******************************************************************************

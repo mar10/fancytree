@@ -1,19 +1,47 @@
-# ext-fixesd / Unreleased
+# 2.21.0-0 / Unreleased
+  * [Added] `rtl` option for right-to-left script support
   * [Added] New exxtension ext-fixed
+  * [Added] ext-dnd5 for native HTML5 drag'n'drop support
+  * [Added] Add $.ui.fancytree.overrideMethod()
+  * [Added] hook `treeSetOption` allows extensions to update on option changes.
+  * [Improved] better support for initializing from embedded JSON using the 
+    `data-type="json"` attribute
+  * [Fixed] corner case of #658 when ext-edit is loaded, but inactive
+  * [Fixed] #396 Don't load 'loading.gif' for glyph skins
+  * [Fixed] #675 ext-table: node.render(false) puts first node at end
 
-# 2.20.0-0 / Unreleased
+# 2.20.0 / 2016-11-13
   * [Added] #419 `modifyChild` event. This event is also a good place to 
     implement auto sorting (#559)
   * [Added] #419 node.triggerModifyChild() and node.triggerModify()
+  * [Added] #595 add custom node filter to `generateFormElements()`
   * [Added] #610 `tree.tooltip` option allows automatic or custom tooltips
   * [Added] #620 improved tooltip escaping to allow newlines
   * [DEPRECATED] `removeNode` event. Listen for `modifyChild` with operation
     'remove' instead (which is fired on the parent).
+  * [Improved] ThemeRoller theme
+  * [Improved] ext-filter
+    - #297 add filter option 'hideExpanders' to remove expanders if all child 
+      nodes are hidden by filter
+    - Filter options and the `opts` argument of `filterNodes()` / `filterBranches()`
+      have been unified.
+    - [Fixed] #230 themeroller theme compatible with ext-filter
+    - [Fixed] #528 autoCollapse option blocks filter's autoExpand option
+    - [Fixed] #529 Filter: Mark matching nodes even if parent was matched in branch mode
+    - [Fixed] #643 Exceptions in ext-filter if expression contains special chars
+    - [Fixed] #658 ext-filter does not work with ext-edit `editCreateNode()`
+  * [Improved] #656 WAI-ARIA support
+    - Set focus to first node on first tab-in
+    - Support [home] and [end] keys
+    - Set aria-activedescendant on container to active ID
+    - Set aria-multiselectable on container if selectMode != 1
+    - Set aria-treeitem, -selected, -expanded, on title span instead `<li>`
   * [Fixed] #576 `loadKeyPath()` sometimes gets the root wrong
+  * [Fixed] #615 Drag & drop helper icons lose indentation with table extension
   * [Fixed] #632 Tabbing is not working if there is an anchor tag in treeview
-  * [Fixed] #643 Exceptions in ext-filter if expression contains special chars
   * [Fixed] #644 New nodes created with ext-edit, are hidden in filtered trees
   * [Fixed] #647 ext-table: tree.render(true) does not discard existing markup 
+  * [Fixed] #659 handling of function keys, when quicksearch is on
   * Use QUnit 2.0
 
 # 2.19.0 / 2016-08-11

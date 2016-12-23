@@ -11,8 +11,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.19.0
- * @date 2016-08-11T15:51
+ * @version 2.20.0
+ * @date 2016-11-13"P"17:49
  */
 
 ;(function($, window, document, undefined) {
@@ -24,18 +24,23 @@
  */
 $.ui.fancytree.registerExtension({
 	name: "themeroller",
-	version: "2.19.0",
+	version: "2.20.0",
 	// Default options for this extension.
 	options: {
-		activeClass: "ui-state-active",
-		foccusClass: "ui-state-focus",
-		hoverClass: "ui-state-hover",
-		selectedClass: "ui-state-highlight"
+		activeClass: "ui-state-active",      // Class added to active node
+		// activeClass: "ui-state-highlight",
+		addClass: "ui-corner-all",           // Class added to all nodes
+		focusClass: "ui-state-focus",        // Class added to focused node
+		hoverClass: "ui-state-hover",        // Class added to hovered node
+		selectedClass: "ui-state-highlight"  // Class added to selected nodes
+		// selectedClass: "ui-state-active"
 	},
 
 	treeInit: function(ctx){
+		var $el = ctx.widget.element,
+			opts = ctx.options.themeroller;
+
 		this._superApply(arguments);
-		var $el = ctx.widget.element;
 
 		if($el[0].nodeName === "TABLE"){
 			$el.addClass("ui-widget ui-corner-all");
@@ -48,8 +53,9 @@ $.ui.fancytree.registerExtension({
 		$el.delegate(".fancytree-node", "mouseenter mouseleave", function(event){
 			var node = $.ui.fancytree.getNode(event.target),
 				flag = (event.type === "mouseenter");
-			node.debug("hover: " + flag);
-			$(node.tr ? node.tr : node.span).toggleClass("ui-state-hover ui-corner-all", flag);
+
+			$(node.tr ? node.tr : node.span)
+				.toggleClass(opts.hoverClass + " " + opts.addClass, flag);
 		});
 	},
 	treeDestroy: function(ctx){
@@ -57,8 +63,11 @@ $.ui.fancytree.registerExtension({
 		ctx.widget.element.removeClass("ui-widget ui-widget-content ui-corner-all");
 	},
 	nodeRenderStatus: function(ctx){
-		var node = ctx.node,
-			$el = $(node.tr ? node.tr : node.span);
+		var classes = {},
+			node = ctx.node,
+			$el = $(node.tr ? node.tr : node.span),
+			opts = ctx.options.themeroller;
+
 		this._superApply(arguments);
 /*
 		.ui-state-highlight: Class to be applied to highlighted or selected elements. Applies "highlight" container styles to an element and its child text, links, and icons.
@@ -70,9 +79,20 @@ $.ui.fancytree.registerExtension({
 		.ui-state-focus: Class to be applied on keyboard focus to clickable button-like elements. Applies "clickable hover" container styles to an element and its child text, links, and icons.
 		.ui-state-active: Class to be applied on mousedown to clickable button-like elements. Applies "clickable active" container styles to an element and its child text, links, and icons.
 */
-		$el.toggleClass("ui-state-active", node.isActive());
-		$el.toggleClass("ui-state-focus", node.hasFocus());
-		$el.toggleClass("ui-state-highlight", node.isSelected());
+		// Set ui-state-* class (handle the case that the same class is assigned
+		// to different states)
+		classes[opts.activeClass] = false;
+		classes[opts.focusClass] = false;
+		classes[opts.selectedClass] = false;
+		if( node.isActive() ) { classes[opts.activeClass] = true; }
+		if( node.hasFocus() ) { classes[opts.focusClass]  = true; }
+		// activeClass takes precedence before selectedClass:
+		if( node.isSelected() && !node.isActive() ) { classes[opts.selectedClass]  = true; }
+		$el.toggleClass(opts.activeClass, classes[opts.activeClass]);
+		$el.toggleClass(opts.focusClass, classes[opts.focusClass]);
+		$el.toggleClass(opts.selectedClass, classes[opts.selectedClass]);
+		// Additional classes (e.g. 'ui-corner-all')
+		$el.addClass(opts.addClass);
 	}
 });
 }(jQuery, window, document));

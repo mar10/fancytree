@@ -177,7 +177,7 @@ span.fancytree-icon {
 .fancytree-loading span.fancytree-expander:hover,
 .fancytree-statusnode-loading span.fancytree-icon,
 .fancytree-statusnode-loading span.fancytree-icon:hover {
-  background-image: url("loading.gif");
+  background-image: none;
 }
 /* Status node icons */
 /*------------------------------------------------------------------------------
@@ -251,6 +251,39 @@ span.fancytree-drag-source.fancytree-drag-remove {
   opacity: 0.15;
 }
 /*** Target node while dragging cursor is over it *****************************/
+/*------------------------------------------------------------------------------
+ * 'rtl' option
+ *----------------------------------------------------------------------------*/
+.fancytree-container.fancytree-rtl .fancytree-title {
+  /*unicode-bidi: bidi-override;*/
+  /* optional: reverse title letters */
+}
+.fancytree-container.fancytree-rtl span.fancytree-connector,
+.fancytree-container.fancytree-rtl span.fancytree-expander,
+.fancytree-container.fancytree-rtl span.fancytree-icon,
+.fancytree-container.fancytree-rtl span.fancytree-drag-helper-img,
+.fancytree-container.fancytree-rtl #fancytree-drop-marker {
+  background-image: url("icons-rtl.gif");
+}
+.fancytree-container.fancytree-rtl .fancytree-exp-n span.fancytree-expander,
+.fancytree-container.fancytree-rtl .fancytree-exp-nl span.fancytree-expander {
+  background-image: none;
+}
+.fancytree-container.fancytree-rtl.fancytree-connectors .fancytree-exp-n span.fancytree-expander,
+.fancytree-container.fancytree-rtl.fancytree-connectors .fancytree-exp-nl span.fancytree-expander {
+  background-image: url("icons-rtl.gif");
+}
+ul.fancytree-container.fancytree-rtl ul {
+  padding: 0 16px 0 0;
+}
+ul.fancytree-container.fancytree-rtl.fancytree-connectors li {
+  background-position: right 0;
+  background-image: url("vline-rtl.gif");
+}
+ul.fancytree-container.fancytree-rtl li.fancytree-lastsib,
+ul.fancytree-container.fancytree-rtl.fancytree-no-connector > li {
+  background-image: none;
+}
 /*------------------------------------------------------------------------------
  * 'table' extension
  *----------------------------------------------------------------------------*/
@@ -330,6 +363,15 @@ table.fancytree-ext-columnview .fancytree-has-children span.fancytree-cv-right {
 .fancytree-ext-filter-hide span.fancytree-node.fancytree-match span.fancytree-title {
   color: black;
   font-weight: normal;
+}
+/* Hide expanders if all child nodes are hidden by filter */
+.fancytree-ext-filter-hide-expanders tr.fancytree-match span.fancytree-expander,
+.fancytree-ext-filter-hide-expanders span.fancytree-node.fancytree-match span.fancytree-expander {
+  visibility: hidden;
+}
+.fancytree-ext-filter-hide-expanders tr.fancytree-submatch span.fancytree-expander,
+.fancytree-ext-filter-hide-expanders span.fancytree-node.fancytree-submatch span.fancytree-expander {
+  visibility: visible;
 }
 .fancytree-ext-childcounter span.fancytree-icon,
 .fancytree-ext-filter span.fancytree-icon {

@@ -4,18 +4,18 @@
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 	<title>Fancytree - Example: Filter</title>
 
-	<script src="//code.jquery.com/jquery-1.12.1.min.js" type="text/javascript"></script>
-	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js" type="text/javascript"></script>
+	<script src="//code.jquery.com/jquery-1.12.1.min.js"></script>
+	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
 
-	<link href="../src/skin-win7/ui.fancytree.css" rel="stylesheet" type="text/css">
-	<script src="../src/jquery.fancytree.js" type="text/javascript"></script>
-	<script src="../src/jquery.fancytree.filter.js" type="text/javascript"></script>
+	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet">
+	<script src="../src/jquery.fancytree.js"></script>
+	<script src="../src/jquery.fancytree.filter.js"></script>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
 	<link href="../lib/prettify.css" rel="stylesheet">
-	<script src="../lib/prettify.js" type="text/javascript"></script>
-	<link href="sample.css" rel="stylesheet" type="text/css">
-	<script src="sample.js" type="text/javascript"></script>
+	<script src="../lib/prettify.js"></script>
+	<link href="sample.css" rel="stylesheet">
+	<script src="sample.js"></script>
 	<!-- End_Exclude -->
 
 <style type="text/css">
@@ -33,12 +33,16 @@
 				url: "ajax-tree-local.json"
 			},
 			filter: {
-				autoApply: true,  // Re-apply last filter if lazy data is loaded
-				counter: true,  // Show a badge with number of matching child nodes near parent icons
-				fuzzy: false,  // Match single characters in order, e.g. 'fb' will match 'FooBar'
-				hideExpandedCounter: true,  // Hide counter badge, when parent is expanded
-				highlight: true,  // Highlight matches by wrapping inside <mark> tags
-				mode: "dimm"  // Grayout unmatched nodes (pass "hide" to remove unmatched node instead)
+				autoApply: true,   // Re-apply last filter if lazy data is loaded
+				autoExpand: false, // Expand all branches that contain matches while filtered
+				counter: true,     // Show a badge with number of matching child nodes near parent icons
+				fuzzy: false,      // Match single characters in order, e.g. 'fb' will match 'FooBar'
+				hideExpandedCounter: true,  // Hide counter badge if parent is expanded
+				hideExpanders: false,       // Hide expanders if all child nodes are hidden by filter
+				highlight: true,   // Highlight matches by wrapping inside <mark> tags
+				leavesOnly: false, // Match end nodes only
+				nodata: true,      // Display a 'no data' status node if result is empty
+				mode: "dimm"       // Grayout unmatched nodes (pass "hide" to remove unmatched node instead)
 			},
 			activate: function(event, data) {
 //				alert("activate " + data.node);
@@ -59,11 +63,16 @@
 		 */
 		$("input[name=search]").keyup(function(e){
 			var n,
-				opts = {
-					autoExpand: $("#autoExpand").is(":checked"),
-					leavesOnly: $("#leavesOnly").is(":checked")
-				},
+				tree = $.ui.fancytree.getTree(),
+				args = "autoApply autoExpand fuzzy hideExpanders highlight leavesOnly nodata".split(" "),
+				opts = {},
+				filterFunc = $("#branchMode").is(":checked") ? tree.filterBranches : tree.filterNodes,
 				match = $(this).val();
+
+			$.each(args, function(i, o) {
+				opts[o] = $("#" + o).is(":checked");
+			});
+			opts.mode = $("#hideMode").is(":checked") ? "hide" : "dimm";
 
 			if(e && e.which === $.ui.keyCode.ESCAPE || $.trim(match) === ""){
 				$("button#btnResetSearch").click();
@@ -71,12 +80,12 @@
 			}
 			if($("#regex").is(":checked")) {
 				// Pass function to perform match
-				n = tree.filterNodes(function(node) {
+				n = filterFunc.call(tree, function(node) {
 					return new RegExp(match, "i").test(node.title);
 				}, opts);
 			} else {
 				// Pass a string to perform case insensitive matching
-				n = tree.filterNodes(match, opts);
+				n = filterFunc.call(tree, match, opts);
 			}
 			$("button#btnResetSearch").attr("disabled", false);
 			$("span#matches").text("(" + n + " matches)");
@@ -89,30 +98,19 @@
 		}).attr("disabled", true);
 
 		$("fieldset input:checkbox").change(function(e){
-			var id = $(this).attr("id"),
-				flag = $(this).is(":checked");
+				var id = $(this).attr("id"),
+					flag = $(this).is(":checked");
 
-			switch( id ) {
-			case "autoExpand":
-			case "regex":
-			case "leavesOnly":
-				// Re-apply filter only
-				break;
-			case "hideMode":
-				tree.options.filter.mode = flag ? "hide" : "dimm";
-				break;
-			case "counter":
-			case "fuzzy":
-			case "hideExpandedCounter":
-			case "highlight":
-				tree.options.filter[id] = flag;
-				break;
-			}
-			tree.clearFilter();
-			$("input[name=search]").keyup();
+				// Some options can only be set with general filter options (not method args):
+				switch( id ){
+				case "counter":
+				case "hideExpandedCounter":
+					tree.options.filter[id] = flag;
+					break;
+				}
+				tree.clearFilter();
+				$("input[name=search]").keyup();
 		});
-
-		$("#counter,#hideExpandedCounter,#highlight").prop("checked", true);
 
 		addSampleButton({
 			label: "Filter active branch",
@@ -144,7 +142,7 @@
 			Allow to dimm or hide nodes based on a matching expression.
 		</p>
 		<p>
-			<b>Status:</b> beta.
+			<b>Status:</b> production.
 			<b>Details:</b>
 			<a href="https://github.com/mar10/fancytree/wiki/ExtFilter"
 				target="_blank" class="external">ext-filter</a>.
@@ -161,37 +159,53 @@
 	</p>
 	<!-- Start_Exclude: This block is not part of the sample code -->
 	<fieldset>
+		<legend>Options</legend>
+		<label for="regex">
+			<input type="checkbox" id="regex">
+			Regular expression
+		</label>
+		<br>
 		<label for="hideMode">
 			<input type="checkbox" id="hideMode">
 			Hide unmatched nodes
 		</label>
-		<label for="leavesOnly">
-			<input type="checkbox" id="leavesOnly">
-			Leaves only
-		</label>
 		<label for="autoExpand">
-			<input type="checkbox" id="autoExpand">
+			<input type="checkbox" id="autoExpand" checked="checked">
 			Auto expand
 		</label>
-		<label for="counter">
-			<input type="checkbox" id="counter">
-			Counter badges
+		<label for="branchMode">
+			<input type="checkbox" id="branchMode">
+			Match whole branch
 		</label>
-		<label for="hideExpandedCounter">
-			<input type="checkbox" id="hideExpandedCounter">
-			hideExpandedCounter
+		<label for="leavesOnly">
+			<input type="checkbox" id="leavesOnly">
+			Match end nodes only
 		</label>
+		<br>
 		<label for="fuzzy">
 			<input type="checkbox" id="fuzzy">
 			Fuzzy
 		</label>
+		<label for="hideExpanders">
+			<input type="checkbox" id="hideExpanders">
+			hideExpanders
+		</label>
 		<label for="highlight">
-			<input type="checkbox" id="highlight">
+			<input type="checkbox" id="highlight" checked="checked">
 			Highlight
 		</label>
-		<label for="regex">
-			<input type="checkbox" id="regex">
-			Regular expression
+		<label for="nodata">
+			<input type="checkbox" id="nodata" checked="checked">
+			nodata
+		</label>
+		<br>
+		<label for="counter">
+			<input type="checkbox" id="counter" checked="checked">
+			Add counter badges
+		</label>
+		<label for="hideExpandedCounter">
+			<input type="checkbox" id="hideExpandedCounter" checked="checked">
+			hideExpandedCounter
 		</label>
 	</fieldset>
 
