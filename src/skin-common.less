@@ -774,3 +774,43 @@ ul.fancytree-ext-wide {
 		box-sizing: border-box;
 	}
 }
+
+/*------------------------------------------------------------------------------
+ * 'fixed' extension
+ *----------------------------------------------------------------------------*/
+
+.fancytree-ext-fixed-wrapper {
+    .fancytree-fixed-hidden {
+        display: none;
+    }
+    div.scrollBorderBottom {
+        border-bottom: 3px solid rgba(0, 0, 0, 0.75);
+    }
+    div.scrollBorderRight {
+        border-right: 3px solid rgba(0, 0, 0, 0.75);
+    }
+    div.fancytree-fixed-wrapper-tl {
+        position: absolute;
+        overflow: hidden;
+        z-index: 3;
+        top: 0px;
+        left: 0px;
+    }
+    div.fancytree-fixed-wrapper-tr {
+        position: absolute;
+        overflow: hidden;
+        z-index: 2;
+        top: 0px;
+    }
+    div.fancytree-fixed-wrapper-bl {
+        position: absolute;
+        overflow: hidden;
+        z-index: 2;
+        left: 0px;
+    }
+    div.fancytree-fixed-wrapper-br {
+        position: absolute;
+        overflow: scroll;
+        z-index: 1;
+    }
+}

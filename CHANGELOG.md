@@ -1,5 +1,6 @@
 # 2.21.0-0 / Unreleased
   * [Added] `rtl` option for right-to-left script support
+  * [Added] New exxtension ext-fixed
   * [Added] ext-dnd5 for native HTML5 drag'n'drop support
   * [Added] Add $.ui.fancytree.overrideMethod()
   * [Added] hook `treeSetOption` allows extensions to update on option changes.
