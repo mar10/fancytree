@@ -580,6 +580,42 @@ ul.fancytree-ext-wide span.fancytree-node span.fancytree-title {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
+/*------------------------------------------------------------------------------
+ * 'fixed' extension
+ *----------------------------------------------------------------------------*/
+.fancytree-ext-fixed-wrapper .fancytree-fixed-hidden {
+  display: none;
+}
+.fancytree-ext-fixed-wrapper div.scrollBorderBottom {
+  border-bottom: 3px solid rgba(0, 0, 0, 0.75);
+}
+.fancytree-ext-fixed-wrapper div.scrollBorderRight {
+  border-right: 3px solid rgba(0, 0, 0, 0.75);
+}
+.fancytree-ext-fixed-wrapper div.fancytree-fixed-wrapper-tl {
+  position: absolute;
+  overflow: hidden;
+  z-index: 3;
+  top: 0px;
+  left: 0px;
+}
+.fancytree-ext-fixed-wrapper div.fancytree-fixed-wrapper-tr {
+  position: absolute;
+  overflow: hidden;
+  z-index: 2;
+  top: 0px;
+}
+.fancytree-ext-fixed-wrapper div.fancytree-fixed-wrapper-bl {
+  position: absolute;
+  overflow: hidden;
+  z-index: 2;
+  left: 0px;
+}
+.fancytree-ext-fixed-wrapper div.fancytree-fixed-wrapper-br {
+  position: absolute;
+  overflow: scroll;
+  z-index: 1;
+}
 /*******************************************************************************
  * Styles specific to this skin.
  *
