@@ -4,6 +4,7 @@
   * [Added] New extension 'ext-dnd5' for native HTML5 drag'n'drop support
   * [Added] Add $.ui.fancytree.overrideMethod()
   * [Added] hook `treeSetOption` allows extensions to update on option changes.
+  * [Changed] standard CSS now defines `overflow: hidden` instead `auto` for container
   * [Improved] better support for initializing from embedded JSON using the 
     `data-type="json"` attribute
   * [Fixed] corner case of #658 when ext-edit is loaded, but inactive

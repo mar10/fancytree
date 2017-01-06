@@ -26,7 +26,7 @@ ul.fancytree-container {
   margin: 0;
   background-color: white;
   border: 1px dotted gray;
-  overflow: auto;
+  overflow: hidden;
   min-height: 0%;
   position: relative;
 }
