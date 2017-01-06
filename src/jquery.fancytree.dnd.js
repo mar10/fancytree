@@ -405,7 +405,7 @@ $.ui.fancytree.registerExtension({
 			if(res === false) {
 				this.debug("tree.dragStart() cancelled");
 				//draggable._clear();
-				// NOTE: the return value seems to be ignored (drag is not canceled, when false is returned)
+				// NOTE: the return value seems to be ignored (drag is not cancelled, when false is returned)
 				// TODO: call this._cancelDrag()?
 				ui.helper.trigger("mouseup")
 					.hide();

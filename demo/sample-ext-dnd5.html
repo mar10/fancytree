@@ -49,15 +49,24 @@
 		background-color: silver
 	}
 
+	ul.fancytree-container {
+		max-height: 200px;
+		overflow-y: scroll;
+	}
 	span.fancytree-node.fancytree-drag-source {
-		/*border: 1px dotted grey;*/
+		outline: 1px dotted grey;
+	}
+	span.fancytree-node.fancytree-drag-source.fancytree-drag-remove {
 		opacity: 0.4;
 	}
+	span.fancytree-node.fancytree-drop-over {
+		outline-style: solid;
+	}
 	span.fancytree-node.fancytree-drop-accept {
-		border: 1px dotted green;
+		outline: 1px dotted green;
 	}
 	span.fancytree-node.fancytree-drop-reject {
-		border: 1px dotted red;
+		outline: 1px dotted red;
 	}
 
 </style>
@@ -75,17 +84,27 @@
 			dnd5: {
 				acceptForeignNodes: true, 
 				acceptNonNodes: true, 
-				autoExpandMS: 400,
+				// autoExpandMS: 400,
+				// scroll: true,
+				// scrollSpeed: 7,
+				// scrollSensitivity: 10,
 				// focusOnClick: true,
 				preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
 				preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
+				// --- Drag-support:
 				dragStart: function(node, data) {
 					/* This function MUST be defined to enable dragging for the tree.
+					 *
 					 * Return false to cancel dragging of node.
+					 * data.dataTransfer.setData() and .setDragImage() is available
+					 * here.
 					 */
 					node.debug(data);
 					return true;
 				},
+				dragEnd: function(node, data) {
+				},
+				// --- Drop-support:
 				dragEnter: function(node, data) {
 					/* data.otherNode may be null for non-fancytree droppables.
 					 * Return false to disallow dropping on node. In this case
@@ -154,7 +173,7 @@
 			<li>Requires IE 9 or later.</li>
 		</ul>
 		<p>
-			<b>Status</b>: experimental.
+			<b>Status:</b> experimental.
 			<b>Details:</b>
 			<a href="https://github.com/mar10/fancytree/wiki/ExtDnd"
 				target="_blank" class="external">ext-dnd</a>.
