@@ -5,33 +5,6 @@
 // Allow unused variables for demonstration
 /*jshint unused:false */
 
-/*  *
- * The jQuery namespace, also acessible by the alias `$`.
- * @name jQuery
- * @namespace
- */
-
-/*  *
- * The <a href="http://jqueryui.com">jQuery UI</a> namespace.
- * @name ui
- * @namespace
- * @memberof jQuery
- */
-
-/*  *
- * Create stateful jQuery plugins using the same abstraction as all jQuery UI widgets.
- * @name jQuery.Widget
- * @class
- * @classdesc Base class for <a href="http://api.jqueryui.com/jQuery.widget/">jQueryUI widgets</a>.
- * @see http://api.jqueryui.com/jQuery.widget/
- */
-
-/*  *
- * (Upcoming) namespace for Fancytree.
- * @name moogle
- * @namespace
- */
-
 /**
  * Context object passed to events and hook functions.
  * @name EventData
@@ -47,6 +20,7 @@
  * @property {any} response (only for postProcess event) Original ajax response
  */
 var EventData = {};
+
 
 /**
  * Data object passed to FancytreeNode() constructor.
@@ -119,6 +93,7 @@ var NodePatch = {};
  */
 var TreePatch = {};
 
+
 /**
  * @name FancytreeOptions
  * @type {Object}
@@ -179,6 +154,7 @@ var TreePatch = {};
  */
 var FancytreeOptions = {};
 
+
 /** Fancytree events
  * @name FancytreeEvents
  * @type {Object}
@@ -186,8 +162,9 @@ var FancytreeOptions = {};
  * @description
  * Events are called like this:
  *    `CALLBACK_NAME(event, data)`
- * where `event` is a <a href="http://api.jquery.com/category/events/event-object">jQuery Event</a> object and `data` is of type {@link EventData}
- * The `this` context is set to  tree's the HTMLDivElement
+ * where `event` is a <a href="http://api.jquery.com/category/events/event-object">jQuery Event</a>
+ * object and `data` is of type {@link EventData}.<br>
+ * The `this` context is set to the tree's HTMLDivElement.
  *
  * @see {@link http://api.jquery.com/category/events/event-object|jQuery Event}
  * @see EventData

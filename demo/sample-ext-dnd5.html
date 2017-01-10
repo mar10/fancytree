@@ -13,7 +13,6 @@
 	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet">
 	<script src="../src/jquery.fancytree.js"></script>
 	<script src="../src/jquery.fancytree.dnd5.js"></script>
-	<script src="../src/jquery.fancytree.edit.js"></script>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
 	<link href="../lib/prettify.css" rel="stylesheet">
@@ -53,15 +52,18 @@
 		max-height: 200px;
 		overflow-y: scroll;
 	}
+
 	span.fancytree-node.fancytree-drag-source {
 		outline: 1px dotted grey;
 	}
+/*
 	span.fancytree-node.fancytree-drag-source.fancytree-drag-remove {
 		opacity: 0.4;
 	}
 	span.fancytree-node.fancytree-drop-over {
-		outline-style: solid;
+		outline: 1px solid gray;
 	}
+*/
 	span.fancytree-node.fancytree-drop-accept {
 		outline: 1px dotted green;
 	}
@@ -76,22 +78,23 @@
 		// Attach the fancytree widget to an existing <div id="tree"> element
 		// and pass the tree options as an argument to the fancytree() function:
 		$("#tree").fancytree({
-			extensions: ["dnd5", "edit"],
+			extensions: ["dnd5"],
 			// titlesTabbable: true,
 			source: {
 				url: "ajax-tree-fs.json"
 			},
 			dnd5: {
-				acceptForeignNodes: true, 
-				acceptNonNodes: true, 
 				// autoExpandMS: 400,
+				// preventForeignNodes: true, 
+				// preventNonNodes: true, 
+				// preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
+				// preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
 				// scroll: true,
 				// scrollSpeed: 7,
 				// scrollSensitivity: 10,
-				// focusOnClick: true,
-				preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
-				preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
+
 				// --- Drag-support:
+
 				dragStart: function(node, data) {
 					/* This function MUST be defined to enable dragging for the tree.
 					 *
@@ -99,29 +102,28 @@
 					 * data.dataTransfer.setData() and .setDragImage() is available
 					 * here.
 					 */
-					node.debug(data);
+//					data.dataTransfer.setDragImage($("<div>hurz</div>").appendTo("body")[0], -10, -10);
 					return true;
+				},
+				dragDrag: function(node, data) {
+					data.dataTransfer.dropEffect = "move";
 				},
 				dragEnd: function(node, data) {
 				},
+
 				// --- Drop-support:
+				
 				dragEnter: function(node, data) {
-					/* data.otherNode may be null for non-fancytree droppables.
-					 * Return false to disallow dropping on node. In this case
-					 * dragOver and dragLeave are not called.
-					 * Return 'over', 'before, or 'after' to force a hitMode.
-					 * Return ['before', 'after'] to restrict available hitModes.
-					 * Any other return value will calc the hitMode from the cursor position.
-					 */
-					// Prevent dropping a parent below another parent (only sort
-					// nodes under the same parent)
-/* 					if(node.parent !== data.otherNode.parent){
-						return false;
-					}
-					// Don't allow dropping *over* a node (would create a child)
-					return ["before", "after"];
-*/
-				   return true;
+					// node.debug("dragEnter", data);
+					data.dataTransfer.dropEffect = "move";
+					// data.dataTransfer.effectAllowed = "copy";
+				    return true;
+				},
+				dragOver: function(node, data) {
+					data.dataTransfer.dropEffect = "move";
+					// data.dataTransfer.effectAllowed = "copy";
+				},
+				dragLeave: function(node, data) {
 				},
 				dragDrop: function(node, data) {
 					/* This function MUST be defined to enable dropping of items on
@@ -129,7 +131,14 @@
 					 */
 					var transfer = data.dataTransfer;
 
-					node.debug("drop", data);
+					// node.debug("drop", data);
+
+					// alert("Drop on " + node + ":\n"
+					// 	+ "source:" + JSON.stringify(data.otherNodeData) + "\n"
+					// 	+ "hitMode:" + data.hitMode
+					// 	+ ", dropEffect:" + transfer.dropEffect 
+					// 	+ ", effectAllowed:" + transfer.effectAllowed);
+
 					if( data.otherNode ) {
 						// Drop another Fancytree node from same frame
 						// (maybe from another tree however)
@@ -141,7 +150,7 @@
 						node.addChild(data.otherNodeData, data.hitMode);
 					} else {
 						// Drop a non-node
-						transfer.effect = "copy";
+						transfer.dropEffect = "copy";
 						node.addNode({
 							title: transfer.getData("text/plain")
 						}, data.hitMode);
@@ -170,13 +179,13 @@
 				different trees).</li>
 			<li>Support drag and drop between different frames, browser tabs, 
 			    windows, or desktop.</li>
-			<li>Requires IE 9 or later.</li>
+			<li>Requires IE 11 or later.</li>
 		</ul>
 		<p>
 			<b>Status:</b> experimental.
 			<b>Details:</b>
-			<a href="https://github.com/mar10/fancytree/wiki/ExtDnd"
-				target="_blank" class="external">ext-dnd</a>.
+			<a href="https://github.com/mar10/fancytree/wiki/ExtDnd5"
+				target="_blank" class="external">ext-dnd5</a>.
 		</p>
 	</div>
 
