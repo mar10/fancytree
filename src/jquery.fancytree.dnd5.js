@@ -4,7 +4,7 @@
  * Drag-and-drop support (native HTML5).
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2016, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2017, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -288,14 +288,14 @@ $.ui.fancytree.registerExtension({
 	version: "@VERSION",
 	// Default options for this extension.
 	options: {
-		autoExpandMS: 1500,  // Expand nodes after n milliseconds of hovering.
+		autoExpandMS: 1500,          // Expand nodes after n milliseconds of hovering
 		preventForeignNodes: false,  // Prevent dropping nodes from different Fancytrees
 		preventNonNodes: false,      // Prevent dropping items other than Fancytree nodes
 		preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
 		preventVoidMoves: true,      // Prevent dropping nodes 'before self', etc.
 		scroll: true,                // Enable auto-scrolling while dragging
 		scrollSensitivity: 20,       // Active top/bottom margin in pixel
-		scrollSpeed: 5,             // Pixel per event
+		scrollSpeed: 5,              // Pixel per event
 		// Events (drag support)
 		dragStart: null,       // Callback(sourceNode, data), return true, to enable dnd drag
 		dragDrag: $.noop,      // Callback(sourceNode, data)
