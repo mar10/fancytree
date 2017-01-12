@@ -112,33 +112,43 @@ function normalizeDragEnterResponse(r) {
 
 /* Implement auto scrolling when drag cursor is in top/bottom area of scroll parent. */
 function autoScroll(tree) {
-	var spOfs, scrollTop,
+	var spOfs, scrollTop, delta,
 		dndOpts = tree.options.dnd5,
 		sp = tree.$scrollParent[0],
-		eps = dndOpts.scrollSensitivity,
+		sensitivity = dndOpts.scrollSensitivity,
 		speed = dndOpts.scrollSpeed,
 		scrolled = 0;
 
 	if ( sp !== document && sp.tagName !== "HTML" ) {
 		spOfs = tree.$scrollParent.offset();
 		scrollTop = sp.scrollTop;
-		if ( ( spOfs.top + sp.offsetHeight ) - event.pageY < eps ) {
-			sp.scrollTop = scrolled = scrollTop + speed;
-		} else if ( scrollTop > 0 && event.pageY - spOfs.top < eps ) {
+		if ( spOfs.top + sp.offsetHeight - event.pageY < sensitivity ) {
+			delta = (sp.scrollHeight - tree.$scrollParent.innerHeight() - scrollTop);
+			// console.log ("sp.offsetHeight: " + sp.offsetHeight 
+			// 	+ ", spOfs.top: " + spOfs.top
+			// 	+ ", scrollTop: " + scrollTop
+			// 	+ ", innerHeight: " + tree.$scrollParent.innerHeight()
+			// 	+ ", scrollHeight: " + sp.scrollHeight
+			// 	+ ", delta: " + delta
+			// 	);
+			if( delta > 0 ) {
+				sp.scrollTop = scrolled = scrollTop + speed;
+			}
+		} else if ( scrollTop > 0 && event.pageY - spOfs.top < sensitivity ) {
 			sp.scrollTop = scrolled = scrollTop - speed;
 		}
 	} else {
 		scrollTop = $(document).scrollTop();
-		if (scrollTop > 0 && event.pageY - scrollTop < eps) {
+		if (scrollTop > 0 && event.pageY - scrollTop < sensitivity) {
 			scrolled = scrollTop - speed;
 			$(document).scrollTop(scrolled);
-		} else if ($(window).height() - (event.pageY - scrollTop) < eps) {
+		} else if ($(window).height() - (event.pageY - scrollTop) < sensitivity) {
 			scrolled = scrollTop + speed;
 			$(document).scrollTop(scrolled);
 		}
 	}
 	if( scrolled ) {
-		tree.debug("autScroll => " + scrolled + "px");
+		tree.debug("autoScroll: " + scrolled + "px");
 	}
 	return scrolled;
 }
