@@ -131,7 +131,7 @@
 					 */
 					var transfer = data.dataTransfer;
 
-					// node.debug("drop", data);
+					node.debug("drop", data);
 
 					// alert("Drop on " + node + ":\n"
 					// 	+ "source:" + JSON.stringify(data.otherNodeData) + "\n"
@@ -152,7 +152,7 @@
 						// Drop a non-node
 						transfer.dropEffect = "copy";
 						node.addNode({
-							title: transfer.getData("text/plain")
+							title: transfer.getData("text")
 						}, data.hitMode);
 					}
 					node.setExpanded();
