@@ -4,13 +4,13 @@
  * Render tree as table (aka 'treegrid', 'tabletree').
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2016, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2017, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.20.0
- * @date 2016-11-13"P"17:49
+ * @version 2.21.0
+ * @date 2017-01-15T17:21:28Z
  */
 
 ;(function($, window, document, undefined) {
@@ -25,6 +25,10 @@ function _assert(cond, msg){
 	if(!cond){
 		$.error("Assertion failed " + msg);
 	}
+}
+
+function insertFirstChild(referenceNode, newNode) {
+	referenceNode.insertBefore(newNode, referenceNode.firstChild);
 }
 
 function insertSiblingAfter(referenceNode, newNode) {
@@ -84,7 +88,7 @@ function findPrevRowNode(node){
 
 $.ui.fancytree.registerExtension({
 	name: "table",
-	version: "2.20.0",
+	version: "2.21.0",
 	// Default options for this extension.
 	options: {
 		checkboxColumnIdx: null, // render the checkboxes into the this column index (default: nodeColumnIdx)
@@ -251,8 +255,9 @@ $.ui.fancytree.registerExtension({
 //					newRow.style.color = "red";
 				}
 				if(!prevNode.tr){
-					_assert(!prevNode.parent, "prev. row must have a tr, or is system root");
-					tree.tbody.appendChild(newRow);
+					_assert(!prevNode.parent, "prev. row must have a tr, or be system root");
+					// tree.tbody.appendChild(newRow);
+					insertFirstChild(tree.tbody, newRow);  // #675
 				}else{
 					insertSiblingAfter(prevNode.tr, newRow);
 				}

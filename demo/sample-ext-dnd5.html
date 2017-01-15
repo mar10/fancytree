@@ -85,8 +85,8 @@
 			},
 			dnd5: {
 				// autoExpandMS: 400,
-				// preventForeignNodes: true, 
-				// preventNonNodes: true, 
+				// preventForeignNodes: true,
+				// preventNonNodes: true,
 				// preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
 				// preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
 				// scroll: true,
@@ -112,12 +112,12 @@
 				},
 
 				// --- Drop-support:
-				
+
 				dragEnter: function(node, data) {
 					// node.debug("dragEnter", data);
 					data.dataTransfer.dropEffect = "move";
 					// data.dataTransfer.effectAllowed = "copy";
-				    return true;
+					return true;
 				},
 				dragOver: function(node, data) {
 					data.dataTransfer.dropEffect = "move";
@@ -136,7 +136,7 @@
 					// alert("Drop on " + node + ":\n"
 					// 	+ "source:" + JSON.stringify(data.otherNodeData) + "\n"
 					// 	+ "hitMode:" + data.hitMode
-					// 	+ ", dropEffect:" + transfer.dropEffect 
+					// 	+ ", dropEffect:" + transfer.dropEffect
 					// 	+ ", effectAllowed:" + transfer.effectAllowed);
 
 					if( data.otherNode ) {
@@ -177,8 +177,8 @@
 		<ul>
 			<li>Support drag and drop of tree nodes (inside the same or between
 				different trees).</li>
-			<li>Support drag and drop between different frames, browser tabs, 
-			    windows, or desktop.</li>
+			<li>Support drag and drop between different frames, browser tabs,
+				windows, or desktop.</li>
 			<li>Requires IE 11 or later.</li>
 		</ul>
 		<p>
@@ -194,7 +194,7 @@
 	</div>
 
 	<p>
-		<span class="drag-source" draggable="true" 
+		<span class="drag-source" draggable="true"
 			ondragstart="event.dataTransfer.setData('text/plain', 'Drag me');">
 			Drag me</span>
 		<br>

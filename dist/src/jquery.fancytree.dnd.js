@@ -1,16 +1,16 @@
 /*!
  * jquery.fancytree.dnd.js
  *
- * Drag-and-drop support.
+ * Drag-and-drop support (jQuery UI draggable/droppable).
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2016, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2017, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.20.0
- * @date 2016-11-13"P"17:49
+ * @version 2.21.0
+ * @date 2017-01-15T17:21:28Z
  */
 
 ;(function($, window, document, undefined) {
@@ -247,7 +247,7 @@ function _initDragAndDrop(tree) {
 
 $.ui.fancytree.registerExtension({
 	name: "dnd",
-	version: "2.20.0",
+	version: "2.21.0",
 	// Default options for this extension.
 	options: {
 		// Make tree nodes accept draggables
@@ -405,7 +405,7 @@ $.ui.fancytree.registerExtension({
 			if(res === false) {
 				this.debug("tree.dragStart() cancelled");
 				//draggable._clear();
-				// NOTE: the return value seems to be ignored (drag is not canceled, when false is returned)
+				// NOTE: the return value seems to be ignored (drag is not cancelled, when false is returned)
 				// TODO: call this._cancelDrag()?
 				ui.helper.trigger("mouseup")
 					.hide();
@@ -512,7 +512,6 @@ $.ui.fancytree.registerExtension({
 				node.hasChildren() !== false && !node.expanded &&
 				(!dnd.dragExpand || dnd.dragExpand(node, ctx) !== false)
 				) {
-				// TODO: maybe add a callback `dragExpand()` here to allow more control
 				node.scheduleAction("expand", dnd.autoExpandMS);
 			}
 			if(hitMode && dnd.dragOver){

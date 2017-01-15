@@ -4,13 +4,13 @@
  * Remove or highlight tree nodes, based on a filter.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2016, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2017, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.20.0
- * @date 2016-11-13"P"17:49
+ * @version 2.21.0
+ * @date 2017-01-15T17:21:28Z
  */
 
 ;(function($, window, document, undefined) {
@@ -273,7 +273,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.isMatched = function(){
  */
 $.ui.fancytree.registerExtension({
 	name: "filter",
-	version: "2.20.0",
+	version: "2.21.0",
 	// Default options for this extension.
 	options: {
 		autoApply: true,   // Re-apply last filter if lazy data is loaded
@@ -333,7 +333,7 @@ $.ui.fancytree.registerExtension({
 			node.$subMatchBadge.hide();
 		}
 		// node.debug("nodeRenderStatus", node.titleWithHighlight, node.title)
-		if( !node.isEditing || !node.isEditing()){
+		if( !node.isEditing || !node.isEditing.call(node)){
 			if( node.titleWithHighlight ) {
 				$title.html(node.titleWithHighlight);
 			} else if ( escapeTitles ) {

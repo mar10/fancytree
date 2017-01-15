@@ -3,12 +3,12 @@
  * Tree view control with support for lazy loading and much more.
  * https://github.com/mar10/fancytree/
  *
- * Copyright (c) 2008-2016, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2017, Martin Wendt (http://wwWendt.de)
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.20.0
- * @date 2016-11-13"P"17:49
+ * @version 2.21.0
+ * @date 2017-01-15T17:21:28Z
  */
 
 /** Core Fancytree module.
@@ -2149,7 +2149,12 @@ function Fancytree(widget) {
 	// See http://www.w3.org/TR/wai-aria-practices/#focus_activedescendant
 	// #577: Allow to set tabindex to "0", "-1" and ""
 	this.$container.attr("tabindex", this.options.tabindex);
-	// this.$container.attr("tabindex", this.options.tabbable ? "0" : "-1");
+
+	if( this.options.rtl ) {
+		this.$container.attr("DIR", "RTL").addClass("fancytree-rtl");
+	// }else{
+	//	this.$container.attr("DIR", null).removeClass("fancytree-rtl");
+	}
 	if(this.options.aria){
 		this.$container.attr("role", "tree");
 		if( this.options.selectMode !== 1 ) {
@@ -4186,7 +4191,7 @@ $.extend(Fancytree.prototype,
 	 * @param {object} [source] optional new source (use last data otherwise)
 	 */
 	treeLoad: function(ctx, source) {
-		var type, $ul,
+		var metaData, type, $ul,
 			tree = ctx.tree,
 			$container = ctx.widget.element,
 			dfd,
@@ -4209,11 +4214,20 @@ $.extend(Fancytree.prototype,
 				this.data = $.extend(this.data, _getElementDataAsDict($ul));
 				break;
 			case "json":
-	//            $().addClass("ui-helper-hidden");
 				source = $.parseJSON($container.text());
-				if(source.children){
-					if(source.title){tree.title = source.title;}
+				// $container already contains the <ul>, but we remove the plain (json) text
+				// $container.empty();
+				$container.contents().filter(function(){
+					return (this.nodeType === 3);
+				}).remove();
+				if( $.isPlainObject(source) ){
+					// We got {foo: 'abc', children: [...]}
+					// Copy extra properties to tree.data.foo
+					_assert($.isArray(source.children), "if an object is passed as source, it must contain a 'children' array (all other properties are added to 'tree.data')");
+					metaData = source;
 					source = source.children;
+					delete metaData.children;
+					$.extend(tree.data, metaData);
 				}
 				break;
 			default:
@@ -4271,6 +4285,57 @@ $.extend(Fancytree.prototype,
 				this.getFirstChild() && this.getFirstChild().setFocus();
 			}
 		}
+	},
+	/** Widget option was set using `$().fancytree("option", "foo", "bar")`.
+	 * @param {EventData} ctx
+	 * @param {string} key option name
+	 * @param {any} value option value
+	 */
+	treeSetOption: function(ctx, key, value) {
+		var tree = ctx.tree,
+			callDefault = true,
+			rerender = false;
+
+		switch( key ) {
+		case "aria":
+		case "checkbox":
+		case "icon":
+		case "minExpandLevel":
+		case "tabindex":
+			tree._callHook("treeCreate", tree);
+			rerender = true;
+			break;
+		case "escapeTitles":
+		case "tooltip":
+			rerender = true;
+			break;
+		case "rtl":
+			if( value === false ) {
+				tree.$container.attr("DIR", null).removeClass("fancytree-rtl");
+			}else{
+				tree.$container.attr("DIR", "RTL").addClass("fancytree-rtl");
+			}
+			rerender = true;
+			break;
+		case "source":
+			callDefault = false;
+			tree._callHook("treeLoad", tree, value);
+			rerender = true;
+			break;
+		}
+		tree.debug("set option " + key + "=" + value + " <" + typeof(value) + ">");
+		if(callDefault){
+			if( this.widget._super ) {
+				// jQuery UI 1.9+
+				this.widget._super.call( this.widget, key, value );
+			} else {
+				// jQuery UI <= 1.8, we have to manually invoke the _setOption method from the base widget
+				$.Widget.prototype._setOption.call(this.widget, key, value);
+			}
+		}
+		if(rerender){
+			tree.render(true, false);  // force, not-deep
+		}
 	}
 });
 
@@ -4306,13 +4371,11 @@ $.widget("ui.fancytree",
 //          timeout: 0, // >0: Make sure we get an ajax error if server is unreachable
 			dataType: "json" // Expect json format and pass json object to callbacks.
 		},  //
-		aria: false, // TODO: default to true
+		aria: false,
 		autoActivate: true,
 		autoCollapse: false,
-//      autoFocus: false,
 		autoScroll: false,
 		checkbox: false,
-		/**defines click behavior*/
 		clickFolderMode: 4,
 		debugLevel: null, // 0..2 (null: use global setting $.ui.fancytree.debugInfo)
 		disabled: false, // TODO: required anymore?
@@ -4331,6 +4394,7 @@ $.widget("ui.fancytree",
 		keyPathSeparator: "/",
 		minExpandLevel: 1,
 		quicksearch: false,
+		rtl: false,
 		scrollOfs: {top: 0, bottom: 0},
 		scrollParent: null,
 		selectMode: 2,
@@ -4340,9 +4404,9 @@ $.widget("ui.fancytree",
 			moreData: "More&#8230;",
 			noData: "No data."
 		},
-		// tabbable: true,  // @deprecated
 		tabindex: "0",
 		titlesTabbable: false,
+		tooltip: false,
 		_classNames: {
 			node: "fancytree-node",
 			folder: "fancytree-folder",
@@ -4434,39 +4498,7 @@ $.widget("ui.fancytree",
 
 	/* Use the _setOption method to respond to changes to options */
 	_setOption: function(key, value) {
-		var callDefault = true,
-			rerender = false;
-		switch( key ) {
-		case "aria":
-		case "checkbox":
-		case "icon":
-		case "minExpandLevel":
-		// case "tabbable":
-		case "tabindex":
-//		case "nolink":
-			this.tree._callHook("treeCreate", this.tree);
-			rerender = true;
-			break;
-		case "escapeTitles":
-		case "tooltip":
-			rerender = true;
-			break;
-		case "source":
-			callDefault = false;
-			this.tree._callHook("treeLoad", this.tree, value);
-			rerender = true;
-			break;
-		}
-		this.tree.debug("set option " + key + "=" + value + " <" + typeof(value) + ">");
-		if(callDefault){
-			// In jQuery UI 1.8, you have to manually invoke the _setOption method from the base widget
-			$.Widget.prototype._setOption.apply(this, arguments);
-			// TODO: In jQuery UI 1.9 and above, you use the _super method instead
-//          this._super( "_setOption", key, value );
-		}
-		if(rerender){
-			this.tree.render(true, false);  // force, not-deep
-		}
+		return this.tree._callHook("treeSetOption", this.tree, key, value);
 	},
 
 	/** Use the destroy method to clean up any modifications your widget has made to the DOM */
@@ -4630,7 +4662,7 @@ $.extend($.ui.fancytree,
 	/** @lends Fancytree_Static# */
 	{
 	/** @type {string} */
-	version: "2.20.0",      // Set to semver by 'grunt release'
+	version: "2.21.0",      // Set to semver by 'grunt release'
 	/** @type {string} */
 	buildType: "production", // Set to 'production' by 'grunt build'
 	/** @type {int} */
@@ -4821,13 +4853,6 @@ $.extend($.ui.fancytree,
 		widget = el.data("ui-fancytree") || el.data("fancytree"); // the latter is required by jQuery <= 1.8
 		return widget ? widget.tree : null;
 	},
-	/** Write message to console if debugLevel >= 1
-	 * @param {string} msg
-	 */
-	info: function(msg){
-		/*jshint expr:true */
-		($.ui.fancytree.debugLevel >= 1) && consoleApply("info", arguments);
-	},
 	/** Convert a keydown or mouse event to a canonical string like 'ctrl+a', 'ctrl+shift+f2', 'shift+leftdblclick'.
 	 * This is especially handy for switch-statements in event handlers.
 	 * @param {event}
@@ -4854,11 +4879,49 @@ $.extend($.ui.fancytree,
 		}
 		return s.join("+");
 	},
+	/** Write message to console if debugLevel >= 1
+	 * @param {string} msg
+	 */
+	info: function(msg){
+		/*jshint expr:true */
+		($.ui.fancytree.debugLevel >= 1) && consoleApply("info", arguments);
+	},
 	/* @deprecated: use eventToString(event) instead.
 	 */
 	keyEventToString: function(event) {
 		this.warn("keyEventToString() is deprecated: use eventToString()");
 		return this.eventToString(event);
+	},
+	/** Return a wrapped handler method, that provides `this.super`.
+	 *
+	 * @example
+		// Implement `opts.createNode` event to add the 'draggable' attribute
+		$.ui.fancytree.overrideMethod(ctx.options, "createNode", function(event, data) {
+			// Default processing if any
+			this._super.apply(this, arguments);
+			// Add 'draggable' attribute
+			data.node.span.draggable = true;
+		});
+	 *
+	 * @param {object} instance
+	 * @param {string} methodName
+	 * @param {function} handler
+	 */
+	overrideMethod: function(instance, methodName, handler){
+		var prevSuper,
+			_super = instance[methodName] || $.noop;
+
+		// context = context || this;
+
+		instance[methodName] = function() {
+			try {
+				prevSuper = this._super;
+				this._super = _super;
+				return handler.apply(this, arguments);
+			} finally {
+				this._super = prevSuper;
+			}
+		};
 	},
 	/**
 	 * Parse tree data from HTML <ul> markup

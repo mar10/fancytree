@@ -18,11 +18,11 @@
 /* 	td.alignRight {
 	   text-align: right;
 	} */
-	
+
 	table th {
-	    background-color: lightgrey;
+		background-color: lightgrey;
 	}
-	
+
 	td, th {
 		/* height: 30px; */
 		border: 1px solid #ededed;
@@ -31,29 +31,29 @@
 		padding: 5px;
 	   white-space: pre;
 	}
-	
+
 	table {
-	    border-collapse: collapse;
+		border-collapse: collapse;
 	}
-	
+
 /*  	span.fancytree-node {
 	   white-space: pre;
 	} */
-	
+
 	#tableWrapper {
 	   width: 1200px;
 	   height: 600px;
 	   overflow: auto;
 	   position: relative;
 	}
-    
-    table.fancytree-container.fancytree-ext-fixed tbody tr {
-        height: 22px;
-    }
-    
-    table.fancytree-container.fancytree-ext-fixed tbody tr td:nth-child(1) {
-        width: 22px;
-    }
+
+	table.fancytree-container.fancytree-ext-fixed tbody tr {
+		height: 22px;
+	}
+
+	table.fancytree-container.fancytree-ext-fixed tbody tr td:nth-child(1) {
+		width: 22px;
+	}
 
 
 </style>
@@ -73,7 +73,7 @@
 	$(function(){
 		// Attach the fancytree widget to an existing <div id="tree"> element
 		// and pass the tree options as an argument to the fancytree() function:
-        window.console.time("Fancytree - postProcess");
+		window.console.time("Fancytree - postProcess");
 		window.console.time("Fancytree - init");
 		$("#treetable").fancytree({
 			extensions: ["table", "fixed"],
@@ -91,15 +91,15 @@
 			source: {
 				url: "ajax-tree-mass-data.json"
 			},
-            postProcess: function(event, data) {
-                window.console.timeEnd("Fancytree - postProcess");
-            },
+			postProcess: function(event, data) {
+				window.console.timeEnd("Fancytree - postProcess");
+			},
 			lazyLoad: function(event, data) {
 				data.result = {url: "ajax-sub2.json"}
 			},
 			init: function(event, data) {
-		        window.console.timeEnd("Fancytree - init");
-		        window.console.info("node count:" + data.tree.count() + ", tr count: " + data.tree.$container.find("tbody>tr").length);
+				window.console.timeEnd("Fancytree - init");
+				window.console.info("node count:" + data.tree.count() + ", tr count: " + data.tree.$container.find("tbody>tr").length);
 				$("#fixedRows").val(data.options.fixed.fixRows);
 				$("#fixedCols").val(data.options.fixed.fixCols);
 			},
@@ -107,79 +107,79 @@
 				var node = data.node,
 					$tr = $(node.tr),
 					$tdList = $tr.find(">td"),
-			        idx = node.getIndexHier();
+					idx = node.getIndexHier();
 				// (index #0 is rendered by fancytree by adding the checkbox)
 				$tdList.eq(1).text(idx).addClass("alignRight");
 				// (index #2 is rendered by fancytree)
 				$tdList.eq(3).text(node.key);
 				$tdList.eq(4).html("<input type='checkbox' name='like' value='" + node.key + "'>");
-				
+
 				for (var i = 5; i < 34; i++) {
 					$tdList.eq(i).text("Body R" + idx + " C" + (i+1));
 				}
 			},
-            collapse: function(event, data) {
-            	data.node.discardMarkup(false);
-            }
+			collapse: function(event, data) {
+				data.node.discardMarkup(false);
+			}
 		});
 	});
 </script>
 
 <!-- Start_Exclude: This block is not part of the sample code -->
 <script type="text/javascript">
-    $(function(){
-        /* Handle custom checkbox clicks */
-        $("#treetable").delegate("input[name=like]", "click", function(e){
-            var node = $.ui.fancytree.getNode(e),
-               $input = $(e.target);
-            e.stopPropagation();  // prevent fancytree activate for this row
-            if($input.is(":checked")){
-                alert("like " + $input.val());
-            }else{
-                alert("dislike " + $input.val());
-            }
-        });
-        $("#fixedRows").keyup(function(evt) {
-            var rows = parseInt($(this).val());
-            if (!isNaN(rows) && evt.keyCode === 13) {
-                var tree = $("#treetable").fancytree("getTree");
-                tree.options.fixed.fixRows = rows;
-                tree.reload();
-            }
-        });
-        $("#fixedCols").keyup(function(evt) {
-            var cols = parseInt($(this).val());
-            if (!isNaN(cols) && evt.keyCode === 13) {
-                var tree = $("#treetable").fancytree("getTree");
-                tree.options.fixed.fixCols = cols;
-                tree.reload();
-            }
-        });
-        
-        addSampleButton({
-            label: "Expand all",
-            code: function(){
-            	var t = $.ui.fancytree.getTree();
-            	var $tree = $("#treetable");
-                window.console.time("expand all");
-            	$tree.fancytree("getTree").visit(function(n){
-                	n.setExpanded();
-                });
-                window.console.timeEnd("expand all");
-            }
-        });
-        addSampleButton({
-            label: "Collapse all",
-            newline: false,
-            code: function(){
-                window.console.time("collapse all");
-                $("#treetable").fancytree("getTree").visit(function(n){
-                    n.setExpanded(false);
-                });
-                window.console.timeEnd("collapse all");
-            }
-        });
-    });
+	$(function(){
+		/* Handle custom checkbox clicks */
+		$("#treetable").delegate("input[name=like]", "click", function(e){
+			var node = $.ui.fancytree.getNode(e),
+			   $input = $(e.target);
+			e.stopPropagation();  // prevent fancytree activate for this row
+			if($input.is(":checked")){
+				alert("like " + $input.val());
+			}else{
+				alert("dislike " + $input.val());
+			}
+		});
+		$("#fixedRows").keyup(function(evt) {
+			var rows = parseInt($(this).val());
+			if (!isNaN(rows) && evt.keyCode === 13) {
+				var tree = $("#treetable").fancytree("getTree");
+				tree.options.fixed.fixRows = rows;
+				tree.reload();
+			}
+		});
+		$("#fixedCols").keyup(function(evt) {
+			var cols = parseInt($(this).val());
+			if (!isNaN(cols) && evt.keyCode === 13) {
+				var tree = $("#treetable").fancytree("getTree");
+				tree.options.fixed.fixCols = cols;
+				tree.reload();
+			}
+		});
+
+		addSampleButton({
+			label: "Expand all",
+			code: function(){
+				var t = $.ui.fancytree.getTree();
+				var $tree = $("#treetable");
+				window.console.time("expand all");
+				$tree.fancytree("getTree").visit(function(n){
+					n.setExpanded();
+				});
+				window.console.timeEnd("expand all");
+			}
+		});
+		addSampleButton({
+			label: "Collapse all",
+			newline: false,
+			code: function(){
+				window.console.time("collapse all");
+				$("#treetable").fancytree("getTree").visit(function(n){
+					n.setExpanded(false);
+				});
+				window.console.timeEnd("collapse all");
+			}
+		});
+	});
 </script>
 <!-- End_Exclude -->
 
@@ -205,8 +205,8 @@
 		<label for="fixedRows">Fixed Rows:</label> <input id="fixedRows">
 	</div>
 
-    <p id="sampleButtons">
-    </p>
+	<p id="sampleButtons">
+	</p>
 	<!-- Add a <table> element where the tree should appear: -->
 	<div id="tableWrapper">
 		<table id="treetable">
@@ -259,36 +259,36 @@
 					<th></th>
 					<th></th>
 					<th></th>
-                    <th>Head R2 C5</th>
-                    <th>Head R2 C6</th>
-                    <th>Head R2 C7</th>
-                    <th>Head R2 C8</th>
-                    <th>Head R2 C9</th>
-                    <th>Head R2 C10</th>
-                    <th>Head R2 C11</th>
-                    <th>Head R2 C12</th>
-                    <th>Head R2 C13</th>
-                    <th>Head R2 C14</th>
-                    <th>Head R2 C15</th>
-                    <th>Head R2 C16</th>
-                    <th>Head R2 C17</th>
-                    <th>Head R2 C18</th>
-                    <th>Head R2 C19</th>
-                    <th>Head R2 C20</th>
-                    <th>Head R2 C21</th>
-                    <th>Head R2 C22</th>
-                    <th>Head R2 C23</th>
-                    <th>Head R2 C24</th>
-                    <th>Head R2 C25</th>
-                    <th>Head R2 C26</th>
-                    <th>Head R2 C27</th>
-                    <th>Head R2 C28</th>
-                    <th>Head R2 C29</th>
-                    <th>Head R2 C30</th>
-                    <th>Head R2 C31</th>
-                    <th>Head R2 C32</th>
-                    <th>Head R2 C33</th>
-                    <th>Head R2 C34</th>
+					<th>Head R2 C5</th>
+					<th>Head R2 C6</th>
+					<th>Head R2 C7</th>
+					<th>Head R2 C8</th>
+					<th>Head R2 C9</th>
+					<th>Head R2 C10</th>
+					<th>Head R2 C11</th>
+					<th>Head R2 C12</th>
+					<th>Head R2 C13</th>
+					<th>Head R2 C14</th>
+					<th>Head R2 C15</th>
+					<th>Head R2 C16</th>
+					<th>Head R2 C17</th>
+					<th>Head R2 C18</th>
+					<th>Head R2 C19</th>
+					<th>Head R2 C20</th>
+					<th>Head R2 C21</th>
+					<th>Head R2 C22</th>
+					<th>Head R2 C23</th>
+					<th>Head R2 C24</th>
+					<th>Head R2 C25</th>
+					<th>Head R2 C26</th>
+					<th>Head R2 C27</th>
+					<th>Head R2 C28</th>
+					<th>Head R2 C29</th>
+					<th>Head R2 C30</th>
+					<th>Head R2 C31</th>
+					<th>Head R2 C32</th>
+					<th>Head R2 C33</th>
+					<th>Head R2 C34</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -306,8 +306,8 @@
 	</p>
 	<p>
 	   <dl>
-    	   <dt>2016-12-23</dt>
-    	   <dd>13 Sek.</dd>
+		   <dt>2016-12-23</dt>
+		   <dd>13 Sek.</dd>
 	   </dl>
 	</p>
 	<pre id="sourceCode" class="prettyprint" style="display:none"></pre>

@@ -2152,7 +2152,7 @@ function Fancytree(widget) {
 
 	if( this.options.rtl ) {
 		this.$container.attr("DIR", "RTL").addClass("fancytree-rtl");
-	// }else{				
+	// }else{
 	//	this.$container.attr("DIR", null).removeClass("fancytree-rtl");
 	}
 	if(this.options.aria){
@@ -4295,7 +4295,7 @@ $.extend(Fancytree.prototype,
 		var tree = ctx.tree,
 			callDefault = true,
 			rerender = false;
-					
+
 		switch( key ) {
 		case "aria":
 		case "checkbox":
@@ -4312,7 +4312,7 @@ $.extend(Fancytree.prototype,
 		case "rtl":
 			if( value === false ) {
 				tree.$container.attr("DIR", null).removeClass("fancytree-rtl");
-			}else{				
+			}else{
 				tree.$container.attr("DIR", "RTL").addClass("fancytree-rtl");
 			}
 			rerender = true;

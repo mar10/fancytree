@@ -13,22 +13,22 @@
  * @date @DATE
  */
 
- 
+
  /*
  #TODO
    - glyph
-    
-    Compatiblity when dragging between *separate* windows:
 
-           Drag from Chrome   Edge    FF    IE11    Safari
-      To Chrome      ok       ok      ok    NO      ?
-	     Edge        ok       ok      ok    NO      ?
-	     FF          ok       ok      ok    NO      ?
-	     IE 11       ok       ok      ok    ok      ?
-	     Safari      ?        ?       ?     ?       ok
+	Compatiblity when dragging between *separate* windows:
+
+		   Drag from Chrome   Edge    FF    IE11    Safari
+	  To Chrome      ok       ok      ok    NO      ?
+		 Edge        ok       ok      ok    NO      ?
+		 FF          ok       ok      ok    NO      ?
+		 IE 11       ok       ok      ok    ok      ?
+		 Safari      ?        ?       ?     ?       ok
 
  */
- 
+
 ;(function($, window, document, undefined) {
 
 "use strict";
@@ -59,7 +59,7 @@ function offsetString(n){
 /* Convert a dragEnter() or dragOver() response to a canonical form.
  * Return false or plain object
  * @param {string|object|boolean} r
- * @return {object|false} 
+ * @return {object|false}
  */
 function normalizeDragEnterResponse(r) {
 	var res;
@@ -109,7 +109,7 @@ function autoScroll(tree, event) {
 		scrollTop = sp.scrollTop;
 		if ( spOfs.top + sp.offsetHeight - event.pageY < sensitivity ) {
 			delta = (sp.scrollHeight - tree.$scrollParent.innerHeight() - scrollTop);
-			// console.log ("sp.offsetHeight: " + sp.offsetHeight 
+			// console.log ("sp.offsetHeight: " + sp.offsetHeight
 			// 	+ ", spOfs.top: " + spOfs.top
 			// 	+ ", scrollTop: " + scrollTop
 			// 	+ ", innerHeight: " + tree.$scrollParent.innerHeight()
@@ -216,7 +216,7 @@ function handleDragOver(event, data) {
 	// LAST_DROP_EFFECT = data.dataTransfer.dropEffect;
 	// LAST_EFFECT_ALLOWED = data.dataTransfer.effectAllowed;
 	LAST_HIT_MODE = hitMode;
-	// 
+	//
 	if( hitMode === "after" || hitMode === "before" || hitMode === "over" ){
 		markerOffsetX = -24;
 		switch(hitMode){
@@ -314,7 +314,7 @@ $.ui.fancytree.registerExtension({
 				.css({
 					"z-index": 1000,
 					// Drop marker should not steal dragenter/dragover events:
-					"pointer-events": "none"  
+					"pointer-events": "none"
 				}).prependTo("body");
 				// if( glyph ) {
 					// instData.$dropMarker
@@ -358,9 +358,9 @@ $.ui.fancytree.registerExtension({
 					// Set payload
 					// Note:
 					// Transfer data is only accessible on dragstart and drop!
-					// For all other events the formats and kinds in the drag 
-					// data store list of items representing dragged data can be 
-					// enumerated, but the data itself is unavailable and no new 
+					// For all other events the formats and kinds in the drag
+					// data store list of items representing dragged data can be
+					// enumerated, but the data itself is unavailable and no new
 					// data can be added.
 					json = JSON.stringify(node.toDict());
 					try {
@@ -371,14 +371,14 @@ $.ui.fancytree.registerExtension({
 						// IE only accepts 'text' type
 						tree.warn("Could not set data (IE only accepts 'text') - " + ex);
 					}
-					// We always need to set the 'text' type if we want to drag 
+					// We always need to set the 'text' type if we want to drag
 					// Because IE 11 only accepts this single type.
 					// If we pass JSON here, IE can can access all node properties,
 					// even when the source lives in another window. (D'n'd inside
 					// the same window will always work.)
 					// The drawback is, that in this case ALL browsers will see
 					// the JSON representation as 'text', so dragging
-					// to a text field will insert the JSON string instead of 
+					// to a text field will insert the JSON string instead of
 					// the node title.
 					if( dndOpts.setTextTypeJson ) {
 						dataTransfer.setData("text", json);
@@ -469,7 +469,7 @@ $.ui.fancytree.registerExtension({
 					// of the previous element!
 					// https://www.w3.org/Bugs/Public/show_bug.cgi?id=19041
 					setTimeout(function(){
-						// node.info("DELAYED " + event.type, event.target, DRAG_ENTER_RESPONSE);						
+						// node.info("DELAYED " + event.type, event.target, DRAG_ENTER_RESPONSE);
 						// Auto-expand node (only when 'over' the node, not 'before', or 'after')
 						if( dndOpts.autoExpandMS &&
 							node.hasChildren() !== false && !node.expanded &&
@@ -506,11 +506,11 @@ $.ui.fancytree.registerExtension({
 					// FOLLOWING element.
 					if( !node ) {
 						tree.debug("Ignore non-node " + event.type + ": " + event.target.tagName + "." + event.target.className);
-						break;						
+						break;
 					}
 					if( !$(node.span).hasClass(classDropOver) ) {
 						node.debug("Ignore dragleave (multi)"); //, event.currentTarget);
-						break;						
+						break;
 					}
 					$(node.span).removeClass(classDropOver + " " + classDropAccept + " " + classDropReject);
 					node.scheduleAction("cancel");
@@ -534,7 +534,7 @@ $.ui.fancytree.registerExtension({
 					}
 					if( nodeData ) {
 						try {
-							// 'text' type may contain JSON if IE is involved 
+							// 'text' type may contain JSON if IE is involved
 							// and setTextTypeJson option was set
 							json = JSON.parse(nodeData);
 							if( json.title !== undefined ) {
