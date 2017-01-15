@@ -17,7 +17,16 @@
  /*
  #TODO
    - glyph
- 
+    
+    Compatiblity when dragging between *separate* windows:
+
+               Chrome   Edge    FF    IE11    Safari
+	Chrome        ok     ok     ok    ok       ?
+	Edge          ok     ok     ok    ok       ?
+	FF            ok     ok     ok    ok       ?
+	IE 11         NO     NO     NO    ok       ?
+	Safari        ?      ?      ?     ?        ok
+
  */
  
 ;(function($, window, document, undefined) {
@@ -38,37 +47,13 @@ var
 	classDropTarget = "fancytree-drop-target",
 	nodeMimeType = "application/x-fancytree-node",
 	$dropMarker = null,
-	// dragstartInfo = {},
 	SOURCE_NODE = null,
 	DRAG_ENTER_RESPONSE = null,
-	// LAST_EVENT_HASH = null,
-	// LAST_DROP_EFFECT = "none",
-	// LAST_EFFECT_ALLOWED = "all",
 	LAST_HIT_MODE = null;
-	// PREV_NODE_ENTERED = null,
-	// LAST_NODE_ENTERED = null;
-	// LAST_NODE_LEFT = null;
 
 /* Convert number to string and prepend +/-; return empty string for 0.*/
 function offsetString(n){
 	return n === 0 ? "" : (( n > 0 ) ? ("+" + n) : ("" + n));
-}
-
-/* Return a unique string for any event.*/
-// function getEventHash(event){
-// 	return event.type + "@" + event.pageX + "/" + event.pageY + "," +
-// 			event.button + "," +
-// 			event.altKey + event.ctrlKey + event.metaKey + event.shiftKey;
-// }
-
-function logEvent(event){
-	// var node = $.ui.fancytree.getNode(event);
-	// if( event.type === "dragover" || event.type === "drag" ) {
-	// 	return;
-	// }
-	// window.console && window.console.log(event.type +
-	// 	" - " + (node ? node.title : "?") + " - " +
-	// 	event.target.tagName + "." + event.target.className);
 }
 
 /* Convert a dragEnter() or dragOver() response to a canonical form.
@@ -111,7 +96,7 @@ function normalizeDragEnterResponse(r) {
 }
 
 /* Implement auto scrolling when drag cursor is in top/bottom area of scroll parent. */
-function autoScroll(tree) {
+function autoScroll(tree, event) {
 	var spOfs, scrollTop, delta,
 		dndOpts = tree.options.dnd5,
 		sp = tree.$scrollParent[0],
@@ -157,7 +142,7 @@ function autoScroll(tree) {
 function handleDragOver(event, data) {
 	// Implement auto-scrolling
 	if ( data.options.dnd5.scroll ) {
-		autoScroll(data.tree);
+		autoScroll(data.tree, event);
 	}
 	// Bail out with previous response if we get an invalid dragover
 	if( !data.node ) {
@@ -177,24 +162,7 @@ function handleDragOver(event, data) {
 		// glyph = options.glyph || null,
 		// $source = sourceNode ? $(sourceNode.span) : null,
 		$target = $(targetNode.span),
-		$targetTitle = $target.find(">span.fancytree-title")
-		// TODO: test & fix
-		// isMove = LAST_DROP_EFFECT === "move"
-		// isMove = data.dataTransfer.dropEffect === "move"
-		;
-
-	// targetNode.debug("dragover" + " " + sourceNode, data);
-	
-	// Suppress redundant events to avoid flickering
-	// if( eventHash === LAST_EVENT_HASH ) {
-	// 	// targetNode.debug("Suppress event " + eventHash + ", hitMode: " + LAST_HIT_MODE);
-	// 	// It seems that dropEffect must be set on *every* dragover event (at least on Safari)?
-	// 	// TODO: test & fix
-	// 	// data.dataTransfer.dropEffect = LAST_DROP_EFFECT;
-	// 	// data.dataTransfer.effectAllowed = LAST_EFFECT_ALLOWED;
-	// 	return LAST_HIT_MODE;
-	// }
-	// LAST_EVENT_HASH = eventHash;
+		$targetTitle = $target.find(">span.fancytree-title");
 
 	if(DRAG_ENTER_RESPONSE === false){
 		tree.warn("Ignore dragover, since dragenter returned false");  //, event, data);
@@ -299,6 +267,7 @@ $.ui.fancytree.registerExtension({
 	// Default options for this extension.
 	options: {
 		autoExpandMS: 1500,          // Expand nodes after n milliseconds of hovering
+		setTextTypeJson: false,      // Allow dragging of nodes to different IE windows
 		preventForeignNodes: false,  // Prevent dropping nodes from different Fancytrees
 		preventNonNodes: false,      // Prevent dropping items other than Fancytree nodes
 		preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
@@ -344,7 +313,7 @@ $.ui.fancytree.registerExtension({
 				.hide()
 				.css({
 					"z-index": 1000,
-					// Drop marker should not steal dragenter/dragover events
+					// Drop marker should not steal dragenter/dragover events:
 					"pointer-events": "none"  
 				}).prependTo("body");
 				// if( glyph ) {
@@ -362,46 +331,73 @@ $.ui.fancytree.registerExtension({
 				data.node.span.draggable = true;
 			});
 			// Bind drag event handlers
-			tree.$container.on("dragstart drag dragend", function(e){
-				var node = getNode(e),
-					dataTransfer = e.originalEvent.dataTransfer,
+			tree.$container.on("dragstart drag dragend", function(event){
+				var json,
+					node = getNode(event),
+					dataTransfer = event.dataTransfer || event.originalEvent.dataTransfer,
 					isMove = dataTransfer.dropEffect === "move",
 					$source = node ? $(node.span) : null,
 					data = {
 						node: node,
 						tree: tree,
 						options: tree.options,
-						originalEvent: e,
+						originalEvent: event,
 						dataTransfer: dataTransfer,
-						dropEffect: undefined,  // set by dragend
+//						dropEffect: undefined,  // set by dragend
 						isCancelled: undefined  // set by dragend
 					};
 
-				logEvent(e);
-
-				switch( e.type ) {
+				switch( event.type ) {
 
 				case "dragstart":
-					// node.debug(e.type, e, data);
-					// LAST_NODE_ENTERED = null;
-					// LAST_NODE_LEFT = null;
-					$(node.span)
-						.addClass(classDragSource)
-						// .toggleClass(classDragRemove, isMove)
-						;
+					$(node.span).addClass(classDragSource);
+
 					// Store current source node in different formats
 					SOURCE_NODE = node;
-					dataTransfer.setData(nodeMimeType, JSON.stringify(node.toDict()));
-					dataTransfer.setData("text/html", $(node.span).html());
-					dataTransfer.setData("text/plain", node.title);
-					// node.debug("data", dataTransfer.getData(nodeMimeType), dataTransfer.getData("text/html"));
+
+					// Set payload
+					// Note:
+					// Transfer data is only accessible on dragstart and drop!
+					// For all other events the formats and kinds in the drag 
+					// data store list of items representing dragged data can be 
+					// enumerated, but the data itself is unavailable and no new 
+					// data can be added.
+					json = JSON.stringify(node.toDict());
+					try {
+						dataTransfer.setData(nodeMimeType, json);
+						dataTransfer.setData("text/html", $(node.span).html());
+						dataTransfer.setData("text/plain", node.title);
+					} catch(ex) {
+						// IE only accepts 'text' type
+						tree.warn("Could not set data (IE only accepts 'text') - " + ex);
+					}
+					// We always need to set the 'text' type if we want to drag 
+					// Because IE 11 only accepts this single type.
+					// If we pass JSON here, IE can can access all node properties,
+					// even when the source lives in another window. (D'n'd inside
+					// the same window will always work.)
+					// The drawback is, that in this case ALL browsers will see
+					// the JSON representation as 'text', so dragging
+					// to a text field will insert the JSON string instead of 
+					// the node title.
+					if( dndOpts.setTextTypeJson ) {
+						dataTransfer.setData("text", json);
+					} else {
+						dataTransfer.setData("text", node.title);
+					}
+
+					// Set the allowed and current drag mode (move, copy, or link)
 					dataTransfer.effectAllowed = "all";  // "copyMove"
 					// dataTransfer.dropEffect = "move";
-					// Set the title as drag image (otherwise it would contain the expander)
-					dataTransfer.setDragImage($(node.span).find(".fancytree-title")[0], -10, -10);
-					// dataTransfer.setDragImage($(node.span)[0], -10, -10);
 
- 					return dndOpts.dragStart(node, data) !== false;
+					// Set the title as drag image (otherwise it would contain the expander)
+					if( dataTransfer.setDragImage ) {
+						// IE 11 does not support this
+						dataTransfer.setDragImage($(node.span).find(".fancytree-title")[0], -10, -10);
+						// dataTransfer.setDragImage($(node.span)[0], -10, -10);
+					}
+					// Let user modify above settings
+					return dndOpts.dragStart(node, data) !== false;
 
 				case "drag":
 					// Called every few miliseconds
@@ -410,14 +406,12 @@ $.ui.fancytree.registerExtension({
 					break;
 
 				case "dragend":
-					// node.debug(e.type, e, data);
 					$(node.span).removeClass(classDragSource + " " + classDragRemove);
 					SOURCE_NODE = null;
 					DRAG_ENTER_RESPONSE = null;
-					data.dropEffect = dataTransfer.dropEffect;
+//					data.dropEffect = dataTransfer.dropEffect;
 					data.isCancelled = (dataTransfer.dropEffect === "none");
 					dndOpts.dragEnd(node, data);
-					dataTransfer.clearData();
 					break;
 				}
 			});
@@ -425,66 +419,37 @@ $.ui.fancytree.registerExtension({
 		// Enable drop support if dragEnter() is specified:
 		if( dndOpts.dragEnter ) {
 			// Bind drop event handlers
-			tree.$container.on("dragenter dragover dragleave drop", function(e){
-				var r, res,
+			tree.$container.on("dragenter dragover dragleave drop", function(event){
+				var json, nodeData, r, res,
 					allowDrop = null,
-					node = getNode(e),
-					dataTransfer = e.originalEvent.dataTransfer,
-					nodeData = dataTransfer.getData(nodeMimeType),
+					node = getNode(event),
+					dataTransfer = event.dataTransfer || event.originalEvent.dataTransfer,
 					// glyph = opts.glyph || null,
 					data = {
 						node: node,
 						tree: tree,
 						options: tree.options,
 						hitMode: DRAG_ENTER_RESPONSE,
-						originalEvent: e,
+						originalEvent: event,
 						dataTransfer: dataTransfer,
 						otherNode: SOURCE_NODE || null,
-						otherNodeData: nodeData ? JSON.parse(nodeData) : null,
+						otherNodeData: null,    // set by drop event
 						dropEffect: undefined,  // set by drop event
 						isCancelled: undefined  // set by drop event
 					};
 
-				logEvent(e);
-				// node.warn("event " + e.type + ": #" + $(e.target).attr("id") + ", " + e.target.tagName + "." + e.target.className + " => " + LAST_HIT_MODE, e);
-
-				switch( e.type ) {
+				switch( event.type ) {
 
 				case "dragenter":
 					// The dragenter event is fired when a dragged element or
 					// text selection enters a valid drop target.
 
-					// if( $(e.target).attr("id") === "fancytree-drop-marker" ) {
-					// 	node.warn("Ignore drop marker " + e.type + ": " + e.target.tagName + "." + e.target.className + " => " + LAST_HIT_MODE);
-					// }
-					// 
 					if( !node ) {
 						// Sometimes we get dragenter for the container element
-						tree.debug("Ignore non-node " + e.type + ": " + e.target.tagName + "." + e.target.className);
+						tree.debug("Ignore non-node " + event.type + ": " + event.target.tagName + "." + event.target.className);
 						DRAG_ENTER_RESPONSE = false;
 						break;
-					// } else if( $(e.target).attr("id") === "fancytree-drop-marker" ) {
-					// 	// 
-					// 	node.warn("Ignore frop marker " + e.type + ": " + e.target.tagName + "." + e.target.className + " => " + LAST_HIT_MODE);
-					// 	// allowDrop = !!LAST_HIT_MODE;
-					// 	allowDrop = res && ( res.over || res.before || res.after );
-					// 	break;
-					// } else if( node === LAST_NODE_ENTERED ) {
-					// 	// Ignore dragenter if the cursor moved between span tags
-					// 	// of the same node. But we still need to reproduce the
-					// 	// last response
-					// 	node.warn("Ignore inter-node " + e.type + ": " + e.target.tagName + "." + e.target.className + " => " + LAST_HIT_MODE);
-					// 	// allowDrop = !!LAST_HIT_MODE;
-					// 	allowDrop = res && ( res.over || res.before || res.after );
-					// 	break;
 					}
-					// PREV_NODE_ENTERED = LAST_NODE_ENTERED;
-					// LAST_NODE_ENTERED = node;
-					// if( $(node.span).hasClass(classDropOver) ) {
-					// 	node.warn("Ingnore dragenter (multi)");
-					// 	DRAG_ENTER_RESPONSE = false;
-					// 	break;
-					// }
 
 					$(node.span)
 						.addClass(classDropOver)
@@ -499,14 +464,12 @@ $.ui.fancytree.registerExtension({
 						DRAG_ENTER_RESPONSE = false;
 						break;
 					}
-					// node.info(e.type + " - " + LAST_HIT_MODE);
+
 					// NOTE: dragenter is fired BEFORE the dragleave event
 					// of the previous element!
 					// https://www.w3.org/Bugs/Public/show_bug.cgi?id=19041
-					// TODO: maybe handle this on the $container level?
-					// But this seems to work:
 					setTimeout(function(){
-						// node.info("DELAYED " + e.type, e.target, DRAG_ENTER_RESPONSE);						
+						// node.info("DELAYED " + event.type, event.target, DRAG_ENTER_RESPONSE);						
 						// Auto-expand node (only when 'over' the node, not 'before', or 'after')
 						if( dndOpts.autoExpandMS &&
 							node.hasChildren() !== false && !node.expanded &&
@@ -516,9 +479,8 @@ $.ui.fancytree.registerExtension({
 						}
 					}, 0);
 
-					$dropMarker
-						// .prependTo(tree.$container.parent())
-						.show();
+					$dropMarker.show();
+
 					// Call dragEnter() to figure out if (and where) dropping is allowed
 					if( dndOpts.preventRecursiveMoves && node.isDescendantOf(data.otherNode) ){
 						res = false;
@@ -527,9 +489,7 @@ $.ui.fancytree.registerExtension({
 						res = normalizeDragEnterResponse(r);
 					}
 					DRAG_ENTER_RESPONSE = res;
-					// LAST_DROP_EFFECT = data.dataTransfer.dropEffect;
-					// LAST_EFFECT_ALLOWED = data.dataTransfer.effectAllowed;
-//					node.info(e.type, data)
+
 					allowDrop = res && ( res.over || res.before || res.after );
 					break;
 
@@ -537,52 +497,73 @@ $.ui.fancytree.registerExtension({
 					// The dragover event is fired when an element or text
 					// selection is being dragged over a valid drop target
 					// (every few hundred milliseconds).
-					LAST_HIT_MODE = handleDragOver(e, data);
+					LAST_HIT_MODE = handleDragOver(event, data);
 					allowDrop = !!LAST_HIT_MODE;
 					break;
 
 				case "dragleave":
 					// NOTE: dragleave is fired AFTER the dragenter event of the
 					// FOLLOWING element.
-
 					if( !node ) {
-						tree.debug("Ignore non-node " + e.type + ": " + e.target.tagName + "." + e.target.className);
+						tree.debug("Ignore non-node " + event.type + ": " + event.target.tagName + "." + event.target.className);
 						break;						
-					// } else if( node !== PREV_NODE_ENTERED ) {
-					// 	node.warn("Ignore inter-node " + e.type + ": " + e.target.tagName + "." + e.target.className);
-					// 	// allowDrop = !!LAST_HIT_MODE;
-					// 	break;
 					}
-					// LAST_NODE_LEFT = node;
 					if( !$(node.span).hasClass(classDropOver) ) {
-						node.debug("Ignore dragleave (multi)"); //, e.currentTarget);
+						node.debug("Ignore dragleave (multi)"); //, event.currentTarget);
 						break;						
 					}
 					$(node.span).removeClass(classDropOver + " " + classDropAccept + " " + classDropReject);
 					node.scheduleAction("cancel");
 					dndOpts.dragLeave(node, data);
 					$dropMarker.hide();
-					// allowDrop = !!LAST_HIT_MODE;
 					break;
 
 				case "drop":
+					// Data is only readable in the (dragenter and) drop event:
+
+					if( $.inArray(nodeMimeType, dataTransfer.types) >= 0 ) {
+						nodeData = dataTransfer.getData(nodeMimeType);
+						tree.info(event.type + ": getData('application/x-fancytree-node'): '" + nodeData + "'");
+					}
+					if( !nodeData ) {
+						// 1. Source is not a Fancytree node, or
+						// 2. If the FT mime type was set, but returns '', this
+						//    is probably IE 11 (which only supports 'text')
+						nodeData = dataTransfer.getData("text");
+						tree.info(event.type + ": getData('text'): '" + nodeData + "'");
+					}
+					if( nodeData ) {
+						try {
+							// 'text' type may contain JSON if IE is involved 
+							// and setTextTypeJson option was set
+							json = JSON.parse(nodeData);
+							if( json.title !== undefined ) {
+								data.otherNodeData = json;
+							}
+						} catch(ex) {
+							// assume 'text' type contains plain text, so `otherNodeData`
+							// should not be set
+						}
+					}
+					tree.debug(event.type + ": nodeData: '" + nodeData + "', otherNodeData: ", data.otherNodeData);
+
 					$(node.span).removeClass(classDropOver + " " + classDropAccept + " " + classDropReject);
-					// node.info(e.type, e, data);
 					$dropMarker.hide();
+
 					data.hitMode = LAST_HIT_MODE;
 					data.dropEffect = dataTransfer.dropEffect;
 					data.isCancelled = data.dropEffect === "none";
-					$dropMarker.hide();
+
+					// Let user implement the actual drop operation
 					dndOpts.dragDrop(node, data);
+
 					// Prevent browser's default drop handling
-					e.preventDefault();
+					event.preventDefault();
 					break;
 				}
 				// Dnd API madness: we must PREVENT default handling to enable dropping
-				// (node || tree).info("" + e.type + " - " + e.target.tagName + "." + e.target.className + " => " + LAST_HIT_MODE + "(" + allowDrop + ")");
 				if( allowDrop ) {
-					// (node || tree).info("DROP " + e.type + " - " + e.target.tagName + "." + e.target.className + " => " + LAST_HIT_MODE + "(" + allowDrop + ")");
-					e.preventDefault();
+					event.preventDefault();
 					return false;
 				}
 			});
