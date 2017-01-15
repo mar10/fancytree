@@ -93,8 +93,10 @@ module.exports = (grunt) ->
                 "build/jquery.fancytree.clones.min.js"
 #                "build/jquery.fancytree.columnview.min.js"
                 "build/jquery.fancytree.dnd.min.js"
+#                "build/jquery.fancytree.dnd5.min.js"
                 "build/jquery.fancytree.edit.min.js"
                 "build/jquery.fancytree.filter.min.js"
+#                "build/jquery.fancytree.fixed.min.js"
                 "build/jquery.fancytree.glyph.min.js"
                 "build/jquery.fancytree.gridnav.min.js"
 #                "build/jquery.fancytree.menu.min.js"
@@ -186,7 +188,7 @@ module.exports = (grunt) ->
             cmd: "tabfix -t -r -m*.js,*.css,*.html,*.json -inode_modules src demo test"
         upload:
             # FTP upload the demo files (requires https://github.com/mar10/pyftpsync)
-            cmd: "pyftpsync --progress upload . ftp://www.wwwendt.de/tech/fancytree --delete-unmatched --omit build,node_modules,.*,_*  -x"
+            cmd: "pyftpsync --progress upload . ftp://www.wwwendt.de/tech/fancytree --delete-unmatched --omit build,node_modules,.*,_*"
 #            cmd: "pyftpsync --progress upload . ftp://www.wwwendt.de/tech/fancytree --omit build,node_modules,.*,_*  -x"
 
     # htmllint:
@@ -277,8 +279,8 @@ module.exports = (grunt) ->
                   { browserName: "chrome", platform: "Windows 8.1" }
                   { browserName: "firefox", platform: "Windows 8.1" }
                   { browserName: "firefox", platform: "Linux" }
-                  { browserName: "internet explorer", version: "6", platform: "Windows XP" }
-                  { browserName: "internet explorer", version: "7", platform: "Windows XP" }
+                  # { browserName: "internet explorer", version: "6", platform: "Windows XP" }
+                  # { browserName: "internet explorer", version: "7", platform: "Windows XP" }
                   { browserName: "internet explorer", version: "8", platform: "Windows 7" }
                   { browserName: "internet explorer", version: "9", platform: "Windows 7" }
                   { browserName: "internet explorer", version: "10", platform: "Windows 8" }
@@ -288,6 +290,7 @@ module.exports = (grunt) ->
                   { browserName: "safari", version: "7", platform: "OS X 10.9" }
                   { browserName: "safari", version: "8", platform: "OS X 10.10" }
                   { browserName: "safari", version: "9", platform: "OS X 10.11" }
+                  { browserName: "safari", version: "10", platform: "OS X 10.12" }
                 ]
                 testname: "fancytree qunit tests"
                 # statusCheckAttempts: 180

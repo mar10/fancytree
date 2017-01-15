@@ -146,7 +146,8 @@
 
 						data.otherNode.moveTo(node, data.hitMode);
 					} else if( data.otherNodeData ) {
-						// Drop Fancytree node from different frame or window
+						// Drop Fancytree node from different frame or window, so we only have
+						// JSON representation available
 						node.addChild(data.otherNodeData, data.hitMode);
 					} else {
 						// Drop a non-node
