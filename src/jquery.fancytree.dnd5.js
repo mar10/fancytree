@@ -20,12 +20,12 @@
     
     Compatiblity when dragging between *separate* windows:
 
-               Chrome   Edge    FF    IE11    Safari
-	Chrome        ok     ok     ok    ok       ?
-	Edge          ok     ok     ok    ok       ?
-	FF            ok     ok     ok    ok       ?
-	IE 11         NO     NO     NO    ok       ?
-	Safari        ?      ?      ?     ?        ok
+           Drag from Chrome   Edge    FF    IE11    Safari
+      To Chrome      ok       ok      ok    NO      ?
+	     Edge        ok       ok      ok    NO      ?
+	     FF          ok       ok      ok    NO      ?
+	     IE 11       ok       ok      ok    ok      ?
+	     Safari      ?        ?       ?     ?       ok
 
  */
  

@@ -6,7 +6,10 @@
   * [Added] `rtl` option for right-to-left script support
   * [Added] Add $.ui.fancytree.overrideMethod()
   * [Added] hook `treeSetOption` allows extensions to update on option changes
-  * [Changed] standard CSS now defines `overflow: hidden` instead `auto` for container
+  * [Changed] standard CSS no longer defines `overflow: auto` for the container.
+    If the tree container has a fixed height, `overflow: auto` or `overflow: scroll`
+    should be added to make it scrollable.
+    (Otherwise this always would be the scroll parent for ext-dnd5.)
   * [Improved] better support for initializing from embedded JSON using the 
     `data-type="json"` attribute
   * [Fixed] corner case of #658 when ext-edit is loaded, but inactive
