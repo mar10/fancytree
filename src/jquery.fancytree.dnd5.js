@@ -299,6 +299,17 @@ $.ui.fancytree.registerExtension({
 		if( dndOpts.dragStop ) {
 			$.error("dragStop is not used by ext-dnd5. Use dragEnd instead.");
 		}
+
+		// Implement `opts.createNode` event to add the 'draggable' attribute
+		// #680: this must happen before calling super.treeInit()
+		if( dndOpts.dragStart ) {
+			$.ui.fancytree.overrideMethod(ctx.options, "createNode", function(event, data) {
+				// Default processing if any
+				this._super.apply(this, arguments);
+
+				data.node.span.draggable = true;
+			});
+		}
 		this._superApply(arguments);
 
 		this.$container.addClass("fancytree-ext-dnd5");
@@ -323,13 +334,6 @@ $.ui.fancytree.registerExtension({
 		}
 		// Enable drag support if dragStart() is specified:
 		if( dndOpts.dragStart ) {
-			// Implement `opts.createNode` event to add the 'draggable' attribute
-			$.ui.fancytree.overrideMethod(ctx.options, "createNode", function(event, data) {
-				// Default processing if any
-				this._super.apply(this, arguments);
-
-				data.node.span.draggable = true;
-			});
 			// Bind drag event handlers
 			tree.$container.on("dragstart drag dragend", function(event){
 				var json,

@@ -1,5 +1,6 @@
 # 2.22.0-0 / Unreleased
   * [Added] New extension 'ext-fixed'
+  * [Fixed] #680 ext-dnd5: top level nodes not draggable
 
 # 2.21.0 / 2017-01-15
   * [Added] New extension 'ext-dnd5' for native HTML5 drag'n'drop support
