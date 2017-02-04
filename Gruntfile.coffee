@@ -276,6 +276,7 @@ module.exports = (grunt) ->
                 throttled: 5
                 recordVideo: false
                 videoUploadOnPass: false
+                # jQuery 1.9     dropped supports IE 6..?
                 # jQuery UI 1.9  supports IE 6+ and ?
                 browsers: [
                   { browserName: "internet explorer", version: "6", platform: "Windows XP" }
@@ -288,6 +289,7 @@ module.exports = (grunt) ->
                 throttled: 5
                 recordVideo: false
                 videoUploadOnPass: false
+                # jQuery 1.10    dropped support for IE 6
                 # jQuery UI 1.10 supports IE 7+ and ?
                 browsers: [
                   { browserName: "internet explorer", version: "7", platform: "Windows XP" }
@@ -295,6 +297,8 @@ module.exports = (grunt) ->
                 ]
         ui_111:
             options:
+                testname: "Fancytree qunit tests (jQuery 1.11, jQuery UI 1.11)"
+                urls: ["http://localhost:9999/test/unit/test-jQuery111-ui111.html"]
                 build: process.env.TRAVIS_JOB_ID
                 throttled: 5
                 recordVideo: false
