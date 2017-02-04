@@ -268,34 +268,64 @@ module.exports = (grunt) ->
             } ]
 
     "saucelabs-qunit":
-        all:
+        ui_109:
             options:
-                urls: ["http://localhost:9999/test/unit/test-core.html"]
-                # tunnelTimeout: 5
+                testname: "Fancytree qunit tests (jQuery 1.9, jQuery UI 1.9)"
+                urls: ["http://localhost:9999/test/unit/test-jQuery19-ui19.html"]
                 build: process.env.TRAVIS_JOB_ID
-                # concurrency: 3
                 throttled: 5
+                recordVideo: false
+                videoUploadOnPass: false
+                # jQuery UI 1.9  supports IE 6+ and ?
+                browsers: [
+                  { browserName: "internet explorer", version: "6", platform: "Windows XP" }
+                ]
+        ui_110:
+            options:
+                testname: "Fancytree qunit tests (jQuery 1.10, jQuery UI 1.10)"
+                urls: ["http://localhost:9999/test/unit/test-jQuery110-ui110.html"]
+                build: process.env.TRAVIS_JOB_ID
+                throttled: 5
+                recordVideo: false
+                videoUploadOnPass: false
+                # jQuery UI 1.10 supports IE 7+ and ?
+                browsers: [
+                  { browserName: "internet explorer", version: "7", platform: "Windows XP" }
+                  { browserName: "internet explorer", version: "8", platform: "Windows 7" }
+                ]
+        ui_111:
+            options:
+                build: process.env.TRAVIS_JOB_ID
+                throttled: 5
+                recordVideo: false
+                videoUploadOnPass: false
+                # jQuery 1.11     supports IE + and latest Chrome/Edge/Firefox/Safari (-1)
+                # jQuery UI 1.11  supports IE 7+ and ?
+                browsers: [
+                  { browserName: "internet explorer", version: "9", platform: "Windows 7" }
+                  { browserName: "internet explorer", version: "10", platform: "Windows 8" }
+                  { browserName: "safari", version: "7", platform: "OS X 10.9" }
+                  { browserName: "safari", version: "8", platform: "OS X 10.10" }
+                ]
+        ui_112:
+            options:
+                testname: "Fancytree qunit tests (jQuery 3, jQuery UI 1.12)"
+                urls: ["http://localhost:9999/test/unit/test-core.html"]
+                build: process.env.TRAVIS_JOB_ID
+                throttled: 5
+                recordVideo: false
+                videoUploadOnPass: false
+                # jQuery 3        supports IE 9+ and latest Chrome/Edge/Firefox/Safari (-1)
+                # jQuery UI 1.12  supports IE 11 and latest Chrome/Edge/Firefox/Safari (-1)
                 browsers: [
                   { browserName: "chrome", platform: "Windows 8.1" }
                   { browserName: "firefox", platform: "Windows 8.1" }
                   { browserName: "firefox", platform: "Linux" }
-                  # { browserName: "internet explorer", version: "6", platform: "Windows XP" }
-                  # { browserName: "internet explorer", version: "7", platform: "Windows XP" }
-                  { browserName: "internet explorer", version: "8", platform: "Windows 7" }
-                  { browserName: "internet explorer", version: "9", platform: "Windows 7" }
-                  { browserName: "internet explorer", version: "10", platform: "Windows 8" }
                   { browserName: "internet explorer", version: "11", platform: "Windows 8.1" }
                   { browserName: "microsoftedge", platform: "Windows 10" }
-                  { browserName: "safari", version: "6", platform: "OS X 10.8" }
-                  { browserName: "safari", version: "7", platform: "OS X 10.9" }
-                  { browserName: "safari", version: "8", platform: "OS X 10.10" }
                   { browserName: "safari", version: "9", platform: "OS X 10.11" }
                   { browserName: "safari", version: "10", platform: "OS X 10.12" }
                 ]
-                testname: "fancytree qunit tests"
-                # statusCheckAttempts: 180
-                recordVideo: false
-                videoUploadOnPass: false
 
     uglify:
         # build:
