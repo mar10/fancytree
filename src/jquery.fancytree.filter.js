@@ -213,7 +213,7 @@ $.ui.fancytree._FancytreeClass.prototype.clearFilter = function(){
 	}
 	this.visit(function(node){
 		if( node.match ) {  // #491
-			$title = $(">span.fancytree-title", node.span);
+			$title = $(node.span).find(">span.fancytree-title");
 			if( escapeTitles ) {
 				$title.text(node.title);
 			} else {
@@ -308,7 +308,7 @@ $.ui.fancytree.registerExtension({
 			node = ctx.node,
 			tree = ctx.tree,
 			opts = ctx.options.filter,
-			$title = $("span.fancytree-title", node.span),
+			$title = $(node.span).find("span.fancytree-title"),
 			$span = $(node[tree.statusClassPropName]),
 			enhanceTitle = ctx.options.enhanceTitle,
 			escapeTitles = ctx.options.escapeTitles;
