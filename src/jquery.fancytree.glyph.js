@@ -17,12 +17,13 @@
 
 "use strict";
 
-/* *****************************************************************************
- * Private functions and variables
- */
-
-function _getIcon(opts, type){
-	return opts.map[type];
+function hasStdIcons(opts) {
+	var map = opts.map;
+	return map["doc"] || map["docOpen"] || map["folder"] || map["folderOpen"];
+}
+function hasCheckboxIcons(opts) {
+	var map = opts.map;
+	return map["checkbox"] || map["checkboxSelected"] || map["checkboxUnknown"];
 }
 
 $.ui.fancytree.registerExtension({
@@ -36,23 +37,26 @@ $.ui.fancytree.registerExtension({
 			// See here for alternatives:
 			//   http://fortawesome.github.io/Font-Awesome/icons/
 			//   http://getbootstrap.com/components/
-			checkbox: "icon-check-empty",
-			checkboxSelected: "icon-check",
-			checkboxUnknown: "icon-check icon-muted",
-			error: "icon-exclamation-sign",
+			// Expander icons:
 			expanderClosed: "icon-caret-right",
 			expanderLazy: "icon-angle-right",
 			expanderOpen: "icon-caret-down",
-			nodata: "icon-meh",
 			noExpander: "",
-			dragHelper: "icon-caret-right",
-			dropMarker: "icon-caret-right",
-			// Default node icons.
-			// (Use tree.options.icon callback to define custom icons
-			// based on node data)
+			// d-n-d icons:
+			// TODO: dragHelper: "icon-caret-right",
+			// TODO: dropMarker: "icon-caret-right",
+			// Checkbox icons:
+			checkbox: "icon-check-empty",
+			checkboxSelected: "icon-check",
+			checkboxUnknown: "icon-check icon-muted",
+			// Default node statuses icons:
+			loading: "icon-refresh icon-spin",
+			nodata: "icon-meh",
+			error: "icon-exclamation-sign",
+			// Default node icons:
+			// (use tree.options.icon callback to define custom icons based on node data)
 			doc: "icon-file-alt",
 			docOpen: "icon-file-alt",
-			loading: "icon-refresh icon-spin",
 			folder: "icon-folder-close-alt",
 			folderOpen: "icon-folder-open-alt"
 		}
@@ -72,14 +76,17 @@ $.ui.fancytree.registerExtension({
 
 		res = this._superApply(arguments);
 
-		if( node.isRoot() ){
+		if( node.isRootNode() ){
 			return res;
 		}
+
+		// Expander icon
 		span = $span.children("span.fancytree-expander").get(0);
 		if( span ){
-			// if( node.isLoading() ){
-				// icon = "loading";
-			if( node.expanded && node.hasChildren() ){
+			if( node.isLoading() ) {
+				// NOTE: it's important to handle "loading" as nodeRenderStatus can be called w/o nodeSetStatus
+				icon = "loading";
+			}else if( node.expanded && node.hasChildren() ){
 				icon = "expanderOpen";
 			}else if( node.isUndefined() ){
 				icon = "expanderLazy";
@@ -88,36 +95,50 @@ $.ui.fancytree.registerExtension({
 			}else{
 				icon = "noExpander";
 			}
+			// noExpander is usually empty, so we must update class in any way
 			span.className = "fancytree-expander " + map[icon];
 		}
 
-		if( node.tr ){
-			span = $("td", node.tr).find("span.fancytree-checkbox").get(0);
-		}else{
-			span = $span.children("span.fancytree-checkbox").get(0);
-		}
-		if( span ){
-			icon = node.selected ? "checkboxSelected" : (node.partsel ? "checkboxUnknown" : "checkbox");
-			span.className = "fancytree-checkbox " + map[icon];
+		// Checkbox icon (optional)
+		if( hasCheckboxIcons(opts) ) {
+			if( node.tr ){
+				span = $("td", node.tr).find("span.fancytree-checkbox").get(0);
+			}else{
+				span = $span.children("span.fancytree-checkbox").get(0);
+			}
+			if( span ){
+				icon = map[node.selected ? "checkboxSelected" : (node.partsel ? "checkboxUnknown" : "checkbox")];
+				if( icon ){
+					span.className = "fancytree-checkbox " + icon;
+				}
+			}
 		}
 
-		// Standard icon (note that this does not match .fancytree-custom-icon,
+		// Status node icon and Standard icon (optional)
+		// (note that this does not match .fancytree-custom-icon, 
 		// that might be set by opts.icon callbacks)
-		span = $span.children("span.fancytree-icon").get(0);
-		if( span ){
-			if( node.statusNodeType ){
-				icon = _getIcon(opts, node.statusNodeType); // loading, error
-			}else if( node.folder ){
-				icon = node.expanded && node.hasChildren() ? _getIcon(opts, "folderOpen") : _getIcon(opts, "folder");
-			}else{
-				icon = node.expanded ? _getIcon(opts, "docOpen") : _getIcon(opts, "doc");
+		if( node.statusNodeType || hasStdIcons(opts) ) {
+			span = $span.children("span.fancytree-icon").get(0);
+			if( span ){
+				if( node.statusNodeType ){
+					// it's a "status node"
+					icon = node.statusNodeType; // loading, error
+				}else if( node.folder ){
+					icon = node.expanded && node.hasChildren() ? "folderOpen" : "folder";
+				}else{
+					icon = node.expanded ? "docOpen" : "doc";
+				}
+				icon = map[icon];
+				if( icon ){
+					span.className = "fancytree-icon " + icon;
+				}	
 			}
-			span.className = "fancytree-icon " + icon;
 		}
+
 		return res;
 	},
 	nodeSetStatus: function(ctx, status, message, details) {
-		var res, span,
+		var res, span, icon,
 			opts = ctx.options.glyph,
 			node = ctx.node;
 
@@ -127,13 +148,19 @@ $.ui.fancytree.registerExtension({
 			if(node.parent){
 				span = $("span.fancytree-expander", node.span).get(0);
 				if( span ) {
-					span.className = "fancytree-expander " + _getIcon(opts, status);
+					icon = opts.map[status];
+					if( icon ){
+						span.className = "fancytree-expander " + icon;
+					}	
 				}
-			}else{ //
+			}else{ // no parent, there could be a stub node
 				span = $(".fancytree-statusnode-" + status, node[this.nodeContainerAttrName])
 					.find("span.fancytree-icon").get(0);
 				if( span ) {
-					span.className = "fancytree-icon " + _getIcon(opts, status);
+					icon = opts.map[status];
+					if( icon ){
+						span.className = "fancytree-icon " + icon;
+					}
 				}
 			}
 		}
