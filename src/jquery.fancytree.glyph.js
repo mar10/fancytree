@@ -19,11 +19,11 @@
 
 function hasStdIcons(opts) {
 	var map = opts.map;
-	return map["doc"] || map["docOpen"] || map["folder"] || map["folderOpen"];
+	return map.doc || map.docOpen || map.folder || map.folderOpen;
 }
 function hasCheckboxIcons(opts) {
 	var map = opts.map;
-	return map["checkbox"] || map["checkboxSelected"] || map["checkboxUnknown"];
+	return map.checkbox || map.checkboxSelected || map.checkboxUnknown;
 }
 
 $.ui.fancytree.registerExtension({
