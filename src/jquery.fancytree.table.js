@@ -61,7 +61,7 @@ function findPrevRowNode(node){
 		prev = siblings[i - 1];
 		_assert(prev.tr);
 		// descend to lowest child (with a <tr> tag)
-		while(prev.children){
+		while(prev.children && prev.children.length){
 			last = prev.children[prev.children.length - 1];
 			if(!last.tr){
 				break;
