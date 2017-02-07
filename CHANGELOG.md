@@ -1,5 +1,6 @@
 # 2.22.0-0 / Unreleased
   * [Added] New extension 'ext-fixed'
+  * [Improved] #601 ext-filter: improve performance (don't render hidden nodes)
   * [Fixed] #680 ext-dnd5: top level nodes not draggable
   * [Fixed] #681 ext-table: exception when a lazy node has `children: []`
 

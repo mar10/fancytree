@@ -212,7 +212,7 @@ $.ui.fancytree._FancytreeClass.prototype.clearFilter = function(){
 		statusNode.remove();
 	}
 	this.visit(function(node){
-		if( node.match ) {  // #491
+		if( node.match && node.span ) {  // #491, #601
 			$title = $(node.span).find(">span.fancytree-title");
 			if( escapeTitles ) {
 				$title.text(node.title);
@@ -333,7 +333,9 @@ $.ui.fancytree.registerExtension({
 			node.$subMatchBadge.hide();
 		}
 		// node.debug("nodeRenderStatus", node.titleWithHighlight, node.title)
-		if( !node.isEditing || !node.isEditing.call(node)){
+		// #601: also chek for $title.length, because we don't need to render
+		// if node.span is null (i.e. not rendered)
+		if( node.span && (!node.isEditing || !node.isEditing.call(node)) ) {
 			if( node.titleWithHighlight ) {
 				$title.html(node.titleWithHighlight);
 			} else if ( escapeTitles ) {
