@@ -86,9 +86,12 @@ $.ui.fancytree.registerExtension({
 			if( node.isLoading() ) {
 				// NOTE: it's important to handle "loading" as nodeRenderStatus can be called w/o nodeSetStatus
 				icon = "loading";
-			}else if( node.expanded && node.hasChildren() ){
+			}else if( node.expanded && node.children.length  /*node.hasChildren()*/ ){
+				// node can has a fake "loading" or "error" child node (so usually hasChildren() should be used to filter this cases out)
+				// But here we don't care what these nodes are, it's something below the current node and it's expanded
 				icon = "expanderOpen";
 			}else if( node.isUndefined() ){
+				// unknown yet do children exist or not
 				icon = "expanderLazy";
 			}else if( node.hasChildren() ){
 				icon = "expanderClosed";
