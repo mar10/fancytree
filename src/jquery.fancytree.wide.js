@@ -57,7 +57,8 @@ function defineHeadStyleElement(id, cssText) {
 }
 
 /* Calculate the CSS rules that indent title spans. */
-function renderLevelCss(containerId, depth, levelOfs, lineOfs, measureUnit) {
+function renderLevelCss(containerId, depth, levelOfs, lineOfs, measureUnit, labelOfs)
+{
 	var i,
 		prefix = "#" + containerId + " span.fancytree-level-",
 		rules = [];
@@ -70,7 +71,7 @@ function renderLevelCss(containerId, depth, levelOfs, lineOfs, measureUnit) {
 	// This breaks the left:0 and padding-left:nn settings of the title
 	rules.push("#" + containerId +
 		" div.ui-effects-wrapper ul li span.fancytree-title " +
-		"{ padding-left: 3px; position: static; width: auto; }");
+		"{ padding-left: " + labelOfs + measureUnit + "; position: static; width: auto; }");
 	return rules.join("\n");
 }
 
@@ -112,6 +113,7 @@ $.ui.fancytree.registerExtension({
 	options: {
 		iconWidth: null,  // Adjust this if @fancy-icon-width != "16px"
 		iconSpacing: null, // Adjust this if @fancy-icon-spacing != "3px"
+		labelSpacing: null,   // Adjust this if padding between icon and label ! = "3px"
 		levelOfs: null    // Adjust this if ul padding != "16px"
 	},
 
@@ -119,7 +121,7 @@ $.ui.fancytree.registerExtension({
 		this._superApply(arguments);
 		this.$container.addClass("fancytree-ext-wide");
 
-		var containerId, cssText, iconSpacingUnit, iconWidthUnit, levelOfsUnit,
+		var containerId, cssText, iconSpacingUnit, labelSpacingUnit, iconWidthUnit, levelOfsUnit,
 			instOpts = ctx.options.wide,
 			// css sniffing
 			$dummyLI = $("<li id='fancytreeTemp'><span class='fancytree-node'><span class='fancytree-icon' /><span class='fancytree-title' /></span><ul />")
@@ -129,28 +131,33 @@ $.ui.fancytree.registerExtension({
 			// $dummyTitle = $dummyLI.find(".fancytree-title"),
 			iconSpacing = instOpts.iconSpacing || $dummyIcon.css("margin-left"),
 			iconWidth = instOpts.iconWidth || $dummyIcon.css("width"),
+			labelSpacing = instOpts.labelSpacing || "3px",
 			levelOfs = instOpts.levelOfs || $dummyUL.css("padding-left");
 
 		$dummyLI.remove();
 
 		iconSpacingUnit = iconSpacing.match(reNumUnit)[2];
 		iconSpacing = parseFloat(iconSpacing, 10);
+		labelSpacingUnit = labelSpacing.match(reNumUnit)[2];
+		labelSpacing = parseFloat(labelSpacing, 10);
 		iconWidthUnit = iconWidth.match(reNumUnit)[2];
 		iconWidth = parseFloat(iconWidth, 10);
 		levelOfsUnit = levelOfs.match(reNumUnit)[2];
-		if( iconSpacingUnit !== iconWidthUnit || levelOfsUnit !== iconWidthUnit ) {
+		if (iconSpacingUnit !== iconWidthUnit || levelOfsUnit !== iconWidthUnit || labelSpacingUnit != iconWidthUnit)
+		{
 			$.error("iconWidth, iconSpacing, and levelOfs must have the same css measure unit");
 		}
 		this._local.measureUnit = iconWidthUnit;
 		this._local.levelOfs = parseFloat(levelOfs);
 		this._local.lineOfs = (1 + (ctx.options.checkbox ? 1 : 0) + (ctx.options.icon === false ? 0 : 1)) * (iconWidth + iconSpacing) + iconSpacing;
+		this._local.labelOfs = labelSpacing;
 		this._local.maxDepth = 10;
 
 		// Get/Set a unique Id on the container (if not already exists)
 		containerId = this.$container.uniqueId().attr("id");
 		// Generated css rules for some levels (extended on demand)
 		cssText = renderLevelCss(containerId, this._local.maxDepth,
-			this._local.levelOfs, this._local.lineOfs, this._local.measureUnit);
+			this._local.levelOfs, this._local.lineOfs, this._local.measureUnit, this._local.labelOfs);
 		defineHeadStyleElement(containerId, cssText);
 	},
 	treeDestroy: function(ctx){
