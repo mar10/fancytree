@@ -4516,9 +4516,9 @@ $.widget("ui.fancytree",
 	/* Remove all event handlers for our namespace */
 	_unbind: function() {
 		var ns = this.tree._ns;
-		this.element.unbind(ns);
-		this.tree.$container.unbind(ns);
-		$(document).unbind(ns);
+		this.element.off(ns);
+		this.tree.$container.off(ns);
+		$(document).off(ns);
 	},
 	/* Add mouse and kyboard handlers to the container */
 	_bind: function() {

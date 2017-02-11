@@ -162,11 +162,11 @@ QUnit.test("Create Fancytree - init", function(assert) {
 
 			done();
 		}
-	}).bind("fancytreecreate", function(event, data){
+	}).on("fancytreecreate", function(event, data){
 		// TODO: event is triggered, but only if we called done() before
 		// but then, the equal() call is added to the following test
 //        equal(event.type, "fancytreecreate", "receive `dynatreecreate` bound event");
-	}).bind("fancytreeinit", function(event, data){
+	}).on("fancytreeinit", function(event, data){
 //        equal(event.type, "fancytreeinit", "receive `init` bound event");
 //        done();
 	});
