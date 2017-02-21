@@ -255,9 +255,12 @@ $.ui.fancytree.registerExtension({
 		draggable: null,     // Additional options passed to jQuery draggable
 		droppable: null,     // Additional options passed to jQuery droppable
 		focusOnClick: false, // Focus, although draggable cancels mousedown event (#270)
-		preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
-		preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
+		preventVoidMoves: true, 	// Prevent dropping nodes 'before self', etc.
+		preventRecursiveMoves: true,// Prevent dropping nodes on own descendants
 		smartRevert: true,   // set draggable.revert = true if drop was rejected
+		dropMarkerOffset: -24,		// absolute position offset for .fancytree-drop-marker relatively to ..fancytree-title (icon/img near a node accepting drop)
+		dropMarkerOffsetBefore: -16,	// additional offset for drop-marker with hitMode="before"
+		dropMarkerOffsetAfter: -16,	// additional offset for drop-marker with hitMode="after"
 		// Events (drag support)
 		dragStart: null,     // Callback(sourceNode, data), return true, to enable dnd
 		dragStop: null,      // Callback(sourceNode, data)
@@ -300,7 +303,8 @@ $.ui.fancytree.registerExtension({
 		var markerOffsetX,
 			markerAt = "center",
 			instData = this._local,
-			glyph = this.options.glyph || null,
+			dndOpt = this.options.dnd ,
+			glyphOpt = this.options.glyph,
 			$source = sourceNode ? $(sourceNode.span) : null,
 			$target = $(targetNode.span),
 			$targetTitle = $target.find(">span.fancytree-title");
@@ -312,22 +316,22 @@ $.ui.fancytree.registerExtension({
 				.prependTo($(this.$div).parent());
 //                .prependTo("body");
 
-			if( glyph ) {
+			if( glyphOpt ) {
 				// instData.$dropMarker.addClass(glyph.map.dragHelper);
 				instData.$dropMarker
-					.addClass(glyph.map.dropMarker);
+					.addClass(glyphOpt.map.dropMarker);
 			}
 		}
 		if( hitMode === "after" || hitMode === "before" || hitMode === "over" ){
-			markerOffsetX = -24;
+			markerOffsetX = dndOpt.dropMarkerOffset || 0;
 			switch(hitMode){
 			case "before":
 				markerAt = "top";
-				markerOffsetX -= 16;
+				markerOffsetX += (dndOpt.dropMarkerOffsetBefore || 0);
 				break;
 			case "after":
 				markerAt = "bottom";
-				markerOffsetX -= 16;
+				markerOffsetX += (dndOpt.dropMarkerOffsetAfter || 0);
 				break;
 			}
 
