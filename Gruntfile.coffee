@@ -108,6 +108,44 @@ module.exports = (grunt) ->
                 ]
             dest: "build/<%= pkg.name %>-all.min.js"
 
+        "no-ui":
+            options:
+                banner: "<%= meta.banner %>"
+                stripBanners: true
+                process: (src, fspec) -> 
+                  # Remove all comments, including /*! ... */
+                  # (but keep disclaimer for jQuery-UI)
+                  if not /jquery-ui..+.min.js/.test(fspec)
+                      src = src.replace(/\/\*(.|\n)*\*\//g, "")
+                  if /jquery.fancytree.min.js/.test(fspec)
+                      src = "\n/*! Fancytree Core */" + src
+                  if /fancytree..+.min.js/.test(fspec)
+                    # If it is an extension:
+                    # Prepend a one-liner instead
+                    fspec = fspec.substr(6) # strip 'build/'
+                    src = "\n/*! Extension '" + fspec + "' */" + src
+                  return src
+            src: [
+                "lib/intro.js"
+                "src/jquery-ui-dependencies/jquery-ui.min.js"
+                "build/jquery.fancytree.min.js"
+                "build/jquery.fancytree.childcounter.min.js"
+                "build/jquery.fancytree.clones.min.js"
+#                "build/jquery.fancytree.dnd.min.js"
+                "build/jquery.fancytree.dnd5.min.js"
+                "build/jquery.fancytree.edit.min.js"
+                "build/jquery.fancytree.filter.min.js"
+#                "build/jquery.fancytree.fixed.min.js"
+                "build/jquery.fancytree.glyph.min.js"
+                "build/jquery.fancytree.gridnav.min.js"
+                "build/jquery.fancytree.persist.min.js"
+                "build/jquery.fancytree.table.min.js"
+#                "build/jquery.fancytree.themeroller.min.js"
+                "build/jquery.fancytree.wide.min.js"
+                "lib/outro.js"
+                ]
+            dest: "build/<%= pkg.name %>-no-ui.min.js"
+
     connect:
         forever:
             options:
@@ -451,6 +489,7 @@ module.exports = (grunt) ->
       "concat:all"
       "uglify:custom"
       "concat:custom"
+      "concat:no-ui"
       "clean:extMin"
       "replace:production"
       "jshint:afterConcat"
