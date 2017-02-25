@@ -380,7 +380,7 @@ $.ui.fancytree.registerExtension({
 //		ctx.tree.debug("clones.treeRegisterNode", add, node);
 
 		if( node.isStatusNode() ){
-			return this._superApply(arguments);
+			return this._super(ctx, add, node);
 		}
 
 		if( add ) {
@@ -428,13 +428,13 @@ $.ui.fancytree.registerExtension({
 				}
 			}
 		}
-		return this._superApply(arguments);
+		return this._super(ctx, add, node);
 	},
 	nodeRenderStatus: function(ctx) {
 		var $span, res,
 			node = ctx.node;
 
-		res = this._superApply(arguments);
+		res = this._super(ctx);
 
 		if( ctx.options.clones.highlightClones ) {
 			$span = $(node[ctx.tree.statusClassPropName]);

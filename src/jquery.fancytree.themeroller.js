@@ -68,7 +68,7 @@ $.ui.fancytree.registerExtension({
 			$el = $(node.tr ? node.tr : node.span),
 			opts = ctx.options.themeroller;
 
-		this._superApply(arguments);
+		this._super(ctx);
 /*
 		.ui-state-highlight: Class to be applied to highlighted or selected elements. Applies "highlight" container styles to an element and its child text, links, and icons.
 		.ui-state-error: Class to be applied to error messaging container elements. Applies "error" container styles to an element and its child text, links, and icons.

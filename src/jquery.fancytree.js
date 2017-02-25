@@ -127,9 +127,10 @@ function isVersionAtLeast(dottedVersion, major, minor, patch){
 }
 
 /** Return a wrapper that calls sub.methodName() and exposes
- *  this        : tree
- *  this._local : tree.ext.EXTNAME
- *  this._super : base.methodName()
+ *  this             : tree
+ *  this._local      : tree.ext.EXTNAME
+ *  this._super      : base.methodName.call()
+ *  this._superApply : base.methodName.apply()
  */
 function _makeVirtualFunction(methodName, tree, base, extension, extName){
 	// $.ui.fancytree.debug("_makeVirtualFunction", methodName, tree, base, extension, extName);

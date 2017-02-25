@@ -163,7 +163,7 @@ $.ui.fancytree.registerExtension({
 			node = ctx.node,
 			level = node.getLevel();
 
-		res = this._superApply(arguments);
+		res = this._super(ctx);
 		// Generate some more level-n rules if required
 		if( level > this._local.maxDepth ) {
 			containerId = this.$container.attr("id");

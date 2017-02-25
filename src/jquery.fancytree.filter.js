@@ -313,7 +313,7 @@ $.ui.fancytree.registerExtension({
 			enhanceTitle = ctx.options.enhanceTitle,
 			escapeTitles = ctx.options.escapeTitles;
 
-		res = this._superApply(arguments);
+		res = this._super(ctx);
 		// nothing to do, if node was not yet rendered
 		if( !$span.length || !tree.enableFilter ) {
 			return res;
