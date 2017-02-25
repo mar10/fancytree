@@ -1,0 +1,13 @@
+# Fancytree benchmarks
+
+Results for 
+    http://localhost:8080/test/unit/test-bench.html
+
+## MacBook Pro early 2011, i5, 2,3GHz, 4GB
+   Safari 10.0.3
+ - 2017-02-14: jQuery 3.1.1, jQuery UI 1.12.1, 
+   use _super instead of _superApply:                                    2220 ms
+                                                                         1440
+ - 2017-02-14: jQuery 3.1.1, jQuery UI 1.12.1:                           2180 ms
+                                                                         1413
+ - 2017-02-14: jQuery 1.12.1, jQuery UI 1.11.4:                          2440 ms

@@ -336,7 +336,7 @@ $.ui.fancytree.registerExtension({
 			opts = ctx.options,
 			isStatusNode = node.isStatusNode();
 
-		res = this._superApply(arguments);
+		res = this._super(ctx, title);
 
 		if( node.isRootNode() ) {
 			return res;
@@ -364,7 +364,7 @@ $.ui.fancytree.registerExtension({
 			node = ctx.node,
 			opts = ctx.options;
 
-		this._superApply(arguments);
+		this._super(ctx);
 
 		$(node.tr).removeClass("fancytree-node");
 		// indent
@@ -436,6 +436,7 @@ $.ui.fancytree.registerExtension({
 	treeDestroy: function(ctx) {
 		this.$container.find("tbody").empty();
 		this.$source && this.$source.removeClass("ui-helper-hidden");
+		return this._superApply(arguments);
 	}
 	/*,
 	treeSetFocus: function(ctx, flag) {
