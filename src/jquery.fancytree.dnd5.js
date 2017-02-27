@@ -218,15 +218,15 @@ function handleDragOver(event, data) {
 	LAST_HIT_MODE = hitMode;
 	//
 	if( hitMode === "after" || hitMode === "before" || hitMode === "over" ){
-		markerOffsetX = -24;
+		markerOffsetX = dndOpts.dropMarkerOffsetX || 0;
 		switch(hitMode){
 		case "before":
 			markerAt = "top";
-			markerOffsetX -= 16;
+			markerOffsetX += (dndOpts.dropMarkerInsertOffsetX || 0);
 			break;
 		case "after":
 			markerAt = "bottom";
-			markerOffsetX -= 16;
+			markerOffsetX += (dndOpts.dropMarkerInsertOffsetX || 0);
 			break;
 		}
 
@@ -275,6 +275,8 @@ $.ui.fancytree.registerExtension({
 		scroll: true,                // Enable auto-scrolling while dragging
 		scrollSensitivity: 20,       // Active top/bottom margin in pixel
 		scrollSpeed: 5,              // Pixel per event
+		dropMarkerOffsetX: -24,		 // absolute position offset for .fancytree-drop-marker relatively to ..fancytree-title (icon/img near a node accepting drop)
+		dropMarkerInsertOffsetX: -16,// additional offset for drop-marker with hitMode = "before"/"after"
 		// Events (drag support)
 		dragStart: null,       // Callback(sourceNode, data), return true, to enable dnd drag
 		dragDrag: $.noop,      // Callback(sourceNode, data)

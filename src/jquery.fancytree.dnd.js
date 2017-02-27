@@ -258,9 +258,8 @@ $.ui.fancytree.registerExtension({
 		preventVoidMoves: true, 	// Prevent dropping nodes 'before self', etc.
 		preventRecursiveMoves: true,// Prevent dropping nodes on own descendants
 		smartRevert: true,   // set draggable.revert = true if drop was rejected
-		dropMarkerOffset: -24,		// absolute position offset for .fancytree-drop-marker relatively to ..fancytree-title (icon/img near a node accepting drop)
-		dropMarkerOffsetBefore: -16,	// additional offset for drop-marker with hitMode="before"
-		dropMarkerOffsetAfter: -16,	// additional offset for drop-marker with hitMode="after"
+		dropMarkerOffsetX: -24,			// absolute position offset for .fancytree-drop-marker relatively to ..fancytree-title (icon/img near a node accepting drop)
+		dropMarkerInsertOffsetX: -16,	// additional offset for drop-marker with hitMode = "before"/"after"
 		// Events (drag support)
 		dragStart: null,     // Callback(sourceNode, data), return true, to enable dnd
 		dragStop: null,      // Callback(sourceNode, data)
@@ -323,15 +322,15 @@ $.ui.fancytree.registerExtension({
 			}
 		}
 		if( hitMode === "after" || hitMode === "before" || hitMode === "over" ){
-			markerOffsetX = dndOpt.dropMarkerOffset || 0;
+			markerOffsetX = dndOpt.dropMarkerOffsetX || 0;
 			switch(hitMode){
 			case "before":
 				markerAt = "top";
-				markerOffsetX += (dndOpt.dropMarkerOffsetBefore || 0);
+				markerOffsetX += (dndOpt.dropMarkerInsertOffsetX || 0);
 				break;
 			case "after":
 				markerAt = "bottom";
-				markerOffsetX += (dndOpt.dropMarkerOffsetAfter || 0);
+				markerOffsetX += (dndOpt.dropMarkerInsertOffsetX || 0);
 				break;
 			}
 
