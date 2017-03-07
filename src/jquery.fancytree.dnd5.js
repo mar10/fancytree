@@ -417,6 +417,7 @@ $.ui.fancytree.registerExtension({
 					DRAG_ENTER_RESPONSE = null;
 //					data.dropEffect = dataTransfer.dropEffect;
 					data.isCancelled = (dataTransfer.dropEffect === "none");
+					$dropMarker.hide();
 					dndOpts.dragEnd(node, data);
 					break;
 				}
