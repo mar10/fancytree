@@ -1,10 +1,12 @@
 # 2.22.0-0 / Unreleased
   * [Added] New extension 'ext-fixed'
+  * [Added] ext-dnd5 now part of standard distribution
   * [Added] #693 ext-dnd(5): configurable drop marker offset
   * [Improved] #601 ext-filter: improve performance (don't render hidden nodes)
   * [Fixed] #680 ext-dnd5: top level nodes not draggable
   * [Fixed] #681 ext-table: exception when a lazy node has `children: []`
   * [Fixed] #699 ext-dnd5: Icon remains after dnd is cancelled
+  * [Fixed] #702 $.ui.fancytree.getNode(jQuery)' for jQuery v3.x
 
 # 2.21.0 / 2017-01-15
   * [Added] New extension 'ext-dnd5' for native HTML5 drag'n'drop support

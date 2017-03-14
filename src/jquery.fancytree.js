@@ -52,10 +52,10 @@ var i, attr,
 		188: ",", 189: "-", 190: ".", 191: "/", 192: "`", 219: "[", 220: "\\",
 		221: "]", 222: "'"},
 	MOUSE_BUTTONS = { 0: "", 1: "left", 2: "middle", 3: "right" },
-	//boolean attributes that can be set with equivalent class names in the LI tags
+	// Boolean attributes that can be set with equivalent class names in the LI tags
 	CLASS_ATTRS = "active expanded focus folder hideCheckbox lazy selected unselectable".split(" "),
 	CLASS_ATTR_MAP = {},
-	//	Top-level Fancytree node attributes, that can be set by dict
+	// Top-level Fancytree node attributes, that can be set by dict
 	NODE_ATTRS = "expanded extraClasses folder hideCheckbox icon key lazy refKey selected statusNodeType title tooltip unselectable".split(" "),
 	NODE_ATTR_MAP = {},
 	// Mapping of lowercase -> real name (because HTML5 data-... attribute only supports lowercase)
@@ -4808,7 +4808,7 @@ $.extend($.ui.fancytree,
 	getNode: function(el){
 		if(el instanceof FancytreeNode){
 			return el; // el already was a FancytreeNode
-		}else if(el.selector !== undefined){
+		}else if( el instanceof jQuery ){
 			el = el[0]; // el was a jQuery object: use the DOM element
 		}else if(el.originalEvent !== undefined){
 			el = el.target; // el was an Event
