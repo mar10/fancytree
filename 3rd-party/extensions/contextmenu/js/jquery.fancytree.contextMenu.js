@@ -1,13 +1,12 @@
 /**!
  * jquery.fancytree.contextmenu.js
- * 3rd party jQuery Context menu extension for jQuery Fancytree
  *
- * Authors: Rodney Rehm, Addy Osmani (patches for FF)
- * Web: http://medialize.github.com/jQuery-contextMenu/
+ * Integrate the 'jQuery contextMenu' plugin as Fancytree extension:
+ * https://github.com/swisnl/jQuery-contextMenu
  *
- * Copyright (c) 2012, Martin Wendt (http://wwWendt.de)
- * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://code.google.com/p/fancytree/wiki/LicenseInfe
+ * Copyright (c) 2008-2017, Martin Wendt (http://wwWendt.de)
+ * Released under the MIT license
+ * https://github.com/mar10/fancytree/wiki/LicenseInfo
  */
 (function($, document) {
 	"use strict";
@@ -17,7 +16,7 @@
 			var node = $.ui.fancytree.getNode(event);
 
 			if(node) {
-        $.contextMenu("destroy", "." + selector);
+				$.contextMenu("destroy", "." + selector);
 
 				node.setFocus(true);
 				node.setActive(true);
@@ -54,18 +53,18 @@
 
 	$.ui.fancytree.registerExtension({
 		name: "contextMenu",
-		version: "1.0",
+		version: "@VERSION",
 		contextMenu: {
-      selector: "fancytree-title",
+			selector: "fancytree-title",
 			menu: {},
 			actions: {}
 		},
 		treeInit: function(ctx) {
 			this._superApply(arguments);
 			initContextMenu(ctx.tree,
-                      ctx.options.contextMenu.selector || "fancytree-title",
-                      ctx.options.contextMenu.menu,
-                      ctx.options.contextMenu.actions);
+					ctx.options.contextMenu.selector || "fancytree-title",
+					ctx.options.contextMenu.menu,
+					ctx.options.contextMenu.actions);
 		}
 	});
 }(jQuery, document));
