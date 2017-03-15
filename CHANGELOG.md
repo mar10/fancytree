@@ -3,6 +3,7 @@
   * [Added] ext-dnd5 now part of standard distribution
   * [Added] #693 ext-dnd(5): configurable drop marker offset
   * [Improved] #601 ext-filter: improve performance (don't render hidden nodes)
+  * [Improved] ext-contextMenu: disable keyboard while popup is open and restore focus
   * [Fixed] #680 ext-dnd5: top level nodes not draggable
   * [Fixed] #681 ext-table: exception when a lazy node has `children: []`
   * [Fixed] #699 ext-dnd5: Icon remains after dnd is cancelled

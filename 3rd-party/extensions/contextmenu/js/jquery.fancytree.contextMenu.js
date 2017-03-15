@@ -23,6 +23,16 @@
 
 				$.contextMenu({
 					selector: "." + selector,
+					events: {
+						show: function(options) {
+							options.prevKeyboard = tree.options.keyboard;
+							tree.options.keyboard = false;
+						},
+						hide: function(options) {
+							tree.options.keyboard = options.prevKeyboard;
+							node.setFocus(true);
+						}
+					},
 					build: function($trigger, e) {
 						node = $.ui.fancytree.getNode($trigger);
 
