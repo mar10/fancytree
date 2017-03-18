@@ -1,7 +1,7 @@
 /*!
  * jquery.fancytree.fixed.js
  *
- * Render tree as table (aka 'treegrid', 'tabletree').
+ * Add fixed colums and headers to ext.table.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
  * Copyright (c) 2008-2017, Martin Wendt (http://wwWendt.de)
@@ -10,7 +10,7 @@
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
  * @version @VERSION
- * @date 2015-09-08T23:02
+ * @date @DATE
  */
 
 ;(function($, window, document, undefined) {
