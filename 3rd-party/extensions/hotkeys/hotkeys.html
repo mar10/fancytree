@@ -37,7 +37,15 @@
 				keydown: {
 					"shift+a": function(node) {
 						$("#selected-action").append(document.createTextNode("Key down 'Shift + a' on node " + node)).append("<br />");
+					}, 
+					'ctrl+d': function(node, evt) {
+						$('#selected-action').append(document.createTextNode('Key down "Ctrl + d" on node ' + node)).append('<br />');
+						var new_node = $.extend(node.toDict(), {key: new Date().getTime().toString()}); // timestamp for dummy key
+						node.appendSibling(new_node);
+						evt.stopPropagation();
+						return false;
 					}
+
 				},
 				keypress: {
 					"shift+a": function(node) {
@@ -77,7 +85,7 @@
 
 <hr />
 
-<div id="selected-action">Activate one node and click "Shift + a":<br /></div>
+<div id="selected-action">Activate one node and click "Shift + a" or "Ctrl + d":<br /></div>
 
 <!-- Start_Exclude: This block is not part of the sample code -->
 <hr>
