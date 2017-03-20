@@ -16,9 +16,8 @@
 			$.each(keys, function(key, handler) {
 				$(tree.$container).on(event, null, key, function(evt) {
 					var node = tree.getActiveNode();
-					handler(node);
-					evt.preventDefault();
-					evt.stopPropagation();
+					return handler(node, evt);
+                    // return false from the handler will stop default handling.
 				});
 			});
 		});
