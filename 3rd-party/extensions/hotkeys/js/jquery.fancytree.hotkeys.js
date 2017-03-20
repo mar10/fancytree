@@ -14,9 +14,10 @@
 	var initHotkeys = function(tree, data) {
 		$.each(data, function(event, keys) {
 			$.each(keys, function(key, handler) {
-				$(tree.$container).on(event, null, key, function() {
+				$(tree.$container).on(event, null, key, function(evt) {
 					var node = tree.getActiveNode();
-					handler(node);
+					return handler(node, evt);
+                    // return false from the handler will stop default handling.
 				});
 			});
 		});
