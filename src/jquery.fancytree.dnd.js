@@ -306,7 +306,7 @@ $.ui.fancytree.registerExtension({
 			glyphOpt = this.options.glyph,
 			$source = sourceNode ? $(sourceNode.span) : null,
 			$target = $(targetNode.span),
-			$targetTitle = $target.find(">span.fancytree-title");
+			$targetTitle = $target.find("span.fancytree-title");
 
 		if( !instData.$dropMarker ) {
 			instData.$dropMarker = $("<div id='fancytree-drop-marker'></div>")
