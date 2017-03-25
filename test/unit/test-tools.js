@@ -285,11 +285,11 @@ TOOLS.formatNumber = function(num) {
 TOOLS.makeBenchWrapper = function(assert, testName, count, callback) {
 	return function() {
 		var elap,
-			start = +new Date();
+			start = Date.now();
 
 //        callback.apply(this, arguments);
 		callback.call();
-		elap = +new Date() - start;
+		elap = Date.now() - start;
 		if( count && elap ){
 			assert.ok(true, testName + " took " + elap + " milliseconds, " + TOOLS.formatNumber(1000 * count / elap) + " items/sec");
 		}else{
@@ -329,12 +329,13 @@ AsyncTimer.prototype = {
 		window.console && window.console.time && window.console.time(this.name);
 		// halt QUnit
 		// this.done = this.assert.async();
-		this.stamp = +new Date();
+		this.stamp = Date.now();
+		this.lastStamp = this.stamp;
 	},
 	stop: function(){
 		/*jshint expr:true */
 		window.console && window.console.timeEnd && window.console.timeEnd(this.name);
-		var elap = +new Date() - this.stamp;
+		var elap = Date.now() - this.stamp;
 		if( this.count && elap ){
 			this.assert.ok(true, this.name + " took " + elap + " milliseconds, " + TOOLS.formatNumber(1000.0 * this.count / elap) + " items/sec");
 		}else{
@@ -345,7 +346,9 @@ AsyncTimer.prototype = {
 		// this.done();
 	},
 	subtime: function(info){
-		var elap = +new Date() - this.stamp;
+		var now = Date.now(),
+			elap = now - this.lastStamp;
+		this.lastStamp = now;
 		this.assert.ok(true, "... " + this.name + " until '" + info + "' took " + elap + " milliseconds");
 	}
 };
