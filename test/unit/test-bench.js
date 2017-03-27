@@ -41,36 +41,13 @@ function _resetEmptyTree(options){
 }
 
 
-//$.ui.fancytree._FancytreeNodeClass.prototype.addChildren
-//    = profileWrapper($.ui.fancytree._FancytreeNodeClass.prototype.addChildren);
-
 function addNodes(node, level1, level2, level3, forceUpdate) {
-	if( forceUpdate !== true ){
-		node.tree.enableUpdate(false);
-	}
-	var d, f, i, j, k, key;
-	for(i=0; i<level1; i++) {
-		key = "" + (i+1);
-		f = node.addChildren({title: "Folder_" + key,
-							   key: key,
-							   folder: true
-							   });
-		for (j=0; j<level2; j++) {
-			key = "" + (i+1) + "." + (j+1);
-			d = f.addChildren({title: "Node_" + key,
-							  key: key
-							  });
-			for (k=0; k<level3; k++) {
-				key = "" + (i+1) + "." + (j+1) + "." + (k+1);
-				d.addChildren({title: "Node_" + key,
-						  key: key
-						  });
-			}
-		}
-	}
-	if( forceUpdate !== true ){
-		node.tree.enableUpdate(true);
-	}
+	tools.addGenericNodes(node, {
+		level1: level1, 
+		level2: level2,
+		level3: level3,
+		disableUpdate: !forceUpdate
+	});
 }
 
 
@@ -122,7 +99,6 @@ QUnit.test("Add nodes using API to collapsed node (no rendering)", function(asse
 	assert.expect(3);
 
 	var tree = _resetEmptyTree();
-
 	tools.benchmark(assert, "1000 nodes flat", 1000, function() {
 		var node = tree.getNodeByKey("root");
 		addNodes(node, 1000, 0, 0);
@@ -348,86 +324,9 @@ QUnit.test("tabletree (6 columns): render while expanded with enableUpdate(false
 });
 
 
-QUnit.test("tabletree (6 columns): Add 1 node to 250,000 nodes (500 top level)", function(assert) {
-	assert.expect(8);
-
-	var $tree, tree, node,
-		forceUpdate = false,
-		done = assert.async(),
-		timer = new tools.AsyncTimer(assert, "500 top level nodes with 500 children each", 250000);
-
-	$tree = $("#tabletree").fancytree({
-		extensions: ["table"],
-		source: [],
-		table: {
-			indentation: 20,  // indent 20px per node level
-			nodeColumnIdx: 1  // render the node title into the 2nd column
-		},
-		renderColumns: function(event, data) {
-			var node = data.node,
-				$tdList = $(node.tr).find(">td");
-			$tdList.eq(0).text(node.getIndexHier()).addClass("alignRight");
-//			(index #1 is rendered by fancytree)
-			$tdList.eq(2).append( $("<span>", {
-				text: "foo"
-				}));
-			$tdList.eq(3).append( $("<span>", {
-				"class": "fancytree-icon"
-				}));
-			$tdList.eq(4).text("Homer Simpson");
-			$tdList.eq(5).html("<input type='text' name='cb1' value='" + node.key + "'>");
-		}
-	});
-
-	tree = $tree.fancytree("getTree");
-
-	node = tree.getRootNode();
-
-	timer.subtime("init tree");
-	
-	addNodes(node, 500, 500, 0, forceUpdate);
-	timer.subtime("addNodes(500, 500)");
-	
-	for( var i=0; i<20; i++ ) {
-		node.children[i].render(true, true);
-	}
-	timer.subtime("render 20 top folder's markup (collapsed)");
-
-	setTimeout(function(){	
-		timer.subtime("wait 1ms (let reflow happen?)");
-
-		node.addChildren({title: "New1", children: [{title: "New 1.1"}]},
-			node.children[1]);
-		timer.subtime("add top node");
-
-		tree.$div[0].offsetHeight;
-		timer.subtime("access offsetHeight (trigger reflow?)");
-	
-		setTimeout(function(){	
-			timer.subtime("wait 1ms (let reflow happen?)");
-			timer.stop();
-			done();
-		}, 1);
-	}, 1);
-});
-
-
-
-
 /* *****************************************************************************
- *
  */
 
-QUnit.module("Configuration and Summary");
-QUnit.test("", function(assert) {
-	assert.expect(5);
-
-	assert.ok(true, "Fancytree v" + $.ui.fancytree.version);
-	assert.ok(true, "jQuery UI " + jQuery.ui.version);
-	assert.ok(true, "jQuery " + jQuery.fn.jquery);
-	assert.ok(true, "Browser: " + tools.getBrowserInfo());
-	assert.ok(true, "Cumulated test time: " + tools.TOTAL_ELAP + " milliseconds");
-});
-// tools.createInfoSection();
+tools.createInfoSection();
 // ---
 });
