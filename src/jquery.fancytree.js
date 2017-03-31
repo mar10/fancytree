@@ -457,7 +457,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 					// Different first child -- recompute classes
 					origFirstChild.renderStatus();
 				}
-				if (origLastChild && origLastChild !== this.getLastChild()) {
+				if (origLastChild !== this.getLastChild()) {
 					// Different last child -- recompute classes
 					origLastChild.renderStatus();
 				}
