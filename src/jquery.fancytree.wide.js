@@ -57,7 +57,7 @@ function defineHeadStyleElement(id, cssText) {
 }
 
 /* Calculate the CSS rules that indent title spans. */
-function renderLevelCss(containerId, depth, levelOfs, lineOfs, measureUnit, labelOfs)
+function renderLevelCss(containerId, depth, levelOfs, lineOfs, labelOfs, measureUnit)
 {
 	var i,
 		prefix = "#" + containerId + " span.fancytree-level-",
@@ -113,7 +113,7 @@ $.ui.fancytree.registerExtension({
 	options: {
 		iconWidth: null,     // Adjust this if @fancy-icon-width != "16px"
 		iconSpacing: null,   // Adjust this if @fancy-icon-spacing != "3px"
-		labelSpacing: null,  // Adjust this if padding between icon and label ! = "3px"
+		labelSpacing: null,  // Adjust this if padding between icon and label != "3px"
 		levelOfs: null       // Adjust this if ul padding != "16px"
 	},
 
@@ -148,7 +148,9 @@ $.ui.fancytree.registerExtension({
 		}
 		this._local.measureUnit = iconWidthUnit;
 		this._local.levelOfs = parseFloat(levelOfs);
-		this._local.lineOfs = (1 + (ctx.options.checkbox ? 1 : 0) + (ctx.options.icon === false ? 0 : 1)) * (iconWidth + iconSpacing) + iconSpacing;
+		this._local.lineOfs = (1 + (ctx.options.checkbox ? 1 : 0) + 
+				(ctx.options.icon === false ? 0 : 1)) * (iconWidth + iconSpacing) +
+				iconSpacing;
 		this._local.labelOfs = labelSpacing;
 		this._local.maxDepth = 10;
 
@@ -156,7 +158,8 @@ $.ui.fancytree.registerExtension({
 		containerId = this.$container.uniqueId().attr("id");
 		// Generated css rules for some levels (extended on demand)
 		cssText = renderLevelCss(containerId, this._local.maxDepth,
-			this._local.levelOfs, this._local.lineOfs, this._local.measureUnit, this._local.labelOfs);
+			this._local.levelOfs, this._local.lineOfs, this._local.labelOfs,
+			this._local.measureUnit);
 		defineHeadStyleElement(containerId, cssText);
 	},
 	treeDestroy: function(ctx){
@@ -176,7 +179,8 @@ $.ui.fancytree.registerExtension({
 			this._local.maxDepth *= 2;
 			node.debug("Define global ext-wide css up to level " + this._local.maxDepth);
 			cssText = renderLevelCss(containerId, this._local.maxDepth,
-				this._local.levelOfs, this._local.lineOfs, this._local.measureUnit);
+				this._local.levelOfs, this._local.lineOfs, this._local.labelSpacing,
+				this._local.measureUnit);
 			defineHeadStyleElement(containerId, cssText);
 		}
 		// Add level-n class to apply indentation padding.
