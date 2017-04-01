@@ -4267,6 +4267,12 @@ $.extend(Fancytree.prototype,
 	 * @param {boolean} [flag=true]
 	 */
 	treeSetFocus: function(ctx, flag, callOpts) {
+		function ensureTreeFocus(thisTree) {
+			if (!thisTree.activeNode && thisTree.getFirstChild()) {
+				thisTree.getFirstChild().setFocus();
+			}
+		}
+
 		flag = (flag !== false);
 
 		// this.debug("treeSetFocus(" + flag + "), callOpts: ", callOpts, this.hasFocus());
@@ -4282,8 +4288,11 @@ $.extend(Fancytree.prototype,
 			}
 			this.$container.toggleClass("fancytree-treefocus", flag);
 			this._triggerTreeEvent(flag ? "focusTree" : "blurTree");
-			if( flag && !this.activeNode ) {
-				this.getFirstChild() && this.getFirstChild().setFocus();
+			if( flag ) {
+				// Check after timeout to ensure mousedown processing is complete
+				// and the clicked node is already activated
+				var thisTree = this;
+				setTimeout(function() { ensureTreeFocus(thisTree); }, 0);
 			}
 		}
 	},
@@ -4581,7 +4590,7 @@ $.widget("ui.fancytree",
 			} finally {
 				tree.phase = prevPhase;
 			}
-		}).on("click" + ns + " dblclick" + ns, function(event){
+		}).on("mousedown" + ns + " dblclick" + ns, function(event){
 			// that.tree.debug("event(" + event + "): !");
 			if(opts.disabled){
 				return true;
@@ -4601,7 +4610,7 @@ $.widget("ui.fancytree",
 			try {
 				tree.phase = "userEvent";
 				switch(event.type) {
-				case "click":
+				case "mousedown":
 					ctx.targetType = et.type;
 					if( node.isPagingNode() ) {
 						return tree._triggerNodeEvent("clickPaging", ctx, event) === true;
