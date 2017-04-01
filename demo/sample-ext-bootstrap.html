@@ -7,8 +7,8 @@
 <!--
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 -->
-
-	<script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+	<!-- "Bootstrap's JavaScript requires jQuery version 1.9.1 or higher, but lower than version 3" -->
+	<script src="//code.jquery.com/jquery-1.12.4.min.js"></script>
 	<script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 <!--
 	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
@@ -104,9 +104,10 @@
 			source: {url: "ajax-tree-taxonomy.json", debugDelay: 1000},
 			toggleEffect: { effect: "drop", options: {direction: "left"}, duration: 400 },
 			wide: {
-				iconWidth: "1em",     // Adjust this if @fancy-icon-width != "16px"
-				iconSpacing: "0.5em", // Adjust this if @fancy-icon-spacing != "3px"
-				levelOfs: "1.5em"     // Adjust this if ul padding != "16px"
+				iconWidth: "1em",       // Adjust this if @fancy-icon-width != "16px"
+				iconSpacing: "0.5em",   // Adjust this if @fancy-icon-spacing != "3px"
+				labelSpacing: "0.1em",  // Adjust this if padding between icon and label != "3px"
+				levelOfs: "1.5em"       // Adjust this if ul padding != "16px"
 			},
 
 			icon: function(event, data){
