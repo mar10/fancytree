@@ -13,6 +13,7 @@
   * [Fixed] #699 ext-dnd5: Icon remains after dnd is cancelled
   * [Fixed] #702 $.ui.fancytree.getNode(jQuery)' for jQuery v3.x
   * [Fixed] #712 When clicking in a scrolled tree for the first time, focus is not set properly
+  * [Fixed] #716 ext-wide: animation 'jumps' with jQuery UI 1.12
 
 # 2.21.0 / 2017-01-15
   * [Added] New extension 'ext-dnd5' for native HTML5 drag'n'drop support

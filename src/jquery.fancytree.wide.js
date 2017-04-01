@@ -69,8 +69,9 @@ function renderLevelCss(containerId, depth, levelOfs, lineOfs, labelOfs, measure
 	}
 	// Some UI animations wrap the UL inside a DIV and set position:relative on both.
 	// This breaks the left:0 and padding-left:nn settings of the title
-	rules.push("#" + containerId +
-		" div.ui-effects-wrapper ul li span.fancytree-title " +
+	rules.push(
+		"#" + containerId + " div.ui-effects-wrapper ul li span.fancytree-title, " +
+		"#" + containerId + " ul.fancytree-animating span.fancytree-title " +  // #716
 		"{ padding-left: " + labelOfs + measureUnit + "; position: static; width: auto; }");
 	return rules.join("\n");
 }
@@ -166,6 +167,16 @@ $.ui.fancytree.registerExtension({
 		// Remove generated css rules
 		defineHeadStyleElement(this.$container.attr("id"), null);
 		return this._superApply(arguments);
+	},
+	nodeSetExpanded: function(ctx, flag, callOpts) {
+		var res = this._superApply(arguments).done(function(){
+			$(ctx.node.ul).removeClass("fancytree-animating");
+		});
+		// #716: Add class (*after* default implementation has run)
+		// Used to create a CSS rule that causes jumping titles whiel animation 
+		// is running
+		$(ctx.node.ul).addClass("fancytree-animating");
+		return res;
 	},
 	nodeRenderStatus: function(ctx) {
 		var containerId, cssText, res,
