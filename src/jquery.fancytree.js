@@ -3869,6 +3869,7 @@ $.extend(Fancytree.prototype,
 		// Trigger expand/collapse after expanding
 		dfd.done(function(){
 			var	lastChild = node.getLastChild();
+
 			if( flag && opts.autoScroll && !noAnimation && lastChild ) {
 				// Scroll down to last child, but keep current node visible
 				lastChild.scrollIntoView(true, {topNode: node}).always(function(){
@@ -3892,16 +3893,6 @@ $.extend(Fancytree.prototype,
 			// can animate later
 			tree._callHook("nodeRender", ctx, false, false, true);
 
-			// If the currently active node is now hidden, deactivate it
-			// if( opts.activeVisible && this.activeNode && ! this.activeNode.isVisible() ) {
-			//     this.activeNode.deactivate();
-			// }
-
-			// Expanding a lazy node: set 'loading...' and call callback
-			// if( bExpand && this.data.isLazy && this.childList === null && !this._isLoading ) {
-			//     this._loadContent();
-			//     return;
-			// }
 			// Hide children, if node is collapsed
 			if( node.ul ) {
 				isVisible = (node.ul.style.display !== "none");
@@ -3916,16 +3907,12 @@ $.extend(Fancytree.prototype,
 					// The UI toggle() effect works with the ext-wide extension,
 					// while jQuery.animate() has problems when the title span
 					// has positon: absolute
-
-					// duration = opts.fx.duration || 200;
-					// easing = opts.fx.easing;
-					// $(node.ul).animate(opts.fx, duration, easing, function(){
-
-					// node.debug("nodeSetExpanded: animate start...");
-					$(node.ul).toggle(effect.effect, effect.options, effect.duration, function(){
-						// node.debug("nodeSetExpanded: animate done");
-						callback();
-					});
+					$(node.ul)
+						.addClass("fancytree-animating")
+						.toggle(effect.effect, effect.options, effect.duration, function(){
+							$(this).removeClass("fancytree-animating");
+							callback();
+						});
 					return;
 				}
 			}

@@ -168,16 +168,6 @@ $.ui.fancytree.registerExtension({
 		defineHeadStyleElement(this.$container.attr("id"), null);
 		return this._superApply(arguments);
 	},
-	nodeSetExpanded: function(ctx, flag, callOpts) {
-		var res = this._superApply(arguments).done(function(){
-			$(ctx.node.ul).removeClass("fancytree-animating");
-		});
-		// #716: Add class (*after* default implementation has run)
-		// Used to create a CSS rule that causes jumping titles whiel animation 
-		// is running
-		$(ctx.node.ul).addClass("fancytree-animating");
-		return res;
-	},
 	nodeRenderStatus: function(ctx) {
 		var containerId, cssText, res,
 			node = ctx.node,
