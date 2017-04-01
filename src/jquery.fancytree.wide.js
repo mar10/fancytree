@@ -111,10 +111,10 @@ $.ui.fancytree.registerExtension({
 	version: "@VERSION",
 	// Default options for this extension.
 	options: {
-		iconWidth: null,  // Adjust this if @fancy-icon-width != "16px"
-		iconSpacing: null, // Adjust this if @fancy-icon-spacing != "3px"
-		labelSpacing: null,   // Adjust this if padding between icon and label ! = "3px"
-		levelOfs: null    // Adjust this if ul padding != "16px"
+		iconWidth: null,     // Adjust this if @fancy-icon-width != "16px"
+		iconSpacing: null,   // Adjust this if @fancy-icon-spacing != "3px"
+		labelSpacing: null,  // Adjust this if padding between icon and label ! = "3px"
+		levelOfs: null       // Adjust this if ul padding != "16px"
 	},
 
 	treeCreate: function(ctx){
@@ -143,8 +143,7 @@ $.ui.fancytree.registerExtension({
 		iconWidthUnit = iconWidth.match(reNumUnit)[2];
 		iconWidth = parseFloat(iconWidth, 10);
 		levelOfsUnit = levelOfs.match(reNumUnit)[2];
-		if (iconSpacingUnit !== iconWidthUnit || levelOfsUnit !== iconWidthUnit || labelSpacingUnit != iconWidthUnit)
-		{
+		if( iconSpacingUnit !== iconWidthUnit || levelOfsUnit !== iconWidthUnit || labelSpacingUnit !== iconWidthUnit ) {
 			$.error("iconWidth, iconSpacing, and levelOfs must have the same css measure unit");
 		}
 		this._local.measureUnit = iconWidthUnit;
