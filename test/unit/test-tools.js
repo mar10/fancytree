@@ -155,8 +155,8 @@ TOOLS.getNodeKeyArray = function(nodeArray){
 TOOLS.addGenericNodes = function(node, options, callback) {
 	var d, f, i, j, k, key,
 		opts = $.extend({
-			level1: 1, 
-			level2: 0, 
+			level1: 1,
+			level2: 0,
 			level3: 0,
 			disableUpdate: true
 		}, options);
@@ -270,14 +270,14 @@ TOOLS.benchmarkWithReflowAsync = function(assert, tree, testName, count, callbac
 	elap1 = Date.now() - start;  // raw execution time
 
 	// Query div size to trigger a layout reflow
-	// As a call to a dummy function to prevent optimizations (cargo-cult?) 
+	// As a call to a dummy function to prevent optimizations (cargo-cult?)
 	// $.noop(window.innerHeight);
 	$.noop(tree.$div[0].offsetHeight);
 	elap2 = Date.now() - start;  // execution time incl. reflow
 
 	// Yield to interpreter -- Hopefully this will cause the browser to redraw,
 	// so we can capture the timings:
-	setTimeout(function(){	
+	setTimeout(function(){
 		elap3 = Date.now() - start;  // execution time incl. reflow & redraw
 		msg = testName + " took " + elap3 + " ms (reflow w/o redraw: " + elap2 + " ms, raw: " + elap1 + " ms)";
 		if( count && elap1 ){
@@ -285,7 +285,7 @@ TOOLS.benchmarkWithReflowAsync = function(assert, tree, testName, count, callbac
 		}
 		assert.ok(true, msg);
 		TOOLS.TOTAL_ELAP += elap3;
-		dfd.resolve();	
+		dfd.resolve();
 	}, 0);
 	return dfd.promise();
 };

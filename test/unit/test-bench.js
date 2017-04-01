@@ -43,7 +43,7 @@ function _resetEmptyTree(options){
 
 function addNodes(node, level1, level2, level3, forceUpdate) {
 	tools.addGenericNodes(node, {
-		level1: level1, 
+		level1: level1,
 		level2: level2,
 		level3: level3,
 		disableUpdate: !forceUpdate
