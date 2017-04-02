@@ -3564,22 +3564,27 @@ $.extend(Fancytree.prototype,
 		// else if node.icon is a boolean or string, use that
 		// else if opts.icon is a boolean or string, use that
 		// else show standard icon (which may be different for folders or documents)
-		if( $.isFunction(opts.icon) ) {
-			icon = opts.icon.call(tree, {type: "icon"}, ctx);
-			if( icon == null ) {
-				icon = node.icon;
-			}
-		} else {
-			icon = (node.icon != null) ? node.icon : opts.icon;
+		icon = FT.evalOption("icon", node, node, tree, opts, true);
+		if( typeof icon !== "boolean" ) {
+			// icon is defined, but not true/false: must be a string
+			icon = "" + icon;
 		}
-		if( icon == null ) {
-			icon = true;  // no icon option at all: show default icon
-		} else {
-			if( typeof icon !== "boolean" ) {
-				// icon is defined, but not true/false: must be a string
-				icon = "" + icon;
-			}
-		}
+		// if( $.isFunction(opts.icon) ) {
+		// 	icon = opts.icon.call(tree, {type: "icon"}, ctx);
+		// 	if( icon == null ) {
+		// 		icon = node.icon;
+		// 	}
+		// } else {
+		// 	icon = (node.icon != null) ? node.icon : opts.icon;
+		// }
+		// if( icon == null ) {
+		// 	icon = true;  // no icon option at all: show default icon
+		// } else {
+		// 	if( typeof icon !== "boolean" ) {
+		// 		// icon is defined, but not true/false: must be a string
+		// 		icon = "" + icon;
+		// 	}
+		// }
 		if( icon !== false ) {
 			role = aria ? " role='img'" : "";
 			if ( typeof icon === "string" ) {
@@ -4869,6 +4874,49 @@ $.extend($.ui.fancytree,
 		el = el.closest(":ui-fancytree");
 		widget = el.data("ui-fancytree") || el.data("fancytree"); // the latter is required by jQuery <= 1.8
 		return widget ? widget.tree : null;
+	},
+	/** Return an option value that has a default, but may be overridden by a 
+	 * callback or a node instance attribute.
+	 *
+	 * Evaluation sequence:
+	 *
+	 * If tree.options.<optionName> is a callback that returns something, use that.
+	 * Else if node.<optionName> is defined, use that.
+	 * Else if tree.options.<optionName> is a value, use that.
+	 * Else use <defaultValue>
+	 *
+	 * @param {string} optionName
+	 * @param {object} nodeObject e.g. `node` or `node.data`
+	 * @param {object} treeOption e.g. `tree.options` or `tree.options.dnd5`
+	 * @param {any} [defaultValue]
+	 * @returns {any}
+	 *
+	 * @example
+	 * // Check for node.foo, tree,options.foo(), and tree.options.foo:
+	 * $.ui.fancytree.evalOption("foo", node, tree.options);
+	 * // Check for node.data.bar, tree,options.qux.bar(), and tree.options.qux.bar:
+	 * $.ui.fancytree.evalOption("bar", node.data, tree.options.qux);
+	 *
+	 * @since 2.22
+	 */
+	evalOption: function(optionName, node, nodeObject, tree, treeOptions, defaultValue) {
+		var ctx, res,
+			treeOpt = treeOptions[optionName],
+			nodeOpt = nodeObject[optionName];
+
+		if( $.isFunction(treeOpt) ) {
+			ctx = { node: node, tree: tree, widget: tree.widget, options: tree.widget.options };
+			res = treeOpt.call(tree, {type: optionName}, ctx);
+			if( res == null ) {
+				res = nodeOpt;
+			}
+		} else {
+			res = (nodeOpt != null) ? nodeOpt : treeOpt;
+		}
+		if( res == null ) {
+			res = defaultValue;  // no option set at all: return default
+		}
+		return res;
 	},
 	/** Convert a keydown or mouse event to a canonical string like 'ctrl+a', 'ctrl+shift+f2', 'shift+leftdblclick'.
 	 * This is especially handy for switch-statements in event handlers.

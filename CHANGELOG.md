@@ -1,10 +1,11 @@
 # 2.22.1-0 / Unreleased
   * 
 
-# 2.22.0 / 2107-04-01
+# 2.22.0 / 2107-04-??
   * [Added] ext-dnd5 now part of standard distribution
   * [Added] #693 ext-dnd(5): configurable drop marker offset
   * [Added] #616 ext-wide: configurable left padding
+  * [Added] New method $.ui.fancytree.evalOption()
   * [Improved] #601 ext-filter: improve performance (don't render hidden nodes)
   * [Improved] ext-contextMenu: disable keyboard while popup is open and restore focus
   * [Improved] #701 ext-hotkeys: Prevent default behavior on hot key combination
