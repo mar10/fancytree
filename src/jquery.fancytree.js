@@ -417,6 +417,8 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	 */
 	addChildren: function(children, insertBefore){
 		var i, l, pos,
+			origFirstChild = this.getFirstChild(),
+			origLastChild = this.getLastChild(),
 			firstNode = null,
 			nodeList = [];
 
@@ -439,9 +441,27 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			// insert nodeList after children[pos]
 			this.children.splice.apply(this.children, [pos, 0].concat(nodeList));
 		}
-		if( !this.parent || this.parent.ul || this.tr ){
-			// render if the parent was rendered (or this is a root node)
-			this.render();
+		if(!this.parent || this.parent.ul || this.tr ){
+			// Render children if the parent was rendered (or this is a root node)
+			// Don't completely rerender every child, just the new ones!
+			for(i=0, l=nodeList.length; i<l; i++) {
+				nodeList[i].render();   // New nodes were never rendered before
+			}
+			// Adjust classes where status may have changed
+			if (!origFirstChild) {
+				this.renderStatus(); // Now expandable where it wasn't before
+			}
+			else {
+				// Has a first child
+				if (origFirstChild !== this.getFirstChild()) {
+					// Different first child -- recompute classes
+					origFirstChild.renderStatus();
+				}
+				if (origLastChild !== this.getLastChild()) {
+					// Different last child -- recompute classes
+					origLastChild.renderStatus();
+				}
+			}
 		}
 		if( this.tree.options.selectMode === 3 ){
 			this.fixSelection3FromEndNodes();
@@ -1533,7 +1553,6 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	 * <li> {@link FancytreeNode#renderTitle} and {@link FancytreeNode#renderStatus}
 	 *     are implied. If changes are more local, calling only renderTitle() or
 	 *     renderStatus() may be sufficient and faster.
-	 * <li>If a node was created/removed, node.render() must be called <i>on the parent</i>.
 	 * </ul>
 	 *
 	 * @param {boolean} [force=false] re-render, even if html markup was already created
@@ -3298,8 +3317,6 @@ $.extend(Fancytree.prototype,
 	 * was changed (e.g. after moving this node or adding/removing children)
 	 * nodeRenderTitle() and nodeRenderStatus() are implied.
 	 *
-	 * Note: if a node was created/removed, nodeRender() must be called for the
-	 *       parent.
 	 * &lt;code>
 	 * &lt;li id='KEY' ftnode=NODE>
 	 *     &lt;span class='fancytree-node fancytree-expanded fancytree-has-children fancytree-lastsib fancytree-exp-el fancytree-ico-e'>
