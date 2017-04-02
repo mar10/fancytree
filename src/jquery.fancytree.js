@@ -3907,10 +3907,13 @@ $.extend(Fancytree.prototype,
 					// The UI toggle() effect works with the ext-wide extension,
 					// while jQuery.animate() has problems when the title span
 					// has positon: absolute
+					// See #716, #717
+					$(node.ul).parent().addClass("fancytree-animating");
 					$(node.ul)
 						.addClass("fancytree-animating")
 						.toggle(effect.effect, effect.options, effect.duration, function(){
 							$(this).removeClass("fancytree-animating");
+							$(this).parent().removeClass("fancytree-animating");
 							callback();
 						});
 					return;
