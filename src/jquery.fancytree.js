@@ -3564,7 +3564,7 @@ $.extend(Fancytree.prototype,
 		// else if node.icon is a boolean or string, use that
 		// else if opts.icon is a boolean or string, use that
 		// else show standard icon (which may be different for folders or documents)
-		icon = FT.evalOption("icon", node, node, tree, opts, true);
+		icon = FT.evalOption("icon", node, node, opts, true);
 		if( typeof icon !== "boolean" ) {
 			// icon is defined, but not true/false: must be a string
 			icon = "" + icon;
@@ -4878,29 +4878,31 @@ $.extend($.ui.fancytree,
 	/** Return an option value that has a default, but may be overridden by a 
 	 * callback or a node instance attribute.
 	 *
-	 * Evaluation sequence:
+	 * Evaluation sequence:<br>
 	 *
-	 * If tree.options.<optionName> is a callback that returns something, use that.
-	 * Else if node.<optionName> is defined, use that.
-	 * Else if tree.options.<optionName> is a value, use that.
-	 * Else use <defaultValue>
+	 * If tree.options.<optionName> is a callback that returns something, use that.<br>
+	 * Else if node.<optionName> is defined, use that.<br>
+	 * Else if tree.options.<optionName> is a value, use that.<br>
+	 * Else use `defaultValue`.
 	 *
-	 * @param {string} optionName
-	 * @param {object} nodeObject e.g. `node` or `node.data`
-	 * @param {object} treeOption e.g. `tree.options` or `tree.options.dnd5`
+	 * @param {string} optionName name of the option property (on node and tree)
+	 * @param {FancytreeNode} node passed to the callback
+	 * @param {object} nodeObject where to look for the local option property, e.g. `node` or `node.data`
+	 * @param {object} treeOption where to look for the tree option, e.g. `tree.options` or `tree.options.dnd5`
 	 * @param {any} [defaultValue]
 	 * @returns {any}
 	 *
 	 * @example
 	 * // Check for node.foo, tree,options.foo(), and tree.options.foo:
-	 * $.ui.fancytree.evalOption("foo", node, tree.options);
+	 * $.ui.fancytree.evalOption("foo", node, node, tree.options);
 	 * // Check for node.data.bar, tree,options.qux.bar(), and tree.options.qux.bar:
-	 * $.ui.fancytree.evalOption("bar", node.data, tree.options.qux);
+	 * $.ui.fancytree.evalOption("bar", node, node.data, tree.options.qux);
 	 *
 	 * @since 2.22
 	 */
-	evalOption: function(optionName, node, nodeObject, tree, treeOptions, defaultValue) {
+	evalOption: function(optionName, node, nodeObject, treeOptions, defaultValue) {
 		var ctx, res,
+			tree = node.tree,
 			treeOpt = treeOptions[optionName],
 			nodeOpt = nodeObject[optionName];
 
@@ -4918,10 +4920,32 @@ $.extend($.ui.fancytree,
 		}
 		return res;
 	},
-	/** Convert a keydown or mouse event to a canonical string like 'ctrl+a', 'ctrl+shift+f2', 'shift+leftdblclick'.
+	/** Convert a keydown or mouse event to a canonical string like 'ctrl+a',
+	 * 'ctrl+shift+f2', 'shift+leftdblclick'.
+	 *
 	 * This is especially handy for switch-statements in event handlers.
+	 *
 	 * @param {event}
 	 * @returns {string}
+	 *
+	 * @example
+	 
+	switch( $.ui.fancytree.eventToString(event) ) {
+		case "-":
+			tree.nodeSetExpanded(ctx, false);
+			break;
+		case "shift+return":
+			tree.nodeSetActive(ctx, true);
+			break;
+		case "down":
+			res = node.navigate(event.which, activate, true);
+			break;
+		default:
+			handled = false;
+	}
+	if( handled ){
+		event.preventDefault();
+	}
 	 */
 	eventToString: function(event) {
 		// Poor-man's hotkeys. See here for a complete implementation:
