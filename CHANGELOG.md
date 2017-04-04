@@ -1,7 +1,7 @@
 # 2.22.1-0 / Unreleased
   * 
 
-# 2.22.0 / 2107-04-??
+# 2.22.0 / Unreleased
   * [Added] ext-dnd5 now part of standard distribution
   * [Added] #693 ext-dnd(5): configurable drop marker offset
   * [Added] #616 ext-wide: configurable left padding
@@ -16,6 +16,7 @@
   * [Fixed] #712 When clicking in a scrolled tree for the first time, focus is not set properly
   * [Fixed] #716 ext-wide: animation 'jumps' (jQuery UI 1.12)
   * [Fixed] #717 expand/collapse shows displaced child nodes when scrolled (jQuery UI 1.12)
+  * Update demos to jQuery 3.2.1 / jQuery UI 1.12.1
 
 # 2.21.0 / 2017-01-15
   * [Added] New extension 'ext-dnd5' for native HTML5 drag'n'drop support
