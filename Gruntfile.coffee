@@ -108,7 +108,7 @@ module.exports = (grunt) ->
                 ]
             dest: "build/<%= pkg.name %>-all.min.js"
 
-        "no-ui":
+        "all-deps":
             options:
                 banner: "<%= meta.banner %>"
                 stripBanners: true
@@ -144,7 +144,7 @@ module.exports = (grunt) ->
                 "build/jquery.fancytree.wide.min.js"
                 "lib/outro.js"
                 ]
-            dest: "build/<%= pkg.name %>-no-ui.min.js"
+            dest: "build/<%= pkg.name %>-all-deps.min.js"
 
     connect:
         forever:
@@ -489,7 +489,7 @@ module.exports = (grunt) ->
       "concat:all"
       "uglify:custom"
       "concat:custom"
-      "concat:no-ui"
+      "concat:all-deps"
       "clean:extMin"
       "replace:production"
       "jshint:afterConcat"
