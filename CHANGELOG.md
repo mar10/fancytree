@@ -1,8 +1,13 @@
-# 2.22.0-0 / Unreleased
-  * [Fixed] #680 ext-dnd5: top level nodes not draggable
-  * [Fixed] #681 ext-table: exception when a lazy node has `children: []`
+# 2.22.0-0 / BRANCH no-ui
+  * [Improved] The external dependency on jQuery UI was removed.
+    A new library `jquery.fancytree-all-deps.min.js` is now added to the 
+    distribution, that includes all dependencies on jQuery UI. So the only 
+    remaining external dependency is jQuery.<br>
+    Continue to use `jquery.fancytree-all.min.js` if jQuery UI is already
+    included anyway.
 
 # 2.21.0 / 2017-01-15
+  * [Added] New extension 'ext-dnd5' (beta) for native HTML5 drag'n'drop support
   * [Added] `rtl` option for right-to-left script support
   * [Added] Add $.ui.fancytree.overrideMethod()
   * [Added] hook `treeSetOption` allows extensions to update on option changes
