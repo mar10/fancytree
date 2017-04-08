@@ -3890,7 +3890,8 @@ $.extend(Fancytree.prototype,
 		});
 		// vvv Code below is executed after loading finished:
 		_afterLoad = function(callback){
-			var isVisible, isExpanded,
+			var cn = opts._classNames,
+				isVisible, isExpanded,
 				effect = opts.toggleEffect;
 
 			node.expanded = flag;
@@ -3911,15 +3912,25 @@ $.extend(Fancytree.prototype,
 				} else {
 					// The UI toggle() effect works with the ext-wide extension,
 					// while jQuery.animate() has problems when the title span
-					// has positon: absolute
-					// See #716, #717
-					$(node.ul).parent().addClass("fancytree-animating");
+					// has positon: absolute.
+					// Since jQuery UI 1.12, the blind effect requires the parent 
+					// element to have 'position: relative'. But IE 11 does not
+					// seem to honor this, if applied using a class and CSS rule
+					// only, so we add an inline style as well.
+					// See #716, #717, #719
+					$(node.ul).parent()
+						.addClass(cn.animating)  // #717
+						.css("position", "relative");  // #719
+//					node.info("fancytree-animating start");
 					$(node.ul)
-						.addClass("fancytree-animating")
+						.addClass(cn.animating)  // # 716
 						.toggle(effect.effect, effect.options, effect.duration, function(){
-							$(this).removeClass("fancytree-animating");
-							$(this).parent().removeClass("fancytree-animating");
+							$(this).removeClass(cn.animating);
+							$(this).parent()
+								.removeClass(cn.animating)
+								.css("position", "");  // #719
 							callback();
+//							node.info("fancytree-animating end");
 						});
 					return;
 				}
@@ -4432,6 +4443,7 @@ $.widget("ui.fancytree",
 		_classNames: {
 			node: "fancytree-node",
 			folder: "fancytree-folder",
+			animating: "fancytree-animating",
 			combinedExpanderPrefix: "fancytree-exp-",
 			combinedIconPrefix: "fancytree-ico-",
 			hasChildren: "fancytree-has-children",

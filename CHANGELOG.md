@@ -15,7 +15,7 @@
   * [Fixed] #702 $.ui.fancytree.getNode(jQuery)' for jQuery v3.x
   * [Fixed] #712 When clicking in a scrolled tree for the first time, focus is not set properly
   * [Fixed] #716 ext-wide: animation 'jumps' (jQuery UI 1.12)
-  * [Fixed] #717 expand/collapse shows displaced child nodes when scrolled (jQuery UI 1.12)
+  * [Fixed] #717, #719 expand/collapse shows displaced child nodes when scrolled (jQuery UI 1.12)
   * Update demos to jQuery 3.2.1 / jQuery UI 1.12.1
 
 # 2.21.0 / 2017-01-15
