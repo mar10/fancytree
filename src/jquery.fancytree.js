@@ -3751,7 +3751,7 @@ $.extend(Fancytree.prototype,
 		// Maybe most (all) of the classes should be set in LI instead of SPAN?
 		if(node.li){
 			// #719: we have to consider that there may be already other classes:
-			$(node.li).toggleClass(cn.lastsib);
+			$(node.li).toggleClass(cn.lastsib, isLastSib);
 		}
 	},
 	/** Activate node.

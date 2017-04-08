@@ -59,14 +59,6 @@ span.external span.fancytree-title:after {
 .ui-fancytree.fancytree-container {
 	border: none;
 }
-/*li.fancytree-animating {
-	position: relative !important;
-}
-li.fancytree-animating .fancytree-title{
-  color: red !important;
-  border: red !important;
-}*/
-
 </style>
 
 <script type="text/javascript">
@@ -80,7 +72,7 @@ $(function(){
 		clickFolderMode: 3, // expand with single click
 		minExpandLevel: 2,
 		tabindex: "-1", // we don't want the focus frame
-		toggleEffect: { effect: "blind", options: {direction: "vertical", scale: "box"}, duration: 2000 },
+		// toggleEffect: { effect: "blind", options: {direction: "vertical", scale: "box"}, duration: 2000 },
 		// scrollParent: null, // use $container
 		focus: function(event, data) {
 			var node = data.node;
