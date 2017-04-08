@@ -3750,7 +3750,8 @@ $.extend(Fancytree.prototype,
 		// TODO: we should not set this in the <span> tag also, if we set it here:
 		// Maybe most (all) of the classes should be set in LI instead of SPAN?
 		if(node.li){
-			node.li.className = isLastSib ? cn.lastsib : "";
+			// #719: we have to consider that there may be already other classes:
+			$(node.li).toggleClass(cn.lastsib);
 		}
 	},
 	/** Activate node.
@@ -3914,23 +3915,17 @@ $.extend(Fancytree.prototype,
 					// while jQuery.animate() has problems when the title span
 					// has positon: absolute.
 					// Since jQuery UI 1.12, the blind effect requires the parent 
-					// element to have 'position: relative'. But IE 11 does not
-					// seem to honor this, if applied using a class and CSS rule
-					// only, so we add an inline style as well.
-					// See #716, #717, #719
-					$(node.ul).parent()
-						.addClass(cn.animating)  // #717
-						.css("position", "relative");  // #719
-//					node.info("fancytree-animating start");
+					// element to have 'position: relative'.
+					// See #716, #717
+					$(node.li).addClass(cn.animating);  // #717
+//					node.info("fancytree-animating start: " + node.li.className);
 					$(node.ul)
 						.addClass(cn.animating)  // # 716
 						.toggle(effect.effect, effect.options, effect.duration, function(){
-							$(this).removeClass(cn.animating);
-							$(this).parent()
-								.removeClass(cn.animating)
-								.css("position", "");  // #719
+//							node.info("fancytree-animating end: " + node.li.className);
+							$(this).removeClass(cn.animating);  // #716
+							$(node.li).removeClass(cn.animating);  // #717
 							callback();
-//							node.info("fancytree-animating end");
 						});
 					return;
 				}
