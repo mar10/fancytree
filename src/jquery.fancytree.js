@@ -32,7 +32,7 @@ if ( $.ui && $.ui.fancytree ) {
 
 var i, attr,
 	FT = null, // initialized below
-	TEST_IMG = new RegExp(/\.|\//),  // strings are considered image urls if they conatin '.' or '/'
+	TEST_IMG = new RegExp(/\.|\//),  // strings are considered image urls if they contain '.' or '/'
 	REX_HTML = /[&<>"'\/]/g,
 	REX_TOOLTIP = /[<>"'\/]/g,
 	RECURSIVE_REQUEST_ERROR = "$recursive_request",
