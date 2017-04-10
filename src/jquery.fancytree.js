@@ -3914,7 +3914,7 @@ $.extend(Fancytree.prototype,
 					// The UI toggle() effect works with the ext-wide extension,
 					// while jQuery.animate() has problems when the title span
 					// has positon: absolute.
-					// Since jQuery UI 1.12, the blind effect requires the parent 
+					// Since jQuery UI 1.12, the blind effect requires the parent
 					// element to have 'position: relative'.
 					// See #716, #717
 					$(node.li).addClass(cn.animating);  // #717
@@ -4882,7 +4882,7 @@ $.extend($.ui.fancytree,
 		widget = el.data("ui-fancytree") || el.data("fancytree"); // the latter is required by jQuery <= 1.8
 		return widget ? widget.tree : null;
 	},
-	/** Return an option value that has a default, but may be overridden by a 
+	/** Return an option value that has a default, but may be overridden by a
 	 * callback or a node instance attribute.
 	 *
 	 * Evaluation sequence:<br>
@@ -4936,7 +4936,7 @@ $.extend($.ui.fancytree,
 	 * @returns {string}
 	 *
 	 * @example
-	 
+
 	switch( $.ui.fancytree.eventToString(event) ) {
 		case "-":
 			tree.nodeSetExpanded(ctx, false);

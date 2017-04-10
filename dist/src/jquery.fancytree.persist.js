@@ -11,8 +11,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.21.0
- * @date 2017-01-15T17:21:28Z
+ * @version 2.22.0
+ * @date 2017-04-10T06:32:34Z
  */
 
 ;(function($, window, document, undefined) {
@@ -151,7 +151,7 @@ $.ui.fancytree._FancytreeClass.prototype.getPersistData = function(){
  */
 $.ui.fancytree.registerExtension({
 	name: "persist",
-	version: "2.21.0",
+	version: "2.22.0",
 	// Default options for this extension.
 	options: {
 		cookieDelimiter: "~",

@@ -149,7 +149,7 @@ $.ui.fancytree.registerExtension({
 		}
 		this._local.measureUnit = iconWidthUnit;
 		this._local.levelOfs = parseFloat(levelOfs);
-		this._local.lineOfs = (1 + (ctx.options.checkbox ? 1 : 0) + 
+		this._local.lineOfs = (1 + (ctx.options.checkbox ? 1 : 0) +
 				(ctx.options.icon === false ? 0 : 1)) * (iconWidth + iconSpacing) +
 				iconSpacing;
 		this._local.labelOfs = labelSpacing;
