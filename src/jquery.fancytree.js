@@ -4061,7 +4061,7 @@ $.extend(Fancytree.prototype,
 		if(flag && opts.selectMode === 1){
 			// single selection mode
 			if(tree.lastSelectedNode){
-				tree.lastSelectedNode.setSelected(false, ctx.originalEvent);
+				tree.lastSelectedNode.setSelected(false);
 			}
 		}else if(opts.selectMode === 3){
 			// multi.hier selection mode
@@ -4073,7 +4073,7 @@ $.extend(Fancytree.prototype,
 		this.nodeRenderStatus(ctx);
 		tree.lastSelectedNode = flag ? node : null;
 		if( !noEvents ) {
-			tree._triggerNodeEvent("select", ctx.originalEvent);
+			tree._triggerNodeEvent("select", ctx);
 		}
 	},
 	/** Show node status (ok, loading, error, nodata) using styles and a dummy child node.
