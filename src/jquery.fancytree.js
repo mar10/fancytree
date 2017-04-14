@@ -1778,9 +1778,10 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	},
 	/**Select this node, i.e. check the checkbox.
 	 * @param {boolean} [flag=true] pass false to deselect
+	 * @param {object} [opts] additional options. Defaults to {noEvents: false}
 	 */
-	setSelected: function(flag){
-		return this.tree._callHook("nodeSetSelected", this, flag);
+	setSelected: function(flag, opts){
+		return this.tree._callHook("nodeSetSelected", this, flag, opts);
 	},
 	/**Mark a lazy node as 'error', 'loading', 'nodata', or 'ok'.
 	 * @param {string} status 'error'|'empty'|'ok'
@@ -4033,11 +4034,15 @@ $.extend(Fancytree.prototype,
 	 *
 	 * @param {EventData} ctx
 	 * @param {boolean} [flag=true]
+	 * @param {object} [opts] additional options. Defaults to {noEvents: false}
 	 */
-	nodeSetSelected: function(ctx, flag) {
+	nodeSetSelected: function(ctx, flag, callOpts) {
+		callOpts = callOpts || {};
 		var node = ctx.node,
 			tree = ctx.tree,
-			opts = ctx.options;
+			opts = ctx.options,
+			noEvents = (callOpts.noEvents === true);
+
 		// flag defaults to true
 		flag = (flag !== false);
 
@@ -4050,13 +4055,13 @@ $.extend(Fancytree.prototype,
 //        if( !!node.expanded === !!flag){
 		if((node.selected && flag) || (!node.selected && !flag)){
 			return !!node.selected;
-		}else if ( this._triggerNodeEvent("beforeSelect", node, ctx.originalEvent) === false ){
+		}else if ( !noEvents && this._triggerNodeEvent("beforeSelect", node, ctx.originalEvent) === false ){
 			return !!node.selected;
 		}
 		if(flag && opts.selectMode === 1){
 			// single selection mode
 			if(tree.lastSelectedNode){
-				tree.lastSelectedNode.setSelected(false);
+				tree.lastSelectedNode.setSelected(false, ctx.originalEvent);
 			}
 		}else if(opts.selectMode === 3){
 			// multi.hier selection mode
@@ -4067,7 +4072,9 @@ $.extend(Fancytree.prototype,
 		node.selected = flag;
 		this.nodeRenderStatus(ctx);
 		tree.lastSelectedNode = flag ? node : null;
-		tree._triggerNodeEvent("select", ctx);
+		if( !noEvents ) {
+			tree._triggerNodeEvent("select", ctx.originalEvent);
+		}
 	},
 	/** Show node status (ok, loading, error, nodata) using styles and a dummy child node.
 	 *
