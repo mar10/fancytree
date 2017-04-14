@@ -644,7 +644,7 @@ QUnit.test("makeVisible not rendered deep node", function(assert) {
  */
 QUnit.module("events");
 
-QUnit.test(".click() to expand a folder", function(assert) {
+QUnit.test(".mousedown() to expand a folder", function(assert) {
 	tools.setup(assert);
 	assert.expect(8);
 
@@ -667,11 +667,11 @@ QUnit.test(".click() to expand a folder", function(assert) {
 			done();
 		}
 	});
-	$("#tree #ft_10 span.fancytree-expander").click();
+	$("#tree #ft_10 span.fancytree-expander").mousedown();
 });
 
 
-QUnit.test(".click() to activate a node", function(assert) {
+QUnit.test(".mousedown() to activate a node", function(assert) {
 	tools.setup(assert);
 	assert.expect(8);
 
@@ -694,11 +694,11 @@ QUnit.test(".click() to activate a node", function(assert) {
 			done();
 		}
 	});
-	$("#tree #ft_2 span.fancytree-title").click();
+	$("#tree #ft_2 span.fancytree-title").mousedown();
 });
 
 
-QUnit.test(".click() to activate a folder (clickFolderMode 3 triggers expand)", function(assert) {
+QUnit.test(".mousedown() to activate a folder (clickFolderMode 3 triggers expand)", function(assert) {
 	tools.setup(assert);
 	assert.expect(4);
 
@@ -723,11 +723,11 @@ QUnit.test(".click() to activate a folder (clickFolderMode 3 triggers expand)", 
 			done();
 		}
 	});
-	$("#tree #ft_10 span.fancytree-title").click();
+	$("#tree #ft_10 span.fancytree-title").mousedown();
 });
 
 
-QUnit.test(".click() to select a node", function(assert) {
+QUnit.test(".mousedown() to select a node", function(assert) {
 	tools.setup(assert);
 	assert.expect(8);
 
@@ -751,7 +751,7 @@ QUnit.test(".click() to select a node", function(assert) {
 			done();
 		}
 	});
-	$("#tree #ft_2 span.fancytree-checkbox").click();
+	$("#tree #ft_2 span.fancytree-checkbox").mousedown();
 });
 
 
@@ -948,7 +948,7 @@ QUnit.test("selectMode: 3", function(assert) {
  */
 QUnit.module("lazy loading");
 
-QUnit.test("Using ajax options for `source`; .click() expands a lazy folder", function(assert) {
+QUnit.test("Using ajax options for `source`; .mousedown() expands a lazy folder", function(assert) {
 	tools.setup(assert);
 	assert.expect(19);
 
@@ -965,7 +965,7 @@ QUnit.test("Using ajax options for `source`; .click() expands a lazy folder", fu
 			assert.equal($("#tree li").length, TESTDATA_VISIBLENODES, "lazy tree has rendered 13 node elements");
 			// now expand a lazy folder
 			isClicked = true;
-			$("#tree #ft_30 span.fancytree-expander").click();
+			$("#tree #ft_30 span.fancytree-expander").mousedown();
 		},
 		beforeExpand: function(event, data){
 			assert.equal(sequence++, 4, "receive `beforeExpand` callback");
@@ -1005,7 +1005,7 @@ QUnit.test("Using ajax options for `source`; .click() expands a lazy folder", fu
 	});
 });
 
-QUnit.test("Using $.ajax promise for `source`; .click() expands a lazy folder", function(assert) {
+QUnit.test("Using $.ajax promise for `source`; .mousedown() expands a lazy folder", function(assert) {
 	tools.setup(assert);
 	assert.expect(12);
 
@@ -1025,7 +1025,7 @@ QUnit.test("Using $.ajax promise for `source`; .click() expands a lazy folder", 
 			assert.equal($("#tree li").length, TESTDATA_VISIBLENODES, "lazy tree has rendered 13 node elements");
 			// now expand a lazy folder
 			isClicked = true;
-			$("#tree #ft_30 span.fancytree-expander").click();
+			$("#tree #ft_30 span.fancytree-expander").mousedown();
 		},
 		beforeExpand: function(event, data){
 			assert.equal(sequence++, 3, "receive `beforeExpand` callback");

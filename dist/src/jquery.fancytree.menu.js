@@ -11,8 +11,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.21.0
- * @date 2017-01-15T17:21:28Z
+ * @version 2.22.0
+ * @date 2017-04-10T06:32:34Z
  */
 
 ;(function($, window, document, undefined) {
@@ -137,7 +137,7 @@ $.ui.fancytree.registerExtension({
 			return;
 		}
 		$menu = $(opts.menu.selector);
-		$(document).unbind("keydown.fancytree, mousedown.fancytree");
+		$(document).off("keydown.fancytree, mousedown.fancytree");
 		$menu.hide();
 		tree.ext.menu.data.node = null;
 	}

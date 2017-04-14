@@ -74,8 +74,8 @@ $(function(){
 		label: "Expand all",
 		newline: false,
 		code: function(){
-			$("#tree").fancytree("getRootNode").visit(function(node){
-				node.setExpanded(true);
+			$("#tree").visit(function(node){
+				node.setExpanded();
 			});
 		}
 	});
@@ -83,7 +83,7 @@ $(function(){
 		label: "Collapse all",
 		newline: false,
 		code: function(){
-			$("#tree").fancytree("getRootNode").visit(function(node){
+			$("#tree").visit(function(node){
 				node.setExpanded(false);
 			});
 		}
@@ -91,7 +91,7 @@ $(function(){
 	addSampleButton({
 		label: "Toggle expand",
 		code: function(){
-			$("#tree").fancytree("getRootNode").visit(function(node){
+			$("#tree").visit(function(node){
 				node.toggleExpanded();
 			});
 		}

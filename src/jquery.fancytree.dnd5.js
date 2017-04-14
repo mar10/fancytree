@@ -162,7 +162,7 @@ function handleDragOver(event, data) {
 		// glyph = options.glyph || null,
 		// $source = sourceNode ? $(sourceNode.span) : null,
 		$target = $(targetNode.span),
-		$targetTitle = $target.find(">span.fancytree-title");
+		$targetTitle = $target.find("span.fancytree-title");
 
 	if(DRAG_ENTER_RESPONSE === false){
 		tree.warn("Ignore dragover, since dragenter returned false");  //, event, data);
