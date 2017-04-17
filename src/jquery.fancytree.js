@@ -441,27 +441,25 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			// insert nodeList after children[pos]
 			this.children.splice.apply(this.children, [pos, 0].concat(nodeList));
 		}
-		if(!this.parent || this.parent.ul || this.tr ){
-			// Render children if the parent was rendered (or this is a root node)
-			// Don't completely rerender every child, just the new ones!
+		if ( origFirstChild ) {
+			// Fast path -- don't render every child of root, just the new ones!
 			for(i=0, l=nodeList.length; i<l; i++) {
 				nodeList[i].render();   // New nodes were never rendered before
 			}
 			// Adjust classes where status may have changed
-			if (!origFirstChild) {
-				this.renderStatus(); // Now expandable where it wasn't before
+			// Has a first child
+			if (origFirstChild !== this.getFirstChild()) {
+				// Different first child -- recompute classes
+				origFirstChild.renderStatus();
 			}
-			else {
-				// Has a first child
-				if (origFirstChild !== this.getFirstChild()) {
-					// Different first child -- recompute classes
-					origFirstChild.renderStatus();
-				}
-				if (origLastChild !== this.getLastChild()) {
-					// Different last child -- recompute classes
-					origLastChild.renderStatus();
-				}
+			if (origLastChild !== this.getLastChild()) {
+				// Different last child -- recompute classes
+				origLastChild.renderStatus();
 			}
+		}
+		else if( !this.parent || this.parent.ul || this.tr ){
+			// render if the parent was rendered (or this is a root node)
+			this.render();
 		}
 		if( this.tree.options.selectMode === 3 ){
 			this.fixSelection3FromEndNodes();
