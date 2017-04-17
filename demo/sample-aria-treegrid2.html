@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+	<title>Fancytree - WAI-ARIA Tree Grid</title>
+
+	<script src="../lib/jquery.js"></script>
+	<script src="../lib/jquery-ui.custom.js"></script>
+
+	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet">
+	<script src="../src/jquery.fancytree.js"></script>
+	<script src="../src/jquery.fancytree.table.js"></script>
+	<script src="../src/jquery.fancytree.ariagrid.js"></script>
+
+	<!-- Start_Exclude: This block is not part of the sample code -->
+	<link href="../lib/prettify.css" rel="stylesheet">
+	<script src="../lib/prettify.js"></script>
+	<link href="sample.css" rel="stylesheet">
+	<script src="sample.js"></script>
+	<!-- End_Exclude -->
+
+	<style type="text/css">
+/*		table.fancytree-container {
+			width: 90%;
+		}*/
+		td.stretch input {
+			box-sizing: border-box;
+			margin: 2px;
+			width: 100%;
+		}
+		tr.fancytree-cell-mode {
+			outline: 1px solid blue;
+		}
+		tr.fancytree-cell-mode > td {
+			background-color: white;
+		}
+		tr.fancytree-cell-mode > td.fancytree-active-cell {
+			outline: 1px solid red;
+			background-color: #cbe8f6;
+		}
+	</style>
+
+	<script type="text/javascript">
+		$(function(){
+			$("#treegrid").fancytree({
+				extensions: ["table", "ariagrid"],
+				aria: true,
+				checkbox: true,
+				quicksearch: true,
+				source: {url: "ajax-tree-products.json"},
+				table: {
+					checkboxColumnIdx: 0,  // render the checkboxes into the 1st column
+					nodeColumnIdx: 1       // render the node title into the 2nd column
+				},
+				renderColumns: function(event, data) {
+					var node = data.node,
+						$tdList = $(node.tr).find(">td");
+
+					// The row template inserts controls, so we have to remove 
+					// them herer for folders:
+					if( node.isFolder() ) {
+						$tdList.eq(2).empty();	
+						$tdList.eq(3).empty();	
+						$tdList.eq(5).empty();	
+					}
+					$tdList.eq(4).text("Lorem ipsum " + node.title);
+//					$tdList.eq(2).text(node.getIndexHier());
+				}
+			});
+		});
+	</script>
+</head>
+
+<body class="example">
+	<h1>Example: WAI-ARIA Tree Grid - Prototype 2</h1>
+	<div class="description">
+		<p>
+			This Fancytree Tree Grid has
+			<a href="https://www.w3.org/TR/wai-aria-practices/#TreeGrid">WAI-ARIA</a>
+			enabled.<br>
+			<strong>Note:</strong> please
+			<a href="https://github.com/mar10/fancytree/issues/655">provide feedback</a>
+			if you have suggestions for improvement.
+		</p>
+		<p>
+			See also the <a href="sample-aria.html">ARIA Tree View example</a>.
+		</p>
+	</div>
+
+<!-- 	<div role="application"> -->
+	<div>
+		<label for="lblBefore">Text 1<input autofocus type="text" id="lblBefore"></label>
+
+		<table id="treegrid">
+			<colgroup>
+			<col width="30px"></col>
+			<col width="400px"></col>
+			<col width="30px"></col>
+			<col width="30px"></col>
+			<col width="400px"></col>
+			<col width="100px"></col>
+			</colgroup>
+			<thead>
+				<tr> <th>Select</th> <th>Item</th> <th>In Stock</th> <th>Favorite</th> <th>Details</th> <th>Qty</th></tr>
+			</thead>
+			<tbody>
+				<tr> 
+					<td></td>
+					<td></td>
+					<td><input type="checkbox" tabindex="-1"></td>
+					<td><input type="checkbox" tabindex="-1"></td>
+					<td class="stretch"><input type="text" tabindex="-1"></td>
+					<td class="stretch"><input type="number" min="0" value="0" tabindex="-1"></td>
+				</tr>
+				</tr>
+			</tbody>
+		</table>
+
+		<label for="lblAfter">Text 2</label><input type="text" id="lblAfter">
+	</div>
+
+	<!-- Start_Exclude: This block is not part of the sample code -->
+	<hr>
+	<p class="sample-links  no_code">
+		<a class="hideInsideFS" href="https://github.com/mar10/fancytree">jquery.fancytree.js project home</a>
+		<a class="hideOutsideFS" href="#">Link to this page</a>
+		<a class="hideInsideFS" href="index.html">Example Browser</a>
+		<a href="#" id="codeExample">View source code</a>
+	</p>
+	<pre id="sourceCode" class="prettyprint" style="display:none"></pre>
+	<!-- End_Exclude -->
+</body>
+</html>

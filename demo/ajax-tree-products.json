@@ -1,6 +1,6 @@
 [
 	{"title": "Books & Audible", "expanded": true, "folder": true, "children": [
-		{"title": "Books", "folder": true, "children": [
+		{"title": "Books", "expanded": true, "folder": true, "children": [
 			{"title": "General Books"},
 			{"title": "Kindle Books"},
 			{"title": "Books For Study"},
