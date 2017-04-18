@@ -7,7 +7,8 @@
 	<script src="../lib/jquery.js"></script>
 	<script src="../lib/jquery-ui.custom.js"></script>
 
-	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet">
+<!-- 	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet"> -->
+	<link href="../src/skin-lion/ui.fancytree.css" rel="stylesheet">
 	<script src="../src/jquery.fancytree.js"></script>
 	<script src="../src/jquery.fancytree.table.js"></script>
 	<script src="../src/jquery.fancytree.ariagrid.js"></script>
@@ -28,6 +29,9 @@
 			margin: 2px;
 			width: 100%;
 		}
+		td.center {
+			text-align: center;
+		}
 		table.fancytree-cell-mode > tbody > tr.fancytree-active {
 			outline: 2px solid #26a0da;
 		}
@@ -36,7 +40,11 @@
 		}
 		table.fancytree-cell-mode > tbody > tr > td.fancytree-active-cell {
 			outline: 1px solid #26a0da;
+			outline: 2px dotted red;
 			background-color: #cbe8f6;
+		}
+		td.fancytree-node[tabindex="-1"] {
+			border: 2px dotted green;
 		}
 	</style>
 
@@ -75,10 +83,11 @@
 	<div class="description">
 		<p>
 			This Fancytree Tree Grid has uses a prototypical extension to 
-			explore ARIA support as discussed here:
-
-			<a href="https://www.w3.org/TR/wai-aria-practices/#TreeGrid">WAI-ARIA</a>
-			enabled.<br>
+			explore ARIA support as discussed here:<br>
+			<a href="https://cdn.rawgit.com/aleventhal/treegrid-tab-active-cells/0.1.10/treegrid.html">
+				aleventhal/treegrid-tab-active-cells
+			</a>
+		</p><p>
 			<strong>Note:</strong> please
 			<a href="https://github.com/mar10/fancytree/issues/655">provide feedback</a>
 			if you have suggestions for improvement.
@@ -94,7 +103,7 @@
 
 		<table id="treegrid">
 			<colgroup>
-			<col width="30px"></col>
+			<col width="20px"></col>
 			<col width="400px"></col>
 			<col width="30px"></col>
 			<col width="30px"></col>
@@ -106,10 +115,10 @@
 			</thead>
 			<tbody>
 				<tr> 
+					<td class="center">></td>
 					<td></td>
-					<td></td>
-					<td><input type="checkbox" tabindex="-1"></td>
-					<td><input type="checkbox" tabindex="-1"></td>
+					<td class="center"><input type="checkbox" tabindex="-1"></td>
+					<td class="center"><input type="checkbox" tabindex="-1"></td>
 					<td class="stretch"><input type="text" tabindex="-1"></td>
 					<td class="stretch"><input type="number" min="0" value="0" tabindex="-1"></td>
 				</tr>

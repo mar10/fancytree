@@ -189,12 +189,14 @@ $.ui.fancytree.registerExtension({
 		if( this.checkboxColumnIdx == null ) {
 			this.checkboxColumnIdx = this.nodeColumnIdx;
 		}
-		
+
 		// Activate node if embedded input gets focus (due to a click)
 		this.$container.on("focusin", function(event){
 			var ctx2,
-				node = $.ui.fancytree.getNode(event.target);
+				node = $.ui.fancytree.getNode(event.target),
+ 				$td = $(event.target).closest("td");
 
+ 			activateCell(ctx.tree, $td);
 			if( node && !node.isActive() ){
 				// Call node.setActive(), but also pass the event
 				ctx2 = ctx.tree._makeHookContext(node, event);
@@ -231,12 +233,10 @@ $.ui.fancytree.registerExtension({
 			// }
 		}else{
 			node.debug("deactivate row");
-			$(node.tr)
-				// only one row can be in cell mode at any given time
-				// .removeClass("fancytree-cell-mode")
-				// only active row is tabbable
-				.find(":input,a")
-					.attr("tabindex", "-1");
+			// only active row is tabbable
+			activateCell(ctx.tree, null);
+			$(node.tr).find("td").removeAttr("tabindex");
+			$(node.tr).find(":input,a").attr("tabindex", "-1");
 		}
 	},
 	nodeKeydown: function(ctx) {
@@ -256,7 +256,7 @@ $.ui.fancytree.registerExtension({
 		ctx.tree.debug("ext-ariagrid nodeKeydown",
 			inputType, this.$activeTd, $.ui.fancytree.eventToString(event));
 
-		if( inputType ){
+		if( inputType && eventString !== "esc" ){
 			handleKeys = NAV_KEYS[inputType];
 			if( handleKeys && $.inArray(event.which, handleKeys) < 0 ){
 				return;  // Let input control handle the key
@@ -305,6 +305,7 @@ $.ui.fancytree.registerExtension({
 			if( $activeTd ) {
 				// Switch back from cell mode to row mode
 				activateCell(this, null);
+				node.setActive();
 				return;
 			}
 			break;
