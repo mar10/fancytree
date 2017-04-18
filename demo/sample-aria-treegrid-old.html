@@ -10,7 +10,6 @@
 	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet">
 	<script src="../src/jquery.fancytree.js"></script>
 	<script src="../src/jquery.fancytree.table.js"></script>
-	<script src="../src/jquery.fancytree.ariagrid.js"></script>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
 	<link href="../lib/prettify.css" rel="stylesheet">
@@ -23,27 +22,12 @@
 /*		table.fancytree-container {
 			width: 90%;
 		}*/
-		td.stretch input {
-			box-sizing: border-box;
-			margin: 2px;
-			width: 100%;
-		}
-		tr.fancytree-cell-mode {
-			outline: 1px solid blue;
-		}
-		tr.fancytree-cell-mode > td {
-			background-color: white;
-		}
-		tr.fancytree-cell-mode > td.fancytree-active-cell {
-			outline: 1px solid red;
-			background-color: #cbe8f6;
-		}
 	</style>
 
 	<script type="text/javascript">
 		$(function(){
 			$("#treegrid").fancytree({
-				extensions: ["table", "ariagrid"],
+				extensions: ["table"],
 				aria: true,
 				checkbox: true,
 				quicksearch: true,
@@ -52,19 +36,22 @@
 					checkboxColumnIdx: 0,  // render the checkboxes into the 1st column
 					nodeColumnIdx: 1       // render the node title into the 2nd column
 				},
+				keydown: function(event, data) {
+					// WAI-ARIA suggests that numpad '*' expands all siblings at
+					// the current node's level.
+					switch( $.ui.fancytree.eventToString(event) ) {
+						case "*":
+							$.each(data.node.parent.children, function(i, node){
+								node.setExpanded({noAnimation: true, noEvents: false});
+							});
+							break;
+					};
+				},
 				renderColumns: function(event, data) {
 					var node = data.node,
 						$tdList = $(node.tr).find(">td");
 
-					// The row template inserts controls, so we have to remove 
-					// them herer for folders:
-					if( node.isFolder() ) {
-						$tdList.eq(2).empty();	
-						$tdList.eq(3).empty();	
-						$tdList.eq(5).empty();	
-					}
-					$tdList.eq(4).text("Lorem ipsum " + node.title);
-//					$tdList.eq(2).text(node.getIndexHier());
+					$tdList.eq(2).text(node.getIndexHier());
 				}
 			});
 		});
@@ -72,7 +59,7 @@
 </head>
 
 <body class="example">
-	<h1>Example: WAI-ARIA Tree Grid - Prototype 2</h1>
+	<h1>Example: WAI-ARIA Tree Grid</h1>
 	<div class="description">
 		<p>
 			This Fancytree Tree Grid has
@@ -89,30 +76,18 @@
 
 <!-- 	<div role="application"> -->
 	<div>
-		<label for="lblBefore">Text 1<input autofocus type="text" id="lblBefore"></label>
+		<label for="lblBefore">Text 1<input type="text" id="lblBefore"></label>
 
 		<table id="treegrid">
 			<colgroup>
 			<col width="30px"></col>
 			<col width="400px"></col>
-			<col width="30px"></col>
-			<col width="30px"></col>
-			<col width="400px"></col>
 			<col width="100px"></col>
 			</colgroup>
 			<thead>
-				<tr> <th>Select</th> <th>Item</th> <th>In Stock</th> <th>Favorite</th> <th>Details</th> <th>Qty</th></tr>
+				<tr> <th></th> <th>Item</th> <th>Index</th> </tr>
 			</thead>
 			<tbody>
-				<tr> 
-					<td></td>
-					<td></td>
-					<td><input type="checkbox" tabindex="-1"></td>
-					<td><input type="checkbox" tabindex="-1"></td>
-					<td class="stretch"><input type="text" tabindex="-1"></td>
-					<td class="stretch"><input type="number" min="0" value="0" tabindex="-1"></td>
-				</tr>
-				</tr>
 			</tbody>
 		</table>
 

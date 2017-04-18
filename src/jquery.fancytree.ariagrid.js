@@ -29,6 +29,7 @@ var	KC = $.ui.keyCode,
 	// navigation handler:
 	NAV_KEYS = {
 		"text": [KC.UP, KC.DOWN],
+		"number": [],
 		"checkbox": [KC.UP, KC.DOWN, KC.LEFT, KC.RIGHT],
 		"link": [KC.UP, KC.DOWN, KC.LEFT, KC.RIGHT],
 		"radiobutton": [KC.UP, KC.DOWN, KC.LEFT, KC.RIGHT],
@@ -111,23 +112,50 @@ function findNeighbourTd($target, keyCode){
 }
 
 
-/*  */
+/* Set active cell and activate cell mode. */
 function activateCell(tree, $td){
+	var $input, $tr,
+		$prevTd = tree.$activeTd || null,
+		$prevTr = $prevTd ? $prevTd.closest("tr") : null;
+
+	tree.debug("activateCell: " + ($prevTd ? $prevTd.text() : "null") +
+		" -> " + ($td ? $td.text() : "null"));
+
 	if( $td && $td.length ) {
-		$td.closest("tr").addClass("fancytree-cell-mode");
-		if( tree.$activeTd ) {
-			if( tree.$activeTd.is($td) ) {
+		tree.$container.addClass("fancytree-cell-mode");
+		$tr = $td.closest("tr");
+		if( $prevTd ) {
+			if( $prevTd.is($td) ) {
 				return;
 			}
-			tree.$activeTd.removeClass("fancytree-active-cell");
+			// if( !$prevTr.is($tr) ) {
+			// 	$prevTr.removeClass("fancytree-cell-mode");
+			// 	$tr.addClass("fancytree-cell-mode");
+			// }
+			$prevTd
+				.removeAttr("tabindex")
+				.removeClass("fancytree-active-cell");
+			// tree.$activeTd.find(":focus").blur();
 		}
-		tree.$activeTd = $td.addClass("fancytree-active-cell");
+		$td.addClass("fancytree-active-cell");
+		tree.$activeTd = $td;
+
+		$input = $td.find(":input:enabled,a");
+		if( $input.length ) {
+			$input.focus();
+		} else {
+			$td.attr("tabindex", "0").focus();
+			// tree.$container.focus();
+		}
 	} else {
-		if( tree.$activeTd ) {
-			tree.$activeTd
-				.removeClass("fancytree-active-cell")
-				.closest("tr")
-					.removeClass("fancytree-cell-mode");
+		// $td == null: switch back to row-mode
+		tree.$container.removeClass("fancytree-cell-mode");
+		if( $prevTd ) {
+			$prevTd
+				.removeAttr("tabindex")
+				.removeClass("fancytree-active-cell");
+			$prevTr.find("td").blur().removeAttr("tabindex");
+			$prevTr.find(":input:enabled,a").attr("tabindex", "-1");
 			tree.$activeTd = null;
 		} else {
 			// nothing to do
@@ -156,24 +184,28 @@ $.ui.fancytree.registerExtension({
 
 		this.$container.addClass("fancytree-ext-ariagrid");
 
+		this.nodeColumnIdx = ctx.options.table.nodeColumnIdx;
+		this.checkboxColumnIdx = ctx.options.table.checkboxColumnIdx;
+		if( this.checkboxColumnIdx == null ) {
+			this.checkboxColumnIdx = this.nodeColumnIdx;
+		}
+		
 		// Activate node if embedded input gets focus (due to a click)
-		// this.$container.on("focusin", function(event){
-		// 	var ctx2,
-		// 		node = $.ui.fancytree.getNode(event.target);
+		this.$container.on("focusin", function(event){
+			var ctx2,
+				node = $.ui.fancytree.getNode(event.target);
 
-		// 	if( node && !node.isActive() ){
-		// 		// Call node.setActive(), but also pass the event
-		// 		ctx2 = ctx.tree._makeHookContext(node, event);
-		// 		ctx.tree._callHook("nodeSetActive", ctx2, true);
-		// 	}
-		// });
+			if( node && !node.isActive() ){
+				// Call node.setActive(), but also pass the event
+				ctx2 = ctx.tree._makeHookContext(node, event);
+				ctx.tree._callHook("nodeSetActive", ctx2, true);
+			}
+		});
 	},
 	nodeSetActive: function(ctx, flag) {
-		var $outer,
-			opts = ctx.options.ariagrid,
-			node = ctx.node,
-			event = ctx.originalEvent || {},
-			triggeredByInput = $(event.target).is(":input");
+		var node = ctx.node;
+			//event = ctx.originalEvent || {},
+			//triggeredByInput = $(event.target).is(":input");
 
 		flag = (flag !== false);
 
@@ -181,7 +213,8 @@ $.ui.fancytree.registerExtension({
 
 		if( flag ){
 			node.debug("activate row");
-			$(node.tr).find(":input").attr("tabindex", "0");
+			// only active row is tabbable
+			$(node.tr).find(":input,a").attr("tabindex", "0");
 			// if( ctx.options.titlesTabbable ){
 			// 	if( !triggeredByInput ) {
 			// 		$(node.span).find("span.fancytree-title").focus();
@@ -199,102 +232,97 @@ $.ui.fancytree.registerExtension({
 		}else{
 			node.debug("deactivate row");
 			$(node.tr)
-				.removeClass("fancytree-cell-mode")
-				.find(":input")
+				// only one row can be in cell mode at any given time
+				// .removeClass("fancytree-cell-mode")
+				// only active row is tabbable
+				.find(":input,a")
 					.attr("tabindex", "-1");
 		}
 	},
 	nodeKeydown: function(ctx) {
-		var inputType, handleKeys, $td,
+		var handleKeys, inputType, $td,
 			node = ctx.node,
-			opts = ctx.options.ariagrid,
+			//opts = ctx.options.ariagrid,
 			event = ctx.originalEvent,
 			eventString = $.ui.fancytree.eventToString(event),
-			$target = $(event.target);
+			$target = $(event.target),
+			$activeTd = this.$activeTd;
 
 		if( $target.is(":input:enabled") ) {
 			inputType = $target.prop("type");
 		} else if( $target.is("a") ) {
 			inputType = "link";
 		}
-		ctx.tree.debug("ext-ariagrid nodeKeydown", inputType, this.$activeTd, $.ui.fancytree.eventToString(event));
+		ctx.tree.debug("ext-ariagrid nodeKeydown",
+			inputType, this.$activeTd, $.ui.fancytree.eventToString(event));
+
+		if( inputType ){
+			handleKeys = NAV_KEYS[inputType];
+			if( handleKeys && $.inArray(event.which, handleKeys) < 0 ){
+				return;  // Let input control handle the key
+			}
+		}
 
 		switch( eventString ) {
 		case "left":
-			if( this.$activeTd ) {  // cell mode: move to neighbor
-				// this.$activeTd.removeClass("active-cell");
-				$td = this.$activeTd.prev();
+			if( $activeTd ) {
+				// Cell mode: move to neighbour
+				$td = $activeTd.prev();
 				activateCell(this, $td);
-				// if( $td.length ) {
-				// 	this.$activeTd = $td.addClass("active-cell");
-				// } else {  // LEFT at leftmost column: enter row-mode again
-				// 	this.$activeTd = null;
-				// }
-				return;  // no default handling
+				return;
 			}
 			break;
 		case "right":
-			if( this.$activeTd ) {  // cell mode: move to neighbor
-//				this.$activeTd.removeClass("active-cell");
-				$td = this.$activeTd.next();
+			if( $activeTd ) {  
+				// Cell mode: move to neighbour
+				$td = $activeTd.next();
 				activateCell(this, $td);
-				// if( $td.length ) {
-				// 	this.$activeTd = $td.addClass("active-cell");
-				// } else {  // RIGHT  at rightmost column: enter row-mode again
-				// 	this.$activeTd = null;
-				// }
 			} else if ( !node.isExpanded() && node.hasChildren() !== false ) {
 				// Row mode and current node can be expanded: 
-				// Default handling will expand
+				// default handling will expand.
 				break;
 			} else {
-				// row mode: switch to cell mode
-//				this.$activeTd = $(node.tr).find(">td:first").addClass("active-cell");
+				// Row mode: switch to cell mode
 				$td = $(node.tr).find(">td:first");
 				activateCell(this, $td);
 			}
 			return;  // no default handling
 		case "up":
 		case "down":
-			if( this.$activeTd ) {  // cell mode: move to neighbor
-				$td = findNeighbourTd(this.$activeTd, eventString === "up" ? KC.UP : KC.DOWN);
+			if( $activeTd ) {
+				// Cell mode: move to neighbour
+				$td = findNeighbourTd($activeTd, eventString === "up" ? KC.UP : KC.DOWN);
 				if( !$td ) {
 					return;  // Stay on the same cell
 				}
-				//this.$activeTd.removeClass("active-cell");
-				//this.$activeTd = $td.addClass("active-cell");
+				// Default handling will now activate the new row...
+				this._superApply(arguments);
 				activateCell(this, $td);
-				// default handling will activate the new row...
+				return;
 			}
 			break;
-		case "space":
-			if( this.$activeTd ) {  // cell mode: move to neighbor
-				$td = findNeighbourTd(this.$activeTd, eventString === "up" ? KC.UP : KC.DOWN);
-				if( $td ) {
-					this.$activeTd.removeClass("active-cell");
-					this.$activeTd = $td.addClass("active-cell");
-					break;  // default handling will activate the row
-				}
+		case "esc":
+			if( $activeTd ) {
+				// Switch back from cell mode to row mode
+				activateCell(this, null);
+				return;
+			}
+			break;
+		case "return":
+			if( !$activeTd ) {
+				// Switch from row mode to cell mode
+				$td = $(node.tr).find(">td:nth(" + this.nodeColumnIdx + ")");
+				activateCell(this, $td);
 				return;  // no default handling
 			}
 			break;
+		case "space":
+			if( $activeTd && getColIdx($(node.tr), $activeTd) !== this.checkboxColumnIdx ) {
+				return;  // no default handling
+			}
+			break;
+		// default:
 		}
-
-
-		// if( inputType && opts.handleCursorKeys ){
-		// 	handleKeys = NAV_KEYS[inputType];
-		// 	if( handleKeys && $.inArray(event.which, handleKeys) >= 0 ){
-		// 		$td = findNeighbourTd($target, event.which);
-		// 		if( $td && $td.length ) {
-		// 			// ctx.node.debug("ignore keydown in input", event.which, handleKeys);
-		// 			$td.find(":input:enabled,a").focus();
-		// 			// Prevent Fancytree default navigation
-		// 			return false;
-		// 		}
-		// 	}
-		// 	return true;
-		// }
-		// ctx.tree.debug("ext-ariagrid NOT HANDLED", event, inputType);
 		return this._superApply(arguments);
 	}
 });
