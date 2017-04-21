@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.22.0
- * @date 2017-04-10T06:32:34Z
+ * @version 2.22.1
+ * @date 2017-04-21T05:55:46Z
  */
 
 ;(function($, window, document, undefined) {
@@ -253,7 +253,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.isEditing = function(){
  */
 $.ui.fancytree.registerExtension({
 	name: "edit",
-	version: "2.22.0",
+	version: "2.22.1",
 	// Default options for this extension.
 	options: {
 		adjustWidthOfs: 4,   // null: don't adjust input size to content

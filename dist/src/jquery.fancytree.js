@@ -7,8 +7,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.22.0
- * @date 2017-04-10T06:32:34Z
+ * @version 2.22.1
+ * @date 2017-04-21T05:55:46Z
  */
 
 /** Core Fancytree module.
@@ -441,27 +441,25 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			// insert nodeList after children[pos]
 			this.children.splice.apply(this.children, [pos, 0].concat(nodeList));
 		}
-		if(!this.parent || this.parent.ul || this.tr ){
-			// Render children if the parent was rendered (or this is a root node)
-			// Don't completely rerender every child, just the new ones!
+		if ( origFirstChild ) {
+			// Fast path -- don't render every child of root, just the new ones!
 			for(i=0, l=nodeList.length; i<l; i++) {
 				nodeList[i].render();   // New nodes were never rendered before
 			}
 			// Adjust classes where status may have changed
-			if (!origFirstChild) {
-				this.renderStatus(); // Now expandable where it wasn't before
+			// Has a first child
+			if (origFirstChild !== this.getFirstChild()) {
+				// Different first child -- recompute classes
+				origFirstChild.renderStatus();
 			}
-			else {
-				// Has a first child
-				if (origFirstChild !== this.getFirstChild()) {
-					// Different first child -- recompute classes
-					origFirstChild.renderStatus();
-				}
-				if (origLastChild !== this.getLastChild()) {
-					// Different last child -- recompute classes
-					origLastChild.renderStatus();
-				}
+			if (origLastChild !== this.getLastChild()) {
+				// Different last child -- recompute classes
+				origLastChild.renderStatus();
 			}
+		}
+		else if( !this.parent || this.parent.ul || this.tr ){
+			// render if the parent was rendered (or this is a root node)
+			this.render();
 		}
 		if( this.tree.options.selectMode === 3 ){
 			this.fixSelection3FromEndNodes();
@@ -4691,7 +4689,7 @@ $.extend($.ui.fancytree,
 	/** @lends Fancytree_Static# */
 	{
 	/** @type {string} */
-	version: "2.22.0",      // Set to semver by 'grunt release'
+	version: "2.22.1",      // Set to semver by 'grunt release'
 	/** @type {string} */
 	buildType: "production", // Set to 'production' by 'grunt build'
 	/** @type {int} */

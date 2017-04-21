@@ -1,5 +1,5 @@
 # 2.22.1-0 / Unreleased
-  * 
+  * [Fixed] #722 Fix regression with addChild performance improvements (#708)
 
 # BRANCH aria-grid / Unreleased
   * 
