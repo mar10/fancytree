@@ -1,4 +1,7 @@
-# 2.22.1-0 / Unreleased
+# 2.22.2-0 / Unreleased
+  * 
+
+# 2.22.1 / 2017-04-21
   * [Fixed] #722 Fix regression with addChild performance improvements (#708)
 
 # 2.22.0 / 2017-04-11
