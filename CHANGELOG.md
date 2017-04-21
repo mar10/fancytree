@@ -1,5 +1,5 @@
 # 2.22.1-0 / Unreleased
-  * 
+  * [Fixed] #722 Fix regression with addChild performance improvements (#708)
 
 # 2.22.0 / 2017-04-11
   * [Added] ext-dnd5 now part of standard distribution
