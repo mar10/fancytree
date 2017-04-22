@@ -3675,7 +3675,7 @@ $.extend(Fancytree.prototype,
 		}else if(aria){
 			// $ariaElem.removeAttr("aria-activedescendant");
 		}
-		node.debug("aria", node.expanded, aria, $ariaElem);
+		// node.debug("aria", node.expanded, aria, $ariaElem);
 		if( node.expanded ){
 			cnList.push(cn.expanded);
 			if(aria){

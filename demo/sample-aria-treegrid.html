@@ -24,7 +24,8 @@
 /*		table.fancytree-container {
 			width: 90%;
 		}*/
-		td.stretch input {
+		td.stretch input,
+		td.stretch select {
 			box-sizing: border-box;
 			margin: 2px;
 			width: 100%;
@@ -53,12 +54,17 @@
 			$("#treegrid").fancytree({
 				extensions: ["table", "ariagrid"],
 				aria: true,
+				// rtl: true,
 				checkbox: true,
 //				quicksearch: true,
 				source: {url: "ajax-tree-products.json"},
 				table: {
 					checkboxColumnIdx: 0,  // render the checkboxes into the 1st column
 					nodeColumnIdx: 1       // render the node title into the 2nd column
+				},
+				ariagrid: {
+					cellFocus: "start",
+					magicEnter: true 
 				},
 				renderColumns: function(event, data) {
 					var node = data.node,
@@ -70,6 +76,8 @@
 						$tdList.eq(2).empty();	
 						$tdList.eq(3).empty();	
 						$tdList.eq(5).empty();	
+						$tdList.eq(6).empty();	
+						$tdList.eq(7).empty();	
 					}
 					$tdList.eq(4).text("Lorem ipsum " + node.title);
 				}
@@ -87,10 +95,15 @@
 			<a href="https://cdn.rawgit.com/aleventhal/treegrid-tab-active-cells/0.1.10/treegrid.html">
 				aleventhal/treegrid-tab-active-cells
 			</a>
+			<br>
+			and here
+			<a href="https://cdn.rawgit.com/w3c/aria-practices/treegrid/examples/treegrid/treegrid-row-nav-primary-1.html">
+				w3c/aria-practices/treegrid
+			</a>
 		</p><p>
 			<strong>Note:</strong> please
 			<a href="https://github.com/mar10/fancytree/issues/655">provide feedback</a>
-			if you have suggestions for improvement.
+			if you have suggestions for improvement on the Fancytree implementation.
 		</p>
 		<p>
 			See also the <a href="sample-aria.html">ARIA Tree View example</a>.
@@ -109,9 +122,11 @@
 			<col width="30px"></col>
 			<col width="400px"></col>
 			<col width="100px"></col>
+			<col width="100px"></col>
+			<col width="100px"></col>
 			</colgroup>
 			<thead>
-				<tr> <th>Select</th> <th>Item</th> <th>In Stock</th> <th>Favorite</th> <th>Details</th> <th>Qty</th></tr>
+				<tr> <th>Select</th> <th>Item</th> <th>In Stock</th> <th>Favorite</th> <th>Details</th> <th>Qty</th> <th>Link</th> <th>Drop</th> </tr>
 			</thead>
 			<tbody>
 				<tr> 
@@ -121,6 +136,8 @@
 					<td class="center"><input type="checkbox" tabindex="-1"></td>
 					<td class="stretch"><input type="text" tabindex="-1"></td>
 					<td class="stretch"><input type="number" min="0" value="0" tabindex="-1"></td>
+					<td class="center"><a href='http://google.com' target='_blank' tabindex='-1'>link</a></td>
+					<td class="stretch"><select tabindex="-1"><option>a</option><option>b</option></select></td>
 				</tr>
 				</tr>
 			</tbody>
