@@ -86,9 +86,9 @@ $.ui.fancytree.registerExtension({
 	},
 	nodeRenderTitle: function(ctx, title) {
 	},
-	nodeSetActive: function(ctx, flag, opts) {
+	nodeSetActive: function(ctx, flag, callOpts) {
 	},
-	nodeSetExpanded: function(ctx, flag, opts) {
+	nodeSetExpanded: function(ctx, flag, callOpts) {
 	},
 	nodeSetFocus: function(ctx) {
 	},

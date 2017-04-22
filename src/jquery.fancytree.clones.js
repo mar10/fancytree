@@ -446,7 +446,7 @@ $.ui.fancytree.registerExtension({
 		}
 		return res;
 	},
-	nodeSetActive: function(ctx, flag) {
+	nodeSetActive: function(ctx, flag, callOpts) {
 		var res,
 			scpn = ctx.tree.statusClassPropName,
 			node = ctx.node;

@@ -142,7 +142,7 @@ $.ui.fancytree.registerExtension({
 			}
 		});
 	},
-	nodeSetActive: function(ctx, flag) {
+	nodeSetActive: function(ctx, flag, callOpts) {
 		var $outer,
 			opts = ctx.options.gridnav,
 			node = ctx.node,
