@@ -7,9 +7,11 @@
 	<script src="../lib/jquery.js"></script>
 	<script src="../lib/jquery-ui.custom.js"></script>
 
-	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet">
+<!-- 	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet"> -->
+	<link href="../src/skin-lion/ui.fancytree.css" rel="stylesheet">
 	<script src="../src/jquery.fancytree.js"></script>
 	<script src="../src/jquery.fancytree.table.js"></script>
+	<script src="../src/jquery.fancytree.ariagrid.js"></script>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
 	<link href="../lib/prettify.css" rel="stylesheet">
@@ -22,36 +24,62 @@
 /*		table.fancytree-container {
 			width: 90%;
 		}*/
+		td.stretch input,
+		td.stretch select {
+			box-sizing: border-box;
+			margin: 2px;
+			width: 100%;
+		}
+		td.center {
+			text-align: center;
+		}
+		table.fancytree-cell-mode > tbody > tr.fancytree-active {
+			outline: 2px solid #26a0da;
+		}
+		table.fancytree-cell-mode > tbody > tr.fancytree-active > td {
+			background-color: white;
+		}
+		table.fancytree-cell-mode > tbody > tr > td.fancytree-active-cell {
+			outline: 1px solid #26a0da;
+			outline: 2px dotted red;
+			background-color: #cbe8f6;
+		}
+		td.fancytree-node[tabindex="-1"] {
+			border: 2px dotted green;
+		}
 	</style>
 
 	<script type="text/javascript">
 		$(function(){
 			$("#treegrid").fancytree({
-				extensions: ["table"],
+				extensions: ["table", "ariagrid"],
 				aria: true,
+				// rtl: true,
 				checkbox: true,
-				quicksearch: true,
+//				quicksearch: true,
 				source: {url: "ajax-tree-products.json"},
 				table: {
 					checkboxColumnIdx: 0,  // render the checkboxes into the 1st column
 					nodeColumnIdx: 1       // render the node title into the 2nd column
 				},
-				keydown: function(event, data) {
-					// WAI-ARIA suggests that numpad '*' expands all siblings at
-					// the current node's level.
-					switch( $.ui.fancytree.eventToString(event) ) {
-						case "*":
-							$.each(data.node.parent.children, function(i, node){
-								node.setExpanded({noAnimation: true, noEvents: false});
-							});
-							break;
-					};
+				ariagrid: {
+					cellFocus: "start",
+					magicEnter: true 
 				},
 				renderColumns: function(event, data) {
 					var node = data.node,
 						$tdList = $(node.tr).find(">td");
 
-					$tdList.eq(2).text(node.getIndexHier());
+					// The row template inserts controls, so we have to remove 
+					// them herer for folders:
+					if( node.isFolder() ) {
+						$tdList.eq(2).empty();	
+						$tdList.eq(3).empty();	
+						$tdList.eq(5).empty();	
+						$tdList.eq(6).empty();	
+						$tdList.eq(7).empty();	
+					}
+					$tdList.eq(4).text("Lorem ipsum " + node.title);
 				}
 			});
 		});
@@ -59,15 +87,23 @@
 </head>
 
 <body class="example">
-	<h1>Example: WAI-ARIA Tree Grid</h1>
+	<h1>Example: WAI-ARIA Tree Grid - Prototype</h1>
 	<div class="description">
 		<p>
-			This Fancytree Tree Grid has
-			<a href="https://www.w3.org/TR/wai-aria-practices/#TreeGrid">WAI-ARIA</a>
-			enabled.<br>
+			This Fancytree Tree Grid has uses a prototypical extension to 
+			explore ARIA support as discussed here:<br>
+			<a href="https://cdn.rawgit.com/aleventhal/treegrid-tab-active-cells/0.1.10/treegrid.html">
+				aleventhal/treegrid-tab-active-cells
+			</a>
+			<br>
+			and here
+			<a href="https://cdn.rawgit.com/w3c/aria-practices/treegrid/examples/treegrid/treegrid-row-nav-primary-1.html">
+				w3c/aria-practices/treegrid
+			</a>
+		</p><p>
 			<strong>Note:</strong> please
 			<a href="https://github.com/mar10/fancytree/issues/655">provide feedback</a>
-			if you have suggestions for improvement.
+			if you have suggestions for improvement on the Fancytree implementation.
 		</p>
 		<p>
 			See also the <a href="sample-aria.html">ARIA Tree View example</a>.
@@ -76,18 +112,34 @@
 
 <!-- 	<div role="application"> -->
 	<div>
-		<label for="lblBefore">Text 1<input type="text" id="lblBefore"></label>
+		<label for="lblBefore">Text 1<input autofocus type="text" id="lblBefore"></label>
 
 		<table id="treegrid">
 			<colgroup>
+			<col width="20px"></col>
+			<col width="400px"></col>
+			<col width="30px"></col>
 			<col width="30px"></col>
 			<col width="400px"></col>
 			<col width="100px"></col>
+			<col width="100px"></col>
+			<col width="100px"></col>
 			</colgroup>
 			<thead>
-				<tr> <th></th> <th>Item</th> <th>Index</th> </tr>
+				<tr> <th>Select</th> <th>Item</th> <th>In Stock</th> <th>Favorite</th> <th>Details</th> <th>Qty</th> <th>Link</th> <th>Drop</th> </tr>
 			</thead>
 			<tbody>
+				<tr> 
+					<td class="center">></td>
+					<td></td>
+					<td class="center"><input type="checkbox" tabindex="-1"></td>
+					<td class="center"><input type="checkbox" tabindex="-1"></td>
+					<td class="stretch"><input type="text" tabindex="-1"></td>
+					<td class="stretch"><input type="number" min="0" value="0" tabindex="-1"></td>
+					<td class="center"><a href='http://google.com' target='_blank' tabindex='-1'>link</a></td>
+					<td class="stretch"><select tabindex="-1"><option>a</option><option>b</option></select></td>
+				</tr>
+				</tr>
 			</tbody>
 		</table>
 

@@ -320,7 +320,7 @@ $.ui.fancytree.registerExtension({
 		// Init the tree
 		return this._superApply(arguments);
 	},
-	nodeSetActive: function(ctx, flag, opts) {
+	nodeSetActive: function(ctx, flag, callOpts) {
 		var res,
 			local = this._local;
 
@@ -332,7 +332,7 @@ $.ui.fancytree.registerExtension({
 		}
 		return res;
 	},
-	nodeSetExpanded: function(ctx, flag, opts) {
+	nodeSetExpanded: function(ctx, flag, callOpts) {
 		var res,
 			node = ctx.node,
 			local = this._local;

@@ -260,7 +260,7 @@ $.ui.fancytree.registerExtension({
 		}
 		return this._superApply(arguments);
 	},
-	nodeSetActive: function(ctx, flag) {
+	nodeSetActive: function(ctx, flag, callOpts) {
 		var node = ctx.node,
 			$rightNode = $(node.tr),
 			$leftNode = $rightNode.data("fancytree-node-counterpart");
@@ -320,7 +320,7 @@ $.ui.fancytree.registerExtension({
 
 		return res;
 	},
-	nodeSetExpanded: function(ctx, flag, opts) {
+	nodeSetExpanded: function(ctx, flag, callOpts) {
 		var res,
 			_this = this,
 			node = ctx.node,

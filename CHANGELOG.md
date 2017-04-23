@@ -4,6 +4,9 @@
 # 2.22.1 / 2017-04-21
   * [Fixed] #722 Fix regression with addChild performance improvements (#708)
 
+# BRANCH aria-grid / Unreleased
+  * [Added] `ext-ariagrid` (experimental)
+
 # 2.22.0 / 2017-04-11
   * [Added] ext-dnd5 now part of standard distribution
   * [Added] #693 ext-dnd/dnd5: configurable drop marker offset

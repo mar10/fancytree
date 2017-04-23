@@ -3636,7 +3636,8 @@ $.extend(Fancytree.prototype,
 	 */
 	nodeRenderStatus: function(ctx) {
 		// Set classes for current status
-		var node = ctx.node,
+		var $ariaElem,
+			node = ctx.node,
 			tree = ctx.tree,
 			opts = ctx.options,
 //			nodeContainer = node[tree.nodeContainerAttrName],
@@ -3644,7 +3645,7 @@ $.extend(Fancytree.prototype,
 			isLastSib = node.isLastSibling(),
 			aria = opts.aria,
 			// $ariaElem = aria ? $(node[tree.ariaPropName]) : null,
-			$ariaElem = $(node.span).find(".fancytree-title"),
+			// $ariaElem = $(node.span).find(".fancytree-title"),
 			cn = opts._classNames,
 			cnList = [],
 			statusElem = node[tree.statusClassPropName];
@@ -3652,6 +3653,9 @@ $.extend(Fancytree.prototype,
 		if( !statusElem || tree._enableUpdate === false ){
 			// if this function is called for an unrendered node, ignore it (will be updated on nect render anyway)
 			return;
+		}
+		if( aria ) {
+			$ariaElem = node.tr ? $(node.tr) : $(node.span).find(".fancytree-title");
 		}
 		// Build a list of class names that we will add to the node <span>
 		cnList.push(cn.node);
@@ -3671,6 +3675,7 @@ $.extend(Fancytree.prototype,
 		}else if(aria){
 			// $ariaElem.removeAttr("aria-activedescendant");
 		}
+		// node.debug("aria", node.expanded, aria, $ariaElem);
 		if( node.expanded ){
 			cnList.push(cn.expanded);
 			if(aria){

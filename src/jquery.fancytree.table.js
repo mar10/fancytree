@@ -373,7 +373,7 @@ $.ui.fancytree.registerExtension({
 		// $(node.span).css({marginLeft: indent + "px"});
 	 },
 	/* Expand node, return Deferred.promise. */
-	nodeSetExpanded: function(ctx, flag, opts) {
+	nodeSetExpanded: function(ctx, flag, callOpts) {
 		// flag defaults to true
 		flag = (flag !== false);
 
@@ -383,35 +383,35 @@ $.ui.fancytree.registerExtension({
 		}
 
 		var dfd = new $.Deferred(),
-			subOpts = $.extend({}, opts, {noEvents: true, noAnimation: true});
+			subOpts = $.extend({}, callOpts, {noEvents: true, noAnimation: true});
 
-		opts = opts || {};
+		callOpts = callOpts || {};
 
 		function _afterExpand(ok) {
 			setChildRowVisibility(ctx.node, flag);
 			if( ok ) {
-				if( flag && ctx.options.autoScroll && !opts.noAnimation && ctx.node.hasChildren() ) {
+				if( flag && ctx.options.autoScroll && !callOpts.noAnimation && ctx.node.hasChildren() ) {
 					// Scroll down to last child, but keep current node visible
 					ctx.node.getLastChild().scrollIntoView(true, {topNode: ctx.node}).always(function(){
-						if( !opts.noEvents ) {
+						if( !callOpts.noEvents ) {
 							ctx.tree._triggerNodeEvent(flag ? "expand" : "collapse", ctx);
 						}
 						dfd.resolveWith(ctx.node);
 					});
 				} else {
-					if( !opts.noEvents ) {
+					if( !callOpts.noEvents ) {
 						ctx.tree._triggerNodeEvent(flag ? "expand" : "collapse", ctx);
 					}
 					dfd.resolveWith(ctx.node);
 				}
 			} else {
-				if( !opts.noEvents ) {
+				if( !callOpts.noEvents ) {
 					ctx.tree._triggerNodeEvent(flag ? "expand" : "collapse", ctx);
 				}
 				dfd.rejectWith(ctx.node);
 			}
 		}
-		// Call base-expand with disabled  events and animation
+		// Call base-expand with disabled events and animation
 		this._super(ctx, flag, subOpts).done(function () {
 			_afterExpand(true);
 		}).fail(function () {
