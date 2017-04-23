@@ -1,8 +1,11 @@
 /*!
  * jquery.fancytree.ariagrid.js
  *
- * Support keyboard navigation for trees with embedded input controls.
+ * Support ARIA compliant markup and keyboard navigation for tree grids with
+ * embedded input controls.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
+ *
+ * Note: this extension also requires `ext-table` to be active.
  *
  * Copyright (c) 2008-2017, Martin Wendt (http://wwWendt.de)
  *
@@ -296,7 +299,6 @@ $.ui.fancytree.registerExtension({
 
 		if( node.parent ) {
 			// TODO: remove aria-labelledby (set by core)?
-			// FIXME: aria-labelledby does not match ID of title span
 			// TODO: consider moving this code to core (if aria: true)
 			$tr
 				.attr("aria-level", node.getLevel())
