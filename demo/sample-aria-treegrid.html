@@ -33,6 +33,9 @@
 		td.center {
 			text-align: center;
 		}
+		table.fancytree-container > thead > tr > th {
+			background-color: #cbe8f6;
+		}
 		table.fancytree-cell-mode > tbody > tr.fancytree-active {
 			outline: 2px solid #26a0da;
 		}
@@ -44,8 +47,12 @@
 			outline: 2px dotted red;
 			background-color: #cbe8f6;
 		}
-		td.fancytree-node[tabindex="-1"] {
-			border: 2px dotted green;
+		/* Debug helpers: */		
+		[tabindex="-1"] {
+			border: 2px dotted green !important;
+		}
+		[tabindex="0"] {
+			border: 2px dotted red !important;
 		}
 	</style>
 
