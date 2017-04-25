@@ -692,29 +692,32 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	_changeSelectStatusAttrs: function (state) {
 		var changed = false;
 
-		switch(state){
-		case false:
-			changed = ( this.selected || this.partsel );
-			this.selected = false;
-			this.partsel = false;
-			break;
-		case true:
-			changed = ( !this.selected || !this.partsel );
-			this.selected = true;
-			this.partsel = true;
-			break;
-		case undefined:
-			changed = ( this.selected || !this.partsel );
-			this.selected = false;
-			this.partsel = true;
-			break;
-		default:
-			_assert(false, "invalid state: " + state);
-		}
-		// this.debug("fixSelection3AfterLoad() _changeSelectStatusAttrs()", state, changed);
-		if( changed ){
-			this.renderStatus();
-		}
+                if(this.unselectable === undefined || !this.unselectable) {
+
+                    switch(state){
+                    case false:
+                            changed = ( this.selected || this.partsel );
+                            this.selected = false;
+                            this.partsel = false;
+                            break;
+                    case true:
+                            changed = ( !this.selected || !this.partsel );
+                            this.selected = true;
+                            this.partsel = true;
+                            break;
+                    case undefined:
+                            changed = ( this.selected || !this.partsel );
+                            this.selected = false;
+                            this.partsel = true;
+                            break;
+                    default:
+                            _assert(false, "invalid state: " + state);
+                    }
+                    // this.debug("fixSelection3AfterLoad() _changeSelectStatusAttrs()", state, changed);
+                    if( changed ){
+                            this.renderStatus();
+                    }
+                }
 		return changed;
 	},
 	/**
