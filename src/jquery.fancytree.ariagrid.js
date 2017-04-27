@@ -5,7 +5,7 @@
  * embedded input controls.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Note: this extension also requires `ext-table` to be active.
+ * @requires ext-table
  *
  * Copyright (c) 2008-2017, Martin Wendt (http://wwWendt.de)
  *
@@ -26,9 +26,26 @@
     - https://rawgit.com/w3c/aria-practices/treegrid/examples/treegrid/treegrid-row-nav-primary-1.html
     - https://github.com/mar10/fancytree/issues/709
 
-  - TODO: enable treeOpts.aria by default
+  TODO:
+
+  - remove 'id=ftal_...'? No lonmgre needed, since aria-labelledby was removed
+
+
+  - Use aria-expanded on the row except in the cellFocus=force case, in which
+    case it should be on the title cell
+    Make sure the aria-expanded is not present when the row has no children
+    Mirror aria-expanded from each row to the cell with the expander
+  - When the tree/grid is multiselectable, use aria-multiselectable="true" on the tree/treegrid element
+  - When a cell has a single focusable widget, the aria-activedescendant should 
+    point to the widget instead of the parent
+   
+  - If rows are hidden I suggest aria-hidden="true" on them (may be optional)
+    aria-hidden currently not set (instead style="display: none")
+    (needs to be added to ext-table)
+
+  - enable treeOpts.aria by default
     (requires some benchmarks, confirm it does not affect performance too much)
-  - TODO: make ext-ariagrid part of ext-table (enable behavior with treeOpts.aria option)
+  - make ext-ariagrid part of ext-table (enable behavior with treeOpts.aria option)
     (Requires stable specification)
 */
 
@@ -314,7 +331,6 @@ $.ui.fancytree.registerExtension({
 		res = this._super(ctx);
 
 		if( node.parent ) {
-			// TODO: consider moving this code to core (if aria: true):
 			$tr
 				.attr("aria-level", node.getLevel())
 				.attr("aria-setsize", node.parent.children.length)
@@ -325,7 +341,13 @@ $.ui.fancytree.registerExtension({
 			} else {
 				$tr.removeAttr("aria-hidden");
 			}
-			// TODO: remove aria-labelledby (set by core) or even remove it from core?
+			this.debug("nodeRenderStatus: " + this.$activeTd + ", " + $tr.attr("aria-expanded"));
+			if( this.$activeTd && $tr.attr("aria-expanded") != null ) {
+				$tr.remove("aria-expanded");
+				$tr.find("td").eq(this.nodeColumnIdx).attr("aria-expanded", node.isExpanded());
+			} else {
+				$tr.find("td").eq(this.nodeColumnIdx).removeAttr("aria-expanded");
+			}
 			// TODO: move or mirror aria-expanded attribute from TR to node-span or its parent TD?
 		}
 		return res;

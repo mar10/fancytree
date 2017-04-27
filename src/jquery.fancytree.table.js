@@ -266,9 +266,9 @@ $.ui.fancytree.registerExtension({
 					node.tr.id = opts.idPrefix + node.key;
 				}
 				node.tr.ftnode = node;
-				if(opts.aria){
-					$(node.tr).attr("aria-labelledby", "ftal_" + opts.idPrefix + node.key);
-				}
+				// if(opts.aria){
+				// 	$(node.tr).attr("aria-labelledby", "ftal_" + opts.idPrefix + node.key);
+				// }
 				node.span = $("span.fancytree-node", node.tr).get(0);
 				// Set icon, link, and title (normally this is only required on initial render)
 				this.nodeRenderTitle(ctx);

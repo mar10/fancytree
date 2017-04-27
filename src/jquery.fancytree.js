@@ -3401,10 +3401,9 @@ $.extend(Fancytree.prototype,
 				}
 				node.span = document.createElement("span");
 				node.span.className = "fancytree-node";
-				if(aria){
-					$(node.li).attr("aria-labelledby", "ftal_" + opts.idPrefix + node.key);
-					// $(node.span).attr("aria-labelledby", "ftal_" + opts.idPrefix + node.key);
-				}
+				// if(aria){
+				// 	$(node.li).attr("aria-labelledby", "ftal_" + opts.idPrefix + node.key);
+				// }
 				node.li.appendChild(node.span);
 
 				// Create inner HTML for the <span> (expander, checkbox, icon, and title)
