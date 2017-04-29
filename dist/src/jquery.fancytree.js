@@ -7,8 +7,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.22.1
- * @date 2017-04-21T05:55:46Z
+ * @version 2.22.2
+ * @date 2017-04-29T07:05:13Z
  */
 
 /** Core Fancytree module.
@@ -441,8 +441,9 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			// insert nodeList after children[pos]
 			this.children.splice.apply(this.children, [pos, 0].concat(nodeList));
 		}
-		if ( origFirstChild ) {
-			// Fast path -- don't render every child of root, just the new ones!
+		if ( origFirstChild && !insertBefore ) {
+			// #708: Fast path -- don't render every child of root, just the new ones!
+			// #723, #729: but only if it's appended to an existing child list
 			for(i=0, l=nodeList.length; i<l; i++) {
 				nodeList[i].render();   // New nodes were never rendered before
 			}
@@ -4689,7 +4690,7 @@ $.extend($.ui.fancytree,
 	/** @lends Fancytree_Static# */
 	{
 	/** @type {string} */
-	version: "2.22.1",      // Set to semver by 'grunt release'
+	version: "2.22.2",      // Set to semver by 'grunt release'
 	/** @type {string} */
 	buildType: "production", // Set to 'production' by 'grunt build'
 	/** @type {int} */
