@@ -2163,22 +2163,22 @@ function Fancytree(widget) {
 	if(this.options.debugLevel == null){
 		this.options.debugLevel = FT.debugLevel;
 	}
-	// Add container to the TAB chain
-	// See http://www.w3.org/TR/wai-aria-practices/#focus_activedescendant
-	// #577: Allow to set tabindex to "0", "-1" and ""
-	this.$container.attr("tabindex", this.options.tabindex);
+	// // Add container to the TAB chain
+	// // See http://www.w3.org/TR/wai-aria-practices/#focus_activedescendant
+	// // #577: Allow to set tabindex to "0", "-1" and ""
+	// this.$container.attr("tabindex", this.options.tabindex);
 
-	if( this.options.rtl ) {
-		this.$container.attr("DIR", "RTL").addClass("fancytree-rtl");
-	// }else{
-	//	this.$container.attr("DIR", null).removeClass("fancytree-rtl");
-	}
-	if(this.options.aria){
-		this.$container.attr("role", "tree");
-		if( this.options.selectMode !== 1 ) {
-			this.$container.attr("aria-multiselectable", true);
-		}
-	}
+	// if( this.options.rtl ) {
+	// 	this.$container.attr("DIR", "RTL").addClass("fancytree-rtl");
+	// // }else{
+	// //	this.$container.attr("DIR", null).removeClass("fancytree-rtl");
+	// }
+	// if(this.options.aria){
+	// 	this.$container.attr("role", "tree");
+	// 	if( this.options.selectMode !== 1 ) {
+	// 		this.$container.attr("aria-multiselectable", true);
+	// 	}
+	// }
 }
 
 
@@ -4204,7 +4204,26 @@ $.extend(Fancytree.prototype,
 	 * @param {EventData} ctx
 	 */
 	treeInit: function(ctx) {
+		var tree = ctx.tree,
+			opts = tree.options;
+
 		//this.debug("Fancytree.treeInit()");
+		// Add container to the TAB chain
+		// See http://www.w3.org/TR/wai-aria-practices/#focus_activedescendant
+		// #577: Allow to set tabindex to "0", "-1" and ""
+		tree.$container.attr("tabindex", opts.tabindex);
+
+		if( opts.rtl ) {
+			tree.$container.attr("DIR", "RTL").addClass("fancytree-rtl");
+		}else{
+			tree.$container.removeAttr("DIR").removeClass("fancytree-rtl");
+		}
+		if( opts.aria ){
+			tree.$container.attr("role", "tree");
+			if( opts.selectMode !== 1 ) {
+				tree.$container.attr("aria-multiselectable", true);
+			}
+		}
 		this.treeLoad(ctx);
 	},
 	/** Parse Fancytree from source, as configured in the options.
@@ -4341,7 +4360,7 @@ $.extend(Fancytree.prototype,
 			break;
 		case "rtl":
 			if( value === false ) {
-				tree.$container.attr("DIR", null).removeClass("fancytree-rtl");
+				tree.$container.removeAttr("DIR").removeClass("fancytree-rtl");
 			}else{
 				tree.$container.attr("DIR", "RTL").addClass("fancytree-rtl");
 			}

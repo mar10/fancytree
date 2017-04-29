@@ -28,16 +28,20 @@
 
   TODO:
 
-  - remove 'id=ftal_...'? No lonmgre needed, since aria-labelledby was removed
+  - remove 'id=ftal_...'? No longer needed, since aria-labelledby was removed
 
+  - Where should we put the cell focu: TD or embeddcheckbox?
 
   - Use aria-expanded on the row except in the cellFocus=force case, in which
     case it should be on the title cell
     Make sure the aria-expanded is not present when the row has no children
     Mirror aria-expanded from each row to the cell with the expander
+  
   - When the tree/grid is multiselectable, use aria-multiselectable="true" on the tree/treegrid element
+
   - When a cell has a single focusable widget, the aria-activedescendant should 
     point to the widget instead of the parent
+    @@
    
   - If rows are hidden I suggest aria-hidden="true" on them (may be optional)
     aria-hidden currently not set (instead style="display: none")
@@ -56,7 +60,8 @@
 
 // Allow these navigation keys even when input controls are focused
 
-var	clsFancytreeActiveCell = "fancytree-active-cell",
+var FT = $.ui.fancytree,
+	clsFancytreeActiveCell = "fancytree-active-cell",
 	// TODO: define attribute- and class-names for better compression
 	// Define which keys are handled by embedded control, and should *not* be 
 	// passed to tree navigation handler:
@@ -153,15 +158,13 @@ function findNeighbourTd(tree, $target, keyCode){
 			}
 			break;
 		case "home":
-			// TODO: rtl
-			$tdNext = $tr.children("td").first();
+			$tdNext = treeOpts.rtl ? $tr.children("td").last() : $tr.children("td").first();
 			break;
 		case "end":
-			// TODO: rtl
-			$tdNext = $tr.children("td").last();
+			$tdNext = treeOpts.rtl ? $tr.children("td").first() : $tr.children("td").last();
 			break;
 	}
-	return $tdNext;
+	return $tdNext.length ? $tdNext : null;
 }
 
 /**
@@ -181,9 +184,10 @@ $.ui.fancytree._FancytreeClass.prototype.activateCell = function($td) {
 		$prevTr = $prevTd ? $prevTd.closest("tr") : null;
 
 	this.debug("activateCell: " + ($prevTd ? $prevTd.text() : "null") +
-		" -> " + ($td ? $td.text() : "null"));
+		" -> " + ($td ? $td.text() : "OFF"));
 
-	if( $td && $td.length ) {
+	if( $td ) {
+		FT.assert($td.length);
 		this.$container.addClass("fancytree-cell-mode");
 		$tr = $td.closest("tr");
 		if( $prevTd ) {
@@ -192,10 +196,15 @@ $.ui.fancytree._FancytreeClass.prototype.activateCell = function($td) {
 				return;
 			}
 			$prevTd
-				// .removeAttr("tabindex")
+				.removeAttr("tabindex")
 				.removeClass(clsFancytreeActiveCell);
+
 			if( !$prevTr.is($tr) ) {
-				$.ui.fancytree.getNode($td).setActive();
+				// We are moving to a different row: only the inputs in the 
+				// active row should be tabbable
+				$tr.find(">td :input,a").attr("tabindex", "0");
+				$prevTr.find(">td :input,a").attr("tabindex", "-1");
+				FT.getNode($td).setActive();
 			}
 			// tree.$activeTd.find(":focus").blur();
 		} else {
@@ -205,10 +214,10 @@ $.ui.fancytree._FancytreeClass.prototype.activateCell = function($td) {
 		this.$activeTd = $td;
 
 		$input = $td.find(":input:enabled,a");
-		if( $input.length ) {
+		if( this.options.ariagrid.autoFocusInput && $input.length ) {
 			$input.focus();
 		} else {
-			// $td.attr("tabindex", "0").focus();
+			$td.attr("tabindex", "-1").focus();
 			// tree.$container.focus();
 		}
 	} else {
@@ -223,6 +232,8 @@ $.ui.fancytree._FancytreeClass.prototype.activateCell = function($td) {
 			$prevTr.find("td").blur().removeAttr("tabindex");
 			$prevTr.find(":input:enabled,a").attr("tabindex", "-1");
 			this.$activeTd = null;
+			// In row-mode, inputs of the active row are tabbable
+			$prevTr.find(">td :input,a").attr("tabindex", "-1");
 			// The cell lost focus, but the tree still needs to capture keys:
 			this.setFocus();
 		} else {
@@ -240,10 +251,12 @@ $.ui.fancytree.registerExtension({
 	version: "@VERSION",
 	// Default options for this extension.
 	options: {
+		autoFocusInput: false,
+		// activateCellOnClick: true,
 		cellFocus: "allow",
-		// TODO: allow custom behavior?
-		// enterMode: "default",
-		// escapaMode: "default",
+		// TODO: document `defaultCellAction` event
+		// enterMode: "default"
+		// escapaMode: "ignore",
 		// TODO: use a global tree option `name` or `title` instead?:
 		label: "Tree Grid"  // Added as `aria-label` attribute
 	},
@@ -264,7 +277,8 @@ $.ui.fancytree.registerExtension({
 		this.$container
 			.addClass("fancytree-ext-ariagrid")
 			.attr("aria-label", "" + opts.label);
-		this.$container.find("thead > tr > th").attr("role", "columnheader");
+		this.$container.find("thead > tr > th")
+			.attr("role", "columnheader");
 
 		this.nodeColumnIdx = treeOpts.table.nodeColumnIdx;
 		this.checkboxColumnIdx = treeOpts.table.checkboxColumnIdx;
@@ -274,7 +288,7 @@ $.ui.fancytree.registerExtension({
 
 		// Activate node if embedded input gets focus (due to a click)
 		this.$container.on("focusin", function(event){
-			var node = $.ui.fancytree.getNode(event.target),
+			var node = FT.getNode(event.target),
  				$td = $(event.target).closest("td");
 
 			tree.debug("focusin: " + (node ? node.title : "null") +
@@ -317,10 +331,25 @@ $.ui.fancytree.registerExtension({
 		// 	_activateCell(this, $td);
 		// }
 		if( tree.$activeTd ) {
-			// If in cell-mode, activate new cell
+			// If already in cell-mode, activate new cell
 			tree.activateCell($td);
 			return false;
 		}
+		return this._super(ctx);
+	},
+	nodeDblclick: function(ctx) {
+		var //targetType = ctx.targetType,
+			tree = ctx.tree,
+			// node = ctx.node,
+			$td = $(event.target).closest("td");
+
+		// console.log("nodeDblclick", tree.$activeTd, ctx.options.ariagrid.cellFocus)
+		if( !tree.$activeTd && ctx.options.ariagrid.cellFocus === "allow" ) {
+			// If in row-mode, activate new cell
+			tree.activateCell($td);
+			return false;
+		}
+		return this._super(ctx);
 	},
 	nodeRenderStatus: function(ctx) {
 		// Set classes for current status
@@ -342,20 +371,21 @@ $.ui.fancytree.registerExtension({
 				$tr.removeAttr("aria-hidden");
 			}
 			this.debug("nodeRenderStatus: " + this.$activeTd + ", " + $tr.attr("aria-expanded"));
+			// In cell-mode, move aria-expanded attribute from TR to its parent TD
 			if( this.$activeTd && $tr.attr("aria-expanded") != null ) {
 				$tr.remove("aria-expanded");
 				$tr.find("td").eq(this.nodeColumnIdx).attr("aria-expanded", node.isExpanded());
 			} else {
 				$tr.find("td").eq(this.nodeColumnIdx).removeAttr("aria-expanded");
 			}
-			// TODO: move or mirror aria-expanded attribute from TR to node-span or its parent TD?
 		}
 		return res;
 	},
 	nodeSetActive: function(ctx, flag, callOpts) {
 		var node = ctx.node,
-			tree = ctx.tree,
-			$tr = $(node.tr);
+			tree = ctx.tree
+			// $tr = $(node.tr)
+			;
 			//event = ctx.originalEvent || {},
 			//triggeredByInput = $(event.target).is(":input");
 
@@ -363,7 +393,7 @@ $.ui.fancytree.registerExtension({
 		node.debug("nodeSetActive(" + flag + ")");
 
 		if( flag && callOpts && callOpts.cell ) {
-			// TODO: `cell` may be an col-index, <td>, or `$(td)`
+			// TODO: `cell` may be a col-index, <td>, or `$(td)`
 			tree.activateCell(callOpts.cell);
 			return;
 		}
@@ -375,29 +405,44 @@ $.ui.fancytree.registerExtension({
 		//   - embedded inputs and <a> tags have tabindex "-1" for active row, "0" otherwise
 		// TODO: should we only consider input:enabled?
 
-		if( flag ){
-			$tr.attr("tabindex", "0");
-			$tr.find(">td :input,a").attr("tabindex", "0");
-			// $tr.find(">td:not(:has(:input,a))").attr("tabindex", "0");
-		} else {
-			// Only active row is tabbable: 
-			// this._local._activateCell(null);
-			// $tr.find("td").removeAttr("tabindex");
-			$tr.attr("tabindex", "-1");
-			$tr.find(">td :input,a").attr("tabindex", "-1");
-		}
+		// if( this.$activeTd ) {
+		// 	if( flag ){
+		// 		// $tr.attr("tabindex", "0");
+		// 		$tr.find(">td :input,a").attr("tabindex", "0");
+		// 		// $tr.find(">td:not(:has(:input,a))").attr("tabindex", "0");
+		// 	} else {
+		// 		// Only active row is tabbable: 
+		// 		// this._local._activateCell(null);
+		// 		// $tr.find("td").removeAttr("tabindex");
+		// 		// $tr.attr("tabindex", "-1");
+		// 		$tr.find(">td :input,a").attr("tabindex", "-1");
+		// 	}
+		// } else {
+		// 	if( flag ){
+		// 		// $tr.attr("tabindex", "0");
+		// 		$tr.find(">td :input,a").attr("tabindex", "0");
+		// 		// $tr.find(">td:not(:has(:input,a))").attr("tabindex", "0");
+		// 	} else {
+		// 		// Only active row is tabbable: 
+		// 		// this._local._activateCell(null);
+		// 		// $tr.find("td").removeAttr("tabindex");
+		// 		// $tr.attr("tabindex", "-1");
+		// 		$tr.find(">td :input,a").attr("tabindex", "-1");
+		// 	}
+		// }
 	},
 	nodeKeydown: function(ctx) {
-		var colIdx, handleKeys, inputType, $td,
+		var handleKeys, inputType, $td,
 			tree = ctx.tree,
 			node = ctx.node,
 			treeOpts = ctx.options,
 			opts = treeOpts.ariagrid,
 			event = ctx.originalEvent,
-			eventString = $.ui.fancytree.eventToString(event),
+			eventString = FT.eventToString(event),
 			$target = $(event.target),
 			$activeTd = this.$activeTd,
-			$activeTr = $activeTd ? $activeTd.closest("tr") : null;
+			$activeTr = $activeTd ? $activeTd.closest("tr") : null,
+			colIdx = $activeTd ? getColIdx($activeTr, $activeTd) : -1;
 
 		if( $target.is(":input:enabled") ) {
 			inputType = $target.prop("type");
@@ -445,6 +490,8 @@ $.ui.fancytree.registerExtension({
 			if( $activeTd ) {
 				// Cell mode: move to neighbour
 				$td = findNeighbourTd(tree, $activeTd, eventString);
+				// Note: $td may be null if we move outside bounds. In this case
+				// we switch back to row-mode
 				tree.activateCell($td);
 				return false;
 			}
@@ -460,8 +507,15 @@ $.ui.fancytree.registerExtension({
 			break;
 
 		case "return":
+			// If we don't focus embedded inputs by default, we do it as default action
+			if( $activeTd && !opts.autoFocusInput && !inputType && $target.has(":input:enabled") ) {
+				$target.find(":input:enabled").focus();
+				return false;
+			}
+			if( tree._triggerNodeEvent("defaultCellAction", node, event, {activeTd: tree.$activeTd, colIdx: colIdx}) === false ) {
+				return false;
+			}
 			if( $activeTd ) {
-				colIdx = getColIdx($activeTr, $activeTd);
 				// Apply 'default action' for embedded cell control
 				if( colIdx === this.nodeColumnIdx ) {
 					node.toggleExpanded();
@@ -472,7 +526,7 @@ $.ui.fancytree.registerExtension({
 				} else if( $activeTd.find(":checkbox:enabled").length ) {
 					$activeTd.find(":checkbox:enabled").click();
 					return false;
-				} else if( inputType === "link" ) {
+				} else if( $activeTd.find("a").length ) {
 					$activeTd.find("a")[0].click();
 					return false;
 				}
@@ -485,7 +539,7 @@ $.ui.fancytree.registerExtension({
 			}
 			break;
 		case "space":
-			if( $activeTd && getColIdx($(node.tr), $activeTd) !== this.checkboxColumnIdx ) {
+			if( $activeTd && colIdx !== this.checkboxColumnIdx ) {
 				// make sure we don't select whole row in cell-mode, unless the
 				// checkbox cell is active
 				return;  // no default handling

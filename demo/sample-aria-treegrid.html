@@ -70,8 +70,10 @@
 					nodeColumnIdx: 1       // render the node title into the 2nd column
 				},
 				ariagrid: {
-					cellFocus: "start",
-					magicEnter: true 
+					cellFocus: "allow"
+				},
+				defaultCellAction: function(event, data) {
+					console.log(event.type, data);
 				},
 				renderColumns: function(event, data) {
 					var node = data.node,
