@@ -4448,9 +4448,9 @@ $.widget("ui.fancytree",
 		scrollParent: null,
 		selectMode: 2,
 		strings: {
-			loading: "Loading&#8230;",
+			loading: "Loading...",  // &#8230; would be escaped when escapeTitles is true
 			loadError: "Load error!",
-			moreData: "More&#8230;",
+			moreData: "More...",
 			noData: "No data."
 		},
 		tabindex: "0",
