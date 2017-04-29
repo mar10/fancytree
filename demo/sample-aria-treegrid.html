@@ -34,30 +34,46 @@
 			text-align: center;
 		}
 		table.fancytree-container > thead > tr > th {
-			background-color: #cbe8f6;
+			background-color: #d4d4d4;
 		}
+/*
 		table.fancytree-cell-mode > tbody > tr.fancytree-active {
 			outline: 2px solid #26a0da;
 		}
+*/
 		table.fancytree-cell-mode > tbody > tr.fancytree-active > td {
-			background-color: white;
+			/*background-color: #cbe8f6;*/
+			background-color: #eee;
 		}
 		table.fancytree-cell-mode > tbody > tr > td.fancytree-active-cell {
-			outline: 1px solid #26a0da;
-			outline: 2px dotted red;
-			background-color: #cbe8f6;
+/*			outline: 1px solid #26a0da;
+			outline: 2px dotted red;*/
+			background-color: #3875d7;
 		}
 		/* Debug helpers: */		
 		[tabindex="-1"] {
-			border: 2px dotted green !important;
+			outline: 2px dotted green !important;
 		}
 		[tabindex="0"] {
-			border: 2px dotted red !important;
+			outline: 2px dotted red !important;
 		}
 	</style>
 
 	<script type="text/javascript">
 		$(function(){
+			// --- Demo GUI: ---------------------------------------------------
+
+			var store = window.sessionStorage;
+
+			$("#optionsForm [name=cellFocus]").change(function(e){
+				store.setItem("cellFocus", $(this).find(":selected").val());
+			}).val(store.getItem("cellFocus") || "start");
+			$("#optionsForm [name=extendedMode]").change(function(e){
+				store.setItem("extendedMode", $(this).prop("checked") || "");
+			}).prop("checked", !!store.getItem("extendedMode"));
+
+			// --- Fancytree widget --------------------------------------------
+
 			$("#treegrid").fancytree({
 				extensions: ["table", "ariagrid"],
 				aria: true,
@@ -70,9 +86,16 @@
 					nodeColumnIdx: 1       // render the node title into the 2nd column
 				},
 				ariagrid: {
-					cellFocus: "allow"
+					cellFocus: $("#optionsForm [name=cellFocus]").find(":selected").val(),
+					extendedMode: $("#optionsForm [name=extendedMode]").is(":checked")
+				},
+				init: function(event, data) {
+					// We could switch to cell-mode here:
+					// data.tree.getFirstChild().setActive(true, {cell: 1});
 				},
 				defaultCellAction: function(event, data) {
+					// Called when ENTER is pressed in cell-mode.
+					// Return false to prevent default
 					console.log(event.type, data);
 				},
 				renderColumns: function(event, data) {
@@ -91,6 +114,7 @@
 					$tdList.eq(4).text("Lorem ipsum " + node.title);
 				}
 			});
+
 		});
 	</script>
 </head>
@@ -121,7 +145,21 @@
 
 <!-- 	<div role="application"> -->
 	<div>
+		<form id="optionsForm">
+			<label>cellFocus:
+				<select name="cellFocus">
+					<option value="start">start</option>
+					<option value="allow" selected>allow</option>
+					<option value="force">force</option>
+				</select>
+			</label>
+			<label>Extended mode <input type="checkbox" name="extendedMode"></label>
+			(Please reload page for changes to take effect.)
+		</form>
+		<hr>
+		<!--
 		<label for="lblBefore">Text 1<input autofocus type="text" id="lblBefore"></label>
+		-->
 
 		<table id="treegrid">
 			<colgroup>
