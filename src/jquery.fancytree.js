@@ -441,8 +441,9 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			// insert nodeList after children[pos]
 			this.children.splice.apply(this.children, [pos, 0].concat(nodeList));
 		}
-		if ( origFirstChild ) {
-			// Fast path -- don't render every child of root, just the new ones!
+		if ( origFirstChild && !insertBefore ) {
+			// #708: Fast path -- don't render every child of root, just the new ones!
+			// #723, #729: but only if it's appended to an existing child list
 			for(i=0, l=nodeList.length; i<l; i++) {
 				nodeList[i].render();   // New nodes were never rendered before
 			}

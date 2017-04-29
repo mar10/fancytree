@@ -399,7 +399,7 @@ module.exports = (grunt) ->
               manifests: ['package.json', 'bower.json']
             # The following tools are run in order:
             run_test: { tasks: ['test'] }
-            check: { branch: ['master'], canPush: true, clean: true, cmpVersion: 'gte' }
+            check: { branch: ['maintain-2.22'], canPush: true, clean: true, cmpVersion: 'gte' }
             bump: {} # 'bump' also uses the increment mode `yabs:release:MODE`
             run_build: { tasks: ['make_release'] }
             commit: { add: '.' }
