@@ -87,7 +87,8 @@
 				},
 				ariagrid: {
 					cellFocus: $("#optionsForm [name=cellFocus]").find(":selected").val(),
-					extendedMode: $("#optionsForm [name=extendedMode]").is(":checked")
+					extendedMode: $("#optionsForm [name=extendedMode]").is(":checked"),
+					label: "Fancytree ARIA sample"
 				},
 				init: function(event, data) {
 					// We could switch to cell-mode here:
@@ -167,14 +168,14 @@
 
 		<table id="treegrid">
 			<colgroup>
-			<col width="20px"></col>
-			<col width="400px"></col>
-			<col width="30px"></col>
-			<col width="30px"></col>
-			<col width="400px"></col>
-			<col width="100px"></col>
-			<col width="100px"></col>
-			<col width="100px"></col>
+			<col width="20px">
+			<col width="400px">
+			<col width="30px">
+			<col width="30px">
+			<col width="400px">
+			<col width="100px">
+			<col width="100px">
+			<col width="100px">
 			</colgroup>
 			<thead>
 				<tr> <th>Select</th> <th>Item</th> <th>In Stock</th> <th>Favorite</th> <th>Details</th> <th>Qty</th> <th>Link</th> <th>Drop</th> </tr>
@@ -189,7 +190,6 @@
 					<td class="stretch"><input type="number" min="0" value="0" tabindex="-1"></td>
 					<td class="center"><a href='http://google.com' target='_blank' tabindex='-1'>link</a></td>
 					<td class="stretch"><select tabindex="-1"><option>a</option><option>b</option></select></td>
-				</tr>
 				</tr>
 			</tbody>
 		</table>

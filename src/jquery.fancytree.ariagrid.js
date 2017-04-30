@@ -309,8 +309,8 @@ $.ui.fancytree.registerExtension({
 			this.checkboxColumnIdx = this.nodeColumnIdx;
 		}
 
-		// Activate node if embedded input gets focus (due to a click)
 		this.$container.on("focusin", function(event){
+			// Activate node if embedded input gets focus (due to a click)
 			var node = FT.getNode(event.target),
 				$td = $(event.target).closest("td");
 
@@ -324,11 +324,20 @@ $.ui.fancytree.registerExtension({
 				tree.activateCell($td);
 			}
 
+		}).on("fancytreeinit", function(event, data){
+			if( opts.cellFocus === "start" ) {
+				tree.debug("Enforce cell-mode on init");
+				tree.debug("init", (tree.getActiveNode() || tree.getFirstChild()));
+				(tree.getActiveNode() || tree.getFirstChild()).setActive(true, {cell: tree.nodeColumnIdx});
+				tree.debug("init2", (tree.getActiveNode() || tree.getFirstChild()));
+			}
+
 		}).on("fancytreefocustree", function(event, data){
 			// Enforce cell-mode when container gets focus
-			if( (opts.cellFocus === "start" || opts.cellFocus === "force") && !tree.activeTd ) {
+			if( (/*opts.cellFocus === "start" ||*/ opts.cellFocus === "force") && !tree.activeTd ) {
+				var node = tree.getActiveNode() || tree.getFirstChild();
 				tree.debug("Enforce cell-mode on focusTree event");
-				tree.getFirstChild().setActive(true, {cell: 0});
+				node.setActive(true, {cell: 0});
 			}
 		});
 	},
