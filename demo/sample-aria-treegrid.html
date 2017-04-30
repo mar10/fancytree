@@ -67,7 +67,7 @@
 
 			$("#optionsForm [name=cellFocus]").change(function(e){
 				store.setItem("cellFocus", $(this).find(":selected").val());
-			}).val(store.getItem("cellFocus") || "start");
+			}).val(store.getItem("cellFocus") || "allow");
 			$("#optionsForm [name=extendedMode]").change(function(e){
 				store.setItem("extendedMode", $(this).prop("checked") || "");
 			}).prop("checked", !!store.getItem("extendedMode"));
@@ -153,7 +153,7 @@
 			<label>cellFocus:
 				<select name="cellFocus">
 					<option value="start">start</option>
-					<option value="allow" selected>allow</option>
+					<option value="allow" selected="selected">allow</option>
 					<option value="force">force</option>
 				</select>
 			</label>
