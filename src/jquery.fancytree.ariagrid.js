@@ -345,6 +345,7 @@ $.ui.fancytree.registerExtension({
 		var targetType = ctx.targetType,
 			tree = ctx.tree,
 			node = ctx.node,
+			event = ctx.originalEvent,
 			$td = $(event.target).closest("td");
 
 		tree.debug("nodeClick: node: " + (node ? node.title : "null") +
@@ -364,6 +365,7 @@ $.ui.fancytree.registerExtension({
 		var tree = ctx.tree,
 			treeOpts = ctx.options,
 			opts = treeOpts.ariagrid,
+			event = ctx.originalEvent,
 			$td = $(event.target).closest("td");
 
 		// console.log("nodeDblclick", tree.$activeTd, ctx.options.ariagrid.cellFocus)

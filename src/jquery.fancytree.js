@@ -4587,7 +4587,7 @@ $.widget("ui.fancytree",
 		tree.$container.on("focusin" + ns + " focusout" + ns, function(event){
 			var node = FT.getNode(event),
 				flag = (event.type === "focusin");
-			tree.debug("Tree container got event " + event.type, node, event);
+			// tree.debug("Tree container got event " + event.type, node, event);
 			// tree.treeOnFocusInOut.call(tree, event);
 			if(node){
 				// For example clicking into an <input> that is part of a node
