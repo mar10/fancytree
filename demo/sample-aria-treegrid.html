@@ -52,10 +52,10 @@
 		}
 		/* Debug helpers: */		
 		[tabindex="-1"] {
-			outline: 2px dotted green !important;
+			border: 2px dotted green !important;
 		}
 		[tabindex="0"] {
-			outline: 2px dotted red !important;
+			border: 2px dotted red !important;
 		}
 	</style>
 
@@ -97,6 +97,10 @@
 					// Called when ENTER is pressed in cell-mode.
 					// Return false to prevent default
 					console.log(event.type, data);
+					if( data.colIdx === 4 ) {
+						alert("Custom default action: " + data.node.title);
+						return false;
+					}
 				},
 				renderColumns: function(event, data) {
 					var node = data.node,
@@ -125,7 +129,7 @@
 		<p>
 			This Fancytree Tree Grid has uses a prototypical extension to 
 			explore ARIA support as discussed here:<br>
-			<a href="https://cdn.rawgit.com/aleventhal/treegrid-tab-active-cells/0.1.10/treegrid.html">
+			<a href="https://cdn.rawgit.com/aleventhal/treegrid-tab-active-cells/0.1.16/treegrid.html">
 				aleventhal/treegrid-tab-active-cells
 			</a>
 			<br>
