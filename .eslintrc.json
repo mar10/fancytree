@@ -111,7 +111,7 @@
 		"lines-around-comment": [
 			"error",
 			{
-				"beforeLineComment": true
+				// "beforeLineComment": true
 			}
 		],
 		"linebreak-style": [
