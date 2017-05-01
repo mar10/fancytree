@@ -59,8 +59,8 @@
 // Allow these navigation keys even when input controls are focused
 
 var FT = $.ui.fancytree,
+	// TODO: define attribute- and class-names for better compression:
 	clsFancytreeActiveCell = "fancytree-active-cell",
-	// TODO: define attribute- and class-names for better compression
 	// Define which keys are handled by embedded control, and should *not* be 
 	// passed to tree navigation handler:
 	NAV_KEYS = {
