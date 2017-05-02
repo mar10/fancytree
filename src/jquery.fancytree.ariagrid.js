@@ -470,9 +470,9 @@ $.ui.fancytree.registerExtension({
 		switch ( eventString ) {
 		case "right":
 			if ( $activeTd ) {
-				// Cell mode: move to neighbour
+				// Cell mode: move to neighbour (stop on right border)
 				$td = findNeighbourTd( tree, $activeTd, eventString );
-				tree.activateCell( $td );
+				$td && tree.activateCell( $td );
 			} else if ( node && !node.isExpanded() && node.hasChildren() !== false ) {
 				// Row mode and current node can be expanded:
 				// default handling will expand.
