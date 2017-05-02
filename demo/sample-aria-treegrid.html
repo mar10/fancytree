@@ -7,7 +7,6 @@
 	<script src="../lib/jquery.js"></script>
 	<script src="../lib/jquery-ui.custom.js"></script>
 
-<!-- 	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet"> -->
 	<link href="../src/skin-lion/ui.fancytree.css" rel="stylesheet">
 	<script src="../src/jquery.fancytree.js"></script>
 	<script src="../src/jquery.fancytree.table.js"></script>
@@ -21,9 +20,6 @@
 	<!-- End_Exclude -->
 
 	<style type="text/css">
-/*		table.fancytree-container {
-			width: 90%;
-		}*/
 		td.stretch input,
 		td.stretch select {
 			box-sizing: border-box;
@@ -36,21 +32,14 @@
 		table.fancytree-container > thead > tr > th {
 			background-color: #d4d4d4;
 		}
-/*
-		table.fancytree-cell-mode > tbody > tr.fancytree-active {
-			outline: 2px solid #26a0da;
-		}
-*/
 		table.fancytree-cell-mode > tbody > tr.fancytree-active > td {
 			/*background-color: #cbe8f6;*/
 			background-color: #eee;
 		}
 		table.fancytree-cell-mode > tbody > tr > td.fancytree-active-cell {
-/*			outline: 1px solid #26a0da;
-			outline: 2px dotted red;*/
 			background-color: #3875d7;
 		}
-		/* Debug helpers: */
+		/* --- Debug helpers: -----------------------------------------------*/
 		[tabindex="-1"] {
 			border: 2px dotted green !important;
 		}
@@ -146,9 +135,11 @@
 			Extended mode adds this behavior:
 			<ul>
 				<li>Embedded inputs are <i>not</i> focused by default (but <kbd>Enter</kbd>
-					and <kbd>Space</kbd> still work on checkboxes)</li>
-				<li><kbd>Enter</kbd>: In row-mode: Switch to cell-mode. In cell-mode: execute default action or focus embedded text input.</li>
-				<li><kbd>Esc</kbd>: In cell-mode: Switch to row-mode. When embedded text-input has focus, set focus to parent cell.</li>
+					and <kbd>Space</kbd> still work on checkboxes). Instead there is a distinct
+					'input-mode' that must be activated by <kbd>Enter</kbd> or alphanum keys.</li>
+				<li><kbd>Enter</kbd>: In row-mode: switch to cell-mode. In cell-mode: execute default action or focus embedded text input (i.e. switch to input-mode).
+				In input-mode: switch back to cell-mode.</li>
+				<li><kbd>Esc</kbd>: In cell-mode: switch to row-mode. In input-mode: switch to cell-mode.</li>
 			</ul>
 <!--
 		</p><p>
@@ -161,7 +152,6 @@
 		</p>
 	</div>
 
-<!-- 	<div role="application"> -->
 	<div>
 		<form id="optionsForm">
 			<label>cellFocus:
@@ -175,9 +165,6 @@
 			(Please reload page for changes to take effect.)
 		</form>
 		<hr>
-		<!--
-		<label for="lblBefore">Text 1<input autofocus type="text" id="lblBefore"></label>
-		-->
 
 		<table id="treegrid">
 			<colgroup>

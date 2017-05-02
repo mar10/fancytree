@@ -524,6 +524,11 @@ $.ui.fancytree.registerExtension({
 					// Embedded checkboxes are always toggled (ignoring `autoFocusInput`)
 					$activeTd.find( ":checkbox:enabled" ).click();
 					return false;
+				} else if ( opts.extendedMode && $target.is( ":input" ) ) {
+					// Switch from input-mode back to cell-mode
+					setTimeout( function() {
+						$activeTd.focus();
+					}, 0 );
 				} else if ( !opts.autoFocusInput && !inputType &&
 						$activeTd.find( ":input:enabled" ).length ) {
 					// autoFocusInput is off:
@@ -556,7 +561,16 @@ $.ui.fancytree.registerExtension({
 				return false;  // no default handling
 			}
 			break;
-		// default:
+		default:
+			// Allow to focus input by typing alphanum keys:
+			// TODO: not so easy to simulate keytrokes on inputs!
+			//       http://stackoverflow.com/questions/6124692/jquery-simulating-keypress-event-on-an-input-field
+			// if ( opts.extendedMode && $activeTd &&
+			// 		eventString.length === 1 &&
+			// 		!$target.is(":input") && $activeTd.find(":input:enabled").length ) {
+			// 	alert("in");
+			// 	return false;  // no default handling
+			// }
 		}
 		return this._superApply( arguments );
 	}
