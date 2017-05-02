@@ -162,7 +162,7 @@ function findNeighbourTd( tree, $target, keyCode ) {
 			$tdNext = treeOpts.rtl ? $tr.children( "td" ).first() : $tr.children( "td" ).last();
 			break;
 	}
-	return $tdNext.length ? $tdNext : null;
+	return ( $tdNext && $tdNext.length ) ? $tdNext : null;
 }
 
 /**
@@ -183,9 +183,8 @@ $.ui.fancytree._FancytreeClass.prototype.activateCell = function( $td ) {
 		$prevTd = this.$activeTd || null,
 		$prevTr = $prevTd ? $prevTd.closest( "tr" ) : null;
 
-	this.debug( "activateCell: " + ( $prevTd ? $prevTd.text() : "null" ) +
-		" -> " + ( $td ? $td.text() : "OFF" ) );
-	// this.debug("activateCell2: activeNode" + this.activeNode);
+	// this.debug( "activateCell: " + ( $prevTd ? $prevTd.text() : "null" ) +
+	// 	" -> " + ( $td ? $td.text() : "OFF" ) );
 
 	// TODO: make available as event
 	// if( this._triggerNodeEvent("cellActivate", node, event, {activeTd: tree.$activeTd, colIdx: colIdx}) === false ) {
@@ -208,18 +207,15 @@ $.ui.fancytree._FancytreeClass.prototype.activateCell = function( $td ) {
 			if ( !$prevTr.is( $tr ) ) {
 				// We are moving to a different row: only the inputs in the
 				// active row should be tabbable
-				$tr.find( ">td :input:enabled,a" ).attr( "tabindex", "0" );
 				$prevTr.find( ">td :input,a" ).attr( "tabindex", "-1" );
-				FT.getNode( $td ).setActive();
 			}
-			// tree.$activeTd.find(":focus").blur();
-		} else {
-
 		}
+		$tr.find( ">td :input:enabled,a" ).attr( "tabindex", "0" );
+		FT.getNode( $td ).setActive();
 		$td.addClass( clsFancytreeActiveCell );
 		this.$activeTd = $td;
 
-		$input = $td.find( ":input:enabled,a" );
+		$input = $td.find( ">td :input:enabled,a" );
 		if ( opts.autoFocusInput && $input.length ) {
 			$input.focus();
 		} else {
@@ -235,22 +231,15 @@ $.ui.fancytree._FancytreeClass.prototype.activateCell = function( $td ) {
 			$prevTd
 				.removeAttr( "tabindex" )
 				.removeClass( clsFancytreeActiveCell );
-
 			// In row-mode, only embedded inputs of the active row are tabbable
 			$prevTr.find( "td" )
 				.blur()  // we need to blur first, because otherwise the focus frame is not reliably removed(?)
 				.removeAttr( "tabindex" );
-			$prevTr.find( ":input:enabled,a" )
-				.attr( "tabindex", "-1" );
+			$prevTr.find( ">td :input,a" ).attr( "tabindex", "-1" );
 			this.$activeTd = null;
-			// $prevTr.find(">td :input,a").attr("tabindex", "-1");
 			// The cell lost focus, but the tree still needs to capture keys:
 			// this.setFocus();
 			this.activeNode.setFocus();
-
-			// FT.getNode($prevTr).setActive();
-			// console.log("activateCell: after setFocus " + this.activeNode);
-			// this.activeNode = FT.getNode($prevTr);
 		} else {
 			// row-mode => row-mode (nothing to do)
 		}
@@ -316,11 +305,12 @@ $.ui.fancytree.registerExtension({
 			var node = FT.getNode( event.target ),
 				$td = $( event.target ).closest( "td" );
 
-			tree.debug( "focusin: " + ( node ? node.title : "null" ) +
-				", target: " + ( $td ? $td.text() : null ) +
-				", node was active: " + ( node && node.isActive() ) +
-				", last cell: " + ( tree.$activeTd ? tree.$activeTd.text() : null ) );
-			tree.debug( "focusin: target", event.target );
+			// tree.debug( "focusin: " + ( node ? node.title : "null" ) +
+			// 	", target: " + ( $td ? $td.text() : null ) +
+			// 	", node was active: " + ( node && node.isActive() ) +
+			// 	", last cell: " + ( tree.$activeTd ? tree.$activeTd.text() : null ) );
+			// tree.debug( "focusin: target", event.target );
+
 			if ( node && !$td.is( tree.$activeTd ) && $( event.target ).is( ":input" ) ) {
 				node.debug( "Activate cell on INPUT focus event" );
 				tree.activateCell( $td );
@@ -419,7 +409,7 @@ $.ui.fancytree.registerExtension({
 			$tr = $( node.tr );
 
 		flag = ( flag !== false );
-		node.debug( "nodeSetActive(" + flag + ")" );
+		// node.debug( "nodeSetActive(" + flag + ")" );
 		// Support custom `cell` option
 		if ( flag && callOpts && callOpts.cell != null ) {
 			// `cell` may be a col-index, <td>, or `$(td)`
@@ -431,7 +421,7 @@ $.ui.fancytree.registerExtension({
 			tree.activateCell( $td );
 			return;
 		}
-		tree.debug( "nodeSetActive: activeNode" + this.activeNode );
+		// tree.debug( "nodeSetActive: activeNode " + this.activeNode );
 		return this._superApply( arguments );
 	},
 	nodeKeydown: function( ctx ) {
@@ -453,8 +443,7 @@ $.ui.fancytree.registerExtension({
 			inputType = "link";
 		}
 		ctx.tree.debug( "nodeKeydown(" + eventString + "), activeTd: '" +
-			( $activeTd && $activeTd.text() ) + "', inputType: " + inputType +
-			", node: ", node, event );
+			( $activeTd && $activeTd.text() ) + "', inputType: " + inputType );
 
 		if ( inputType && eventString !== "esc" ) {
 			handleKeys = NAV_KEYS[ inputType ];
@@ -472,7 +461,9 @@ $.ui.fancytree.registerExtension({
 			if ( $activeTd ) {
 				// Cell mode: move to neighbour (stop on right border)
 				$td = findNeighbourTd( tree, $activeTd, eventString );
-				$td && tree.activateCell( $td );
+				if ( $td ) {
+					tree.activateCell( $td );
+				}
 			} else if ( node && !node.isExpanded() && node.hasChildren() !== false ) {
 				// Row mode and current node can be expanded:
 				// default handling will expand.
@@ -482,7 +473,7 @@ $.ui.fancytree.registerExtension({
 				$td = $( node.tr ).find( ">td:first" );
 				tree.activateCell( $td );
 			}
-			return;  // no default handling
+			return false;  // no default handling
 
 		case "left":
 		case "home":
@@ -551,15 +542,18 @@ $.ui.fancytree.registerExtension({
 					// Switch from row-mode to cell-mode
 					$td = $( node.tr ).find( ">td:nth(" + this.nodeColumnIdx + ")" );
 					tree.activateCell( $td );
-					return;  // no default handling
+					return false;  // no default handling
 				}
 			}
 			break;
 		case "space":
-			if ( $activeTd && colIdx !== this.checkboxColumnIdx ) {
-				// make sure we don't select whole row in cell-mode, unless the
-				// checkbox cell is active
-				return;  // no default handling
+			if ( $activeTd ) {
+				if ( colIdx === this.checkboxColumnIdx ) {
+					node.toggleSelected();
+				} else if ( $activeTd.find( ":checkbox:enabled" ).length ) {
+					$activeTd.find( ":checkbox:enabled" ).click();
+				}
+				return false;  // no default handling
 			}
 			break;
 		// default:

@@ -98,7 +98,6 @@
 				defaultCellAction: function( event, data ) {
 					// Called when ENTER is pressed in cell-mode.
 					// Return false to prevent default
-					data.node( event.type, data );
 					if ( data.colIdx === 4 ) {
 						// eslint-disable-next-line no-alert
 						alert( "Custom default action: " + data.node.title );
@@ -132,22 +131,32 @@
 		<p>
 			This Fancytree Tree Grid has uses a prototypical extension to
 			explore ARIA support as discussed here:<br>
-
+<!--
 			<a href="https://github.com/aleventhal/treegrid-example">
 				aleventhal/treegrid-example </a>,
 			<a href="https://github.com/aleventhal/treegrid-tab-active-cells">
 				aleventhal/treegrid-tab-active-cells </a>
 			<br>
 			and here
+-->
 			<a href="https://rawgit.com/w3c/aria-practices/treegrid/examples/treegrid/treegrid-1.html">
 				w3c/aria-practices/treegrid/examples/treegrid/treegrid-1.html
 			</a>
+		</p> <p>
+			Extended mode adds this behavior:
+			<ul>
+				<li>Embedded inputs are <i>not</i> focused by default (but <kbd>Enter</kbd>
+					and <kbd>Space</kbd> still work on checkboxes)</li>
+				<li><kbd>Enter</kbd>: In row-mode: Switch to cell-mode. In cell-mode: execute default action or focus embedded text input.</li>
+				<li><kbd>Esc</kbd>: In cell-mode: Switch to row-mode. When embedded text-input has focus, set focus to parent cell.</li>
+			</ul>
+<!--
 		</p><p>
 			<strong>Note:</strong> please
 			<a href="https://github.com/mar10/fancytree/issues/655">provide feedback</a>
 			if you have suggestions for improvement on the Fancytree implementation.
-		</p>
-		<p>
+-->
+		</p> <p>
 			See also the <a href="sample-aria.html">ARIA Tree View example</a>.
 		</p>
 	</div>
