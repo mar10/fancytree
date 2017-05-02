@@ -1,4 +1,15 @@
 {
+	"env": {
+		"browser": true,
+		// "commonjs": true,
+		// "es6": true,
+		"jquery": true
+	},
+    "globals": {
+    	// "document": false,
+     //    "jQuery": false,
+     //    "window": false
+    },
 	"rules": {
 		"no-negated-in-lhs": "error",
 		"no-cond-assign": [
@@ -39,7 +50,10 @@
 			"double"
 		],
 		"no-undef": "error",
-		"no-unused-vars": "error",
+		"no-unused-vars": ["error", {
+			"vars": "all",
+			"args": "none"
+		}],
 		"operator-linebreak": [
 			"error",
 			"after"
@@ -89,7 +103,7 @@
 		],
 		"space-in-parens": [
 			"error",
-			"always"
+			"always", { "exceptions": ["{}", "[]"] }
 		],
 		"keyword-spacing": [
 			2

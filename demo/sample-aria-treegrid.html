@@ -50,7 +50,7 @@
 			outline: 2px dotted red;*/
 			background-color: #3875d7;
 		}
-		/* Debug helpers: */		
+		/* Debug helpers: */
 		[tabindex="-1"] {
 			border: 2px dotted green !important;
 		}
@@ -60,86 +60,87 @@
 	</style>
 
 	<script type="text/javascript">
-		$(function(){
+		/*global $ */
+		$( function() {
 			// --- Demo GUI: ---------------------------------------------------
 
 			var store = window.sessionStorage;
 
-			$("#optionsForm [name=cellFocus]").change(function(e){
-				store.setItem("cellFocus", $(this).find(":selected").val());
-			}).val(store.getItem("cellFocus") || "allow");
-			$("#optionsForm [name=extendedMode]").change(function(e){
-				store.setItem("extendedMode", $(this).prop("checked") || "");
-			}).prop("checked", !!store.getItem("extendedMode"));
+			$( "#optionsForm [name=cellFocus]" ).change( function( e ) {
+				store.setItem( "cellFocus", $( this ).find( ":selected" ).val() );
+			}).val( store.getItem( "cellFocus" ) || "allow" );
+			$( "#optionsForm [name=extendedMode]" ).change( function( e ) {
+				store.setItem( "extendedMode", $( this ).prop( "checked" ) || "" );
+			}).prop( "checked", !!store.getItem( "extendedMode" ) );
 
 			// --- Fancytree widget --------------------------------------------
 
-			$("#treegrid").fancytree({
-				extensions: ["table", "ariagrid"],
+			$( "#treegrid" ).fancytree({
+				extensions: [ "table", "ariagrid" ],
 				aria: true,
 				// rtl: true,
 				checkbox: true,
 //				quicksearch: true,
-				source: {url: "ajax-tree-products.json"},
+				source: { url: "ajax-tree-products.json" },
 				table: {
 					checkboxColumnIdx: 0,  // render the checkboxes into the 1st column
 					nodeColumnIdx: 1       // render the node title into the 2nd column
 				},
 				ariagrid: {
-					cellFocus: $("#optionsForm [name=cellFocus]").find(":selected").val(),
-					extendedMode: $("#optionsForm [name=extendedMode]").is(":checked"),
+					cellFocus: $( "#optionsForm [name=cellFocus]" ).find( ":selected" ).val(),
+					extendedMode: $( "#optionsForm [name=extendedMode]" ).is( ":checked" ),
 					label: "Fancytree ARIA sample"
 				},
-				init: function(event, data) {
+				init: function( event, data ) {
 					// We could switch to cell-mode here:
 					// data.tree.getFirstChild().setActive(true, {cell: 1});
 				},
-				defaultCellAction: function(event, data) {
+				defaultCellAction: function( event, data ) {
 					// Called when ENTER is pressed in cell-mode.
 					// Return false to prevent default
-					console.log(event.type, data);
-					if( data.colIdx === 4 ) {
-						alert("Custom default action: " + data.node.title);
+					data.node( event.type, data );
+					if ( data.colIdx === 4 ) {
+						// eslint-disable-next-line no-alert
+						alert( "Custom default action: " + data.node.title );
 						return false;
 					}
 				},
-				renderColumns: function(event, data) {
+				renderColumns: function( event, data ) {
 					var node = data.node,
-						$tdList = $(node.tr).find(">td");
+						$tdList = $( node.tr ).find( ">td" );
 
-					// The row template inserts controls, so we have to remove 
+					// The row template inserts controls, so we have to remove
 					// them herer for folders:
-					if( node.isFolder() ) {
-						$tdList.eq(2).empty();	
-						$tdList.eq(3).empty();	
-						$tdList.eq(5).empty();	
-						$tdList.eq(6).empty();	
-						$tdList.eq(7).empty();	
+					if ( node.isFolder() ) {
+						$tdList.eq( 2 ).empty();
+						$tdList.eq( 3 ).empty();
+						$tdList.eq( 5 ).empty();
+						$tdList.eq( 6 ).empty();
+						$tdList.eq( 7 ).empty();
 					}
-					$tdList.eq(4).text("Lorem ipsum " + node.title);
+					$tdList.eq( 4 ).text( "Lorem ipsum " + node.title );
 				}
 			});
 
 		});
-	</script>
+</script>
 </head>
 
 <body class="example">
 	<h1>Example: WAI-ARIA Tree Grid - Prototype</h1>
 	<div class="description">
 		<p>
-			This Fancytree Tree Grid has uses a prototypical extension to 
+			This Fancytree Tree Grid has uses a prototypical extension to
 			explore ARIA support as discussed here:<br>
-	
+
 			<a href="https://github.com/aleventhal/treegrid-example">
 				aleventhal/treegrid-example </a>,
-			<a href="https://github.com/aleventhal/treegrid-tab-active-cells"> 
+			<a href="https://github.com/aleventhal/treegrid-tab-active-cells">
 				aleventhal/treegrid-tab-active-cells </a>
-
 			<br>
 			and here
-			<a href="https://cdn.rawgit.com/w3c/aria-practices/treegrid/examples/treegrid/treegrid-row-nav-primary-1.html">
-				w3c/aria-practices/treegrid
+			<a href="https://rawgit.com/w3c/aria-practices/treegrid/examples/treegrid/treegrid-1.html">
+				w3c/aria-practices/treegrid/examples/treegrid/treegrid-1.html
 			</a>
 		</p><p>
 			<strong>Note:</strong> please
@@ -184,7 +185,7 @@
 				<tr> <th>Select</th> <th>Item</th> <th>In Stock</th> <th>Favorite</th> <th>Details</th> <th>Qty</th> <th>Link</th> <th>Drop</th> </tr>
 			</thead>
 			<tbody>
-				<tr> 
+				<tr>
 					<td class="center">></td>
 					<td></td>
 					<td class="center"><input type="checkbox" tabindex="-1"></td>

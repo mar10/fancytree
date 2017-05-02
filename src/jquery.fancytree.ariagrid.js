@@ -23,7 +23,7 @@
 /*
   - References:
     - https://github.com/w3c/aria-practices/issues/132
-    - https://rawgit.com/w3c/aria-practices/treegrid/examples/treegrid/treegrid-row-nav-primary-1.html
+    - https://rawgit.com/w3c/aria-practices/treegrid/examples/treegrid/treegrid-1.html
     - https://github.com/mar10/fancytree/issues/709
 
   TODO:
@@ -86,7 +86,7 @@ function getColIdx( $tr, $td ) {
 		}
 		colspan = $( this ).prop( "colspan" );
 		idx += colspan ? colspan : 1;
-	} );
+	});
 	return idx;
 }
 
@@ -104,7 +104,7 @@ function findTdAtColIdx( $tr, colIdx ) {
 		}
 		colspan = $( this ).prop( "colspan" );
 		idx += colspan ? colspan : 1;
-	} );
+	});
 	return res;
 }
 
@@ -261,7 +261,7 @@ $.ui.fancytree._FancytreeClass.prototype.activateCell = function( $td ) {
 /*******************************************************************************
  * Extension code
  */
-$.ui.fancytree.registerExtension( {
+$.ui.fancytree.registerExtension({
 	name: "ariagrid",
 	version: "@VERSION",
 	// Default options for this extension.
@@ -286,8 +286,8 @@ $.ui.fancytree.registerExtension( {
 		// ariagrid requires the table extension to be loaded before itself
 		this._requireExtension( "table", true, true );
 		if ( !treeOpts.aria ) {
- $.error( "ext-ariagrid requires `aria: true`" );
-}
+			$.error( "ext-ariagrid requires `aria: true`" );
+		}
 
 		if ( opts.extendedMode ) {
 			opts.autoFocusInput = false;
@@ -326,22 +326,23 @@ $.ui.fancytree.registerExtension( {
 				tree.activateCell( $td );
 			}
 
-		} ).on( "fancytreeinit", function( event, data ) {
+		}).on( "fancytreeinit", function( event, data ) {
 			if ( opts.cellFocus === "start" ) {
 				tree.debug( "Enforce cell-mode on init" );
 				tree.debug( "init", ( tree.getActiveNode() || tree.getFirstChild() ) );
-				( tree.getActiveNode() || tree.getFirstChild() ).setActive( true, { cell: tree.nodeColumnIdx } );
+				( tree.getActiveNode() || tree.getFirstChild() )
+					.setActive( true, { cell: tree.nodeColumnIdx });
 				tree.debug( "init2", ( tree.getActiveNode() || tree.getFirstChild() ) );
 			}
 
-		} ).on( "fancytreefocustree", function( event, data ) {
+		}).on( "fancytreefocustree", function( event, data ) {
 			// Enforce cell-mode when container gets focus
-			if ( ( /*opts.cellFocus === "start" ||*/ opts.cellFocus === "force" ) && !tree.activeTd ) {
+			if ( ( opts.cellFocus === "force" ) && !tree.activeTd ) {
 				var node = tree.getActiveNode() || tree.getFirstChild();
 				tree.debug( "Enforce cell-mode on focusTree event" );
-				node.setActive( true, { cell: 0 } );
+				node.setActive( true, { cell: 0 });
 			}
-		} );
+		});
 	},
 	nodeClick: function( ctx ) {
 		var targetType = ctx.targetType,
@@ -401,7 +402,8 @@ $.ui.fancytree.registerExtension( {
 			// In cell-mode, move aria-expanded attribute from TR to its parent TD
 			if ( this.$activeTd && $tr.attr( "aria-expanded" ) != null ) {
 				$tr.remove( "aria-expanded" );
-				$tr.find( "td" ).eq( this.nodeColumnIdx ).attr( "aria-expanded", node.isExpanded() );
+				$tr.find( "td" ).eq( this.nodeColumnIdx )
+					.attr( "aria-expanded", node.isExpanded() );
 			} else {
 				$tr.find( "td" ).eq( this.nodeColumnIdx ).removeAttr( "aria-expanded" );
 			}
@@ -515,7 +517,8 @@ $.ui.fancytree.registerExtension( {
 
 		case "return":
 			// Let caller override the default action:
-			if ( tree._triggerNodeEvent( "defaultCellAction", node, event, { activeTd: tree.$activeTd, colIdx: colIdx } ) === false ) {
+			if ( tree._triggerNodeEvent( "defaultCellAction", node, event,
+					{ activeTd: tree.$activeTd, colIdx: colIdx }) === false ) {
 				return false;
 			}
 			if ( $activeTd ) {
@@ -530,7 +533,8 @@ $.ui.fancytree.registerExtension( {
 					// Embedded checkboxes are always toggled (ignoring `autoFocusInput`)
 					$activeTd.find( ":checkbox:enabled" ).click();
 					return false;
-				} else if ( !opts.autoFocusInput && !inputType && $activeTd.find( ":input:enabled" ).length ) {
+				} else if ( !opts.autoFocusInput && !inputType &&
+						$activeTd.find( ":input:enabled" ).length ) {
 					// autoFocusInput is off:
 					// If we don't focus embedded inputs on navigation by default,
 					// we do it as ENTER default action
@@ -562,5 +566,5 @@ $.ui.fancytree.registerExtension( {
 		}
 		return this._superApply( arguments );
 	}
-} );
-} )( jQuery, window, document );
+});
+})( jQuery, window, document );
