@@ -403,7 +403,7 @@ module.exports = (grunt) ->
             options:
                 atBegin: true
             files: ["src/*.js", "test/unit/*.js", "demo/**/*.js"]
-            tasks: ["jshint:beforeConcat"]
+            tasks: ["jshint:beforeConcat", "eslint:dev"]
 
     yabs:
         release:
@@ -440,6 +440,7 @@ module.exports = (grunt) ->
   grunt.registerTask "tabfix", ["exec:tabfix"]
   grunt.registerTask "test", [
       "jshint:beforeConcat",
+      "eslint:dev",
       # "csslint",
       # "htmllint",
       "qunit:develop"
