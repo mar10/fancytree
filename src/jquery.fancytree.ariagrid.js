@@ -43,6 +43,21 @@
     => aria-hidden currently not set (instead: style="display: none") needs to
     be added to ext-table
 
+  - The aria-activedescendant must point to the row when a row has focus, and
+    point to a gridcell when a cell has focus. This is critical.
+
+  - Don't put role="treeitem" anywhere in a treegrid, they are currently on
+	a grandchild of the gridcell. The treeitem should only be used in a tree
+
+  - Don't put role="button" on expanders if they are not visible (leaf nodes)
+
+  - For role="img" on folders:
+	- Are they important to understanding the line? I'm not sure they are given that
+		we can use aria-expanded to say whether something is a folder.
+		Therefore I suggest to put role="presentation" instead
+	- If it is really is important for understanding the line, add an aria-label
+	  to it so the screen reader knows what the img means
+
   - enable treeOpts.aria by default
     => requires some benchmarks, confirm it does not affect performance too much
 
@@ -238,7 +253,6 @@ $.ui.fancytree._FancytreeClass.prototype.activateCell = function( $td ) {
 			$prevTr.find( ">td :input,a" ).attr( "tabindex", "-1" );
 			this.$activeTd = null;
 			// The cell lost focus, but the tree still needs to capture keys:
-			// this.setFocus();
 			this.activeNode.setFocus();
 		} else {
 			// row-mode => row-mode (nothing to do)

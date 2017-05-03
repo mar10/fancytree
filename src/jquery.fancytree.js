@@ -3668,11 +3668,6 @@ $.extend(Fancytree.prototype,
 		}
 		if( tree.focusNode === node ){
 			cnList.push(cn.focused);
-			// if(aria){
-			// 	$ariaElem.attr("aria-activedescendant", true);
-			// }
-		}else if(aria){
-			// $ariaElem.removeAttr("aria-activedescendant");
 		}
 		// node.debug("aria", node.expanded, aria, $ariaElem);
 		if( node.expanded ){
