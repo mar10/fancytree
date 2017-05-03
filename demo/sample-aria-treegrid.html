@@ -32,6 +32,7 @@
 		table.fancytree-container > thead > tr > th {
 			background-color: #d4d4d4;
 		}
+		/* --- ext-ariagrid specific ---------------------------------------- */
 		table.fancytree-cell-mode > tbody > tr.fancytree-active > td {
 			/*background-color: #cbe8f6;*/
 			background-color: #eee;
@@ -39,13 +40,18 @@
 		table.fancytree-cell-mode > tbody > tr > td.fancytree-active-cell {
 			background-color: #3875d7;
 		}
-		/* --- Debug helpers: -----------------------------------------------*/
+		table.fancytree-cell-mode.fancytree-cell-nav-mode > tbody > tr > td.fancytree-active-cell {
+			background-color: #cbe8f6;
+		}
+		/* --- Debug helpers: ----------------------------------------------- */
+/*
 		[tabindex="-1"] {
 			border: 2px dotted green !important;
 		}
 		[tabindex="0"] {
 			border: 2px dotted red !important;
 		}
+*/
 	</style>
 
 	<script type="text/javascript">
@@ -134,12 +140,13 @@
 		</p> <p>
 			Extended mode adds this behavior:
 			<ul>
-				<li>Embedded inputs are <i>not</i> focused by default (but <kbd>Enter</kbd>
-					and <kbd>Space</kbd> still work on checkboxes). Instead there is a distinct
-					'input-mode' that must be activated by <kbd>Enter</kbd> or alphanum keys.</li>
-				<li><kbd>Enter</kbd>: In row-mode: switch to cell-mode. In cell-mode: execute default action or focus embedded text input (i.e. switch to input-mode).
-				In input-mode: switch back to cell-mode.</li>
-				<li><kbd>Esc</kbd>: In cell-mode: switch to row-mode. In input-mode: switch to cell-mode.</li>
+				<li>Embedded inputs get the focus, but we distinguish cell-nav-mode
+				and cell-edit-mode. cell-nav-mode steals <kbd>Up</kbd>, <kbd>Down</kbd>,
+				<kbd>Left</kbd>, <kbd>Right</kbd>, <kbd>Home</kbd>, <kbd>End</kbd>
+				fromt input controls to always allow cell navigation.</li>
+				<li><kbd>Enter</kbd>: In row-mode: switch to cell-nav-mode. In cell-nav-mode: execute default action or switch to cell-edit-mode for embedded text input.
+				In cell-edit-mode: switch back to cell-nav-mode.</li>
+				<li><kbd>Esc</kbd>: In cell-nav-mode: switch to row-mode. In cell-edit-mode: switch to cell-nav-mode.</li>
 			</ul>
 <!--
 		</p><p>
