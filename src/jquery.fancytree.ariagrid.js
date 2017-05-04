@@ -35,16 +35,9 @@
     case it should be on the title cell
     => what if cellFocus=start, but in cell-mode?
 
-  - When a cell has a single focusable widget, the aria-activedescendant should
-    point to the widget instead of the parent
-	=> Where should it point to in row mode?
-
   - If rows are hidden I suggest aria-hidden="true" on them (may be optional)
     => aria-hidden currently not set (instead: style="display: none") needs to
     be added to ext-table
-
-  - The aria-activedescendant must point to the row when a row has focus, and
-    point to a gridcell when a cell has focus. This is critical.
 
   - Don't put role="treeitem" anywhere in a treegrid, they are currently on
 	a grandchild of the gridcell. The treeitem should only be used in a tree
@@ -89,6 +82,14 @@ var FT = $.ui.fancytree,
 		"select-multiple": [ "up", "down" ]
 	},
 	NAV_KEYS = [ "up", "down", "left", "right", "home", "end" ];
+
+
+/* Calculate TD column index (considering colspans).*/
+function setActiveDescendant( tree, $target ) {
+	var id = $target ? $target.uniqueId().attr( "id" ) : "";
+
+	tree.$container.attr( "aria-activedescendant", id );
+}
 
 
 /* Calculate TD column index (considering colspans).*/
@@ -233,9 +234,10 @@ $.ui.fancytree._FancytreeClass.prototype.activateCell = function( $td ) {
 		this.debug( "Focus input", $input );
 		if ( opts.autoFocusInput && $input.length ) {
 			$input.focus();
+			setActiveDescendant( this, $input );
 		} else {
 			$td.attr( "tabindex", "-1" ).focus();
-			// tree.$container.focus();
+			setActiveDescendant( this, $td );
 		}
 	} else {
 		// $td == null: switch back to row-mode
@@ -254,6 +256,7 @@ $.ui.fancytree._FancytreeClass.prototype.activateCell = function( $td ) {
 			this.$activeTd = null;
 			// The cell lost focus, but the tree still needs to capture keys:
 			this.activeNode.setFocus();
+			setActiveDescendant( this, $tr );
 		} else {
 			// row-mode => row-mode (nothing to do)
 		}

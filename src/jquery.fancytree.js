@@ -4012,8 +4012,10 @@ $.extend(Fancytree.prototype,
 				}
 			}
 			if( opts.aria ){
+				// Set active descendant to node's span ID (create one, if needed)
 				$(tree.$container).attr("aria-activedescendant",
-					"ftal_" + opts.idPrefix + node.key);
+					$( node.tr || node.span ).uniqueId().attr("id"));
+					// "ftal_" + opts.idPrefix + node.key);
 			}
 //			$(node.span).find(".fancytree-title").focus();
 			this._triggerNodeEvent("focus", ctx);
