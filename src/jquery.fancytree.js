@@ -3609,7 +3609,8 @@ $.extend(Fancytree.prototype,
 				tooltip = opts.tooltip === true ? node.title : opts.tooltip.call(tree, node);
 			}
 			tooltip = tooltip ? " title='" + _escapeTooltip(tooltip) + "'" : "";
-			id = aria ? " id='ftal_" + opts.idPrefix + node.key + "'" : "";
+			// id = aria ? " id='ftal_" + opts.idPrefix + node.key + "'" : "";
+			id = "";
 			// role = "";
 			role = (aria && !node.tr) ? " role='treeitem'" : "";
 			tabindex = opts.titlesTabbable ? " tabindex='0'" : "";

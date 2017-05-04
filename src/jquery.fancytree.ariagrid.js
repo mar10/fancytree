@@ -39,9 +39,6 @@
     => aria-hidden currently not set (instead: style="display: none") needs to
     be added to ext-table
 
-  - Don't put role="treeitem" anywhere in a treegrid, they are currently on
-	a grandchild of the gridcell. The treeitem should only be used in a tree
-
   - Don't put role="button" on expanders if they are not visible (leaf nodes)
 
   - For role="img" on folders:
