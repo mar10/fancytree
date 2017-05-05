@@ -12,8 +12,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version @VERSION
- * @date @DATE
+ * @version 2.22.3
+ * @date 2017-05-05T05:59:51Z
  */
 
 ;( function( $, window, document, undefined ) {
@@ -266,7 +266,7 @@ $.ui.fancytree._FancytreeClass.prototype.activateCell = function( $td ) {
  */
 $.ui.fancytree.registerExtension({
 	name: "ariagrid",
-	version: "@VERSION",
+	version: "2.22.3",
 	// Default options for this extension.
 	options: {
 		// Internal behavior flags, currently controlled via `extendedMode`

@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.22.1
- * @date 2017-04-21T05:55:46Z
+ * @version 2.22.3
+ * @date 2017-05-05T05:59:51Z
  */
 
 ;(function($, window, document, undefined) {
@@ -342,7 +342,7 @@ $.ui.fancytree._FancytreeClass.prototype.changeRefKey = function(oldRefKey, newR
  */
 $.ui.fancytree.registerExtension({
 	name: "clones",
-	version: "2.22.1",
+	version: "2.22.3",
 	// Default options for this extension.
 	options: {
 		highlightActiveClones: true, // set 'fancytree-active-clone' on active clones and all peers
@@ -446,7 +446,7 @@ $.ui.fancytree.registerExtension({
 		}
 		return res;
 	},
-	nodeSetActive: function(ctx, flag) {
+	nodeSetActive: function(ctx, flag, callOpts) {
 		var res,
 			scpn = ctx.tree.statusClassPropName,
 			node = ctx.node;

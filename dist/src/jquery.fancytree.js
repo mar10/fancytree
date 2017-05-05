@@ -7,8 +7,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.22.1
- * @date 2017-04-21T05:55:46Z
+ * @version 2.22.3
+ * @date 2017-05-05T05:59:51Z
  */
 
 /** Core Fancytree module.
@@ -441,8 +441,9 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			// insert nodeList after children[pos]
 			this.children.splice.apply(this.children, [pos, 0].concat(nodeList));
 		}
-		if ( origFirstChild ) {
-			// Fast path -- don't render every child of root, just the new ones!
+		if ( origFirstChild && !insertBefore ) {
+			// #708: Fast path -- don't render every child of root, just the new ones!
+			// #723, #729: but only if it's appended to an existing child list
 			for(i=0, l=nodeList.length; i<l; i++) {
 				nodeList[i].render();   // New nodes were never rendered before
 			}
@@ -456,8 +457,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 				// Different last child -- recompute classes
 				origLastChild.renderStatus();
 			}
-		}
-		else if( !this.parent || this.parent.ul || this.tr ){
+		} else if( !this.parent || this.parent.ul || this.tr ){
 			// render if the parent was rendered (or this is a root node)
 			this.render();
 		}
@@ -2163,22 +2163,22 @@ function Fancytree(widget) {
 	if(this.options.debugLevel == null){
 		this.options.debugLevel = FT.debugLevel;
 	}
-	// Add container to the TAB chain
-	// See http://www.w3.org/TR/wai-aria-practices/#focus_activedescendant
-	// #577: Allow to set tabindex to "0", "-1" and ""
-	this.$container.attr("tabindex", this.options.tabindex);
+	// // Add container to the TAB chain
+	// // See http://www.w3.org/TR/wai-aria-practices/#focus_activedescendant
+	// // #577: Allow to set tabindex to "0", "-1" and ""
+	// this.$container.attr("tabindex", this.options.tabindex);
 
-	if( this.options.rtl ) {
-		this.$container.attr("DIR", "RTL").addClass("fancytree-rtl");
-	// }else{
-	//	this.$container.attr("DIR", null).removeClass("fancytree-rtl");
-	}
-	if(this.options.aria){
-		this.$container.attr("role", "tree");
-		if( this.options.selectMode !== 1 ) {
-			this.$container.attr("aria-multiselectable", true);
-		}
-	}
+	// if( this.options.rtl ) {
+	// 	this.$container.attr("DIR", "RTL").addClass("fancytree-rtl");
+	// // }else{
+	// //	this.$container.attr("DIR", null).removeClass("fancytree-rtl");
+	// }
+	// if(this.options.aria){
+	// 	this.$container.attr("role", "tree");
+	// 	if( this.options.selectMode !== 1 ) {
+	// 		this.$container.attr("aria-multiselectable", true);
+	// 	}
+	// }
 }
 
 
@@ -3401,10 +3401,9 @@ $.extend(Fancytree.prototype,
 				}
 				node.span = document.createElement("span");
 				node.span.className = "fancytree-node";
-				if(aria){
-					$(node.li).attr("aria-labelledby", "ftal_" + opts.idPrefix + node.key);
-					// $(node.span).attr("aria-labelledby", "ftal_" + opts.idPrefix + node.key);
-				}
+				// if(aria){
+				// 	$(node.li).attr("aria-labelledby", "ftal_" + opts.idPrefix + node.key);
+				// }
 				node.li.appendChild(node.span);
 
 				// Create inner HTML for the <span> (expander, checkbox, icon, and title)
@@ -3610,9 +3609,10 @@ $.extend(Fancytree.prototype,
 				tooltip = opts.tooltip === true ? node.title : opts.tooltip.call(tree, node);
 			}
 			tooltip = tooltip ? " title='" + _escapeTooltip(tooltip) + "'" : "";
-			id = aria ? " id='ftal_" + opts.idPrefix + node.key + "'" : "";
+			// id = aria ? " id='ftal_" + opts.idPrefix + node.key + "'" : "";
+			id = "";
 			// role = "";
-			role = aria ? " role='treeitem'" : "";
+			role = (aria && !node.tr) ? " role='treeitem'" : "";
 			tabindex = opts.titlesTabbable ? " tabindex='0'" : "";
 
 			nodeTitle = "<span " + role + " class='fancytree-title'" +
@@ -3636,7 +3636,8 @@ $.extend(Fancytree.prototype,
 	 */
 	nodeRenderStatus: function(ctx) {
 		// Set classes for current status
-		var node = ctx.node,
+		var $ariaElem,
+			node = ctx.node,
 			tree = ctx.tree,
 			opts = ctx.options,
 //			nodeContainer = node[tree.nodeContainerAttrName],
@@ -3644,7 +3645,7 @@ $.extend(Fancytree.prototype,
 			isLastSib = node.isLastSibling(),
 			aria = opts.aria,
 			// $ariaElem = aria ? $(node[tree.ariaPropName]) : null,
-			$ariaElem = $(node.span).find(".fancytree-title"),
+			// $ariaElem = $(node.span).find(".fancytree-title"),
 			cn = opts._classNames,
 			cnList = [],
 			statusElem = node[tree.statusClassPropName];
@@ -3652,6 +3653,9 @@ $.extend(Fancytree.prototype,
 		if( !statusElem || tree._enableUpdate === false ){
 			// if this function is called for an unrendered node, ignore it (will be updated on nect render anyway)
 			return;
+		}
+		if( aria ) {
+			$ariaElem = node.tr ? $(node.tr) : $(node.span).find(".fancytree-title");
 		}
 		// Build a list of class names that we will add to the node <span>
 		cnList.push(cn.node);
@@ -3665,12 +3669,8 @@ $.extend(Fancytree.prototype,
 		}
 		if( tree.focusNode === node ){
 			cnList.push(cn.focused);
-			// if(aria){
-			// 	$ariaElem.attr("aria-activedescendant", true);
-			// }
-		}else if(aria){
-			// $ariaElem.removeAttr("aria-activedescendant");
 		}
+		// node.debug("aria", node.expanded, aria, $ariaElem);
 		if( node.expanded ){
 			cnList.push(cn.expanded);
 			if(aria){
@@ -4013,8 +4013,10 @@ $.extend(Fancytree.prototype,
 				}
 			}
 			if( opts.aria ){
+				// Set active descendant to node's span ID (create one, if needed)
 				$(tree.$container).attr("aria-activedescendant",
-					"ftal_" + opts.idPrefix + node.key);
+					$( node.tr || node.span ).uniqueId().attr("id"));
+					// "ftal_" + opts.idPrefix + node.key);
 			}
 //			$(node.span).find(".fancytree-title").focus();
 			this._triggerNodeEvent("focus", ctx);
@@ -4200,7 +4202,26 @@ $.extend(Fancytree.prototype,
 	 * @param {EventData} ctx
 	 */
 	treeInit: function(ctx) {
+		var tree = ctx.tree,
+			opts = tree.options;
+
 		//this.debug("Fancytree.treeInit()");
+		// Add container to the TAB chain
+		// See http://www.w3.org/TR/wai-aria-practices/#focus_activedescendant
+		// #577: Allow to set tabindex to "0", "-1" and ""
+		tree.$container.attr("tabindex", opts.tabindex);
+
+		if( opts.rtl ) {
+			tree.$container.attr("DIR", "RTL").addClass("fancytree-rtl");
+		}else{
+			tree.$container.removeAttr("DIR").removeClass("fancytree-rtl");
+		}
+		if( opts.aria ){
+			tree.$container.attr("role", "tree");
+			if( opts.selectMode !== 1 ) {
+				tree.$container.attr("aria-multiselectable", true);
+			}
+		}
 		this.treeLoad(ctx);
 	},
 	/** Parse Fancytree from source, as configured in the options.
@@ -4337,7 +4358,7 @@ $.extend(Fancytree.prototype,
 			break;
 		case "rtl":
 			if( value === false ) {
-				tree.$container.attr("DIR", null).removeClass("fancytree-rtl");
+				tree.$container.removeAttr("DIR").removeClass("fancytree-rtl");
 			}else{
 				tree.$container.attr("DIR", "RTL").addClass("fancytree-rtl");
 			}
@@ -4425,9 +4446,9 @@ $.widget("ui.fancytree",
 		scrollParent: null,
 		selectMode: 2,
 		strings: {
-			loading: "Loading&#8230;",
+			loading: "Loading...",  // &#8230; would be escaped when escapeTitles is true
 			loadError: "Load error!",
-			moreData: "More&#8230;",
+			moreData: "More...",
 			noData: "No data."
 		},
 		tabindex: "0",
@@ -4689,7 +4710,7 @@ $.extend($.ui.fancytree,
 	/** @lends Fancytree_Static# */
 	{
 	/** @type {string} */
-	version: "2.22.1",      // Set to semver by 'grunt release'
+	version: "2.22.3",      // Set to semver by 'grunt release'
 	/** @type {string} */
 	buildType: "production", // Set to 'production' by 'grunt build'
 	/** @type {int} */

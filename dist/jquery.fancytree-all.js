@@ -7,8 +7,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.22.1
- * @date 2017-04-21T05:55:46Z
+ * @version 2.22.3
+ * @date 2017-05-05T05:59:51Z
  */
 
 /** Core Fancytree module.
@@ -441,8 +441,9 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			// insert nodeList after children[pos]
 			this.children.splice.apply(this.children, [pos, 0].concat(nodeList));
 		}
-		if ( origFirstChild ) {
-			// Fast path -- don't render every child of root, just the new ones!
+		if ( origFirstChild && !insertBefore ) {
+			// #708: Fast path -- don't render every child of root, just the new ones!
+			// #723, #729: but only if it's appended to an existing child list
 			for(i=0, l=nodeList.length; i<l; i++) {
 				nodeList[i].render();   // New nodes were never rendered before
 			}
@@ -456,8 +457,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 				// Different last child -- recompute classes
 				origLastChild.renderStatus();
 			}
-		}
-		else if( !this.parent || this.parent.ul || this.tr ){
+		} else if( !this.parent || this.parent.ul || this.tr ){
 			// render if the parent was rendered (or this is a root node)
 			this.render();
 		}
@@ -2163,22 +2163,22 @@ function Fancytree(widget) {
 	if(this.options.debugLevel == null){
 		this.options.debugLevel = FT.debugLevel;
 	}
-	// Add container to the TAB chain
-	// See http://www.w3.org/TR/wai-aria-practices/#focus_activedescendant
-	// #577: Allow to set tabindex to "0", "-1" and ""
-	this.$container.attr("tabindex", this.options.tabindex);
+	// // Add container to the TAB chain
+	// // See http://www.w3.org/TR/wai-aria-practices/#focus_activedescendant
+	// // #577: Allow to set tabindex to "0", "-1" and ""
+	// this.$container.attr("tabindex", this.options.tabindex);
 
-	if( this.options.rtl ) {
-		this.$container.attr("DIR", "RTL").addClass("fancytree-rtl");
-	// }else{
-	//	this.$container.attr("DIR", null).removeClass("fancytree-rtl");
-	}
-	if(this.options.aria){
-		this.$container.attr("role", "tree");
-		if( this.options.selectMode !== 1 ) {
-			this.$container.attr("aria-multiselectable", true);
-		}
-	}
+	// if( this.options.rtl ) {
+	// 	this.$container.attr("DIR", "RTL").addClass("fancytree-rtl");
+	// // }else{
+	// //	this.$container.attr("DIR", null).removeClass("fancytree-rtl");
+	// }
+	// if(this.options.aria){
+	// 	this.$container.attr("role", "tree");
+	// 	if( this.options.selectMode !== 1 ) {
+	// 		this.$container.attr("aria-multiselectable", true);
+	// 	}
+	// }
 }
 
 
@@ -3401,10 +3401,9 @@ $.extend(Fancytree.prototype,
 				}
 				node.span = document.createElement("span");
 				node.span.className = "fancytree-node";
-				if(aria){
-					$(node.li).attr("aria-labelledby", "ftal_" + opts.idPrefix + node.key);
-					// $(node.span).attr("aria-labelledby", "ftal_" + opts.idPrefix + node.key);
-				}
+				// if(aria){
+				// 	$(node.li).attr("aria-labelledby", "ftal_" + opts.idPrefix + node.key);
+				// }
 				node.li.appendChild(node.span);
 
 				// Create inner HTML for the <span> (expander, checkbox, icon, and title)
@@ -3610,9 +3609,10 @@ $.extend(Fancytree.prototype,
 				tooltip = opts.tooltip === true ? node.title : opts.tooltip.call(tree, node);
 			}
 			tooltip = tooltip ? " title='" + _escapeTooltip(tooltip) + "'" : "";
-			id = aria ? " id='ftal_" + opts.idPrefix + node.key + "'" : "";
+			// id = aria ? " id='ftal_" + opts.idPrefix + node.key + "'" : "";
+			id = "";
 			// role = "";
-			role = aria ? " role='treeitem'" : "";
+			role = (aria && !node.tr) ? " role='treeitem'" : "";
 			tabindex = opts.titlesTabbable ? " tabindex='0'" : "";
 
 			nodeTitle = "<span " + role + " class='fancytree-title'" +
@@ -3636,7 +3636,8 @@ $.extend(Fancytree.prototype,
 	 */
 	nodeRenderStatus: function(ctx) {
 		// Set classes for current status
-		var node = ctx.node,
+		var $ariaElem,
+			node = ctx.node,
 			tree = ctx.tree,
 			opts = ctx.options,
 //			nodeContainer = node[tree.nodeContainerAttrName],
@@ -3644,7 +3645,7 @@ $.extend(Fancytree.prototype,
 			isLastSib = node.isLastSibling(),
 			aria = opts.aria,
 			// $ariaElem = aria ? $(node[tree.ariaPropName]) : null,
-			$ariaElem = $(node.span).find(".fancytree-title"),
+			// $ariaElem = $(node.span).find(".fancytree-title"),
 			cn = opts._classNames,
 			cnList = [],
 			statusElem = node[tree.statusClassPropName];
@@ -3652,6 +3653,9 @@ $.extend(Fancytree.prototype,
 		if( !statusElem || tree._enableUpdate === false ){
 			// if this function is called for an unrendered node, ignore it (will be updated on nect render anyway)
 			return;
+		}
+		if( aria ) {
+			$ariaElem = node.tr ? $(node.tr) : $(node.span).find(".fancytree-title");
 		}
 		// Build a list of class names that we will add to the node <span>
 		cnList.push(cn.node);
@@ -3665,12 +3669,8 @@ $.extend(Fancytree.prototype,
 		}
 		if( tree.focusNode === node ){
 			cnList.push(cn.focused);
-			// if(aria){
-			// 	$ariaElem.attr("aria-activedescendant", true);
-			// }
-		}else if(aria){
-			// $ariaElem.removeAttr("aria-activedescendant");
 		}
+		// node.debug("aria", node.expanded, aria, $ariaElem);
 		if( node.expanded ){
 			cnList.push(cn.expanded);
 			if(aria){
@@ -4013,8 +4013,10 @@ $.extend(Fancytree.prototype,
 				}
 			}
 			if( opts.aria ){
+				// Set active descendant to node's span ID (create one, if needed)
 				$(tree.$container).attr("aria-activedescendant",
-					"ftal_" + opts.idPrefix + node.key);
+					$( node.tr || node.span ).uniqueId().attr("id"));
+					// "ftal_" + opts.idPrefix + node.key);
 			}
 //			$(node.span).find(".fancytree-title").focus();
 			this._triggerNodeEvent("focus", ctx);
@@ -4200,7 +4202,26 @@ $.extend(Fancytree.prototype,
 	 * @param {EventData} ctx
 	 */
 	treeInit: function(ctx) {
+		var tree = ctx.tree,
+			opts = tree.options;
+
 		//this.debug("Fancytree.treeInit()");
+		// Add container to the TAB chain
+		// See http://www.w3.org/TR/wai-aria-practices/#focus_activedescendant
+		// #577: Allow to set tabindex to "0", "-1" and ""
+		tree.$container.attr("tabindex", opts.tabindex);
+
+		if( opts.rtl ) {
+			tree.$container.attr("DIR", "RTL").addClass("fancytree-rtl");
+		}else{
+			tree.$container.removeAttr("DIR").removeClass("fancytree-rtl");
+		}
+		if( opts.aria ){
+			tree.$container.attr("role", "tree");
+			if( opts.selectMode !== 1 ) {
+				tree.$container.attr("aria-multiselectable", true);
+			}
+		}
 		this.treeLoad(ctx);
 	},
 	/** Parse Fancytree from source, as configured in the options.
@@ -4337,7 +4358,7 @@ $.extend(Fancytree.prototype,
 			break;
 		case "rtl":
 			if( value === false ) {
-				tree.$container.attr("DIR", null).removeClass("fancytree-rtl");
+				tree.$container.removeAttr("DIR").removeClass("fancytree-rtl");
 			}else{
 				tree.$container.attr("DIR", "RTL").addClass("fancytree-rtl");
 			}
@@ -4425,9 +4446,9 @@ $.widget("ui.fancytree",
 		scrollParent: null,
 		selectMode: 2,
 		strings: {
-			loading: "Loading&#8230;",
+			loading: "Loading...",  // &#8230; would be escaped when escapeTitles is true
 			loadError: "Load error!",
-			moreData: "More&#8230;",
+			moreData: "More...",
 			noData: "No data."
 		},
 		tabindex: "0",
@@ -4689,7 +4710,7 @@ $.extend($.ui.fancytree,
 	/** @lends Fancytree_Static# */
 	{
 	/** @type {string} */
-	version: "2.22.1",      // Set to semver by 'grunt release'
+	version: "2.22.3",      // Set to semver by 'grunt release'
 	/** @type {string} */
 	buildType: "production", // Set to 'production' by 'grunt build'
 	/** @type {int} */
@@ -5168,8 +5189,8 @@ $.extend($.ui.fancytree,
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.22.1
- * @date 2017-04-21T05:55:46Z
+ * @version 2.22.3
+ * @date 2017-05-05T05:59:51Z
  */
 
 // To keep the global namespace clean, we wrap everything in a closure
@@ -5271,7 +5292,7 @@ $.ui.fancytree.registerExtension({
 // Every extension must be registered by a unique name.
 	name: "childcounter",
 // Version information should be compliant with [semver](http://semver.org)
-	version: "2.22.1",
+	version: "2.22.3",
 
 // Extension specific options and their defaults.
 // This options will be available as `tree.options.childcounter.hideExpanded`
@@ -5343,7 +5364,7 @@ $.ui.fancytree.registerExtension({
 		}
 	},
 // Overload the `setExpanded` hook, so the counters are updated
-	nodeSetExpanded: function(ctx, flag, opts) {
+	nodeSetExpanded: function(ctx, flag, callOpts) {
 		var tree = ctx.tree,
 			node = ctx.node;
 // Let the base implementation expand/collapse the node, then redraw the title
@@ -5369,8 +5390,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.22.1
- * @date 2017-04-21T05:55:46Z
+ * @version 2.22.3
+ * @date 2017-05-05T05:59:51Z
  */
 
 ;(function($, window, document, undefined) {
@@ -5702,7 +5723,7 @@ $.ui.fancytree._FancytreeClass.prototype.changeRefKey = function(oldRefKey, newR
  */
 $.ui.fancytree.registerExtension({
 	name: "clones",
-	version: "2.22.1",
+	version: "2.22.3",
 	// Default options for this extension.
 	options: {
 		highlightActiveClones: true, // set 'fancytree-active-clone' on active clones and all peers
@@ -5806,7 +5827,7 @@ $.ui.fancytree.registerExtension({
 		}
 		return res;
 	},
-	nodeSetActive: function(ctx, flag) {
+	nodeSetActive: function(ctx, flag, callOpts) {
 		var res,
 			scpn = ctx.tree.statusClassPropName,
 			node = ctx.node;
@@ -5835,8 +5856,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.22.1
- * @date 2017-04-21T05:55:46Z
+ * @version 2.22.3
+ * @date 2017-05-05T05:59:51Z
  */
 
 ;(function($, window, document, undefined) {
@@ -6073,7 +6094,7 @@ function _initDragAndDrop(tree) {
 
 $.ui.fancytree.registerExtension({
 	name: "dnd",
-	version: "2.22.1",
+	version: "2.22.3",
 	// Default options for this extension.
 	options: {
 		// Make tree nodes accept draggables
@@ -6408,8 +6429,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.22.1
- * @date 2017-04-21T05:55:46Z
+ * @version 2.22.3
+ * @date 2017-05-05T05:59:51Z
  */
 
 
@@ -6662,7 +6683,7 @@ function handleDragOver(event, data) {
 
 $.ui.fancytree.registerExtension({
 	name: "dnd5",
-	version: "2.22.1",
+	version: "2.22.3",
 	// Default options for this extension.
 	options: {
 		autoExpandMS: 1500,          // Expand nodes after n milliseconds of hovering
@@ -6989,8 +7010,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.22.1
- * @date 2017-04-21T05:55:46Z
+ * @version 2.22.3
+ * @date 2017-05-05T05:59:51Z
  */
 
 ;(function($, window, document, undefined) {
@@ -7233,7 +7254,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.isEditing = function(){
  */
 $.ui.fancytree.registerExtension({
 	name: "edit",
-	version: "2.22.1",
+	version: "2.22.3",
 	// Default options for this extension.
 	options: {
 		adjustWidthOfs: 4,   // null: don't adjust input size to content
@@ -7305,8 +7326,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.22.1
- * @date 2017-04-21T05:55:46Z
+ * @version 2.22.3
+ * @date 2017-05-05T05:59:51Z
  */
 
 ;(function($, window, document, undefined) {
@@ -7569,7 +7590,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.isMatched = function(){
  */
 $.ui.fancytree.registerExtension({
 	name: "filter",
-	version: "2.22.1",
+	version: "2.22.3",
 	// Default options for this extension.
 	options: {
 		autoApply: true,   // Re-apply last filter if lazy data is loaded
@@ -7659,8 +7680,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.22.1
- * @date 2017-04-21T05:55:46Z
+ * @version 2.22.3
+ * @date 2017-05-05T05:59:51Z
  */
 
 ;(function($, window, document, undefined) {
@@ -7677,7 +7698,7 @@ function _getIcon(opts, type){
 
 $.ui.fancytree.registerExtension({
 	name: "glyph",
-	version: "2.22.1",
+	version: "2.22.3",
 	// Default options for this extension.
 	options: {
 		map: {
@@ -7803,8 +7824,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.22.1
- * @date 2017-04-21T05:55:46Z
+ * @version 2.22.3
+ * @date 2017-05-05T05:59:51Z
  */
 
 ;(function($, window, document, undefined) {
@@ -7910,7 +7931,7 @@ function findNeighbourTd($target, keyCode){
  */
 $.ui.fancytree.registerExtension({
 	name: "gridnav",
-	version: "2.22.1",
+	version: "2.22.3",
 	// Default options for this extension.
 	options: {
 		autofocusInput:   false,  // Focus first embedded input if node gets activated
@@ -7936,7 +7957,7 @@ $.ui.fancytree.registerExtension({
 			}
 		});
 	},
-	nodeSetActive: function(ctx, flag) {
+	nodeSetActive: function(ctx, flag, callOpts) {
 		var $outer,
 			opts = ctx.options.gridnav,
 			node = ctx.node,
@@ -8009,8 +8030,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.22.1
- * @date 2017-04-21T05:55:46Z
+ * @version 2.22.3
+ * @date 2017-05-05T05:59:51Z
  */
 
 ;(function($, window, document, undefined) {
@@ -8045,6 +8066,7 @@ if( typeof Cookies === "function" ) {
 function _loadLazyNodes(tree, local, keyList, mode, dfd) {
 	var i, key, l, node,
 		foundOne = false,
+		expandOpts = tree.options.persist.expandOpts,
 		deferredList = [],
 		missingKeyList = [];
 
@@ -8059,13 +8081,13 @@ function _loadLazyNodes(tree, local, keyList, mode, dfd) {
 				foundOne = true;
 				tree.debug("_loadLazyNodes: " + node + " is lazy: loading...");
 				if( mode === "expand" ) {
-					deferredList.push(node.setExpanded());
+					deferredList.push(node.setExpanded(true, expandOpts));
 				} else {
 					deferredList.push(node.load());
 				}
 			} else {
 				tree.debug("_loadLazyNodes: " + node + " already loaded.");
-				node.setExpanded();
+				node.setExpanded(true, expandOpts);
 			}
 		} else {
 			missingKeyList.push(key);
@@ -8149,7 +8171,7 @@ $.ui.fancytree._FancytreeClass.prototype.getPersistData = function(){
  */
 $.ui.fancytree.registerExtension({
 	name: "persist",
-	version: "2.22.1",
+	version: "2.22.3",
 	// Default options for this extension.
 	options: {
 		cookieDelimiter: "~",
@@ -8162,6 +8184,7 @@ $.ui.fancytree.registerExtension({
 			secure: false
 		},
 		expandLazy: false,     // true: recursively expand and load lazy nodes
+		expandOpts: undefined, // optional `opts` argument passed to setExpanded()
 		fireActivate: true,    // false: suppress `activate` event after active node was restored
 		overrideSource: true,  // true: cookie takes precedence over `source` data attributes.
 		store: "auto",         // 'cookie': force cookie, 'local': force localStore, 'session': force sessionStore
@@ -8318,7 +8341,7 @@ $.ui.fancytree.registerExtension({
 		// Init the tree
 		return this._superApply(arguments);
 	},
-	nodeSetActive: function(ctx, flag, opts) {
+	nodeSetActive: function(ctx, flag, callOpts) {
 		var res,
 			local = this._local;
 
@@ -8330,7 +8353,7 @@ $.ui.fancytree.registerExtension({
 		}
 		return res;
 	},
-	nodeSetExpanded: function(ctx, flag, opts) {
+	nodeSetExpanded: function(ctx, flag, callOpts) {
 		var res,
 			node = ctx.node,
 			local = this._local;
@@ -8395,8 +8418,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.22.1
- * @date 2017-04-21T05:55:46Z
+ * @version 2.22.3
+ * @date 2017-05-05T05:59:51Z
  */
 
 ;(function($, window, document, undefined) {
@@ -8474,7 +8497,7 @@ function findPrevRowNode(node){
 
 $.ui.fancytree.registerExtension({
 	name: "table",
-	version: "2.22.1",
+	version: "2.22.3",
 	// Default options for this extension.
 	options: {
 		checkboxColumnIdx: null, // render the checkboxes into the this column index (default: nodeColumnIdx)
@@ -8652,11 +8675,9 @@ $.ui.fancytree.registerExtension({
 					node.tr.id = opts.idPrefix + node.key;
 				}
 				node.tr.ftnode = node;
-				if(opts.aria){
-					// TODO: why doesn't this work:
-//                  node.li.role = "treeitem";
-					$(node.tr).attr("aria-labelledby", "ftal_" + node.key);
-				}
+				// if(opts.aria){
+				// 	$(node.tr).attr("aria-labelledby", "ftal_" + opts.idPrefix + node.key);
+				// }
 				node.span = $("span.fancytree-node", node.tr).get(0);
 				// Set icon, link, and title (normally this is only required on initial render)
 				this.nodeRenderTitle(ctx);
@@ -8759,7 +8780,7 @@ $.ui.fancytree.registerExtension({
 		// $(node.span).css({marginLeft: indent + "px"});
 	 },
 	/* Expand node, return Deferred.promise. */
-	nodeSetExpanded: function(ctx, flag, opts) {
+	nodeSetExpanded: function(ctx, flag, callOpts) {
 		// flag defaults to true
 		flag = (flag !== false);
 
@@ -8769,35 +8790,35 @@ $.ui.fancytree.registerExtension({
 		}
 
 		var dfd = new $.Deferred(),
-			subOpts = $.extend({}, opts, {noEvents: true, noAnimation: true});
+			subOpts = $.extend({}, callOpts, {noEvents: true, noAnimation: true});
 
-		opts = opts || {};
+		callOpts = callOpts || {};
 
 		function _afterExpand(ok) {
 			setChildRowVisibility(ctx.node, flag);
 			if( ok ) {
-				if( flag && ctx.options.autoScroll && !opts.noAnimation && ctx.node.hasChildren() ) {
+				if( flag && ctx.options.autoScroll && !callOpts.noAnimation && ctx.node.hasChildren() ) {
 					// Scroll down to last child, but keep current node visible
 					ctx.node.getLastChild().scrollIntoView(true, {topNode: ctx.node}).always(function(){
-						if( !opts.noEvents ) {
+						if( !callOpts.noEvents ) {
 							ctx.tree._triggerNodeEvent(flag ? "expand" : "collapse", ctx);
 						}
 						dfd.resolveWith(ctx.node);
 					});
 				} else {
-					if( !opts.noEvents ) {
+					if( !callOpts.noEvents ) {
 						ctx.tree._triggerNodeEvent(flag ? "expand" : "collapse", ctx);
 					}
 					dfd.resolveWith(ctx.node);
 				}
 			} else {
-				if( !opts.noEvents ) {
+				if( !callOpts.noEvents ) {
 					ctx.tree._triggerNodeEvent(flag ? "expand" : "collapse", ctx);
 				}
 				dfd.rejectWith(ctx.node);
 			}
 		}
-		// Call base-expand with disabled  events and animation
+		// Call base-expand with disabled events and animation
 		this._super(ctx, flag, subOpts).done(function () {
 			_afterExpand(true);
 		}).fail(function () {
@@ -8846,8 +8867,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.22.1
- * @date 2017-04-21T05:55:46Z
+ * @version 2.22.3
+ * @date 2017-05-05T05:59:51Z
  */
 
 ;(function($, window, document, undefined) {
@@ -8859,7 +8880,7 @@ $.ui.fancytree.registerExtension({
  */
 $.ui.fancytree.registerExtension({
 	name: "themeroller",
-	version: "2.22.1",
+	version: "2.22.3",
 	// Default options for this extension.
 	options: {
 		activeClass: "ui-state-active",      // Class added to active node
@@ -8942,8 +8963,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.22.1
- * @date 2017-04-21T05:55:46Z
+ * @version 2.22.3
+ * @date 2017-05-05T05:59:51Z
  */
 
 ;(function($, window, document, undefined) {
@@ -9043,7 +9064,7 @@ function renderLevelCss(containerId, depth, levelOfs, lineOfs, labelOfs, measure
  */
 $.ui.fancytree.registerExtension({
 	name: "wide",
-	version: "2.22.1",
+	version: "2.22.3",
 	// Default options for this extension.
 	options: {
 		iconWidth: null,     // Adjust this if @fancy-icon-width != "16px"

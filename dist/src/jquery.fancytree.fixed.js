@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.22.1
- * @date 2017-04-21T05:55:46Z
+ * @version 2.22.3
+ * @date 2017-05-05T05:59:51Z
  */
 
 ;(function($, window, document, undefined) {
@@ -260,7 +260,7 @@ $.ui.fancytree.registerExtension({
 		}
 		return this._superApply(arguments);
 	},
-	nodeSetActive: function(ctx, flag) {
+	nodeSetActive: function(ctx, flag, callOpts) {
 		var node = ctx.node,
 			$rightNode = $(node.tr),
 			$leftNode = $rightNode.data("fancytree-node-counterpart");
@@ -320,7 +320,7 @@ $.ui.fancytree.registerExtension({
 
 		return res;
 	},
-	nodeSetExpanded: function(ctx, flag, opts) {
+	nodeSetExpanded: function(ctx, flag, callOpts) {
 		var res,
 			_this = this,
 			node = ctx.node,
