@@ -3583,7 +3583,7 @@ $.extend(Fancytree.prototype,
 		// 	}
 		// }
 		if( icon !== false ) {
-			role = aria ? " role='img'" : "";
+			role = aria ? " role='presentation'" : "";
 			if ( typeof icon === "string" ) {
 				if( TEST_IMG.test(icon) ) {
 					// node.icon is an image url. Prepend imagePath

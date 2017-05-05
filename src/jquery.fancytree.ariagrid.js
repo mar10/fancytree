@@ -41,13 +41,6 @@
 
   - Don't put role="button" on expanders if they are not visible (leaf nodes)
 
-  - For role="img" on folders:
-	- Are they important to understanding the line? I'm not sure they are given that
-		we can use aria-expanded to say whether something is a folder.
-		Therefore I suggest to put role="presentation" instead
-	- If it is really is important for understanding the line, add an aria-label
-	  to it so the screen reader knows what the img means
-
   - enable treeOpts.aria by default
 	=> requires some benchmarks, confirm it does not affect performance too much
 
