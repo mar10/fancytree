@@ -3,7 +3,7 @@
   * [Added] #730 ext-persist option `expandOpts` is passed to setExpanded()
     Allows to suppress animation or event generation.
 
-# 2.22.4 / Unreleased
+# 2.22.4 / 2017-05-06
  * [Improved] #709 experimental ext-ariagrid
 
 # 2.22.3 / 2017-05-05

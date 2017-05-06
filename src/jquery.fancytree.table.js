@@ -234,7 +234,7 @@ $.ui.fancytree.registerExtension({
 				if( ctx.hasCollapsedParents && !deep ) {
 					// #166: we assume that the parent will be (recursively) rendered
 					// later anyway.
-					node.debug("nodeRender ignored due to unrendered parent");
+					// node.debug("nodeRender ignored due to unrendered parent");
 					return;
 				}
 				// Create new <tr> after previous row

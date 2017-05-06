@@ -2365,7 +2365,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 		/*jshint +W018 */
 		this._enableUpdate = flag;
 		if ( flag ) {
-			this.debug("enableUpdate(true): redraw ", this._dirtyRoots);
+			this.debug("enableUpdate(true): redraw ");  //, this._dirtyRoots);
 			this.render();
 		} else {
 		// 	this._dirtyRoots = null;

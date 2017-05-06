@@ -52,5 +52,67 @@ table#tabletree td{
 	</tbody>
  </table>
 
+<script>
+	// Beacon the results to Browserscope.
+	// See: http://www.browserscope.org/user/tests/howto
+	/*global QUnit */
+	var _bTestResults = {},
+		_testKey = "ahBzfnVhLXByb2ZpbGVyLWhychELEgRUZXN0GICAkNDcrYwJDA";
+
+
+    // Timeout for async tests
+    // QUnit.config.testTimeout = 1000;
+
+    // Custom switch (could be used for a checkbox?)
+    QUnit.config.publishResults = true;
+
+	QUnit.moduleDone( function( details ) {
+		var name = details.name;
+
+		// window.console.log( "moduleDone", details );
+		// make sure all assertions passed successfully
+		if ( name === "Configuration and Summary" ) {
+			return;
+		}
+		if ( !details.failed && details.total === details.passed ) {
+			_bTestResults[ name ] = details.runtime;
+		// _bTestResults[ name ] = 1
+		} else {
+			_bTestResults[ name ] = 0;
+		}
+	});
+
+	// If the user agreed to publish results to BrowserScope.org, go for it!
+	QUnit.done( function(details) {
+		window.console.log( "done", arguments );
+		_bTestResults[ "Overall::passed" ] = details.passed;
+		_bTestResults[ "Overall::failed" ] = details.failed;
+		_bTestResults[ "Overall::runtime" ] = details.runtime;
+		if ( QUnit.config.publishResults ) {
+
+			var newScript = document.createElement( "script" ),
+				firstScript = document.getElementsByTagName( "script" )[ 0 ];
+
+			newScript.src = "http://www.browserscope.org/user/beacon/" + _testKey + "?callback=showResults";
+			// Set this to prevent throtteling
+			// newScript.src += "&sandboxid=f87fe779e9a4375";
+			// // newScript.src += "?test_results_var=YOUR-VAR-NAME2;
+
+			firstScript.parentNode.insertBefore( newScript, firstScript );
+		}
+	});
+
+    // Load the results widget from browserscope.org
+	function showResults() {
+		var script = document.createElement( "script" );
+
+		script.src = "http://www.browserscope.org/user/tests/table/" + _testKey + "?o=js";
+
+		// window.console.log( "showResults", arguments );
+		document.body.appendChild( script );
+		$( "table#tabletree, #tree" ).hide( "slow" );
+	}
+
+</script>
 </body>
 </html>
