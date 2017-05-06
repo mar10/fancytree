@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.22.3
- * @date 2017-05-05T05:59:51Z
+ * @version 2.22.4
+ * @date 2017-05-06T06:26:23Z
  */
 
 ;(function($, window, document, undefined) {
@@ -247,7 +247,7 @@ function _initDragAndDrop(tree) {
 
 $.ui.fancytree.registerExtension({
 	name: "dnd",
-	version: "2.22.3",
+	version: "2.22.4",
 	// Default options for this extension.
 	options: {
 		// Make tree nodes accept draggables

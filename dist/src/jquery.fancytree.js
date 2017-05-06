@@ -7,8 +7,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.22.3
- * @date 2017-05-05T05:59:51Z
+ * @version 2.22.4
+ * @date 2017-05-06T06:26:23Z
  */
 
 /** Core Fancytree module.
@@ -3389,18 +3389,17 @@ $.extend(Fancytree.prototype,
 				node.li = document.createElement("li");
 				node.li.ftnode = node;
 
-				// We set role 'treeitem' to the title span instead
-				if(aria){
-					// TODO: why does the next line don't work:
-					// node.li.role = "treeitem";
-					// $(node.li).attr("role", "treeitem");
-					// .attr("aria-labelledby", "ftal_" + opts.idPrefix + node.key);
-				}
+				// if(aria){
+				// 	$(node.li).attr("role", "treeitem");
+				// }
 				if( node.key && opts.generateIds ){
 					node.li.id = opts.idPrefix + node.key;
 				}
 				node.span = document.createElement("span");
 				node.span.className = "fancytree-node";
+				if( aria && !node.tr ) {
+					$(node.span).attr("role", "treeitem");
+				}
 				// if(aria){
 				// 	$(node.li).attr("aria-labelledby", "ftal_" + opts.idPrefix + node.key);
 				// }
@@ -3520,32 +3519,22 @@ $.extend(Fancytree.prototype,
 			return;
 		}
 		// Connector (expanded, expandable or simple)
+		role = (aria && node.hasChildren() !== false) ? " role='button'" : "";
 		if( level < opts.minExpandLevel ) {
 			if( !node.lazy ) {
 				node.expanded = true;
 			}
 			if(level > 1){
-				if(aria){
-					ares.push("<span role='button' class='fancytree-expander fancytree-expander-fixed'></span>");
-				}else{
-					ares.push("<span class='fancytree-expander fancytree-expander-fixed''></span>");
-				}
+				ares.push("<span " + role + " class='fancytree-expander fancytree-expander-fixed'></span>");
 			}
 			// .. else (i.e. for root level) skip expander/connector alltogether
 		} else {
-			if(aria){
-				ares.push("<span role='button' class='fancytree-expander'></span>");
-			}else{
-				ares.push("<span class='fancytree-expander'></span>");
-			}
+			ares.push("<span " + role + " class='fancytree-expander'></span>");
 		}
 		// Checkbox mode
 		if( opts.checkbox && node.hideCheckbox !== true && !node.isStatusNode() ) {
-			if(aria){
-				ares.push("<span role='checkbox' class='fancytree-checkbox'></span>");
-			}else{
-				ares.push("<span class='fancytree-checkbox'></span>");
-			}
+			role = aria ? " role='checkbox'" : "";
+			ares.push("<span " + role + " class='fancytree-checkbox'></span>");
 		}
 		// Folder or doctype icon
 		if( node.data.iconClass !== undefined ) {  // 2015-11-16
@@ -3566,24 +3555,8 @@ $.extend(Fancytree.prototype,
 			// icon is defined, but not true/false: must be a string
 			icon = "" + icon;
 		}
-		// if( $.isFunction(opts.icon) ) {
-		// 	icon = opts.icon.call(tree, {type: "icon"}, ctx);
-		// 	if( icon == null ) {
-		// 		icon = node.icon;
-		// 	}
-		// } else {
-		// 	icon = (node.icon != null) ? node.icon : opts.icon;
-		// }
-		// if( icon == null ) {
-		// 	icon = true;  // no icon option at all: show default icon
-		// } else {
-		// 	if( typeof icon !== "boolean" ) {
-		// 		// icon is defined, but not true/false: must be a string
-		// 		icon = "" + icon;
-		// 	}
-		// }
 		if( icon !== false ) {
-			role = aria ? " role='img'" : "";
+			role = aria ? " role='presentation'" : "";
 			if ( typeof icon === "string" ) {
 				if( TEST_IMG.test(icon) ) {
 					// node.icon is an image url. Prepend imagePath
@@ -3612,7 +3585,7 @@ $.extend(Fancytree.prototype,
 			// id = aria ? " id='ftal_" + opts.idPrefix + node.key + "'" : "";
 			id = "";
 			// role = "";
-			role = (aria && !node.tr) ? " role='treeitem'" : "";
+			role = "";  // (aria && !node.tr) ? " role='treeitem'" : "";
 			tabindex = opts.titlesTabbable ? " tabindex='0'" : "";
 
 			nodeTitle = "<span " + role + " class='fancytree-title'" +
@@ -3655,7 +3628,7 @@ $.extend(Fancytree.prototype,
 			return;
 		}
 		if( aria ) {
-			$ariaElem = node.tr ? $(node.tr) : $(node.span).find(".fancytree-title");
+			$ariaElem = node.tr ? $(node.tr) : $(node.span); //.find(".fancytree-title");
 		}
 		// Build a list of class names that we will add to the node <span>
 		cnList.push(cn.node);
@@ -4710,7 +4683,7 @@ $.extend($.ui.fancytree,
 	/** @lends Fancytree_Static# */
 	{
 	/** @type {string} */
-	version: "2.22.3",      // Set to semver by 'grunt release'
+	version: "2.22.4",      // Set to semver by 'grunt release'
 	/** @type {string} */
 	buildType: "production", // Set to 'production' by 'grunt build'
 	/** @type {int} */

@@ -12,8 +12,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.22.3
- * @date 2017-05-05T05:59:51Z
+ * @version 2.22.4
+ * @date 2017-05-06T06:26:23Z
  */
 
 ;( function( $, window, document, undefined ) {
@@ -31,22 +31,9 @@
   - In strict mode, how can a user leave an embedded text input, if it is
 	the only control in a row?
 
-  - Use aria-expanded on the row except in the cellFocus=force case, in which
-	case it should be on the title cell
-	=> what if cellFocus=start, but in cell-mode?
-
   - If rows are hidden I suggest aria-hidden="true" on them (may be optional)
 	=> aria-hidden currently not set (instead: style="display: none") needs to
 	be added to ext-table
-
-  - Don't put role="button" on expanders if they are not visible (leaf nodes)
-
-  - For role="img" on folders:
-	- Are they important to understanding the line? I'm not sure they are given that
-		we can use aria-expanded to say whether something is a folder.
-		Therefore I suggest to put role="presentation" instead
-	- If it is really is important for understanding the line, add an aria-label
-	  to it so the screen reader knows what the img means
 
   - enable treeOpts.aria by default
 	=> requires some benchmarks, confirm it does not affect performance too much
@@ -266,7 +253,7 @@ $.ui.fancytree._FancytreeClass.prototype.activateCell = function( $td ) {
  */
 $.ui.fancytree.registerExtension({
 	name: "ariagrid",
-	version: "2.22.3",
+	version: "2.22.4",
 	// Default options for this extension.
 	options: {
 		// Internal behavior flags, currently controlled via `extendedMode`
