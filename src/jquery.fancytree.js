@@ -3646,17 +3646,14 @@ $.extend(Fancytree.prototype,
 		// node.debug("aria", node.expanded, aria, $ariaElem);
 		if( node.expanded ){
 			cnList.push(cn.expanded);
-			if(aria){
-				if (hasChildren) {
-					$ariaElem.attr("aria-expanded", true);
-				}
-				else {
-					// Leaf nodes are expanded in the tree view model
-					$ariaElem.removeAttr("aria-expanded");
-				}
+		}
+		if( aria ){
+			if (hasChildren) {
+				$ariaElem.attr("aria-expanded", Boolean(node.expanded));
 			}
-		}else if( aria ){
-			$ariaElem.attr("aria-expanded", false);
+			else {
+				$ariaElem.removeAttr("aria-expanded");
+			}
 		}
 		if( node.folder ){
 			cnList.push(cn.folder);
