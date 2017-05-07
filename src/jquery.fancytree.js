@@ -3398,7 +3398,7 @@ $.extend(Fancytree.prototype,
 				node.span = document.createElement("span");
 				node.span.className = "fancytree-node";
 				if( aria && !node.tr ) {
-					$(node.span).attr("role", "treeitem");
+					$(node.li).attr("role", "treeitem");
 				}
 				// if(aria){
 				// 	$(node.li).attr("aria-labelledby", "ftal_" + opts.idPrefix + node.key);
@@ -3628,7 +3628,7 @@ $.extend(Fancytree.prototype,
 			return;
 		}
 		if( aria ) {
-			$ariaElem = node.tr ? $(node.tr) : $(node.span); //.find(".fancytree-title");
+			$ariaElem = $(node.tr || node.li); //.find(".fancytree-title");
 		}
 		// Build a list of class names that we will add to the node <span>
 		cnList.push(cn.node);
@@ -3987,7 +3987,7 @@ $.extend(Fancytree.prototype,
 			if( opts.aria ){
 				// Set active descendant to node's span ID (create one, if needed)
 				$(tree.$container).attr("aria-activedescendant",
-					$( node.tr || node.span ).uniqueId().attr("id"));
+					$( node.tr || node.li ).uniqueId().attr("id"));
 					// "ftal_" + opts.idPrefix + node.key);
 			}
 //			$(node.span).find(".fancytree-title").focus();
