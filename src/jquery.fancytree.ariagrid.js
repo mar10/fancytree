@@ -392,7 +392,7 @@ $.ui.fancytree.registerExtension({
 				$tr.removeAttr( "aria-hidden" );
 			}
 			// this.debug("nodeRenderStatus: " + this.$activeTd + ", " + $tr.attr("aria-expanded"));
-			// In cell-mode, move aria-expanded attribute from TR to its parent TD
+			// In cell-mode, move aria-expanded attribute from TR to first child TD
 			if ( this.$activeTd && $tr.attr( "aria-expanded" ) != null ) {
 				$tr.remove( "aria-expanded" );
 				$tr.find( "td" ).eq( this.nodeColumnIdx )
