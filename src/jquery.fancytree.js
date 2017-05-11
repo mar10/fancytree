@@ -3389,9 +3389,6 @@ $.extend(Fancytree.prototype,
 				node.li = document.createElement("li");
 				node.li.ftnode = node;
 
-				// if(aria){
-				// 	$(node.li).attr("role", "treeitem");
-				// }
 				if( node.key && opts.generateIds ){
 					node.li.id = opts.idPrefix + node.key;
 				}
@@ -3400,9 +3397,6 @@ $.extend(Fancytree.prototype,
 				if( aria && !node.tr ) {
 					$(node.li).attr("role", "treeitem");
 				}
-				// if(aria){
-				// 	$(node.li).attr("aria-labelledby", "ftal_" + opts.idPrefix + node.key);
-				// }
 				node.li.appendChild(node.span);
 
 				// Create inner HTML for the <span> (expander, checkbox, icon, and title)
@@ -3582,14 +3576,10 @@ $.extend(Fancytree.prototype,
 				tooltip = opts.tooltip === true ? node.title : opts.tooltip.call(tree, node);
 			}
 			tooltip = tooltip ? " title='" + _escapeTooltip(tooltip) + "'" : "";
-			// id = aria ? " id='ftal_" + opts.idPrefix + node.key + "'" : "";
-			id = "";
-			// role = "";
-			role = "";  // (aria && !node.tr) ? " role='treeitem'" : "";
 			tabindex = opts.titlesTabbable ? " tabindex='0'" : "";
 
-			nodeTitle = "<span " + role + " class='fancytree-title'" +
-				id + tooltip + tabindex + ">" +
+			nodeTitle = "<span class='fancytree-title'" +
+				tooltip + tabindex + ">" +
 				(opts.escapeTitles ? _escapeHtml(node.title) : node.title) +
 				"</span>";
 		}
@@ -3617,8 +3607,6 @@ $.extend(Fancytree.prototype,
 			hasChildren = node.hasChildren(),
 			isLastSib = node.isLastSibling(),
 			aria = opts.aria,
-			// $ariaElem = aria ? $(node[tree.ariaPropName]) : null,
-			// $ariaElem = $(node.span).find(".fancytree-title"),
 			cn = opts._classNames,
 			cnList = [],
 			statusElem = node[tree.statusClassPropName];
@@ -3628,7 +3616,7 @@ $.extend(Fancytree.prototype,
 			return;
 		}
 		if( aria ) {
-			$ariaElem = $(node.tr || node.li); //.find(".fancytree-title");
+			$ariaElem = $(node.tr || node.li);
 		}
 		// Build a list of class names that we will add to the node <span>
 		cnList.push(cn.node);
@@ -3643,12 +3631,11 @@ $.extend(Fancytree.prototype,
 		if( tree.focusNode === node ){
 			cnList.push(cn.focused);
 		}
-		// node.debug("aria", node.expanded, aria, $ariaElem);
 		if( node.expanded ){
 			cnList.push(cn.expanded);
 		}
 		if( aria ){
-			if (hasChildren) {
+			if (hasChildren !== false) {
 				$ariaElem.attr("aria-expanded", Boolean(node.expanded));
 			}
 			else {

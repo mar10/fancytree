@@ -3646,14 +3646,13 @@ $.extend(Fancytree.prototype,
 		// node.debug("aria", node.expanded, aria, $ariaElem);
 		if( node.expanded ){
 			cnList.push(cn.expanded);
-		}
-		if( aria ){
-			if (hasChildren || (hasChildren === undefined && node.lazy)) {
-				// Has or likely has children
-				$ariaElem.attr("aria-expanded", Boolean(node.expanded));
+			if(aria){
+				$ariaElem.attr("aria-expanded", true);
 			}
-			else {
-				// Definitely no children
+		}else if( aria ){
+			if( hasChildren ) {
+				$ariaElem.attr("aria-expanded", false);
+			} else {
 				$ariaElem.removeAttr("aria-expanded");
 			}
 		}
