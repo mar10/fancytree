@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.22.4
- * @date 2017-05-06T06:26:23Z
+ * @version 2.22.5
+ * @date 2017-05-11T17:01:53Z
  */
 
 ;(function($, window, document, undefined) {
@@ -41,7 +41,7 @@ function _assert(cond, msg){
  */
 $.ui.fancytree.registerExtension({
 	name: "columnview",
-	version: "2.22.4",
+	version: "2.22.5",
 	// Default options for this extension.
 	options: {
 	},

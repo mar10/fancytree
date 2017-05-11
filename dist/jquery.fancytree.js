@@ -7,8 +7,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.22.4
- * @date 2017-05-06T06:26:23Z
+ * @version 2.22.5
+ * @date 2017-05-11T17:01:53Z
  */
 
 /** Core Fancytree module.
@@ -2365,7 +2365,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 		/*jshint +W018 */
 		this._enableUpdate = flag;
 		if ( flag ) {
-			this.debug("enableUpdate(true): redraw ", this._dirtyRoots);
+			this.debug("enableUpdate(true): redraw ");  //, this._dirtyRoots);
 			this.render();
 		} else {
 		// 	this._dirtyRoots = null;
@@ -3389,20 +3389,14 @@ $.extend(Fancytree.prototype,
 				node.li = document.createElement("li");
 				node.li.ftnode = node;
 
-				// if(aria){
-				// 	$(node.li).attr("role", "treeitem");
-				// }
 				if( node.key && opts.generateIds ){
 					node.li.id = opts.idPrefix + node.key;
 				}
 				node.span = document.createElement("span");
 				node.span.className = "fancytree-node";
 				if( aria && !node.tr ) {
-					$(node.span).attr("role", "treeitem");
+					$(node.li).attr("role", "treeitem");
 				}
-				// if(aria){
-				// 	$(node.li).attr("aria-labelledby", "ftal_" + opts.idPrefix + node.key);
-				// }
 				node.li.appendChild(node.span);
 
 				// Create inner HTML for the <span> (expander, checkbox, icon, and title)
@@ -3502,7 +3496,7 @@ $.extend(Fancytree.prototype,
 	 */
 	nodeRenderTitle: function(ctx, title) {
 		// set node connector images, links and text
-		var id, icon, nodeTitle, role, tabindex, tooltip,
+		var icon, nodeTitle, role, tabindex, tooltip,
 			node = ctx.node,
 			tree = ctx.tree,
 			opts = ctx.options,
@@ -3582,14 +3576,10 @@ $.extend(Fancytree.prototype,
 				tooltip = opts.tooltip === true ? node.title : opts.tooltip.call(tree, node);
 			}
 			tooltip = tooltip ? " title='" + _escapeTooltip(tooltip) + "'" : "";
-			// id = aria ? " id='ftal_" + opts.idPrefix + node.key + "'" : "";
-			id = "";
-			// role = "";
-			role = "";  // (aria && !node.tr) ? " role='treeitem'" : "";
 			tabindex = opts.titlesTabbable ? " tabindex='0'" : "";
 
-			nodeTitle = "<span " + role + " class='fancytree-title'" +
-				id + tooltip + tabindex + ">" +
+			nodeTitle = "<span class='fancytree-title'" +
+				tooltip + tabindex + ">" +
 				(opts.escapeTitles ? _escapeHtml(node.title) : node.title) +
 				"</span>";
 		}
@@ -3617,8 +3607,6 @@ $.extend(Fancytree.prototype,
 			hasChildren = node.hasChildren(),
 			isLastSib = node.isLastSibling(),
 			aria = opts.aria,
-			// $ariaElem = aria ? $(node[tree.ariaPropName]) : null,
-			// $ariaElem = $(node.span).find(".fancytree-title"),
 			cn = opts._classNames,
 			cnList = [],
 			statusElem = node[tree.statusClassPropName];
@@ -3628,7 +3616,7 @@ $.extend(Fancytree.prototype,
 			return;
 		}
 		if( aria ) {
-			$ariaElem = node.tr ? $(node.tr) : $(node.span); //.find(".fancytree-title");
+			$ariaElem = $(node.tr || node.li);
 		}
 		// Build a list of class names that we will add to the node <span>
 		cnList.push(cn.node);
@@ -3643,16 +3631,14 @@ $.extend(Fancytree.prototype,
 		if( tree.focusNode === node ){
 			cnList.push(cn.focused);
 		}
-		// node.debug("aria", node.expanded, aria, $ariaElem);
 		if( node.expanded ){
 			cnList.push(cn.expanded);
-			if(aria){
-				$ariaElem.attr("aria-expanded", true);
+		}
+		if( aria ){
+			if (hasChildren !== false) {
+				$ariaElem.attr("aria-expanded", Boolean(node.expanded));
 			}
-		}else if( aria ){
-			if( hasChildren ) {
-				$ariaElem.attr("aria-expanded", false);
-			} else {
+			else {
 				$ariaElem.removeAttr("aria-expanded");
 			}
 		}
@@ -3988,7 +3974,7 @@ $.extend(Fancytree.prototype,
 			if( opts.aria ){
 				// Set active descendant to node's span ID (create one, if needed)
 				$(tree.$container).attr("aria-activedescendant",
-					$( node.tr || node.span ).uniqueId().attr("id"));
+					$( node.tr || node.li ).uniqueId().attr("id"));
 					// "ftal_" + opts.idPrefix + node.key);
 			}
 //			$(node.span).find(".fancytree-title").focus();
@@ -4683,7 +4669,7 @@ $.extend($.ui.fancytree,
 	/** @lends Fancytree_Static# */
 	{
 	/** @type {string} */
-	version: "2.22.4",      // Set to semver by 'grunt release'
+	version: "2.22.5",      // Set to semver by 'grunt release'
 	/** @type {string} */
 	buildType: "production", // Set to 'production' by 'grunt build'
 	/** @type {int} */
