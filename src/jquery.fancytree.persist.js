@@ -359,7 +359,7 @@ $.ui.fancytree.registerExtension({
 		}
 		return res;
 	},
-	nodeSetSelected: function(ctx, flag) {
+	nodeSetSelected: function(ctx, flag, callOpts) {
 		var res, selNodes,
 			tree = ctx.tree,
 			node = ctx.node,

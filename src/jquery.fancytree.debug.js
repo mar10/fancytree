@@ -92,7 +92,7 @@ $.ui.fancytree.registerExtension({
 	},
 	nodeSetFocus: function(ctx) {
 	},
-	nodeSetSelected: function(ctx, flag) {
+	nodeSetSelected: function(ctx, flag, callOpts) {
 	},
 	nodeSetStatus: function(ctx, status, message, details) {
 	},
