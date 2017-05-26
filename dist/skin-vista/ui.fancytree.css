@@ -81,6 +81,9 @@ ul.fancytree-container li.fancytree-lastsib,
 ul.fancytree-no-connector > li {
   background-image: none;
 }
+li.fancytree-animating {
+  position: relative;
+}
 /*------------------------------------------------------------------------------
  * Common icon definitions
  *----------------------------------------------------------------------------*/

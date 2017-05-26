@@ -149,7 +149,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editEnd = function(applyChanges, _e
 	}
 	$input
 		.removeClass("fancytree-edit-dirty")
-		.unbind();
+		.off();
 	// Unbind outer-click handler
 	$(document).off(".fancytree-edit");
 

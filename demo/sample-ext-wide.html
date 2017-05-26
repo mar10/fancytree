@@ -7,8 +7,8 @@
 	<script src="//code.jquery.com/jquery-1.7.min.js"></script>
 	<script src="//code.jquery.com/ui/1.9.2/jquery-ui.min.js"></script>
 -->
-	<script src="//code.jquery.com/jquery-1.12.1.min.js"></script>
-	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+	<script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+	<script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 
 	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet">
 	<script src="../src/jquery.fancytree.js"></script>
@@ -41,9 +41,10 @@
 			// toggleEffect: { effect: "drop", options: {direction: "left"}, duration: 400 },
 			// toggleEffect: false,
 			wide: {
-				// iconWidth: "1em",     // Adjust this if @fancy-icon-width != "16px"
-				// iconSpacing: "0.5em", // Adjust this if @fancy-icon-spacing != "3px"
-				// levelOfs: "1.5em"     // Adjust this if ul padding != "16px"
+				// iconWidth: "32px",     // Adjust this if @fancy-icon-width != "16px"
+				// iconSpacing: "6px", // Adjust this if @fancy-icon-spacing != "3px"
+				// labelSpacing: "6px",   // Adjust this if padding between icon and label !=  "3px"
+				// levelOfs: "32px"     // Adjust this if ul padding != "16px"
 			},
 			lazyLoad: function(event, data) {
 				data.result = {url: "ajax-sub2.json"}

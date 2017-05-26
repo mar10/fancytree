@@ -1,26 +1,32 @@
-; EditorConfig is awesome: http://EditorConfig.org
+# This file is for unifying the coding style for different editors and IDEs
+# editorconfig.org
 
-; top-most EditorConfig file
 root = true
 
-; Unix-style newlines with a newline ending every file
 [*]
-; end_of_line = lf
-insert_final_newline = true
+indent_style = tab
+end_of_line = lf
+charset = utf-8
 trim_trailing_whitespace = true
+insert_final_newline = true
 
-; 4 space indentation
+[package.json]
+indent_style = space
+indent_size = 2
+
+[*.coffee]
+indent_style = space
+indent_size = 2
+
+[*.md]
+indent_style = space
+indent_size = 4
+
 [*.py]
 indent_style = space
 indent_size = 4
 
-; Tab indentation (no size specified)
-[*.js]
-; indent_style = tab
-indent_style = space
-indent_size = 4
-
 ; Indentation override for all JS under lib directory
-[lib/**.js]
-indent_style = space
-indent_size = 2
+;[lib/**.js]
+;indent_style = space
+;indent_size = 2

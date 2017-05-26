@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+	<title>Fancytree - WAI-ARIA Tree Grid</title>
+
+	<script src="../lib/jquery.js"></script>
+	<script src="../lib/jquery-ui.custom.js"></script>
+
+	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet">
+	<script src="../src/jquery.fancytree.js"></script>
+	<script src="../src/jquery.fancytree.table.js"></script>
+
+	<!-- Start_Exclude: This block is not part of the sample code -->
+	<link href="../lib/prettify.css" rel="stylesheet">
+	<script src="../lib/prettify.js"></script>
+	<link href="sample.css" rel="stylesheet">
+	<script src="sample.js"></script>
+	<!-- End_Exclude -->
+
+	<style type="text/css">
+/*		table.fancytree-container {
+			width: 90%;
+		}*/
+	</style>
+
+	<script type="text/javascript">
+		$(function(){
+			$("#treegrid").fancytree({
+				extensions: ["table"],
+				aria: true,
+				checkbox: true,
+				quicksearch: true,
+				source: {url: "ajax-tree-products.json"},
+				table: {
+					checkboxColumnIdx: 0,  // render the checkboxes into the 1st column
+					nodeColumnIdx: 1       // render the node title into the 2nd column
+				},
+				keydown: function(event, data) {
+					// WAI-ARIA suggests that numpad '*' expands all siblings at
+					// the current node's level.
+					switch( $.ui.fancytree.eventToString(event) ) {
+						case "*":
+							$.each(data.node.parent.children, function(i, node){
+								node.setExpanded({noAnimation: true, noEvents: false});
+							});
+							break;
+					};
+				},
+				renderColumns: function(event, data) {
+					var node = data.node,
+						$tdList = $(node.tr).find(">td");
+
+					$tdList.eq(2).text(node.getIndexHier());
+				}
+			});
+		});
+	</script>
+</head>
+
+<body class="example">
+	<h1>Example: WAI-ARIA Tree Grid</h1>
+	<div class="description">
+		<p>
+			This Fancytree Tree Grid has
+			<a href="https://www.w3.org/TR/wai-aria-practices/#TreeGrid">WAI-ARIA</a>
+			enabled.<br>
+			<strong>Note:</strong> please
+			<a href="https://github.com/mar10/fancytree/issues/655">provide feedback</a>
+			if you have suggestions for improvement.
+		</p>
+		<p>
+			See also the <a href="sample-aria.html">ARIA Tree View example</a>.
+		</p>
+	</div>
+
+<!-- 	<div role="application"> -->
+	<div>
+		<label for="lblBefore">Text 1<input type="text" id="lblBefore"></label>
+
+		<table id="treegrid">
+			<colgroup>
+			<col width="30px"></col>
+			<col width="400px"></col>
+			<col width="100px"></col>
+			</colgroup>
+			<thead>
+				<tr> <th></th> <th>Item</th> <th>Index</th> </tr>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
+
+		<label for="lblAfter">Text 2</label><input type="text" id="lblAfter">
+	</div>
+
+	<!-- Start_Exclude: This block is not part of the sample code -->
+	<hr>
+	<p class="sample-links  no_code">
+		<a class="hideInsideFS" href="https://github.com/mar10/fancytree">jquery.fancytree.js project home</a>
+		<a class="hideOutsideFS" href="#">Link to this page</a>
+		<a class="hideInsideFS" href="index.html">Example Browser</a>
+		<a href="#" id="codeExample">View source code</a>
+	</p>
+	<pre id="sourceCode" class="prettyprint" style="display:none"></pre>
+	<!-- End_Exclude -->
+</body>
+</html>

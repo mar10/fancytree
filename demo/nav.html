@@ -72,6 +72,7 @@ $(function(){
 		clickFolderMode: 3, // expand with single click
 		minExpandLevel: 2,
 		tabindex: "-1", // we don't want the focus frame
+		// toggleEffect: { effect: "blind", options: {direction: "vertical", scale: "box"}, duration: 2000 },
 		// scrollParent: null, // use $container
 		focus: function(event, data) {
 			var node = data.node;
@@ -83,24 +84,42 @@ $(function(){
 		blur: function(event, data) {
 			data.node.scheduleAction("cancel");
 		},
+		beforeActivate: function(event, data){
+			var node = data.node;
+
+			if( node.data.href && node.data.target === "_blank") {
+				window.open(node.data.href, "_blank");
+				return false; // don't activate
+			}
+		},
 		activate: function(event, data){
 			var node = data.node,
 				orgEvent = data.originalEvent || {};
 
+			// Open href (force new window if Ctrl is pressed)
 			if(node.data.href){
 				window.open(node.data.href, (orgEvent.ctrlKey || orgEvent.metaKey) ? "_blank" : node.data.target);
 			}
+			// When an external link was clicked, we don't want the node to become
+			// active. Also the URL fragment should not be changed
+			if( node.data.target === "_blank") {
+				return false;
+			}
+			// Append #HREF to URL without actually loading content
+			// (We check for this value on page load re-activate the node.)
 			if( window.parent &&  parent.history && parent.history.pushState ) {
-				// Add #HREF to URL without actually loading content
 				parent.history.pushState({title: node.title}, "", "#" + (node.data.href || ""));
 			}
 		},
-		click: function(event, data){ // allow re-loads
+		click: function(event, data){
+			// We implement this in the `click` event, because `activate` is not
+			// triggered if the node already was active.
+			// We want to allow re-loads by clicking again.
 			var node = data.node,
 				orgEvent = data.originalEvent;
 
+			// Open href (force new window if Ctrl is pressed)
 			if(node.isActive() && node.data.href){
-				// data.tree.reactivate();
 				window.open(node.data.href, (orgEvent.ctrlKey || orgEvent.metaKey) ? "_blank" : node.data.target);
 			}
 		}
@@ -140,6 +159,7 @@ $(function(){
 		<ul>
 			<li><a target="content" href="welcome.html">Welcome</a>
 			<li><a target="content" href="sample-default.html">Default options</a>
+			<li><a target="content" href="sample-playground.html">Playground</a>
 			<li><a target="content" href="sample-configurator.html">Option configurator</a>
 			<li><a target="content" href="sample-multi-ext.html">Complex demo</a>
 			<li><a target="content" href="sample-source.html">Initialization</a>
@@ -169,6 +189,7 @@ $(function(){
 				<li class="external"><a target="_blank" href="sample-ext-persist.html">Persist</a>
 				<li><a target="content" href="sample-ext-table.html">Table</a>
 				<li><a target="content" href="sample-ext-themeroller.html">ThemeRoller</a>
+				<li><a target="content" href="sample-ext-select.html">Select</a>
 				<li><a target="content" href="sample-ext-wide.html">Wide</a>
 				</ul>
 			<li class="folder">Tweaks
@@ -176,6 +197,7 @@ $(function(){
 				<li><a target="content" href="sample-iframe.html">URL navigation and &lt;iframe></a>
 				<li><a target="content" href="sample-accordion.html">Accordion</a>
 				<li><a target="content" href="sample-3rd-ui-contextmenu.html">ui-contextmenu</a>
+				<li><a target="content" href="sample-3rd-jQuery-contextMenu.html">jQuery contextMenu</a>
 				<li><a target="content" href="sample-3rd-contextmenu-abs.html">Context menu (ABS), Copy/paste</a>
 				<li><a target="content" href="sample-ext-awesome.html">font-awesome</a>
 				<li><a target="content" href="sample-load-errors.html">Lazy load errors handling</a>
@@ -210,7 +232,7 @@ $(function(){
 		<ul>
 			<li class="folder">Extensions
 			<ul>
-				<li><a target="content" href="../3rd-party/extensions/contextmenu/contextmenu.html">contextMenu</a>
+				<li><a target="content" href="../3rd-party/extensions/contextmenu/contextmenu.html">jQuery contextMenu</a>
 				<li><a target="content" href="../3rd-party/extensions/hotkeys/hotkeys.html">hotkeys</a>
 			</ul>
 			<li class="folder">Samples

@@ -1,0 +1,10 @@
+bin
+doc
+lib
+node_modules
+test/**
+!test/unit/**
+*.min.js
+build/**
+dist/**
+!dist/jquery.js

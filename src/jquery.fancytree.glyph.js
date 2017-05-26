@@ -70,7 +70,7 @@ $.ui.fancytree.registerExtension({
 			opts = ctx.options.glyph,
 			map = opts.map;
 
-		res = this._superApply(arguments);
+		res = this._super(ctx);
 
 		if( node.isRoot() ){
 			return res;

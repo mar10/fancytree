@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.21.0
- * @date 2017-01-15T17:21:28Z
+ * @version 2.22.5
+ * @date 2017-05-11T17:01:53Z
  */
 
 ;(function($, window, document, undefined) {
@@ -212,8 +212,8 @@ $.ui.fancytree._FancytreeClass.prototype.clearFilter = function(){
 		statusNode.remove();
 	}
 	this.visit(function(node){
-		if( node.match ) {  // #491
-			$title = $(">span.fancytree-title", node.span);
+		if( node.match && node.span ) {  // #491, #601
+			$title = $(node.span).find(">span.fancytree-title");
 			if( escapeTitles ) {
 				$title.text(node.title);
 			} else {
@@ -273,7 +273,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.isMatched = function(){
  */
 $.ui.fancytree.registerExtension({
 	name: "filter",
-	version: "2.21.0",
+	version: "2.22.5",
 	// Default options for this extension.
 	options: {
 		autoApply: true,   // Re-apply last filter if lazy data is loaded
@@ -308,12 +308,12 @@ $.ui.fancytree.registerExtension({
 			node = ctx.node,
 			tree = ctx.tree,
 			opts = ctx.options.filter,
-			$title = $("span.fancytree-title", node.span),
+			$title = $(node.span).find("span.fancytree-title"),
 			$span = $(node[tree.statusClassPropName]),
 			enhanceTitle = ctx.options.enhanceTitle,
 			escapeTitles = ctx.options.escapeTitles;
 
-		res = this._superApply(arguments);
+		res = this._super(ctx);
 		// nothing to do, if node was not yet rendered
 		if( !$span.length || !tree.enableFilter ) {
 			return res;
@@ -333,7 +333,9 @@ $.ui.fancytree.registerExtension({
 			node.$subMatchBadge.hide();
 		}
 		// node.debug("nodeRenderStatus", node.titleWithHighlight, node.title)
-		if( !node.isEditing || !node.isEditing.call(node)){
+		// #601: also chek for $title.length, because we don't need to render
+		// if node.span is null (i.e. not rendered)
+		if( node.span && (!node.isEditing || !node.isEditing.call(node)) ) {
 			if( node.titleWithHighlight ) {
 				$title.html(node.titleWithHighlight);
 			} else if ( escapeTitles ) {

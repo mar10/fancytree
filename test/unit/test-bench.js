@@ -41,36 +41,13 @@ function _resetEmptyTree(options){
 }
 
 
-//$.ui.fancytree._FancytreeNodeClass.prototype.addChildren
-//    = profileWrapper($.ui.fancytree._FancytreeNodeClass.prototype.addChildren);
-
 function addNodes(node, level1, level2, level3, forceUpdate) {
-	if( forceUpdate !== true ){
-		node.tree.enableUpdate(false);
-	}
-	var d, f, i, j, k, key;
-	for(i=0; i<level1; i++) {
-		key = "" + (i+1);
-		f = node.addChildren({title: "Folder_" + key,
-							   key: key,
-							   folder: true
-							   });
-		for (j=0; j<level2; j++) {
-			key = "" + (i+1) + "." + (j+1);
-			d = f.addChildren({title: "Node_" + key,
-							  key: key
-							  });
-			for (k=0; k<level3; k++) {
-				key = "" + (i+1) + "." + (j+1) + "." + (k+1);
-				d.addChildren({title: "Node_" + key,
-						  key: key
-						  });
-			}
-		}
-	}
-	if( forceUpdate !== true ){
-		node.tree.enableUpdate(true);
-	}
+	tools.addGenericNodes(node, {
+		level1: level1,
+		level2: level2,
+		level3: level3,
+		disableUpdate: !forceUpdate
+	});
 }
 
 
@@ -122,7 +99,6 @@ QUnit.test("Add nodes using API to collapsed node (no rendering)", function(asse
 	assert.expect(3);
 
 	var tree = _resetEmptyTree();
-
 	tools.benchmark(assert, "1000 nodes flat", 1000, function() {
 		var node = tree.getNodeByKey("root");
 		addNodes(node, 1000, 0, 0);
@@ -349,19 +325,8 @@ QUnit.test("tabletree (6 columns): render while expanded with enableUpdate(false
 
 
 /* *****************************************************************************
- *
  */
 
-QUnit.module("Configuration and Summary");
-QUnit.test("", function(assert) {
-	assert.expect(5);
-
-	assert.ok(true, "Fancytree v" + $.ui.fancytree.version);
-	assert.ok(true, "jQuery UI " + jQuery.ui.version);
-	assert.ok(true, "jQuery " + jQuery.fn.jquery);
-	assert.ok(true, "Browser: " + tools.getBrowserInfo());
-	assert.ok(true, "Cumulated test time: " + tools.TOTAL_ELAP + " milliseconds");
-});
-// tools.createInfoSection();
+tools.createInfoSection();
 // ---
 });

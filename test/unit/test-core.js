@@ -162,11 +162,11 @@ QUnit.test("Create Fancytree - init", function(assert) {
 
 			done();
 		}
-	}).bind("fancytreecreate", function(event, data){
+	}).on("fancytreecreate", function(event, data){
 		// TODO: event is triggered, but only if we called done() before
 		// but then, the equal() call is added to the following test
 //        equal(event.type, "fancytreecreate", "receive `dynatreecreate` bound event");
-	}).bind("fancytreeinit", function(event, data){
+	}).on("fancytreeinit", function(event, data){
 //        equal(event.type, "fancytreeinit", "receive `init` bound event");
 //        done();
 	});
@@ -644,7 +644,7 @@ QUnit.test("makeVisible not rendered deep node", function(assert) {
  */
 QUnit.module("events");
 
-QUnit.test(".click() to expand a folder", function(assert) {
+QUnit.test(".mousedown() to expand a folder", function(assert) {
 	tools.setup(assert);
 	assert.expect(8);
 
@@ -667,11 +667,11 @@ QUnit.test(".click() to expand a folder", function(assert) {
 			done();
 		}
 	});
-	$("#tree #ft_10 span.fancytree-expander").click();
+	$("#tree #ft_10 span.fancytree-expander").mousedown();
 });
 
 
-QUnit.test(".click() to activate a node", function(assert) {
+QUnit.test(".mousedown() to activate a node", function(assert) {
 	tools.setup(assert);
 	assert.expect(8);
 
@@ -694,11 +694,11 @@ QUnit.test(".click() to activate a node", function(assert) {
 			done();
 		}
 	});
-	$("#tree #ft_2 span.fancytree-title").click();
+	$("#tree #ft_2 span.fancytree-title").mousedown();
 });
 
 
-QUnit.test(".click() to activate a folder (clickFolderMode 3 triggers expand)", function(assert) {
+QUnit.test(".mousedown() to activate a folder (clickFolderMode 3 triggers expand)", function(assert) {
 	tools.setup(assert);
 	assert.expect(4);
 
@@ -723,11 +723,11 @@ QUnit.test(".click() to activate a folder (clickFolderMode 3 triggers expand)", 
 			done();
 		}
 	});
-	$("#tree #ft_10 span.fancytree-title").click();
+	$("#tree #ft_10 span.fancytree-title").mousedown();
 });
 
 
-QUnit.test(".click() to select a node", function(assert) {
+QUnit.test(".mousedown() to select a node", function(assert) {
 	tools.setup(assert);
 	assert.expect(8);
 
@@ -751,7 +751,7 @@ QUnit.test(".click() to select a node", function(assert) {
 			done();
 		}
 	});
-	$("#tree #ft_2 span.fancytree-checkbox").click();
+	$("#tree #ft_2 span.fancytree-checkbox").mousedown();
 });
 
 
@@ -804,7 +804,7 @@ QUnit.test("'modifyChild' event", function(assert) {
 });
 
 /*******************************************************************************
- * Lazy loading
+ * generateFormElements
  */
 QUnit.module("generateFormElements()");
 
@@ -907,6 +907,7 @@ QUnit.test("multi select", function(assert) {
 		"filter => isActive(): generate selected nodes");
 });
 
+
 QUnit.test("selectMode: 3", function(assert) {
 	tools.setup(assert);
 	assert.expect(4);
@@ -943,12 +944,13 @@ QUnit.test("selectMode: 3", function(assert) {
 		"stopOnParents: false: all nodes created");
 });
 
+
 /*******************************************************************************
  * Lazy loading
  */
 QUnit.module("lazy loading");
 
-QUnit.test("Using ajax options for `source`; .click() expands a lazy folder", function(assert) {
+QUnit.test("Using ajax options for `source`; .mousedown() expands a lazy folder", function(assert) {
 	tools.setup(assert);
 	assert.expect(19);
 
@@ -965,7 +967,7 @@ QUnit.test("Using ajax options for `source`; .click() expands a lazy folder", fu
 			assert.equal($("#tree li").length, TESTDATA_VISIBLENODES, "lazy tree has rendered 13 node elements");
 			// now expand a lazy folder
 			isClicked = true;
-			$("#tree #ft_30 span.fancytree-expander").click();
+			$("#tree #ft_30 span.fancytree-expander").mousedown();
 		},
 		beforeExpand: function(event, data){
 			assert.equal(sequence++, 4, "receive `beforeExpand` callback");
@@ -1005,7 +1007,8 @@ QUnit.test("Using ajax options for `source`; .click() expands a lazy folder", fu
 	});
 });
 
-QUnit.test("Using $.ajax promise for `source`; .click() expands a lazy folder", function(assert) {
+
+QUnit.test("Using $.ajax promise for `source`; .mousedown() expands a lazy folder", function(assert) {
 	tools.setup(assert);
 	assert.expect(12);
 
@@ -1025,7 +1028,7 @@ QUnit.test("Using $.ajax promise for `source`; .click() expands a lazy folder", 
 			assert.equal($("#tree li").length, TESTDATA_VISIBLENODES, "lazy tree has rendered 13 node elements");
 			// now expand a lazy folder
 			isClicked = true;
-			$("#tree #ft_30 span.fancytree-expander").click();
+			$("#tree #ft_30 span.fancytree-expander").mousedown();
 		},
 		beforeExpand: function(event, data){
 			assert.equal(sequence++, 3, "receive `beforeExpand` callback");
@@ -1049,6 +1052,172 @@ QUnit.test("Using $.ajax promise for `source`; .click() expands a lazy folder", 
 			assert.equal($("#tree li").length, TESTDATA_VISIBLENODES + 2, "lazy tree has rendered 15 node elements");
 			done();
 		}
+	});
+});
+
+/******************************************************************************/
+
+QUnit.module("Selection mode 3");
+
+QUnit.test("load behavior", function(assert) {
+	tools.setup(assert);
+	assert.expect(30);
+
+	var tree;
+
+	$("#tree").fancytree({
+		selectMode: 3,
+		checkbox: true,
+		source: [
+			{title: "n1", children: [
+				{title: "n1.1", selected: true},
+				{title: "n1.2", selected: false},
+				{title: "n1.3", selected: null}
+			]},
+			{title: "n2 (all selected)", children: [
+				{title: "n2.1", selected: true, unselectable: true, unselectableStatus: true},
+				{title: "n2.2", selected: true, unselectable: true, unselectableStatus: false},
+				{title: "n2.3", selected: true, unselectable: true, unselectableStatus: null}
+			]},
+			{title: "n3", children: [
+				{title: "n3.1", children: [
+					{title: "n3.1.1 (unselectable)", unselectable: true},
+					{title: "n3.1.2 (unselectable)", unselectable: true},
+					{title: "n3.1.3"}
+				]},
+				{title: "n3.2", children: [
+					{title: "n3.2.1 (unselectableStatus: true)", unselectable: true, unselectableStatus: true},
+					{title: "n3.2.2 (unselectableStatus: false)", unselectable: true, unselectableStatus: false},
+					{title: "n3.2.3"}
+				]},
+				{title: "n3.3", children: [
+					{title: "n3.3.1 (unselectableStatus: true, unselectableIgnore)", unselectable: true, unselectableStatus: true,  unselectableIgnore: true},
+					{title: "n3.3.2 (unselectableStatus: false, unselectableIgnore)", unselectable: true, unselectableStatus: false, unselectableIgnore: true},
+					{title: "n3.3.3"}
+				]}
+			]},
+			{title: "n4 (radiogroup)", radiogroup: true, unselectable: true, children: [
+				{title: "n4.1 (selected)", selected: true},
+				{title: "n4.2"},
+				{title: "n4.3"}
+			]}
+		],
+		init: function(event, data) {
+			// Set key from first part of title
+			data.tree.visit(function(n) {
+				n.key = n.title.split(" ")[0];
+			});
+		},
+		generateIds: true
+	});
+	tree = $.ui.fancytree.getTree();
+
+	tools.getNode("n1").setSelected();
+
+	assert.equal(tools.getNode("n1.1").selected, true,
+		"propagate down `select` (simple child) 1/3");
+	assert.equal(tools.getNode("n1.2").selected, true,
+		"propagate down `select` (simple child) 2/3");
+	assert.equal(tools.getNode("n1.3").selected, true,
+		"propagate down `select` (simple child) 3/3");
+
+	tools.getNode("n1").setSelected(false);
+
+	assert.equal(tools.getNode("n1.1").selected, false,
+		"propagate down `deselect` (simple child)");
+
+	tools.getNode("n2").setSelected();
+
+	assert.equal(tools.getNode("n2.1").selected, true,
+		"propagate down `select` (unselectable status: true)");
+	assert.equal(tools.getNode("n2.2").selected, false,
+		"propagate down `select` (unselectable status: false)");
+	assert.equal(tools.getNode("n2.3").selected, true,
+		"propagate down `select` (unselectable status: undefined)");
+
+	tools.getNode("n2").setSelected(false);
+
+	assert.equal(tools.getNode("n2.1").selected, true,
+		"propagate down `deselect` (unselectable status: true)");
+	assert.equal(tools.getNode("n2.2").selected, false,
+		"propagate down `deselect` (unselectable status: false)");
+	assert.equal(tools.getNode("n2.3").selected, false,
+		"propagate down `deselect` (unselectable status: undefined)");
+
+	// Check upward propagation
+
+	tools.getNode("n3").setSelected(true);
+
+	assert.equal(tools.getNode("n3.1").isSelected(), true,
+		"propagate down `select` (unselectable): parent selected");
+	assert.equal(tools.getNode("n3.1.1").isSelected(), true,
+		"propagate down `select` (unselectable): selected by api");
+
+	assert.equal(tools.getNode("n3.2").isPartsel(), true,
+		"propagate down `select` (unselectable status: true&false): parent partsel");
+
+	assert.equal(tools.getNode("n3.3").isSelected(), true,
+		"propagate down `select` (unselectable status: true&false, ignore): parent selected");
+	assert.equal(tools.getNode("n3.3.2").isSelected(), false,
+		"propagate down `select` (unselectable status: false): not selected");
+
+	tools.getNode("n3").setSelected(false);
+
+	assert.equal(tools.getNode("n3.1").isPartsel(), false,
+		"propagate down `deselect` (unselectable): parent not partsel");
+	assert.equal(tools.getNode("n3.1.1").isSelected(), false,
+		"propagate down `deselect` (unselectable): deselected by api");
+
+	assert.equal(tools.getNode("n3.2").isPartsel(), true,
+		"propagate down `deselect` (unselectable status: true&false): parent partsel");
+	assert.equal(tools.getNode("n3.2.1").isSelected(), true,
+		"propagate down `deselect` (unselectable status: true): not deselected");
+
+	assert.equal(tools.getNode("n3.3").isPartsel(), false,
+		"propagate down `deselect` (unselectable status: true&false, ignore): parent not partsel");
+	assert.equal(tools.getNode("n3.3").isSelected(), false,
+		"propagate down `deselect` (unselectable status: true&false, ignore): parent not selected");
+	assert.equal(tools.getNode("n3.3.1").isSelected(), true,
+		"propagate down `deselect` (unselectable status: true): not deselected");
+
+	tools.getNode("n3.2.3").setSelected(true);
+
+	assert.equal(tools.getNode("n3.2").isPartsel(), true,
+		"propagate up `select`: parent partsel, because of deselected sibling");
+
+	tools.getNode("n3.2.3").setSelected(false);
+
+	assert.equal(tools.getNode("n3.2").isPartsel(), true,
+		"propagate up `deselect`: parent partsel, because of selected sibling");
+
+	tools.getNode("n3.3.3").setSelected(true);
+
+	assert.equal(tools.getNode("n3.3").isSelected(), true,
+		"propagate up `select`: parent selected, because of ignored siblings");
+
+	tools.getNode("n3.3.3").setSelected(false);
+
+	assert.equal(tools.getNode("n3.3").isSelected(), false,
+		"propagate up `deselect`: parent deselected, because of ignored siblings");
+
+	// radiogroup
+
+	tools.getNode("n4.1").setSelected();
+
+	assert.equal(tools.getNode("n4.1").isSelected(), true,
+		"radiogroup `select`: select first");
+	assert.ok(!tools.getNode("n4.2").isSelected() && !tools.getNode("n4.3").isSelected(),
+		"radiogroup `select`: deselect siblings");
+
+	tools.getNode("n4.3").setSelected();
+
+	assert.equal(tools.getNode("n4.3").isSelected(), true,
+		"radiogroup `select`: select last");
+	assert.ok(!tools.getNode("n4.1").isSelected() && !tools.getNode("n4.2").isSelected(),
+		"radiogroup `select`: deselect siblings");
+
+	tree.visit(function(n){
+		n.setExpanded();
 	});
 });
 

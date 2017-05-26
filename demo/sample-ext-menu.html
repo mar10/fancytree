@@ -24,24 +24,36 @@
 	<h1>Example: 'menu' extension</h1>
 	<div class="description">
 		<p>
-			<b>Note: The <code>ext-menu</code> extension is deprecated and no
-			longer supported!</b>
+			Fancytree does <b>not</b> include a native context menu extension.<br>
+			A context menu is typically used for multiple elements of a web
+			application and the appearance should be consistent everywhere.
 		</p><p>
-			We feel that a context menu is typically used for multiple elements
-			on a web application and should not be tied to Fancytree only.
+			However, using an <i>existing</i> context menu plugin is easy.
+			It normally only requires to call <code>$.ui.fancytree.getNode(element)</code>
+			in the respective callback handler and then trigger the desired
+			operation.
 		</p><p>
-			Use existing context menus instead, for example
+			Examples of existing third party context menus include:
 			<ul>
-			<li>jquery-ui-contextmenu
-				(RECOMMENDED, see <a href="index.html#sample-3rd-ui-contextmenu.html" target="_top">Fancytree demo</a>
-				and <a href="https://github.com/mar10/jquery-ui-contextmenu" target="_blank" class="external">project site</a>.)
-			<li>DEPRECATED <code>ext-menu</code> <a href="sample-ext-menu-deprecated.html">demo</a>.
-			<li>Abstract spoon
-				(no longer maintained, see <a href="index.html#sample-3rd-contextmenu-abs.html" target="_top">Fancytree demo</a>
-				and <a href="http://www.abeautifulsite.net" target="_blank" class="external">project site</a>.)
-			<li><a href="http://medialize.github.io/jQuery-contextMenu/" target="_blank" class="external">jQuery contextMenu</a>,
-				<a href="https://github.com/tweego/JeeGooContext" target="_blank" class="external">JeeGooContext</a>,
-				or <a href="https://www.npmjs.com/search?q=contextmenu" target="_blank" class="external">others</a>...
+			<li><b>jQuery contextMenu</b><br>
+				A popular, free context menu and polyfil
+				(<a href="https://github.com/swisnl/jQuery-contextMenu" target="_blank" class="external">project site</a>).<br>
+				See here for a <a href="index.html#sample-3rd-jQuery-contextMenu.html" target="_top">Fancytree demo</a>.
+
+			<li><b>jQuery contextMenu (using a Fancytree extension)</b><br>
+				The <code>ext-contextMenu</code> extension is a thin wrapper that
+				integrates the above plugin into Fancytree (
+				<a href="index.html#../3rd-party/extensions/contextmenu/contextmenu.html" target="_top">demo</a> ).
+
+			<li><b>jquery.ui-contextmenu</b><br>
+				A free jQuery plugin that turns a <a href="http://jqueryui.com/menu/" target="_blank" class="external">jQuery UI Menu</a>
+				widget into a context menu
+				(<a href="https://github.com/mar10/jquery-ui-contextmenu" target="_blank" class="external">project site</a>).<br>
+				See here for a <a href="index.html#sample-3rd-ui-contextmenu.html" target="_top">Fancytree demo</a>.
+
+			<li><b>Plenty of other menus &hellip;</b><br>
+				<a href="https://github.com/tweego/JeeGooContext" target="_blank" class="external">JeeGooContext</a> and
+				<a href="https://www.npmjs.com/search?q=contextmenu" target="_blank" class="external">more</a>&hellip;
 			</ul>
 		</p>
 	</div>

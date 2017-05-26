@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+	<title>Fancytree - 3rd Party Example: jQuery contextMenu</title>
+
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/start/jquery-ui.css" />
+	<script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+	<script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
+	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet">
+	<script src="../src/jquery.fancytree.js"></script>
+
+	<!-- jquery-contextmenu (https://github.com/swisnl/jQuery-contextMenu) -->
+	<link rel="stylesheet"
+		href="//cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.2.3/jquery.contextMenu.min.css" />
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.2.3/jquery.contextMenu.min.js">
+	</script>
+	<!-- Start_Exclude: This block is not part of the sample code -->
+	<link href="../lib/prettify.css" rel="stylesheet">
+	<script src="../lib/prettify.js"></script>
+	<link href="sample.css" rel="stylesheet">
+	<script src="sample.js"></script>
+	<!-- End_Exclude -->
+
+<style type="text/css">
+</style>
+
+	<script type="text/javascript">
+	$(function() {
+		$("#tree").fancytree({
+			extensions: [],
+			source: {
+				url: "ajax-tree-plain.json"
+			},
+			lazyLoad: function(event, data) {
+				data.result = { url: "ajax-sub2.json" }
+			}
+		});
+
+		$.contextMenu({
+			selector: "#tree span.fancytree-title",
+			items: {
+				"cut": {name: "Cut", icon: "cut",
+						callback: function(key, opt){
+							var node = $.ui.fancytree.getNode(opt.$trigger);
+							alert("Clicked on " + key + " on " + node);
+						}
+					},
+				"copy": {name: "Copy", icon: "copy"},
+				"paste": {name: "Paste", icon: "paste", disabled: false },
+				"sep1": "----",
+				"edit": {name: "Edit", icon: "edit", disabled: true },
+				"delete": {name: "Delete", icon: "delete", disabled: true },
+				"more": {name: "More", items: {
+					"sub1": {name: "Sub 1"},
+					"sub1": {name: "Sub 2"}
+					}}
+				},
+			callback: function(itemKey, opt) {
+				var node = $.ui.fancytree.getNode(opt.$trigger);
+				alert("select " + itemKey + " on " + node);
+			}
+		});
+	});
+	</script>
+</head>
+
+<body class="example">
+
+<h1>Example: use 'jQuery contextMenu'</h1>
+
+<div class="description">
+	<p>
+		This example integrates the
+		<a href="https://github.com/mar10/jquery-ui-contextmenu" target="_blank" class="external">jQuery contextMenu plugin</a>,
+		which is maintained independantly from Fancytree and is based on
+		<a href="http://api.jqueryui.com/menu/">jQuery UI Menu</a>
+		(part of jQuery UI 1.9+).
+	</p>
+	<p>
+		This is only one of more options. See the
+		<a href="index.html#sample-ext-menu.html">menu overview</a> for details.
+	</p>
+</div>
+
+<div>
+ <label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
+</div>
+
+<!-- Tree wrapper -->
+<div id="tree"></div>
+
+<hr />
+
+<div id="selected-action">Click right mouse button on node</div>
+
+<!-- Start_Exclude: This block is not part of the sample code -->
+<hr>
+
+<p class="sample-links  no_code">
+ <a class="hideInsideFS" href="https://github.com/mar10/fancytree">jquery.fancytree.js project home</a>
+ <a class="hideOutsideFS" href="#">Link to this page</a>
+ <a class="hideInsideFS" href="index.html">Example Browser</a>
+ <a href="#" id="codeExample">View source code</a>
+</p>
+
+<pre id="sourceCode" class="prettyprint" style="display:none"></pre>
+<!-- End_Exclude -->
+
+</body>
+</html>

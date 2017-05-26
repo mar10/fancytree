@@ -1,5 +1,5 @@
 ###
-Build scripts for Fancytree 
+Build scripts for Fancytree
 ###
 
 # jshint directives for the generated JS:
@@ -12,7 +12,7 @@ module.exports = (grunt) ->
 
   grunt.initConfig
 
-    pkg: 
+    pkg:
         grunt.file.readJSON("package.json")
 
     # Project metadata, used by the <banner> directive.
@@ -61,12 +61,15 @@ module.exports = (grunt) ->
                 "src/jquery.fancytree.clones.js"
 #                "src/jquery.fancytree.columnview.js"
                 "src/jquery.fancytree.dnd.js"
+                "src/jquery.fancytree.dnd5.js"
                 "src/jquery.fancytree.edit.js"
                 "src/jquery.fancytree.filter.js"
+#                "src/jquery.fancytree.fixed.js"
                 "src/jquery.fancytree.glyph.js"
                 "src/jquery.fancytree.gridnav.js"
 #                "src/jquery.fancytree.menu.js"
                 "src/jquery.fancytree.persist.js"
+#                "src/jquery.fancytree.select.js"
                 "src/jquery.fancytree.table.js"
                 "src/jquery.fancytree.themeroller.js"
                 "src/jquery.fancytree.wide.js"
@@ -77,7 +80,7 @@ module.exports = (grunt) ->
             options:
                 banner: "<%= meta.banner %>"
                 stripBanners: true
-                process: (src, fspec) -> 
+                process: (src, fspec) ->
                   # Remove all comments, including /*! ... */
                   src = src.replace(/\/\*(.|\n)*\*\//g, "")
                   if /fancytree..+.min.js/.test(fspec)
@@ -93,7 +96,7 @@ module.exports = (grunt) ->
                 "build/jquery.fancytree.clones.min.js"
 #                "build/jquery.fancytree.columnview.min.js"
                 "build/jquery.fancytree.dnd.min.js"
-#                "build/jquery.fancytree.dnd5.min.js"
+                "build/jquery.fancytree.dnd5.min.js"
                 "build/jquery.fancytree.edit.min.js"
                 "build/jquery.fancytree.filter.min.js"
 #                "build/jquery.fancytree.fixed.min.js"
@@ -101,6 +104,7 @@ module.exports = (grunt) ->
                 "build/jquery.fancytree.gridnav.min.js"
 #                "build/jquery.fancytree.menu.min.js"
                 "build/jquery.fancytree.persist.min.js"
+#                "build/jquery.fancytree.select.min.js"
                 "build/jquery.fancytree.table.min.js"
                 "build/jquery.fancytree.themeroller.min.js"
                 "build/jquery.fancytree.wide.min.js"
@@ -218,6 +222,18 @@ module.exports = (grunt) ->
             options:
                 output: "doc/annotated-src"
 
+    eslint:
+        # options:
+        #   # See https://github.com/sindresorhus/grunt-eslint/issues/119
+        #   quiet: true
+        # We have to explicitly declare "src" property otherwise "newer"
+        # task wouldn't work properly :/
+        dist:
+            src: "dist/jquery.js"
+        dev:
+            # src: [ "src/**/*.js", "test/**/*.js", "build/**/*.js" ]
+            src: [ "src/jquery.fancytree.ariagrid.js" ]
+
     exec:
         tabfix:
             # Cleanup whitespace according to http://contribute.jquery.org/style-guide/js/
@@ -228,6 +244,9 @@ module.exports = (grunt) ->
             # FTP upload the demo files (requires https://github.com/mar10/pyftpsync)
             cmd: "pyftpsync --progress upload . ftp://www.wwwendt.de/tech/fancytree --delete-unmatched --omit build,node_modules,.*,_*"
 #            cmd: "pyftpsync --progress upload . ftp://www.wwwendt.de/tech/fancytree --omit build,node_modules,.*,_*  -x"
+        upload_force:
+            # FTP upload the demo files (requires https://github.com/mar10/pyftpsync)
+            cmd: "pyftpsync --progress upload . ftp://www.wwwendt.de/tech/fancytree --delete-unmatched --omit build,node_modules,.*,_* --resolve=local --force"
 
     # htmllint:
     #     all: ["demo/**/*.html", "doc/**/*.html", "test/**/*.html"]
@@ -272,10 +291,10 @@ module.exports = (grunt) ->
             ]
 
     qunit:
-        build: [ 
-            "test/unit/test-core-build.html" 
+        build: [
+            "test/unit/test-core-build.html"
         ]
-        develop: [ 
+        develop: [
             "test/unit/test-core.html"
             "test/unit/test-ext-filter.html"
             "test/unit/test-ext-table.html"
@@ -375,9 +394,9 @@ module.exports = (grunt) ->
         #         banner: "<%= meta.banner %>"
         #         # preserveComments: "some"
         #         report: "min"
-        #         sourceMap: 
+        #         sourceMap:
         #             (path) -> path.replace(/.js/, ".js.map")
-        #         sourceMappingURL: 
+        #         sourceMappingURL:
         #             (path) -> path.replace(/^build\//, "") + ".map"
         #         sourceMapPrefix: 1 # strip 'build/' from paths
 
@@ -424,7 +443,7 @@ module.exports = (grunt) ->
             options:
                 atBegin: true
             files: ["src/*.js", "test/unit/*.js", "demo/**/*.js"]
-            tasks: ["jshint:beforeConcat"]
+            tasks: ["jshint:beforeConcat", "eslint:dev"]
 
     yabs:
         release:
@@ -461,6 +480,7 @@ module.exports = (grunt) ->
   grunt.registerTask "tabfix", ["exec:tabfix"]
   grunt.registerTask "test", [
       "jshint:beforeConcat",
+      "eslint:dev",
       # "csslint",
       # "htmllint",
       "qunit:develop"
@@ -496,7 +516,7 @@ module.exports = (grunt) ->
       # "uglify:build"
       "qunit:build"
       ]
-  
+
   grunt.registerTask "make_release", [
       "exec:tabfix"
       "build"
@@ -510,4 +530,9 @@ module.exports = (grunt) ->
   grunt.registerTask "upload", [
       "build"
       "exec:upload"
+      ]
+
+  grunt.registerTask "upload_force", [
+      "build"
+      "exec:upload_force"
       ]

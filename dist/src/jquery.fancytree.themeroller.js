@@ -11,8 +11,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.21.0
- * @date 2017-01-15T17:21:28Z
+ * @version 2.22.5
+ * @date 2017-05-11T17:01:53Z
  */
 
 ;(function($, window, document, undefined) {
@@ -24,7 +24,7 @@
  */
 $.ui.fancytree.registerExtension({
 	name: "themeroller",
-	version: "2.21.0",
+	version: "2.22.5",
 	// Default options for this extension.
 	options: {
 		activeClass: "ui-state-active",      // Class added to active node
@@ -68,7 +68,7 @@ $.ui.fancytree.registerExtension({
 			$el = $(node.tr ? node.tr : node.span),
 			opts = ctx.options.themeroller;
 
-		this._superApply(arguments);
+		this._super(ctx);
 /*
 		.ui-state-highlight: Class to be applied to highlighted or selected elements. Applies "highlight" container styles to an element and its child text, links, and icons.
 		.ui-state-error: Class to be applied to error messaging container elements. Applies "error" container styles to an element and its child text, links, and icons.

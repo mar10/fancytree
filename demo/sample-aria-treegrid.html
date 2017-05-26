@@ -7,9 +7,10 @@
 	<script src="../lib/jquery.js"></script>
 	<script src="../lib/jquery-ui.custom.js"></script>
 
-	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet">
+	<link href="../src/skin-lion/ui.fancytree.css" rel="stylesheet">
 	<script src="../src/jquery.fancytree.js"></script>
 	<script src="../src/jquery.fancytree.table.js"></script>
+	<script src="../src/jquery.fancytree.ariagrid.js"></script>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
 	<link href="../lib/prettify.css" rel="stylesheet">
@@ -19,75 +20,185 @@
 	<!-- End_Exclude -->
 
 	<style type="text/css">
-/*		table.fancytree-container {
-			width: 90%;
-		}*/
+		td.stretch input,
+		td.stretch select {
+			box-sizing: border-box;
+			margin: 2px;
+			width: 100%;
+		}
+		td.center {
+			text-align: center;
+		}
+		table.fancytree-container > thead > tr > th {
+			background-color: #d4d4d4;
+		}
+		/* --- ext-ariagrid specific ---------------------------------------- */
+		table.fancytree-cell-mode > tbody > tr.fancytree-active > td {
+			/*background-color: #cbe8f6;*/
+			background-color: #eee;
+		}
+		table.fancytree-cell-mode > tbody > tr > td.fancytree-active-cell {
+			background-color: #3875d7;
+		}
+		table.fancytree-cell-mode.fancytree-cell-nav-mode > tbody > tr > td.fancytree-active-cell {
+			background-color: #cbe8f6;
+		}
+		/* --- Debug helpers: ----------------------------------------------- */
+/*
+		[tabindex="-1"] {
+			border: 2px dotted green !important;
+		}
+		[tabindex="0"] {
+			border: 2px dotted red !important;
+		}
+*/
 	</style>
 
 	<script type="text/javascript">
-		$(function(){
-			$("#treegrid").fancytree({
-				extensions: ["table"],
+		/*global $ */
+		$( function() {
+			// --- Demo GUI: ---------------------------------------------------
+
+			var store = window.sessionStorage;
+
+			$( "#optionsForm [name=cellFocus]" ).change( function( e ) {
+				store.setItem( "cellFocus", $( this ).find( ":selected" ).val() );
+			}).val( store.getItem( "cellFocus" ) || "allow" );
+			$( "#optionsForm [name=extendedMode]" ).change( function( e ) {
+				store.setItem( "extendedMode", $( this ).prop( "checked" ) || "" );
+			}).prop( "checked", !!store.getItem( "extendedMode" ) );
+
+			// --- Fancytree widget --------------------------------------------
+
+			$( "#treegrid" ).fancytree({
+				extensions: [ "table", "ariagrid" ],
 				aria: true,
+				generateIds: true,
+				// rtl: true,
 				checkbox: true,
-				quicksearch: true,
-				source: {url: "ajax-tree-products.json"},
+//				quicksearch: true,
+				source: { url: "ajax-tree-products.json" },
 				table: {
 					checkboxColumnIdx: 0,  // render the checkboxes into the 1st column
 					nodeColumnIdx: 1       // render the node title into the 2nd column
 				},
-				keydown: function(event, data) {
-					// WAI-ARIA suggests that numpad '*' expands all siblings at
-					// the current node's level.
-					switch( $.ui.fancytree.eventToString(event) ) {
-						case "*":
-							$.each(data.node.parent.children, function(i, node){
-								node.setExpanded({noAnimation: true, noEvents: false});
-							});
-							break;
-					};
+				ariagrid: {
+					cellFocus: $( "#optionsForm [name=cellFocus]" ).find( ":selected" ).val(),
+					extendedMode: $( "#optionsForm [name=extendedMode]" ).is( ":checked" ),
+					label: "Fancytree ARIA sample"
 				},
-				renderColumns: function(event, data) {
+				init: function( event, data ) {
+					// We could switch to cell-mode here:
+					// data.tree.getFirstChild().setActive(true, {cell: 1});
+				},
+				defaultCellAction: function( event, data ) {
+					// Called when ENTER is pressed in cell-mode.
+					// Return false to prevent default
+					if ( data.colIdx === 4 ) {
+						// eslint-disable-next-line no-alert
+						alert( "Custom default action: " + data.node.title );
+						return false;
+					}
+				},
+				renderColumns: function( event, data ) {
 					var node = data.node,
-						$tdList = $(node.tr).find(">td");
+						$tdList = $( node.tr ).find( ">td" );
 
-					$tdList.eq(2).text(node.getIndexHier());
+					// The row template inserts controls, so we have to remove
+					// them herer for folders:
+					if ( node.isFolder() ) {
+						$tdList.eq( 2 ).empty();
+						$tdList.eq( 3 ).empty();
+						$tdList.eq( 5 ).empty();
+						$tdList.eq( 6 ).empty();
+						$tdList.eq( 7 ).empty();
+					}
+					$tdList.eq( 4 ).text( "Lorem ipsum " + node.title );
 				}
 			});
+
 		});
-	</script>
+</script>
 </head>
 
 <body class="example">
-	<h1>Example: WAI-ARIA Tree Grid</h1>
+	<h1>Example: WAI-ARIA Tree Grid - Prototype</h1>
 	<div class="description">
 		<p>
-			This Fancytree Tree Grid has
-			<a href="https://www.w3.org/TR/wai-aria-practices/#TreeGrid">WAI-ARIA</a>
-			enabled.<br>
+			This Fancytree Tree Grid has uses a prototypical extension to
+			explore ARIA support as discussed here:<br>
+<!--
+			<a href="https://github.com/aleventhal/treegrid-example">
+				aleventhal/treegrid-example </a>,
+			<a href="https://github.com/aleventhal/treegrid-tab-active-cells">
+				aleventhal/treegrid-tab-active-cells </a>
+			<br>
+			and here
+-->
+			<a href="https://rawgit.com/w3c/aria-practices/treegrid/examples/treegrid/treegrid-1.html">
+				w3c/aria-practices/treegrid/examples/treegrid/treegrid-1.html
+			</a>
+		</p> <p>
+			Extended mode adds this behavior:
+			<ul>
+				<li>Embedded inputs get the focus, but we distinguish cell-nav-mode
+				and cell-edit-mode. cell-nav-mode steals <kbd>Up</kbd>, <kbd>Down</kbd>,
+				<kbd>Left</kbd>, <kbd>Right</kbd>, <kbd>Home</kbd>, <kbd>End</kbd>
+				fromt input controls to always allow cell navigation.</li>
+				<li><kbd>Enter</kbd>: In row-mode: switch to cell-nav-mode. In cell-nav-mode: execute default action or switch to cell-edit-mode for embedded text input.
+				In cell-edit-mode: switch back to cell-nav-mode.</li>
+				<li><kbd>Esc</kbd>: In cell-nav-mode: switch to row-mode. In cell-edit-mode: switch to cell-nav-mode.</li>
+			</ul>
+<!--
+		</p><p>
 			<strong>Note:</strong> please
 			<a href="https://github.com/mar10/fancytree/issues/655">provide feedback</a>
-			if you have suggestions for improvement.
-		</p>
-		<p>
+			if you have suggestions for improvement on the Fancytree implementation.
+-->
+		</p> <p>
 			See also the <a href="sample-aria.html">ARIA Tree View example</a>.
 		</p>
 	</div>
 
-<!-- 	<div role="application"> -->
 	<div>
-		<label for="lblBefore">Text 1<input type="text" id="lblBefore"></label>
+		<form id="optionsForm">
+			<label>cellFocus:
+				<select name="cellFocus">
+					<option value="start">start</option>
+					<option value="allow" selected="selected">allow</option>
+					<option value="force">force</option>
+				</select>
+			</label>
+			<label>Extended mode <input type="checkbox" name="extendedMode"></label>
+			(Please reload page for changes to take effect.)
+		</form>
+		<hr>
 
 		<table id="treegrid">
 			<colgroup>
-			<col width="30px"></col>
-			<col width="400px"></col>
-			<col width="100px"></col>
+			<col width="20px">
+			<col width="400px">
+			<col width="30px">
+			<col width="30px">
+			<col width="400px">
+			<col width="100px">
+			<col width="100px">
+			<col width="100px">
 			</colgroup>
 			<thead>
-				<tr> <th></th> <th>Item</th> <th>Index</th> </tr>
+				<tr> <th>Select</th> <th>Item</th> <th>In Stock</th> <th>Favorite</th> <th>Details</th> <th>Qty</th> <th>Link</th> <th>Drop</th> </tr>
 			</thead>
 			<tbody>
+				<tr>
+					<td class="center">></td>
+					<td></td>
+					<td class="center"><input type="checkbox" tabindex="-1"></td>
+					<td class="center"><input type="checkbox" tabindex="-1"></td>
+					<td class="stretch"><input type="text" tabindex="-1"></td>
+					<td class="stretch"><input type="number" min="0" value="0" tabindex="-1"></td>
+					<td class="center"><a href='http://google.com' target='_blank' tabindex='-1'>link</a></td>
+					<td class="stretch"><select tabindex="-1"><option>a</option><option>b</option></select></td>
+				</tr>
 			</tbody>
 		</table>
 

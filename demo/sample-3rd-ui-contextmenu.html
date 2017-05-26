@@ -2,11 +2,11 @@
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
-	<title>Fancytree - 3rd Party Example: Context menu</title>
+	<title>Fancytree - 3rd Party Example: jquery.ui-contextmenu</title>
 
-	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/start/jquery-ui.css" />
-	<script src="//code.jquery.com/jquery-1.12.1.min.js"></script>
-	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
+	<script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+	<script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 
 	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet">
 	<script src="../src/jquery.fancytree.js"></script>
@@ -33,7 +33,7 @@
 	<script type="text/javascript">
 	$(function() {
 		$("#tree").fancytree({
-//            extensions: ['dnd'],
+			extensions: [],
 			source: {
 				url: "ajax-tree-plain.json"
 			},
@@ -44,6 +44,7 @@
 
 		$("#tree").contextmenu({
 			delegate: "span.fancytree-title",
+			autoFocus: true,
 //			menu: "#options",
 			menu: [
 					{title: "Cut", cmd: "cut", uiIcon: "ui-icon-scissors"},
@@ -66,6 +67,17 @@
 
 				// Activate node on right-click
 				node.setActive();
+				// Disable tree keyboard handling
+				ui.menu.prevKeyboard = node.tree.options.keyboard;
+				node.tree.options.keyboard = false;
+			},
+			close: function(event, ui) {
+				// Restore tree keyboard handling
+				// console.log("close", event, ui, this)
+				// Note: ui is passed since v1.15.0
+				var node = $.ui.fancytree.getNode(ui.target);
+				node.tree.options.keyboard = ui.menu.prevKeyboard;
+				node.setFocus();
 			},
 			select: function(event, ui) {
 				var node = $.ui.fancytree.getNode(ui.target);
@@ -78,16 +90,20 @@
 
 <body class="example">
 
-<h1>Example: use 'jquery.contextmenu'</h1>
+<h1>Example: use 'jquery.ui-contextmenu'</h1>
 
 <div class="description">
 	<p>
-	This example integrates the
-	<a href="https://github.com/mar10/jquery-ui-contextmenu" target="_blank" class="external">jquery-ui-contextmenu plugin</a>,
-	which is maintained independantly from Fancytree and is based on
-	<a href="http://api.jqueryui.com/menu/">jQuery UI Menu</a>
-	(part of jQuery UI 1.9+).
+		This example integrates the
+		<a href="https://github.com/mar10/jquery-ui-contextmenu" target="_blank" class="external">jquery-ui-contextmenu plugin</a>,
+		which is maintained independantly from Fancytree and is based on
+		<a href="http://api.jqueryui.com/menu/">jQuery UI Menu</a>
+		(part of jQuery UI 1.9+).
    </p>
+	<p>
+		This is only one of more options. See the
+		<a href="index.html#sample-ext-menu.html">menu overview</a> for details.
+	</p>
 </div>
 
 <div>
@@ -97,20 +113,6 @@
 <!-- Tree wrapper -->
 <div id="tree"></div>
 
-<!-- Menu definition -->
-<!--
-<ul id="options" class="ui-helper-hidden">
-	<li><a href="#action1"><span class="ui-icon custom-icon-firefox"></span>Action 1</a>
-	<li><a href="#action2"><span class="ui-icon ui-icon-heart"></span>Action 2</a>
-	<li class="ui-state-disabled"><a href="#action3">Action 3</a>
-	<li>----
-	<li><a>Extra</a>
-		<ul>
-			<li><a href="#action4">sub4</a>
-			<li><a href="#action5">sub5</a>
-		</ul>
-</ul>
- -->
 <hr />
 
 <div id="selected-action">Click right mouse button on node</div>

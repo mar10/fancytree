@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.21.0
- * @date 2017-01-15T17:21:28Z
+ * @version 2.22.5
+ * @date 2017-05-11T17:01:53Z
  */
 
 
@@ -162,7 +162,7 @@ function handleDragOver(event, data) {
 		// glyph = options.glyph || null,
 		// $source = sourceNode ? $(sourceNode.span) : null,
 		$target = $(targetNode.span),
-		$targetTitle = $target.find(">span.fancytree-title");
+		$targetTitle = $target.find("span.fancytree-title");
 
 	if(DRAG_ENTER_RESPONSE === false){
 		tree.warn("Ignore dragover, since dragenter returned false");  //, event, data);
@@ -218,15 +218,15 @@ function handleDragOver(event, data) {
 	LAST_HIT_MODE = hitMode;
 	//
 	if( hitMode === "after" || hitMode === "before" || hitMode === "over" ){
-		markerOffsetX = -24;
+		markerOffsetX = dndOpts.dropMarkerOffsetX || 0;
 		switch(hitMode){
 		case "before":
 			markerAt = "top";
-			markerOffsetX -= 16;
+			markerOffsetX += (dndOpts.dropMarkerInsertOffsetX || 0);
 			break;
 		case "after":
 			markerAt = "bottom";
-			markerOffsetX -= 16;
+			markerOffsetX += (dndOpts.dropMarkerInsertOffsetX || 0);
 			break;
 		}
 
@@ -263,7 +263,7 @@ function handleDragOver(event, data) {
 
 $.ui.fancytree.registerExtension({
 	name: "dnd5",
-	version: "2.21.0",
+	version: "2.22.5",
 	// Default options for this extension.
 	options: {
 		autoExpandMS: 1500,          // Expand nodes after n milliseconds of hovering
@@ -275,6 +275,8 @@ $.ui.fancytree.registerExtension({
 		scroll: true,                // Enable auto-scrolling while dragging
 		scrollSensitivity: 20,       // Active top/bottom margin in pixel
 		scrollSpeed: 5,              // Pixel per event
+		dropMarkerOffsetX: -24,		 // absolute position offset for .fancytree-drop-marker relatively to ..fancytree-title (icon/img near a node accepting drop)
+		dropMarkerInsertOffsetX: -16,// additional offset for drop-marker with hitMode = "before"/"after"
 		// Events (drag support)
 		dragStart: null,       // Callback(sourceNode, data), return true, to enable dnd drag
 		dragDrag: $.noop,      // Callback(sourceNode, data)
@@ -298,6 +300,17 @@ $.ui.fancytree.registerExtension({
 		}
 		if( dndOpts.dragStop ) {
 			$.error("dragStop is not used by ext-dnd5. Use dragEnd instead.");
+		}
+
+		// Implement `opts.createNode` event to add the 'draggable' attribute
+		// #680: this must happen before calling super.treeInit()
+		if( dndOpts.dragStart ) {
+			$.ui.fancytree.overrideMethod(ctx.options, "createNode", function(event, data) {
+				// Default processing if any
+				this._super.apply(this, arguments);
+
+				data.node.span.draggable = true;
+			});
 		}
 		this._superApply(arguments);
 
@@ -323,13 +336,6 @@ $.ui.fancytree.registerExtension({
 		}
 		// Enable drag support if dragStart() is specified:
 		if( dndOpts.dragStart ) {
-			// Implement `opts.createNode` event to add the 'draggable' attribute
-			$.ui.fancytree.overrideMethod(ctx.options, "createNode", function(event, data) {
-				// Default processing if any
-				this._super.apply(this, arguments);
-
-				data.node.span.draggable = true;
-			});
 			// Bind drag event handlers
 			tree.$container.on("dragstart drag dragend", function(event){
 				var json,
@@ -411,6 +417,7 @@ $.ui.fancytree.registerExtension({
 					DRAG_ENTER_RESPONSE = null;
 //					data.dropEffect = dataTransfer.dropEffect;
 					data.isCancelled = (dataTransfer.dropEffect === "none");
+					$dropMarker.hide();
 					dndOpts.dragEnd(node, data);
 					break;
 				}

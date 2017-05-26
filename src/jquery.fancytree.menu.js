@@ -137,7 +137,7 @@ $.ui.fancytree.registerExtension({
 			return;
 		}
 		$menu = $(opts.menu.selector);
-		$(document).unbind("keydown.fancytree, mousedown.fancytree");
+		$(document).off("keydown.fancytree, mousedown.fancytree");
 		$menu.hide();
 		tree.ext.menu.data.node = null;
 	}
