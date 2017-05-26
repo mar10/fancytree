@@ -79,3 +79,18 @@ pre{
   margin:.5em;
   font-size:.9em;
 }
+
+ul.fancytree-container {
+	margin: 4px; /* leave some room for the safari focus border */
+}
+
+iframe.embedded-plunkr {
+	border: 1px solid #999;
+	width: 100%;
+	height: 500px;
+}
+iframe.embedded-jsbin {
+	border: 1px solid #999;
+	width: 100%;
+	height: 500px;
+}

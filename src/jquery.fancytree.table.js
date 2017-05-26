@@ -1,7 +1,7 @@
 /*!
  * jquery.fancytree.table.js
  *
- * Render tree as table (aka 'treegrid', 'tabletree').
+ * Render tree as table (aka 'tree grid', 'table tree').
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
  * Copyright (c) 2008-2017, Martin Wendt (http://wwWendt.de)

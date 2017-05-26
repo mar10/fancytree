@@ -21,52 +21,32 @@
 </style>
 
 <script type="text/javascript">
-	var SOURCE = [
-		{title: "item1 with key and tooltip", tooltip: "Look, a tool tip!" },
-		{title: "item2: selected on init", selected: true },
-		{title: "Folder", folder: true, key: "id3",
-			children: [
-				{title: "Sub-item 3.1",
-					children: [
-						{title: "Sub-item 3.1.1", key: "id3.1.1" },
-						{title: "Sub-item 3.1.2", key: "id3.1.2" }
-					]
-				},
-				{title: "Sub-item 3.2",
-					children: [
-						{title: "Sub-item 3.2.1", key: "id3.2.1" },
-						{title: "Sub-item 3.2.2", key: "id3.2.2" }
-					]
-				}
-			]
-		},
-		{title: "Document with some children (expanded on init)", key: "id4", expanded: true,
-			children: [
-				{title: "Sub-item 4.1 (active on init)", active: true,
-					children: [
-						{title: "Sub-item 4.1.1", key: "id4.1.1" },
-						{title: "Sub-item 4.1.2", key: "id4.1.2" }
-					]
-				},
-				{title: "Sub-item 4.2 (selected on init)", selected: true,
-					children: [
-						{title: "Sub-item 4.2.1", key: "id4.2.1" },
-						{title: "Sub-item 4.2.2", key: "id4.2.2" }
-					]
-				},
-				{title: "Sub-item 4.3 (hideCheckbox)", hideCheckbox: true },
-				{title: "Sub-item 4.4 (unselectable)", unselectable: true }
-			]
-		},
-		{title: "Lazy folder", folder: true, lazy: true }
-	];
 	$(function(){
 
 		// --- Initialize sample trees
 		$("#tree1").fancytree({
-			checkbox: true,
+			checkbox: "radio",
 			selectMode: 1,
-			source: SOURCE,
+			// tooltip: true,
+			// tooltip: function(event, data) { return data.node.title + "!"},
+			source: [
+				{title: "n1 (checkbox: false)", expanded: true, checkbox: false, children: [
+					{title: "n1.1"},
+					{title: "n1.2 (selected)", selected: true},
+					{title: "n1.3"}
+				]},
+				{title: "n2", expanded: true, checkbox: false, children: [
+					{title: "n2.1"},
+					{title: "n2.2"},
+					{title: "n2.3"}
+				]}
+				],
+			init: function(event, data) {
+				// Set key from first part of title (just for this demo output)
+				data.tree.visit(function(n) {
+					n.key = n.title.split(" ")[0];
+				});
+			},
 			activate: function(event, data) {
 				$("#echoActive1").text(data.node.title);
 			},
@@ -74,22 +54,51 @@
 				// Display list of selected nodes
 				var s = data.tree.getSelectedNodes().join(", ");
 				$("#echoSelection1").text(s);
-			},
-			dblclick: function(event, data) {
-				data.node.toggleSelected();
-			},
-			keydown: function(event, data) {
-				if( event.which === 32 ) {
-					data.node.toggleSelected();
-					return false;
-				}
 			}
+		});
+
+		// ---------------------------------------------------------------------
+
+		$("#btnDeselectAll2").click(function(){
+			$("#tree2").fancytree("getTree").visit(function(node){
+				node.setSelected(false);
+			});
+			return false;
+		});
+		$("#btnSelectAll2").click(function(){
+			$("#tree2").fancytree("getTree").visit(function(node){
+				node.setSelected(true);
+			});
+			return false;
 		});
 
 		$("#tree2").fancytree({
 			checkbox: true,
 			selectMode: 2,
-			source: SOURCE,
+			source: [
+				{title: "n1 (selected)", expanded: true, selected: true, children: [
+					{title: "n1.1"},
+					{title: "n1.2 (selected)", selected: true},
+					{title: "n1.3"}
+				]},
+				{title: "n2 (checkbox: false)", expanded: true, checkbox: false, children: [
+					{title: "n2.1"},
+					{title: "n2.2"},
+					{title: "n2.3"}
+				]},
+				{title: "n3 (radiogroup, checkbox: false)", expanded: true, 
+					checkbox: false, radiogroup: true, children: [
+					{title: "n3.1"},
+					{title: "n3.2"},
+					{title: "n3.3"}
+				]}
+				],
+			init: function(event, data) {
+				// Set key from first part of title (just for this demo output)
+				data.tree.visit(function(n) {
+					n.key = n.title.split(" ")[0];
+				});
+			},
 			select: function(event, data) {
 				// Display list of selected nodes
 				var selNodes = data.tree.getSelectedNodes();
@@ -99,28 +108,66 @@
 					});
 				$("#echoSelection2").text(selKeys.join(", "));
 			},
-			click: function(event, data) {
-				// We should not toggle, if target was "checkbox", because this
-				// would result in double-toggle (i.e. no toggle)
-				if( $.ui.fancytree.getEventTargetType(event) === "title" ){
-					data.node.toggleSelected();
-				}
-			},
-			keydown: function(event, data) {
-				if( event.which === 32 ) {
-					data.node.toggleSelected();
-					return false;
-				}
-			},
 			// The following options are only required, if we have more than one tree on one page:
 			cookieId: "fancytree-Cb2",
 			idPrefix: "fancytree-Cb2-"
 		});
 
+		// ---------------------------------------------------------------------
+
+		$("#btnDeselectAll3").click(function(){
+			$("#tree3").fancytree("getTree").visit(function(node){
+				node.setSelected(false);
+			});
+			return false;
+		});
+		$("#btnSelectAll3").click(function(){
+			$("#tree3").fancytree("getTree").visit(function(node){
+				node.setSelected(true);
+			});
+			return false;
+		});
 		$("#tree3").fancytree({
 			checkbox: true,
 			selectMode: 3,
-			source: SOURCE,
+			source: [
+				{title: "n1", expanded: true, children: [
+					{title: "n1.1 (selected)"},
+					{title: "n1.2"},
+					{title: "n1.3"}
+				]},
+				{title: "n2", expanded: true, children: [
+					{title: "n2.1 (selected)", selected: true},
+					{title: "n2.2", selected: false},
+					{title: "n2.3", selected: null}
+				]},
+				{title: "n3", expanded: true, children: [
+					{title: "n3.1", expanded: true, children: [
+						{title: "n3.1.1 (unselectable)", unselectable: true},
+						{title: "n3.1.2 (unselectable)", unselectable: true},
+						{title: "n3.1.3"}
+					]},
+					{title: "n3.2", expanded: true, children: [
+						{title: "n3.2.1 (unselectableStatus: true)", unselectableStatus: true},
+						{title: "n3.2.2 (unselectableStatus: false)", unselectableStatus: false},
+						{title: "n3.2.3"}
+					]},
+					{title: "n3.3", expanded: true, children: [
+						{title: "n3.3.1 (unselectableStatus: true, unselectableIgnore)",
+								unselectableStatus: true,  unselectableIgnore: true},
+						{title: "n3.3.2 (unselectableStatus: false, unselectableIgnore)",
+								unselectableStatus: false, unselectableIgnore: true},
+						{title: "n3.3.3"}
+					]}
+				]}
+				],
+			init: function(event, data) {
+				// Set key from first part of title (just for this demo output)
+				data.tree.visit(function(n) {
+					n.key = n.title.split(" ")[0];
+					n.expanded = true;
+				});
+			},
 			lazyLoad: function(event, ctx) {
 				ctx.result = {url: "ajax-sub2.json", debugDelay: 1000};
 			},
@@ -141,79 +188,13 @@
 					return node.key;
 				});
 				$("#echoSelectionRootKeys3").text(selRootKeys.join(", "));
-				$("#echoSelectionRoots3").text(selRootNodes.join(", "));
-			},
-			dblclick: function(event, data) {
-				data.node.toggleSelected();
-			},
-			keydown: function(event, data) {
-				if( event.which === 32 ) {
-					data.node.toggleSelected();
-					return false;
-				}
+				// $("#echoSelectionRoots3").text(selRootNodes.join(", "));
 			},
 			// The following options are only required, if we have more than one tree on one page:
-//				initId: "SOURCE",
 			cookieId: "fancytree-Cb3",
 			idPrefix: "fancytree-Cb3-"
 		});
 
-		$("#tree4").fancytree({
-			checkbox: false,
-			selectMode: 2,
-			source: SOURCE,
-			beforeSelect: function(event, data) {
-				if( data.node.folder ){
-					return false;
-				}
-			},
-			select: function(event, data) {
-				// Display list of selected nodes
-				var selNodes = data.tree.getSelectedNodes();
-				// convert to title/key array
-				var selKeys = $.map(selNodes, function(node){
-					   return "[" + node.key + "]: '" + node.title + "'";
-					});
-				$("#echoSelection4").text(selKeys.join(", "));
-			},
-			click: function(event, data) {
-				if( ! data.node.folder ){
-					data.node.toggleSelected();
-				}
-			},
-			dblclick: function(event, data) {
-				data.node.toggleExpanded();
-			},
-			keydown: function(event, data) {
-				if( event.which === 32 ) {
-					data.node.toggleSelected();
-					return false;
-				}
-			},
-			// The following options are only required, if we have more than one tree on one page:
-//			initId: "SOURCE",
-			cookieId: "fancytree-Cb4",
-			idPrefix: "fancytree-Cb4-"
-		});
-
-		$("#btnToggleSelect").click(function(){
-			$("#tree2").fancytree("getRootNode").visit(function(node){
-				node.toggleSelected();
-			});
-			return false;
-		});
-		$("#btnDeselectAll").click(function(){
-			$("#tree2").fancytree("getTree").visit(function(node){
-				node.setSelected(false);
-			});
-			return false;
-		});
-		$("#btnSelectAll").click(function(){
-			$("#tree2").fancytree("getTree").visit(function(node){
-				node.setSelected(true);
-			});
-			return false;
-		});
 	});
 </script>
 </head>
@@ -232,15 +213,10 @@
 
 	<p class="description">
 		This tree has <b>checkoxes and selectMode 1 (single-selection)</b> enabled.<br>
-		A double-click handler selects a <i>document</i> node (not folders).<br>
-		A keydown handler selects on [space].<br>
-		The <code>checkbox</code> icons are replaced by radio buttons by adding
-		the 'fancytree-radio' class to the container.<br>
-		Note: the initialization data contains multiple selected nodes. This is
-		considered bad input data and <b>not</b> fixed automatically (only on
-		the first click).
+		The checkbox icons are replaced by radio buttons by adding
+		the <code>tree.checkbox: "radio"</code> option.
 	</p>
-	<div id="tree1" class="fancytree-radio">
+	<div id="tree1">
 	</div>
 	<div>Active node: <span id="echoActive1">-</span></div>
 	<div>Selection: <span id="echoSelection1">-</span></div>
@@ -250,13 +226,11 @@
 
 	<p class="description">
 		This tree has <b>selectMode 2 (multi-selection)</b> enabled.<br>
-		A single-click handler selects the node.<br>
-		A keydown handler selects on [space].
+		Node `n3` uses the 'radiogroup' option and hides the checkbox.
 	</p>
 	<p>
-		<a href="#" id="btnSelectAll">Select all</a> -
-		<a href="#" id="btnDeselectAll">Deselect all</a> -
-		<a href="#" id="btnToggleSelect">Toggle select</a>
+		<a href="#" id="btnSelectAll2">Select all</a> -
+		<a href="#" id="btnDeselectAll2">Deselect all</a>
 	</p>
 	<div id="tree2"></div>
 	<div>Selected keys: <span id="echoSelection2">-</span></div>
@@ -266,26 +240,16 @@
 
 	<p class="description">
 		This tree has <b>checkoxes and selectMode 3 (hierarchical multi-selection)</b> enabled.<br>
-		A double-click handler selects the node.<br>
-		A keydown handler selects on [space].
+		Node `n3` features different variations of the <code>unselectable</code> mode.
+	</p>
+	<p>
+		<a href="#" id="btnSelectAll3">Select all</a> -
+		<a href="#" id="btnDeselectAll3">Deselect all</a>
 	</p>
 	<div id="tree3"></div>
 	<div>Selected keys: <span id="echoSelection3">-</span></div>
 	<div>Selected root keys: <span id="echoSelectionRootKeys3">-</span></div>
-	<div>Selected root nodes: <span id="echoSelectionRoots3">-</span></div>
-
-
-	<!-- Tree #4 -->
-
-	<p class="description">
-		This tree has selectMode 2 (multi-selection) enabled, but <b>no checkboxes</b>.<br>
-		A single-click handler selects the node.<br>
-		A keydown handler selects on [space].<br>
-		A double-click handler expands documents.<br>
-		A onQuerySelect handler prevents selection of folders.
-	</p>
-	<div id="tree4"></div>
-	<div>Selected keys: <span id="echoSelection4">-</span></div>
+<!-- 	<div>Selected root nodes: <span id="echoSelectionRoots3">-</span></div> -->
 
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
