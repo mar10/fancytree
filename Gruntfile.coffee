@@ -57,6 +57,7 @@ module.exports = (grunt) ->
                 "<%= meta.banner %>"
                 # "lib/intro.js"
                 "src/jquery.fancytree.js"
+#                "build/jquery.fancytree.ariagrid.js"
                 "src/jquery.fancytree.childcounter.js"
                 "src/jquery.fancytree.clones.js"
 #                "src/jquery.fancytree.columnview.js"
@@ -92,6 +93,7 @@ module.exports = (grunt) ->
             src: [
                 "lib/intro.js"
                 "build/jquery.fancytree.min.js"
+#                "build/jquery.fancytree.ariagrid.min.js"
                 "build/jquery.fancytree.childcounter.min.js"
                 "build/jquery.fancytree.clones.min.js"
 #                "build/jquery.fancytree.columnview.min.js"
