@@ -1,3 +1,12 @@
+<<<<<<< HEAD
+# 2.22.0-0 / BRANCH no-ui
+  * [Improved] The external dependency on jQuery UI was removed.
+    A new library `jquery.fancytree-all-deps.min.js` is now added to the 
+    distribution, that includes all dependencies on jQuery UI. So the only 
+    remaining external dependency is jQuery.<br>
+    Continue to use `jquery.fancytree-all.min.js` if jQuery UI is already
+    included anyway.
+=======
 # 2.23.0-0 / Unreleased
   * [Changed] #626 refactor the select behavior:
     [details](https://github.com/mar10/fancytree/wiki/SpecSelect)
@@ -61,9 +70,10 @@
   * [Fixed] #716 ext-wide: animation 'jumps' (jQuery UI 1.12)
   * [Fixed] #717, #719 expand/collapse shows displaced child nodes when scrolled (jQuery UI 1.12)
   * Update demos to jQuery 3.2.1 / jQuery UI 1.12.1
+>>>>>>> master
 
 # 2.21.0 / 2017-01-15
-  * [Added] New extension 'ext-dnd5' for native HTML5 drag'n'drop support
+  * [Added] New extension 'ext-dnd5' (beta) for native HTML5 drag'n'drop support
   * [Added] `rtl` option for right-to-left script support
   * [Added] Add $.ui.fancytree.overrideMethod()
   * [Added] hook `treeSetOption` allows extensions to update on option changes
