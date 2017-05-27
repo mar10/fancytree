@@ -1,39 +1,37 @@
-<<<<<<< HEAD
-# 2.22.0-0 / BRANCH no-ui
-  * [Improved] The external dependency on jQuery UI was removed.
-    A new library `jquery.fancytree-all-deps.min.js` is now added to the 
-    distribution, that includes all dependencies on jQuery UI. So the only 
+# 2.23.0-0 / Unreleased
+  * **Refactored the select behavior**
+    [details](https://github.com/mar10/fancytree/wiki/SpecSelect):
+    [details](https://github.com/mar10/fancytree/wiki#selection-and-checkboxes)
+    * BREAKING CHANGES:
+      * The `hideCheckbox` option was removed. Use `checkbox: false` instead.<br>
+        Note that the `<li class='hideCheckbox'>` is still parsed from input
+        HTML and converted accordingly.
+      * The optional modifier class `<div class='fancytree-radio'>` was removed.
+        This class was used on the *container* to turn all checkbox items into
+        radio buttons.<br>
+        Instead, this class is now added to `<span class="fancytree-checkbox fancytree-radio">`.
+        Use the `tree.checkox: "radio"` option to activate this for the whole tree.
+      * The callback signature for the `tree.tooltip` option has changed to
+        `tooltip(event, data)`
+
+    * [Added] Allow control of selection status propagation with new options:
+      `unselectable`, `unselectableIgnore`, `unselectableStatus`.
+    * [Added] node option `radiogroup` enables single-select for child nodes
+    * [Added] option `opts.noEvents` to `setSelected(flag, opts)`
+    * [Improved] Option 'checkbox' can have the string value "radio" (only visual
+      effect)
+
+  * **The external dependency on jQuery UI was removed**.
+    A new library `jquery.fancytree-all-deps.min.js` is now added to the
+    distribution. It includes all dependencies on jQuery UI, so the only
     remaining external dependency is jQuery.<br>
     Continue to use `jquery.fancytree-all.min.js` if jQuery UI is already
     included anyway.
-=======
-# 2.23.0-0 / Unreleased
-  * [Changed] #626 refactor the select behavior:
-    [details](https://github.com/mar10/fancytree/wiki/SpecSelect)
-  * BREAKING CHANGES:
-    * The `hideCheckbox` option was removed. Use `checkbox: false` instead.
-      Note that the `<li class='hideCheckbox'>` is still parsed from input
-      HTML and converted accordingly.
-    * The optional modifer class `<div class='fancytree-radio'>` was removed.
-      This class was used on the **container** to turn all checkbox items into
-      radio buttons.
-      Instead, this class is now added to <span class="fancytree-checkbox fancytree-radio">.
-      Use the `tree.checkox: "radio"` option to activate this for the whole tree.
-    * The callback signature for the `tree.tooltip` option has changed to
-      `tooltip(event, data)`
-
-  * Refactoring of `selectMode: 3` behavior:
-    Allow control of selection status propagation with new options:
-    unselectable, unselectableIgnore, unselectableStatus
-    See also the <a href="https://github.com/mar10/fancytree/wiki/SpecSelect">specification</a>.
   * Use the new dynamic options pattern for
-    checkbox, icon, tooltip, unselectable, unselectableIgnore, unselectableStatus.
+    `checkbox`, `icon`, `tooltip`, `unselectable`, `unselectableIgnore`,
+    `unselectableStatus`.
     See also <a href="https://github.com/mar10/fancytree/wiki#dynamic-options">dynamic options</a>.
-  * [Added] option 'radiogroup' enables single-select for child nodes
-  * [Added] option 'opts.noEvents' to `setSelected(flag, opts)`
   * [Added] New method `node.visitSiblings()`
-  * [Improved] Option 'checkbox' can have the string value "radio" (only visual
-    effect)
   * [Added] #730 ext-persist option `expandOpts` is passed to setExpanded()
     Allows to suppress animation or event generation.
 

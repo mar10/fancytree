@@ -4,6 +4,7 @@
 
 // Allow unused variables for demonstration
 /*jshint unused:false */
+/*eslint unused:false */
 
 /**
  * Context object passed to events and hook functions.
@@ -32,7 +33,7 @@ var EventData = {};
  *
  * @property {boolean} active (Initialization only, but will not be stored with the node.)
  * @property {boolean|string} checkbox Pass `false` to remove checkbox for this node.<br>
- *     Note that selection via the API or initialization data is still possible, even 
+ *     Note that selection via the API or initialization data is still possible, even
  *     if no checkbox is displayed.<br>
  *     undefined: Use global tree option of the same name<br>
  *     true: display a checkbox<br>
@@ -51,7 +52,8 @@ var EventData = {};
  *     Note: use `node.add/remove/toggleClass()` to modify.
  * @property {boolean} focus (Initialization only, but will not be stored  with the node.)
  * @property {boolean} folder Folders have different default icons and honor the `clickFolderMode` option.
- * @property {boolean} <del>hideCheckbox</del>  @deprecated use `checkbox` instead.
+ * @property {boolean} <del>hideCheckbox</del>  @deprecated use `checkbox` instead.<br>
+ *     (The 'hideCheckbox' is still recognized when html input is parsed.)
  * @property {boolean|string} icon Define this node's icon.<br>
  *     undefined: Use global tree option of the same name<br>
  *     true: Use default icon, depending on `node.folder` and `node.expanded` status<br>
@@ -76,7 +78,7 @@ var EventData = {};
  * @property {boolean} unselectableIgnore Ignore this node when calculating the `partsel`
  *     status of parent nodes in selectMode 3 propagation.<br>
  *     If defined, `unselectable: true` is implied.
- * @property {boolean} unselectableStatus Use this as constant `selected` value 
+ * @property {boolean} unselectableStatus Use this as constant `selected` value
  *     (overriding selectMode 3 propagation).<br>
  *     If defined, `unselectable: true` is implied.
  * @property {any} OTHER Attributes other than listed above will be copied to `node.data`.

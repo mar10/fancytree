@@ -70,7 +70,6 @@ module.exports = (grunt) ->
                 "src/jquery.fancytree.gridnav.js"
 #                "src/jquery.fancytree.menu.js"
                 "src/jquery.fancytree.persist.js"
-#                "src/jquery.fancytree.select.js"
                 "src/jquery.fancytree.table.js"
                 "src/jquery.fancytree.themeroller.js"
                 "src/jquery.fancytree.wide.js"
@@ -106,7 +105,6 @@ module.exports = (grunt) ->
                 "build/jquery.fancytree.gridnav.min.js"
 #                "build/jquery.fancytree.menu.min.js"
                 "build/jquery.fancytree.persist.min.js"
-#                "build/jquery.fancytree.select.min.js"
                 "build/jquery.fancytree.table.min.js"
                 "build/jquery.fancytree.themeroller.min.js"
                 "build/jquery.fancytree.wide.min.js"
@@ -118,7 +116,7 @@ module.exports = (grunt) ->
             options:
                 banner: "<%= meta.banner %>"
                 stripBanners: true
-                process: (src, fspec) -> 
+                process: (src, fspec) ->
                   # Remove all comments, including /*! ... */
                   # (but keep disclaimer for jQuery-UI)
                   if not /jquery-ui..+.min.js/.test(fspec)
@@ -134,6 +132,7 @@ module.exports = (grunt) ->
             src: [
                 "lib/intro.js"
                 "src/jquery-ui-dependencies/jquery-ui.min.js"
+#                "build/jquery.fancytree.ariagrid.min.js"
                 "build/jquery.fancytree.min.js"
                 "build/jquery.fancytree.childcounter.min.js"
                 "build/jquery.fancytree.clones.min.js"
