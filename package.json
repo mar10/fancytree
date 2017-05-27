@@ -2,7 +2,7 @@
   "name": "jquery.fancytree",
   "title": "jQuery Fancytree Plugin",
   "description": "jQuery tree view / tree grid plugin with support for keyboard, inline editing, filtering, checkboxes, drag'n'drop, and lazy loading",
-  "version": "2.22.6-0",
+  "version": "2.23.0",
   "homepage": "https://github.com/mar10/fancytree",
   "author": {
     "name": "Martin Wendt",
