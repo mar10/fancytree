@@ -124,7 +124,7 @@ var TreePatch = {};
  *
  * @property {boolean} activeVisible Make sure that the active node is always visible, i.e. its parents are expanded (default: true).
  * @property {object} ajax Default options for ajax requests
- * @property {boolean} aria (default: false) Add WAI-ARIA attributes to markup
+ * @property {boolean} aria (default: true) Add WAI-ARIA attributes to markup
  * @property {boolean} autoActivate Activate a node when focused with the keyboard (default: true)
  * @property {boolean} autoCollapse Automatically collapse all siblings, when a node is expanded (default: false).
  * @property {boolean} autoScroll Scroll node into visible area, when focused by keyboard (default: false).

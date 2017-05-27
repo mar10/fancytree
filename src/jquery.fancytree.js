@@ -4488,7 +4488,7 @@ $.widget("ui.fancytree",
 //          timeout: 0, // >0: Make sure we get an ajax error if server is unreachable
 			dataType: "json" // Expect json format and pass json object to callbacks.
 		},  //
-		aria: false,
+		aria: true,
 		autoActivate: true,
 		autoCollapse: false,
 		autoScroll: false,

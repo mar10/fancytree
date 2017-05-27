@@ -1,7 +1,14 @@
 # 2.23.0-0 / Unreleased
+  * **The external dependency on jQuery UI was removed**.
+    A new library `jquery.fancytree-all-deps.min.js` is now added to the
+    distribution. It includes all dependencies on jQuery UI, so the only
+    remaining external dependency is jQuery.<br>
+    Continue to use `jquery.fancytree-all.min.js` if jQuery UI is already
+    included anyway.
+
   * **Refactored the select behavior**
     [details](https://github.com/mar10/fancytree/wiki/SpecSelect):
-    [details](https://github.com/mar10/fancytree/wiki#selection-and-checkboxes)
+    <!-- [details](https://github.com/mar10/fancytree/wiki#selection-and-checkboxes) -->
     * BREAKING CHANGES:
       * The `hideCheckbox` option was removed. Use `checkbox: false` instead.<br>
         Note that the `<li class='hideCheckbox'>` is still parsed from input
@@ -21,15 +28,10 @@
     * [Improved] Option 'checkbox' can have the string value "radio" (only visual
       effect)
 
-  * **The external dependency on jQuery UI was removed**.
-    A new library `jquery.fancytree-all-deps.min.js` is now added to the
-    distribution. It includes all dependencies on jQuery UI, so the only
-    remaining external dependency is jQuery.<br>
-    Continue to use `jquery.fancytree-all.min.js` if jQuery UI is already
-    included anyway.
+  * [Improved] `aria` option is now on by default
   * Use the new dynamic options pattern for
     `checkbox`, `icon`, `tooltip`, `unselectable`, `unselectableIgnore`,
-    `unselectableStatus`.
+    `unselectableStatus`.<br>
     See also <a href="https://github.com/mar10/fancytree/wiki#dynamic-options">dynamic options</a>.
   * [Added] New method `node.visitSiblings()`
   * [Added] #730 ext-persist option `expandOpts` is passed to setExpanded()
@@ -68,7 +70,6 @@
   * [Fixed] #716 ext-wide: animation 'jumps' (jQuery UI 1.12)
   * [Fixed] #717, #719 expand/collapse shows displaced child nodes when scrolled (jQuery UI 1.12)
   * Update demos to jQuery 3.2.1 / jQuery UI 1.12.1
->>>>>>> master
 
 # 2.21.0 / 2017-01-15
   * [Added] New extension 'ext-dnd5' (beta) for native HTML5 drag'n'drop support
