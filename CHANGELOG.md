@@ -1,4 +1,7 @@
-# 2.23.0-0 / Unreleased
+# 2.23.1-0 / Unreleased
+  *
+
+# 2.23.0 / 2017-05-27
   * **The external dependency on jQuery UI was removed**.
     A new library `jquery.fancytree-all-deps.min.js` is now added to the
     distribution. It includes all dependencies on jQuery UI, so the only
@@ -9,24 +12,24 @@
   * **Refactored the select behavior**
     [details](https://github.com/mar10/fancytree/wiki/SpecSelect):
     <!-- [details](https://github.com/mar10/fancytree/wiki#selection-and-checkboxes) -->
-    * BREAKING CHANGES:
-      * The `hideCheckbox` option was removed. Use `checkbox: false` instead.<br>
-        Note that the `<li class='hideCheckbox'>` is still parsed from input
-        HTML and converted accordingly.
-      * The optional modifier class `<div class='fancytree-radio'>` was removed.
-        This class was used on the *container* to turn all checkbox items into
-        radio buttons.<br>
-        Instead, this class is now added to `<span class="fancytree-checkbox fancytree-radio">`.
-        Use the `tree.checkox: "radio"` option to activate this for the whole tree.
-      * The callback signature for the `tree.tooltip` option has changed to
-        `tooltip(event, data)`
-
     * [Added] Allow control of selection status propagation with new options:
       `unselectable`, `unselectableIgnore`, `unselectableStatus`.
     * [Added] node option `radiogroup` enables single-select for child nodes
     * [Added] option `opts.noEvents` to `setSelected(flag, opts)`
     * [Improved] Option 'checkbox' can have the string value "radio" (only visual
       effect)
+
+  * BREAKING CHANGES:
+    * The `hideCheckbox` option was removed. Use `checkbox: false` instead.<br>
+      Note that the `<li class='hideCheckbox'>` is still parsed from input
+      HTML and converted accordingly.
+    * The optional modifier class `<div class='fancytree-radio'>` was removed.
+      This class was used on the *container* to turn all checkbox items into
+      radio buttons.<br>
+      Instead, this class is now added to `<span class="fancytree-checkbox fancytree-radio">`.
+      Use the `tree.checkox: "radio"` option to activate this for the whole tree.
+    * The callback signature for the `tree.tooltip` option has changed to
+      `tooltip(event, data)`
 
   * [Improved] `aria` option is now on by default
   * Use the new dynamic options pattern for
