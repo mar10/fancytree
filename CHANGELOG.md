@@ -1,5 +1,5 @@
 # 2.23.1-0 / Unreleased
-  *
+  * [Fixed] #735: Trying to set root node selected throws an error
 
 # 2.23.0 / 2017-05-27
   * **The external dependency on jQuery UI was removed**.
@@ -9,7 +9,7 @@
     Continue to use `jquery.fancytree-all.min.js` if jQuery UI is already
     included anyway.
 
-  * **Refactored the select behavior**
+  * **Refactored the select behavior**<br>
     [details](https://github.com/mar10/fancytree/wiki/SpecSelect):
     <!-- [details](https://github.com/mar10/fancytree/wiki#selection-and-checkboxes) -->
     * [Added] Allow control of selection status propagation with new options:

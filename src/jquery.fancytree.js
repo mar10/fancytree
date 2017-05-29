@@ -4071,7 +4071,8 @@ $.extend(Fancytree.prototype,
 		var node = ctx.node,
 			tree = ctx.tree,
 			opts = ctx.options,
-			noEvents = (callOpts.noEvents === true);
+			noEvents = (callOpts.noEvents === true),
+			parent = node.parent;
 
 		// flag defaults to true
 		flag = (flag !== false);
@@ -4110,11 +4111,11 @@ $.extend(Fancytree.prototype,
 				tree.lastSelectedNode.setSelected(false);
 			}
 			node.selected = flag;
-		}else if(opts.selectMode === 3 && !node.parent.radiogroup && !node.radiogroup){
+		}else if(opts.selectMode === 3 && parent && !parent.radiogroup && !node.radiogroup){
 			// multi-hierarchical selection mode
 			node.selected = flag;
 			node.fixSelection3AfterClick(callOpts);
-		}else if(node.parent.radiogroup){
+		}else if(parent && parent.radiogroup){
 			node.visitSiblings(function(n){
 				n._changeSelectStatusAttrs(flag && n === node);
 			}, true);
