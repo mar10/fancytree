@@ -1,4 +1,5 @@
 # 2.23.1-0 / Unreleased
+  * [Fixed] #695: List AMD dependency on jQuery UI
   * [Fixed] #735: Trying to set root node selected throws an error
 
 # 2.23.0 / 2017-05-27
@@ -14,10 +15,10 @@
     <!-- [details](https://github.com/mar10/fancytree/wiki#selection-and-checkboxes) -->
     * [Added] Allow control of selection status propagation with new options:
       `unselectable`, `unselectableIgnore`, `unselectableStatus`.
-    * [Added] node option `radiogroup` enables single-select for child nodes
+    * [Added] node option `radiogroup` to enable single-select for child nodes
     * [Added] option `opts.noEvents` to `setSelected(flag, opts)`
-    * [Improved] Option 'checkbox' can have the string value "radio" (only visual
-      effect)
+    * [Improved] Option 'checkbox' can have the string value "radio" (only has
+      the visual effect of replacing the icon)
 
   * BREAKING CHANGES:
     * The `hideCheckbox` option was removed. Use `checkbox: false` instead.<br>

@@ -90,7 +90,7 @@ module.exports = (grunt) ->
                     src = "\n/*! Extension '" + fspec + "' */" + src
                   return src
             src: [
-                "lib/intro.js"
+                "lib/intro-all.js"
                 "build/jquery.fancytree.min.js"
 #                "build/jquery.fancytree.ariagrid.min.js"
                 "build/jquery.fancytree.childcounter.min.js"
@@ -130,7 +130,7 @@ module.exports = (grunt) ->
                     src = "\n/*! Extension '" + fspec + "' */" + src
                   return src
             src: [
-                "lib/intro.js"
+                "lib/intro-all-deps.js"
                 "src/jquery-ui-dependencies/jquery-ui.min.js"
 #                "build/jquery.fancytree.ariagrid.min.js"
                 "build/jquery.fancytree.min.js"
