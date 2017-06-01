@@ -110,8 +110,8 @@ QUnit.test("Add nodes using API to collapsed node (no rendering)", function(asse
 		addNodes(node, 10, 10, 10);
 	});
 
-	tree = _resetEmptyTree({aria: true});
-	tools.benchmark(assert, "1000 nodes deep (10x10x10) with ARIA", 1000, function() {
+	tree = _resetEmptyTree({aria: false});
+	tools.benchmark(assert, "1000 nodes deep (10x10x10) without ARIA", 1000, function() {
 		var node = tree.getNodeByKey("root");
 		addNodes(node, 10, 10, 10);
 	});
@@ -135,8 +135,8 @@ QUnit.test("Create and render hidden nodes, but don't make visible (i.e. don't e
 		tree.render(true, true);
 	});
 
-	tree = _resetEmptyTree({aria: true});
-	tools.benchmark(assert, "1000 nodes deep (10x10x10) and force render(deep=true) with ARIA", 1000, function() {
+	tree = _resetEmptyTree({aria: false});
+	tools.benchmark(assert, "1000 nodes deep (10x10x10) and force render(deep=true) without ARIA", 1000, function() {
 		var node = tree.getNodeByKey("root");
 		addNodes(node, 10, 10, 10);
 		tree.render(true, true);
