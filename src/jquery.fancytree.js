@@ -742,7 +742,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 //		this.debug("fixSelection3AfterClick()");
 
 		this.visit(function(node){
-			node._changeSelectStatusAttrs(flag);
+			if(node.unselectable != true){node._changeSelectStatusAttrs(flag);}
 		});
 		this.fixSelection3FromEndNodes(callOpts);
 	},
