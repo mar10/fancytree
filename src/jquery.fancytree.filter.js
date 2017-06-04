@@ -318,6 +318,9 @@ $.ui.fancytree.registerExtension({
 		if( !$span.length || !tree.enableFilter ) {
 			return res;
 		}
+		if ( !!node.subMatch ) {
+			node.setExpanded(true);
+		}
 		$span
 			.toggleClass("fancytree-match", !!node.match)
 			.toggleClass("fancytree-submatch", !!node.subMatchCount)
