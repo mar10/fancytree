@@ -437,8 +437,11 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		if(!this.children){
 			this.children = [];
 		}
-		for(i=0, l=children.length; i<l; i++){
-			nodeList.push(new FancytreeNode(this, children[i]));
+		if (children)
+		{
+			for(i=0, l=children.length; i<l; i++){
+				nodeList.push(new FancytreeNode(this, children[i]));
+			}
 		}
 		firstNode = nodeList[0];
 		if(insertBefore == null){
