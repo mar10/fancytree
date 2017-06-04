@@ -25,7 +25,7 @@
 
 // To keep the global namespace clean, we wrap everything in a closure
 
-;(function($, undefined) {
+;(function($, window, document, undefined) {
 
 // Consider to use [strict mode](http://ejohn.org/blog/ecmascript-5-strict-mode-json-and-more/)
 "use strict";
@@ -207,4 +207,4 @@ $.ui.fancytree.registerExtension({
 // End of extension definition
 });
 // End of namespace closure
-}(jQuery));
+}(jQuery, window, document));

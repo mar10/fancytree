@@ -16,8 +16,6 @@
 
  /*
  #TODO
-   - glyph
-
 	Compatiblity when dragging between *separate* windows:
 
 		   Drag from Chrome   Edge    FF    IE11    Safari
@@ -159,7 +157,6 @@ function handleDragOver(event, data) {
 		targetNode = data.node,
 		sourceNode = data.otherNode,
 		markerAt = "center",
-		// glyph = options.glyph || null,
 		// $source = sourceNode ? $(sourceNode.span) : null,
 		$target = $(targetNode.span),
 		$targetTitle = $target.find("span.fancytree-title");
@@ -292,6 +289,7 @@ $.ui.fancytree.registerExtension({
 	treeInit: function(ctx){
 		var tree = ctx.tree,
 			opts = ctx.options,
+			glyph = opts.glyph || null,
 			dndOpts = opts.dnd5,
 			getNode = $.ui.fancytree.getNode;
 
@@ -329,10 +327,9 @@ $.ui.fancytree.registerExtension({
 					// Drop marker should not steal dragenter/dragover events:
 					"pointer-events": "none"
 				}).prependTo("body");
-				// if( glyph ) {
-					// instData.$dropMarker
-						// .addClass(glyph.map.dropMarker);
-				// }
+			if( glyph ) {
+				$dropMarker.addClass(glyph.map.dropMarker);
+			}
 		}
 		// Enable drag support if dragStart() is specified:
 		if( dndOpts.dragStart ) {
@@ -431,7 +428,6 @@ $.ui.fancytree.registerExtension({
 					allowDrop = null,
 					node = getNode(event),
 					dataTransfer = event.dataTransfer || event.originalEvent.dataTransfer,
-					// glyph = opts.glyph || null,
 					data = {
 						node: node,
 						tree: tree,
