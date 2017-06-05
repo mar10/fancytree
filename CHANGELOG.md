@@ -1,4 +1,5 @@
 # 2.23.1-0 / Unreleased
+  * [Added] ext-glyph option `preset` (making the `map` option optional)
   * [Fixed] #695: List AMD dependency on jQuery UI
   * [Fixed] #735: Trying to set root node selected throws an error
   * [Fixed] Drop marker for ext-glyph + ext-dnd5
