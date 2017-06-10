@@ -22,7 +22,6 @@
  */
 
 var FT = $.ui.fancytree,
-//	rexIsLigature = /^lig\:/,
 	PRESETS = {
 		"awesome3": {  // Old version
 			_addClass: "",

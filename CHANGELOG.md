@@ -1,8 +1,11 @@
 # 2.23.1-0 / Unreleased
-  * [Added] ext-glyph option `preset` (making the `map` option optional)
+  * **Improved ext-glyph**.
+    * [Added] support for ligature icons (e.g. [material icons](https://material.io/icons/))
+    * [Added] option `preset` (making the `map` option optional)
+    * [Added] `icon` option can now return a dict to set ligature icon
+    * [Fixed] Drop marker for ext-glyph + ext-dnd5
   * [Fixed] #695: List AMD dependency on jQuery UI
   * [Fixed] #735: Trying to set root node selected throws an error
-  * [Fixed] Drop marker for ext-glyph + ext-dnd5
 
 # 2.23.0 / 2017-05-27
   * **The external dependency on jQuery UI was removed**.
