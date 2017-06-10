@@ -71,7 +71,7 @@ function renderLevelCss(containerId, depth, levelOfs, lineOfs, labelOfs, measure
 	// This breaks the left:0 and padding-left:nn settings of the title
 	rules.push(
 		"#" + containerId + " div.ui-effects-wrapper ul li span.fancytree-title, " +
-		"#" + containerId + " ul.fancytree-animating span.fancytree-title " +  // #716
+		"#" + containerId + " li.fancytree-animating span.fancytree-title " +  // #716
 		"{ padding-left: " + labelOfs + measureUnit + "; position: static; width: auto; }");
 	return rules.join("\n");
 }
