@@ -22,7 +22,6 @@
 
 // @fancy-line-ofs-top: (@fancy-line-height - @fancy-icon-height) / 2;
 
-@fancy-image-dir: ".";
 
 // Use 'url(...)' to link to the throbber image, or
 // use data-uri(...)' to inline the data in css instead:
@@ -560,7 +559,7 @@ span.fancytree-drop-reject {
 	span.fancytree-icon,
 	span.fancytree-drag-helper-img,
 	#fancytree-drop-marker {
-		background-image: url("icons-rtl.gif");
+		background-image: url("@{fancy-image-dir}/icons-rtl.gif");
 	}
 	.fancytree-exp-n span.fancytree-expander, 
 	.fancytree-exp-nl span.fancytree-expander {
@@ -568,7 +567,7 @@ span.fancytree-drop-reject {
 	}
 	&.fancytree-connectors .fancytree-exp-n span.fancytree-expander, 
 	&.fancytree-connectors .fancytree-exp-nl span.fancytree-expander {
-		background-image: url("icons-rtl.gif");
+		background-image: url("@{fancy-image-dir}/icons-rtl.gif");
 	}
 }
 ul.fancytree-container.fancytree-rtl {
