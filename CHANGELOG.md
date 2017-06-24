@@ -1,5 +1,6 @@
 # 2.23.1-0 / Unreleased
   * [Fixed] #735: Trying to set root node selected throws an error
+  * [Fixed] #741: Passing an empty string ("") as filter calls clearFilter()
 
 # 2.23.0 / 2017-05-27
   * **The external dependency on jQuery UI was removed**.

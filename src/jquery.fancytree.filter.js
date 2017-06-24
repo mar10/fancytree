@@ -49,7 +49,10 @@ $.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, bra
 
 	// Default to 'match title substring (not case sensitive)'
 	if(typeof filter === "string"){
-		// console.log("rex", filter.split('').join('\\w*').replace(/\W/, ""))
+		if( filter === "" ) {
+			this.warn("Fancytree passing an empty string as a filter is handled as clearFilter().");
+			$.ui.fancytree.clearFilter();
+		}
 		if( opts.fuzzy ) {
 			// See https://codereview.stackexchange.com/questions/23899/faster-javascript-fuzzy-string-matching-function/23905#23905
 			// and http://www.quora.com/How-is-the-fuzzy-search-algorithm-in-Sublime-Text-designed
