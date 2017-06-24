@@ -51,7 +51,8 @@ $.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, bra
 	if(typeof filter === "string"){
 		if( filter === "" ) {
 			this.warn("Fancytree passing an empty string as a filter is handled as clearFilter().");
-			$.ui.fancytree.clearFilter();
+			this.clearFilter();
+			return;
 		}
 		if( opts.fuzzy ) {
 			// See https://codereview.stackexchange.com/questions/23899/faster-javascript-fuzzy-string-matching-function/23905#23905
