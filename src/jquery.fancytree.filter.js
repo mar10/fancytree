@@ -38,7 +38,7 @@ function extractHtmlText(s){
 }
 
 $.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, branchMode, _opts){
-	var match, statusNode, re, reHighlight,
+	var match, statusNode, re, reHighlight, temp,
 		count = 0,
 		treeOpts = this.options,
 		escapeTitles = treeOpts.escapeTitles,
@@ -67,15 +67,26 @@ $.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, bra
 		re = new RegExp(".*" + match + ".*", "i");
 		reHighlight = new RegExp(_escapeRegex(filter), "gi");
 		filter = function(node){
-			var display,
-				text = escapeTitles ? node.title : extractHtmlText(node.title),
+			var text = escapeTitles ? node.title : extractHtmlText(node.title),
 				res = !!re.test(text);
 
 			if( res && opts.highlight ) {
-				display = escapeTitles ? escapeHtml(node.title) : text;
-				node.titleWithHighlight = display.replace(reHighlight, function(s){
-					return "<mark>" + s + "</mark>";
-				});
+				if( escapeTitles ) {
+					// #740: we must not apply the marks to escaped entity names, e.g. `&quot;`
+					// Use some exotic characters to mark matches:
+					temp = text.replace(reHighlight, function(s){
+						return "\uFFF7" + s + "\uFFF8";
+					});
+					// now we can escape the title...
+					node.titleWithHighlight = escapeHtml(temp)
+						// ... and finally insert the desired `<mark>` tags
+						.replace(/\uFFF7/g, "<mark>")
+						.replace(/\uFFF8/g, "</mark>");
+				} else {
+					node.titleWithHighlight = text.replace(reHighlight, function(s){
+						return "<mark>" + s + "</mark>";
+					});
+				}
 				// node.debug("filter", escapeTitles, text, node.titleWithHighlight);
 			}
 			return res;
