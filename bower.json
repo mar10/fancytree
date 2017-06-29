@@ -3,7 +3,7 @@
   "description": "jQuery tree view / tree grid plugin with support for keyboard, inline editing, filtering, checkboxes, drag'n'drop, and lazy loading",
   "version": "2.23.1-0",
   "main": [
-    "dist/jquery.fancytree-all.js"
+    "dist/jquery.fancytree-all-deps.min.js"
   ],
   "moduleType": "globals",
   "license": "MIT",
