@@ -252,16 +252,18 @@ module.exports = (grunt) ->
     # htmllint:
     #     all: ["demo/**/*.html", "doc/**/*.html", "test/**/*.html"]
 
-#     jsdoc:
-#         build:
-#             src: ["src/*.js", "doc/README.md", "doc/jsdoctest.js"]
-#             options:
-#                 destination: "doc/jsdoc_new"
-# #                template: "bin/jsdoc3-moogle",
-# #                template: "node_modules/ink-docstrap/template",
-#                 template: "../docstrap/template",
-#                 configure: "doc/jsdoc.conf.json"
-#                 verbose: true
+    jsdoc:
+        build:
+            src: ["src/*.js", "doc/README.md"]
+            # src: ["src/*.js", "doc/README.md", "doc/jsdoctest.js"]
+            options:
+                destination: "doc/jsdoc"
+                # template: "bin/jsdoc3-moogle",
+                # template: "node_modules/ink-docstrap/template",
+                # template: "node_modules/minami",
+                # template: "node_modules/tui-jsdoc-template",
+                configure: "doc/jsdoc.conf.json"
+                verbose: true
 
     jshint:
         options:
