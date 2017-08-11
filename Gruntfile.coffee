@@ -258,7 +258,8 @@ module.exports = (grunt) ->
             # src: ["src/*.js", "doc/README.md", "doc/jsdoctest.js"]
             options:
                 destination: "doc/jsdoc"
-                # template: "bin/jsdoc3-moogle",
+                template: "bin/jsdoc3-moogle",
+                # template: "bin/jsdoc3.0.0-moogle",
                 # template: "node_modules/ink-docstrap/template",
                 # template: "node_modules/minami",
                 # template: "node_modules/tui-jsdoc-template",
@@ -503,7 +504,7 @@ module.exports = (grunt) ->
   grunt.registerTask "build", [
       "less:development"
       "test"
-      # "jsdoc:build"
+      "jsdoc:build"
       "docco:docs"
       "clean:build"
       "copy:build"

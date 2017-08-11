@@ -1,5 +1,15 @@
 The default template for JSDoc 3 uses: [the Taffy Database library](http://taffydb.com/) and the [Underscore Template library](http://underscorejs.org/).
 
+## Customized
+
+Modified by Martin Wendt in 2017-08.
+
+Changes are marked with `<!-- Start MOOGLE Changes -->` or `// --- Start MOOGLE Changes`
+
+* Add a 'Methods:' section for class views, between 'Properties:' and 'Methods details'
+* Add google analytics hooks
+* Add a 'Fork me on Github'
+
 
 ## Generating Typeface Fonts
 

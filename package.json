@@ -54,7 +54,7 @@
     "grunt-saucelabs": "^8.6.3",
     "grunt-text-replace": "^0.4.0",
     "grunt-yabs": "^1.1.0",
-    "jsdoc": "^3.5.4",
+    "jsdoc": "~3.5.4",
     "jshint": "^2.9.4",
     "qunitjs": "^1.21"
   },

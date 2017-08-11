@@ -356,3 +356,33 @@ tr > th:last-child { border-right: 1px solid #ddd; }
 .disabled {
     color: #454545;
 }
+
+/* Start MOOGLE Changes */
+
+.showHover
+{
+	display: none;
+}
+tr:hover .showHover
+{
+	display: inline-block;
+}
+
+.params th, .props th, .methods th { border-right: 1px solid #aaa; }
+.params thead .last, .props thead .last, .methods thead .last  { border-right: 1px solid #ddd; }
+
+.disabled {
+	color: #454545;
+}
+
+table.methods tbody tr {
+	cursor: pointer;
+}
+table.methods tbody tr:hover {
+	background-color: #e2edff;
+}
+
+nav {
+	margin-left: -250px; /* prevent GitHub logo to overlap TOC links */
+}
+/* End MOOGLE Changes */

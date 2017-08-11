@@ -147,11 +147,22 @@
         <?js }); ?>
     <?js } ?>
 
+    <!-- Start MOOGLE Changes -->
     <?js
         var methods = self.find({kind: 'function', memberof: isGlobalPage ? {isUndefined: true} : doc.longname});
         if (methods && methods.length && methods.forEach) {
     ?>
-        <h3 class="subsection-title">Methods</h3>
+        <h3 class="subsection-title">Method Summary</h3>
+
+        <?js= self.partial('methods_overview.tmpl', methods) ?>
+    <?js } ?>
+    <!-- End MOOGLE Changes -->
+
+    <?js
+        var methods = self.find({kind: 'function', memberof: isGlobalPage ? {isUndefined: true} : doc.longname});
+        if (methods && methods.length && methods.forEach) {
+    ?>
+        <h3 class="subsection-title">Method Details</h3>
 
         <?js methods.forEach(function(m) { ?>
             <?js= self.partial('method.tmpl', m) ?>
