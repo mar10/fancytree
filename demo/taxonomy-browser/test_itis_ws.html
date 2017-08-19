@@ -9,7 +9,7 @@
 $(function(){
 	$("#btnJson1").click(function(e){
 		$.ajax({
-			url: "http://www.itis.gov/ITISWebService/jsonservice/getHierarchyDownFromTSN",
+			url: "//www.itis.gov/ITISWebService/jsonservice/getHierarchyDownFromTSN",
 			data: {
 				tsn: "0"
 			},
@@ -22,7 +22,7 @@ $(function(){
 	});
 	$("#btnJsonp1").click(function(e){
 		$.ajax({
-			url: "http://www.itis.gov/ITISWebService/jsonservice/getHierarchyDownFromTSN",
+			url: "//www.itis.gov/ITISWebService/jsonservice/getHierarchyDownFromTSN",
 			data: {
 				jsonp: "itis_data",
 				tsn: "0"
@@ -39,7 +39,7 @@ $(function(){
 
 	$("#btnJson2").click(function(e){
 		$.ajax({
-			url: "http://www.itis.gov/ITISWebService/jsonservice/searchForAnyMatchPaged",
+			url: "//www.itis.gov/ITISWebService/jsonservice/searchForAnyMatchPaged",
 			data: {
 				srchKey: "Zy",
 				pageSize: 10,
@@ -55,7 +55,7 @@ $(function(){
 	});
 	$("#btnJsonp2").click(function(e){
 		$.ajax({
-			url: "http://www.itis.gov/ITISWebService/jsonservice/searchForAnyMatchPaged",
+			url: "//www.itis.gov/ITISWebService/jsonservice/searchForAnyMatchPaged",
 			data: {
 				jsonp: "itis_data",
 				srchKey: "Zy",

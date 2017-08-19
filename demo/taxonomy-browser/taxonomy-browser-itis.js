@@ -24,7 +24,7 @@ var taxonTree, searchResultTree,
 	timerMap = {},
 	tmplDetails, // =
 	USER_AGENT = "Fancytree Taxonomy Browser/1.0",
-	ITIS_URL = "http://www.itis.gov/ITISWebService/jsonservice/",
+	ITIS_URL = "//www.itis.gov/ITISWebService/jsonservice/",
 	glyphOpts = {
 		preset: "bootstrap3",
 		map: {

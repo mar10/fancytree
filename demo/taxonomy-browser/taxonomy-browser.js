@@ -23,7 +23,7 @@
 var taxonTree, searchResultTree, tmplDetails, tmplInfoPane, tmplMedia,
 	timerMap = {},
 	USER_AGENT = "Fancytree Taxonomy Browser/1.0",
-	GBIF_URL = "http://api.gbif.org/v1/",
+	GBIF_URL = "//api.gbif.org/v1/",
 	TAXONOMY_KEY = "d7dddbf4-2cf0-4f39-9b2a-bb099caae36c",  // GBIF backbone taxonomy
 	SEARCH_PAGE_SIZE = 5,
 	CHILD_NODE_PAGE_SIZE = 200,

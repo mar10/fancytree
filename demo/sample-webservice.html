@@ -21,7 +21,7 @@
 		$(function(){
 			$("#taxonTree").fancytree({
 				source: {
-					url: "http://www.itis.gov/ITISWebService/jsonservice/getKingdomNames",
+					url: "//www.itis.gov/ITISWebService/jsonservice/getKingdomNames",
 					data: {
 						jsonp: "itis_data"
 					},
@@ -31,7 +31,7 @@
 				},
 				lazyLoad: function(event, data) {
 					data.result = {
-						url: "http://www.itis.gov/ITISWebService/jsonservice/getHierarchyDownFromTSN",
+						url: "//www.itis.gov/ITISWebService/jsonservice/getHierarchyDownFromTSN",
 						data: {
 							jsonp: "itis_data",
 							tsn: data.node.key
