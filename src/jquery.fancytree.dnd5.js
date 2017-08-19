@@ -287,7 +287,8 @@ $.ui.fancytree.registerExtension({
 	},
 
 	treeInit: function(ctx){
-		var tree = ctx.tree,
+		var $temp,
+			tree = ctx.tree,
 			opts = ctx.options,
 			glyph = opts.glyph || null,
 			dndOpts = opts.dnd5,
@@ -315,8 +316,11 @@ $.ui.fancytree.registerExtension({
 		this.$container.addClass("fancytree-ext-dnd5");
 
 		// Store the current scroll parent, which may be the tree
-		// container, any enclosing div, or the document
-		this.$scrollParent = this.$container.children(":first").scrollParent();
+		// container, any enclosing div, or the document.
+		// #761: scrollParent() always needs a container child
+		$temp = $("<span>").appendTo(this.$container);
+		this.$scrollParent = $temp.scrollParent();
+		$temp.remove();
 
 		$dropMarker = $("#fancytree-drop-marker");
 		if( !$dropMarker.length ) {

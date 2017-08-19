@@ -14,6 +14,10 @@ insert_final_newline = true
 indent_style = space
 indent_size = 2
 
+[*.js]
+indent_style = tab
+indent_size = 4
+
 [*.coffee]
 indent_style = space
 indent_size = 2
@@ -25,8 +29,3 @@ indent_size = 4
 [*.py]
 indent_style = space
 indent_size = 4
-
-; Indentation override for all JS under lib directory
-;[lib/**.js]
-;indent_style = space
-;indent_size = 2

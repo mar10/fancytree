@@ -5,6 +5,8 @@
   * [Fixed] Drop marker for ext-glyph + ext-dnd5
   * [Fixed] #740: Filtering must not consider escaped html entities
   * [Fixed] #741: Passing an empty string ("") as filter calls clearFilter()
+  * [Fixed] #761: dnd5 throws exception when tree is empty
+  * Updated jsdoc to 3.5
 
 # 2.23.0 / 2017-05-27
   * **The external dependency on jQuery UI was removed**.
