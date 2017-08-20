@@ -66,7 +66,10 @@ $.fn.scrollTo = function( target, options, callback ){
 			},
 			lazyLoad: function(event, data) {
 				data.result = {url: "../test/unit/ajax-sub2.json"}
-			}
+			},
+			init: function(event, data) {
+				data.tree.getFirstChild().setFocus();
+			},
 			// expand: function(event, data){
 			// 	// scroll down to last node, but keep current node visible
 			// 	data.node.getLastChild().scrollIntoView(true, {topNode: data.node});
