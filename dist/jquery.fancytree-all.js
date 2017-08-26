@@ -7,8 +7,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.23.0
- * @date 2017-05-27T20:09:38Z
+ * @version 2.24.0
+ * @date 2017-08-26T13:42:51Z
  */
 
 /** Core Fancytree module.
@@ -2186,6 +2186,7 @@ function Fancytree(widget) {
 	this.activeNode = null;
 	this.focusNode = null;
 	this._hasFocus = null;
+	this._lastMousedownNode = null;
 	this._enableUpdate = true;
 	// this._dirtyRoots = null;
 	this.lastSelectedNode = null;
@@ -4071,7 +4072,8 @@ $.extend(Fancytree.prototype,
 		var node = ctx.node,
 			tree = ctx.tree,
 			opts = ctx.options,
-			noEvents = (callOpts.noEvents === true);
+			noEvents = (callOpts.noEvents === true),
+			parent = node.parent;
 
 		// flag defaults to true
 		flag = (flag !== false);
@@ -4110,11 +4112,11 @@ $.extend(Fancytree.prototype,
 				tree.lastSelectedNode.setSelected(false);
 			}
 			node.selected = flag;
-		}else if(opts.selectMode === 3 && !node.parent.radiogroup && !node.radiogroup){
+		}else if(opts.selectMode === 3 && parent && !parent.radiogroup && !node.radiogroup){
 			// multi-hierarchical selection mode
 			node.selected = flag;
 			node.fixSelection3AfterClick(callOpts);
-		}else if(node.parent.radiogroup){
+		}else if(parent && parent.radiogroup){
 			node.visitSiblings(function(n){
 				n._changeSelectStatusAttrs(flag && n === node);
 			}, true);
@@ -4374,11 +4376,7 @@ $.extend(Fancytree.prototype,
 	 * @param {boolean} [flag=true]
 	 */
 	treeSetFocus: function(ctx, flag, callOpts) {
-		function ensureTreeFocus(thisTree) {
-			if (!thisTree.activeNode && thisTree.getFirstChild()) {
-				thisTree.getFirstChild().setFocus();
-			}
-		}
+		var targetNode;
 
 		flag = (flag !== false);
 
@@ -4395,11 +4393,10 @@ $.extend(Fancytree.prototype,
 			}
 			this.$container.toggleClass("fancytree-treefocus", flag);
 			this._triggerTreeEvent(flag ? "focusTree" : "blurTree");
-			if( flag ) {
-				// Check after timeout to ensure mousedown processing is complete
-				// and the clicked node is already activated
-				var thisTree = this;
-				setTimeout(function() { ensureTreeFocus(thisTree); }, 0);
+			if( flag && !this.activeNode ) {
+				// #712: Use last mousedowned node ('click' event fires after focusin)
+				targetNode = this._lastMousedownNode || this.getFirstChild();
+				targetNode && targetNode.setFocus();
 			}
 		}
 	},
@@ -4666,10 +4663,12 @@ $.widget("ui.fancytree",
 			}else{
 				tree._callHook("treeSetFocus", tree, flag);
 			}
+
 		}).on("selectstart" + ns, "span.fancytree-title", function(event){
 			// prevent mouse-drags to select text ranges
 			// tree.debug("<span title> got event " + event.type);
 			event.preventDefault();
+
 		}).on("keydown" + ns, function(event){
 			// TODO: also bind keyup and keypress
 			// tree.debug("got event " + event.type + ", hasFocus:" + tree.hasFocus());
@@ -4700,8 +4699,15 @@ $.widget("ui.fancytree",
 			} finally {
 				tree.phase = prevPhase;
 			}
-		}).on("mousedown" + ns + " dblclick" + ns, function(event){
-			// that.tree.debug("event(" + event + "): !");
+
+		}).on("mousedown" + ns, function(event){
+			var et = FT.getEventTarget(event);
+			// that.tree.debug("event(" + event.type + "): node: ", et.node);
+			// #712: Store the clicked node, so we can use it when we get a focusin event
+			//       ('click' event fires after focusin)
+			that.tree._lastMousedownNode = et ? et.node : null;
+
+		}).on("click" + ns + " dblclick" + ns, function(event){
 			if(opts.disabled){
 				return true;
 			}
@@ -4720,7 +4726,7 @@ $.widget("ui.fancytree",
 			try {
 				tree.phase = "userEvent";
 				switch(event.type) {
-				case "mousedown":
+				case "click":
 					ctx.targetType = et.type;
 					if( node.isPagingNode() ) {
 						return tree._triggerNodeEvent("clickPaging", ctx, event) === true;
@@ -4730,9 +4736,6 @@ $.widget("ui.fancytree",
 					ctx.targetType = et.type;
 					return ( tree._triggerNodeEvent("dblclick", ctx, event) === false ) ? false : tree._callHook("nodeDblclick", ctx);
 				}
-//             } catch(e) {
-// //                var _ = null; // DT issue 117 // TODO
-//                 $.error(e);
 			} finally {
 				tree.phase = prevPhase;
 			}
@@ -4782,7 +4785,7 @@ $.extend($.ui.fancytree,
 	/** @lends Fancytree_Static# */
 	{
 	/** @type {string} */
-	version: "2.23.0",      // Set to semver by 'grunt release'
+	version: "2.24.0",      // Set to semver by 'grunt release'
 	/** @type {string} */
 	buildType: "production", // Set to 'production' by 'grunt build'
 	/** @type {int} */
@@ -5266,13 +5269,13 @@ $.extend($.ui.fancytree,
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.23.0
- * @date 2017-05-27T20:09:38Z
+ * @version 2.24.0
+ * @date 2017-08-26T13:42:51Z
  */
 
 // To keep the global namespace clean, we wrap everything in a closure
 
-;(function($, undefined) {
+;(function($, window, document, undefined) {
 
 // Consider to use [strict mode](http://ejohn.org/blog/ecmascript-5-strict-mode-json-and-more/)
 "use strict";
@@ -5369,7 +5372,7 @@ $.ui.fancytree.registerExtension({
 // Every extension must be registered by a unique name.
 	name: "childcounter",
 // Version information should be compliant with [semver](http://semver.org)
-	version: "2.23.0",
+	version: "2.24.0",
 
 // Extension specific options and their defaults.
 // This options will be available as `tree.options.childcounter.hideExpanded`
@@ -5454,7 +5457,7 @@ $.ui.fancytree.registerExtension({
 // End of extension definition
 });
 // End of namespace closure
-}(jQuery));
+}(jQuery, window, document));
 
 /*!
  *
@@ -5467,8 +5470,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.23.0
- * @date 2017-05-27T20:09:38Z
+ * @version 2.24.0
+ * @date 2017-08-26T13:42:51Z
  */
 
 ;(function($, window, document, undefined) {
@@ -5800,7 +5803,7 @@ $.ui.fancytree._FancytreeClass.prototype.changeRefKey = function(oldRefKey, newR
  */
 $.ui.fancytree.registerExtension({
 	name: "clones",
-	version: "2.23.0",
+	version: "2.24.0",
 	// Default options for this extension.
 	options: {
 		highlightActiveClones: true, // set 'fancytree-active-clone' on active clones and all peers
@@ -5933,8 +5936,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.23.0
- * @date 2017-05-27T20:09:38Z
+ * @version 2.24.0
+ * @date 2017-08-26T13:42:51Z
  */
 
 ;(function($, window, document, undefined) {
@@ -6171,7 +6174,7 @@ function _initDragAndDrop(tree) {
 
 $.ui.fancytree.registerExtension({
 	name: "dnd",
-	version: "2.23.0",
+	version: "2.24.0",
 	// Default options for this extension.
 	options: {
 		// Make tree nodes accept draggables
@@ -6506,15 +6509,13 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.23.0
- * @date 2017-05-27T20:09:38Z
+ * @version 2.24.0
+ * @date 2017-08-26T13:42:51Z
  */
 
 
  /*
  #TODO
-   - glyph
-
 	Compatiblity when dragging between *separate* windows:
 
 		   Drag from Chrome   Edge    FF    IE11    Safari
@@ -6656,7 +6657,6 @@ function handleDragOver(event, data) {
 		targetNode = data.node,
 		sourceNode = data.otherNode,
 		markerAt = "center",
-		// glyph = options.glyph || null,
 		// $source = sourceNode ? $(sourceNode.span) : null,
 		$target = $(targetNode.span),
 		$targetTitle = $target.find("span.fancytree-title");
@@ -6760,7 +6760,7 @@ function handleDragOver(event, data) {
 
 $.ui.fancytree.registerExtension({
 	name: "dnd5",
-	version: "2.23.0",
+	version: "2.24.0",
 	// Default options for this extension.
 	options: {
 		autoExpandMS: 1500,          // Expand nodes after n milliseconds of hovering
@@ -6787,8 +6787,10 @@ $.ui.fancytree.registerExtension({
 	},
 
 	treeInit: function(ctx){
-		var tree = ctx.tree,
+		var $temp,
+			tree = ctx.tree,
 			opts = ctx.options,
+			glyph = opts.glyph || null,
 			dndOpts = opts.dnd5,
 			getNode = $.ui.fancytree.getNode;
 
@@ -6814,8 +6816,11 @@ $.ui.fancytree.registerExtension({
 		this.$container.addClass("fancytree-ext-dnd5");
 
 		// Store the current scroll parent, which may be the tree
-		// container, any enclosing div, or the document
-		this.$scrollParent = this.$container.children(":first").scrollParent();
+		// container, any enclosing div, or the document.
+		// #761: scrollParent() always needs a container child
+		$temp = $("<span>").appendTo(this.$container);
+		this.$scrollParent = $temp.scrollParent();
+		$temp.remove();
 
 		$dropMarker = $("#fancytree-drop-marker");
 		if( !$dropMarker.length ) {
@@ -6826,10 +6831,9 @@ $.ui.fancytree.registerExtension({
 					// Drop marker should not steal dragenter/dragover events:
 					"pointer-events": "none"
 				}).prependTo("body");
-				// if( glyph ) {
-					// instData.$dropMarker
-						// .addClass(glyph.map.dropMarker);
-				// }
+			if( glyph ) {
+				$dropMarker.addClass(glyph.map.dropMarker);
+			}
 		}
 		// Enable drag support if dragStart() is specified:
 		if( dndOpts.dragStart ) {
@@ -6928,7 +6932,6 @@ $.ui.fancytree.registerExtension({
 					allowDrop = null,
 					node = getNode(event),
 					dataTransfer = event.dataTransfer || event.originalEvent.dataTransfer,
-					// glyph = opts.glyph || null,
 					data = {
 						node: node,
 						tree: tree,
@@ -7087,8 +7090,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.23.0
- * @date 2017-05-27T20:09:38Z
+ * @version 2.24.0
+ * @date 2017-08-26T13:42:51Z
  */
 
 ;(function($, window, document, undefined) {
@@ -7331,7 +7334,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.isEditing = function(){
  */
 $.ui.fancytree.registerExtension({
 	name: "edit",
-	version: "2.23.0",
+	version: "2.24.0",
 	// Default options for this extension.
 	options: {
 		adjustWidthOfs: 4,   // null: don't adjust input size to content
@@ -7403,8 +7406,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.23.0
- * @date 2017-05-27T20:09:38Z
+ * @version 2.24.0
+ * @date 2017-08-26T13:42:51Z
  */
 
 ;(function($, window, document, undefined) {
@@ -7432,7 +7435,7 @@ function extractHtmlText(s){
 }
 
 $.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, branchMode, _opts){
-	var match, statusNode, re, reHighlight,
+	var match, statusNode, re, reHighlight, temp,
 		count = 0,
 		treeOpts = this.options,
 		escapeTitles = treeOpts.escapeTitles,
@@ -7443,7 +7446,11 @@ $.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, bra
 
 	// Default to 'match title substring (not case sensitive)'
 	if(typeof filter === "string"){
-		// console.log("rex", filter.split('').join('\\w*').replace(/\W/, ""))
+		if( filter === "" ) {
+			this.warn("Fancytree passing an empty string as a filter is handled as clearFilter().");
+			this.clearFilter();
+			return;
+		}
 		if( opts.fuzzy ) {
 			// See https://codereview.stackexchange.com/questions/23899/faster-javascript-fuzzy-string-matching-function/23905#23905
 			// and http://www.quora.com/How-is-the-fuzzy-search-algorithm-in-Sublime-Text-designed
@@ -7457,15 +7464,26 @@ $.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, bra
 		re = new RegExp(".*" + match + ".*", "i");
 		reHighlight = new RegExp(_escapeRegex(filter), "gi");
 		filter = function(node){
-			var display,
-				text = escapeTitles ? node.title : extractHtmlText(node.title),
+			var text = escapeTitles ? node.title : extractHtmlText(node.title),
 				res = !!re.test(text);
 
 			if( res && opts.highlight ) {
-				display = escapeTitles ? escapeHtml(node.title) : text;
-				node.titleWithHighlight = display.replace(reHighlight, function(s){
-					return "<mark>" + s + "</mark>";
-				});
+				if( escapeTitles ) {
+					// #740: we must not apply the marks to escaped entity names, e.g. `&quot;`
+					// Use some exotic characters to mark matches:
+					temp = text.replace(reHighlight, function(s){
+						return "\uFFF7" + s + "\uFFF8";
+					});
+					// now we can escape the title...
+					node.titleWithHighlight = escapeHtml(temp)
+						// ... and finally insert the desired `<mark>` tags
+						.replace(/\uFFF7/g, "<mark>")
+						.replace(/\uFFF8/g, "</mark>");
+				} else {
+					node.titleWithHighlight = text.replace(reHighlight, function(s){
+						return "<mark>" + s + "</mark>";
+					});
+				}
 				// node.debug("filter", escapeTitles, text, node.titleWithHighlight);
 			}
 			return res;
@@ -7667,7 +7685,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.isMatched = function(){
  */
 $.ui.fancytree.registerExtension({
 	name: "filter",
-	version: "2.23.0",
+	version: "2.24.0",
 	// Default options for this extension.
 	options: {
 		autoApply: true,   // Re-apply last filter if lazy data is loaded
@@ -7757,8 +7775,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.23.0
- * @date 2017-05-27T20:09:38Z
+ * @version 2.24.0
+ * @date 2017-08-26T13:42:51Z
  */
 
 ;(function($, window, document, undefined) {
@@ -7769,45 +7787,97 @@ $.ui.fancytree.registerExtension({
  * Private functions and variables
  */
 
+var FT = $.ui.fancytree,
+	PRESETS = {
+	"awesome3": {
+		checkbox: "icon-check-empty",
+		checkboxSelected: "icon-check",
+		checkboxUnknown: "icon-check icon-muted",
+		dragHelper: "icon-caret-right",
+		dropMarker: "icon-caret-right",
+		error: "icon-exclamation-sign",
+		expanderClosed: "icon-caret-right",
+		expanderLazy: "icon-angle-right",
+		expanderOpen: "icon-caret-down",
+		loading: "icon-refresh icon-spin",
+		nodata: "icon-meh",
+		noExpander: "",
+		// Default node icons.
+		// (Use tree.options.icon callback to define custom icons based on node data)
+		doc: "icon-file-alt",
+		docOpen: "icon-file-alt",
+		folder: "icon-folder-close-alt",
+		folderOpen: "icon-folder-open-alt"
+		},
+	"awesome4": {
+		checkbox: "fa fa-square-o",
+		checkboxSelected: "fa fa-check-square-o",
+		checkboxUnknown: "fa fa-square",
+		dragHelper: "fa fa-arrow-right",
+		dropMarker: "fa fa-long-arrow-right",
+		error: "fa fa-warning",
+		expanderClosed: "fa fa-caret-right",
+		expanderLazy: "fa fa-angle-right",
+		expanderOpen: "fa fa-caret-down",
+		loading: "fa fa-spinner fa-pulse",
+		nodata: "fa fa-meh-o",
+		noExpander: "",
+		// Default node icons.
+		// (Use tree.options.icon callback to define custom icons based on node data)
+		doc: "fa fa-file-o",
+		docOpen: "fa fa-file-o",
+		folder: "fa fa-folder-o",
+		folderOpen: "fa fa-folder-open-o"
+		},
+	"bootstrap3": {
+		checkbox: "glyphicon glyphicon-unchecked",
+		checkboxSelected: "glyphicon glyphicon-check",
+		checkboxUnknown: "glyphicon glyphicon-share",
+		dragHelper: "glyphicon glyphicon-play",
+		dropMarker: "glyphicon glyphicon-arrow-right",
+		error: "glyphicon glyphicon-warning-sign",
+		expanderClosed: "glyphicon glyphicon-plus-sign",
+		expanderLazy: "glyphicon glyphicon-plus-sign",
+		expanderOpen: "glyphicon glyphicon-minus-sign",
+		loading: "glyphicon glyphicon-refresh glyphicon-spin",
+		nodata: "glyphicon glyphicon-info-sign",
+		noExpander: "",
+		// Default node icons.
+		// (Use tree.options.icon callback to define custom icons based on node data)
+		doc: "glyphicon glyphicon-file",
+		docOpen: "glyphicon glyphicon-file",
+		folder: "glyphicon glyphicon-folder-close",
+		folderOpen: "glyphicon glyphicon-folder-open"
+		}
+	};
+
+
 function _getIcon(opts, type){
 	return opts.map[type];
 }
 
+
 $.ui.fancytree.registerExtension({
 	name: "glyph",
-	version: "2.23.0",
+	version: "2.24.0",
 	// Default options for this extension.
 	options: {
+		preset: null,  // 'awesome3', 'awesome4', 'bootstrap3'
 		map: {
-			// Samples from Font Awesome 3.2
-			//   http://fortawesome.github.io/Font-Awesome/3.2.1/icons/
-			// See here for alternatives:
-			//   http://fortawesome.github.io/Font-Awesome/icons/
-			//   http://getbootstrap.com/components/
-			checkbox: "icon-check-empty",
-			checkboxSelected: "icon-check",
-			checkboxUnknown: "icon-check icon-muted",
-			error: "icon-exclamation-sign",
-			expanderClosed: "icon-caret-right",
-			expanderLazy: "icon-angle-right",
-			expanderOpen: "icon-caret-down",
-			nodata: "icon-meh",
-			noExpander: "",
-			dragHelper: "icon-caret-right",
-			dropMarker: "icon-caret-right",
-			// Default node icons.
-			// (Use tree.options.icon callback to define custom icons
-			// based on node data)
-			doc: "icon-file-alt",
-			docOpen: "icon-file-alt",
-			loading: "icon-refresh icon-spin",
-			folder: "icon-folder-close-alt",
-			folderOpen: "icon-folder-open-alt"
 		}
 	},
 
 	treeInit: function(ctx){
-		var tree = ctx.tree;
+		var tree = ctx.tree,
+			opts = ctx.options.glyph;
+
+		if( opts.preset ) {
+			FT.assert( !!PRESETS[opts.preset],
+				"Invalid value for `options.glyph.preset`: " + opts.preset);
+			opts.map = $.extend({}, PRESETS[opts.preset], opts.map);
+		} else {
+			tree.warn("ext-glyph: missing `preset` option.");
+		}
 		this._superApply(arguments);
 		tree.$container.addClass("fancytree-ext-glyph");
 	},
@@ -7901,8 +7971,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.23.0
- * @date 2017-05-27T20:09:38Z
+ * @version 2.24.0
+ * @date 2017-08-26T13:42:51Z
  */
 
 ;(function($, window, document, undefined) {
@@ -8008,7 +8078,7 @@ function findNeighbourTd($target, keyCode){
  */
 $.ui.fancytree.registerExtension({
 	name: "gridnav",
-	version: "2.23.0",
+	version: "2.24.0",
 	// Default options for this extension.
 	options: {
 		autofocusInput:   false,  // Focus first embedded input if node gets activated
@@ -8107,8 +8177,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.23.0
- * @date 2017-05-27T20:09:38Z
+ * @version 2.24.0
+ * @date 2017-08-26T13:42:51Z
  */
 
 ;(function($, window, document, undefined) {
@@ -8248,7 +8318,7 @@ $.ui.fancytree._FancytreeClass.prototype.getPersistData = function(){
  */
 $.ui.fancytree.registerExtension({
 	name: "persist",
-	version: "2.23.0",
+	version: "2.24.0",
 	// Default options for this extension.
 	options: {
 		cookieDelimiter: "~",
@@ -8495,8 +8565,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.23.0
- * @date 2017-05-27T20:09:38Z
+ * @version 2.24.0
+ * @date 2017-08-26T13:42:51Z
  */
 
 ;(function($, window, document, undefined) {
@@ -8574,7 +8644,7 @@ function findPrevRowNode(node){
 
 $.ui.fancytree.registerExtension({
 	name: "table",
-	version: "2.23.0",
+	version: "2.24.0",
 	// Default options for this extension.
 	options: {
 		checkboxColumnIdx: null, // render the checkboxes into the this column index (default: nodeColumnIdx)
@@ -8944,8 +9014,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.23.0
- * @date 2017-05-27T20:09:38Z
+ * @version 2.24.0
+ * @date 2017-08-26T13:42:51Z
  */
 
 ;(function($, window, document, undefined) {
@@ -8957,7 +9027,7 @@ $.ui.fancytree.registerExtension({
  */
 $.ui.fancytree.registerExtension({
 	name: "themeroller",
-	version: "2.23.0",
+	version: "2.24.0",
 	// Default options for this extension.
 	options: {
 		activeClass: "ui-state-active",      // Class added to active node
@@ -9040,8 +9110,8 @@ $.ui.fancytree.registerExtension({
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.23.0
- * @date 2017-05-27T20:09:38Z
+ * @version 2.24.0
+ * @date 2017-08-26T13:42:51Z
  */
 
 ;(function($, window, document, undefined) {
@@ -9141,7 +9211,7 @@ function renderLevelCss(containerId, depth, levelOfs, lineOfs, labelOfs, measure
  */
 $.ui.fancytree.registerExtension({
 	name: "wide",
-	version: "2.23.0",
+	version: "2.24.0",
 	// Default options for this extension.
 	options: {
 		iconWidth: null,     // Adjust this if @fancy-icon-width != "16px"

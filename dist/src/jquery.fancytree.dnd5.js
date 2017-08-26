@@ -9,15 +9,13 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.23.0
- * @date 2017-05-27T20:09:38Z
+ * @version 2.24.0
+ * @date 2017-08-26T13:42:51Z
  */
 
 
  /*
  #TODO
-   - glyph
-
 	Compatiblity when dragging between *separate* windows:
 
 		   Drag from Chrome   Edge    FF    IE11    Safari
@@ -159,7 +157,6 @@ function handleDragOver(event, data) {
 		targetNode = data.node,
 		sourceNode = data.otherNode,
 		markerAt = "center",
-		// glyph = options.glyph || null,
 		// $source = sourceNode ? $(sourceNode.span) : null,
 		$target = $(targetNode.span),
 		$targetTitle = $target.find("span.fancytree-title");
@@ -263,7 +260,7 @@ function handleDragOver(event, data) {
 
 $.ui.fancytree.registerExtension({
 	name: "dnd5",
-	version: "2.23.0",
+	version: "2.24.0",
 	// Default options for this extension.
 	options: {
 		autoExpandMS: 1500,          // Expand nodes after n milliseconds of hovering
@@ -290,8 +287,10 @@ $.ui.fancytree.registerExtension({
 	},
 
 	treeInit: function(ctx){
-		var tree = ctx.tree,
+		var $temp,
+			tree = ctx.tree,
 			opts = ctx.options,
+			glyph = opts.glyph || null,
 			dndOpts = opts.dnd5,
 			getNode = $.ui.fancytree.getNode;
 
@@ -317,8 +316,11 @@ $.ui.fancytree.registerExtension({
 		this.$container.addClass("fancytree-ext-dnd5");
 
 		// Store the current scroll parent, which may be the tree
-		// container, any enclosing div, or the document
-		this.$scrollParent = this.$container.children(":first").scrollParent();
+		// container, any enclosing div, or the document.
+		// #761: scrollParent() always needs a container child
+		$temp = $("<span>").appendTo(this.$container);
+		this.$scrollParent = $temp.scrollParent();
+		$temp.remove();
 
 		$dropMarker = $("#fancytree-drop-marker");
 		if( !$dropMarker.length ) {
@@ -329,10 +331,9 @@ $.ui.fancytree.registerExtension({
 					// Drop marker should not steal dragenter/dragover events:
 					"pointer-events": "none"
 				}).prependTo("body");
-				// if( glyph ) {
-					// instData.$dropMarker
-						// .addClass(glyph.map.dropMarker);
-				// }
+			if( glyph ) {
+				$dropMarker.addClass(glyph.map.dropMarker);
+			}
 		}
 		// Enable drag support if dragStart() is specified:
 		if( dndOpts.dragStart ) {
@@ -431,7 +432,6 @@ $.ui.fancytree.registerExtension({
 					allowDrop = null,
 					node = getNode(event),
 					dataTransfer = event.dataTransfer || event.originalEvent.dataTransfer,
-					// glyph = opts.glyph || null,
 					data = {
 						node: node,
 						tree: tree,

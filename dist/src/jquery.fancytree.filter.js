@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.23.0
- * @date 2017-05-27T20:09:38Z
+ * @version 2.24.0
+ * @date 2017-08-26T13:42:51Z
  */
 
 ;(function($, window, document, undefined) {
@@ -38,7 +38,7 @@ function extractHtmlText(s){
 }
 
 $.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, branchMode, _opts){
-	var match, statusNode, re, reHighlight,
+	var match, statusNode, re, reHighlight, temp,
 		count = 0,
 		treeOpts = this.options,
 		escapeTitles = treeOpts.escapeTitles,
@@ -49,7 +49,11 @@ $.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, bra
 
 	// Default to 'match title substring (not case sensitive)'
 	if(typeof filter === "string"){
-		// console.log("rex", filter.split('').join('\\w*').replace(/\W/, ""))
+		if( filter === "" ) {
+			this.warn("Fancytree passing an empty string as a filter is handled as clearFilter().");
+			this.clearFilter();
+			return;
+		}
 		if( opts.fuzzy ) {
 			// See https://codereview.stackexchange.com/questions/23899/faster-javascript-fuzzy-string-matching-function/23905#23905
 			// and http://www.quora.com/How-is-the-fuzzy-search-algorithm-in-Sublime-Text-designed
@@ -63,15 +67,26 @@ $.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, bra
 		re = new RegExp(".*" + match + ".*", "i");
 		reHighlight = new RegExp(_escapeRegex(filter), "gi");
 		filter = function(node){
-			var display,
-				text = escapeTitles ? node.title : extractHtmlText(node.title),
+			var text = escapeTitles ? node.title : extractHtmlText(node.title),
 				res = !!re.test(text);
 
 			if( res && opts.highlight ) {
-				display = escapeTitles ? escapeHtml(node.title) : text;
-				node.titleWithHighlight = display.replace(reHighlight, function(s){
-					return "<mark>" + s + "</mark>";
-				});
+				if( escapeTitles ) {
+					// #740: we must not apply the marks to escaped entity names, e.g. `&quot;`
+					// Use some exotic characters to mark matches:
+					temp = text.replace(reHighlight, function(s){
+						return "\uFFF7" + s + "\uFFF8";
+					});
+					// now we can escape the title...
+					node.titleWithHighlight = escapeHtml(temp)
+						// ... and finally insert the desired `<mark>` tags
+						.replace(/\uFFF7/g, "<mark>")
+						.replace(/\uFFF8/g, "</mark>");
+				} else {
+					node.titleWithHighlight = text.replace(reHighlight, function(s){
+						return "<mark>" + s + "</mark>";
+					});
+				}
 				// node.debug("filter", escapeTitles, text, node.titleWithHighlight);
 			}
 			return res;
@@ -273,7 +288,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.isMatched = function(){
  */
 $.ui.fancytree.registerExtension({
 	name: "filter",
-	version: "2.23.0",
+	version: "2.24.0",
 	// Default options for this extension.
 	options: {
 		autoApply: true,   // Re-apply last filter if lazy data is loaded

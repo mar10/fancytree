@@ -7,8 +7,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.23.0
- * @date 2017-05-27T20:09:38Z
+ * @version 2.24.0
+ * @date 2017-08-26T13:42:51Z
  */
 
 /** Core Fancytree module.
@@ -2186,6 +2186,7 @@ function Fancytree(widget) {
 	this.activeNode = null;
 	this.focusNode = null;
 	this._hasFocus = null;
+	this._lastMousedownNode = null;
 	this._enableUpdate = true;
 	// this._dirtyRoots = null;
 	this.lastSelectedNode = null;
@@ -4071,7 +4072,8 @@ $.extend(Fancytree.prototype,
 		var node = ctx.node,
 			tree = ctx.tree,
 			opts = ctx.options,
-			noEvents = (callOpts.noEvents === true);
+			noEvents = (callOpts.noEvents === true),
+			parent = node.parent;
 
 		// flag defaults to true
 		flag = (flag !== false);
@@ -4110,11 +4112,11 @@ $.extend(Fancytree.prototype,
 				tree.lastSelectedNode.setSelected(false);
 			}
 			node.selected = flag;
-		}else if(opts.selectMode === 3 && !node.parent.radiogroup && !node.radiogroup){
+		}else if(opts.selectMode === 3 && parent && !parent.radiogroup && !node.radiogroup){
 			// multi-hierarchical selection mode
 			node.selected = flag;
 			node.fixSelection3AfterClick(callOpts);
-		}else if(node.parent.radiogroup){
+		}else if(parent && parent.radiogroup){
 			node.visitSiblings(function(n){
 				n._changeSelectStatusAttrs(flag && n === node);
 			}, true);
@@ -4374,11 +4376,7 @@ $.extend(Fancytree.prototype,
 	 * @param {boolean} [flag=true]
 	 */
 	treeSetFocus: function(ctx, flag, callOpts) {
-		function ensureTreeFocus(thisTree) {
-			if (!thisTree.activeNode && thisTree.getFirstChild()) {
-				thisTree.getFirstChild().setFocus();
-			}
-		}
+		var targetNode;
 
 		flag = (flag !== false);
 
@@ -4395,11 +4393,10 @@ $.extend(Fancytree.prototype,
 			}
 			this.$container.toggleClass("fancytree-treefocus", flag);
 			this._triggerTreeEvent(flag ? "focusTree" : "blurTree");
-			if( flag ) {
-				// Check after timeout to ensure mousedown processing is complete
-				// and the clicked node is already activated
-				var thisTree = this;
-				setTimeout(function() { ensureTreeFocus(thisTree); }, 0);
+			if( flag && !this.activeNode ) {
+				// #712: Use last mousedowned node ('click' event fires after focusin)
+				targetNode = this._lastMousedownNode || this.getFirstChild();
+				targetNode && targetNode.setFocus();
 			}
 		}
 	},
@@ -4666,10 +4663,12 @@ $.widget("ui.fancytree",
 			}else{
 				tree._callHook("treeSetFocus", tree, flag);
 			}
+
 		}).on("selectstart" + ns, "span.fancytree-title", function(event){
 			// prevent mouse-drags to select text ranges
 			// tree.debug("<span title> got event " + event.type);
 			event.preventDefault();
+
 		}).on("keydown" + ns, function(event){
 			// TODO: also bind keyup and keypress
 			// tree.debug("got event " + event.type + ", hasFocus:" + tree.hasFocus());
@@ -4700,8 +4699,15 @@ $.widget("ui.fancytree",
 			} finally {
 				tree.phase = prevPhase;
 			}
-		}).on("mousedown" + ns + " dblclick" + ns, function(event){
-			// that.tree.debug("event(" + event + "): !");
+
+		}).on("mousedown" + ns, function(event){
+			var et = FT.getEventTarget(event);
+			// that.tree.debug("event(" + event.type + "): node: ", et.node);
+			// #712: Store the clicked node, so we can use it when we get a focusin event
+			//       ('click' event fires after focusin)
+			that.tree._lastMousedownNode = et ? et.node : null;
+
+		}).on("click" + ns + " dblclick" + ns, function(event){
 			if(opts.disabled){
 				return true;
 			}
@@ -4720,7 +4726,7 @@ $.widget("ui.fancytree",
 			try {
 				tree.phase = "userEvent";
 				switch(event.type) {
-				case "mousedown":
+				case "click":
 					ctx.targetType = et.type;
 					if( node.isPagingNode() ) {
 						return tree._triggerNodeEvent("clickPaging", ctx, event) === true;
@@ -4730,9 +4736,6 @@ $.widget("ui.fancytree",
 					ctx.targetType = et.type;
 					return ( tree._triggerNodeEvent("dblclick", ctx, event) === false ) ? false : tree._callHook("nodeDblclick", ctx);
 				}
-//             } catch(e) {
-// //                var _ = null; // DT issue 117 // TODO
-//                 $.error(e);
 			} finally {
 				tree.phase = prevPhase;
 			}
@@ -4782,7 +4785,7 @@ $.extend($.ui.fancytree,
 	/** @lends Fancytree_Static# */
 	{
 	/** @type {string} */
-	version: "2.23.0",      // Set to semver by 'grunt release'
+	version: "2.24.0",      // Set to semver by 'grunt release'
 	/** @type {string} */
 	buildType: "production", // Set to 'production' by 'grunt build'
 	/** @type {int} */

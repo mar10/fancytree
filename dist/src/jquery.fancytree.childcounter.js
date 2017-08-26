@@ -19,13 +19,13 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.23.0
- * @date 2017-05-27T20:09:38Z
+ * @version 2.24.0
+ * @date 2017-08-26T13:42:51Z
  */
 
 // To keep the global namespace clean, we wrap everything in a closure
 
-;(function($, undefined) {
+;(function($, window, document, undefined) {
 
 // Consider to use [strict mode](http://ejohn.org/blog/ecmascript-5-strict-mode-json-and-more/)
 "use strict";
@@ -122,7 +122,7 @@ $.ui.fancytree.registerExtension({
 // Every extension must be registered by a unique name.
 	name: "childcounter",
 // Version information should be compliant with [semver](http://semver.org)
-	version: "2.23.0",
+	version: "2.24.0",
 
 // Extension specific options and their defaults.
 // This options will be available as `tree.options.childcounter.hideExpanded`
@@ -207,4 +207,4 @@ $.ui.fancytree.registerExtension({
 // End of extension definition
 });
 // End of namespace closure
-}(jQuery));
+}(jQuery, window, document));
