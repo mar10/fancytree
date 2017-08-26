@@ -1,4 +1,7 @@
-# 2.24.0-0 / Unreleased
+# 2.24.1 / Unreleased
+  *
+
+# 2.24.0 / 2017-08-26
   * [Added] ext-glyph option `preset` (making the `map` option optional)
   * [Fixed] #695: List AMD dependency on jQuery UI
   * [Fixed] #735: Trying to set root node selected throws an error
@@ -6,9 +9,9 @@
   * [Fixed] #740: Filtering must not consider escaped html entities
   * [Fixed] #741: Passing an empty string ("") as filter calls clearFilter()
   * [Fixed] #761: dnd5 throws exception when tree is empty
-  * Updated jsdoc to 3.5
   * [Fixed] #748: Drag start should not activate a node
   * [Fixed] #764: FancyTree filter breaks links
+  * Updated jsdoc to 3.5
 
 # 2.23.0 / 2017-05-27
   * **The external dependency on jQuery UI was removed**.
