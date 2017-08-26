@@ -4394,6 +4394,7 @@ $.extend(Fancytree.prototype,
 			this.$container.toggleClass("fancytree-treefocus", flag);
 			this._triggerTreeEvent(flag ? "focusTree" : "blurTree");
 			if( flag && !this.activeNode ) {
+				// #712: Use last mousedowned node ('click' event fires after focusin)
 				targetNode = this._lastMousedownNode || this.getFirstChild();
 				targetNode && targetNode.setFocus();
 			}
@@ -4700,9 +4701,10 @@ $.widget("ui.fancytree",
 			}
 
 		}).on("mousedown" + ns, function(event){
-			// #412: store the clicked node, so we can use it when we get a focusin event
 			var et = FT.getEventTarget(event);
-			that.tree.debug("event(" + event.type + "): node: ", et.node);
+			// that.tree.debug("event(" + event.type + "): node: ", et.node);
+			// #712: Store the clicked node, so we can use it when we get a focusin event
+			//       ('click' event fires after focusin)
 			that.tree._lastMousedownNode = et ? et.node : null;
 
 		}).on("click" + ns + " dblclick" + ns, function(event){
@@ -4715,7 +4717,7 @@ $.widget("ui.fancytree",
 				tree = that.tree,
 				prevPhase = tree.phase;
 
-			that.tree.debug("event(" + event.type + "): node: ", node);
+			// that.tree.debug("event(" + event.type + "): node: ", node);
 			if( !node ){
 				return true;  // Allow bubbling of other events
 			}
