@@ -2186,6 +2186,7 @@ function Fancytree(widget) {
 	this.activeNode = null;
 	this.focusNode = null;
 	this._hasFocus = null;
+	this._lastMousedownNode = null;
 	this._enableUpdate = true;
 	// this._dirtyRoots = null;
 	this.lastSelectedNode = null;
@@ -4375,6 +4376,8 @@ $.extend(Fancytree.prototype,
 	 * @param {boolean} [flag=true]
 	 */
 	treeSetFocus: function(ctx, flag, callOpts) {
+		var targetNode;
+
 		flag = (flag !== false);
 
 		// this.debug("treeSetFocus(" + flag + "), callOpts: ", callOpts, this.hasFocus());
@@ -4391,7 +4394,8 @@ $.extend(Fancytree.prototype,
 			this.$container.toggleClass("fancytree-treefocus", flag);
 			this._triggerTreeEvent(flag ? "focusTree" : "blurTree");
 			if( flag && !this.activeNode ) {
-				this.getFirstChild() && this.getFirstChild().setFocus();
+				targetNode = this._lastMousedownNode || this.getFirstChild();
+				targetNode && targetNode.setFocus();
 			}
 		}
 	},
@@ -4658,10 +4662,12 @@ $.widget("ui.fancytree",
 			}else{
 				tree._callHook("treeSetFocus", tree, flag);
 			}
+
 		}).on("selectstart" + ns, "span.fancytree-title", function(event){
 			// prevent mouse-drags to select text ranges
 			// tree.debug("<span title> got event " + event.type);
 			event.preventDefault();
+
 		}).on("keydown" + ns, function(event){
 			// TODO: also bind keyup and keypress
 			// tree.debug("got event " + event.type + ", hasFocus:" + tree.hasFocus());
@@ -4692,8 +4698,14 @@ $.widget("ui.fancytree",
 			} finally {
 				tree.phase = prevPhase;
 			}
+
+		}).on("mousedown" + ns, function(event){
+			// #412: store the clicked node, so we can use it when we get a focusin event
+			var et = FT.getEventTarget(event);
+			that.tree.debug("event(" + event.type + "): node: ", et.node);
+			that.tree._lastMousedownNode = et ? et.node : null;
+
 		}).on("click" + ns + " dblclick" + ns, function(event){
-			// that.tree.debug("event(" + event + "): !");
 			if(opts.disabled){
 				return true;
 			}
@@ -4703,7 +4715,7 @@ $.widget("ui.fancytree",
 				tree = that.tree,
 				prevPhase = tree.phase;
 
-			// that.tree.debug("event(" + event.type + "): node: ", node);
+			that.tree.debug("event(" + event.type + "): node: ", node);
 			if( !node ){
 				return true;  // Allow bubbling of other events
 			}
@@ -4722,9 +4734,6 @@ $.widget("ui.fancytree",
 					ctx.targetType = et.type;
 					return ( tree._triggerNodeEvent("dblclick", ctx, event) === false ) ? false : tree._callHook("nodeDblclick", ctx);
 				}
-//             } catch(e) {
-// //                var _ = null; // DT issue 117 // TODO
-//                 $.error(e);
 			} finally {
 				tree.phase = prevPhase;
 			}

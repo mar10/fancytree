@@ -5,6 +5,7 @@ root = true
 
 [*]
 indent_style = tab
+indent_size = 4
 end_of_line = lf
 charset = utf-8
 trim_trailing_whitespace = true
@@ -16,7 +17,6 @@ indent_size = 2
 
 [*.js]
 indent_style = tab
-indent_size = 4
 
 [*.coffee]
 indent_style = space
@@ -24,8 +24,6 @@ indent_size = 2
 
 [*.md]
 indent_style = space
-indent_size = 4
 
 [*.py]
 indent_style = space
-indent_size = 4
