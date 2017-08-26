@@ -8,6 +8,9 @@
   * [Fixed] #761: dnd5 throws exception when tree is empty
   * Updated jsdoc to 3.5
 
+# Branch click-folder
+  * Undo commit #712 / #713 to fix regressions #748, #763, #764
+
 # 2.23.0 / 2017-05-27
   * **The external dependency on jQuery UI was removed**.
     A new library `jquery.fancytree-all-deps.min.js` is now added to the
