@@ -111,6 +111,10 @@ nav
     box-sizing: border-box;
     border-left: 1px solid #ccc;
     padding-left: 16px;
+	/* Start MOOGLE Changes */
+	position: sticky;
+	position: -webkit-sticky;
+	top: 10px;
 }
 
 nav ul {
@@ -363,7 +367,8 @@ tr > th:last-child { border-right: 1px solid #ddd; }
 {
 	display: none;
 }
-tr:hover .showHover
+tr:hover .showHover,
+h4:hover .showHover
 {
 	display: inline-block;
 }
