@@ -160,7 +160,7 @@
 				var s = data.tree.getSelectedNodes().join(", ");
 				$("#echoSelected").text(s);
 			}
-		}).bind("fancytreeactivate", function(event, data){
+		}).on("fancytreeactivate", function(event, data){
 			// alternative way to bind to 'activate' event
 //		    logEvent(event, data);
 		}).on("mouseenter mouseleave", ".fancytree-title", function(event){

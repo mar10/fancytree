@@ -109,11 +109,11 @@ $.ui.fancytree.registerExtension({
 			return;
 		}
 
-		$(document).bind("keydown.fancytree", function(event){
+		$(document).on("keydown.fancytree", function(event){
 			if( event.which === $.ui.keyCode.ESCAPE ){
 				tree.ext.menu._closeMenu(ctx);
 			}
-		}).bind("mousedown.fancytree", function(event){
+		}).on("mousedown.fancytree", function(event){
 			// Close menu when clicked outside menu
 			if( $(event.target).closest(".ui-menu-item").length === 0 ){
 				tree.ext.menu._closeMenu(ctx);

@@ -418,7 +418,7 @@ searchResultTree = $.ui.fancytree.getTree("#searchResultTree");
 
 // Bind a callback that executes when document.location.hash changes.
 // (This code uses bbq: https://github.com/cowboy/jquery-bbq)
-$(window).bind( "hashchange", function(e) {
+$(window).on( "hashchange", function(e) {
 	var key = $.bbq.getState( "key" );
 	console.log("bbq key", key);
 	if( key ) {

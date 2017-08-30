@@ -78,7 +78,7 @@ $.ui.fancytree.registerExtension({
 		tree.widget.options.clickFolderMode = 1;
 
 		// Make sure that only active path is expanded when a node is activated:
-		$table.bind("fancytreeactivate", function(event, data){
+		$table.on("fancytreeactivate", function(event, data){
 			var i, tdList,
 				node = data.node,
 				tree = data.tree,
@@ -97,7 +97,7 @@ $.ui.fancytree.registerExtension({
 				node.setExpanded();
 			}
 		// Adjust keyboard behaviour:
-		}).bind("fancytreekeydown", function(event, data){
+		}).on("fancytreekeydown", function(event, data){
 			var next = null,
 				node = data.node || data.tree.getFirstChild();
 			switch(event.which){

@@ -236,7 +236,7 @@ $.ui.fancytree.registerExtension({
 		}
 
 		// Bind init-handler to apply cookie state
-		tree.$div.bind("fancytreeinit", function(event){
+		tree.$div.on("fancytreeinit", function(event){
 			if ( tree._triggerTreeEvent("beforeRestore", null, {}) === false ) {
 				return;
 			}

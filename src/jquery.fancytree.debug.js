@@ -55,7 +55,7 @@ $.ui.fancytree.registerExtension({
 		var tree = ctx.tree;
 
 		// Bind init-handler to apply cookie state
-		tree.$div.bind("fancytreeinit", function(event){
+		tree.$div.on("fancytreeinit", function(event){
 			tree.debug("COOKIE " + document.cookie);
 		});
 		// Init the tree
