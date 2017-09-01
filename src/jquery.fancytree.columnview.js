@@ -4,7 +4,7 @@
  * Render tree like a Mac Finder's column view.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2016, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2017, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -124,7 +124,7 @@ $.ui.fancytree.registerExtension({
 	},
 	nodeRender: function(ctx, force, deep, collapsed, _recursive) {
 		// Render standard nested <ul> - <li> hierarchy
-		this._superApply(arguments);
+		this._super(ctx, force, deep, collapsed, _recursive);
 		// Remove expander and add a trailing triangle instead
 		var level, $tdChild, $ul,
 			tree = ctx.tree,

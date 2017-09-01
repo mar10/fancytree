@@ -6,7 +6,7 @@
  *
  * @depends: js-cookie or jquery-cookie
  *
- * Copyright (c) 2008-2016, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2017, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -47,6 +47,7 @@ if( typeof Cookies === "function" ) {
 function _loadLazyNodes(tree, local, keyList, mode, dfd) {
 	var i, key, l, node,
 		foundOne = false,
+		expandOpts = tree.options.persist.expandOpts,
 		deferredList = [],
 		missingKeyList = [];
 
@@ -61,13 +62,13 @@ function _loadLazyNodes(tree, local, keyList, mode, dfd) {
 				foundOne = true;
 				tree.debug("_loadLazyNodes: " + node + " is lazy: loading...");
 				if( mode === "expand" ) {
-					deferredList.push(node.setExpanded());
+					deferredList.push(node.setExpanded(true, expandOpts));
 				} else {
 					deferredList.push(node.load());
 				}
 			} else {
 				tree.debug("_loadLazyNodes: " + node + " already loaded.");
-				node.setExpanded();
+				node.setExpanded(true, expandOpts);
 			}
 		} else {
 			missingKeyList.push(key);
@@ -164,6 +165,7 @@ $.ui.fancytree.registerExtension({
 			secure: false
 		},
 		expandLazy: false,     // true: recursively expand and load lazy nodes
+		expandOpts: undefined, // optional `opts` argument passed to setExpanded()
 		fireActivate: true,    // false: suppress `activate` event after active node was restored
 		overrideSource: true,  // true: cookie takes precedence over `source` data attributes.
 		store: "auto",         // 'cookie': force cookie, 'local': force localStore, 'session': force sessionStore
@@ -320,7 +322,7 @@ $.ui.fancytree.registerExtension({
 		// Init the tree
 		return this._superApply(arguments);
 	},
-	nodeSetActive: function(ctx, flag, opts) {
+	nodeSetActive: function(ctx, flag, callOpts) {
 		var res,
 			local = this._local;
 
@@ -332,7 +334,7 @@ $.ui.fancytree.registerExtension({
 		}
 		return res;
 	},
-	nodeSetExpanded: function(ctx, flag, opts) {
+	nodeSetExpanded: function(ctx, flag, callOpts) {
 		var res,
 			node = ctx.node,
 			local = this._local;
@@ -357,7 +359,7 @@ $.ui.fancytree.registerExtension({
 		}
 		return res;
 	},
-	nodeSetSelected: function(ctx, flag) {
+	nodeSetSelected: function(ctx, flag, callOpts) {
 		var res, selNodes,
 			tree = ctx.tree,
 			node = ctx.node,

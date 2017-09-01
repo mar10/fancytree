@@ -16,7 +16,7 @@ a standard listbox:
   Container gets `:focus` and `.fancytree-focus`  
   After that, UP/DOWN keys can be used to navigate inside the tree.  
 - There is a visual feedback, when the tree has focus:  
-  - the container get's a focus frame  
+  - the container gets a focus frame  
   - the activated node is stronlgy colored (but dimmed, when tree is not focused)
 - Clicking a node also sets tree focus  
 - But clicking inside an input control (or any other tabbable element) that 

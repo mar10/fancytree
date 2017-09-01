@@ -24,23 +24,13 @@ var taxonTree, searchResultTree,
 	timerMap = {},
 	tmplDetails, // =
 	USER_AGENT = "Fancytree Taxonomy Browser/1.0",
-	ITIS_URL = "http://www.itis.gov/ITISWebService/jsonservice/",
+	ITIS_URL = "//www.itis.gov/ITISWebService/jsonservice/",
 	glyphOpts = {
+		preset: "bootstrap3",
 		map: {
-			doc: "glyphicon glyphicon-file",
-			docOpen: "glyphicon glyphicon-file",
-			checkbox: "glyphicon glyphicon-unchecked",
-			checkboxSelected: "glyphicon glyphicon-check",
-			checkboxUnknown: "glyphicon glyphicon-share",
-			dragHelper: "glyphicon glyphicon-play",
-			dropMarker: "glyphicon glyphicon-arrow-right",
-			error: "glyphicon glyphicon-warning-sign",
-			expanderClosed: "glyphicon glyphicon-plus-sign",
-			expanderLazy: "glyphicon glyphicon-plus-sign",  // glyphicon-expand
-			expanderOpen: "glyphicon glyphicon-minus-sign",  // glyphicon-collapse-down
-			folder: "glyphicon glyphicon-folder-close",
-			folderOpen: "glyphicon glyphicon-folder-open",
-			loading: "glyphicon glyphicon-refresh glyphicon-spin"
+			expanderClosed: "glyphicon glyphicon-menu-right",  // glyphicon-plus-sign
+			expanderLazy: "glyphicon glyphicon-menu-right",  // glyphicon-plus-sign
+			expanderOpen: "glyphicon glyphicon-menu-down"  // glyphicon-minus-sign
 		}
 	};
 

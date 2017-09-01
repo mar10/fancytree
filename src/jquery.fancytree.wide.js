@@ -3,7 +3,7 @@
  * Support for 100% wide selection bars.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2016, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2017, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -57,7 +57,8 @@ function defineHeadStyleElement(id, cssText) {
 }
 
 /* Calculate the CSS rules that indent title spans. */
-function renderLevelCss(containerId, depth, levelOfs, lineOfs, measureUnit) {
+function renderLevelCss(containerId, depth, levelOfs, lineOfs, labelOfs, measureUnit)
+{
 	var i,
 		prefix = "#" + containerId + " span.fancytree-level-",
 		rules = [];
@@ -68,9 +69,10 @@ function renderLevelCss(containerId, depth, levelOfs, lineOfs, measureUnit) {
 	}
 	// Some UI animations wrap the UL inside a DIV and set position:relative on both.
 	// This breaks the left:0 and padding-left:nn settings of the title
-	rules.push("#" + containerId +
-		" div.ui-effects-wrapper ul li span.fancytree-title " +
-		"{ padding-left: 3px; position: static; width: auto; }");
+	rules.push(
+		"#" + containerId + " div.ui-effects-wrapper ul li span.fancytree-title, " +
+		"#" + containerId + " ul.fancytree-animating span.fancytree-title " +  // #716
+		"{ padding-left: " + labelOfs + measureUnit + "; position: static; width: auto; }");
 	return rules.join("\n");
 }
 
@@ -110,16 +112,17 @@ $.ui.fancytree.registerExtension({
 	version: "@VERSION",
 	// Default options for this extension.
 	options: {
-		iconWidth: null,  // Adjust this if @fancy-icon-width != "16px"
-		iconSpacing: null, // Adjust this if @fancy-icon-spacing != "3px"
-		levelOfs: null    // Adjust this if ul padding != "16px"
+		iconWidth: null,     // Adjust this if @fancy-icon-width != "16px"
+		iconSpacing: null,   // Adjust this if @fancy-icon-spacing != "3px"
+		labelSpacing: null,  // Adjust this if padding between icon and label != "3px"
+		levelOfs: null       // Adjust this if ul padding != "16px"
 	},
 
 	treeCreate: function(ctx){
 		this._superApply(arguments);
 		this.$container.addClass("fancytree-ext-wide");
 
-		var containerId, cssText, iconSpacingUnit, iconWidthUnit, levelOfsUnit,
+		var containerId, cssText, iconSpacingUnit, labelSpacingUnit, iconWidthUnit, levelOfsUnit,
 			instOpts = ctx.options.wide,
 			// css sniffing
 			$dummyLI = $("<li id='fancytreeTemp'><span class='fancytree-node'><span class='fancytree-icon' /><span class='fancytree-title' /></span><ul />")
@@ -129,28 +132,35 @@ $.ui.fancytree.registerExtension({
 			// $dummyTitle = $dummyLI.find(".fancytree-title"),
 			iconSpacing = instOpts.iconSpacing || $dummyIcon.css("margin-left"),
 			iconWidth = instOpts.iconWidth || $dummyIcon.css("width"),
+			labelSpacing = instOpts.labelSpacing || "3px",
 			levelOfs = instOpts.levelOfs || $dummyUL.css("padding-left");
 
 		$dummyLI.remove();
 
 		iconSpacingUnit = iconSpacing.match(reNumUnit)[2];
 		iconSpacing = parseFloat(iconSpacing, 10);
+		labelSpacingUnit = labelSpacing.match(reNumUnit)[2];
+		labelSpacing = parseFloat(labelSpacing, 10);
 		iconWidthUnit = iconWidth.match(reNumUnit)[2];
 		iconWidth = parseFloat(iconWidth, 10);
 		levelOfsUnit = levelOfs.match(reNumUnit)[2];
-		if( iconSpacingUnit !== iconWidthUnit || levelOfsUnit !== iconWidthUnit ) {
+		if( iconSpacingUnit !== iconWidthUnit || levelOfsUnit !== iconWidthUnit || labelSpacingUnit !== iconWidthUnit ) {
 			$.error("iconWidth, iconSpacing, and levelOfs must have the same css measure unit");
 		}
 		this._local.measureUnit = iconWidthUnit;
 		this._local.levelOfs = parseFloat(levelOfs);
-		this._local.lineOfs = (1 + (ctx.options.checkbox ? 1 : 0) + (ctx.options.icon === false ? 0 : 1)) * (iconWidth + iconSpacing) + iconSpacing;
+		this._local.lineOfs = (1 + (ctx.options.checkbox ? 1 : 0) +
+				(ctx.options.icon === false ? 0 : 1)) * (iconWidth + iconSpacing) +
+				iconSpacing;
+		this._local.labelOfs = labelSpacing;
 		this._local.maxDepth = 10;
 
 		// Get/Set a unique Id on the container (if not already exists)
 		containerId = this.$container.uniqueId().attr("id");
 		// Generated css rules for some levels (extended on demand)
 		cssText = renderLevelCss(containerId, this._local.maxDepth,
-			this._local.levelOfs, this._local.lineOfs, this._local.measureUnit);
+			this._local.levelOfs, this._local.lineOfs, this._local.labelOfs,
+			this._local.measureUnit);
 		defineHeadStyleElement(containerId, cssText);
 	},
 	treeDestroy: function(ctx){
@@ -163,14 +173,15 @@ $.ui.fancytree.registerExtension({
 			node = ctx.node,
 			level = node.getLevel();
 
-		res = this._superApply(arguments);
+		res = this._super(ctx);
 		// Generate some more level-n rules if required
 		if( level > this._local.maxDepth ) {
 			containerId = this.$container.attr("id");
 			this._local.maxDepth *= 2;
 			node.debug("Define global ext-wide css up to level " + this._local.maxDepth);
 			cssText = renderLevelCss(containerId, this._local.maxDepth,
-				this._local.levelOfs, this._local.lineOfs, this._local.measureUnit);
+				this._local.levelOfs, this._local.lineOfs, this._local.labelSpacing,
+				this._local.measureUnit);
 			defineHeadStyleElement(containerId, cssText);
 		}
 		// Add level-n class to apply indentation padding.

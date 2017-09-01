@@ -278,6 +278,17 @@ function initCodeSamples() {
 $(function(){
 	// Log to Google Analytics, when not running locally
 	if ( document.URL.toLowerCase().indexOf("wwwendt.de/") >= 0 ) {
+		/* jshint ignore:start */
+		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+		ga('create', 'UA-316028-1', 'auto');
+		ga('send', 'pageview');
+		/* jshint ignore:end */
+	}
+
+/*	if ( document.URL.toLowerCase().indexOf("wwwendt.de/") >= 0 ) {
 		_gaq.push(["_setAccount", "UA-316028-1"]);
 		_gaq.push(["_trackPageview"]);
 
@@ -287,7 +298,7 @@ $(function(){
 			s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(ga, s);
 		})();
 	}
-
+*/
 	// Show some elements only, if (not) inside the Example Browser
 	if (top.location === window.location){
 		$(".hideOutsideFS").hide();
@@ -308,7 +319,7 @@ $(function(){
 				  ],
 		change: function(choice) {
 			// console.log("choice: " + choice.value)
-			$("#connectorsSwitch").toggle(choice.value === "win8");
+			$("#connectorsSwitch").toggle(choice.value !== "xp");
 		}
 	}).after($("<label id='connectorsSwitch'><input name='cbConnectors' type='checkbox'>Connectors</label>"));
 

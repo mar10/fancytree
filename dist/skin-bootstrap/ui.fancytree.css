@@ -26,7 +26,6 @@ ul.fancytree-container {
   margin: 0;
   background-color: white;
   border: 1px dotted gray;
-  overflow: auto;
   min-height: 0%;
   position: relative;
 }
@@ -66,6 +65,9 @@ ul.fancytree-container li.fancytree-lastsib,
 ul.fancytree-no-connector > li {
   background-image: none;
 }
+li.fancytree-animating {
+  position: relative;
+}
 /*------------------------------------------------------------------------------
  * Common icon definitions
  *----------------------------------------------------------------------------*/
@@ -74,7 +76,6 @@ span.fancytree-vline,
 span.fancytree-expander,
 span.fancytree-icon,
 span.fancytree-checkbox,
-span.fancytree-radio,
 span.fancytree-drag-helper-img,
 #fancytree-drop-marker {
   width: 1em;
@@ -88,7 +89,6 @@ span.fancytree-drag-helper-img,
 span.fancytree-icon,
 span.fancytree-checkbox,
 span.fancytree-expander,
-span.fancytree-radio,
 span.fancytree-custom-icon {
   margin-top: 2px;
 }
@@ -154,11 +154,6 @@ span.fancytree-checkbox {
   opacity: 0.4;
   filter: alpha(opacity=40);
 }
-/*------------------------------------------------------------------------------
- * Radiobutton icon
- * This is a customization, that may be activated by overriding the 'checkbox'
- * class name as 'fancytree-radio' in the tree options.
- *----------------------------------------------------------------------------*/
 /*------------------------------------------------------------------------------
  * Node type icon
  * Note: IE6 doesn't correctly evaluate multiples class names,
@@ -252,6 +247,39 @@ span.fancytree-drag-source.fancytree-drag-remove {
 }
 /*** Target node while dragging cursor is over it *****************************/
 /*------------------------------------------------------------------------------
+ * 'rtl' option
+ *----------------------------------------------------------------------------*/
+.fancytree-container.fancytree-rtl .fancytree-title {
+  /*unicode-bidi: bidi-override;*/
+  /* optional: reverse title letters */
+}
+.fancytree-container.fancytree-rtl span.fancytree-connector,
+.fancytree-container.fancytree-rtl span.fancytree-expander,
+.fancytree-container.fancytree-rtl span.fancytree-icon,
+.fancytree-container.fancytree-rtl span.fancytree-drag-helper-img,
+.fancytree-container.fancytree-rtl #fancytree-drop-marker {
+  background-image: url("icons-rtl.gif");
+}
+.fancytree-container.fancytree-rtl .fancytree-exp-n span.fancytree-expander,
+.fancytree-container.fancytree-rtl .fancytree-exp-nl span.fancytree-expander {
+  background-image: none;
+}
+.fancytree-container.fancytree-rtl.fancytree-connectors .fancytree-exp-n span.fancytree-expander,
+.fancytree-container.fancytree-rtl.fancytree-connectors .fancytree-exp-nl span.fancytree-expander {
+  background-image: url("icons-rtl.gif");
+}
+ul.fancytree-container.fancytree-rtl ul {
+  padding: 0 16px 0 0;
+}
+ul.fancytree-container.fancytree-rtl.fancytree-connectors li {
+  background-position: right 0;
+  background-image: url("vline-rtl.gif");
+}
+ul.fancytree-container.fancytree-rtl li.fancytree-lastsib,
+ul.fancytree-container.fancytree-rtl.fancytree-no-connector > li {
+  background-image: none;
+}
+/*------------------------------------------------------------------------------
  * 'table' extension
  *----------------------------------------------------------------------------*/
 table.fancytree-ext-table {
@@ -331,6 +359,15 @@ table.fancytree-ext-columnview .fancytree-has-children span.fancytree-cv-right {
   color: black;
   font-weight: normal;
 }
+/* Hide expanders if all child nodes are hidden by filter */
+.fancytree-ext-filter-hide-expanders tr.fancytree-match span.fancytree-expander,
+.fancytree-ext-filter-hide-expanders span.fancytree-node.fancytree-match span.fancytree-expander {
+  visibility: hidden;
+}
+.fancytree-ext-filter-hide-expanders tr.fancytree-submatch span.fancytree-expander,
+.fancytree-ext-filter-hide-expanders span.fancytree-node.fancytree-submatch span.fancytree-expander {
+  visibility: visible;
+}
 .fancytree-ext-childcounter span.fancytree-icon,
 .fancytree-ext-filter span.fancytree-icon {
   position: relative;
@@ -377,6 +414,42 @@ ul.fancytree-ext-wide span.fancytree-node span.fancytree-title {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+}
+/*------------------------------------------------------------------------------
+ * 'fixed' extension
+ *----------------------------------------------------------------------------*/
+.fancytree-ext-fixed-wrapper .fancytree-fixed-hidden {
+  display: none;
+}
+.fancytree-ext-fixed-wrapper div.scrollBorderBottom {
+  border-bottom: 3px solid rgba(0, 0, 0, 0.75);
+}
+.fancytree-ext-fixed-wrapper div.scrollBorderRight {
+  border-right: 3px solid rgba(0, 0, 0, 0.75);
+}
+.fancytree-ext-fixed-wrapper div.fancytree-fixed-wrapper-tl {
+  position: absolute;
+  overflow: hidden;
+  z-index: 3;
+  top: 0px;
+  left: 0px;
+}
+.fancytree-ext-fixed-wrapper div.fancytree-fixed-wrapper-tr {
+  position: absolute;
+  overflow: hidden;
+  z-index: 2;
+  top: 0px;
+}
+.fancytree-ext-fixed-wrapper div.fancytree-fixed-wrapper-bl {
+  position: absolute;
+  overflow: hidden;
+  z-index: 2;
+  left: 0px;
+}
+.fancytree-ext-fixed-wrapper div.fancytree-fixed-wrapper-br {
+  position: absolute;
+  overflow: scroll;
+  z-index: 1;
 }
 /*******************************************************************************
  * Styles specific to this skin.

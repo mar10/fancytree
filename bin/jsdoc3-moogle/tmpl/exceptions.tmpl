@@ -1,21 +1,32 @@
-<?js if (data.description) { ?>
-<div class="param-desc">
-    <?js= description ?>
-</div>
-<?js } ?>
-
-<?js if (data.type && data.type.names) { ?>
+<?js
+    var data = obj;
+?>
+<?js if (data.description && data.type && data.type.names) { ?>
 <dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		<?js
-			var typeNames = data.type.names,
-                self = this;
-			typeNames.forEach(function(name, i) { ?>
-		<span class="param-type"><?js= self.linkto(name, self.htmlsafe(name)) ?></span> <?js if (i < typeNames.length-1) { ?>|<?js } ?>
-		<?js }); ?>
-	</dd>
+    <dt>
+        <div class="param-desc">
+        <?js= data.description ?>
+        </div>
+    </dt>
+    <dd></dd>
+    <dt>
+        <dl>
+            <dt>
+                Type
+            </dt>
+            <dd>
+                <?js= this.partial('type.tmpl', data.type.names) ?>
+            </dd>
+        </dl>
+    </dt>
+    <dd></dd>
 </dl>
+<?js } else { ?>
+    <div class="param-desc">
+    <?js if (data.description) { ?>
+        <?js= data.description ?>
+    <?js } else if (data.type && data.type.names) { ?>
+        <?js= this.partial('type.tmpl', data.type.names) ?>
+    <?js } ?>
+    </div>
 <?js } ?>

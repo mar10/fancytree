@@ -4,13 +4,13 @@
  * Render tree like a Mac Finder's column view.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2016, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2017, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.19.0
- * @date 2016-08-11T15:51
+ * @version 2.24.0
+ * @date 2017-08-26T13:42:51Z
  */
 
 ;(function($, window, document, undefined) {
@@ -41,7 +41,7 @@ function _assert(cond, msg){
  */
 $.ui.fancytree.registerExtension({
 	name: "columnview",
-	version: "2.19.0",
+	version: "2.24.0",
 	// Default options for this extension.
 	options: {
 	},
@@ -124,7 +124,7 @@ $.ui.fancytree.registerExtension({
 	},
 	nodeRender: function(ctx, force, deep, collapsed, _recursive) {
 		// Render standard nested <ul> - <li> hierarchy
-		this._superApply(arguments);
+		this._super(ctx, force, deep, collapsed, _recursive);
 		// Remove expander and add a trailing triangle instead
 		var level, $tdChild, $ul,
 			tree = ctx.tree,

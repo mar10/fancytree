@@ -4,7 +4,7 @@
  * Miscellaneous debug extensions.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2016, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2017, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -86,13 +86,13 @@ $.ui.fancytree.registerExtension({
 	},
 	nodeRenderTitle: function(ctx, title) {
 	},
-	nodeSetActive: function(ctx, flag, opts) {
+	nodeSetActive: function(ctx, flag, callOpts) {
 	},
-	nodeSetExpanded: function(ctx, flag, opts) {
+	nodeSetExpanded: function(ctx, flag, callOpts) {
 	},
 	nodeSetFocus: function(ctx) {
 	},
-	nodeSetSelected: function(ctx, flag) {
+	nodeSetSelected: function(ctx, flag, callOpts) {
 	},
 	nodeSetStatus: function(ctx, status, message, details) {
 	},

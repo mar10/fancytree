@@ -4,42 +4,27 @@
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 	<title>Fancytree - Example: RTL</title>
 
-	<script src="//code.jquery.com/jquery-1.12.1.min.js" type="text/javascript"></script>
-	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js" type="text/javascript"></script>
+	<script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+	<script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 
-	<link href="../src/skin-xp/ui.fancytree.css" rel="stylesheet" type="text/css">
-	<script src="../src/jquery.fancytree.js" type="text/javascript"></script>
-	<script src="../src/jquery.fancytree.dnd.js" type="text/javascript"></script>
+	<link href="../src/skin-xp/ui.fancytree.css" rel="stylesheet">
+	<script src="../src/jquery.fancytree.js"></script>
+	<script src="../src/jquery.fancytree.dnd.js"></script>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
 	<link href="../lib/prettify.css" rel="stylesheet">
-	<script src="../lib/prettify.js" type="text/javascript"></script>
-	<link href="sample.css" rel="stylesheet" type="text/css">
-	<script src="sample.js" type="text/javascript"></script>
+	<script src="../lib/prettify.js"></script>
+	<link href="sample.css" rel="stylesheet">
+	<script src="sample.js"></script>
 	<!-- End_Exclude -->
 	<style type="text/css">
-		.fancytree-container.fancytree-rtl .fancytree-title {
-			unicode-bidi: bidi-override; /* optional: reverse title letters */
-		}
-		ul.fancytree-container.fancytree-rtl ul {
-			padding: 0 16px 0 0;
-		}
-		ul.fancytree-container.fancytree-rtl li {
-			background-position: right 0;
-			background-image: url("../src/skin-xp/vline-rtl.gif");
-		}
-		.fancytree-container.fancytree-rtl span.fancytree-connector,
-		.fancytree-container.fancytree-rtl span.fancytree-expander,
-		.fancytree-container.fancytree-rtl span.fancytree-icon,
-		.fancytree-container.fancytree-rtl span.fancytree-drag-helper-img,
-		.fancytree-container.fancytree-rtl #fancytree-drop-marker {
-			background-image: url("../src/skin-xp/icons-rtl.gif");
-		}
 	</style>
 	<script type="text/javascript">
 		$(function(){
 			$("#tree").fancytree({
 				extensions: ["dnd"],
+				rtl: true,
+				source: {url: "ajax-tree-products.json"},
 				dnd: {
 					focusOnClick: true,
 					dragStart: function(node, data) {
@@ -53,8 +38,6 @@
 					}
 				},
 				init: function(event, data){
-					// Set RTL attribute on init
-					$(this).find(".fancytree-container").attr("DIR", "RTL").addClass("fancytree-rtl");
 				},
 				keydown: function(event, data) {
 					var KC = $.ui.keyCode,
@@ -87,36 +70,6 @@
 	</div>
 
 	<div id="tree">
-		<ul id="treeData" style="display: none;">
-			<li id="id1" title="Look, a tool tip!">item1 with key and tooltip
-			<li id="id2">item2
-			<li id="id3" class="folder">Folder with some children
-				<ul>
-					<li id="id3.1">Sub-item 3.1
-						<ul>
-							<li id="id3.1.1">Sub-item 3.1.1
-							<li id="id3.1.2">Sub-item 3.1.2
-						</ul>
-					<li id="id3.2">Sub-item 3.2
-						<ul>
-							<li id="id3.2.1">Sub-item 3.2.1
-							<li id="id3.2.2">Sub-item 3.2.2
-						</ul>
-				</ul>
-			<li id="id4" class="expanded">Document with some children (expanded on init)
-				<ul>
-					<li id="id4.1"  class="active focused">Sub-item 4.1 (active and focus on init)
-						<ul>
-							<li id="id4.1.1">Sub-item 4.1.1
-							<li id="id4.1.2">Sub-item 4.1.2
-						</ul>
-					<li id="id4.2">Sub-item 4.2
-						<ul>
-							<li id="id4.2.1">Sub-item 4.2.1
-							<li id="id4.2.2">Sub-item 4.2.2
-						</ul>
-				</ul>
-		</ul>
 	</div>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->

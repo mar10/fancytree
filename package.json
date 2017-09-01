@@ -1,8 +1,8 @@
 {
   "name": "jquery.fancytree",
   "title": "jQuery Fancytree Plugin",
-  "description": "Fancytree is a JavaScript tree view plugin for jQuery with support for persistence, keyboard, checkboxes, drag'n'drop, and lazy loading.",
-  "version": "2.19.1-0",
+  "description": "jQuery tree view / tree grid plugin with support for keyboard, inline editing, filtering, checkboxes, drag'n'drop, and lazy loading",
+  "version": "2.24.1-0",
   "homepage": "https://github.com/mar10/fancytree",
   "author": {
     "name": "Martin Wendt",
@@ -48,11 +48,14 @@
     "grunt-contrib-watch": "^1.0.0",
     "grunt-dev-update": "^2.0.0",
     "grunt-docco": "^0.5.0",
+    "grunt-eslint": "^19.0.0",
     "grunt-exec": "^1.0.0",
-    "grunt-jsdoc": "^2.0.0",
+    "grunt-jsdoc": "^2.1.0",
     "grunt-saucelabs": "^8.6.3",
     "grunt-text-replace": "^0.4.0",
-    "grunt-yabs": "^1.0.0",
+    "grunt-yabs": "^1.1.0",
+    "jsdoc": "~3.5.4",
+    "jshint": "^2.9.4",
     "qunitjs": "^1.21"
   },
   "scripts": {

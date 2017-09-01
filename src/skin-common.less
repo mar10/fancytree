@@ -101,7 +101,7 @@ ul.fancytree-container {
 	margin: 0; // DT issue 201
 	background-color: white;
 	border: 1px dotted gray;
-	overflow: auto;
+	// overflow: auto;  // ext-dnd5: otherwise this is always the scroll parent
 //	height: 100%; // DT issue 263, 470
 	min-height: 0%; // #192
 	position: relative; // #235
@@ -156,6 +156,11 @@ ul.fancytree-no-connector > li {
 	background-image: none;
 }
 
+// Fix jQuery UI 'blind' animation for jQuery UI (#717)
+li.fancytree-animating {
+	position: relative;
+}
+
 /*------------------------------------------------------------------------------
  * Common icon definitions
  *----------------------------------------------------------------------------*/
@@ -165,7 +170,7 @@ span.fancytree-vline,
 span.fancytree-expander,
 span.fancytree-icon,
 span.fancytree-checkbox,
-span.fancytree-radio,
+// span.fancytree-radio,
 span.fancytree-drag-helper-img,
 #fancytree-drop-marker {
 	width: @fancy-icon-width;
@@ -182,7 +187,7 @@ span.fancytree-drag-helper-img,
 span.fancytree-icon,
 span.fancytree-checkbox,
 span.fancytree-expander,
-span.fancytree-radio,
+// span.fancytree-radio,
 span.fancytree-custom-icon {
 	margin-top: @fancy-icon-ofs-top;
 }
@@ -318,15 +323,21 @@ span.fancytree-checkbox {
 	margin-left: @fancy-icon-spacing;
 	.useSprite(0, 2);
 	&:hover { .useSprite(1, 2); }
+	&.fancytree-radio { .useSprite(0, 3); }
+	&.fancytree-radio:hover { .useSprite(1, 3); }
 }
 .fancytree-partsel span.fancytree-checkbox {
 	.useSprite(4, 2);
 	&:hover { .useSprite(5, 2); }
+	&.fancytree-radio { .useSprite(4, 3); }
+	&.fancytree-radio:hover { .useSprite(5, 3); }
 }
 // selected after partsel, so it takes precedence:
 .fancytree-selected span.fancytree-checkbox {
 	.useSprite(2, 2);
 	&:hover { .useSprite(3, 2); }
+	&.fancytree-radio { .useSprite(2, 3); }
+	&.fancytree-radio:hover { .useSprite(3, 3); }
 }
 // Unselectable is dimmed, without hover effects
 .fancytree-unselectable {
@@ -342,35 +353,6 @@ span.fancytree-checkbox {
 	}
 	&.fancytree-selected span.fancytree-checkbox:hover {
 		.useSprite(2, 2);
-	}
-}
-
-/*------------------------------------------------------------------------------
- * Radiobutton icon
- * This is a customization, that may be activated by overriding the 'checkbox'
- * class name as 'fancytree-radio' in the tree options.
- *----------------------------------------------------------------------------*/
-
-.fancytree-radio {
-	span.fancytree-checkbox {
-		.useSprite(0, 3);
-		&:hover { .useSprite(1, 3); }
-	}
-	.fancytree-partsel span.fancytree-checkbox {
-		.useSprite(4, 3);
-		&:hover { .useSprite(5, 3); }
-	}
-	// Selected after partsel, so it takes precedence:
-	.fancytree-selected span.fancytree-checkbox {
-		.useSprite(2, 3);
-		&:hover { .useSprite(3, 3); }
-	}
-	// Unselectable is dimmed, without hover effects
-	.fancytree-unselectable {
-		span.fancytree-checkbox,
-		span.fancytree-checkbox:hover {
-			.useSprite(0, 3);
-		}
 	}
 }
 
@@ -566,6 +548,46 @@ span.fancytree-drop-reject {
 
 
 /*------------------------------------------------------------------------------
+ * 'rtl' option
+ *----------------------------------------------------------------------------*/
+ 
+.fancytree-container.fancytree-rtl {
+	.fancytree-title {
+		/*unicode-bidi: bidi-override;*/ /* optional: reverse title letters */
+	}
+	span.fancytree-connector,
+	span.fancytree-expander,
+	span.fancytree-icon,
+	span.fancytree-drag-helper-img,
+	#fancytree-drop-marker {
+		background-image: url("icons-rtl.gif");
+	}
+	.fancytree-exp-n span.fancytree-expander, 
+	.fancytree-exp-nl span.fancytree-expander {
+		background-image: none;
+	}
+	&.fancytree-connectors .fancytree-exp-n span.fancytree-expander, 
+	&.fancytree-connectors .fancytree-exp-nl span.fancytree-expander {
+		background-image: url("icons-rtl.gif");
+	}
+}
+ul.fancytree-container.fancytree-rtl {
+	ul {
+		padding: 0 16px 0 0;
+	}
+	&.fancytree-connectors li {
+		background-position: right 0;
+		background-image: url("@{fancy-image-dir}/vline-rtl.gif");
+	}
+	// Suppress lines for last child node
+	li.fancytree-lastsib,
+	// Suppress lines if level is fixed expanded (option minExpandLevel) 
+	&.fancytree-no-connector > li {
+		background-image: none;
+	}
+}
+
+/*------------------------------------------------------------------------------
  * 'table' extension
  *----------------------------------------------------------------------------*/
 
@@ -663,6 +685,17 @@ table.fancytree-ext-columnview {
 	span.fancytree-node.fancytree-match span.fancytree-title {
 		color: black;
 		font-weight: normal;
+	}
+}
+/* Hide expanders if all child nodes are hidden by filter */
+.fancytree-ext-filter-hide-expanders {
+	tr.fancytree-match span.fancytree-expander,
+	span.fancytree-node.fancytree-match span.fancytree-expander {
+		visibility: hidden;
+	}
+	tr.fancytree-submatch span.fancytree-expander,
+	span.fancytree-node.fancytree-submatch span.fancytree-expander {
+		visibility: visible;
 	}
 }
 

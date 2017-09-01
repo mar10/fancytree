@@ -7,16 +7,15 @@
 		"cleverLinks"     : false,
 		"monospaceLinks"  : false,
 		"default"         : {
+			"includeDate": true,
 			"outputSourceFiles" : true
 		},
-		"systemName"      : "Fancytree",
-		"footer"          : "",
-		"copyright"       : "Fancytree Copyright © 2014 Martin Wendt and contributors.",
-		"navType"         : "vertical",
-		"theme"           : "flatly",
-		"linenums"        : true,
-		"collapseSymbols" : true,
-		"inverseNav"      : true
+		"moogle"         : {
+			"analytics" : { "ua": "UA-316028-1", "domain": "auto" },
+			"ghForkMe"  : { "url": "https://github.com/mar10/fancytree/" },
+			"footer"   	: "",
+			"copyright" : "Fancytree Copyright © 2008-2017 Martin Wendt and contributors."
+		}
 	},
 	"markdown"  : {
 		"parser"   : "gfm",

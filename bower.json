@@ -1,9 +1,9 @@
 {
   "name": "jquery.fancytree",
-  "description": "Fancytree is a JavaScript tree view plugin for jQuery with support for persistence, keyboard, checkboxes, drag'n'drop, and lazy loading.",
-  "version": "2.19.1-0",
+  "description": "jQuery tree view / tree grid plugin with support for keyboard, inline editing, filtering, checkboxes, drag'n'drop, and lazy loading",
+  "version": "2.24.1-0",
   "main": [
-    "dist/jquery.fancytree-all.js"
+    "dist/jquery.fancytree-all-deps.min.js"
   ],
   "moduleType": "globals",
   "license": "MIT",

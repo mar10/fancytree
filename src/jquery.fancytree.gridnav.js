@@ -4,7 +4,7 @@
  * Support keyboard navigation for trees with embedded input controls.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2016, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2017, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -142,7 +142,7 @@ $.ui.fancytree.registerExtension({
 			}
 		});
 	},
-	nodeSetActive: function(ctx, flag) {
+	nodeSetActive: function(ctx, flag, callOpts) {
 		var $outer,
 			opts = ctx.options.gridnav,
 			node = ctx.node,

@@ -1,5 +1,5 @@
 ###
-Build scripts for Fancytree 
+Build scripts for Fancytree
 ###
 
 # jshint directives for the generated JS:
@@ -12,7 +12,7 @@ module.exports = (grunt) ->
 
   grunt.initConfig
 
-    pkg: 
+    pkg:
         grunt.file.readJSON("package.json")
 
     # Project metadata, used by the <banner> directive.
@@ -57,12 +57,15 @@ module.exports = (grunt) ->
                 "<%= meta.banner %>"
                 # "lib/intro.js"
                 "src/jquery.fancytree.js"
+#                "build/jquery.fancytree.ariagrid.js"
                 "src/jquery.fancytree.childcounter.js"
                 "src/jquery.fancytree.clones.js"
 #                "src/jquery.fancytree.columnview.js"
                 "src/jquery.fancytree.dnd.js"
+                "src/jquery.fancytree.dnd5.js"
                 "src/jquery.fancytree.edit.js"
                 "src/jquery.fancytree.filter.js"
+#                "src/jquery.fancytree.fixed.js"
                 "src/jquery.fancytree.glyph.js"
                 "src/jquery.fancytree.gridnav.js"
 #                "src/jquery.fancytree.menu.js"
@@ -77,7 +80,7 @@ module.exports = (grunt) ->
             options:
                 banner: "<%= meta.banner %>"
                 stripBanners: true
-                process: (src, fspec) -> 
+                process: (src, fspec) ->
                   # Remove all comments, including /*! ... */
                   src = src.replace(/\/\*(.|\n)*\*\//g, "")
                   if /fancytree..+.min.js/.test(fspec)
@@ -87,14 +90,17 @@ module.exports = (grunt) ->
                     src = "\n/*! Extension '" + fspec + "' */" + src
                   return src
             src: [
-                "lib/intro.js"
+                "lib/intro-all.js"
                 "build/jquery.fancytree.min.js"
+#                "build/jquery.fancytree.ariagrid.min.js"
                 "build/jquery.fancytree.childcounter.min.js"
                 "build/jquery.fancytree.clones.min.js"
 #                "build/jquery.fancytree.columnview.min.js"
                 "build/jquery.fancytree.dnd.min.js"
+                "build/jquery.fancytree.dnd5.min.js"
                 "build/jquery.fancytree.edit.min.js"
                 "build/jquery.fancytree.filter.min.js"
+#                "build/jquery.fancytree.fixed.min.js"
                 "build/jquery.fancytree.glyph.min.js"
                 "build/jquery.fancytree.gridnav.min.js"
 #                "build/jquery.fancytree.menu.min.js"
@@ -105,6 +111,45 @@ module.exports = (grunt) ->
                 "lib/outro.js"
                 ]
             dest: "build/<%= pkg.name %>-all.min.js"
+
+        "all-deps":
+            options:
+                banner: "<%= meta.banner %>"
+                stripBanners: true
+                process: (src, fspec) ->
+                  # Remove all comments, including /*! ... */
+                  # (but keep disclaimer for jQuery-UI)
+                  if not /jquery-ui..+.min.js/.test(fspec)
+                      src = src.replace(/\/\*(.|\n)*\*\//g, "")
+                  if /jquery.fancytree.min.js/.test(fspec)
+                      src = "\n/*! Fancytree Core */" + src
+                  if /fancytree..+.min.js/.test(fspec)
+                    # If it is an extension:
+                    # Prepend a one-liner instead
+                    fspec = fspec.substr(6) # strip 'build/'
+                    src = "\n/*! Extension '" + fspec + "' */" + src
+                  return src
+            src: [
+                "lib/intro-all-deps.js"
+                "src/jquery-ui-dependencies/jquery-ui.min.js"
+#                "build/jquery.fancytree.ariagrid.min.js"
+                "build/jquery.fancytree.min.js"
+                "build/jquery.fancytree.childcounter.min.js"
+                "build/jquery.fancytree.clones.min.js"
+#                "build/jquery.fancytree.dnd.min.js"
+                "build/jquery.fancytree.dnd5.min.js"
+                "build/jquery.fancytree.edit.min.js"
+                "build/jquery.fancytree.filter.min.js"
+#                "build/jquery.fancytree.fixed.min.js"
+                "build/jquery.fancytree.glyph.min.js"
+                "build/jquery.fancytree.gridnav.min.js"
+                "build/jquery.fancytree.persist.min.js"
+                "build/jquery.fancytree.table.min.js"
+#                "build/jquery.fancytree.themeroller.min.js"
+                "build/jquery.fancytree.wide.min.js"
+                "lib/outro.js"
+                ]
+            dest: "build/<%= pkg.name %>-all-deps.min.js"
 
     connect:
         forever:
@@ -178,6 +223,18 @@ module.exports = (grunt) ->
             options:
                 output: "doc/annotated-src"
 
+    eslint:
+        # options:
+        #   # See https://github.com/sindresorhus/grunt-eslint/issues/119
+        #   quiet: true
+        # We have to explicitly declare "src" property otherwise "newer"
+        # task wouldn't work properly :/
+        dist:
+            src: "dist/jquery.js"
+        dev:
+            # src: [ "src/**/*.js", "test/**/*.js", "build/**/*.js" ]
+            src: [ "src/jquery.fancytree.ariagrid.js" ]
+
     exec:
         tabfix:
             # Cleanup whitespace according to http://contribute.jquery.org/style-guide/js/
@@ -186,22 +243,28 @@ module.exports = (grunt) ->
             cmd: "tabfix -t -r -m*.js,*.css,*.html,*.json -inode_modules src demo test"
         upload:
             # FTP upload the demo files (requires https://github.com/mar10/pyftpsync)
-            cmd: "pyftpsync --progress upload . ftp://www.wwwendt.de/tech/fancytree --delete-unmatched --omit build,node_modules,.*,_*  -x"
+            cmd: "pyftpsync --progress upload . ftp://www.wwwendt.de/tech/fancytree --delete-unmatched --omit build,node_modules,.*,_*"
 #            cmd: "pyftpsync --progress upload . ftp://www.wwwendt.de/tech/fancytree --omit build,node_modules,.*,_*  -x"
+        upload_force:
+            # FTP upload the demo files (requires https://github.com/mar10/pyftpsync)
+            cmd: "pyftpsync --progress upload . ftp://www.wwwendt.de/tech/fancytree --delete-unmatched --omit build,node_modules,.*,_* --resolve=local --force"
 
     # htmllint:
     #     all: ["demo/**/*.html", "doc/**/*.html", "test/**/*.html"]
 
-#     jsdoc:
-#         build:
-#             src: ["src/*.js", "doc/README.md", "doc/jsdoctest.js"]
-#             options:
-#                 destination: "doc/jsdoc_new"
-# #                template: "bin/jsdoc3-moogle",
-# #                template: "node_modules/ink-docstrap/template",
-#                 template: "../docstrap/template",
-#                 configure: "doc/jsdoc.conf.json"
-#                 verbose: true
+    jsdoc:
+        build:
+            src: ["src/*.js", "doc/README.md"]
+            # src: ["src/*.js", "doc/README.md", "doc/jsdoctest.js"]
+            options:
+                destination: "doc/jsdoc"
+                template: "bin/jsdoc3-moogle",
+                # template: "bin/jsdoc3.0.0-moogle",
+                # template: "node_modules/ink-docstrap/template",
+                # template: "node_modules/minami",
+                # template: "node_modules/tui-jsdoc-template",
+                configure: "doc/jsdoc.conf.json"
+                verbose: true
 
     jshint:
         options:
@@ -232,10 +295,10 @@ module.exports = (grunt) ->
             ]
 
     qunit:
-        build: [ 
-            "test/unit/test-core-build.html" 
+        build: [
+            "test/unit/test-core-build.html"
         ]
-        develop: [ 
+        develop: [
             "test/unit/test-core.html"
             "test/unit/test-ext-filter.html"
             "test/unit/test-ext-table.html"
@@ -248,7 +311,8 @@ module.exports = (grunt) ->
             overwrite : true
             replacements: [ {
                 from : /@DATE/g
-                to : "<%= grunt.template.today('yyyy-mm-dd\"T\"HH:MM') %>"
+                # https://github.com/felixge/node-dateformat
+                to : "<%= grunt.template.today('isoUtcDateTime') %>"
             },{
                 from : /buildType:\s*\"[a-zA-Z]+\"/g
                 to : "buildType: \"production\""
@@ -265,33 +329,68 @@ module.exports = (grunt) ->
             } ]
 
     "saucelabs-qunit":
-        all:
+        ui_109:
             options:
-                urls: ["http://localhost:9999/test/unit/test-core.html"]
-                # tunnelTimeout: 5
+                testname: "Fancytree qunit tests (jQuery 1.9, jQuery UI 1.9)"
+                urls: ["http://localhost:9999/test/unit/test-jQuery19-ui19.html"]
                 build: process.env.TRAVIS_JOB_ID
-                # concurrency: 3
                 throttled: 5
+                recordVideo: false
+                videoUploadOnPass: false
+                # jQuery 1.9     dropped supports IE 6..?
+                # jQuery UI 1.9  supports IE 6+ and ?
+                browsers: [
+                  { browserName: "internet explorer", version: "6", platform: "Windows XP" }
+                ]
+        ui_110:
+            options:
+                testname: "Fancytree qunit tests (jQuery 1.10, jQuery UI 1.10)"
+                urls: ["http://localhost:9999/test/unit/test-jQuery110-ui110.html"]
+                build: process.env.TRAVIS_JOB_ID
+                throttled: 5
+                recordVideo: false
+                videoUploadOnPass: false
+                # jQuery 1.10    dropped support for IE 6
+                # jQuery UI 1.10 supports IE 7+ and ?
+                browsers: [
+                  { browserName: "internet explorer", version: "7", platform: "Windows XP" }
+                  { browserName: "internet explorer", version: "8", platform: "Windows 7" }
+                ]
+        ui_111:
+            options:
+                testname: "Fancytree qunit tests (jQuery 1.11, jQuery UI 1.11)"
+                urls: ["http://localhost:9999/test/unit/test-jQuery111-ui111.html"]
+                build: process.env.TRAVIS_JOB_ID
+                throttled: 5
+                recordVideo: false
+                videoUploadOnPass: false
+                # jQuery 1.11     supports IE + and latest Chrome/Edge/Firefox/Safari (-1)
+                # jQuery UI 1.11  supports IE 7+ and ?
+                browsers: [
+                  { browserName: "internet explorer", version: "9", platform: "Windows 7" }
+                  { browserName: "internet explorer", version: "10", platform: "Windows 8" }
+                  { browserName: "safari", version: "7", platform: "OS X 10.9" }
+                  { browserName: "safari", version: "8", platform: "OS X 10.10" }
+                ]
+        ui_112:
+            options:
+                testname: "Fancytree qunit tests (jQuery 3, jQuery UI 1.12)"
+                urls: ["http://localhost:9999/test/unit/test-core.html"]
+                build: process.env.TRAVIS_JOB_ID
+                throttled: 5
+                recordVideo: false
+                videoUploadOnPass: false
+                # jQuery 3        supports IE 9+ and latest Chrome/Edge/Firefox/Safari (-1)
+                # jQuery UI 1.12  supports IE 11 and latest Chrome/Edge/Firefox/Safari (-1)
                 browsers: [
                   { browserName: "chrome", platform: "Windows 8.1" }
                   { browserName: "firefox", platform: "Windows 8.1" }
                   { browserName: "firefox", platform: "Linux" }
-                  { browserName: "internet explorer", version: "6", platform: "Windows XP" }
-                  { browserName: "internet explorer", version: "7", platform: "Windows XP" }
-                  { browserName: "internet explorer", version: "8", platform: "Windows 7" }
-                  { browserName: "internet explorer", version: "9", platform: "Windows 7" }
-                  { browserName: "internet explorer", version: "10", platform: "Windows 8" }
                   { browserName: "internet explorer", version: "11", platform: "Windows 8.1" }
                   { browserName: "microsoftedge", platform: "Windows 10" }
-                  { browserName: "safari", version: "6", platform: "OS X 10.8" }
-                  { browserName: "safari", version: "7", platform: "OS X 10.9" }
-                  { browserName: "safari", version: "8", platform: "OS X 10.10" }
                   { browserName: "safari", version: "9", platform: "OS X 10.11" }
+                  { browserName: "safari", version: "10", platform: "OS X 10.12" }
                 ]
-                testname: "fancytree qunit tests"
-                # statusCheckAttempts: 180
-                recordVideo: false
-                videoUploadOnPass: false
 
     uglify:
         # build:
@@ -299,9 +398,9 @@ module.exports = (grunt) ->
         #         banner: "<%= meta.banner %>"
         #         # preserveComments: "some"
         #         report: "min"
-        #         sourceMap: 
+        #         sourceMap:
         #             (path) -> path.replace(/.js/, ".js.map")
-        #         sourceMappingURL: 
+        #         sourceMappingURL:
         #             (path) -> path.replace(/^build\//, "") + ".map"
         #         sourceMapPrefix: 1 # strip 'build/' from paths
 
@@ -348,7 +447,7 @@ module.exports = (grunt) ->
             options:
                 atBegin: true
             files: ["src/*.js", "test/unit/*.js", "demo/**/*.js"]
-            tasks: ["jshint:beforeConcat"]
+            tasks: ["jshint:beforeConcat", "eslint:dev"]
 
     yabs:
         release:
@@ -385,6 +484,7 @@ module.exports = (grunt) ->
   grunt.registerTask "tabfix", ["exec:tabfix"]
   grunt.registerTask "test", [
       "jshint:beforeConcat",
+      "eslint:dev",
       # "csslint",
       # "htmllint",
       "qunit:develop"
@@ -404,7 +504,7 @@ module.exports = (grunt) ->
   grunt.registerTask "build", [
       "less:development"
       "test"
-      # "jsdoc:build"
+      "jsdoc:build"
       "docco:docs"
       "clean:build"
       "copy:build"
@@ -413,13 +513,14 @@ module.exports = (grunt) ->
       "concat:all"
       "uglify:custom"
       "concat:custom"
+      "concat:all-deps"
       "clean:extMin"
       "replace:production"
       "jshint:afterConcat"
       # "uglify:build"
       "qunit:build"
       ]
-  
+
   grunt.registerTask "make_release", [
       "exec:tabfix"
       "build"
@@ -433,4 +534,9 @@ module.exports = (grunt) ->
   grunt.registerTask "upload", [
       "build"
       "exec:upload"
+      ]
+
+  grunt.registerTask "upload_force", [
+      "build"
+      "exec:upload_force"
       ]

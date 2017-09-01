@@ -14,7 +14,7 @@
  * Add a child counter bubble to tree nodes.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2016, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2017, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -25,7 +25,7 @@
 
 // To keep the global namespace clean, we wrap everything in a closure
 
-;(function($, undefined) {
+;(function($, window, document, undefined) {
 
 // Consider to use [strict mode](http://ejohn.org/blog/ecmascript-5-strict-mode-json-and-more/)
 "use strict";
@@ -103,8 +103,8 @@ $.ui.fancytree.prototype.widgetMethod1 = function(arg1){
 // A full blown extension, extension is available for all trees and can be
 // enabled like so (see also the [live demo](http://wwwendt.de/tech/fancytree/demo/sample-ext-childcounter.html)):
 //
-//    <script src="../src/jquery.fancytree.js" type="text/javascript"></script>
-//    <script src="../src/jquery.fancytree.childcounter.js" type="text/javascript"></script>
+//    <script src="../src/jquery.fancytree.js"></script>
+//    <script src="../src/jquery.fancytree.childcounter.js"></script>
 //    ...
 //
 //     $("#tree").fancytree({
@@ -185,14 +185,16 @@ $.ui.fancytree.registerExtension({
 			extOpts = ctx.options.childcounter,
 			count = (node.data.childCounter == null) ? node.countChildren(extOpts.deep) : +node.data.childCounter;
 // Let the base implementation render the title
-		this._superApply(arguments);
+// We use `_super()` instead of `_superApply()` here, since it is a little bit
+// more performant when called often
+		this._super(ctx, title);
 // Append a counter badge
 		if( (count || ! extOpts.hideZeros) && (!node.isExpanded() || !extOpts.hideExpanded) ){
 			$("span.fancytree-icon", node.span).append($("<span class='fancytree-childcounter'/>").text(count));
 		}
 	},
 // Overload the `setExpanded` hook, so the counters are updated
-	nodeSetExpanded: function(ctx, flag, opts) {
+	nodeSetExpanded: function(ctx, flag, callOpts) {
 		var tree = ctx.tree,
 			node = ctx.node;
 // Let the base implementation expand/collapse the node, then redraw the title
@@ -205,4 +207,4 @@ $.ui.fancytree.registerExtension({
 // End of extension definition
 });
 // End of namespace closure
-}(jQuery));
+}(jQuery, window, document));

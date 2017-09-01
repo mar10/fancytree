@@ -4,13 +4,13 @@
  * Make node titles editable.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2016, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2017, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.19.0
- * @date 2016-08-11T15:51
+ * @version 2.24.0
+ * @date 2017-08-26T13:42:51Z
  */
 
 ;(function($, window, document, undefined) {
@@ -149,7 +149,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editEnd = function(applyChanges, _e
 	}
 	$input
 		.removeClass("fancytree-edit-dirty")
-		.unbind();
+		.off();
 	// Unbind outer-click handler
 	$(document).off(".fancytree-edit");
 
@@ -210,6 +210,13 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editCreateNode = function(mode, ini
 		return;
 	}
 	newNode = this.addNode(init, mode);
+
+	// #644: Don't filter new nodes.
+	newNode.match = true;
+	$(newNode[tree.statusClassPropName])
+		.removeClass("fancytree-hide")
+		.addClass("fancytree-match");
+
 	newNode.makeVisible(/*{noAnimation: true}*/).done(function(){
 		$(newNode[tree.statusClassPropName]).addClass("fancytree-edit-new");
 		self.tree.ext.edit.relatedNode = self;
@@ -226,7 +233,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editCreateNode = function(mode, ini
  * @requires jquery.fancytree.edit.js
  */
 $.ui.fancytree._FancytreeClass.prototype.isEditing = function(){
-	return this.ext.edit.currentNode;
+	return this.ext.edit ? this.ext.edit.currentNode : null;
 };
 
 
@@ -237,7 +244,7 @@ $.ui.fancytree._FancytreeClass.prototype.isEditing = function(){
  * @requires jquery.fancytree.edit.js
  */
 $.ui.fancytree._FancytreeNodeClass.prototype.isEditing = function(){
-	return this.tree.ext.edit.currentNode === this;
+	return this.tree.ext.edit ? this.tree.ext.edit.currentNode === this : false;
 };
 
 
@@ -246,7 +253,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.isEditing = function(){
  */
 $.ui.fancytree.registerExtension({
 	name: "edit",
-	version: "2.19.0",
+	version: "2.24.0",
 	// Default options for this extension.
 	options: {
 		adjustWidthOfs: 4,   // null: don't adjust input size to content

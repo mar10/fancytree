@@ -6,13 +6,13 @@
  *
  * @see http://api.jqueryui.com/menu/
  *
- * Copyright (c) 2008-2016, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2017, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.19.0
- * @date 2016-08-11T15:51
+ * @version 2.24.0
+ * @date 2017-08-26T13:42:51Z
  */
 
 ;(function($, window, document, undefined) {
@@ -137,7 +137,7 @@ $.ui.fancytree.registerExtension({
 			return;
 		}
 		$menu = $(opts.menu.selector);
-		$(document).unbind("keydown.fancytree, mousedown.fancytree");
+		$(document).off("keydown.fancytree, mousedown.fancytree");
 		$menu.hide();
 		tree.ext.menu.data.node = null;
 	}

@@ -4,18 +4,18 @@
 	<meta http-equiv="content-type" content="text/html; charset=utf-8">
 	<title>Fancytree - Example: Forms</title>
 
-	<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.1/themes/base/jquery-ui.css">
-	<script src="//code.jquery.com/jquery-1.12.1.min.js" type="text/javascript"></script>
-	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js" type="text/javascript"></script>
+	<link href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet">
+	<script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+	<script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 
-	<link href="../src/skin-win7/ui.fancytree.css" rel="stylesheet" type="text/css">
-	<script src="../src/jquery.fancytree.js" type="text/javascript"></script>
+	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet">
+	<script src="../src/jquery.fancytree.js"></script>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
 	<link href="../lib/prettify.css" rel="stylesheet">
-	<script src="../lib/prettify.js" type="text/javascript"></script>
-	<link href="sample.css" rel="stylesheet" type="text/css">
-	<script src="sample.js" type="text/javascript"></script>
+	<script src="../lib/prettify.js"></script>
+	<link href="sample.css" rel="stylesheet">
+	<script src="sample.js"></script>
 	<!-- End_Exclude -->
 
 <style type="text/css">
@@ -87,15 +87,16 @@ $(function(){
 	<h1>Example: Form</h1>
 	<!-- Start_Exclude: This block is not part of the sample code -->
 	<div class="description">
-	These two trees are embedded in a form, together with some standard elements.
+	Two Fancytrees embedded in a form, together with some standard elements.
 	<ul>
-	<li>Use TAB key to move the focus between form elements.<br>
+	<li>Use the <kbd>TAB</kbd> key to move the focus between form elements.<br>
 		Note that a tree behaves like a single control (like a radio button group)
 	<li>Experimental support for <a href="http://www.w3.org/TR/wai-aria/">WAI-ARIA</a>
 	<li>The submit handler is hooked to generate hidden checkbox elements for
 		selected and active nodes.<br>
-		Note that in select mode 3 only the topmost nodes are considered.
-	<li>The values are then POSTed to the server (together with the other form elements).
+		Note that in select mode 3 only the topmost nodes are considered.<br>
+		Click the <kbd>Submit</kbd> button at the bottom of this page to POST
+		these values to the server (together with the other form elements).
 	</ul>
 	</div>
 	<div>
@@ -149,7 +150,7 @@ $(function(){
 			</div>
 		</fieldset>
 
-		<input type="submit" value="Send data">
+		<input type="submit" value="Submit Form">
 	</form>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->

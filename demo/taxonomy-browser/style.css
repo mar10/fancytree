@@ -17,6 +17,7 @@ body {
 	border: 1px solid #ccc;
 	border-radius: 3px;
 	max-height: 600px;
+	overflow: auto;
 }
 
 #searchResultTree  td > div.truncate {

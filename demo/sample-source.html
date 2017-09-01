@@ -4,25 +4,25 @@
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 	<title>Fancytree - Example</title>
 
-	<script src="../lib/jquery.js" type="text/javascript"></script>
-	<script src="../lib/jquery-ui.custom.js" type="text/javascript"></script>
+	<script src="../lib/jquery.js"></script>
+	<script src="../lib/jquery-ui.custom.js"></script>
 
-	<link href="../src/skin-xp/ui.fancytree.css" rel="stylesheet" type="text/css">
-	<script src="../src/jquery.fancytree.js" type="text/javascript"></script>
+	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet">
+	<script src="../src/jquery.fancytree.js"></script>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
 	<link href="../lib/prettify.css" rel="stylesheet">
-	<script src="../lib/prettify.js" type="text/javascript"></script>
-	<link href="sample.css" rel="stylesheet" type="text/css">
-	<script src="sample.js" type="text/javascript"></script>
+	<script src="../lib/prettify.js"></script>
+	<link href="sample.css" rel="stylesheet">
+	<script src="sample.js"></script>
 	<!-- End_Exclude -->
 
 	<script type="text/javascript">
 	$(function(){
 		var FT = $.ui.fancytree;
-		FT.debug("Using fancytree " + FT.version);
-		// attach to all instances
-		$("#tree, #tree3").fancytree({
+
+		// attach to instance 1 and 3
+		$("#tree1, #tree3").fancytree({
 			checkbox: true,
 			selectMode: 1,
 			activate: function(event, data){
@@ -33,85 +33,94 @@
 				}
 			},
 			lazyLoad: function(event, data){
+				// we can't `return` values from an event handler, so we
+				// pass the result as `data.result` attribute:
 				data.result = {url: "ajax-sub2.json"};
 			}
-		}).bind("fancytreeactivate", function(event, data){
-			$.ui.fancytree.debug("fancytreeactivate: event=", event, ", data=", data);
-			return false;
-//          $(this).fancytree("debug", "fancytreeactivate");
+		// }).bind("fancytreeactivate", function(event, data){
+		// 	$.ui.fancytree.debug("fancytreeactivate: event=", event, ", data=", data);
+		// 	return false;
 		});
-		var tree = $("div:ui-fancytree").data("ui-fancytree").getTree();
-		FT.debug("Test ':ui-fancytree' expression " + $("div:ui-fancytree").length);
 
-		/* Load tree from Ajax JSON
-		 */
+		// Load tree from Ajax JSON
 		$("#tree2").fancytree({
 			source: {
 				url: "ajax-tree-plain.json"
 			},
 			lazyLoad: function(event, data){
-				// we can't return values from an event handler, so we
-				// pass the result as `data`attribute.
-//              data.result = {url: "unit/ajax-sub2.json"};
 				data.result = $.ajax({
 					url: "ajax-sub2.json",
 					dataType: "json"
 				});
 			}
 		});
-		// call methods on multiple instances
-//		$("div:ui-fancytree").fancytree("foo", "after init");
-		//
-		$("button").button();
-		$("button#destroy").click(function(event){
-			$(":ui-fancytree").fancytree("destroy");
+	});
+	</script>
+<!-- Start_Exclude: This block is not part of the sample code -->
+<script>
+	$(function(){
+		addSampleButton({
+			label: "destroy all",
+			newline: false,
+			code: function(){
+				$(":ui-fancytree").fancytree("destroy");
+			}
 		});
-		$("button#init").click(function(event){
-			$(".sampletree").fancytree();
+		addSampleButton({
+			label: "init all",
+			newline: false,
+			code: function(){
+				$(".sampletree").fancytree();
+			}
 		});
-		$("button#reload").click(function(event){
-			tree.reload([
-				{title: "node1"},
-				{title: "node2"}
+		addSampleButton({
+			label: "Reload() #1",
+			newline: false,
+			code: function(){
+				$.ui.fancytree.getTree("#tree1").reload([
+					{title: "node1"},
+					{title: "node2"}
 				]).done(function(){
 					alert("reloaded");
 				});
+			}
 		});
-		$("button#expand").click(function(event){
-			tree.getNodeByKey("id3").toggleExpanded().done(function(){
-				alert("expanded " + this);
-			}).fail(function(errMsg){
-				alert("failed to expand " + this + ": " + errMsg);
-			});
-		});
-		$("button#setSource").click(function(event){
-			$(".sampletree").fancytree("option", "source", [
-				{title: "node1"}
-			]);
+		addSampleButton({
+			label: "Set 'source' option (all)",
+			newline: false,
+			code: function(){
+				$(".sampletree").fancytree("option", "source", [
+					{title: "node1"}
+				]);
+			}
 		});
 	});
-	</script>
+</script>
+<!-- End_Exclude -->
 </head>
 
 <body class="example">
-	<h1>Example: Initialization methods</h1>
+	<h1>Example: Initialization Methods</h1>
 
 	<p class="description">
-		This tree uses default options.<br>
-		It is initalized from a hidden &lt;ul> element on this page.
+		Use different methods to initialize the tree (Ajax, embedded &lt;ul>,
+		embedded JSON).
+		<br>
+		Also distinct nodes contain custom data using `data="..."` attributes.
+		<br>
+		See the <a href="https://github.com/mar10/fancytree/wiki/TutorialLoadData"
+			target="_blank" class="external">LoadData Tutorial</a>
+		for details.
 	</p>
 	<div>
 		<label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
 	</div>
 
-	<p>
-		<button id="destroy">Destroy</button> <button id="init">Init</button>
-		<button id="expand">Expand</button>
-		<button id="reload">Reload</button>
-		<button id="setSource">Set source option</button>
+	<p id="sampleButtons">
 	</p>
-	<p>Tree with UL markup</p>
-	<div id="tree" class="sampletree">
+
+	<p>Load from embedded &lt;UL> markup:</p>
+	<div id="tree1" class="sampletree">
 		<ul id="treeData" styleXXX="display: none;">
 			<li>simple node (no explicit id, so a default key is generated)
 			<li id="id1" title="Look, a tool tip!">Define key and tooltip using 'id' and 'title' attributes
@@ -152,20 +161,17 @@
 		</ul>
 	</div>
 
-	<p>Tree with Ajax data</p>
+	<p>Load from Ajax data:</p>
 	<div id="tree2" data-source="ajax" class="sampletree">
 	</div>
 
-	<p>Tree with embedded JSON data</p>
+	<p>Load from embedded JSON data:</p>
 	<div id="tree3" class="sampletree" data-type="json">
+	{"foo": "bazbaz", "children":
 	[
-		{"title": "cäsar€"},
-		{"title": "a<a href='#'>b</a>c"}
-	]
-	</div>
-
-	<p>Tree with programmatic dataAjax data</p>
-	<div id="tree4" class="sampletree">
+		{"title": "node 1"},
+		{"title": "node 2", "folder": true }
+	]}
 	</div>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->

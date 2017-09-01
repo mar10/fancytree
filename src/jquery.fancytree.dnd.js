@@ -1,10 +1,10 @@
 /*!
  * jquery.fancytree.dnd.js
  *
- * Drag-and-drop support.
+ * Drag-and-drop support (jQuery UI draggable/droppable).
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2016, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2017, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -255,9 +255,11 @@ $.ui.fancytree.registerExtension({
 		draggable: null,     // Additional options passed to jQuery draggable
 		droppable: null,     // Additional options passed to jQuery droppable
 		focusOnClick: false, // Focus, although draggable cancels mousedown event (#270)
-		preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
-		preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
+		preventVoidMoves: true, 	// Prevent dropping nodes 'before self', etc.
+		preventRecursiveMoves: true,// Prevent dropping nodes on own descendants
 		smartRevert: true,   // set draggable.revert = true if drop was rejected
+		dropMarkerOffsetX: -24,			// absolute position offset for .fancytree-drop-marker relatively to ..fancytree-title (icon/img near a node accepting drop)
+		dropMarkerInsertOffsetX: -16,	// additional offset for drop-marker with hitMode = "before"/"after"
 		// Events (drag support)
 		dragStart: null,     // Callback(sourceNode, data), return true, to enable dnd
 		dragStop: null,      // Callback(sourceNode, data)
@@ -297,12 +299,14 @@ $.ui.fancytree.registerExtension({
 	},
 	/* Display drop marker according to hitMode ('after', 'before', 'over'). */
 	_setDndStatus: function(sourceNode, targetNode, helper, hitMode, accept) {
-		var markerOffsetX = 0,
+		var markerOffsetX,
 			markerAt = "center",
 			instData = this._local,
-			glyph = this.options.glyph || null,
+			dndOpt = this.options.dnd ,
+			glyphOpt = this.options.glyph,
 			$source = sourceNode ? $(sourceNode.span) : null,
-			$target = $(targetNode.span);
+			$target = $(targetNode.span),
+			$targetTitle = $target.find("span.fancytree-title");
 
 		if( !instData.$dropMarker ) {
 			instData.$dropMarker = $("<div id='fancytree-drop-marker'></div>")
@@ -311,22 +315,23 @@ $.ui.fancytree.registerExtension({
 				.prependTo($(this.$div).parent());
 //                .prependTo("body");
 
-			if( glyph ) {
+			if( glyphOpt ) {
 				// instData.$dropMarker.addClass(glyph.map.dragHelper);
 				instData.$dropMarker
-					.addClass(glyph.map.dropMarker);
+					.addClass(glyphOpt.map.dropMarker);
 			}
 		}
 		if( hitMode === "after" || hitMode === "before" || hitMode === "over" ){
+			markerOffsetX = dndOpt.dropMarkerOffsetX || 0;
 			switch(hitMode){
 			case "before":
 				markerAt = "top";
+				markerOffsetX += (dndOpt.dropMarkerInsertOffsetX || 0);
 				break;
 			case "after":
 				markerAt = "bottom";
+				markerOffsetX += (dndOpt.dropMarkerInsertOffsetX || 0);
 				break;
-			default:
-				markerOffsetX = 8;
 			}
 
 			instData.$dropMarker
@@ -337,7 +342,7 @@ $.ui.fancytree.registerExtension({
 				.position($.ui.fancytree.fixPositionOptions({
 					my: "left" + offsetString(markerOffsetX) + " center",
 					at: "left " + markerAt,
-					of: $target
+					of: $targetTitle
 					}));
 		} else {
 			instData.$dropMarker.hide();
@@ -403,7 +408,7 @@ $.ui.fancytree.registerExtension({
 			if(res === false) {
 				this.debug("tree.dragStart() cancelled");
 				//draggable._clear();
-				// NOTE: the return value seems to be ignored (drag is not canceled, when false is returned)
+				// NOTE: the return value seems to be ignored (drag is not cancelled, when false is returned)
 				// TODO: call this._cancelDrag()?
 				ui.helper.trigger("mouseup")
 					.hide();
@@ -510,7 +515,6 @@ $.ui.fancytree.registerExtension({
 				node.hasChildren() !== false && !node.expanded &&
 				(!dnd.dragExpand || dnd.dragExpand(node, ctx) !== false)
 				) {
-				// TODO: maybe add a callback `dragExpand()` here to allow more control
 				node.scheduleAction("expand", dnd.autoExpandMS);
 			}
 			if(hitMode && dnd.dragOver){

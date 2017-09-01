@@ -2,6 +2,8 @@ jQuery(document).ready(function(){
 
 /*globals TEST_TOOLS, QUnit */
 
+/* jshint -W081 */  // Ignore 'W081: Too many var statements'
+
 var TEST_DATA, TESTDATA_NODES, TESTDATA_TOPNODES, TESTDATA_VISIBLENODES,
 	$ = jQuery,
 	// Use tools from test-tools.js
@@ -160,11 +162,11 @@ QUnit.test("Create Fancytree - init", function(assert) {
 
 			done();
 		}
-	}).bind("fancytreecreate", function(event, data){
+	}).on("fancytreecreate", function(event, data){
 		// TODO: event is triggered, but only if we called done() before
 		// but then, the equal() call is added to the following test
 //        equal(event.type, "fancytreecreate", "receive `dynatreecreate` bound event");
-	}).bind("fancytreeinit", function(event, data){
+	}).on("fancytreeinit", function(event, data){
 //        equal(event.type, "fancytreeinit", "receive `init` bound event");
 //        done();
 	});
@@ -802,6 +804,148 @@ QUnit.test("'modifyChild' event", function(assert) {
 });
 
 /*******************************************************************************
+ * generateFormElements
+ */
+QUnit.module("generateFormElements()");
+
+QUnit.test("multi select", function(assert) {
+	tools.setup(assert);
+	assert.expect(22);
+
+	var $result, tree;
+
+	$("#tree").fancytree({
+		source: TEST_DATA,
+		generateIds: true
+	});
+	tree = $.ui.fancytree.getTree();
+
+	$result = $("#fancytree_result_" + tree._id);
+	assert.equal($result.length, 0, "result <div> not yet created");
+
+	tree.generateFormElements();
+	$result = $("#fancytree_result_" + tree._id);
+	assert.equal($result.length, 1, "result <div> created");
+	assert.equal($result.is(":visible"), false, "result is hidden");
+	assert.equal($result.find("input").length, 0, "initial result is empty");
+
+	tools.getNode("10_1").setActive();
+
+	tools.getNode("10").setSelected();
+	tools.getNode("10_1").setSelected();
+	tools.getNode("10_1_1").setSelected();
+	tools.getNode("10_1_2").setSelected();
+
+	tree.generateFormElements();
+
+	assert.equal($result.find("input[type=radio]").length, 1,
+		"one radio input element created for active node");
+	assert.equal($result.find("input[type=radio]").attr("name"), "ft_" + tree._id + "_active",
+		"radio input name is 'ft_TREEID_active'");
+	assert.equal($result.find("input[type=radio]").attr("value"), "10_1",
+		"radio input value is set to node key");
+	assert.equal($result.find("input[type=radio]").attr("checked"), "checked",
+		"radio input is checked");
+
+	assert.equal($result.find("input[type=checkbox]").length, 4,
+		"multiple checkbox input elements created for selected nodes");
+	assert.equal($result.find("input[name=ft_" + tree._id + "\\[\\]]").length, 4,
+		"checkboxes name is 'ft_TREEID[]'");
+	assert.equal($result.find("input[type=checkbox][value=10_1]").length, 1,
+		"checkboxes value is set to node keys");
+	assert.equal($result.find("input[type=checkbox]:checked").length, 4,
+		"checkboxes are checked");
+
+	tree.generateFormElements(false, true);
+
+	assert.equal($result.find("input[type=radio]").length, 1,
+		"only active node created");
+	assert.equal($result.find("input[type=checkbox]").length, 0,
+		"disable generation of selcted nodes");
+
+	tree.generateFormElements(true, false);
+
+	assert.equal($result.find("input[type=radio]").length, 0,
+		"disable generation of active node");
+	assert.equal($result.find("input[type=checkbox]").length, 4,
+		"only selected nodes created");
+
+	tree.generateFormElements("cust_sel", "cust_act");
+
+	assert.equal($result.find("input[name=cust_act]").length, 1,
+		"custom name for active node");
+	assert.equal($result.find("input[name=cust_sel]").length, 4,
+		"custom name for selected nodes");
+
+	tree.generateFormElements(true, true, {stopOnParents: true});
+
+	assert.equal($result.find("input[type=checkbox]").length, 4,
+		"stopOnParents ignored for selectMode 2");
+
+	tree.generateFormElements(true, true, {
+		filter: function(node) {
+			return true;
+		}
+	});
+	assert.equal($result.find("input[type=checkbox]").length, TESTDATA_NODES,
+		"filter => true: generate all nodes");
+
+	tree.generateFormElements(true, true, {
+		filter: function(node) {
+			return node.isSelected();
+		}
+	});
+	assert.equal($result.find("input[type=checkbox]").length, 4,
+		"filter => isSelected(): generate selected nodes");
+
+	tree.generateFormElements(true, true, {
+		filter: function(node) {
+			return node.isActive();
+		}
+	});
+	assert.equal($result.find("input[type=checkbox]").length, 1,
+		"filter => isActive(): generate selected nodes");
+});
+
+
+QUnit.test("selectMode: 3", function(assert) {
+	tools.setup(assert);
+	assert.expect(4);
+
+	var $result, tree;
+
+	$("#tree").fancytree({
+		source: TEST_DATA,
+		selectMode: 3,
+		generateIds: true
+	});
+	tree = $.ui.fancytree.getTree();
+
+	tools.getNode("10_1").setActive();
+
+	tools.getNode("10").setSelected();
+	tools.getNode("10_1").setSelected();
+	tools.getNode("10_1_1").setSelected();
+	tools.getNode("10_1_2").setSelected();
+
+	tree.generateFormElements();
+	$result = $("#fancytree_result_" + tree._id);
+
+	assert.equal($result.find("input[type=radio]").length, 1,
+		"generation of active node");
+	assert.equal($result.find("input[type=checkbox]").length, 1,
+		"stopOnParents: only top node created");
+
+	tree.generateFormElements(true, true, {stopOnParents: false});
+
+	assert.equal($result.find("input[type=radio]").length, 1,
+		"generation of active node");
+	assert.equal($result.find("input[type=checkbox]").length, 7,
+		"stopOnParents: false: all nodes created");
+});
+
+
+/*******************************************************************************
  * Lazy loading
  */
 QUnit.module("lazy loading");
@@ -907,6 +1051,172 @@ QUnit.test("Using $.ajax promise for `source`; .click() expands a lazy folder", 
 			assert.equal($("#tree li").length, TESTDATA_VISIBLENODES + 2, "lazy tree has rendered 15 node elements");
 			done();
 		}
+	});
+});
+
+/******************************************************************************/
+
+QUnit.module("Selection mode 3");
+
+QUnit.test("load behavior", function(assert) {
+	tools.setup(assert);
+	assert.expect(30);
+
+	var tree;
+
+	$("#tree").fancytree({
+		selectMode: 3,
+		checkbox: true,
+		source: [
+			{title: "n1", children: [
+				{title: "n1.1", selected: true},
+				{title: "n1.2", selected: false},
+				{title: "n1.3", selected: null}
+			]},
+			{title: "n2 (all selected)", children: [
+				{title: "n2.1", selected: true, unselectable: true, unselectableStatus: true},
+				{title: "n2.2", selected: true, unselectable: true, unselectableStatus: false},
+				{title: "n2.3", selected: true, unselectable: true, unselectableStatus: null}
+			]},
+			{title: "n3", children: [
+				{title: "n3.1", children: [
+					{title: "n3.1.1 (unselectable)", unselectable: true},
+					{title: "n3.1.2 (unselectable)", unselectable: true},
+					{title: "n3.1.3"}
+				]},
+				{title: "n3.2", children: [
+					{title: "n3.2.1 (unselectableStatus: true)", unselectable: true, unselectableStatus: true},
+					{title: "n3.2.2 (unselectableStatus: false)", unselectable: true, unselectableStatus: false},
+					{title: "n3.2.3"}
+				]},
+				{title: "n3.3", children: [
+					{title: "n3.3.1 (unselectableStatus: true, unselectableIgnore)", unselectable: true, unselectableStatus: true,  unselectableIgnore: true},
+					{title: "n3.3.2 (unselectableStatus: false, unselectableIgnore)", unselectable: true, unselectableStatus: false, unselectableIgnore: true},
+					{title: "n3.3.3"}
+				]}
+			]},
+			{title: "n4 (radiogroup)", radiogroup: true, unselectable: true, children: [
+				{title: "n4.1 (selected)", selected: true},
+				{title: "n4.2"},
+				{title: "n4.3"}
+			]}
+		],
+		init: function(event, data) {
+			// Set key from first part of title
+			data.tree.visit(function(n) {
+				n.key = n.title.split(" ")[0];
+			});
+		},
+		generateIds: true
+	});
+	tree = $.ui.fancytree.getTree();
+
+	tools.getNode("n1").setSelected();
+
+	assert.equal(tools.getNode("n1.1").selected, true,
+		"propagate down `select` (simple child) 1/3");
+	assert.equal(tools.getNode("n1.2").selected, true,
+		"propagate down `select` (simple child) 2/3");
+	assert.equal(tools.getNode("n1.3").selected, true,
+		"propagate down `select` (simple child) 3/3");
+
+	tools.getNode("n1").setSelected(false);
+
+	assert.equal(tools.getNode("n1.1").selected, false,
+		"propagate down `deselect` (simple child)");
+
+	tools.getNode("n2").setSelected();
+
+	assert.equal(tools.getNode("n2.1").selected, true,
+		"propagate down `select` (unselectable status: true)");
+	assert.equal(tools.getNode("n2.2").selected, false,
+		"propagate down `select` (unselectable status: false)");
+	assert.equal(tools.getNode("n2.3").selected, true,
+		"propagate down `select` (unselectable status: undefined)");
+
+	tools.getNode("n2").setSelected(false);
+
+	assert.equal(tools.getNode("n2.1").selected, true,
+		"propagate down `deselect` (unselectable status: true)");
+	assert.equal(tools.getNode("n2.2").selected, false,
+		"propagate down `deselect` (unselectable status: false)");
+	assert.equal(tools.getNode("n2.3").selected, false,
+		"propagate down `deselect` (unselectable status: undefined)");
+
+	// Check upward propagation
+
+	tools.getNode("n3").setSelected(true);
+
+	assert.equal(tools.getNode("n3.1").isSelected(), true,
+		"propagate down `select` (unselectable): parent selected");
+	assert.equal(tools.getNode("n3.1.1").isSelected(), true,
+		"propagate down `select` (unselectable): selected by api");
+
+	assert.equal(tools.getNode("n3.2").isPartsel(), true,
+		"propagate down `select` (unselectable status: true&false): parent partsel");
+
+	assert.equal(tools.getNode("n3.3").isSelected(), true,
+		"propagate down `select` (unselectable status: true&false, ignore): parent selected");
+	assert.equal(tools.getNode("n3.3.2").isSelected(), false,
+		"propagate down `select` (unselectable status: false): not selected");
+
+	tools.getNode("n3").setSelected(false);
+
+	assert.equal(tools.getNode("n3.1").isPartsel(), false,
+		"propagate down `deselect` (unselectable): parent not partsel");
+	assert.equal(tools.getNode("n3.1.1").isSelected(), false,
+		"propagate down `deselect` (unselectable): deselected by api");
+
+	assert.equal(tools.getNode("n3.2").isPartsel(), true,
+		"propagate down `deselect` (unselectable status: true&false): parent partsel");
+	assert.equal(tools.getNode("n3.2.1").isSelected(), true,
+		"propagate down `deselect` (unselectable status: true): not deselected");
+
+	assert.equal(tools.getNode("n3.3").isPartsel(), false,
+		"propagate down `deselect` (unselectable status: true&false, ignore): parent not partsel");
+	assert.equal(tools.getNode("n3.3").isSelected(), false,
+		"propagate down `deselect` (unselectable status: true&false, ignore): parent not selected");
+	assert.equal(tools.getNode("n3.3.1").isSelected(), true,
+		"propagate down `deselect` (unselectable status: true): not deselected");
+
+	tools.getNode("n3.2.3").setSelected(true);
+
+	assert.equal(tools.getNode("n3.2").isPartsel(), true,
+		"propagate up `select`: parent partsel, because of deselected sibling");
+
+	tools.getNode("n3.2.3").setSelected(false);
+
+	assert.equal(tools.getNode("n3.2").isPartsel(), true,
+		"propagate up `deselect`: parent partsel, because of selected sibling");
+
+	tools.getNode("n3.3.3").setSelected(true);
+
+	assert.equal(tools.getNode("n3.3").isSelected(), true,
+		"propagate up `select`: parent selected, because of ignored siblings");
+
+	tools.getNode("n3.3.3").setSelected(false);
+
+	assert.equal(tools.getNode("n3.3").isSelected(), false,
+		"propagate up `deselect`: parent deselected, because of ignored siblings");
+
+	// radiogroup
+
+	tools.getNode("n4.1").setSelected();
+
+	assert.equal(tools.getNode("n4.1").isSelected(), true,
+		"radiogroup `select`: select first");
+	assert.ok(!tools.getNode("n4.2").isSelected() && !tools.getNode("n4.3").isSelected(),
+		"radiogroup `select`: deselect siblings");
+
+	tools.getNode("n4.3").setSelected();
+
+	assert.equal(tools.getNode("n4.3").isSelected(), true,
+		"radiogroup `select`: select last");
+	assert.ok(!tools.getNode("n4.1").isSelected() && !tools.getNode("n4.2").isSelected(),
+		"radiogroup `select`: deselect siblings");
+
+	tree.visit(function(n){
+		n.setExpanded();
 	});
 });
 

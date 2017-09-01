@@ -23,26 +23,16 @@
 var taxonTree, searchResultTree, tmplDetails, tmplInfoPane, tmplMedia,
 	timerMap = {},
 	USER_AGENT = "Fancytree Taxonomy Browser/1.0",
-	GBIF_URL = "http://api.gbif.org/v1/",
+	GBIF_URL = "//api.gbif.org/v1/",
 	TAXONOMY_KEY = "d7dddbf4-2cf0-4f39-9b2a-bb099caae36c",  // GBIF backbone taxonomy
 	SEARCH_PAGE_SIZE = 5,
 	CHILD_NODE_PAGE_SIZE = 200,
 	glyphOpts = {
+		preset: "bootstrap3",
 		map: {
-			doc: "glyphicon glyphicon-file",
-			docOpen: "glyphicon glyphicon-file",
-			checkbox: "glyphicon glyphicon-unchecked",
-			checkboxSelected: "glyphicon glyphicon-check",
-			checkboxUnknown: "glyphicon glyphicon-share",
-			dragHelper: "glyphicon glyphicon-play",
-			dropMarker: "glyphicon glyphicon-arrow-right",
-			error: "glyphicon glyphicon-warning-sign",
-			expanderClosed: "glyphicon glyphicon-menu-right",
+			expanderClosed: "glyphicon glyphicon-menu-right",  // glyphicon-plus-sign
 			expanderLazy: "glyphicon glyphicon-menu-right",  // glyphicon-plus-sign
-			expanderOpen: "glyphicon glyphicon-menu-down",  // glyphicon-collapse-down
-			folder: "glyphicon glyphicon-folder-close",
-			folderOpen: "glyphicon glyphicon-folder-open",
-			loading: "glyphicon glyphicon-refresh glyphicon-spin"
+			expanderOpen: "glyphicon glyphicon-menu-down"  // glyphicon-minus-sign
 		}
 	};
 

@@ -1,10 +1,10 @@
 /*!
  * jquery.fancytree.table.js
  *
- * Render tree as table (aka 'treegrid', 'tabletree').
+ * Render tree as table (aka 'tree grid', 'table tree').
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2016, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2017, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -25,6 +25,10 @@ function _assert(cond, msg){
 	if(!cond){
 		$.error("Assertion failed " + msg);
 	}
+}
+
+function insertFirstChild(referenceNode, newNode) {
+	referenceNode.insertBefore(newNode, referenceNode.firstChild);
 }
 
 function insertSiblingAfter(referenceNode, newNode) {
@@ -57,7 +61,7 @@ function findPrevRowNode(node){
 		prev = siblings[i - 1];
 		_assert(prev.tr);
 		// descend to lowest child (with a <tr> tag)
-		while(prev.children){
+		while(prev.children && prev.children.length){
 			last = prev.children[prev.children.length - 1];
 			if(!last.tr){
 				break;
@@ -230,7 +234,7 @@ $.ui.fancytree.registerExtension({
 				if( ctx.hasCollapsedParents && !deep ) {
 					// #166: we assume that the parent will be (recursively) rendered
 					// later anyway.
-					node.debug("nodeRender ignored due to unrendered parent");
+					// node.debug("nodeRender ignored due to unrendered parent");
 					return;
 				}
 				// Create new <tr> after previous row
@@ -251,8 +255,9 @@ $.ui.fancytree.registerExtension({
 //					newRow.style.color = "red";
 				}
 				if(!prevNode.tr){
-					_assert(!prevNode.parent, "prev. row must have a tr, or is system root");
-					tree.tbody.appendChild(newRow);
+					_assert(!prevNode.parent, "prev. row must have a tr, or be system root");
+					// tree.tbody.appendChild(newRow);
+					insertFirstChild(tree.tbody, newRow);  // #675
 				}else{
 					insertSiblingAfter(prevNode.tr, newRow);
 				}
@@ -261,11 +266,9 @@ $.ui.fancytree.registerExtension({
 					node.tr.id = opts.idPrefix + node.key;
 				}
 				node.tr.ftnode = node;
-				if(opts.aria){
-					// TODO: why doesn't this work:
-//                  node.li.role = "treeitem";
-					$(node.tr).attr("aria-labelledby", "ftal_" + node.key);
-				}
+				// if(opts.aria){
+				// 	$(node.tr).attr("aria-labelledby", "ftal_" + opts.idPrefix + node.key);
+				// }
 				node.span = $("span.fancytree-node", node.tr).get(0);
 				// Set icon, link, and title (normally this is only required on initial render)
 				this.nodeRenderTitle(ctx);
@@ -331,7 +334,7 @@ $.ui.fancytree.registerExtension({
 			opts = ctx.options,
 			isStatusNode = node.isStatusNode();
 
-		res = this._superApply(arguments);
+		res = this._super(ctx, title);
 
 		if( node.isRootNode() ) {
 			return res;
@@ -359,7 +362,7 @@ $.ui.fancytree.registerExtension({
 			node = ctx.node,
 			opts = ctx.options;
 
-		this._superApply(arguments);
+		this._super(ctx);
 
 		$(node.tr).removeClass("fancytree-node");
 		// indent
@@ -368,7 +371,7 @@ $.ui.fancytree.registerExtension({
 		// $(node.span).css({marginLeft: indent + "px"});
 	 },
 	/* Expand node, return Deferred.promise. */
-	nodeSetExpanded: function(ctx, flag, opts) {
+	nodeSetExpanded: function(ctx, flag, callOpts) {
 		// flag defaults to true
 		flag = (flag !== false);
 
@@ -378,35 +381,35 @@ $.ui.fancytree.registerExtension({
 		}
 
 		var dfd = new $.Deferred(),
-			subOpts = $.extend({}, opts, {noEvents: true, noAnimation: true});
+			subOpts = $.extend({}, callOpts, {noEvents: true, noAnimation: true});
 
-		opts = opts || {};
+		callOpts = callOpts || {};
 
 		function _afterExpand(ok) {
 			setChildRowVisibility(ctx.node, flag);
 			if( ok ) {
-				if( flag && ctx.options.autoScroll && !opts.noAnimation && ctx.node.hasChildren() ) {
+				if( flag && ctx.options.autoScroll && !callOpts.noAnimation && ctx.node.hasChildren() ) {
 					// Scroll down to last child, but keep current node visible
 					ctx.node.getLastChild().scrollIntoView(true, {topNode: ctx.node}).always(function(){
-						if( !opts.noEvents ) {
+						if( !callOpts.noEvents ) {
 							ctx.tree._triggerNodeEvent(flag ? "expand" : "collapse", ctx);
 						}
 						dfd.resolveWith(ctx.node);
 					});
 				} else {
-					if( !opts.noEvents ) {
+					if( !callOpts.noEvents ) {
 						ctx.tree._triggerNodeEvent(flag ? "expand" : "collapse", ctx);
 					}
 					dfd.resolveWith(ctx.node);
 				}
 			} else {
-				if( !opts.noEvents ) {
+				if( !callOpts.noEvents ) {
 					ctx.tree._triggerNodeEvent(flag ? "expand" : "collapse", ctx);
 				}
 				dfd.rejectWith(ctx.node);
 			}
 		}
-		// Call base-expand with disabled  events and animation
+		// Call base-expand with disabled events and animation
 		this._super(ctx, flag, subOpts).done(function () {
 			_afterExpand(true);
 		}).fail(function () {
@@ -431,6 +434,7 @@ $.ui.fancytree.registerExtension({
 	treeDestroy: function(ctx) {
 		this.$container.find("tbody").empty();
 		this.$source && this.$source.removeClass("ui-helper-hidden");
+		return this._superApply(arguments);
 	}
 	/*,
 	treeSetFocus: function(ctx, flag) {
