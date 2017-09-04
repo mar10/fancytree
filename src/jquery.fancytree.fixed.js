@@ -29,6 +29,7 @@ $.ui.fancytree.registerExtension({
 		fixCol: 1,
 		fixColWidths: null,
 		fixRows: true,
+		scrollSpeed: 50,
 		classNames: {
 			table: "fancytree-ext-fixed",
 			wrapper: "fancytree-ext-fixed-wrapper",
@@ -140,13 +141,10 @@ $.ui.fancytree.registerExtension({
 
 		$bottomLeftWrapper.on("mousewheel DOMMouseScroll", function(event) {
 			var $this = $(this),
-				newScroll = $this.scrollTop();
-
-			if (event.originalEvent.wheelDelta) {
-				newScroll -= event.originalEvent.wheelDelta / 2;
-			} else if (event.originalEvent.detail) {
-				newScroll += event.originalEvent.detail * 14;
-			}
+				newScroll = $this.scrollTop(),
+				scrollUp = event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0;
+			
+			newScroll += scrollUp ? -options.scrollSpeed : options.scrollSpeed;
 			$this.scrollTop(newScroll);
 			$bottomRightWrapper.scrollTop(newScroll);
 			event.preventDefault();
