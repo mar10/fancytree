@@ -33,14 +33,15 @@ $.ui.fancytree.registerExtension({
 		classNames: {
 			table: "fancytree-ext-fixed",
 			wrapper: "fancytree-ext-fixed-wrapper",
-			topLeft: "fancytree-fixed-wrapper-tl",
-			topRight: "fancytree-fixed-wrapper-tr",
-			bottomLeft: "fancytree-fixed-wrapper-bl",
-			bottomRight: "fancytree-fixed-wrapper-br",
-			hidden: "fancytree-fixed-hidden",
-			counterpart: "fancytree-node-counterpart",
-			scrollBorderBottom: "scrollBorderBottom",
-			scrollBorderRight: "scrollBorderRight"
+			topLeft: "fancytree-ext-fixed-wrapper-tl",
+			topRight: "fancytree-ext-fixed-wrapper-tr",
+			bottomLeft: "fancytree-ext-fixed-wrapper-bl",
+			bottomRight: "fancytree-ext-fixed-wrapper-br",
+			hidden: "fancytree-ext-fixed-hidden",
+			counterpart: "fancytree-ext-fixed-node-counterpart",
+			scrollBorderBottom: "fancytree-ext-fixed-scroll-border-bottom",
+			scrollBorderRight: "fancytree-ext-fixed-scroll-border-right",
+			hover: "fancytree-ext-fixed-hover"
 		}
 	},
 	// Overide virtual methods for this extension.
@@ -53,15 +54,15 @@ $.ui.fancytree.registerExtension({
 		var res = this._superApply(arguments),
 			tree = ctx.tree,
 			options = this.options.fixed,
-			cn = this.options.fixed.classNames,
+			fcn = this.options.fixed.classNames,
 			$table = tree.widget.element,
 			fixedColCount = options.fixCols,
 			fixedRowCount = options.fixRows,
 			$tableWrapper = $table.parent(),
-			$topLeftWrapper = $("<div>").addClass(cn.topLeft),
-			$topRightWrapper = $("<div>").addClass(cn.topRight),
-			$bottomLeftWrapper = $("<div>").addClass(cn.bottomLeft),
-			$bottomRightWrapper = $("<div>").addClass(cn.bottomRight),
+			$topLeftWrapper = $("<div>").addClass(fcn.topLeft),
+			$topRightWrapper = $("<div>").addClass(fcn.topRight),
+			$bottomLeftWrapper = $("<div>").addClass(fcn.bottomLeft),
+			$bottomRightWrapper = $("<div>").addClass(fcn.bottomRight),
 			tableStyle = $table.attr("style"),
 			tableClass = $table.attr("class"),
 			$topLeftTable = $("<table>").attr("style", tableStyle).attr("class", tableClass),
@@ -73,8 +74,8 @@ $.ui.fancytree.registerExtension({
 			headRowCount = $head.find("tr").length;
 		
 		this.$fixedWrapper = $tableWrapper;
-		$table.addClass(cn.table);
-		$tableWrapper.addClass(cn.wrapper);
+		$table.addClass(fcn.table);
+		$tableWrapper.addClass(fcn.wrapper);
 		$bottomRightTable.append($("<tbody>"));
 
 		if ($colgroup.length) {
@@ -94,7 +95,7 @@ $.ui.fancytree.registerExtension({
 		}
 
 		$topLeftTable.find("tr").each(function(idx) {
-			$(this).find("th").slice(fixedColCount).addClass(cn.hidden);
+			$(this).find("th").slice(fixedColCount).addClass(fcn.hidden);
 		});
 
 		$topRightTable.find("tr").each(function(idx) {
@@ -120,23 +121,23 @@ $.ui.fancytree.registerExtension({
 		
 		$bottomRightTable.on("click", "tr", function(evt) {
 			var $trLeft = $(this),
-				$trRight = $trLeft.data(cn.counterpart),
+				$trRight = $trLeft.data(fcn.counterpart),
 				node = $.ui.fancytree.getNode($trRight);
 			if (!node.isActive()) {
 				node.setActive(true);
 			}
 		});
 		
-		$tableWrapper.on("mouseenter", "." + cn.bottomRight + " table tr, ." + cn.bottomLeft + " table tr", function(evt) {
+		$tableWrapper.on("mouseenter", "." + fcn.bottomRight + " table tr, ." + fcn.bottomLeft + " table tr", function(evt) {
 			var $tr = $(this),
-				$trOther = $tr.data(cn.counterpart);
-			$tr.addClass("fancytree-hover");
-			$trOther.addClass("fancytree-hover");
-		}).on("mouseleave", "." + cn.bottomRight + " table tr, ." + cn.bottomLeft + " table tr", function(evt) {
+				$trOther = $tr.data(fcn.counterpart);
+			$tr.addClass(fcn.hover);
+			$trOther.addClass(fcn.hover);
+		}).on("mouseleave", "." + fcn.bottomRight + " table tr, ." + fcn.bottomLeft + " table tr", function(evt) {
 			var $tr = $(this),
-				$trOther = $tr.data(cn.counterpart);
-			$tr.removeClass("fancytree-hover");
-			$trOther.removeClass("fancytree-hover");
+				$trOther = $tr.data(fcn.counterpart);
+			$tr.removeClass(fcn.hover);
+			$trOther.removeClass(fcn.hover);
 		});
 
 		$bottomLeftWrapper.on("mousewheel DOMMouseScroll", function(event) {
@@ -156,13 +157,13 @@ $.ui.fancytree.registerExtension({
 				scrollTop = $this.scrollTop();
 
 			$topLeftWrapper
-				.toggleClass(cn.scrollBorderBottom, scrollTop > 0)
-				.toggleClass(cn.scrollBorderRight, scrollLeft > 0);
+				.toggleClass(fcn.scrollBorderBottom, scrollTop > 0)
+				.toggleClass(fcn.scrollBorderRight, scrollLeft > 0);
 			$topRightWrapper
-				.toggleClass(cn.scrollBorderBottom, scrollTop > 0)
+				.toggleClass(fcn.scrollBorderBottom, scrollTop > 0)
 				.scrollLeft(scrollLeft);
 			$bottomLeftWrapper
-				.toggleClass(cn.scrollBorderRight, scrollLeft > 0)
+				.toggleClass(fcn.scrollBorderRight, scrollLeft > 0)
 				.scrollTop(scrollTop);
 		});
 
@@ -189,14 +190,14 @@ $.ui.fancytree.registerExtension({
 	
 	nodeRemoveChildMarkup: function(ctx) {
 		var node = ctx.node,
-			cn = this.options.fixed.classNames;
+			fcn = this.options.fixed.classNames;
 		
 		function _removeChild(elem) {
 			var children = elem.children;
 			if (children) {
 				for (var i = 0; i < children.length; i++) {
 					var child = children[i],
-						$rightTr = $(child.tr).data(cn.counterpart);
+						$rightTr = $(child.tr).data(fcn.counterpart);
 					if ($rightTr) {
 						$rightTr.remove();
 					}
@@ -212,8 +213,9 @@ $.ui.fancytree.registerExtension({
 	nodeRemoveMarkup: function(ctx) {
 		var node = ctx.node,
 			$leftNode = $(node.tr),
-			cn = this.options.fixed.classNames,
-			$rightNode = $leftNode.data(cn.counterpart);
+			fcn = this.options.fixed.classNames,
+			$rightNode = $leftNode.data(fcn.counterpart);
+		
 		if ($rightNode) {
 			$rightNode.remove();
 		}
@@ -223,11 +225,13 @@ $.ui.fancytree.registerExtension({
 	nodeSetActive: function(ctx, flag, callOpts) {
 		var node = ctx.node,
 			$leftNode = $(node.tr),
-			cn = this.options.fixed.classNames,
-			$rightNode = $leftNode.data(cn.counterpart);
+			fcn = this.options.fixed.classNames,
+			cn = this.options._classNames,
+			$rightNode = $leftNode.data(fcn.counterpart);
+		
 		if ($rightNode) {
-			$rightNode.toggleClass("fancytree-active", flag);
-			$rightNode.toggleClass("fancytree-focused", flag);
+			$rightNode.toggleClass(cn.active, flag);
+			$rightNode.toggleClass(cn.focused, flag);
 		}
 		var res = this._superApply(arguments);
 		return res;
@@ -236,10 +240,12 @@ $.ui.fancytree.registerExtension({
 	nodeSetFocus: function(ctx, flag) {
 		var node = ctx.node,
 			$leftNode = $(node.tr),
-			cn = this.options.fixed.classNames,
-			$rightNode = $leftNode.data(cn.counterpart);
+			fcn = this.options.fixed.classNames,
+			cn = this.options._classNames,
+			$rightNode = $leftNode.data(fcn.counterpart);
+		
 		if ($rightNode) {
-			$rightNode.toggleClass("fancytree-focused", flag);
+			$rightNode.toggleClass(cn.focused, flag);
 		}
 		var res = this._superApply(arguments);
 		return res;
@@ -249,17 +255,17 @@ $.ui.fancytree.registerExtension({
 		var res = this._superApply(arguments),
 			node = ctx.node,
 			isRootNode = !node.parent,
-			cn = this.options.fixed.classNames;
+			fcn = this.options.fixed.classNames;
 		
 		if (!isRootNode) {
 			var $nodeTr = $(node.tr),
-				$trRight = $nodeTr.data(cn.counterpart), 
+				$trRight = $nodeTr.data(fcn.counterpart), 
 				fixedColCount = this.options.fixed.fixCols,
 				$clone = $nodeTr.clone();
 			
 			if (!$trRight) {
 				var idx = $nodeTr.index(),
-					$brTableBody = $("div." + cn.bottomRight + " table tbody"),
+					$brTableBody = $("div." + fcn.bottomRight + " table tbody"),
 					$prevRightNode = $brTableBody.find("tr:eq(" + Math.max(idx - 1, 0) + ")");
 				
 				if ($prevRightNode.length) {
@@ -271,13 +277,13 @@ $.ui.fancytree.registerExtension({
 				$clone.show();
 			} else {
 				$trRight.replaceWith($clone);
-				$clone.find("td").removeClass(cn.hidden);
+				$clone.find("td").removeClass(fcn.hidden);
 			}
 			
-			$nodeTr.find("td").slice(fixedColCount).addClass(cn.hidden);
+			$nodeTr.find("td").slice(fixedColCount).addClass(fcn.hidden);
 			$clone.find("td").slice(0, fixedColCount).remove();
-			$nodeTr.data(cn.counterpart, $clone);
-			$clone.data(cn.counterpart, $nodeTr);
+			$nodeTr.data(fcn.counterpart, $clone);
+			$clone.data(fcn.counterpart, $nodeTr);
 		}
 		
 		return res;
@@ -291,15 +297,15 @@ $.ui.fancytree.registerExtension({
 		var res = this._superApply(arguments),
 			node = ctx.node,
 			$tr = $(node.tr),
-			cn = this.options.fixed.classNames,
-			$rightTr = $tr.data(cn.counterpart),
+			fcn = this.options.fixed.classNames,
+			$rightTr = $tr.data(fcn.counterpart),
 			trClasses = $tr.attr("class");
 		if ($rightTr) {
-			var hovering = $rightTr.hasClass("fancytree-hover");
+			var hovering = $rightTr.hasClass(fcn.hover);
 			$rightTr.attr("class", trClasses);
 			if (hovering) {
-				$rightTr.addClass("fancytree-hover");
-				$tr.addClass("fancytree-hover");
+				$rightTr.addClass(fcn.hover);
+				$tr.addClass(fcn.hover);
 			}
 		}
 
@@ -311,20 +317,21 @@ $.ui.fancytree.registerExtension({
 			_this = this,
 			node = ctx.node,
 			$leftTr = $(node.tr),
-			cn = this.options.fixed.classNames,
-			$rightTr = $leftTr.data(cn.counterpart);
+			fcn = this.options.fixed.classNames,
+			cn = this.options._classNames,
+			$rightTr = $leftTr.data(fcn.counterpart);
 
 		if (!$rightTr) {
 			return this._superApply(arguments);
 		}
-		$rightTr.toggleClass("fancytree-expanded", !!flag);
+		$rightTr.toggleClass(cn.expanded, !!flag);
 		if (flag && !node.isExpanded()) {
 			res = this._superApply(arguments);
 			res.done(function() {
 				node.visit(function(child) {
 					var $tr = $(child.tr),
-						$clone = $tr.data(cn.counterpart);
-					$clone.toggleClass(cn.hidden, !flag).find("td, th").toggleClass(cn.hidden, !flag);
+						$clone = $tr.data(fcn.counterpart);
+					$clone.toggleClass(fcn.hidden, !flag).find("td, th").toggleClass(fcn.hidden, !flag);
 					_this.ext.fixed._adjustRowHeight($tr, $clone);
 					if (!child.expanded) {
 						return "skip";
@@ -337,9 +344,9 @@ $.ui.fancytree.registerExtension({
 		} else if (!flag && node.isExpanded()) {
 			node.visit(function(child) {
 				var $tr = $(child.tr),
-					$clone = $tr.data(cn.counterpart);
+					$clone = $tr.data(fcn.counterpart);
 				if ($clone) {
-					$clone.toggleClass(cn.hidden, !flag).find("td, th").toggleClass(cn.hidden, !flag);
+					$clone.toggleClass(fcn.hidden, !flag).find("td, th").toggleClass(fcn.hidden, !flag);
 					_this.ext.fixed._adjustRowHeight($tr, $clone);
 					if (!child.expanded) {
 						return "skip";
@@ -362,9 +369,9 @@ $.ui.fancytree.registerExtension({
 		var tree = ctx.tree,
 			$table = tree.widget.element,
 			$wrapper = this.$fixedWrapper,
-			cn = this.options.fixed.classNames;
+			fcn = this.options.fixed.classNames;
 		
-		$table.find("tr, td, th, thead").removeClass(cn.hidden).css({
+		$table.find("tr, td, th, thead").removeClass(fcn.hidden).css({
 			"min-width": "auto",
 			"height": "auto"
 		});
@@ -380,9 +387,9 @@ $.ui.fancytree.registerExtension({
 		var tree = ctx.tree,
 			$table = tree.widget.element,
 			$wrapper = this.$fixedWrapper,
-			cn = this.options.fixed.classNames;
+			fcn = this.options.fixed.classNames;
 		
-		$table.find("tr, td, th, thead").removeClass(cn.hidden).css({
+		$table.find("tr, td, th, thead").removeClass(fcn.hidden).css({
 			"min-width": "auto",
 			"height": "auto"
 		});
@@ -392,17 +399,17 @@ $.ui.fancytree.registerExtension({
 
 	_adjustColWidths: function() {
 		var $wrapper = this.$fixedWrapper,
-			cn = this.options.fixed.classNames,
-			$tlWrapper = $wrapper.find("div." + cn.topLeft),
-			$blWrapper = $wrapper.find("div." + cn.bottomLeft),
-			$trWrapper = $wrapper.find("div." + cn.topRight),
-			$brWrapper = $wrapper.find("div." + cn.bottomRight);
+			fcn = this.options.fixed.classNames,
+			$tlWrapper = $wrapper.find("div." + fcn.topLeft),
+			$blWrapper = $wrapper.find("div." + fcn.bottomLeft),
+			$trWrapper = $wrapper.find("div." + fcn.topRight),
+			$brWrapper = $wrapper.find("div." + fcn.bottomRight);
 		
 		function _adjust($topWrapper, $bottomWrapper) {
-			var $trTop = $topWrapper.find("thead tr:not(." + cn.hidden + ")").first(),
-				$trBottom = $bottomWrapper.find("tbody tr:not(." + cn.hidden + ")").first();
+			var $trTop = $topWrapper.find("thead tr:not(." + fcn.hidden + ")").first(),
+				$trBottom = $bottomWrapper.find("tbody tr:not(." + fcn.hidden + ")").first();
 			
-			$trTop.find("th:not(." + cn.hidden + ")").each(function(idx) {
+			$trTop.find("th:not(." + fcn.hidden + ")").each(function(idx) {
 				var $thTop = $(this),
 					$tdBottom = $trBottom.find("td:eq(" + idx + ")");
 				
@@ -425,10 +432,10 @@ $.ui.fancytree.registerExtension({
 	},
 	
 	_adjustRowHeight: function($row1, $row2) {
-		var cn = this.options.fixed.classNames;
+		var fcn = this.options.fixed.classNames;
 		
 		if (!$row2) {
-			$row2 = $row1.data(cn.counterpart);
+			$row2 = $row1.data(fcn.counterpart);
 		}
 		$row1.css("height", "auto");
 		$row2.css("height", "auto");
@@ -441,11 +448,11 @@ $.ui.fancytree.registerExtension({
 
 	_adjustWrapperLayout: function() {
 		var $wrapper = this.$fixedWrapper,
-			cn = this.options.fixed.classNames,
-			$topLeftWrapper = $wrapper.find("div." + cn.topLeft),
-			$topRightWrapper = $wrapper.find("div." + cn.topRight),
-			$bottomLeftWrapper = $wrapper.find("div." + cn.bottomLeft),
-			$bottomRightWrapper = $wrapper.find("div." + cn.bottomRight),
+			fcn = this.options.fixed.classNames,
+			$topLeftWrapper = $wrapper.find("div." + fcn.topLeft),
+			$topRightWrapper = $wrapper.find("div." + fcn.topRight),
+			$bottomLeftWrapper = $wrapper.find("div." + fcn.bottomLeft),
+			$bottomRightWrapper = $wrapper.find("div." + fcn.bottomRight),
 			$topLeftTable = $topLeftWrapper.find("table"),
 			$topRightTable = $topRightWrapper.find("table"),
 			$bottomLeftTable = $bottomLeftWrapper.find("table"),
@@ -481,11 +488,11 @@ $.ui.fancytree.registerExtension({
 	_adjustLayout: function() {
 		var _this = this,
 			$wrapper = this.$fixedWrapper,
-			cn = this.options.fixed.classNames,
-			$topLeftTable = $wrapper.find("div." + cn.topLeft + " table"),
-			$topRightTable = $wrapper.find("div." + cn.topRight + " table"),
-			$bottomLeftTable = $wrapper.find("div." + cn.bottomLeft + " table"),
-			$bottomRightTable = $wrapper.find("div." + cn.bottomRight + " table");
+			fcn = this.options.fixed.classNames,
+			$topLeftTable = $wrapper.find("div." + fcn.topLeft + " table"),
+			$topRightTable = $wrapper.find("div." + fcn.topRight + " table"),
+			$bottomLeftTable = $wrapper.find("div." + fcn.bottomLeft + " table"),
+			$bottomRightTable = $wrapper.find("div." + fcn.bottomRight + " table");
 		
 		$topLeftTable.find("tr").each(function(idx) {
 			var $row2 = $topRightTable.find("tr:eq(" + idx + ")");
