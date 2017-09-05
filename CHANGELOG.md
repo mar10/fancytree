@@ -1,6 +1,9 @@
 # 2.24.1 / Unreleased
   *
 
+# ext-fixesd / Unreleased
+  * [Added] New extension ext-fixed
+
 # 2.24.0 / 2017-08-26
   * [Added] ext-glyph option `preset` (making the `map` option optional)
   * [Fixed] Drop marker for ext-glyph + ext-dnd5
