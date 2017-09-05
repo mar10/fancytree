@@ -36,14 +36,10 @@
 		border-collapse: collapse;
 	}
 
-/*  	span.fancytree-node {
-	   white-space: pre;
-	} */
-
 	#tableWrapper {
-	   width: 1200px;
+	   width: 100%;
 	   height: 600px;
-	   overflow: auto;
+	   overflow: hidden;
 	   position: relative;
 	}
 
@@ -54,7 +50,35 @@
 	table.fancytree-container.fancytree-ext-fixed tbody tr td:nth-child(1) {
 		width: 22px;
 	}
+	
+	table.fancytree-ext-table tbody tr.fancytree-ext-fixed-hover {
+	  border-color: inherit;
+	  background: #f8fcfe;
+	  color: inherit;
+	  background: -moz-linear-gradient(top, #f8fcfe 0%, #eff9fe 100%);
+	  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f8fcfe), color-stop(100%, #eff9fe));
+	  background: -webkit-linear-gradient(top, #f8fcfe 0%, #eff9fe 100%);
+	  background: -o-linear-gradient(top, #f8fcfe 0%, #eff9fe 100%);
+	  background: -ms-linear-gradient(top, #f8fcfe 0%, #eff9fe 100%);
+	  background: linear-gradient(to bottom, #f8fcfe 0%, #eff9fe 100%);
+	  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f8fcfe', endColorstr='#eff9fe', GradientType=0);
+	  outline: 1px solid #d8f0fa;
+	}
 
+	table.fancytree-ext-table tbody tr.fancytree-active.fancytree-ext-fixed-hover,
+	table.fancytree-ext-table tbody tr.fancytree-selected.fancytree-ext-fixed-hover {
+	  border-color: inherit;
+	  background: #f2f9fd;
+	  color: inherit;
+	  background: -moz-linear-gradient(top, #f2f9fd 0%, #c4e8fa 100%);
+	  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f2f9fd), color-stop(100%, #c4e8fa));
+	  background: -webkit-linear-gradient(top, #f2f9fd 0%, #c4e8fa 100%);
+	  background: -o-linear-gradient(top, #f2f9fd 0%, #c4e8fa 100%);
+	  background: -ms-linear-gradient(top, #f2f9fd 0%, #c4e8fa 100%);
+	  background: linear-gradient(to bottom, #f2f9fd 0%, #c4e8fa 100%);
+	  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f2f9fd', endColorstr='#c4e8fa', GradientType=0);
+	  outline: 1px solid #B6E6FB;
+	}
 
 </style>
 	<link href="../src/skin-win7/ui.fancytree.css" rel="stylesheet" type="text/css">
@@ -79,7 +103,7 @@
 			extensions: ["table", "fixed"],
 			checkbox: true,
 			fixed: {
-				fixCols: 3,	  // Fix leftmost n columns
+				fixCols: 4,	  // Fix leftmost n columns
 //		        fixColWidths: [16, 50, 200],
 				fixRows: 2  // Fix topmost n rows (true: whole <thead>)
 			},
