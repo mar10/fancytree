@@ -4661,7 +4661,12 @@ $.widget("ui.fancytree",
 				tree._callHook("nodeSetFocus", tree._makeHookContext(node, event), flag);
 				// tree._callHook("nodeSetFocus", node, flag);
 			}else{
-				tree._callHook("treeSetFocus", tree, flag);
+				if( tree.tbody && $(event.target).parents("table.fancytree-container > thead").length ) {
+					// #767: ignore events in the table's header
+					tree.debug("Ignore focus event outside table body.", event);
+				} else {
+					tree._callHook("treeSetFocus", tree, flag);
+				}
 			}
 
 		}).on("selectstart" + ns, "span.fancytree-title", function(event){
