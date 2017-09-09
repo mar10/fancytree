@@ -1,8 +1,6 @@
-# 2.24.1 / Unreleased
-  *
-
-# ext-fixesd / Unreleased
-  * [Added] New extension ext-fixed
+# 2.25.0 / Unreleased
+  * [Added] New extension ext-fixed (experimental)
+  * [Added] Source map files for jquery.fancytree-all-deps.min.js
 
 # 2.24.0 / 2017-08-26
   * [Added] ext-glyph option `preset` (making the `map` option optional)
