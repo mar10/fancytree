@@ -368,14 +368,13 @@ $("#searchResultTree").fancytree({
 	// 	});
 	// },
 	renderColumns: function(event, data) {
-		var i,
+		var i = 0,
 			node = data.node,
 			$tdList = $(node.tr).find(">td"),
 			cnList = node.data.vernacularNames ? $.map(node.data.vernacularNames, function(o){
 					return o.vernacularName;
 				}) : [];
 
-		i = 0;
 		function _setCell($cell, text){
 			$("<div class='truncate'>").attr("title", text).text(text).appendTo($cell);
 		}
