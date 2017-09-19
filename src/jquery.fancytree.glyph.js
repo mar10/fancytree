@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version @VERSION
- * @date @DATE
+ * @version 2.24.0
+ * @date 2017-08-26T13:42:51Z
  */
 
 ;(function($, window, document, undefined) {
@@ -90,10 +90,14 @@ function _getIcon(opts, type){
 	return opts.map[type];
 }
 
+function _removeSpanIcon(span) {
+    if (span && $(span).find('i'))
+        $(span).find('i').remove();
+}
 
 $.ui.fancytree.registerExtension({
 	name: "glyph",
-	version: "@VERSION",
+	version: "2.24.0",
 	// Default options for this extension.
 	options: {
 		preset: null,  // 'awesome3', 'awesome4', 'bootstrap3'
@@ -127,6 +131,7 @@ $.ui.fancytree.registerExtension({
 		if( node.isRoot() ){
 			return res;
 		}
+        
 		span = $span.children("span.fancytree-expander").get(0);
 		if( span ){
 			// if( node.isLoading() ){
@@ -142,6 +147,7 @@ $.ui.fancytree.registerExtension({
 			}
 			span.className = "fancytree-expander " + map[icon];
 		}
+		_removeSpanIcon(span);
 
 		if( node.tr ){
 			span = $("td", node.tr).find("span.fancytree-checkbox").get(0);
@@ -152,6 +158,7 @@ $.ui.fancytree.registerExtension({
 			icon = node.selected ? "checkboxSelected" : (node.partsel ? "checkboxUnknown" : "checkbox");
 			span.className = "fancytree-checkbox " + map[icon];
 		}
+		_removeSpanIcon(span);
 
 		// Standard icon (note that this does not match .fancytree-custom-icon,
 		// that might be set by opts.icon callbacks)
@@ -166,6 +173,8 @@ $.ui.fancytree.registerExtension({
 			}
 			span.className = "fancytree-icon " + icon;
 		}
+		_removeSpanIcon(span);
+
 		return res;
 	},
 	nodeSetStatus: function(ctx, status, message, details) {
@@ -175,17 +184,29 @@ $.ui.fancytree.registerExtension({
 
 		res = this._superApply(arguments);
 
-		if( status === "error" || status === "loading" || status === "nodata" ){
+		if (status === "error" || status === "loading" || status === "nodata") {
+            /*
+             * Wrap the icons inside the span. Instead of appending to the same span 
+             */
+		    var icon=$('<i />', {
+		        "class": ''
+		    });
+
+
 			if(node.parent){
 				span = $("span.fancytree-expander", node.span).get(0);
 				if( span ) {
-					span.className = "fancytree-expander " + _getIcon(opts, status);
+				    span.className = "fancytree-expander";
+				    $(icon).addClass(_getIcon(opts, status))
+				    $(span).html($(icon));
 				}
 			}else{ //
 				span = $(".fancytree-statusnode-" + status, node[this.nodeContainerAttrName])
 					.find("span.fancytree-icon").get(0);
 				if( span ) {
-					span.className = "fancytree-icon " + _getIcon(opts, status);
+				    span.className = "fancytree-icon ";
+				    $(icon).addClass(_getIcon(opts, status));
+				    $(span).html($(icon));
 				}
 			}
 		}
