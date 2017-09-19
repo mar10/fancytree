@@ -91,8 +91,11 @@ function _getIcon(opts, type){
 }
 
 function _removeSpanIcon(span) {
-    if (span && $(span).find('i'))
-        $(span).find('i').remove();
+    if (span && $(span).find("i"))
+	{
+		$(span).find("i").remove();
+	}
+        
 }
 $.ui.fancytree.registerExtension({
 	name: "glyph",
@@ -183,15 +186,15 @@ $.ui.fancytree.registerExtension({
 			   /*
              * Wrap the icons inside the span. Instead of appending to the same span 
              */
-		    var icon=$('<i />', {
-		        "class": ''
+		    var icon=$("<i />", {
+		        "class": ""
 		    });
 			
 			if(node.parent){
 				span = $("span.fancytree-expander", node.span).get(0);
 				if( span ) {
 					span.className = "fancytree-expander ";
-					$(icon).addClass(_getIcon(opts, status))
+					$(icon).addClass(_getIcon(opts, status));
 				    $(span).html($(icon));
 				}
 			}else{ //
@@ -199,7 +202,7 @@ $.ui.fancytree.registerExtension({
 					.find("span.fancytree-icon").get(0);
 				if( span ) {
 					span.className = "fancytree-icon ";
-					$(icon).addClass(_getIcon(opts, status))
+					$(icon).addClass(_getIcon(opts, status));
 				    $(span).html($(icon));
 				}
 			}
