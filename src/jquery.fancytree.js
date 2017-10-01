@@ -3051,7 +3051,7 @@ $.extend(Fancytree.prototype,
 			case "space":
 				if( node.isPagingNode() ) {
 					tree._triggerNodeEvent("clickPaging", ctx, event);
-				} else if(opts.checkbox){
+				} else if( FT.evalOption("checkbox", node, node, opts, false) ) {  // #768
 					tree.nodeToggleSelected(ctx);
 				}else{
 					tree.nodeSetActive(ctx, true);
