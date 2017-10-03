@@ -340,7 +340,7 @@ module.exports = (grunt) ->
                 # jQuery 1.9     dropped supports IE 6..?
                 # jQuery UI 1.9  supports IE 6+ and ?
                 browsers: [
-                  { browserName: "internet explorer", version: "6", platform: "Windows XP" }
+                  { browserName: "internet explorer", version: "7", platform: "Windows XP" }
                 ]
         ui_110:
             options:
