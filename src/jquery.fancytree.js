@@ -1073,6 +1073,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			if( p === otherNode ){
 				return true;
 			}
+			if( p === p.parent ) { $.error("Recursive parent link: " + p); }
 			p = p.parent;
 		}
 		return false;
