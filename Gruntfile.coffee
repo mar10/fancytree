@@ -243,11 +243,11 @@ module.exports = (grunt) ->
             cmd: "tabfix -t -r -m*.js,*.css,*.html,*.json -inode_modules src demo test"
         upload:
             # FTP upload the demo files (requires https://github.com/mar10/pyftpsync)
-            cmd: "pyftpsync --progress upload . ftp://www.wwwendt.de/tech/fancytree --delete-unmatched --omit build,node_modules,.*,_*"
-#            cmd: "pyftpsync --progress upload . ftp://www.wwwendt.de/tech/fancytree --omit build,node_modules,.*,_*  -x"
+            stdin: true  # Allow interactive console
+            cmd: "pyftpsync --progress upload . ftp://www.wwwendt.de/tech/fancytree --exclude build,node_modules,.*,_* --delete-unmatched"
         upload_force:
             # FTP upload the demo files (requires https://github.com/mar10/pyftpsync)
-            cmd: "pyftpsync --progress upload . ftp://www.wwwendt.de/tech/fancytree --delete-unmatched --omit build,node_modules,.*,_* --resolve=local --force"
+            cmd: "pyftpsync --progress upload . ftp://www.wwwendt.de/tech/fancytree --exclude build,node_modules,.*,_* --delete-unmatched --resolve=local --force"
 
     # htmllint:
     #     all: ["demo/**/*.html", "doc/**/*.html", "test/**/*.html"]
