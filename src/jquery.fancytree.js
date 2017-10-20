@@ -4409,7 +4409,8 @@ $.extend(Fancytree.prototype,
 	treeSetOption: function(ctx, key, value) {
 		var tree = ctx.tree,
 			callDefault = true,
-			rerender = false;
+			callCreate = false,
+			callRender = false;
 
 		switch( key ) {
 		case "aria":
@@ -4417,12 +4418,13 @@ $.extend(Fancytree.prototype,
 		case "icon":
 		case "minExpandLevel":
 		case "tabindex":
-			tree._callHook("treeCreate", tree);
-			rerender = true;
+			// tree._callHook("treeCreate", tree);
+			callCreate = true;
+			callRender = true;
 			break;
 		case "escapeTitles":
 		case "tooltip":
-			rerender = true;
+			callRender = true;
 			break;
 		case "rtl":
 			if( value === false ) {
@@ -4430,12 +4432,12 @@ $.extend(Fancytree.prototype,
 			}else{
 				tree.$container.attr("DIR", "RTL").addClass("fancytree-rtl");
 			}
-			rerender = true;
+			callRender = true;
 			break;
 		case "source":
 			callDefault = false;
 			tree._callHook("treeLoad", tree, value);
-			rerender = true;
+			callRender = true;
 			break;
 		}
 		tree.debug("set option " + key + "=" + value + " <" + typeof(value) + ">");
@@ -4448,7 +4450,10 @@ $.extend(Fancytree.prototype,
 				$.Widget.prototype._setOption.call(this.widget, key, value);
 			}
 		}
-		if(rerender){
+		if(callCreate){
+			tree._callHook("treeCreate", tree);
+		}
+		if(callRender){
 			tree.render(true, false);  // force, not-deep
 		}
 	}
