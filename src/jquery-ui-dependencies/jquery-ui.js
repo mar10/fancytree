@@ -3,6 +3,9 @@
 * Includes: widget.js, position.js, keycode.js, scroll-parent.js, unique-id.js, effect.js, effects/effect-blind.js
 * Copyright jQuery Foundation and other contributors; Licensed MIT */
 
+/*
+	NOTE: Wrapper replaced. See README-Fancytree.md
+
 (function( factory ) {
 	if ( typeof define === "function" && define.amd ) {
 
@@ -14,6 +17,8 @@
 		factory( jQuery );
 	}
 }(function( $ ) {
+*/
+(function( $ ) {
 
 $.ui = $.ui || {};
 
@@ -3022,5 +3027,6 @@ var effectsEffectBlind = $.effects.define( "blind", "hide", function( options, d
 
 
 
-
-}));
+// NOTE: Wrapper replaced. See README-Fancytree.md
+// }));
+})(jQuery);

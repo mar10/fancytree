@@ -1,6 +1,10 @@
 # 2.25.0 / Unreleased
   * [Added] New extension ext-fixed (experimental)
   * [Added] Source map files for jquery.fancytree-all-deps.min.js
+  * [Improved] #781 import dist/jquery.fancytree-all-deps.min.js by default
+  * [Changed] `npm install jquery.fancytree` no longer installs unnecessary files
+    (only dist/ folder)
+  * [Improved] Support for Node/CommonJS
   * [Fixed] #767: Input inside table head not working
   * [Fixed] #768: Can't use keyboard to select nodes when `checkbox` option is false
   * [Fixed] #782: wide extension - padding is off when checkbox option is changed

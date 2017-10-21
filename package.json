@@ -22,6 +22,12 @@
       "url": "https://raw.githubusercontent.com/mar10/fancytree/master/LICENSE.txt"
     }
   ],
+  "main": "./dist/jquery.fancytree-all-deps.min.js",
+  "files": [
+    "dist/"
+  ],
+  "directories": {
+  },
   "keywords": [
     "ajax",
     "ecosystem:jquery",
