@@ -121,6 +121,9 @@ module.exports = (grunt) ->
                   # (but keep disclaimer for jQuery-UI)
                   if not /jquery-ui..+.min.js/.test(fspec)
                       src = src.replace(/\/\*(.|\n)*\*\//g, "")
+                  # strip out AMD related code from jQuery-UI and make it an IIFE
+                  if /jquery-ui..+.min.js/.test(fspec)
+                      src = src.replace(/\(function.+jQuery\)}\)\((.+\)}\)})\);/, "!$1(jQuery);")
                   if /jquery.fancytree.min.js/.test(fspec)
                       src = "\n/*! Fancytree Core */" + src
                   if /fancytree..+.min.js/.test(fspec)
