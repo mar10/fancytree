@@ -90,7 +90,13 @@ function _getIcon(opts, type){
 	return opts.map[type];
 }
 
-
+function _removeSpanIcon(span) {
+    if (span && $(span).find("i"))
+	{
+		$(span).find("i").remove();
+	}
+        
+}
 $.ui.fancytree.registerExtension({
 	name: "glyph",
 	version: "@VERSION",
@@ -142,7 +148,7 @@ $.ui.fancytree.registerExtension({
 			}
 			span.className = "fancytree-expander " + map[icon];
 		}
-
+		_removeSpanIcon(span);
 		if( node.tr ){
 			span = $("td", node.tr).find("span.fancytree-checkbox").get(0);
 		}else{
@@ -152,7 +158,7 @@ $.ui.fancytree.registerExtension({
 			icon = node.selected ? "checkboxSelected" : (node.partsel ? "checkboxUnknown" : "checkbox");
 			span.className = "fancytree-checkbox " + map[icon];
 		}
-
+		_removeSpanIcon(span);
 		// Standard icon (note that this does not match .fancytree-custom-icon,
 		// that might be set by opts.icon callbacks)
 		span = $span.children("span.fancytree-icon").get(0);
@@ -166,6 +172,7 @@ $.ui.fancytree.registerExtension({
 			}
 			span.className = "fancytree-icon " + icon;
 		}
+		_removeSpanIcon(span);
 		return res;
 	},
 	nodeSetStatus: function(ctx, status, message, details) {
@@ -176,16 +183,27 @@ $.ui.fancytree.registerExtension({
 		res = this._superApply(arguments);
 
 		if( status === "error" || status === "loading" || status === "nodata" ){
+			   /*
+             * Wrap the icons inside the span. Instead of appending to the same span 
+             */
+		    var icon=$("<i />", {
+		        "class": ""
+		    });
+			
 			if(node.parent){
 				span = $("span.fancytree-expander", node.span).get(0);
 				if( span ) {
-					span.className = "fancytree-expander " + _getIcon(opts, status);
+					span.className = "fancytree-expander ";
+					$(icon).addClass(_getIcon(opts, status));
+				    $(span).html($(icon));
 				}
 			}else{ //
 				span = $(".fancytree-statusnode-" + status, node[this.nodeContainerAttrName])
 					.find("span.fancytree-icon").get(0);
 				if( span ) {
-					span.className = "fancytree-icon " + _getIcon(opts, status);
+					span.className = "fancytree-icon ";
+					$(icon).addClass(_getIcon(opts, status));
+				    $(span).html($(icon));
 				}
 			}
 		}
