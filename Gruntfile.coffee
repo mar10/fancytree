@@ -461,7 +461,7 @@ module.exports = (grunt) ->
             run_test: { tasks: ['test'] }
             check: { branch: ['master'], canPush: true, clean: true, cmpVersion: 'gte' }
             bump: {} # 'bump' also uses the increment mode `yabs:release:MODE`
-            run_build: { tasks: ['make_release'] }
+            run_build: { tasks: ['make_dist'] }
             commit: { add: '.' }
             tag: {}
             push: { tags: true, useFollowTags: true },
@@ -526,7 +526,7 @@ module.exports = (grunt) ->
       "qunit:build"
       ]
 
-  grunt.registerTask "make_release", [
+  grunt.registerTask "make_dist", [
       "exec:tabfix"
       "build"
       "clean:dist"
