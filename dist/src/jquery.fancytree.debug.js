@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.24.0
- * @date 2017-08-26T13:42:51Z
+ * @version 2.24.1-0
+ * @date 2017-10-24T06:44:53Z
  */
 
 ;(function($, window, document, undefined) {
@@ -41,7 +41,7 @@ for(i=0; i<EVENT_NAMES.length; i++){ EVENT_NAME_MAP[EVENT_NAMES[i]] = true; }
  */
 $.ui.fancytree.registerExtension({
 	name: "tracecalls",
-	version: "2.24.0",
+	version: "2.24.1-0",
 	// Default options for this extension.
 	options: {
 		logTarget: null,   // optional redirect logging to this <div> tag
@@ -55,7 +55,7 @@ $.ui.fancytree.registerExtension({
 		var tree = ctx.tree;
 
 		// Bind init-handler to apply cookie state
-		tree.$div.bind("fancytreeinit", function(event){
+		tree.$div.on("fancytreeinit", function(event){
 			tree.debug("COOKIE " + document.cookie);
 		});
 		// Init the tree
@@ -124,7 +124,7 @@ $.ui.fancytree.registerExtension({
 ;(function($, window, document, undefined) {
 	$.ui.fancytree.registerExtension({
 		name: "profiler",
-		version: "2.24.0",
+		version: "2.24.1-0",
 		// Default options for this extension
 		options: {
 			prefix: ""

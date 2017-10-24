@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.24.0
- * @date 2017-08-26T13:42:51Z
+ * @version 2.24.1-0
+ * @date 2017-10-24T06:44:53Z
  */
 
 
@@ -162,7 +162,7 @@ function handleDragOver(event, data) {
 		$targetTitle = $target.find("span.fancytree-title");
 
 	if(DRAG_ENTER_RESPONSE === false){
-		tree.warn("Ignore dragover, since dragenter returned false");  //, event, data);
+		tree.info("Ignore dragover, since dragenter returned false");  //, event, data);
 		// $.error("assert failed: dragenter returned false");
 		return false;
 	} else if(typeof DRAG_ENTER_RESPONSE === "string") {
@@ -260,7 +260,7 @@ function handleDragOver(event, data) {
 
 $.ui.fancytree.registerExtension({
 	name: "dnd5",
-	version: "2.24.0",
+	version: "2.24.1-0",
 	// Default options for this extension.
 	options: {
 		autoExpandMS: 1500,          // Expand nodes after n milliseconds of hovering

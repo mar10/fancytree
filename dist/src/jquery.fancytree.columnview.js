@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.24.0
- * @date 2017-08-26T13:42:51Z
+ * @version 2.24.1-0
+ * @date 2017-10-24T06:44:53Z
  */
 
 ;(function($, window, document, undefined) {
@@ -41,7 +41,7 @@ function _assert(cond, msg){
  */
 $.ui.fancytree.registerExtension({
 	name: "columnview",
-	version: "2.24.0",
+	version: "2.24.1-0",
 	// Default options for this extension.
 	options: {
 	},
@@ -78,7 +78,7 @@ $.ui.fancytree.registerExtension({
 		tree.widget.options.clickFolderMode = 1;
 
 		// Make sure that only active path is expanded when a node is activated:
-		$table.bind("fancytreeactivate", function(event, data){
+		$table.on("fancytreeactivate", function(event, data){
 			var i, tdList,
 				node = data.node,
 				tree = data.tree,
@@ -97,7 +97,7 @@ $.ui.fancytree.registerExtension({
 				node.setExpanded();
 			}
 		// Adjust keyboard behaviour:
-		}).bind("fancytreekeydown", function(event, data){
+		}).on("fancytreekeydown", function(event, data){
 			var next = null,
 				node = data.node || data.tree.getFirstChild();
 			switch(event.which){

@@ -4,19 +4,7 @@
 * Copyright jQuery Foundation and other contributors; Licensed MIT */
 
 /*
-	NOTE: Wrapper replaced. See README-Fancytree.md
-
-(function( factory ) {
-	if ( typeof define === "function" && define.amd ) {
-
-		// AMD. Register as an anonymous module.
-		define([ "jquery" ], factory );
-	} else {
-
-		// Browser globals
-		factory( jQuery );
-	}
-}(function( $ ) {
+	NOTE: Original jQuery UI wrapper was replaced. See README-Fancytree.md
 */
 (function( $ ) {
 
@@ -3025,8 +3013,6 @@ var effectsEffectBlind = $.effects.define( "blind", "hide", function( options, d
 	} );
 } );
 
-
-
-// NOTE: Wrapper replaced. See README-Fancytree.md
+// NOTE: Original jQuery UI wrapper was replaced. See README-Fancytree.md
 // }));
 })(jQuery);

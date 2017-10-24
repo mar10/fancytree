@@ -7,8 +7,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.24.0
- * @date 2017-08-26T13:42:51Z
+ * @version 2.24.1-0
+ * @date 2017-10-24T06:44:53Z
  */
 
 /** Core Fancytree module.
@@ -1073,6 +1073,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			if( p === otherNode ){
 				return true;
 			}
+			if( p === p.parent ) { $.error("Recursive parent link: " + p); }
 			p = p.parent;
 		}
 		return false;
@@ -3050,7 +3051,7 @@ $.extend(Fancytree.prototype,
 			case "space":
 				if( node.isPagingNode() ) {
 					tree._triggerNodeEvent("clickPaging", ctx, event);
-				} else if(opts.checkbox){
+				} else if( FT.evalOption("checkbox", node, node, opts, false) ) {  // #768
 					tree.nodeToggleSelected(ctx);
 				}else{
 					tree.nodeSetActive(ctx, true);
@@ -4408,7 +4409,8 @@ $.extend(Fancytree.prototype,
 	treeSetOption: function(ctx, key, value) {
 		var tree = ctx.tree,
 			callDefault = true,
-			rerender = false;
+			callCreate = false,
+			callRender = false;
 
 		switch( key ) {
 		case "aria":
@@ -4416,12 +4418,13 @@ $.extend(Fancytree.prototype,
 		case "icon":
 		case "minExpandLevel":
 		case "tabindex":
-			tree._callHook("treeCreate", tree);
-			rerender = true;
+			// tree._callHook("treeCreate", tree);
+			callCreate = true;
+			callRender = true;
 			break;
 		case "escapeTitles":
 		case "tooltip":
-			rerender = true;
+			callRender = true;
 			break;
 		case "rtl":
 			if( value === false ) {
@@ -4429,12 +4432,12 @@ $.extend(Fancytree.prototype,
 			}else{
 				tree.$container.attr("DIR", "RTL").addClass("fancytree-rtl");
 			}
-			rerender = true;
+			callRender = true;
 			break;
 		case "source":
 			callDefault = false;
 			tree._callHook("treeLoad", tree, value);
-			rerender = true;
+			callRender = true;
 			break;
 		}
 		tree.debug("set option " + key + "=" + value + " <" + typeof(value) + ">");
@@ -4447,7 +4450,10 @@ $.extend(Fancytree.prototype,
 				$.Widget.prototype._setOption.call(this.widget, key, value);
 			}
 		}
-		if(rerender){
+		if(callCreate){
+			tree._callHook("treeCreate", tree);
+		}
+		if(callRender){
 			tree.render(true, false);  // force, not-deep
 		}
 	}
@@ -4661,7 +4667,12 @@ $.widget("ui.fancytree",
 				tree._callHook("nodeSetFocus", tree._makeHookContext(node, event), flag);
 				// tree._callHook("nodeSetFocus", node, flag);
 			}else{
-				tree._callHook("treeSetFocus", tree, flag);
+				if( tree.tbody && $(event.target).parents("table.fancytree-container > thead").length ) {
+					// #767: ignore events in the table's header
+					tree.debug("Ignore focus event outside table body.", event);
+				} else {
+					tree._callHook("treeSetFocus", tree, flag);
+				}
 			}
 
 		}).on("selectstart" + ns, "span.fancytree-title", function(event){
@@ -4785,7 +4796,7 @@ $.extend($.ui.fancytree,
 	/** @lends Fancytree_Static# */
 	{
 	/** @type {string} */
-	version: "2.24.0",      // Set to semver by 'grunt release'
+	version: "2.24.1-0",      // Set to semver by 'grunt release'
 	/** @type {string} */
 	buildType: "production", // Set to 'production' by 'grunt build'
 	/** @type {int} */
