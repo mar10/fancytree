@@ -37,7 +37,9 @@
     "tree",
     "treegrid"
   ],
-  "dependencies": {},
+  "dependencies": {
+    "jquery": ">=1.9"
+  },
   "devDependencies": {
     "grunt": "^1.0.0",
     "grunt-contrib-clean": "^1.0.0",
