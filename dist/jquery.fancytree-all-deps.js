@@ -1,4 +1,4 @@
-/*! jQuery Fancytree Plugin - 2.24.1-0 - 2017-10-24T06:44:53Z
+/*! jQuery Fancytree Plugin - 2.24.1-0 - 2017-10-28T11:33:00Z
   * https://github.com/mar10/fancytree
   * Copyright (c) 2017 Martin Wendt; Licensed MIT
  */
@@ -8,19 +8,7 @@
 * Copyright jQuery Foundation and other contributors; Licensed MIT */
 
 /*
-	NOTE: Wrapper replaced. See README-Fancytree.md
-
-(function( factory ) {
-	if ( typeof define === "function" && define.amd ) {
-
-		// AMD. Register as an anonymous module.
-		define([ "jquery" ], factory );
-	} else {
-
-		// Browser globals
-		factory( jQuery );
-	}
-}(function( $ ) {
+	NOTE: Original jQuery UI wrapper was replaced. See README-Fancytree.md
 */
 (function( $ ) {
 
@@ -3029,9 +3017,7 @@ var effectsEffectBlind = $.effects.define( "blind", "hide", function( options, d
 	} );
 } );
 
-
-
-// NOTE: Wrapper replaced. See README-Fancytree.md
+// NOTE: Original jQuery UI wrapper was replaced. See README-Fancytree.md
 // }));
 })(jQuery);
 
@@ -3059,7 +3045,7 @@ var effectsEffectBlind = $.effects.define( "blind", "hide", function( options, d
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
  * @version 2.24.1-0
- * @date 2017-10-24T06:44:53Z
+ * @date 2017-10-28T11:33:00Z
  */
 
 /** Core Fancytree module.
@@ -8311,7 +8297,7 @@ $.extend($.ui.fancytree,
 }(jQuery, window, document));
 
 
-/*! Extension 'uery.fancytree.childcounter.js' */// Extending Fancytree
+/*! Extension 'jquery.fancytree.childcounter.js' */// Extending Fancytree
 // ===================
 //
 // See also the [live demo](http://wwwendt.de/tech/fancytree/demo/sample-ext-childcounter.html) of this code.
@@ -8333,7 +8319,7 @@ $.extend($.ui.fancytree,
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
  * @version 2.24.1-0
- * @date 2017-10-24T06:44:53Z
+ * @date 2017-10-28T11:33:00Z
  */
 
 // To keep the global namespace clean, we wrap everything in a closure
@@ -8523,7 +8509,7 @@ $.ui.fancytree.registerExtension({
 }(jQuery, window, document));
 
 
-/*! Extension 'uery.fancytree.clones.js' *//*!
+/*! Extension 'jquery.fancytree.clones.js' *//*!
  *
  * jquery.fancytree.clones.js
  * Support faster lookup of nodes by key and shared ref-ids.
@@ -8535,7 +8521,7 @@ $.ui.fancytree.registerExtension({
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
  * @version 2.24.1-0
- * @date 2017-10-24T06:44:53Z
+ * @date 2017-10-28T11:33:00Z
  */
 
 ;(function($, window, document, undefined) {
@@ -8990,7 +8976,7 @@ $.ui.fancytree.registerExtension({
 }(jQuery, window, document));
 
 
-/*! Extension 'uery.fancytree.dnd5.js' *//*!
+/*! Extension 'jquery.fancytree.dnd5.js' *//*!
  * jquery.fancytree.dnd5.js
  *
  * Drag-and-drop support (native HTML5).
@@ -9002,7 +8988,7 @@ $.ui.fancytree.registerExtension({
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
  * @version 2.24.1-0
- * @date 2017-10-24T06:44:53Z
+ * @date 2017-10-28T11:33:00Z
  */
 
 
@@ -9572,7 +9558,7 @@ $.ui.fancytree.registerExtension({
 }(jQuery, window, document));
 
 
-/*! Extension 'uery.fancytree.edit.js' *//*!
+/*! Extension 'jquery.fancytree.edit.js' *//*!
  * jquery.fancytree.edit.js
  *
  * Make node titles editable.
@@ -9584,7 +9570,7 @@ $.ui.fancytree.registerExtension({
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
  * @version 2.24.1-0
- * @date 2017-10-24T06:44:53Z
+ * @date 2017-10-28T11:33:00Z
  */
 
 ;(function($, window, document, undefined) {
@@ -9889,7 +9875,7 @@ $.ui.fancytree.registerExtension({
 }(jQuery, window, document));
 
 
-/*! Extension 'uery.fancytree.filter.js' *//*!
+/*! Extension 'jquery.fancytree.filter.js' *//*!
  * jquery.fancytree.filter.js
  *
  * Remove or highlight tree nodes, based on a filter.
@@ -9901,7 +9887,7 @@ $.ui.fancytree.registerExtension({
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
  * @version 2.24.1-0
- * @date 2017-10-24T06:44:53Z
+ * @date 2017-10-28T11:33:00Z
  */
 
 ;(function($, window, document, undefined) {
@@ -10259,7 +10245,7 @@ $.ui.fancytree.registerExtension({
 }(jQuery, window, document));
 
 
-/*! Extension 'uery.fancytree.glyph.js' *//*!
+/*! Extension 'jquery.fancytree.glyph.js' *//*!
  * jquery.fancytree.glyph.js
  *
  * Use glyph fonts as instead of icon sprites.
@@ -10271,7 +10257,7 @@ $.ui.fancytree.registerExtension({
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
  * @version 2.24.1-0
- * @date 2017-10-24T06:44:53Z
+ * @date 2017-10-28T11:33:00Z
  */
 
 ;(function($, window, document, undefined) {
@@ -10456,7 +10442,7 @@ $.ui.fancytree.registerExtension({
 }(jQuery, window, document));
 
 
-/*! Extension 'uery.fancytree.gridnav.js' *//*!
+/*! Extension 'jquery.fancytree.gridnav.js' *//*!
  * jquery.fancytree.gridnav.js
  *
  * Support keyboard navigation for trees with embedded input controls.
@@ -10468,7 +10454,7 @@ $.ui.fancytree.registerExtension({
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
  * @version 2.24.1-0
- * @date 2017-10-24T06:44:53Z
+ * @date 2017-10-28T11:33:00Z
  */
 
 ;(function($, window, document, undefined) {
@@ -10661,7 +10647,7 @@ $.ui.fancytree.registerExtension({
 }(jQuery, window, document));
 
 
-/*! Extension 'uery.fancytree.persist.js' *//*!
+/*! Extension 'jquery.fancytree.persist.js' *//*!
  * jquery.fancytree.persist.js
  *
  * Persist tree status in cookiesRemove or highlight tree nodes, based on a filter.
@@ -10675,7 +10661,7 @@ $.ui.fancytree.registerExtension({
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
  * @version 2.24.1-0
- * @date 2017-10-24T06:44:53Z
+ * @date 2017-10-28T11:33:00Z
  */
 
 ;(function($, window, document, undefined) {
@@ -11052,7 +11038,7 @@ $.ui.fancytree.registerExtension({
 }(jQuery, window, document));
 
 
-/*! Extension 'uery.fancytree.table.js' *//*!
+/*! Extension 'jquery.fancytree.table.js' *//*!
  * jquery.fancytree.table.js
  *
  * Render tree as table (aka 'tree grid', 'table tree').
@@ -11064,7 +11050,7 @@ $.ui.fancytree.registerExtension({
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
  * @version 2.24.1-0
- * @date 2017-10-24T06:44:53Z
+ * @date 2017-10-28T11:33:00Z
  */
 
 ;(function($, window, document, undefined) {
@@ -11500,7 +11486,7 @@ $.ui.fancytree.registerExtension({
 }(jQuery, window, document));
 
 
-/*! Extension 'uery.fancytree.themeroller.js' *//*!
+/*! Extension 'jquery.fancytree.themeroller.js' *//*!
  * jquery.fancytree.themeroller.js
  *
  * Enable jQuery UI ThemeRoller styles.
@@ -11514,7 +11500,7 @@ $.ui.fancytree.registerExtension({
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
  * @version 2.24.1-0
- * @date 2017-10-24T06:44:53Z
+ * @date 2017-10-28T11:33:00Z
  */
 
 ;(function($, window, document, undefined) {
@@ -11600,7 +11586,7 @@ $.ui.fancytree.registerExtension({
 }(jQuery, window, document));
 
 
-/*! Extension 'uery.fancytree.wide.js' *//*!
+/*! Extension 'jquery.fancytree.wide.js' *//*!
  * jquery.fancytree.wide.js
  * Support for 100% wide selection bars.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
@@ -11611,7 +11597,7 @@ $.ui.fancytree.registerExtension({
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
  * @version 2.24.1-0
- * @date 2017-10-24T06:44:53Z
+ * @date 2017-10-28T11:33:00Z
  */
 
 ;(function($, window, document, undefined) {
@@ -11795,4 +11781,6 @@ $.ui.fancytree.registerExtension({
 });
 }(jQuery, window, document));
 
+// Value returned by `require('jquery.fancytree')`
+return $.ui.fancytree;
 }));  // End of closure
