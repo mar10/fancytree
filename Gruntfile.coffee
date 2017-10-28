@@ -130,7 +130,7 @@ module.exports = (grunt) ->
                   if /fancytree..+.js/.test(fspec)
                     # If it is an extension:
                     # Prepend a one-liner instead
-                    fspec = fspec.substr(6) # strip 'build/'
+                    fspec = fspec.substr(4) # strip 'src/'
                     src = "\n/*! Extension '" + fspec + "' */" + src
                   return src
             src: [
