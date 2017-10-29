@@ -23,9 +23,25 @@
  * @date @DATE
  */
 
-// To keep the global namespace clean, we wrap everything in a closure
+// To keep the global namespace clean, we wrap everything in a closure.
+// The UMD wrapper pattern defines the dependencies on jQuery and the
+// Fancytree core module, and makes sure that we can use the `require()`
+// syntax with package loaders.
 
-;(function($, window, document, undefined) {
+;(function( factory ) {
+	if ( typeof define === "function" && define.amd ) {
+		// AMD. Register as an anonymous module.
+		define( [ "jquery", "./jquery.fancytree" ], factory );
+	} else if ( typeof module === "object" && module.exports ) {
+		// Node/CommonJS
+		require("jquery.fancytree.ui-deps");
+		module.exports = factory(require("jquery"));
+	} else {
+		// Browser globals
+		factory( jQuery );
+	}
+
+}( function( $ ) {
 
 // Consider to use [strict mode](http://ejohn.org/blog/ecmascript-5-strict-mode-json-and-more/)
 "use strict";
@@ -206,5 +222,6 @@ $.ui.fancytree.registerExtension({
 
 // End of extension definition
 });
-// End of namespace closure
-}(jQuery, window, document));
+// Value returned by `require('jquery.fancytree..')`
+return $.ui.fancytree;
+}));  // End of closure

@@ -14,9 +14,22 @@
 /** Core Fancytree module.
  */
 
+// UMD wrapper for the Fancytree core module
+;(function( factory ) {
+	if ( typeof define === "function" && define.amd ) {
+		// AMD. Register as an anonymous module.
+		define( [ "jquery", "./jquery.fancytree.ui-deps" ], factory );
+	} else if ( typeof module === "object" && module.exports ) {
+		// Node/CommonJS
+		require("jquery.fancytree.ui-deps");
+		module.exports = factory(require("jquery"));
+	} else {
+		// Browser globals
+		factory( jQuery );
+	}
 
-// Start of local namespace
-;(function($, window, document, undefined) {
+}( function( $ ) {
+
 "use strict";
 
 // prevent duplicate loading
@@ -5257,4 +5270,6 @@ $.extend($.ui.fancytree,
 	}
 });
 
-}(jQuery, window, document));
+// Value returned by `require('jquery.fancytree')`
+return $.ui.fancytree;
+}));  // End of closure

@@ -30,33 +30,22 @@ module.exports = (grunt) ->
             src: [ "build" ]
         dist:
             src: [ "dist" ]
-        extMin:
+        buildExtMin:
             src: [ "build/jquery.fancytree.*.min.js" ]
 
-    # compress:
-    #     dist:
-    #         options:
-    #             archive: "archive/<%= pkg.name %>-<%= pkg.version %>.zip"
-    #         files: [
-    #             {expand: true, cwd: "dist/", src: ["**/*"], dest: ""}
-    #             ]
-
     concat:
-        core:
+        core_to_build:
             options:
                 stripBanners: true
             src: ["<banner:meta.banner>"
-                  # "lib/intro.js"
-                  "src/<%= pkg.name %>.js"
-                  # "lib/outro.js"
+                  "src/jquery.fancytree.js"
                   ]
-            dest: "build/<%= pkg.name %>.js"
-        all:
+            dest: "build/jquery.fancytree.js"
+        bundle_to_build:
             options:
                 stripBanners: true
             src: [
                 "<%= meta.banner %>"
-                # "lib/intro.js"
                 "src/jquery.fancytree.js"
 #                "build/jquery.fancytree.ariagrid.js"
                 "src/jquery.fancytree.childcounter.js"
@@ -73,11 +62,10 @@ module.exports = (grunt) ->
                 "src/jquery.fancytree.table.js"
                 "src/jquery.fancytree.themeroller.js"
                 "src/jquery.fancytree.wide.js"
-                # "lib/outro.js"
                 ]
-            dest: "build/<%= pkg.name %>-all.js"
+            dest: "build/jquery.fancytree-all.js"
 
-        custom:
+        amd_bundle_min:
             options:
                 banner: "<%= meta.banner %>"
                 stripBanners: true
@@ -91,7 +79,7 @@ module.exports = (grunt) ->
                     src = "\n/*! Extension '" + fspec + "' */" + src
                   return src
             src: [
-                "lib/intro-all.js"
+                "lib/amd-intro-require-ui.js"
                 "build/jquery.fancytree.min.js"
 #                "build/jquery.fancytree.ariagrid.min.js"
                 "build/jquery.fancytree.childcounter.min.js"
@@ -108,11 +96,11 @@ module.exports = (grunt) ->
                 "build/jquery.fancytree.table.min.js"
                 "build/jquery.fancytree.themeroller.min.js"
                 "build/jquery.fancytree.wide.min.js"
-                "lib/outro.js"
+                "lib/amd-outro.js"
                 ]
-            dest: "build/<%= pkg.name %>-all.min.js"
+            dest: "build/jquery.fancytree-all.min.js"
 
-        "all-deps":  # un-minified, so we can generate a map file
+        all_deps:  # un-minified, so we can generate a map file
             options:
                 banner: "<%= meta.banner %>"
                 stripBanners: true
@@ -138,26 +126,26 @@ module.exports = (grunt) ->
                 # jQuery UI custom (AMD header removed; IIFE only)
                 "src/jquery-ui-dependencies/jquery-ui.js"
                 # Fancytree core and extensions, wrapped in UMD pattern
-                "lib/intro-all-deps.js"
+                "lib/amd-intro-all-deps.js"
                 "src/jquery.fancytree.js"
-#                "build/jquery.fancytree.ariagrid.js"
+                # "build/jquery.fancytree.ariagrid.js"
                 "src/jquery.fancytree.childcounter.js"
                 "src/jquery.fancytree.clones.js"
-#                "src/jquery.fancytree.columnview.js"
-                # "src/jquery.fancytree.dnd.js"
+                # "src/jquery.fancytree.columnview.js"
+                # "src/jquery.fancytree.dnd.js"  # Draggable widget is not part of our custom jQuery UI dependencies
                 "src/jquery.fancytree.dnd5.js"
                 "src/jquery.fancytree.edit.js"
                 "src/jquery.fancytree.filter.js"
-#                "src/jquery.fancytree.fixed.js"
+                # "src/jquery.fancytree.fixed.js"
                 "src/jquery.fancytree.glyph.js"
                 "src/jquery.fancytree.gridnav.js"
                 "src/jquery.fancytree.persist.js"
                 "src/jquery.fancytree.table.js"
                 "src/jquery.fancytree.themeroller.js"
                 "src/jquery.fancytree.wide.js"
-                "lib/outro.js"
+                "lib/amd-outro.js"
                 ]
-            dest: "build/<%= pkg.name %>-all-deps.js"
+            dest: "build/jquery.fancytree-all-deps.js"
 
     connect:
         forever:
@@ -178,9 +166,9 @@ module.exports = (grunt) ->
                 keepalive: false
 
     copy:
-        build: # copy production files to build folder
-            files: [{
-                expand: true # required for cwd
+        build:  # Copy development files to build folder
+            files: [{  # src/ => build/
+                expand: true  # required for cwd
                 cwd: "src/"
                 src: [
                     "skin-**/*.{css,gif,md,png,less}"
@@ -188,26 +176,24 @@ module.exports = (grunt) ->
                     "*.txt"
                     ]
                 dest: "build/"
-            }, {
+            }, {  # src/ => build/modules/
                 expand: true
                 cwd: "src/"
-                src: [
-                    "jquery.*.js"
-                    ]
-                # src: [
-                #   "skin-**/*.{css,gif,png,less,md}"
-                #   "*.txt"
-                #   "jquery.*.js"
-                #   "skin-common.less"
-                #   ]
-                dest: "build/src/"
-            }, {
-                # src: ["*.txt", "*.md"]
+                src: [ "jquery.*.js" ]
+                dest: "build/modules/"
+            }, {  # Top-level => build/
                 src: ["LICENSE.txt"]
                 dest: "build/"
             }]
-        dist: # copy build folder to dist
-            files: [{expand: true, cwd: "build/", src: ["**"], dest: "dist/"}]
+        ui_deps:  #
+            files: [{
+                src: "src/jquery-ui-dependencies/jquery.fancytree.ui-deps.js"
+                dest: "build/modules/jquery.fancytree.ui-deps.js"
+            }]
+        dist:  # Copy build folder to dist/ (recursive)
+            files: [
+              {expand: true, cwd: "build/", src: ["**"], dest: "dist/"}
+            ]
 
     cssmin:
         options:
@@ -257,9 +243,6 @@ module.exports = (grunt) ->
             # FTP upload the demo files (requires https://github.com/mar10/pyftpsync)
             cmd: "pyftpsync --progress upload . ftp://www.wwwendt.de/tech/fancytree --exclude build,node_modules,.*,_* --delete-unmatched --resolve=local --force"
 
-    # htmllint:
-    #     all: ["demo/**/*.html", "doc/**/*.html", "test/**/*.html"]
-
     jsdoc:
         build:
             src: ["src/*.js", "doc/README.md"]
@@ -281,8 +264,8 @@ module.exports = (grunt) ->
             "demo/**/*.js"
             ]
         afterConcat: [
-            "<%= concat.core.dest %>"
-            "<%= concat.all.dest %>"
+            "build/jquery.fancytree.js"
+            "build/jquery.fancytree-all.js"
             ]
 
     less:
@@ -403,8 +386,7 @@ module.exports = (grunt) ->
                 ]
 
     uglify:
-
-        custom:
+        src_to_build:
             options:  # see https://github.com/gruntjs/grunt-contrib-uglify/issues/366
                 report: "min"
                 # preserveComments: "some"
@@ -423,7 +405,7 @@ module.exports = (grunt) ->
               }
               ]
 
-        "all-deps":
+        all_deps:
             options:  # see https://github.com/gruntjs/grunt-contrib-uglify/issues/366
                 report: "min"
                 sourceMap: true
@@ -513,15 +495,16 @@ module.exports = (grunt) ->
       "clean:build"
       "copy:build"
       "cssmin:build"
-      "concat:core"
-      "concat:all"
-      "uglify:custom"
-      "concat:custom"
-      "concat:all-deps"
-      "uglify:all-deps"
-      "clean:extMin"
+      "concat:core_to_build"
+      "concat:bundle_to_build"
+      "uglify:src_to_build"
+      "concat:amd_bundle_min"
+      "concat:all_deps"
+      "uglify:all_deps"
+      "clean:buildExtMin"
       "replace:production"
       "jshint:afterConcat"
+      "copy:ui_deps"
       # "uglify:build"
       "qunit:build"
       ]

@@ -9,6 +9,9 @@
     	// "document": false,
      //    "jQuery": false,
      //    "window": false
+     "define": true,
+     "module": true,
+     "require": true
     },
 	"rules": {
 		"no-negated-in-lhs": "error",
@@ -41,7 +44,7 @@
 		"no-nested-ternary": "error",
 		"no-unreachable": "error",
 		"wrap-iife": [
-			"error",
+			"warn",
 			"inside"
 		],
 		"no-caller": "error",
