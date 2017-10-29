@@ -1,10 +1,16 @@
 # 2.25.0 / Unreleased
+  * **Improved Module Support and Distribution**<br>
+    * The `dist/` folder now includes a `modules/` directory with fancytree core and all extensions.<br>
+      `jquery.fancytree/dist/modules/jquery.fancytree` is defined as main module,
+      so Fancytree can now be included using a simple<br>
+      `fancytree = require('jquery.fancytree')`.<br>
+      See [the docs](https://github.com/mar10/fancytree/wiki/TutorialIntegration) for details.
+    * The modules now return the [Fancytree namespace](http://www.wwwendt.de/tech/fancytree/doc/jsdoc/Fancytree_Static.html).
+    * [Improved] #781 import dist/modules/jquery.fancytree.js by default
+    * [Added] Source map files for `jquery.fancytree-all-deps.min.js`
+    * BREAKING CHANGES:<br>
+      The `dist/src/` folder was renamed to `dist/modules`. The files are now UMD compliant.
   * [Added] New extension ext-fixed (experimental)
-  * [Added] Source map files for jquery.fancytree-all-deps.min.js
-  * [Improved] #781 import dist/jquery.fancytree-all-deps.min.js by default
-  * [Changed] `npm install jquery.fancytree` no longer installs unnecessary files
-    (only dist/ folder)
-  * [Improved] Support for Node/CommonJS
   * [Fixed] #767: Input inside table head not working
   * [Fixed] #768: Can't use keyboard to select nodes when `checkbox` option is false
   * [Fixed] #782: wide extension - padding is off when checkbox option is changed

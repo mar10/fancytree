@@ -30,8 +30,11 @@ module.exports = (grunt) ->
             src: [ "build" ]
         dist:
             src: [ "dist" ]
-        buildExtMin:
-            src: [ "build/jquery.fancytree.*.min.js" ]
+        build_minified:
+            src: [
+              "build/jquery.fancytree.*.min.js"
+              "build/jquery-ui-dependencies/"
+            ]
 
     concat:
         core_to_build:
@@ -79,17 +82,17 @@ module.exports = (grunt) ->
                     src = "\n/*! Extension '" + fspec + "' */" + src
                   return src
             src: [
-                "lib/amd-intro-require-ui.js"
+                "lib/amd-intro-require-native-ui.js"
                 "build/jquery.fancytree.min.js"
-#                "build/jquery.fancytree.ariagrid.min.js"
+                # "build/jquery.fancytree.ariagrid.min.js"
                 "build/jquery.fancytree.childcounter.min.js"
                 "build/jquery.fancytree.clones.min.js"
-#                "build/jquery.fancytree.columnview.min.js"
+                # "build/jquery.fancytree.columnview.min.js"
                 "build/jquery.fancytree.dnd.min.js"
                 "build/jquery.fancytree.dnd5.min.js"
                 "build/jquery.fancytree.edit.min.js"
                 "build/jquery.fancytree.filter.min.js"
-#                "build/jquery.fancytree.fixed.min.js"
+                # "build/jquery.fancytree.fixed.min.js"
                 "build/jquery.fancytree.glyph.min.js"
                 "build/jquery.fancytree.gridnav.min.js"
                 "build/jquery.fancytree.persist.min.js"
@@ -123,10 +126,10 @@ module.exports = (grunt) ->
                   return src
             src: [
                 "<%= meta.banner %>"
-                # jQuery UI custom (AMD header removed; IIFE only)
-                "src/jquery-ui-dependencies/jquery-ui.js"
+                # Inline jQuery UI custom (AMD header removed: IIFE only)
+                "src/jquery-ui-dependencies/jquery-ui-iife.js"
                 # Fancytree core and extensions, wrapped in UMD pattern
-                "lib/amd-intro-all-deps.js"
+                "lib/amd-intro-require-jquery.js"
                 "src/jquery.fancytree.js"
                 # "build/jquery.fancytree.ariagrid.js"
                 "src/jquery.fancytree.childcounter.js"
@@ -501,7 +504,7 @@ module.exports = (grunt) ->
       "concat:amd_bundle_min"
       "concat:all_deps"
       "uglify:all_deps"
-      "clean:buildExtMin"
+      "clean:build_minified"
       "replace:production"
       "jshint:afterConcat"
       "copy:ui_deps"

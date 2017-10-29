@@ -12,18 +12,25 @@
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
  * @version 2.24.1-0
- * @date 2017-10-28T11:33:00Z
+ * @date 2017-10-29T17:28:46Z
  */
 
-;(function($, window, document, undefined) {
+;(function( factory ) {
+	if ( typeof define === "function" && define.amd ) {
+		// AMD. Register as an anonymous module.
+		define( [ "jquery", "./jquery.fancytree" ], factory );
+	} else if ( typeof module === "object" && module.exports ) {
+		// Node/CommonJS
+		require("jquery.fancytree");
+		module.exports = factory(require("jquery"));
+	} else {
+		// Browser globals
+		factory( jQuery );
+	}
+
+}( function( $ ) {
 
 "use strict";
-
-// prevent duplicate loading
-// if ( $.ui.fancytree && $.ui.fancytree.version ) {
-//     $.ui.fancytree.warn("Fancytree: duplicate include");
-//     return;
-// }
 
 $.ui.fancytree.registerExtension({
 	name: "menu",
@@ -152,4 +159,6 @@ $.ui.fancytree.registerExtension({
 //		this._superApply(arguments);
 //	}
 });
-}(jQuery, window, document));
+// Value returned by `require('jquery.fancytree..')`
+return $.ui.fancytree;
+}));  // End of closure

@@ -1,4 +1,4 @@
-/*! jQuery Fancytree Plugin - 2.24.1-0 - 2017-10-28T11:33:00Z
+/*! jQuery Fancytree Plugin - 2.24.1-0 - 2017-10-29T17:28:46Z
   * https://github.com/mar10/fancytree
   * Copyright (c) 2017 Martin Wendt; Licensed MIT
  */
@@ -8,7 +8,8 @@
 * Copyright jQuery Foundation and other contributors; Licensed MIT */
 
 /*
-	NOTE: Original jQuery UI wrapper was replaced. See README-Fancytree.md
+	NOTE: Original jQuery UI wrapper was replaced with a simple IIFE.
+	See README-Fancytree.md
 */
 (function( $ ) {
 
@@ -3045,15 +3046,28 @@ var effectsEffectBlind = $.effects.define( "blind", "hide", function( options, d
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
  * @version 2.24.1-0
- * @date 2017-10-28T11:33:00Z
+ * @date 2017-10-29T17:28:46Z
  */
 
 /** Core Fancytree module.
  */
 
+// UMD wrapper for the Fancytree core module
+;(function( factory ) {
+	if ( typeof define === "function" && define.amd ) {
+		// AMD. Register as an anonymous module.
+		define( [ "jquery", "./jquery.fancytree.ui-deps" ], factory );
+	} else if ( typeof module === "object" && module.exports ) {
+		// Node/CommonJS
+		require("jquery.fancytree.ui-deps");
+		module.exports = factory(require("jquery"));
+	} else {
+		// Browser globals
+		factory( jQuery );
+	}
 
-// Start of local namespace
-;(function($, window, document, undefined) {
+}( function( $ ) {
+
 "use strict";
 
 // prevent duplicate loading
@@ -8294,7 +8308,9 @@ $.extend($.ui.fancytree,
 	}
 });
 
-}(jQuery, window, document));
+// Value returned by `require('jquery.fancytree')`
+return $.ui.fancytree;
+}));  // End of closure
 
 
 /*! Extension 'jquery.fancytree.childcounter.js' */// Extending Fancytree
@@ -8319,12 +8335,28 @@ $.extend($.ui.fancytree,
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
  * @version 2.24.1-0
- * @date 2017-10-28T11:33:00Z
+ * @date 2017-10-29T17:28:46Z
  */
 
-// To keep the global namespace clean, we wrap everything in a closure
+// To keep the global namespace clean, we wrap everything in a closure.
+// The UMD wrapper pattern defines the dependencies on jQuery and the
+// Fancytree core module, and makes sure that we can use the `require()`
+// syntax with package loaders.
 
-;(function($, window, document, undefined) {
+;(function( factory ) {
+	if ( typeof define === "function" && define.amd ) {
+		// AMD. Register as an anonymous module.
+		define( [ "jquery", "./jquery.fancytree" ], factory );
+	} else if ( typeof module === "object" && module.exports ) {
+		// Node/CommonJS
+		require("jquery.fancytree");
+		module.exports = factory(require("jquery"));
+	} else {
+		// Browser globals
+		factory( jQuery );
+	}
+
+}( function( $ ) {
 
 // Consider to use [strict mode](http://ejohn.org/blog/ecmascript-5-strict-mode-json-and-more/)
 "use strict";
@@ -8505,8 +8537,9 @@ $.ui.fancytree.registerExtension({
 
 // End of extension definition
 });
-// End of namespace closure
-}(jQuery, window, document));
+// Value returned by `require('jquery.fancytree..')`
+return $.ui.fancytree;
+}));  // End of closure
 
 
 /*! Extension 'jquery.fancytree.clones.js' *//*!
@@ -8521,10 +8554,23 @@ $.ui.fancytree.registerExtension({
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
  * @version 2.24.1-0
- * @date 2017-10-28T11:33:00Z
+ * @date 2017-10-29T17:28:46Z
  */
 
-;(function($, window, document, undefined) {
+;(function( factory ) {
+	if ( typeof define === "function" && define.amd ) {
+		// AMD. Register as an anonymous module.
+		define( [ "jquery", "./jquery.fancytree" ], factory );
+	} else if ( typeof module === "object" && module.exports ) {
+		// Node/CommonJS
+		require("jquery.fancytree");
+		module.exports = factory(require("jquery"));
+	} else {
+		// Browser globals
+		factory( jQuery );
+	}
+
+}( function( $ ) {
 
 "use strict";
 
@@ -8973,7 +9019,9 @@ $.ui.fancytree.registerExtension({
 		return res;
 	}
 });
-}(jQuery, window, document));
+// Value returned by `require('jquery.fancytree..')`
+return $.ui.fancytree;
+}));  // End of closure
 
 
 /*! Extension 'jquery.fancytree.dnd5.js' *//*!
@@ -8988,7 +9036,7 @@ $.ui.fancytree.registerExtension({
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
  * @version 2.24.1-0
- * @date 2017-10-28T11:33:00Z
+ * @date 2017-10-29T17:28:46Z
  */
 
 
@@ -9005,7 +9053,20 @@ $.ui.fancytree.registerExtension({
 
  */
 
-;(function($, window, document, undefined) {
+;(function( factory ) {
+	if ( typeof define === "function" && define.amd ) {
+		// AMD. Register as an anonymous module.
+		define( [ "jquery", "./jquery.fancytree" ], factory );
+	} else if ( typeof module === "object" && module.exports ) {
+		// Node/CommonJS
+		require("jquery.fancytree");
+		module.exports = factory(require("jquery"));
+	} else {
+		// Browser globals
+		factory( jQuery );
+	}
+
+}( function( $ ) {
 
 "use strict";
 
@@ -9555,7 +9616,9 @@ $.ui.fancytree.registerExtension({
 		}
 	}
 });
-}(jQuery, window, document));
+// Value returned by `require('jquery.fancytree..')`
+return $.ui.fancytree;
+}));  // End of closure
 
 
 /*! Extension 'jquery.fancytree.edit.js' *//*!
@@ -9570,10 +9633,23 @@ $.ui.fancytree.registerExtension({
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
  * @version 2.24.1-0
- * @date 2017-10-28T11:33:00Z
+ * @date 2017-10-29T17:28:46Z
  */
 
-;(function($, window, document, undefined) {
+;(function( factory ) {
+	if ( typeof define === "function" && define.amd ) {
+		// AMD. Register as an anonymous module.
+		define( [ "jquery", "./jquery.fancytree" ], factory );
+	} else if ( typeof module === "object" && module.exports ) {
+		// Node/CommonJS
+		require("jquery.fancytree");
+		module.exports = factory(require("jquery"));
+	} else {
+		// Browser globals
+		factory( jQuery );
+	}
+
+}( function( $ ) {
 
 "use strict";
 
@@ -9872,7 +9948,9 @@ $.ui.fancytree.registerExtension({
 		return this._superApply(arguments);
 	}
 });
-}(jQuery, window, document));
+// Value returned by `require('jquery.fancytree..')`
+return $.ui.fancytree;
+}));  // End of closure
 
 
 /*! Extension 'jquery.fancytree.filter.js' *//*!
@@ -9887,10 +9965,23 @@ $.ui.fancytree.registerExtension({
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
  * @version 2.24.1-0
- * @date 2017-10-28T11:33:00Z
+ * @date 2017-10-29T17:28:46Z
  */
 
-;(function($, window, document, undefined) {
+;(function( factory ) {
+	if ( typeof define === "function" && define.amd ) {
+		// AMD. Register as an anonymous module.
+		define( [ "jquery", "./jquery.fancytree" ], factory );
+	} else if ( typeof module === "object" && module.exports ) {
+		// Node/CommonJS
+		require("jquery.fancytree");
+		module.exports = factory(require("jquery"));
+	} else {
+		// Browser globals
+		factory( jQuery );
+	}
+
+}( function( $ ) {
 
 "use strict";
 
@@ -10242,7 +10333,9 @@ $.ui.fancytree.registerExtension({
 		return res;
 	}
 });
-}(jQuery, window, document));
+// Value returned by `require('jquery.fancytree..')`
+return $.ui.fancytree;
+}));  // End of closure
 
 
 /*! Extension 'jquery.fancytree.glyph.js' *//*!
@@ -10257,10 +10350,23 @@ $.ui.fancytree.registerExtension({
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
  * @version 2.24.1-0
- * @date 2017-10-28T11:33:00Z
+ * @date 2017-10-29T17:28:46Z
  */
 
-;(function($, window, document, undefined) {
+;(function( factory ) {
+	if ( typeof define === "function" && define.amd ) {
+		// AMD. Register as an anonymous module.
+		define( [ "jquery", "./jquery.fancytree" ], factory );
+	} else if ( typeof module === "object" && module.exports ) {
+		// Node/CommonJS
+		require("jquery.fancytree");
+		module.exports = factory(require("jquery"));
+	} else {
+		// Browser globals
+		factory( jQuery );
+	}
+
+}( function( $ ) {
 
 "use strict";
 
@@ -10439,7 +10545,9 @@ $.ui.fancytree.registerExtension({
 		return res;
 	}
 });
-}(jQuery, window, document));
+// Value returned by `require('jquery.fancytree..')`
+return $.ui.fancytree;
+}));  // End of closure
 
 
 /*! Extension 'jquery.fancytree.gridnav.js' *//*!
@@ -10454,10 +10562,27 @@ $.ui.fancytree.registerExtension({
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
  * @version 2.24.1-0
- * @date 2017-10-28T11:33:00Z
+ * @date 2017-10-29T17:28:46Z
  */
 
-;(function($, window, document, undefined) {
+;(function( factory ) {
+	if ( typeof define === "function" && define.amd ) {
+		// AMD. Register as an anonymous module.
+		define([
+			 "jquery",
+			 "./jquery.fancytree",
+			 "./jquery.fancytree.table"
+		 ], factory );
+	} else if ( typeof module === "object" && module.exports ) {
+		// Node/CommonJS
+		require("jquery.fancytree.table");  // core + table
+		module.exports = factory(require("jquery"));
+	} else {
+		// Browser globals
+		factory( jQuery );
+	}
+
+}( function( $ ) {
 
 "use strict";
 
@@ -10644,7 +10769,9 @@ $.ui.fancytree.registerExtension({
 		return this._superApply(arguments);
 	}
 });
-}(jQuery, window, document));
+// Value returned by `require('jquery.fancytree..')`
+return $.ui.fancytree;
+}));  // End of closure
 
 
 /*! Extension 'jquery.fancytree.persist.js' *//*!
@@ -10661,10 +10788,23 @@ $.ui.fancytree.registerExtension({
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
  * @version 2.24.1-0
- * @date 2017-10-28T11:33:00Z
+ * @date 2017-10-29T17:28:46Z
  */
 
-;(function($, window, document, undefined) {
+;(function( factory ) {
+	if ( typeof define === "function" && define.amd ) {
+		// AMD. Register as an anonymous module.
+		define( [ "jquery", "./jquery.fancytree" ], factory );
+	} else if ( typeof module === "object" && module.exports ) {
+		// Node/CommonJS
+		require("jquery.fancytree");
+		module.exports = factory(require("jquery"));
+	} else {
+		// Browser globals
+		factory( jQuery );
+	}
+
+}( function( $ ) {
 
 "use strict";
 /* global Cookies:false */
@@ -11035,7 +11175,9 @@ $.ui.fancytree.registerExtension({
 		return res;
 	}
 });
-}(jQuery, window, document));
+// Value returned by `require('jquery.fancytree..')`
+return $.ui.fancytree;
+}));  // End of closure
 
 
 /*! Extension 'jquery.fancytree.table.js' *//*!
@@ -11050,10 +11192,23 @@ $.ui.fancytree.registerExtension({
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
  * @version 2.24.1-0
- * @date 2017-10-28T11:33:00Z
+ * @date 2017-10-29T17:28:46Z
  */
 
-;(function($, window, document, undefined) {
+;(function( factory ) {
+	if ( typeof define === "function" && define.amd ) {
+		// AMD. Register as an anonymous module.
+		define( [ "jquery", "./jquery.fancytree" ], factory );
+	} else if ( typeof module === "object" && module.exports ) {
+		// Node/CommonJS
+		require("jquery.fancytree");
+		module.exports = factory(require("jquery"));
+	} else {
+		// Browser globals
+		factory( jQuery );
+	}
+
+}( function( $ ) {
 
 "use strict";
 
@@ -11483,7 +11638,9 @@ $.ui.fancytree.registerExtension({
 		$.ui.fancytree.focusTree = ctx.tree;
 	}*/
 });
-}(jQuery, window, document));
+// Value returned by `require('jquery.fancytree..')`
+return $.ui.fancytree;
+}));  // End of closure
 
 
 /*! Extension 'jquery.fancytree.themeroller.js' *//*!
@@ -11500,10 +11657,23 @@ $.ui.fancytree.registerExtension({
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
  * @version 2.24.1-0
- * @date 2017-10-28T11:33:00Z
+ * @date 2017-10-29T17:28:46Z
  */
 
-;(function($, window, document, undefined) {
+;(function( factory ) {
+	if ( typeof define === "function" && define.amd ) {
+		// AMD. Register as an anonymous module.
+		define( [ "jquery", "./jquery.fancytree" ], factory );
+	} else if ( typeof module === "object" && module.exports ) {
+		// Node/CommonJS
+		require("jquery.fancytree");
+		module.exports = factory(require("jquery"));
+	} else {
+		// Browser globals
+		factory( jQuery );
+	}
+
+}( function( $ ) {
 
 "use strict";
 
@@ -11583,7 +11753,9 @@ $.ui.fancytree.registerExtension({
 		$el.addClass(opts.addClass);
 	}
 });
-}(jQuery, window, document));
+// Value returned by `require('jquery.fancytree..')`
+return $.ui.fancytree;
+}));  // End of closure
 
 
 /*! Extension 'jquery.fancytree.wide.js' *//*!
@@ -11597,10 +11769,23 @@ $.ui.fancytree.registerExtension({
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
  * @version 2.24.1-0
- * @date 2017-10-28T11:33:00Z
+ * @date 2017-10-29T17:28:46Z
  */
 
-;(function($, window, document, undefined) {
+;(function( factory ) {
+	if ( typeof define === "function" && define.amd ) {
+		// AMD. Register as an anonymous module.
+		define( [ "jquery", "./jquery.fancytree" ], factory );
+	} else if ( typeof module === "object" && module.exports ) {
+		// Node/CommonJS
+		require("jquery.fancytree");
+		module.exports = factory(require("jquery"));
+	} else {
+		// Browser globals
+		factory( jQuery );
+	}
+
+}( function( $ ) {
 
 "use strict";
 
@@ -11779,7 +11964,9 @@ $.ui.fancytree.registerExtension({
 		return res;
 	}
 });
-}(jQuery, window, document));
+// Value returned by `require('jquery.fancytree..')`
+return $.ui.fancytree;
+}));  // End of closure
 
 // Value returned by `require('jquery.fancytree')`
 return $.ui.fancytree;
