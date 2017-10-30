@@ -4837,6 +4837,22 @@ $.extend($.ui.fancytree,
 	assert: function(cond, msg){
 		return _assert(cond, msg);
 	},
+	/** Create a new Fancytree instance on a target element.
+	 *
+	 * @param {Element | jQueryObject | string} el Target DOM element or selector
+	 * @param {FancytreeOptions} [opts] Fancytree options
+	 * @returns {Fancytree} new tree instance
+	 * @example
+	 * var tree = $.ui.fancytree.createTree("#tree", {
+	 *     source: {url: "my/webservice"}
+	 * }); // Create tree for this matching element
+	 *
+	 * @since 2.25
+	 */
+	createTree: function(el, opts){
+		var tree = $(el).fancytree(opts).fancytree("getTree");
+		return tree;
+	},
 	/** Return a function that executes *fn* at most every *timeout* ms.
 	 * @param {integer} timeout
 	 * @param {function} fn
