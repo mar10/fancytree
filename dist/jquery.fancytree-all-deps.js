@@ -1,4 +1,4 @@
-/*! jQuery Fancytree Plugin - 2.24.1-0 - 2017-10-31T13:28:30Z
+/*! jQuery Fancytree Plugin - 2.25.0 - 2017-10-31T17:32:40Z
   * https://github.com/mar10/fancytree
   * Copyright (c) 2017 Martin Wendt; Licensed MIT
  */
@@ -3045,8 +3045,8 @@ var effectsEffectBlind = $.effects.define( "blind", "hide", function( options, d
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.24.1-0
- * @date 2017-10-31T13:28:30Z
+ * @version 2.25.0
+ * @date 2017-10-31T17:32:40Z
  */
 
 /** Core Fancytree module.
@@ -7840,7 +7840,7 @@ $.extend($.ui.fancytree,
 	/** @lends Fancytree_Static# */
 	{
 	/** @type {string} */
-	version: "2.24.1-0",      // Set to semver by 'grunt release'
+	version: "2.25.0",      // Set to semver by 'grunt release'
 	/** @type {string} */
 	buildType: "production", // Set to 'production' by 'grunt build'
 	/** @type {int} */
@@ -8347,8 +8347,8 @@ return $.ui.fancytree;
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.24.1-0
- * @date 2017-10-31T13:28:30Z
+ * @version 2.25.0
+ * @date 2017-10-31T17:32:40Z
  */
 
 // To keep the global namespace clean, we wrap everything in a closure.
@@ -8466,7 +8466,7 @@ $.ui.fancytree.registerExtension({
 // Every extension must be registered by a unique name.
 	name: "childcounter",
 // Version information should be compliant with [semver](http://semver.org)
-	version: "2.24.1-0",
+	version: "2.25.0",
 
 // Extension specific options and their defaults.
 // This options will be available as `tree.options.childcounter.hideExpanded`
@@ -8566,8 +8566,8 @@ return $.ui.fancytree;
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.24.1-0
- * @date 2017-10-31T13:28:30Z
+ * @version 2.25.0
+ * @date 2017-10-31T17:32:40Z
  */
 
 ;(function( factory ) {
@@ -8912,7 +8912,7 @@ $.ui.fancytree._FancytreeClass.prototype.changeRefKey = function(oldRefKey, newR
  */
 $.ui.fancytree.registerExtension({
 	name: "clones",
-	version: "2.24.1-0",
+	version: "2.25.0",
 	// Default options for this extension.
 	options: {
 		highlightActiveClones: true, // set 'fancytree-active-clone' on active clones and all peers
@@ -9048,8 +9048,8 @@ return $.ui.fancytree;
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.24.1-0
- * @date 2017-10-31T13:28:30Z
+ * @version 2.25.0
+ * @date 2017-10-31T17:32:40Z
  */
 
 
@@ -9312,7 +9312,7 @@ function handleDragOver(event, data) {
 
 $.ui.fancytree.registerExtension({
 	name: "dnd5",
-	version: "2.24.1-0",
+	version: "2.25.0",
 	// Default options for this extension.
 	options: {
 		autoExpandMS: 1500,          // Expand nodes after n milliseconds of hovering
@@ -9645,8 +9645,8 @@ return $.ui.fancytree;
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.24.1-0
- * @date 2017-10-31T13:28:30Z
+ * @version 2.25.0
+ * @date 2017-10-31T17:32:40Z
  */
 
 ;(function( factory ) {
@@ -9902,7 +9902,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.isEditing = function(){
  */
 $.ui.fancytree.registerExtension({
 	name: "edit",
-	version: "2.24.1-0",
+	version: "2.25.0",
 	// Default options for this extension.
 	options: {
 		adjustWidthOfs: 4,   // null: don't adjust input size to content
@@ -9977,8 +9977,8 @@ return $.ui.fancytree;
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.24.1-0
- * @date 2017-10-31T13:28:30Z
+ * @version 2.25.0
+ * @date 2017-10-31T17:32:40Z
  */
 
 ;(function( factory ) {
@@ -10269,7 +10269,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.isMatched = function(){
  */
 $.ui.fancytree.registerExtension({
 	name: "filter",
-	version: "2.24.1-0",
+	version: "2.25.0",
 	// Default options for this extension.
 	options: {
 		autoApply: true,   // Re-apply last filter if lazy data is loaded
@@ -10362,8 +10362,8 @@ return $.ui.fancytree;
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.24.1-0
- * @date 2017-10-31T13:28:30Z
+ * @version 2.25.0
+ * @date 2017-10-31T17:32:40Z
  */
 
 ;(function( factory ) {
@@ -10459,7 +10459,7 @@ function _getIcon(opts, type){
 
 $.ui.fancytree.registerExtension({
 	name: "glyph",
-	version: "2.24.1-0",
+	version: "2.25.0",
 	// Default options for this extension.
 	options: {
 		preset: null,  // 'awesome3', 'awesome4', 'bootstrap3'
@@ -10574,8 +10574,8 @@ return $.ui.fancytree;
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.24.1-0
- * @date 2017-10-31T13:28:30Z
+ * @version 2.25.0
+ * @date 2017-10-31T17:32:40Z
  */
 
 ;(function( factory ) {
@@ -10698,7 +10698,7 @@ function findNeighbourTd($target, keyCode){
  */
 $.ui.fancytree.registerExtension({
 	name: "gridnav",
-	version: "2.24.1-0",
+	version: "2.25.0",
 	// Default options for this extension.
 	options: {
 		autofocusInput:   false,  // Focus first embedded input if node gets activated
@@ -10800,8 +10800,8 @@ return $.ui.fancytree;
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.24.1-0
- * @date 2017-10-31T13:28:30Z
+ * @version 2.25.0
+ * @date 2017-10-31T17:32:40Z
  */
 
 ;(function( factory ) {
@@ -10954,7 +10954,7 @@ $.ui.fancytree._FancytreeClass.prototype.getPersistData = function(){
  */
 $.ui.fancytree.registerExtension({
 	name: "persist",
-	version: "2.24.1-0",
+	version: "2.25.0",
 	// Default options for this extension.
 	options: {
 		cookieDelimiter: "~",
@@ -11204,8 +11204,8 @@ return $.ui.fancytree;
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.24.1-0
- * @date 2017-10-31T13:28:30Z
+ * @version 2.25.0
+ * @date 2017-10-31T17:32:40Z
  */
 
 ;(function( factory ) {
@@ -11296,7 +11296,7 @@ function findPrevRowNode(node){
 
 $.ui.fancytree.registerExtension({
 	name: "table",
-	version: "2.24.1-0",
+	version: "2.25.0",
 	// Default options for this extension.
 	options: {
 		checkboxColumnIdx: null, // render the checkboxes into the this column index (default: nodeColumnIdx)
@@ -11669,8 +11669,8 @@ return $.ui.fancytree;
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.24.1-0
- * @date 2017-10-31T13:28:30Z
+ * @version 2.25.0
+ * @date 2017-10-31T17:32:40Z
  */
 
 ;(function( factory ) {
@@ -11695,7 +11695,7 @@ return $.ui.fancytree;
  */
 $.ui.fancytree.registerExtension({
 	name: "themeroller",
-	version: "2.24.1-0",
+	version: "2.25.0",
 	// Default options for this extension.
 	options: {
 		activeClass: "ui-state-active",      // Class added to active node
@@ -11781,8 +11781,8 @@ return $.ui.fancytree;
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.24.1-0
- * @date 2017-10-31T13:28:30Z
+ * @version 2.25.0
+ * @date 2017-10-31T17:32:40Z
  */
 
 ;(function( factory ) {
@@ -11895,7 +11895,7 @@ function renderLevelCss(containerId, depth, levelOfs, lineOfs, labelOfs, measure
  */
 $.ui.fancytree.registerExtension({
 	name: "wide",
-	version: "2.24.1-0",
+	version: "2.25.0",
 	// Default options for this extension.
 	options: {
 		iconWidth: null,     // Adjust this if @fancy-icon-width != "16px"

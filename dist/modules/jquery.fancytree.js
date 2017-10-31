@@ -7,8 +7,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.24.1-0
- * @date 2017-10-31T13:28:30Z
+ * @version 2.25.0
+ * @date 2017-10-31T17:32:40Z
  */
 
 /** Core Fancytree module.
@@ -4802,7 +4802,7 @@ $.extend($.ui.fancytree,
 	/** @lends Fancytree_Static# */
 	{
 	/** @type {string} */
-	version: "2.24.1-0",      // Set to semver by 'grunt release'
+	version: "2.25.0",      // Set to semver by 'grunt release'
 	/** @type {string} */
 	buildType: "production", // Set to 'production' by 'grunt build'
 	/** @type {int} */
