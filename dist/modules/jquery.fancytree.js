@@ -8,7 +8,7 @@
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
  * @version 2.24.1-0
- * @date 2017-10-30T21:25:53Z
+ * @date 2017-10-31T13:28:30Z
  */
 
 /** Core Fancytree module.
@@ -250,13 +250,6 @@ function _getElementDataAsDict($el){
 		d = $.extend(d, json);
 	}
 	return d;
-}
-
-
-function _escapeHtml(s){
-	return ("" + s).replace(REX_HTML, function(s) {
-		return ENTITY_MAP[s];
-	});
 }
 
 
@@ -3663,7 +3656,7 @@ $.extend(Fancytree.prototype,
 
 			nodeTitle = "<span class='fancytree-title'" +
 				tooltip + tabindex + ">" +
-				(opts.escapeTitles ? _escapeHtml(node.title) : node.title) +
+				(opts.escapeTitles ? FT.escapeHtml(node.title) : node.title) +
 				"</span>";
 		}
 		ares.push(nodeTitle);
@@ -4894,7 +4887,11 @@ $.extend($.ui.fancytree,
 	 * @param {string} s
 	 * @returns {string}
 	 */
-	escapeHtml: _escapeHtml,
+	escapeHtml: function(s){
+		return ("" + s).replace(REX_HTML, function(s) {
+			return ENTITY_MAP[s];
+		});
+	},
 	/** Make jQuery.position() arguments backwards compatible, i.e. if
 	 * jQuery UI version <= 1.8, convert
 	 *   { my: "left+3 center", at: "left bottom", of: $target }
@@ -4929,14 +4926,6 @@ $.extend($.ui.fancytree,
 	/** Return a {node: FancytreeNode, type: TYPE} object for a mouse event.
 	 *
 	 * @param {Event} event Mouse event, e.g. click, ...
-	 * @returns {string} 'title' | 'prefix' | 'expander' | 'checkbox' | 'icon' | undefined
-	 */
-	getEventTargetType: function(event){
-		return this.getEventTarget(event).type;
-	},
-	/** Return a {node: FancytreeNode, type: TYPE} object for a mouse event.
-	 *
-	 * @param {Event} event Mouse event, e.g. click, ...
 	 * @returns {object} Return a {node: FancytreeNode, type: TYPE} object
 	 *     TYPE: 'title' | 'prefix' | 'expander' | 'checkbox' | 'icon' | undefined
 	 */
@@ -4952,7 +4941,7 @@ $.extend($.ui.fancytree,
 		// }else if( /\bfancytree-checkbox\b/.test(tcn) || /\bfancytree-radio\b/.test(tcn) ){
 		}else if( /\bfancytree-checkbox\b/.test(tcn) ){
 			res.type = "checkbox";
-		}else if( /\bfancytree-icon\b/.test(tcn) ){
+		}else if( /\bfancytree(-custom)?-icon\b/.test(tcn) ){
 			res.type = "icon";
 		}else if( /\bfancytree-node\b/.test(tcn) ){
 			// Somewhere near the title
@@ -4962,6 +4951,14 @@ $.extend($.ui.fancytree,
 			res.type = "title";
 		}
 		return res;
+	},
+	/** Return a string describing the affected node region for a mouse event.
+	 *
+	 * @param {Event} event Mouse event, e.g. click, mousemove, ...
+	 * @returns {string} 'title' | 'prefix' | 'expander' | 'checkbox' | 'icon' | undefined
+	 */
+	getEventTargetType: function(event){
+		return this.getEventTarget(event).type;
 	},
 	/** Return a FancytreeNode instance from element, event, or jQuery object.
 	 *

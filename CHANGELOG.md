@@ -1,17 +1,21 @@
 # 2.25.0 / Unreleased
   * **Improved Module Support and Distribution**<br>
-    * The `dist/` folder now includes a `modules/` directory with fancytree core and all extensions.<br>
-      All modules have UMD headers with defined dependencies.<br>
-      `jquery.fancytree/dist/modules/jquery.fancytree` is defined as main module,
-      so Fancytree can be included using a simple<br>
+    * The `dist/` folder now includes a `modules/` directory with fancytree core
+      and all extensions.
+    * All modules have UMD wrappers with defined dependencies.
+    * Internal jQuery UI dependencies are deployed as module and implicitly loaded.
+    * `jquery.fancytree/dist/modules/jquery.fancytree` is defined as
+      package main module, so Fancytree can be included using a simple<br>
       `fancytree = require('jquery.fancytree')`.<br>
-      See [the docs](https://github.com/mar10/fancytree/wiki/TutorialIntegration) for details.
-    * All modules now return the [Fancytree namespace](http://www.wwwendt.de/tech/fancytree/doc/jsdoc/Fancytree_Static.html).
-    * [Improved] #781 import dist/modules/jquery.fancytree.js by default
-    * [Added] Source map files for `jquery.fancytree-all-deps.min.js`
+      See [the docs](https://github.com/mar10/fancytree/wiki/TutorialIntegration)
+      for details.
+    * All modules now return the
+      [$.ui.fancytree object](http://www.wwwendt.de/tech/fancytree/doc/jsdoc/Fancytree_Static.html).
     * [Added] new static method `$.ui.fancytree.createTree(elem, opts)`
     * BREAKING CHANGES:<br>
-      The `dist/src/` folder was renamed to `dist/modules`. The files are now UMD compliant.
+      The `dist/src/` folder was renamed to `dist/modules`.<br>
+      Some directories like `demo/` are no longer part of the npm install.
+  * [Added] Source map files for `jquery.fancytree-all-deps.min.js`
   * [Added] New extension ext-fixed (work-in-progress, experimental)
   * [Fixed] #767: Input inside table head not working
   * [Fixed] #768: Can't use keyboard to select nodes when `checkbox` option is false

@@ -30,9 +30,10 @@ module.exports = (grunt) ->
             src: [ "build" ]
         dist:
             src: [ "dist" ]
-        build_minified:
+        post_build:  # Remove unwanted files from build folder
             src: [
               "build/jquery.fancytree.*.min.js"
+              "build/jquery.fancytree.js"
               "build/jquery-ui-dependencies/"
             ]
 
@@ -504,7 +505,7 @@ module.exports = (grunt) ->
       "concat:amd_bundle_min"
       "concat:all_deps"
       "uglify:all_deps"
-      "clean:build_minified"
+      "clean:post_build"
       "replace:production"
       "jshint:afterConcat"
       "copy:ui_deps"
