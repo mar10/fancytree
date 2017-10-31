@@ -31,7 +31,8 @@ var EventData = {};
  * @name NodeData
  * @type {Object}
  *
- * @property {boolean} active (Initialization only, but will not be stored with the node.)
+ * @property {boolean} active Evaluated during initialization: If true, `node.setActive()` is called after loading.
+ *
  * @property {boolean|string} checkbox Pass `false` to remove checkbox for this node.<br>
  *     Note that selection via the API or initialization data is still possible, even
  *     if no checkbox is displayed.<br>
@@ -53,7 +54,7 @@ var EventData = {};
  * @property {boolean} focus (Initialization only, but will not be stored  with the node.)
  * @property {boolean} folder Folders have different default icons and honor the `clickFolderMode` option.
  * @property {boolean} <del>hideCheckbox</del>  @deprecated use `checkbox` instead.<br>
- *     (The 'hideCheckbox' is still recognized when html input is parsed.)
+ *     (The 'hideCheckbox' class name is still recognized when html source input is parsed.)
  * @property {boolean|string} icon Define this node's icon.<br>
  *     undefined: Use global tree option of the same name<br>
  *     true: Use default icon, depending on `node.folder` and `node.expanded` status<br>

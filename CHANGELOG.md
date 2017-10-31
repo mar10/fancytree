@@ -1,4 +1,7 @@
-# 2.25.0 / Unreleased
+# 2.25.1-0 / Unreleased
+  *
+
+# 2.25.0 / 2017-10-31
   * **Improved Module Support and Distribution**<br>
     * The `dist/` folder now includes a `modules/` directory with fancytree core
       and all extensions.

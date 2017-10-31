@@ -2333,7 +2333,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	},
 	/** Activate node with a given key and fire focus and activate events.
 	 *
-	 * A prevously activated node will be deactivated.
+	 * A previously activated node will be deactivated.
 	 * If activeVisible option is set, all parents will be expanded as necessary.
 	 * Pass key = false, to deactivate the current node only.
 	 * @param {string} key
