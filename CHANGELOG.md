@@ -16,6 +16,7 @@
   * [Fixed] #767: Input inside table head not working
   * [Fixed] #768: Can't use keyboard to select nodes when `checkbox` option is false
   * [Fixed] #782: wide extension - padding is off when checkbox option is changed
+  * [Fixed] #787: Fix getEventTarget() for custom icons
 
 # 2.24.0 / 2017-08-26
   * [Added] ext-glyph option `preset` (making the `map` option optional)

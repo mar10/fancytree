@@ -4941,7 +4941,7 @@ $.extend($.ui.fancytree,
 		// }else if( /\bfancytree-checkbox\b/.test(tcn) || /\bfancytree-radio\b/.test(tcn) ){
 		}else if( /\bfancytree-checkbox\b/.test(tcn) ){
 			res.type = "checkbox";
-		}else if( /\bfancytree-icon\b/.test(tcn) ){
+		}else if( /\bfancytree(-custom)?-icon\b/.test(tcn) ){
 			res.type = "icon";
 		}else if( /\bfancytree-node\b/.test(tcn) ){
 			// Somewhere near the title
