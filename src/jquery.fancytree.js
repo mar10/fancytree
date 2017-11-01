@@ -4968,7 +4968,7 @@ $.extend($.ui.fancytree,
 	getNode: function(el){
 		if(el instanceof FancytreeNode){
 			return el; // el already was a FancytreeNode
-		}else if( el instanceof jQuery ){
+		}else if( el instanceof $ ){
 			el = el[0]; // el was a jQuery object: use the DOM element
 		}else if(el.originalEvent !== undefined){
 			el = el.target; // el was an Event

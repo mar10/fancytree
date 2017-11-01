@@ -1,5 +1,5 @@
 # 2.25.1-0 / Unreleased
-  *
+  * Fix `$.ui.fancytree.getNode()` for ES6 environments
 
 # 2.25.0 / 2017-10-31
   * **Improved Module Support and Distribution**<br>
