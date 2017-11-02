@@ -26,7 +26,7 @@
 @fancy-node-border-width: 0;
 
 // Use 'data-uri(...)' to embed the image into CSS instead of linking to 'loading.gif':
-@fancy-loading-url: data-uri("@{fancy-image-dir}/loading.gif");
+@fancy-loading-url: data-uri("@{fancy-image-prefix}loading.gif");
 // Set to `true` to use `data-uri(...)` which will embed icons.gif into CSS 
 // instead of linking to that file:
 // @fancy-inline-sprites: true;
@@ -39,7 +39,7 @@ ul.fancytree-container {
 	li {
 		// background-image: url("vline.gif");
 		// Use 'data-uri(...)' to embed the image into CSS instead of linking to 'loading.gif':
-		background-image: data-uri("@{fancy-image-dir}/vline.gif");
+		background-image: data-uri("@{fancy-image-prefix}vline.gif");
 		background-position: 0 0;
 	}
 	&.fancytree-rtl {
