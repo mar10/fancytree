@@ -420,6 +420,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			this.children.push(new FancytreeNode(this, children[i]));
 		}
 	},
+
 	/**
 	 * Append (or insert) a list of child nodes.
 	 *
@@ -430,58 +431,10 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	 *
 	 * @see FancytreeNode#applyPatch
 	 */
-	addChildren: function(children, insertBefore){
-		var i, l, pos,
-			origFirstChild = this.getFirstChild(),
-			origLastChild = this.getLastChild(),
-			firstNode = null,
-			nodeList = [];
-
-		if($.isPlainObject(children) ){
-			children = [children];
-		}
-		if(!this.children){
-			this.children = [];
-		}
-		for(i=0, l=children.length; i<l; i++){
-			nodeList.push(new FancytreeNode(this, children[i]));
-		}
-		firstNode = nodeList[0];
-		if(insertBefore == null){
-			this.children = this.children.concat(nodeList);
-		}else{
-			insertBefore = this._findDirectChild(insertBefore);
-			pos = $.inArray(insertBefore, this.children);
-			_assert(pos >= 0, "insertBefore must be an existing child");
-			// insert nodeList after children[pos]
-			this.children.splice.apply(this.children, [pos, 0].concat(nodeList));
-		}
-		if ( origFirstChild && !insertBefore ) {
-			// #708: Fast path -- don't render every child of root, just the new ones!
-			// #723, #729: but only if it's appended to an existing child list
-			for(i=0, l=nodeList.length; i<l; i++) {
-				nodeList[i].render();   // New nodes were never rendered before
-			}
-			// Adjust classes where status may have changed
-			// Has a first child
-			if (origFirstChild !== this.getFirstChild()) {
-				// Different first child -- recompute classes
-				origFirstChild.renderStatus();
-			}
-			if (origLastChild !== this.getLastChild()) {
-				// Different last child -- recompute classes
-				origLastChild.renderStatus();
-			}
-		} else if( !this.parent || this.parent.ul || this.tr ){
-			// render if the parent was rendered (or this is a root node)
-			this.render();
-		}
-		if( this.tree.options.selectMode === 3 ){
-			this.fixSelection3FromEndNodes();
-		}
-		this.triggerModifyChild("add", nodeList.length === 1 ? nodeList[0] : null);
-		return firstNode;
-	},
+	addChildren: function(children, insertBefore) {
+		return this.tree._callHook("nodeAddChildren", this, children, insertBefore);
+	},	
+	
 	/**
 	 * Add class to node's span tag and to .extraClasses.
 	 *
@@ -2893,6 +2846,70 @@ Fancytree.prototype = /** @lends Fancytree# */{
 $.extend(Fancytree.prototype,
 	/** @lends Fancytree_Hooks# */
 	{
+	/**
+	 * Append (or insert) a list of child nodes to ctx.node.
+	 *
+	 * @param {EventData} ctx
+	 * @param {NodeData[]} children array of child node definitions (also single child accepted)
+	 * @param {FancytreeNode | string | Integer} [insertBefore] child node (or key or index of such).
+	 *     If omitted, the new children are appended.
+	 * @returns {FancytreeNode} first child added
+	 *
+	 * @see FancytreeNode#applyPatch
+	 */		
+	nodeAddChildren: function(ctx, children, insertBefore){
+		var i, l, pos,
+			node = ctx.node,
+			origFirstChild = node.getFirstChild(),
+			origLastChild = node.getLastChild(),
+			firstNode = null,
+			nodeList = [];
+
+		if($.isPlainObject(children) ){
+			children = [children];
+		}
+		if(!node.children){
+			node.children = [];
+		}
+		for(i=0, l=children.length; i<l; i++){
+			nodeList.push(new FancytreeNode(node, children[i]));
+		}
+		firstNode = nodeList[0];
+		if(insertBefore == null){
+			node.children = node.children.concat(nodeList);
+		}else{
+			insertBefore = node._findDirectChild(insertBefore);
+			pos = $.inArray(insertBefore, node.children);
+			_assert(pos >= 0, "insertBefore must be an existing child");
+			// insert nodeList after children[pos]
+			node.children.splice.apply(node.children, [pos, 0].concat(nodeList));
+		}
+		if ( origFirstChild && !insertBefore ) {
+			// #708: Fast path -- don't render every child of root, just the new ones!
+			// #723, #729: but only if it's appended to an existing child list
+			for(i=0, l=nodeList.length; i<l; i++) {
+				nodeList[i].render();   // New nodes were never rendered before
+			}
+			// Adjust classes where status may have changed
+			// Has a first child
+			if (origFirstChild !== node.getFirstChild()) {
+				// Different first child -- recompute classes
+				origFirstChild.renderStatus();
+			}
+			if (origLastChild !== node.getLastChild()) {
+				// Different last child -- recompute classes
+				origLastChild.renderStatus();
+			}
+		} else if( !node.parent || node.parent.ul || node.tr ){
+			// render if the parent was rendered (or this is a root node)
+			node.render();
+		}
+		if( node.tree.options.selectMode === 3 ){
+			node.fixSelection3FromEndNodes();
+		}
+		node.triggerModifyChild("add", nodeList.length === 1 ? nodeList[0] : null);
+		return firstNode;
+	},		
 	/** Default handling for mouse click events.
 	 *
 	 * @param {EventData} ctx
