@@ -4,7 +4,7 @@
  * Automaticly converts nodes to folders if they have children.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2017, Jakub Jagielka (http://wwWendt.de)
+ * Copyright (c) 2017, Jakub Jagielka (jjagielka@gmail.com)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
