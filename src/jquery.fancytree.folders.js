@@ -59,8 +59,9 @@ $.ui.fancytree.registerExtension({
 
 		if(add && !parent.hasChildren()) {
 			parent.folder = true;
-			if(parent.isVisible())
+			if(parent.isVisible()) {
 				parent.render();
+			}
 		}
 	},
 	
@@ -71,8 +72,9 @@ $.ui.fancytree.registerExtension({
 
 		if (!node.hasChildren()) {
 			node.folder = false;
-			if(node.isVisible())
+			if(node.isVisible()) {
 				node.render();
+			}
 		}
 	}
 });
