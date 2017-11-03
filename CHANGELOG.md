@@ -1,5 +1,5 @@
 # 2.25.1-0 / Unreleased
-  *
+  * #789 Fix wrong node is activated in IE, when clicking in unfocused container
 
 # 2.25.0 / 2017-10-31
   * **Improved Module Support and Distribution**<br>

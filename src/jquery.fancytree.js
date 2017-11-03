@@ -2193,6 +2193,7 @@ function Fancytree(widget) {
 	this.activeNode = null;
 	this.focusNode = null;
 	this._hasFocus = null;
+	this._tempCache = {};
 	this._lastMousedownNode = null;
 	this._enableUpdate = true;
 	// this._dirtyRoots = null;
@@ -2295,6 +2296,17 @@ Fancytree.prototype = /** @lends Fancytree# */{
 		args.unshift(ctx);
 //		this.debug("_hook", funcName, ctx.node && ctx.node.toString() || ctx.tree.toString(), args);
 		return fn.apply(this, args);
+	},
+	_setExpiringValue: function(key, value, ms){
+		this._tempCache[key] = {value: value, expire: Date.now() + (+ms || 50)};
+	},
+	_getExpiringValue: function(key){
+		var entry = this._tempCache[key];
+		if( entry && entry.expire < Date.now() ) { 
+			return entry.value;
+		}
+		delete this._tempCache[key];
+		return null;
 	},
 	/* Check if current extensions dependencies are met and throw an error if not.
 	 *
@@ -4666,12 +4678,24 @@ $.widget("ui.fancytree",
 		tree.$container.on("focusin" + ns + " focusout" + ns, function(event){
 			var node = FT.getNode(event),
 				flag = (event.type === "focusin");
-			// tree.debug("Tree container got event " + event.type, node, event);
+
 			// tree.treeOnFocusInOut.call(tree, event);
+			// tree.debug("Tree container got event " + event.type, node, event, FT.getEventTarget(event));
+			if( flag && tree._getExpiringValue("focusin") ) {
+				// #789: IE 11 may send duplicate focusin events
+				FT.info("Ignored double focusin.");
+				return;
+			}
+			tree._setExpiringValue("focusin", true, 50);
+
+			if( flag && !node ) {
+				// #789: IE 11 may send focusin before mousdown(?)
+				node = tree._getExpiringValue("mouseDownNode");
+				if( node ) { FT.info("Reconstruct mouse target for focusin from recent event."); }
+			}
 			if(node){
 				// For example clicking into an <input> that is part of a node
 				tree._callHook("nodeSetFocus", tree._makeHookContext(node, event), flag);
-				// tree._callHook("nodeSetFocus", node, flag);
 			}else{
 				if( tree.tbody && $(event.target).parents("table.fancytree-container > thead").length ) {
 					// #767: ignore events in the table's header
@@ -4722,7 +4746,11 @@ $.widget("ui.fancytree",
 			// that.tree.debug("event(" + event.type + "): node: ", et.node);
 			// #712: Store the clicked node, so we can use it when we get a focusin event
 			//       ('click' event fires after focusin)
-			that.tree._lastMousedownNode = et ? et.node : null;
+			// tree.debug("event(" + event.type + "): node: ", et.node);
+			tree._lastMousedownNode = et ? et.node : null;
+			// #789: Store the node also for a short period, so we can use it
+			// in a *resulting* focusin event
+			tree._setExpiringValue("mouseDownNode", tree._lastMousedownNode);
 
 		}).on("click" + ns + " dblclick" + ns, function(event){
 			if(opts.disabled){
@@ -4946,6 +4974,10 @@ $.extend($.ui.fancytree,
 		}else if( /\bfancytree-node\b/.test(tcn) ){
 			// Somewhere near the title
 			res.type = "title";
+		}else if( event && $(event.target).is("ul[role=group]") ) {
+			// #nnn: Clicking right to a node may hit the surrounding UL
+			FT.info("Ignoring click on outer UL.");
+			res.node = null;
 		}else if( event && event.target && $(event.target).closest(".fancytree-title").length ) {
 			// #228: clicking an embedded element inside a title
 			res.type = "title";
