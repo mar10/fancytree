@@ -2302,7 +2302,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	},
 	_getExpiringValue: function(key){
 		var entry = this._tempCache[key];
-		if( entry && entry.expire < Date.now() ) { 
+		if( entry && entry.expire < Date.now() ) {
 			return entry.value;
 		}
 		delete this._tempCache[key];
@@ -3244,6 +3244,13 @@ $.extend(Fancytree.prototype,
 					tree.nodeSetStatus(ctx, "error", ctxErr.message, ctxErr.details);
 				}
 			});
+		} else {
+			if( ctx.options.postProcess ){
+				// #792: Call postProcess for non-deferred source
+				tree._triggerNodeEvent("postProcess", ctx, ctx.originalEvent, {
+					response: source, error: null, dataType: typeof source
+				});
+			}
 		}
 		// $.when(source) resolves also for non-deferreds
 		return $.when(source).done(function(children){
