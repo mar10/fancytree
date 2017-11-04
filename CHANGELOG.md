@@ -3,6 +3,7 @@
   * LESS: rename @fancy-image-dir to @fancy-image-prefix (must contain '/' now)
   * [Fixed] #789 Wrong node is activated in IE, when clicking in unfocused container
   * [Added] #791 ext-glyph support for radio buttons
+  * [Added] color definitions for skin-awesome (taken from skin-lion)
 
 # 2.25.0 / 2017-10-31
   * **Improved Module Support and Distribution**<br>
