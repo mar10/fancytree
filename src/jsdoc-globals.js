@@ -167,7 +167,7 @@ var TreePatch = {};
  * @property {boolean} <del>tabbable</del> @deprecated use `tabindex` instead
  * @property {string} tabindex Add tabindex attribute to container, so tree can be reached using TAB (default: "0")<br>
  *     "0": Tree control can be reached using TAB keys<br>
- *     "-1": Tree control cannot be reached using TAB keys, but may receive keyboard focusable using mouse clicks or Javascript<br>
+ *     "-1": Tree control cannot be reached using TAB keys, but may receive keyboard focusable using mouse clicks or JavaScript<br>
  *     "": Tree control is not tabbable nor may it receive keyboard focus.
  * @property {boolean} titlesTabbable Add tabindex='0' to node title span, so it can receive keyboard focus
  * @property {object} toggleEffect Animation options, false:off (default: { effect: "blind", options: {direction: "vertical", scale: "box"}, duration: 200 })

@@ -2,7 +2,7 @@
   * [Improved] LESS: rename @fancy-image-dir to @fancy-image-prefix
     (should contain '/' now, but also allows to remove prefix altogether)
   * [Added] #791 ext-glyph support for radio buttons
-  * [Added] #792 Call postProcess for non-ajax sources
+  * [Added] #792 Call postProcess for non-Ajax sources
   * [Added] color definitions for skin-awesome (taken from skin-lion)
   * [Fixed] `$.ui.fancytree.getNode()` for ES6 environments
   * [Fixed] #789 Wrong node is activated in IE, when clicking in unfocused container
@@ -409,13 +409,13 @@
   * [Fixed] crash in scrollIntoView() when parent is `window`
   * [Fixed] #305 Checkbox doesn't show with Glyph + Table
   * [Fixed] #316 Fix hasChildren() when children = []
-  * [Fixed] #237 ajax LoadError not updated in StatusNode with Table ext
+  * [Fixed] #237 Ajax LoadError not updated in StatusNode with Table ext
   * [Fixed] #295 loadKeyPath with multiple paths
   * [DEPRECATED] node.isRoot(). Use node.isRootNode() instead
 
 # 2.3.0 / 2014-08-17
   * [CHANGED] renamed (undocumented) event 'loaderror' to 'loadError'
-  * [Added] postProcess now allows to signal error conditions (so it becomes easy to handle custom ajax response formats)
+  * [Added] postProcess now allows to signal error conditions (so it becomes easy to handle custom Ajax response formats)
   * [Added] node.setStatus()
   * [Added] ext-clones to the standard distribution.
   * [Improved] loadError allows to return `false` to prevent default handling

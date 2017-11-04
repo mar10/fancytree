@@ -4524,7 +4524,7 @@ $.widget("ui.fancytree",
 		clickFolderMode: 4,
 		debugLevel: null, // 0..2 (null: use global setting $.ui.fancytree.debugInfo)
 		disabled: false, // TODO: required anymore?
-		enableAspx: true, // TODO: document
+		enableAspx: true,
 		escapeTitles: false,
 		extensions: [],
 		// fx: { height: "toggle", duration: 200 },

@@ -139,7 +139,7 @@
 			},
 			postProcess: function(event, data) {
 				logEvent(event, data);
-				// either modify the ajax response directly
+				// either modify the Ajax response directly
 				data.response[0].title += " - hello from postProcess";
 				// or setup and return a new response object
 //				data.result = [{title: "set by postProcess"}];
