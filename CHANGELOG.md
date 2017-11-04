@@ -1,9 +1,8 @@
 # 2.26.0-0 / Unreleased
-  * [Improved] LESS: rename @fancy-image-dir to @fancy-image-prefix
-    (should contain '/' now, but also allows to remove prefix altogether)
+  * [Improved] LESS now compiles with webpack
   * [Added] #791 ext-glyph support for radio buttons
   * [Added] #792 Call postProcess for non-Ajax sources
-  * [Added] color definitions for skin-awesome (taken from skin-lion)
+  * [Added] Color definitions for skin-awesome (taken from skin-lion)
   * [Fixed] `$.ui.fancytree.getNode()` for ES6 environments
   * [Fixed] #789 Wrong node is activated in IE, when clicking in unfocused container
 

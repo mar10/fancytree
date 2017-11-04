@@ -22,14 +22,18 @@
 
 // @fancy-line-ofs-top: (@fancy-line-height - @fancy-icon-height) / 2;
 
+// webpack uses /dist/skin-common.less as root path
+// grunt-less uses /dist/skin-Xxx/ui.fancyree.less as root path
+// So we define our theme LESS files for webpack compatibility, i.e.
+// define the image path n every main LESS file instead of here.
 // Prefix may be set to "", "/", "./", or any other value
-@fancy-image-prefix: "";
-// @fancy-image-dir: ".";
+// Note: this variable must be defined by the main LESS files:
+// @fancy-image-prefix: "";
 
 // Use 'url(...)' to link to the throbber image, or
 // use data-uri(...)' to inline the data in css instead:
-@fancy-loading-url: url("@{fancy-image-prefix}loading.gif");
-// @fancy-loading-url: data-uri("@{fancy-image-prefix}loading.gif");
+// @fancy-loading-url: url("@{fancy-image-prefix}loading.gif");
+@fancy-loading-url: data-uri("@{fancy-image-prefix}loading.gif");
 
 // Set to `true` to use `data-uri(...)` instead of a `url(...)` link:
 @fancy-inline-sprites: false;
@@ -562,7 +566,7 @@ span.fancytree-drop-reject {
 	span.fancytree-icon,
 	span.fancytree-drag-helper-img,
 	#fancytree-drop-marker {
-		background-image: url("icons-rtl.gif");
+		.setBgImageUrl("icons-rtl.gif");
 	}
 	.fancytree-exp-n span.fancytree-expander,
 	.fancytree-exp-nl span.fancytree-expander {
@@ -570,7 +574,7 @@ span.fancytree-drop-reject {
 	}
 	&.fancytree-connectors .fancytree-exp-n span.fancytree-expander,
 	&.fancytree-connectors .fancytree-exp-nl span.fancytree-expander {
-		background-image: url("icons-rtl.gif");
+		.setBgImageUrl("icons-rtl.gif");
 	}
 }
 ul.fancytree-container.fancytree-rtl {

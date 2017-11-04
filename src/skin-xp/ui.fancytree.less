@@ -15,8 +15,8 @@
  * This section is automatically generated from the `ui-fancytree.less` template.
  ******************************************************************************/
 
-// Override the variable after the import. 
-// NOTE: Variables are always resolved as the last definition, even if it is 
+// Override the variable after the import.
+// NOTE: Variables are always resolved as the last definition, even if it is
 // after where it is used.
 @fancy-use-sprites: true;      // false: suppress all background images (i.e. icons)
 
@@ -25,9 +25,13 @@
 @fancy-icon-spacing: 3px;
 @fancy-node-border-width: 0;
 
+// We need to define this variable here (not in skin-common.less) to make it
+// work with grunt and webpack:
+@fancy-image-prefix: "./skin-xp/";
+
 // Use 'data-uri(...)' to embed the image into CSS instead of linking to 'loading.gif':
-@fancy-loading-url: data-uri("@{fancy-image-prefix}loading.gif");
-// Set to `true` to use `data-uri(...)` which will embed icons.gif into CSS 
+// @fancy-loading-url: data-uri("@{fancy-image-prefix}loading.gif");
+// Set to `true` to use `data-uri(...)` which will embed icons.gif into CSS
 // instead of linking to that file:
 // @fancy-inline-sprites: true;
 
@@ -67,7 +71,7 @@ ul.fancytree-no-connector > li {
 }
 
 // XP theme always displays connectors (not only when .fancytree-connectors is set)
-.fancytree-exp-n span.fancytree-expander, 
+.fancytree-exp-n span.fancytree-expander,
 .fancytree-exp-nl span.fancytree-expander {
 	.setBgImageUrl("icons.gif");
 	// margin-top: 0;
@@ -105,7 +109,7 @@ span.fancytree-focused span.fancytree-title {
 }
 .fancytree-active span.fancytree-title {
 	background-color: #3169C6 !important;
-	color: white !important; // @ IE6 
+	color: white !important; // @ IE6
 }
 
 /*******************************************************************************
@@ -123,4 +127,3 @@ table.fancytree-ext-table {
 		background-color: #99FDDE;
 	}
 }
-

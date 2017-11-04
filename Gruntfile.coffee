@@ -280,6 +280,12 @@ module.exports = (grunt) ->
                 compress: false
                 yuicompress: false
 #               optimization: 10
+
+                # webpack uses /dist/skin-common.less as root path
+                # grunt-less uses /dist/skin-Xxx/ui.fancyree.less as root path
+                # So we define our theme LESS files for webpack compatibility
+                # and fix it for grunt-less here:
+                rootpath: ".."
             files: [
                 {expand: true, cwd: "src/", src: "**/ui.fancytree.less", dest: "src/", ext: ".fancytree.css"}
             ]

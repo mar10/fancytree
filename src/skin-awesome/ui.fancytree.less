@@ -46,6 +46,10 @@
 @fancy-line-height: 1em;
 @fancy-icon-spacing: 0.5em;
 
+// We need to define this variable here (not in skin-common.less) to make it
+// work with grunt and webpack:
+@fancy-image-prefix: "./skin-awesome/";
+
 ul.fancytree-container ul
 {
 	padding: 0.3em 0 0 1em;
