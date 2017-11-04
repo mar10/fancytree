@@ -19,8 +19,8 @@
 // local vars
 @fancy-my-icon-size: 16px;
 
-// Override the variable after the import. 
-// NOTE: Variables are always resolved as the last definition, even if it is 
+// Override the variable after the import.
+// NOTE: Variables are always resolved as the last definition, even if it is
 // after where it is used.
 @fancy-use-sprites: false;  // false: suppress all background images (i.e. icons)
 @fancy-loading-url: none;
@@ -31,11 +31,14 @@
 @fancy-icon-spacing: 0.5em;
 
 // Use 'data-uri(...)' to embed the image into CSS instead of linking to 'loading.gif':
-// @fancy-loading-url: data-uri("@{fancy-image-dir}/loading.gif");
-// Set to `true` to use `data-uri(...)` which will embed icons.gif into CSS 
+// @fancy-loading-url: data-uri("@{fancy-image-prefix}loading.gif");
+// Set to `true` to use `data-uri(...)` which will embed icons.gif into CSS
 // instead of linking to that file:
 // @fancy-inline-sprites: true;
 
+// We need to define this variable here (not in skin-common.less) to make it
+// work with grunt and webpack:
+@fancy-image-prefix: "./skin-bootstrap-n/";
 
 ul.fancytree-container ul {
 	padding: 0 0 0 1.5em;
@@ -43,7 +46,7 @@ ul.fancytree-container ul {
 }
 /* Prevent focus frame */
 .fancytree-container:focus {
-	outline: none; 
+	outline: none;
 }
 
 // Error status node
@@ -156,7 +159,7 @@ table.fancytree-ext-table tbody {
 	//   filter: none;
 	// }
 	// dimmed, if inside inactive tree
-	tr.fancytree-selected {  
+	tr.fancytree-selected {
 		background-color: lighten(@brand-success, 10%);
 		span.fancytree-node {
 			background-color: lighten(@brand-success, 10%);

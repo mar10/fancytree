@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.25.0
- * @date 2017-10-31T17:32:40Z
+ * @version 2.26.0
+ * @date 2017-11-04T17:52:53Z
  */
 
 ;(function( factory ) {
@@ -40,6 +40,10 @@ var FT = $.ui.fancytree,
 		checkbox: "icon-check-empty",
 		checkboxSelected: "icon-check",
 		checkboxUnknown: "icon-check icon-muted",
+		radio: "icon-circle-blank",
+		radioSelected: "icon-circle",
+		radioUnknown: "icon-circle icon-muted",
+		// radioUnknown: "icon-remove-circle-blank",
 		dragHelper: "icon-caret-right",
 		dropMarker: "icon-caret-right",
 		error: "icon-exclamation-sign",
@@ -59,7 +63,11 @@ var FT = $.ui.fancytree,
 	"awesome4": {
 		checkbox: "fa fa-square-o",
 		checkboxSelected: "fa fa-check-square-o",
+		// checkboxUnknown: "fa fa-window-close-o",
 		checkboxUnknown: "fa fa-square",
+		radio: "fa fa-circle-o",
+		radioSelected: "fa fa-circle",
+		radioUnknown: "fa fa-dot-circle-o",
 		dragHelper: "fa fa-arrow-right",
 		dropMarker: "fa fa-long-arrow-right",
 		error: "fa fa-warning",
@@ -79,13 +87,16 @@ var FT = $.ui.fancytree,
 	"bootstrap3": {
 		checkbox: "glyphicon glyphicon-unchecked",
 		checkboxSelected: "glyphicon glyphicon-check",
-		checkboxUnknown: "glyphicon glyphicon-share",
+		checkboxUnknown: "glyphicon glyphicon-expand",
+		radio: "glyphicon glyphicon-remove-circle",
+		radioSelected: "glyphicon glyphicon-ok-circle",
+		radioUnknown: "glyphicon glyphicon-ban-circle",
 		dragHelper: "glyphicon glyphicon-play",
 		dropMarker: "glyphicon glyphicon-arrow-right",
 		error: "glyphicon glyphicon-warning-sign",
-		expanderClosed: "glyphicon glyphicon-plus-sign",
-		expanderLazy: "glyphicon glyphicon-plus-sign",
-		expanderOpen: "glyphicon glyphicon-minus-sign",
+		expanderClosed: "glyphicon glyphicon-menu-right",  // glyphicon-plus-sign
+		expanderLazy: "glyphicon glyphicon-menu-right",  // glyphicon-plus-sign
+		expanderOpen: "glyphicon glyphicon-menu-down",  // glyphicon-minus-sign
 		loading: "glyphicon glyphicon-refresh glyphicon-spin",
 		nodata: "glyphicon glyphicon-info-sign",
 		noExpander: "",
@@ -106,7 +117,7 @@ function _getIcon(opts, type){
 
 $.ui.fancytree.registerExtension({
 	name: "glyph",
-	version: "2.25.0",
+	version: "2.26.0",
 	// Default options for this extension.
 	options: {
 		preset: null,  // 'awesome3', 'awesome4', 'bootstrap3'
@@ -129,7 +140,7 @@ $.ui.fancytree.registerExtension({
 		tree.$container.addClass("fancytree-ext-glyph");
 	},
 	nodeRenderStatus: function(ctx) {
-		var icon, res, span,
+		var checkbox, className, icon, res, span,
 			node = ctx.node,
 			$span = $(node.span),
 			opts = ctx.options.glyph,
@@ -162,8 +173,17 @@ $.ui.fancytree.registerExtension({
 			span = $span.children("span.fancytree-checkbox").get(0);
 		}
 		if( span ){
-			icon = node.selected ? "checkboxSelected" : (node.partsel ? "checkboxUnknown" : "checkbox");
-			span.className = "fancytree-checkbox " + map[icon];
+			checkbox = FT.evalOption("checkbox", node, node, ctx.options, false);
+			if( checkbox && !node.isStatusNode() ) {
+				className = "fancytree-checkbox ";
+				if( checkbox === "radio" || (node.parent && node.parent.radiogroup) ) {
+					className += "fancytree-radio ";
+					icon = node.selected ? "radioSelected" : (node.partsel ? "radioUnknown" : "radio");
+				} else {
+					icon = node.selected ? "checkboxSelected" : (node.partsel ? "checkboxUnknown" : "checkbox");
+				}
+				span.className = className + map[icon];
+			}
 		}
 
 		// Standard icon (note that this does not match .fancytree-custom-icon,
