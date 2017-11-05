@@ -59,6 +59,8 @@ var EventData = {};
  *     undefined: Use global tree option of the same name<br>
  *     true: Use default icon, depending on `node.folder` and `node.expanded` status<br>
  *     false: Hide icon<br>
+ *     Object: Dict of options, e.g. {text: 'check_box', addClass: ''}, useful for
+ *     ligature fonts like Material.<br>
  *     String: A string value that contains a '/' or a '.' is used as `src` attribute for a &lt;img> tag.
  *     (See also the global `imagePath` option.)<br>
  *     Any other string value is used to generate custom tags, e.g. for "ui-icon ui-icon-heart":<br>
@@ -147,7 +149,7 @@ var TreePatch = {};
  * @property {boolean|function} icon Display node icons (default: true)<br>
  *     true: use default icons, depending on `node.folder` and `node.expanded`<br>
  *     false: hide icons<br>
- *     function(event, data): callback returning true, false, or a string.<br>
+ *     function(event, data): callback returning true, false, object, or a string.<br>
  *     NOTE: changed with v2.14.<br>
  *     See also <a href="https://github.com/mar10/fancytree/wiki#dynamic-options">dynamic options</a>.<br>
  *     See the node option of the same name for an explanation of possible string values.

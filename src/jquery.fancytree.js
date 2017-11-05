@@ -3636,10 +3636,10 @@ $.extend(Fancytree.prototype,
 		// else if opts.icon is a boolean or string, use that
 		// else show standard icon (which may be different for folders or documents)
 		icon = FT.evalOption("icon", node, node, opts, true);
-		if( typeof icon !== "boolean" ) {
-			// icon is defined, but not true/false: must be a string
-			icon = "" + icon;
-		}
+		// if( typeof icon !== "boolean" ) {
+		// 	// icon is defined, but not true/false: must be a string
+		// 	icon = "" + icon;
+		// }
 		if( icon !== false ) {
 			role = aria ? " role='presentation'" : "";
 			if ( typeof icon === "string" ) {
@@ -3650,6 +3650,9 @@ $.extend(Fancytree.prototype,
 				} else {
 					ares.push("<span " + role + " class='fancytree-custom-icon " + icon +  "'></span>");
 				}
+			} else if ( icon.text ) {
+				ares.push("<span " + role + " class='fancytree-custom-icon " +
+					(icon.addClass || "") + "'>" + icon.text + "</span>");
 			} else {
 				// standard icon: theme css will take care of this
 				ares.push("<span " + role + " class='fancytree-icon'></span>");
@@ -5097,6 +5100,24 @@ $.extend($.ui.fancytree,
 			res = defaultValue;  // no option set at all: return default
 		}
 		return res;
+	},
+	/** Set expander, checkbox, or node icon, supporting string and object format.
+	 * @param {DOM element} span
+	 * @param {string} baseClass
+	 * @param {string | object} icon
+	 * @since 2.27
+	 */
+	setSpanIcon: function( span, baseClass, icon ) {
+		var $span = $( span );
+
+		if( typeof icon === "string" ) {
+			$span.attr( "class", baseClass + " " + icon );
+		} else {  // support object syntax: { text: ligature, addClasse: classname }
+			if( icon.text ) {
+				$span.text( "" + icon.text );
+			}
+			$span.attr( "class", baseClass + " " + ( icon.addClass || "" ) );
+		}
 	},
 	/** Convert a keydown or mouse event to a canonical string like 'ctrl+a',
 	 * 'ctrl+shift+f2', 'shift+leftdblclick'.

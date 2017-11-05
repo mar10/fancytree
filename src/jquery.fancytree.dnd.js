@@ -207,7 +207,7 @@ function _initDragAndDrop(tree) {
 				// Support glyph symbols instead of icons
 				if( glyph ) {
 					$helper.find(".fancytree-drag-helper-img")
-						.addClass(glyph.map.dragHelper);
+						.addClass(glyph.map._addClass + " " + glyph.map.dragHelper);
 				}
 				// Allow to modify the helper, e.g. to add multi-node-drag feedback
 				if( opts.initHelper ) {
@@ -334,9 +334,8 @@ $.ui.fancytree.registerExtension({
 //                .prependTo("body");
 
 			if( glyphOpt ) {
-				// instData.$dropMarker.addClass(glyph.map.dragHelper);
 				instData.$dropMarker
-					.addClass(glyphOpt.map.dropMarker);
+					.addClass(glyphOpt.map._addClass + " " + glyphOpt.map.dropMarker);
 			}
 		}
 		if( hitMode === "after" || hitMode === "before" || hitMode === "over" ){

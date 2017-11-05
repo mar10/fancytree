@@ -1,5 +1,7 @@
-# 2.26.1-0 / Unreleased
-  *
+# 2.27.0-0 / Unreleased
+  * **Improved ext-glyph**.
+     * [Added] support for ligature icons (e.g. [material icons](https://material.io/icons/))
+     * [Added] `icon` option can now return a dict to set ligature icon
 
 # 2.26.0 / 2017-11-04
   * [Improved] LESS now compiles with webpack

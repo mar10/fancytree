@@ -30,7 +30,7 @@ var taxonTree, searchResultTree,
 		map: {
 			expanderClosed: "glyphicon glyphicon-menu-right",  // glyphicon-plus-sign
 			expanderLazy: "glyphicon glyphicon-menu-right",  // glyphicon-plus-sign
-			expanderOpen: "glyphicon glyphicon-menu-down"  // glyphicon-minus-sign
+			expanderOpen: "glyphicon glyphicon-menu-down"  // glyphicon-collapse-down
 		}
 	};
 
