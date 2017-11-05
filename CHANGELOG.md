@@ -1,4 +1,7 @@
-# 2.26.0-0 / Unreleased
+# 2.26.1-0 / Unreleased
+  *
+
+# 2.26.0 / 2017-11-04
   * [Improved] LESS now compiles with webpack
   * [Added] #791 ext-glyph support for radio buttons
   * [Added] #792 Call postProcess for non-Ajax sources
