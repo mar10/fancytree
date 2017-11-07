@@ -136,8 +136,16 @@ $.ui.fancytree.registerExtension({
 		}
 
 		$table.addClass("fancytree-container fancytree-ext-table");
-		tree.tbody = $table.find(">tbody")[0];
-		$tbody = $(tree.tbody);
+		$tbody = $table.find(">tbody");
+		if( !$tbody.length ) {
+			// TODO: not sure if we can rely on browsers to insert missing <tbody> before <tr>s:
+			if( $table.find(">tr").length ) {
+				$.error("Expected table > tbody > tr. If you see this please open an issue.");
+			}
+			$tbody = $("<tbody>").appendTo($table);
+		}
+
+		tree.tbody = $tbody[0];
 
 		// Prepare row templates:
 		// Determine column count from table header if any
