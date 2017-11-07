@@ -45,7 +45,8 @@
 		"no-unreachable": "error",
 		"wrap-iife": [
 			"warn",
-			"inside"
+			"outside"
+			//"inside"
 		],
 		"no-caller": "error",
 		"quotes": [
