@@ -40,7 +40,8 @@
 				preset: "awesome4",
 				map: {}
 			},
-			source: {url: "ajax-tree-taxonomy.json", debugDelay: 1000},
+			source: {url: "ajax-tree-products.json", debugDelay: 1000},
+			// source: {url: "ajax-tree-taxonomy.json", debugDelay: 1000},
 			lazyLoad: function(event, ctx) {
 				ctx.result = {url: "ajax-sub2.json", debugDelay: 1000};
 			}
@@ -93,7 +94,10 @@ $(function(){
 			The 'glyph' extension adds <code>fa-...</code> classes to the
 			node's <code>span</code> tags, so scalable vector icons as provided by
 			<a href="http://fontawesome.io/" class="external" target="_blank">Font Awesome</a>
-			can be used.
+			can be used.<br>
+			See also
+			<a href="https://github.com/mar10/fancytree/wiki/ExtGlyph"
+				class="external" target="_blank">ext-glyph</a>.
 		</p>
 	</div>
 

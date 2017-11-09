@@ -1,5 +1,5 @@
 /*!
- * Fancytree "awesome" skin.
+ * Fancytree "material" skin.
  *
  * DON'T EDIT THE CSS FILE DIRECTLY, since it is automatically generated from
  * the LESS templates.
@@ -19,8 +19,8 @@
  * Container and UL / LI
  *----------------------------------------------------------------------------*/
 ul.fancytree-container {
-  font-family: tahoma, arial, helvetica;
-  font-size: 10pt;
+  font-family: "Roboto Regular", tahoma, arial, helvetica;
+  font-size: 24px;
   white-space: nowrap;
   padding: 3px;
   margin: 0;
@@ -30,7 +30,7 @@ ul.fancytree-container {
   position: relative;
 }
 ul.fancytree-container ul {
-  padding: 0 0 0 10pt;
+  padding: 0 0 0 24px;
   margin: 0;
 }
 ul.fancytree-container ul > li:before {
@@ -45,7 +45,7 @@ ul.fancytree-container li {
   -moz-background-origin: padding;
   background-attachment: scroll;
   background-color: transparent;
-  background-position: 0pt 0pt;
+  background-position: 0px 0px;
   background-repeat: repeat-y;
   background-image: none;
   margin: 0;
@@ -58,7 +58,7 @@ ul.fancytree-container li.fancytree-lastsib {
   background-color: silver;
 }
 ul.fancytree-connectors.fancytree-container li {
-  background-image: url("../skin-awesome/vline.gif");
+  background-image: url("../skin-material/vline.gif");
   background-position: 0 0;
 }
 ul.fancytree-container li.fancytree-lastsib,
@@ -78,13 +78,13 @@ span.fancytree-icon,
 span.fancytree-checkbox,
 span.fancytree-drag-helper-img,
 #fancytree-drop-marker {
-  width: 10pt;
-  height: 10pt;
+  width: 24px;
+  height: 24px;
   display: inline-block;
   vertical-align: top;
   background-repeat: no-repeat;
   background-position: left;
-  background-position: 0pt 0pt;
+  background-position: 0px 0px;
 }
 span.fancytree-icon,
 span.fancytree-checkbox,
@@ -94,16 +94,16 @@ span.fancytree-custom-icon {
 }
 /* Used by icon option: */
 span.fancytree-custom-icon {
-  width: 10pt;
-  height: 10pt;
+  width: 24px;
+  height: 24px;
   display: inline-block;
   margin-left: 3px;
-  background-position: 0pt 0pt;
+  background-position: 0px 0px;
 }
 /* Used by 'icon' node option: */
 img.fancytree-icon {
-  width: 10pt;
-  height: 10pt;
+  width: 24px;
+  height: 24px;
   margin-left: 3px;
   margin-top: 0px;
   vertical-align: top;
@@ -183,14 +183,14 @@ span.fancytree-node {
   display: inherit;
   width: 100%;
   margin-top: 1px;
-  min-height: 10pt;
+  min-height: 24px;
 }
 span.fancytree-title {
-  color: #000;
+  color: #212121;
   cursor: pointer;
   display: inline-block;
   vertical-align: top;
-  min-height: 10pt;
+  min-height: 24px;
   padding: 0 3px 0 3px;
   margin: 0px 0 0 3px;
   border: 1px solid transparent;
@@ -233,13 +233,13 @@ div.fancytree-drag-helper span.fancytree-dnd-modifier {
 }
 /*** Drop marker icon *********************************************************/
 #fancytree-drop-marker {
-  width: 20pt;
+  width: 48px;
   position: absolute;
   margin: 0;
 }
 #fancytree-drop-marker.fancytree-drop-after,
 #fancytree-drop-marker.fancytree-drop-before {
-  width: 40pt;
+  width: 96px;
 }
 /*** Source node while dragging ***********************************************/
 span.fancytree-drag-source.fancytree-drag-remove {
@@ -262,7 +262,7 @@ ul.fancytree-container.fancytree-rtl ul {
 }
 ul.fancytree-container.fancytree-rtl.fancytree-connectors li {
   background-position: right 0;
-  background-image: url("../skin-awesome/vline-rtl.gif");
+  background-image: url("../skin-material/vline-rtl.gif");
 }
 ul.fancytree-container.fancytree-rtl li.fancytree-lastsib,
 ul.fancytree-container.fancytree-rtl.fancytree-no-connector > li {
@@ -299,7 +299,7 @@ table.fancytree-ext-columnview tbody tr td > ul li {
   -moz-background-origin: padding;
   background-attachment: scroll;
   background-color: transparent;
-  background-position: 0pt 0pt;
+  background-position: 0px 0px;
   background-repeat: repeat-y;
   background-image: none;
   /* no v-lines */
@@ -445,26 +445,61 @@ ul.fancytree-ext-wide span.fancytree-node span.fancytree-title {
  *
  * This section is automatically generated from the `ui-fancytree.less` template.
  ******************************************************************************/
+/*
+https://material.io/guidelines/components/data-tables.html#data-tables-structure
+*/
 ul.fancytree-container ul {
   padding: 0.3em 0 0 1em;
   margin: 0;
+  font-size: 24px;
+  color: #212121;
 }
 /*******************************************************************************
  * Node titles
  */
-span.fancytree-title {
-  border: 1px solid transparent;
-  border-radius: 0;
+.fancytree-plain span.fancytree-node:hover {
+  border: none;
+  background-color: #eeeeee;
 }
-span.fancytree-focused span.fancytree-title {
-  outline: 1px dotted black;
+/*
+ .fancytree-container thead > tr > td {
+ 	font-size: 12sp;
+ 	font-family: "Roboto Regular", tahoma, arial, helvetica;
+ 	color: #757575;
+ }
+ .fancytree-container tbody > tr > td {
+ 	font-size: 13sp;
+ 	font-family: "Roboto Regular", tahoma, arial, helvetica;
+ 	color: #212121;
+ }
+ */
+.fancytree-container span.fancytree-checkbox {
+  color: #ff4081;
 }
-span.fancytree-active span.fancytree-title {
-  background-color: #D4D4D4;
+/* Helper to allow spinning loader icon with bootstrap */
+.glyphicon-spin {
+  -webkit-animation: spin 1000ms infinite linear;
+  animation: spin 1000ms infinite linear;
 }
-.fancytree-treefocus span.fancytree-active span.fancytree-title {
-  color: white;
-  background-color: #3875D7;
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+@keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
 }
 /*******************************************************************************
  * 'table' extension
@@ -473,10 +508,16 @@ table.fancytree-ext-table {
   border-collapse: collapse;
 }
 table.fancytree-ext-table tbody tr.fancytree-focused {
-  background-color: #99DEFD;
+  background-color: #f5f5f5;
+}
+table.fancytree-ext-table tbody tr.fancytree-selected {
+  background-color: #f5f5f5;
 }
 table.fancytree-ext-table tbody tr.fancytree-active {
-  background-color: royalblue;
+  background-color: #eeeeee;
+}
+table.fancytree-ext-table tbody tr:hover {
+  background-color: #eeeeee;
 }
 /*******************************************************************************
  * 'columnview' extension

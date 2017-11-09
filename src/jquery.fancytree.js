@@ -5102,7 +5102,8 @@ $.extend($.ui.fancytree,
 		return res;
 	},
 	/** Set expander, checkbox, or node icon, supporting string and object format.
-	 * @param {DOM element} span
+	 *
+	 * @param {Element | jQueryObject} span
 	 * @param {string} baseClass
 	 * @param {string | object} icon
 	 * @since 2.27

@@ -126,10 +126,10 @@ var FT = $.ui.fancytree,
 			radioSelected: { text: "radio_button_checked" },
 			// Default node icons.
 			// (Use tree.options.icon callback to define custom icons based on node data)
-			doc: { text: "web_asset" },
-			docOpen: { text: "web_asset" },
+			doc: { text: "insert_drive_file" },
+			docOpen: { text: "insert_drive_file" },
 			folder: { text: "folder" },
-			folderOpen: { text: "folder" }
+			folderOpen: { text: "folder_open" }
 			}
 	};
 

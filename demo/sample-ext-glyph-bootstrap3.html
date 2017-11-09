@@ -12,11 +12,7 @@
 	-->
 	<script src="//code.jquery.com/jquery-1.12.4.min.js"></script>
 	<script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-<!--
-	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
-	<link href="../src/skin-awesome/ui.fancytree.css" rel="stylesheet" class="skinswitcher">
-	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
--->
+
 	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 	<script src="//netdna.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
@@ -75,9 +71,6 @@
 	var glyph_opts = {
 		preset: "bootstrap3",
 		map: {
-			expanderClosed: "glyphicon glyphicon-menu-right",  // glyphicon-plus-sign
-			expanderLazy: "glyphicon glyphicon-menu-right",  // glyphicon-plus-sign
-			expanderOpen: "glyphicon glyphicon-menu-down"  // glyphicon-collapse-down
 		}
 	};
 	$(function(){
@@ -182,15 +175,22 @@ $(function(){
 			<p>
 				The 'glyph' extension adds <code>icon-...</code> classes to the
 				node's <code>span</code> tags, so scalable vector icons as provided by
-				<a href="http://fortawesome.github.io/Font-Awesome/" class="external" target="_blank">Font Awesome</a> or <a href="http://getbootstrap.com/components/" class="external" target="_blank">Bootstrap Glyphicons</a> can be used.
+				<a href="http://fortawesome.github.io/Font-Awesome/" class="external" target="_blank">Font Awesome</a>
+				or <a href="http://getbootstrap.com/components/" class="external" target="_blank">Bootstrap Glyphicons</a>
+				can be used.
 			</p>
 			<p>
 				The theme defines some colors from bootstrap. To change it, run
-				<a href="https://github.com/mar10/fancytree/wiki/HowtoContribute">grunt dev</a> and edit the
-				<a href="https://github.com/mar10/fancytree/blob/master/src/skin-bootstrap/ui.fancytree.less" class="external" target="_blank">LESS definition</a>.
+				<a href="https://github.com/mar10/fancytree/wiki/HowtoContribute">grunt dev</a>
+				and edit the
+				<a href="https://github.com/mar10/fancytree/blob/master/src/skin-bootstrap/ui.fancytree.less"
+					class="external" target="_blank">LESS definition</a>.
 			</p>
 			<p>
-				<b>Status</b>: alpha
+				<b>Status</b>: beta<br>
+				See also
+				<a href="https://github.com/mar10/fancytree/wiki/ExtGlyph"
+					class="external" target="_blank">ext-glyph</a>.
 			</p>
 		</div>
 	</div>

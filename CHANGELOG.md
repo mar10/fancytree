@@ -3,11 +3,13 @@
      * [Added] support for ligature icons (e.g. [material icons](https://material.io/icons/))
      * [Added] `icon` option can now return a dict to set ligature icon
   * [Added] Material Design demo
+  * [Improved] ext-table no longer need empty tbody if thead is present.
 
 # 2.26.0 / 2017-11-04
+  * BREAKING:
+    [Fixed] #792 postProcess is now also called for non-Ajax sources
   * [Improved] LESS now compiles with webpack
   * [Added] #791 ext-glyph support for radio buttons
-  * [Added] #792 Call postProcess for non-Ajax sources
   * [Added] Color definitions for skin-awesome (taken from skin-lion)
   * [Fixed] `$.ui.fancytree.getNode()` for ES6 environments
   * [Fixed] #789 Wrong node is activated in IE, when clicking in unfocused container
@@ -242,7 +244,7 @@
   * [Added] new method `node.replaceWith()`
   * [Added] new type 'paging' for `node.statusNodeType`
   * [Added] #542 new method `node.getSelectedNodes()`
-  * [Added] Helper class `glyphicon-spin` to allow rotating loading icon with bootstrap
+  * [Added] Helper class `glyphicon-spin` to allow rotating loading icon with bootstrap3
   * [Improved] #356: serialize load requests
   * [Improved] #538: Be more robust if site css defines custom li:before
   * [Improved] ext-table: Define table row templates in `<tbody>`
