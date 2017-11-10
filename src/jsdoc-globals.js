@@ -67,13 +67,21 @@ var EventData = {};
  *     &lt;span class="fancytree-custom-icon ui-icon ui-icon-heart" />.<br>
  *     See also <a href="https://github.com/mar10/fancytree/wiki#dynamic-options">dynamic options</a>.<br>
  * @property {string} <del>iconclass</del> @deprecated use `icon` instead.
+ * @property {string} iconTooltip Will be added as `title` attribute of the node's icon span,
+ *     thus enabling a tooltip.<br>
+ *     NOTE: Passing a tooltip string per node is probably very inefficient, assuming the
+ *     same text would be passed for every node of the same type!<br>
+ *     See also the global `tree.iconTooltip` option.
  * @property {string} key Unique key for this node (auto-generated if omitted).
  * @property {boolean} lazy Lazy folders call the `lazyLoad` on first expand to load their children.
  * @property {string} refKey (Reserved, used by 'clones' extension.)
  * @property {boolean} selected Initial selection state. Use `node.setSelected()` or `node.isSelected()` to access.
  * @property {string} statusNodeType If set, make this node a status node. Values: 'error', 'loading', 'nodata', 'paging'.
  * @property {string} title Node text (may contain HTML tags). Use `node.setTitle()` to modify.
- * @property {string} tooltip Will be added as `title` attribute, thus enabling a tooltip.<br>
+ * @property {string} tooltip Will be added as `title` attribute of the node's title span,
+ *     thus enabling a tooltip.<br>
+ *     NOTE: Passing a tooltip string per node would be inefficient, if it can be constructed
+ *     from existing node data. Consider using the callback instead:<br>
  *     See also the global `tree.tooltip` option.
  * @property {boolean} unselectable Prevent (de-)selection using mouse or keyboard.<br>
  *     Note: This node can still be (de)selected by status propagation in selectMode 3.
@@ -154,6 +162,9 @@ var TreePatch = {};
  *     See also <a href="https://github.com/mar10/fancytree/wiki#dynamic-options">dynamic options</a>.<br>
  *     See the node option of the same name for an explanation of possible string values.
  * @property {boolean} <del>icons</del> @deprecated use `icon` instead
+ * @property {boolean|function} iconTooltip Add a `title` attribute to the node's icon span markup,
+ *     thus enabling a tooltip (default: false).<br>
+ *     See `tree.tooltip` option for details.
  * @property {string} idPrefix prefix used to generate node markup ID attributes (default: "ft_", requires generateIds to be set)
  * @property {string} imagePath Path to a folder containing icons (default: null, using 'skin/' subdirectory).
  * @property {boolean} keyboard Support keyboard navigation (default: true).
@@ -173,7 +184,8 @@ var TreePatch = {};
  *     "": Tree control is not tabbable nor may it receive keyboard focus.
  * @property {boolean} titlesTabbable Add tabindex='0' to node title span, so it can receive keyboard focus
  * @property {object} toggleEffect Animation options, false:off (default: { effect: "blind", options: {direction: "vertical", scale: "box"}, duration: 200 })
- * @property {boolean|function} tooltip Add a `title` attribute to the node markup, thus enabling a tooltip (default: false).<br>
+ * @property {boolean|function} tooltip Add a `title` attribute to the node's title span markup,
+ *     thus enabling a tooltip (default: false).<br>
  *     false: No automatic tooltip (but still honor `node.tooltip` attribute)<br>
  *     true:  Use `node.title` as tooltip<br>
  *     function:  A `callback(event, data)<br>

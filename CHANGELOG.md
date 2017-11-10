@@ -1,9 +1,11 @@
 # 2.27.0-0 / Unreleased
   * **Improved ext-glyph**.
-     * [Added] support for ligature icons (e.g. [material icons](https://material.io/icons/))
-     * [Added] `icon` option can now return a dict to set ligature icon
+     * [Added] support for ligature icons (e.g. [material icons](https://material.io/icons/)).
+     * [Added] `icon` option can now return a dict to create a ligature icon.
   * [Added] Material Design demo
-  * [Improved] ext-table no longer need empty tbody if thead is present.
+  * [Added] #798 Tooltip support for icons (dynamic option `iconTooltip`).
+  * [Improved] ext-table no longer needs empty tbody/tr if thead is present.
+  * [Added] Demo for jquery-confirm popup.
 
 # 2.26.0 / 2017-11-04
   * BREAKING:
