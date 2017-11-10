@@ -70,7 +70,7 @@ var i, attr,
 	CLASS_ATTRS = "active expanded focus folder lazy radiogroup selected unselectable unselectableIgnore".split(" "),
 	CLASS_ATTR_MAP = {},
 	// Top-level Fancytree node attributes, that can be set by dict
-	NODE_ATTRS = "checkbox expanded extraClasses folder icon key lazy radiogroup refKey selected statusNodeType title tooltip unselectable unselectableIgnore unselectableStatus".split(" "),
+	NODE_ATTRS = "checkbox expanded extraClasses folder icon iconTooltip key lazy radiogroup refKey selected statusNodeType title tooltip unselectable unselectableIgnore unselectableStatus".split(" "),
 	NODE_ATTR_MAP = {},
 	// Mapping of lowercase -> real name (because HTML5 data-... attribute only supports lowercase)
 	NODE_ATTR_LOWERCASE_MAP = {},
@@ -308,6 +308,7 @@ function _makeNodeTitleStartMatcher(s){
  * @property {boolean} lazy True if this node is loaded on demand, i.e. on first expansion.
  * @property {boolean} selected Use isSelected(), setSelected() to access this property.
  * @property {string} tooltip Alternative description used as hover popup
+ * @property {string} iconTooltip Description used as hover popup for icon
  */
 function FancytreeNode(parent, obj){
 	var i, l, name, cl;
@@ -3581,7 +3582,7 @@ $.extend(Fancytree.prototype,
 	 */
 	nodeRenderTitle: function(ctx, title) {
 		// set node connector images, links and text
-		var checkbox, className, icon, nodeTitle, role, tabindex, tooltip,
+		var checkbox, className, icon, nodeTitle, role, tabindex, tooltip, iconTooltip,
 			node = ctx.node,
 			tree = ctx.tree,
 			opts = ctx.options,
@@ -3642,20 +3643,24 @@ $.extend(Fancytree.prototype,
 		// }
 		if( icon !== false ) {
 			role = aria ? " role='presentation'" : "";
+			
+			iconTooltip = FT.evalOption("iconTooltip", node, node, opts, null);
+			iconTooltip = iconTooltip ? " title='" + _escapeTooltip(iconTooltip) + "'" : "";
+			
 			if ( typeof icon === "string" ) {
 				if( TEST_IMG.test(icon) ) {
 					// node.icon is an image url. Prepend imagePath
 					icon = (icon.charAt(0) === "/") ? icon : ((opts.imagePath || "") + icon);
-					ares.push("<img src='" + icon + "' class='fancytree-icon' alt='' />");
+					ares.push("<img src='" + icon + "' class='fancytree-icon'" + iconTooltip + " alt='' />");
 				} else {
-					ares.push("<span " + role + " class='fancytree-custom-icon " + icon +  "'></span>");
+					ares.push("<span " + role + " class='fancytree-custom-icon " + icon +  "'" + iconTooltip + "></span>");
 				}
 			} else if ( icon.text ) {
 				ares.push("<span " + role + " class='fancytree-custom-icon " +
-					(icon.addClass || "") + "'>" + icon.text + "</span>");
+					(icon.addClass || "") + "'" + iconTooltip + ">" + icon.text + "</span>");
 			} else {
 				// standard icon: theme css will take care of this
-				ares.push("<span " + role + " class='fancytree-icon'></span>");
+				ares.push("<span " + role + " class='fancytree-icon'" + iconTooltip + "></span>");
 			}
 		}
 		// Node title
