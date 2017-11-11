@@ -92,7 +92,7 @@ var FT = $.ui.fancytree,
 			dragHelper: "glyphicon-play",
 			dropMarker: "glyphicon-arrow-right",
 			error: "glyphicon-warning-sign",
-	 		expanderClosed: "glyphicon-menu-right",  // glyphicon-plus-sign
+			expanderClosed: "glyphicon-menu-right",  // glyphicon-plus-sign
 			expanderLazy: "glyphicon-menu-right",  // glyphicon-plus-sign
 			expanderOpen: "glyphicon-menu-down",  // glyphicon-minus-sign
 			loading: "glyphicon-refresh glyphicon-spin",

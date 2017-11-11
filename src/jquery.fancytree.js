@@ -3643,10 +3643,10 @@ $.extend(Fancytree.prototype,
 		// }
 		if( icon !== false ) {
 			role = aria ? " role='presentation'" : "";
-			
+
 			iconTooltip = FT.evalOption("iconTooltip", node, node, opts, null);
 			iconTooltip = iconTooltip ? " title='" + _escapeTooltip(iconTooltip) + "'" : "";
-			
+
 			if ( typeof icon === "string" ) {
 				if( TEST_IMG.test(icon) ) {
 					// node.icon is an image url. Prepend imagePath

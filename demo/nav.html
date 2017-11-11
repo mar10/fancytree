@@ -74,6 +74,9 @@ $(function(){
 		tabindex: "-1", // we don't want the focus frame
 		// toggleEffect: { effect: "blind", options: {direction: "vertical", scale: "box"}, duration: 2000 },
 		// scrollParent: null, // use $container
+		tooltip: function(event, data) {
+			return data.node.title;
+		},
 		focus: function(event, data) {
 			var node = data.node;
 			// Auto-activate focused node after 1 second
@@ -208,12 +211,6 @@ $(function(){
 				<ul>
 					<li><a target="content" href="sample-iframe.html">URL navigation and &lt;iframe></a></li>
 					<li><a target="content" href="sample-accordion.html">Accordion</a></li>
-					<li><a target="content" href="sample-3rd-confirm.html">confirm</a></li>
-					<li><a target="content" href="sample-3rd-ui-contextmenu.html">ui-contextmenu</a></li>
-					<li><a target="content" href="sample-3rd-jQuery-contextMenu.html">jQuery contextMenu</a></li>
-					<li><a target="content" href="sample-3rd-contextmenu-abs.html">Context menu (ABS), Copy/paste</a></li>
-					<!-- <li><a target="content" href="sample-ext-glyph-awesome3.html">font-awesome</a></li> -->
-					<!-- <li><a target="content" href="sample-ext-glyph-material.html">material icons</a></li> -->
 					<li><a target="content" href="sample-load-errors.html">Lazy load errors handling</a></li>
 					<li><a target="content" href="sample-rtl.html">RTL</a></li>
 					<li><a target="content" href="sample-multiline.html">Large nodes</a></li>
@@ -249,13 +246,16 @@ $(function(){
 			<ul>
 				<li class="folder">Extensions
 					<ul>
-						<li><a target="content" href="../3rd-party/extensions/contextmenu/contextmenu.html">jQuery contextMenu</a></li>
+						<li><a target="content" href="../3rd-party/extensions/contextmenu/contextmenu.html">jQuery contextMenu Extension</a></li>
 						<li><a target="content" href="../3rd-party/extensions/hotkeys/hotkeys.html">hotkeys</a></li>
 					</ul>
 				</li>
 				<li class="folder">Samples
 					<ul>
+						<li><a target="content" href="sample-3rd-confirm.html">jquery-confirm</a></li>
+						<li><a target="content" href="sample-3rd-jQuery-contextMenu.html">jQuery contextMenu</a></li>
 						<li><a target="content" href="sample-3rd-ui-contextmenu.html">ui-contextmenu</a></li>
+						<li><a target="content" href="sample-3rd-contextmenu-abs.html">Context menu (ABS), Copy/paste</a></li>
 					</ul>
 				</li>
 			</ul>
