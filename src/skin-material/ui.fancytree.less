@@ -77,47 +77,16 @@ ul.fancytree-container span.fancytree-icon.material-icons
 /*******************************************************************************
  * Node titles
  */
- .fancytree-plain span.fancytree-node:hover { // undo standard tree css
-	 border: none;
-	 background-color: @fancy-cst-hover-bg;
- }
- /*
- .fancytree-container thead > tr > td {
- 	font-size: 12sp;
- 	font-family: "Roboto Regular", tahoma, arial, helvetica;
- 	color: #757575;
- }
- .fancytree-container tbody > tr > td {
- 	font-size: 13sp;
- 	font-family: "Roboto Regular", tahoma, arial, helvetica;
- 	color: #212121;
- }
- */
 
-// span.fancytree-title {
-// 	border: 1px solid transparent; // reserve some space for status borders
-// 	border-radius: 0;
-// }
-// span.fancytree-focused span.fancytree-title {
-// 	outline: 1px dotted black;
-// }
-// // span.fancytree-selected span.fancytree-title,
-// span.fancytree-active span.fancytree-title {
-// 	background-color: #D4D4D4; // gray
-// }
-// span.fancytree-selected span.fancytree-title {
-// 	// font-style: italic;
-// }
-// // .fancytree-treefocus span.fancytree-selected span.fancytree-title,
-// .fancytree-treefocus span.fancytree-active span.fancytree-title {
-// 	color: white;
-// 	background-color: #3875D7; // blue
-// }
-
-// .fancytree-treefocus span.fancytree-selected span.fancytree-title{
-// 	color: white;
-// 	background-color: #99DEFD; // blue
-// }
+ .fancytree-plain {
+	 span.fancytree-selected span.fancytree-title {
+		 background-color: @fancy-cst-select-bg;
+	 }
+	 span.fancytree-selected span.fancytree-title:hover,
+	 span.fancytree-active span.fancytree-title {
+		 background-color: @fancy-cst-hover-bg;
+	 }
+}
 
 .fancytree-container span.fancytree-checkbox {
 	color: @fancy-cst-secondary-color;
@@ -155,16 +124,10 @@ ul.fancytree-container span.fancytree-icon.material-icons
 table.fancytree-ext-table {
 	border-collapse: collapse;
 	tbody {
-		tr.fancytree-focused {
+		tr.fancytree-focused, tr.fancytree-selected {
 			background-color: @fancy-cst-select-bg;
 		}
-		tr.fancytree-selected {
-			background-color: @fancy-cst-select-bg;
-		}
-		tr.fancytree-active {
-			background-color: @fancy-cst-hover-bg;
-		}
-		tr:hover {
+		tr.fancytree-active, tr:hover {
 			background-color: @fancy-cst-hover-bg;
 		}
 	}

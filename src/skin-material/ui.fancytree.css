@@ -457,22 +457,13 @@ ul.fancytree-container ul {
 /*******************************************************************************
  * Node titles
  */
-.fancytree-plain span.fancytree-node:hover {
-  border: none;
+.fancytree-plain span.fancytree-selected span.fancytree-title {
+  background-color: #f5f5f5;
+}
+.fancytree-plain span.fancytree-selected span.fancytree-title:hover,
+.fancytree-plain span.fancytree-active span.fancytree-title {
   background-color: #eeeeee;
 }
-/*
- .fancytree-container thead > tr > td {
- 	font-size: 12sp;
- 	font-family: "Roboto Regular", tahoma, arial, helvetica;
- 	color: #757575;
- }
- .fancytree-container tbody > tr > td {
- 	font-size: 13sp;
- 	font-family: "Roboto Regular", tahoma, arial, helvetica;
- 	color: #212121;
- }
- */
 .fancytree-container span.fancytree-checkbox {
   color: #ff4081;
 }
@@ -507,15 +498,11 @@ ul.fancytree-container ul {
 table.fancytree-ext-table {
   border-collapse: collapse;
 }
-table.fancytree-ext-table tbody tr.fancytree-focused {
-  background-color: #f5f5f5;
-}
+table.fancytree-ext-table tbody tr.fancytree-focused,
 table.fancytree-ext-table tbody tr.fancytree-selected {
   background-color: #f5f5f5;
 }
-table.fancytree-ext-table tbody tr.fancytree-active {
-  background-color: #eeeeee;
-}
+table.fancytree-ext-table tbody tr.fancytree-active,
 table.fancytree-ext-table tbody tr:hover {
   background-color: #eeeeee;
 }
