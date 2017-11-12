@@ -806,7 +806,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		this.visitParents(function(node){
 			var i, l, child, state, unselIgnore, unselState,
 				children = node.children,
-				allSelected = true,
+				allSelected = (children.length > 1),
 				someSelected = false;
 
 			for( i=0, l=children.length; i<l; i++ ){
