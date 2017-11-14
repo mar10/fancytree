@@ -56,5 +56,5 @@ used in the build process.
 ## Updating this Dependencies
 
 1. Download new versions from http://jqueryui.com .
-2. Apply modifcations as described above.
+2. Apply modifications as described above.
 3. run `grunt build` to test.

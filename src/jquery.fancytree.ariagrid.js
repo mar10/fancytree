@@ -26,7 +26,7 @@
 		], factory );
 	} else if ( typeof module === "object" && module.exports ) {
 		// Node/CommonJS
-		require( "jquery.fancytree.table" );  // core + table
+		require( "./jquery.fancytree.table" );  // core + table
 		module.exports = factory( require( "jquery" ) );
 	} else {
 		// Browser globals

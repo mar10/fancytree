@@ -21,7 +21,7 @@
 		define( [ "jquery", "./jquery.fancytree.ui-deps" ], factory );
 	} else if ( typeof module === "object" && module.exports ) {
 		// Node/CommonJS
-		require("jquery.fancytree.ui-deps");
+		require("./jquery.fancytree.ui-deps");
 		module.exports = factory(require("jquery"));
 	} else {
 		// Browser globals
