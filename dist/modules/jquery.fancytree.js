@@ -1961,7 +1961,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		return this.tree._callHook("nodeToggleSelected", this);
 	},
 	toString: function() {
-		return "<FancytreeNode(#" + this.key + ", '" + this.title + "')>";
+		return "FancytreeNode(#" + this.key + ", '" + this.title + "')";
 	},
 	/**
 	 * Trigger `modifyChild` event on a parent to signal that a child was modified.
@@ -2852,7 +2852,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	 * @returns {string}
 	 */
 	toString: function(){
-		return "<Fancytree(#" + this._id + ")>";
+		return "Fancytree(#" + this._id + ")";
 	},
 	/* _trigger a widget event with additional node ctx.
 	 * @see EventData
