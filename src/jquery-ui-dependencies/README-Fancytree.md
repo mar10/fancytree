@@ -73,8 +73,7 @@ This module is distributed as `dist/modules/jquery.fancytree.ui-deps.js` and is 
 The code is patched, so that the library will not override and replace widgets in case another jQuery UI instance was already included before.
 (See [this issue](https://github.com/mar10/fancytree/issues/803#issuecomment-344526898) for details.)
 
-```js
-```
+See [Patch DIFF](https://github.com/mar10/fancytree/commit/4ac9b461e8e633c938610fc01f292355e12720a2#diff-da57115b491a5564bf312f2a8b609b37)
 
 
 ## Updating this Dependencies

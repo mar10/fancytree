@@ -5,6 +5,7 @@
   * [Added] #798 Tooltip support for icons (dynamic option `iconTooltip`).
   * [Improved] ext-table no longer needs empty tbody/tr if thead is present.
   * [Fixed] #796 UMD requirements for node/CommonJS
+  * [Fixed] #803 jquery.fancytree.ui-deps.js does not override existing widgets.
   * [Added] Material Design demo
   * [Added] Demo for jquery-confirm popup
 
