@@ -1,7 +1,18 @@
 # 2.27.0-0 / Unreleased
+  * **BREAKING CHANGES:**
+    - `node.type` is now a first-class property of FancytreeNode.
+      Node data `{..., type: "foo"}` is now available as `node.type` (before: `node.data.type`).
+    - The properties `tree.types` and `tree.columns` have been added to Fancytree.
+      If passed with source data, they are now available directly instead of
+      `tree.data.types` or `tree.data.columns`.
+  * **Support patterns for node types:**
+    - The properties `node.type` and `tree.types` are recommended to implement node-type
+      specific configuration ([details](https://github.com/mar10/fancytree/wiki/TutorialNodeTypes)).
+    - Event `data` argument contains `typeInfo == tree.types[node.type]`.
   * **Improved ext-glyph:**
-     - [Added] support for ligature icons (e.g. [material icons](https://material.io/icons/)).
-     - [Added] `icon` option can now return a dict to create a ligature icon.
+    - [Added] support for ligature icons (e.g. [material icons](https://material.io/icons/)).
+    - [Added] `icon` option can now return a dict to create a ligature icon.
+  * The property `tree.columns` was added to Fancytree.
   * [Added] #798 Tooltip support for icons (dynamic option `iconTooltip`).
   * [Improved] ext-table no longer needs empty tbody/tr if thead is present.
   * [Fixed] #796 UMD requirements for node/CommonJS
@@ -23,18 +34,18 @@
     - The `dist/src/` folder was renamed to `dist/modules`.
     - Some directories like `demo/` are no longer part of the npm install.
   * **Improved Module Support and Distribution**<br>
-    * The `dist/` folder now includes a `modules/` directory with fancytree core
+    - The `dist/` folder now includes a `modules/` directory with fancytree core
       and all extensions.
-    * All modules have UMD wrappers with defined dependencies.
-    * Internal jQuery UI dependencies are deployed as module and implicitly loaded.
-    * `jquery.fancytree/dist/modules/jquery.fancytree` is defined as
+    - All modules have UMD wrappers with defined dependencies.
+    - Internal jQuery UI dependencies are deployed as module and implicitly loaded.
+    - `jquery.fancytree/dist/modules/jquery.fancytree` is defined as
       package main module, so Fancytree can be included using a simple<br>
       `fancytree = require('jquery.fancytree')`.<br>
       See [the docs](https://github.com/mar10/fancytree/wiki/TutorialIntegration)
       for details.
-    * All modules now return the
+    - All modules now return the
       [$.ui.fancytree object](http://www.wwwendt.de/tech/fancytree/doc/jsdoc/Fancytree_Static.html).
-    * [Added] new static method `$.ui.fancytree.createTree(elem, opts)`
+    - [Added] new static method `$.ui.fancytree.createTree(elem, opts)`
   * [Added] Source map files for `jquery.fancytree-all-deps.min.js`
   * [Added] New extension ext-fixed (work-in-progress, experimental)
   * [Fixed] #767: Input inside table head not working

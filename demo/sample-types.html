@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+	<title>Fancytree - Example: Types</title>
+
+	<script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+	<script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
+	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet">
+	<script src="../src/jquery.fancytree.js"></script>
+
+	<!-- Start_Exclude: This block is not part of the sample code -->
+	<link href="../lib/prettify.css" rel="stylesheet">
+	<script src="../lib/prettify.js"></script>
+	<link href="sample.css" rel="stylesheet">
+	<script src="sample.js"></script>
+	<!-- End_Exclude -->
+
+<script type="text/javascript">
+$(function(){
+	$("#tree").fancytree({
+		types: {
+			"book": {"icon": "ft-ico-book", "iconTooltip": "This is a book"},
+		    "computer": {"icon": "ft-ico-computer", "iconTooltip": "This is a computer."}
+		},
+		checkbox: true,
+		source: {url: "ajax-tree-products.json"},
+		iconTooltip: function(event, data){
+			return data.typeInfo.iconTooltip + "!";
+		}
+	});
+});
+</script>
+<!-- Start_Exclude: This block is not part of the sample code -->
+<script>
+$(function(){
+	addSampleButton({
+		label: "(De)Select active node",
+		newline: false,
+		code: function(){
+			var node = $("#tree").fancytree("getActiveNode");
+			node.setSelected( !node.isSelected() );
+		}
+	});
+	addSampleButton({
+		label: "Remove active node",
+		newline: false,
+		code: function(){
+			var node = $("#tree").fancytree("getActiveNode");
+			node.remove();
+		}
+	});
+});
+</script>
+<!-- End_Exclude -->
+</head>
+
+<body class="example">
+	<h1>Example: Node Types</h1>
+	<div class="description">
+		Used shared configuration per node type.
+		<br>
+		See the <a href="https://github.com/mar10/fancytree/wiki/TutorialNodeTypes"
+			target="_blank" class="external">Node Type Tutorial</a>
+		for details.
+	</div>
+	<div>
+		<label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
+	</div>
+
+	<p id="sampleButtons">
+	</p>
+
+	<div id="tree">
+	</div>
+
+	<!-- Start_Exclude: This block is not part of the sample code -->
+	<hr>
+	<p class="sample-links  no_code">
+		<a class="hideInsideFS" href="https://github.com/mar10/fancytree/">Fancytree project home</a>
+		<a class="hideOutsideFS" href="#">Link to this page</a>
+		<a class="hideInsideFS" href="index.html">Example Browser</a>
+		<a href="#" id="codeExample">View source code</a>
+	</p>
+	<pre id="sourceCode" class="prettyprint" style="display:none"></pre>
+	<!-- End_Exclude -->
+</body>
+</html>

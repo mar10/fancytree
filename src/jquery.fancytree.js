@@ -46,8 +46,8 @@ if ( $.ui && $.ui.fancytree ) {
 var i, attr,
 	FT = null, // initialized below
 	TEST_IMG = new RegExp(/\.|\//),  // strings are considered image urls if they contain '.' or '/'
-	REX_HTML = /[&<>"'\/]/g,
-	REX_TOOLTIP = /[<>"'\/]/g,
+	REX_HTML = /[&<>"'\/]/g,  // Escape those characters
+	REX_TOOLTIP = /[<>"'\/]/g,  // Don't escape `&` in tooltips
 	RECURSIVE_REQUEST_ERROR = "$recursive_request",
 	ENTITY_MAP = {"&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;", "/": "&#x2F;"},
 	IGNORE_KEYCODES = { 16: true, 17: true, 18: true },
@@ -69,8 +69,11 @@ var i, attr,
 	// Note: v2.23: checkbox and hideCheckbox are *not* in this list
 	CLASS_ATTRS = "active expanded focus folder lazy radiogroup selected unselectable unselectableIgnore".split(" "),
 	CLASS_ATTR_MAP = {},
-	// Top-level Fancytree node attributes, that can be set by dict
-	NODE_ATTRS = "checkbox expanded extraClasses folder icon iconTooltip key lazy radiogroup refKey selected statusNodeType title tooltip unselectable unselectableIgnore unselectableStatus".split(" "),
+	// Top-level Fancytree attributes, that can be set by dict
+	TREE_ATTRS = "columns types".split(" "),
+	// TREE_ATTR_MAP = {},
+	// Top-level FancytreeNode attributes, that can be set by dict
+	NODE_ATTRS = "checkbox expanded extraClasses folder icon iconTooltip key lazy radiogroup refKey selected statusNodeType title tooltip type unselectable unselectableIgnore unselectableStatus".split(" "),
 	NODE_ATTR_MAP = {},
 	// Mapping of lowercase -> real name (because HTML5 data-... attribute only supports lowercase)
 	NODE_ATTR_LOWERCASE_MAP = {},
@@ -85,6 +88,9 @@ for(i=0; i<NODE_ATTRS.length; i++) {
 		NODE_ATTR_LOWERCASE_MAP[attr.toLowerCase()] = attr;
 	}
 }
+// for(i=0; i<TREE_ATTRS.length; i++) {
+// 	TREE_ATTR_MAP[TREE_ATTRS[i]] = true;
+// }
 
 
 function _assert(cond, msg){
@@ -308,7 +314,8 @@ function _makeNodeTitleStartMatcher(s){
  * @property {boolean} lazy True if this node is loaded on demand, i.e. on first expansion.
  * @property {boolean} selected Use isSelected(), setSelected() to access this property.
  * @property {string} tooltip Alternative description used as hover popup
- * @property {string} iconTooltip Description used as hover popup for icon
+ * @property {string} iconTooltip Description used as hover popup for icon. @since 2.27
+ * @property {string} type Node type, used with tree.types map. @since 2.27
  */
 function FancytreeNode(parent, obj){
 	var i, l, name, cl;
@@ -339,7 +346,7 @@ function FancytreeNode(parent, obj){
 	if(obj.data){
 		$.extend(this.data, obj.data);
 	}
-	// copy all other attributes to this.data.NAME
+	// Copy all other attributes to this.data.NAME
 	for(name in obj){
 		if(!NODE_ATTR_MAP[name] && !$.isFunction(obj[name]) && !NONE_NODE_DATA_MAP[name]){
 			// node.data.NAME = obj.NAME
@@ -2151,6 +2158,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
  *     Typically "li", but "tr" for table extension.
  * @property {jQueryObject} $container Outer &lt;ul> element (or &lt;table> element for ext-table).
  * @property {jQueryObject} $div A jQuery object containing the element used to instantiate the tree widget (`widget.element`)
+ * @property {object|array} columns Recommended place to store shared column meta data. @since 2.27
  * @property {object} data Metadata, i.e. properties that may be passed to `source` in addition to a children array.
  * @property {object} ext Hash of all active plugin instances.
  * @property {FancytreeNode} focusNode Currently focused node or null.
@@ -2161,6 +2169,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
  * @property {FancytreeNode} rootNode Invisible system root node.
  * @property {string} statusClassPropName Property name of FancytreeNode that contains the element which will receive the status classes.
  *     Typically "span", but "tr" for table extension.
+ * @property {object} types Map for shared type specific meta data, used with node.type attribute. @since 2.27
  * @property {object} widget Base widget instance.
  */
 function Fancytree(widget) {
@@ -2185,6 +2194,8 @@ function Fancytree(widget) {
 		}
 	}
 	this.ext = {}; // Active extension instances
+	this.types = {};
+	this.columns = {};
 	// allow to init tree.data.foo from <div data-foo=''>
 	this.data = _getElementDataAsDict(this.$div);
 	// TODO: use widget.uuid instead?
@@ -2197,7 +2208,6 @@ function Fancytree(widget) {
 	this._tempCache = {};
 	this._lastMousedownNode = null;
 	this._enableUpdate = true;
-	// this._dirtyRoots = null;
 	this.lastSelectedNode = null;
 	this.systemFocusElement = null;
 	this.lastQuicksearchTerm = "";
@@ -2268,7 +2278,8 @@ Fancytree.prototype = /** @lends Fancytree# */{
 		}else if(obj.tree){
 			// obj is a FancytreeNode
 			tree = obj.tree;
-			ctx = { node: obj, tree: tree, widget: tree.widget, options: tree.widget.options, originalEvent: originalEvent };
+			ctx = { node: obj, tree: tree, widget: tree.widget, options: tree.widget.options, originalEvent: originalEvent,
+			 		typeInfo: tree.types[obj.type] || {}};
 		}else if(obj.widget){
 			// obj is a Fancytree
 			ctx = { node: null, tree: obj, widget: obj.widget, options: obj.widget.options, originalEvent: originalEvent };
@@ -3265,6 +3276,14 @@ $.extend(Fancytree.prototype,
 				metaData = children;
 				children = children.children;
 				delete metaData.children;
+				// Copy some attributes to tree.data
+				$.each(TREE_ATTRS, function(i, attr) {
+					if( metaData[attr] !== undefined ){
+						tree[attr] = metaData[attr];
+						delete metaData[attr];
+					}
+				});
+				// Copy all other attributes to tree.data.NAME
 				$.extend(tree.data, metaData);
 			}
 			_assert($.isArray(children), "expected array of children");
@@ -4317,6 +4336,15 @@ $.extend(Fancytree.prototype,
 		// #577: Allow to set tabindex to "0", "-1" and ""
 		tree.$container.attr("tabindex", opts.tabindex);
 
+		// Copy some attributes to tree.data
+		$.each(TREE_ATTRS, function(i, attr) {
+			if( opts[attr] !== undefined ){
+				tree.info("Move option " + attr + " to tree");
+				tree[attr] = opts[attr];
+				delete opts[attr];
+			}
+		});
+
 		if( opts.rtl ) {
 			tree.$container.attr("DIR", "RTL").addClass("fancytree-rtl");
 		}else{
@@ -4366,11 +4394,18 @@ $.extend(Fancytree.prototype,
 				}).remove();
 				if( $.isPlainObject(source) ){
 					// We got {foo: 'abc', children: [...]}
-					// Copy extra properties to tree.data.foo
 					_assert($.isArray(source.children), "if an object is passed as source, it must contain a 'children' array (all other properties are added to 'tree.data')");
 					metaData = source;
 					source = source.children;
 					delete metaData.children;
+					// Copy some attributes to tree.data
+					$.each(TREE_ATTRS, function(i, attr) {
+						if( metaData[attr] !== undefined ){
+							tree[attr] = metaData[attr];
+							delete metaData[attr];
+						}
+					});
+					// Copy extra properties to tree.data.foo
 					$.extend(tree.data, metaData);
 				}
 				break;
@@ -4648,7 +4683,7 @@ $.widget("ui.fancytree",
 		this.tree._callHook("treeInit", this.tree);
 		// TODO: currently we call bind after treeInit, because treeInit
 		// might change tree.$container.
-		// It would be better, to move ebent binding into hooks altogether
+		// It would be better, to move event binding into hooks altogether
 		this._bind();
 	},
 
@@ -5093,7 +5128,10 @@ $.extend($.ui.fancytree,
 			nodeOpt = nodeObject[optionName];
 
 		if( $.isFunction(treeOpt) ) {
-			ctx = { node: node, tree: tree, widget: tree.widget, options: tree.widget.options };
+			ctx = {
+				node: node, tree: tree, widget: tree.widget, options: tree.widget.options,
+				typeInfo: tree.types[node.type] || {}
+			 	};
 			res = treeOpt.call(tree, {type: optionName}, ctx);
 			if( res == null ) {
 				res = nodeOpt;
