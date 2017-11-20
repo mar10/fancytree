@@ -40,7 +40,7 @@ var version = $.ui.version = "1.12.1";
 var widgetUuid = 0;
 var widgetSlice = Array.prototype.slice;
 
-$.cleanData = $.cleanData || ( function( orig ) {
+$.cleanData = ( function( orig ) {
 	return function( elems ) {
 		var events, elem, i;
 		for ( i = 0; ( elem = elems[ i ] ) != null; i++ ) {
@@ -59,7 +59,7 @@ $.cleanData = $.cleanData || ( function( orig ) {
 	};
 } )( $.cleanData );
 
-$.widget = $.widget || function( name, base, prototype ) {
+$.widget = function( name, base, prototype ) {
 	var existingConstructor, constructor, basePrototype;
 
 	// ProxiedPrototype allows the provided prototype to remain unmodified
@@ -287,7 +287,7 @@ $.widget.bridge = function( name, object ) {
 	};
 };
 
-$.Widget = $.Widget || function( /* options, element */ ) {};
+$.Widget = function( /* options, element */ ) {};
 $.Widget._childConstructors = [];
 
 $.Widget.prototype = {
@@ -813,7 +813,7 @@ function getDimensions( elem ) {
 	};
 }
 
-$.position = $.position || {
+$.position = {
 	scrollbarWidth: function() {
 		if ( cachedScrollbarWidth !== undefined ) {
 			return cachedScrollbarWidth;
@@ -1367,7 +1367,7 @@ var dataSpace = "ui-effects-",
 	// global may not exist with AMD and a custom build (#10199)
 	jQuery = $;
 
-$.effects = $.effects || {
+$.effects = {
 	effect: {}
 };
 
