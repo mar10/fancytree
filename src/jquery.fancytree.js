@@ -2314,7 +2314,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	},
 	_getExpiringValue: function(key){
 		var entry = this._tempCache[key];
-		if( entry && entry.expire < Date.now() ) {
+		if( entry && entry.expire > Date.now() ) {
 			return entry.value;
 		}
 		delete this._tempCache[key];
