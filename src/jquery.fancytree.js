@@ -2464,6 +2464,14 @@ Fancytree.prototype = /** @lends Fancytree# */{
 		}
 		return !flag; // return previous value
 	},
+	/** Write warning to browser console (prepending tree info)
+	 *
+	 * @param {*} msg string or object or array of such
+	 */
+	error: function(msg){
+		Array.prototype.unshift.call(arguments, this.toString());
+		consoleApply("error", arguments);
+	},
 	/**Find all nodes that matches condition.
 	 *
 	 * @param {string | function(node)} match title string to search for, or a
