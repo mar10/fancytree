@@ -12,14 +12,20 @@
   * **Improved ext-glyph:**
     - [Added] support for ligature icons (e.g. [material icons](https://material.io/icons/)).
     - [Added] `icon` option can now return a dict to create a ligature icon.
-  * The property `tree.columns` was added to Fancytree.
+  * **Improved tree.loadKeyPath():**
+    - [Added] support for a custom path segment matcher.
+      This allows to have key paths with segments other than `node.key`.
+    - [Improved] the returned deferred promise now triggers `progress()` events which can
+      be used instead of the callback.
+  * The property `tree.columns` was added to Fancytree. Currently only reserved as
+    recommended pattern to pass global meta-data for ext-table.
   * [Added] #798 Tooltip support for icons (dynamic option `iconTooltip`).
   * [Improved] ext-table no longer needs empty tbody/tr if thead is present.
   * [Fixed] #796 UMD requirements for node/CommonJS
   * [Fixed] #803 jquery.fancytree.ui-deps.js does not override existing widgets.
   * [Added] Material Design demo
-  * [Added] Demo for jquery-confirm popup
-  * [Changed] String representation "FancytreeNode@_4[title='My name']"
+  * [Added] Demo for Fancytree inside a jquery-confirm popup
+  * [Changed] String representation is now `"FancytreeNode@_4[title='My name']"`
 
 # 2.26.0 / 2017-11-04
   * **BREAKING CHANGES:**

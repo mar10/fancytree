@@ -94,6 +94,13 @@ TOOLS.appendEvent = function(assert, msg) {
 };
 
 
+TOOLS.clearEvents = function(assert) {
+	if( !assert || !assert.deepEqual ) { $.error("assert must be passed"); }
+	if( !assert.EVENT_SEQUENCE ) { $.error("TOOLS.setup() was not called"); }
+	assert.EVENT_SEQUENCE = [];
+};
+
+
 /** Helper to reset environment for asynchronous Fancytree tests. */
 TOOLS.setup = function(assert) {
 	if( !assert ) { $.error("Need assert arg"); }

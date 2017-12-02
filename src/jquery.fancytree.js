@@ -458,6 +458,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		if(insertBefore == null){
 			this.children = this.children.concat(nodeList);
 		}else{
+			// Returns null if insertBefore is not a direct child:
 			insertBefore = this._findDirectChild(insertBefore);
 			pos = $.inArray(insertBefore, this.children);
 			_assert(pos >= 0, "insertBefore must be an existing child");
@@ -2725,91 +2726,192 @@ Fancytree.prototype = /** @lends Fancytree# */{
 
 	/**
 	 * Make sure that a node with a given ID is loaded, by traversing - and
-	 * loading - its parents. This method is ment for lazy hierarchies.
+	 * loading - its parents. This method is meant for lazy hierarchies.
 	 * A callback is executed for every node as we go.
 	 * @example
+	 * // Resolve using node.key:
 	 * tree.loadKeyPath("/_3/_23/_26/_27", function(node, status){
 	 *   if(status === "loaded") {
-	 *     console.log("loaded intermiediate node " + node);
+	 *     console.log("loaded intermediate node " + node);
 	 *   }else if(status === "ok") {
 	 *     node.activate();
 	 *   }
 	 * });
-	 *
+	 * // Use deferred promise:
+	 * tree.loadKeyPath("/_3/_23/_26/_27").progress(function(data){
+	 *   if(data.status === "loaded") {
+	 *     console.log("loaded intermediate node " + data.node);
+	 *   }else if(data.status === "ok") {
+	 *     node.activate();
+	 *   }
+	 * }).done(function(){
+	 *    ...
+	 * });
+	 * // Custom path segment resolver:
+	 * tree.loadKeyPath("/321/431/21/2", {
+	 *   matchKey: function(node, key){
+	 *     return node.data.refKey === key;
+	 *   },
+	 *   callback: function(node, status){
+	 *     if(status === "loaded") {
+	 *       console.log("loaded intermediate node " + node);
+	 *     }else if(status === "ok") {
+	 *       node.activate();
+	 *     }
+	 *   }
+	 * });
 	 * @param {string | string[]} keyPathList one or more key paths (e.g. '/3/2_1/7')
-	 * @param {function} callback callback(node, status) is called for every visited node ('loading', 'loaded', 'ok', 'error')
+	 * @param {function | object} optsOrCallback callback(node, status) is called for every visited node ('loading', 'loaded', 'ok', 'error').
+	 *     Pass an object to define custom key matchers for the path segments: {callback: function, matchKey: function}.
 	 * @returns {$.Promise}
 	 */
-	loadKeyPath: function(keyPathList, callback, _rootNode) {
-		var deferredList, dfd, i, path, key, loadMap, node, root, segList,
+	loadKeyPath: function(keyPathList, optsOrCallback) {
+		var callback, i, path,
+			self = this,
+			dfd = new $.Deferred(),
+			parent = this.getRootNode(),
 			sep = this.options.keyPathSeparator,
-			self = this;
+			pathSegList = [],
+			opts = $.extend({}, optsOrCallback);
 
-		callback = callback || $.noop;
+		// Prepare options
+		if( typeof optsOrCallback === "function" ) {
+			callback = optsOrCallback;
+		} else if ( optsOrCallback && optsOrCallback.callback ) {
+			callback = optsOrCallback.callback;
+		}
+		opts.callback = function(ctx, node, status){
+ 			if( callback ) {
+				callback.call(ctx, node, status);
+			}
+			dfd.notifyWith(ctx, [{node: node, status: status}]);
+		};
+		if( opts.matchKey == null ) {
+			opts.matchKey = function(node, key) { return node.key === key; };
+		}
+		// Convert array of path strings to array of segment arrays
 		if(!$.isArray(keyPathList)){
 			keyPathList = [keyPathList];
 		}
-		// Pass 1: handle all path segments for nodes that are already loaded
-		// Collect distinct top-most lazy nodes in a map
-		loadMap = {};
-
 		for(i=0; i<keyPathList.length; i++){
-			root = _rootNode || this.rootNode;
 			path = keyPathList[i];
 			// strip leading slash
 			if(path.charAt(0) === sep){
 				path = path.substr(1);
 			}
-			// traverse and strip keys, until we hit a lazy, unloaded node
-			segList = path.split(sep);
+			// segListMap[path] = { parent: parent, segList: path.split(sep) };
+			pathSegList.push(path.split(sep));
+			// targetList.push({ parent: parent, segList: path.split(sep)/* , path: path*/});
+		}
+		// The timeout forces async behavior always (even if nodes are all loaded)
+		// This way a potential progress() event will fire.
+		setTimeout(function(){
+			self._loadKeyPathImpl(dfd, opts, parent, pathSegList).done(function(){
+				dfd.resolve();
+			});
+		}, 0);
+		return dfd.promise();
+	},
+	/*
+	 * Resolve a list of paths, relative to one parent node.
+	 */
+	_loadKeyPathImpl: function(dfd, opts, parent, pathSegList) {
+		var deferredList, i, key, node, remainMap, tmpParent, segList, subDfd,
+			self = this;
+
+		function __findChild(parent, key){
+			// console.log("__findChild", key, parent);
+			var i, l,
+				cl = parent.children;
+
+			if( cl ) {
+				for(i=0, l=cl.length; i<l; i++){
+					if( opts.matchKey(cl[i], key)) { return cl[i]; }
+				}
+			}
+			return null;
+		}
+
+		// console.log("_loadKeyPathImpl, parent=", parent, ", pathSegList=", pathSegList);
+
+		// Pass 1:
+		// Handle all path segments for nodes that are already loaded.
+		// Collect distinct top-most lazy nodes in a map.
+		// Note that we can use node.key to de-dupe entries, even if a custom matcher would
+		// look for other node attributes.
+		// map[node.key] => {node: node, pathList: [list of remaining rest-paths]}
+		remainMap = {};
+
+		for(i=0; i<pathSegList.length; i++){
+			segList = pathSegList[i];
+			// target = targetList[i];
+
+			// Traverse and pop path segments (i.e. keys), until we hit a lazy, unloaded node
+			tmpParent = parent;
 			while(segList.length){
 				key = segList.shift();
-//                node = _findDirectChild(root, key);
-				node = root._findDirectChild(key);
+				node = __findChild(tmpParent, key);
 				if(!node){
-					this.warn("loadKeyPath: key not found: " + key + " (parent: " + root + ")");
-					callback.call(this, key, "error");
+					this.warn("loadKeyPath: key not found: " + key + " (parent: " + tmpParent + ")");
+					opts.callback(this, key, "error");
 					break;
 				}else if(segList.length === 0){
-					callback.call(this, node, "ok");
+					opts.callback(this, node, "ok");
 					break;
 				}else if(!node.lazy || (node.hasChildren() !== undefined )){
-					callback.call(this, node, "loaded");
-					root = node;
+					opts.callback(this, node, "loaded");
+					tmpParent = node;
 				}else{
-					callback.call(this, node, "loaded");
-//                    segList.unshift(key);
-					if(loadMap[key]){
-						loadMap[key].push(segList.join(sep));
+					opts.callback(this, node, "loaded");
+					key = node.key;  //target.segList.join(sep);
+					if(remainMap[key]){
+						remainMap[key].pathSegList.push(segList);
 					}else{
-						loadMap[key] = [segList.join(sep)];
+						remainMap[key] = {parent: node, pathSegList: [segList]};
 					}
 					break;
 				}
 			}
 		}
-//        alert("loadKeyPath: loadMap=" + JSON.stringify(loadMap));
-		// Now load all lazy nodes and continue itearation for remaining paths
+		// console.log("_loadKeyPathImpl AFTER pass 1, remainMap=", remainMap);
+
+		// Now load all lazy nodes and continue iteration for remaining paths
 		deferredList = [];
+
 		// Avoid jshint warning 'Don't make functions within a loop.':
-		function __lazyload(key, node, dfd){
-			callback.call(self, node, "loading");
-			node.load().done(function(){
-				self.loadKeyPath.call(self, loadMap[key], callback, node).always(_makeResolveFunc(dfd, self));
+		function __lazyload(dfd, parent, pathSegList){
+			// console.log("__lazyload", parent, "pathSegList=", pathSegList);
+			opts.callback(self, parent, "loading");
+			parent.load().done(function(){
+				self._loadKeyPathImpl.call(self, dfd, opts, parent, pathSegList)
+					.always(_makeResolveFunc(dfd, self));
 			}).fail(function(errMsg){
-				self.warn("loadKeyPath: error loading: " + key + " (parent: " + root + ")");
-				callback.call(self, node, "error");
-				dfd.reject();
+				self.warn("loadKeyPath: error loading lazy " + parent);
+				opts.callback(self, node, "error");
+				dfd.rejectWith(self);
 			});
 		}
-		for(key in loadMap){
-			node = root._findDirectChild(key);
-			if (node == null) {  // #576
-				node = self.getNodeByKey(key);
-			}
-			dfd = new $.Deferred();
-			deferredList.push(dfd);
-			__lazyload(key, node, dfd);
+		// remainMap contains parent nodes, each with a list of relative sub-paths.
+		// We start loading all of them now, and pass the the list to each loader.
+		for(var nodeKey in remainMap){
+			var remain = remainMap[nodeKey];
+			// console.log("for(): remain=", remain, "remainMap=", remainMap);
+			// key = remain.segList.shift();
+			// node = __findChild(remain.parent, key);
+			// if (node == null) {  // #576
+			// 	// Issue #576, refactored for v2.27:
+			// 	// The root cause was, that sometimes the wrong parent was used here
+			// 	// to find the next segment.
+			// 	// Falling back to getNodeByKey() was a hack that no longer works if a custom
+			// 	// matcher is used, because we cannot assume that a single segment-key is unique
+			// 	// throughout the tree.
+			// 	self.error("loadKeyPath: error loading child by key '" + key + "' (parent: " + target.parent + ")", target);
+			// 	// 	node = self.getNodeByKey(key);
+			// 	continue;
+			// }
+			subDfd = new $.Deferred();
+			deferredList.push(subDfd);
+			__lazyload(subDfd, remain.parent, remain.pathSegList);
 		}
 		// Return a promise that is resolved, when ALL paths were loaded
 		return $.when.apply($, deferredList).promise();
