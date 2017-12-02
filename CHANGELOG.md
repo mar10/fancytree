@@ -19,6 +19,7 @@
   * [Fixed] #803 jquery.fancytree.ui-deps.js does not override existing widgets.
   * [Added] Material Design demo
   * [Added] Demo for jquery-confirm popup
+  * [Changed] String representation "FancytreeNode@_4[title='My name']"
 
 # 2.26.0 / 2017-11-04
   * **BREAKING CHANGES:**

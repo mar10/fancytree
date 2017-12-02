@@ -501,7 +501,7 @@ QUnit.test("FancytreeNode class methods", function(assert) {
 
 QUnit.test("Fancytree class methods", function(assert) {
 	tools.setup(assert);
-	assert.expect(14);
+	assert.expect(15);
 
 	$("#tree").fancytree({
 		source: TEST_DATA
@@ -557,8 +557,10 @@ QUnit.test("Fancytree class methods", function(assert) {
 //  reload: function(source) {
 //    render: function(force, deep) {
 	// tree.toString()
-	assert.equal(tree.toString(), "<Fancytree(#" + tree._id + ")>", "toString()");
+	assert.equal(tree.toString(), "Fancytree@" + tree._id, "toString()");
+	// assert.equal(tree.toString(), "<Fancytree(#" + tree._id + ")>", "toString()");
 	assert.equal("" + tree, tree.toString(), "toString() implicit");
+	assert.equal("" + tools.getNode("10_2_2"), "FancytreeNode@10_2_2[title='Sub-item 1.2.2']");
 
 	// tree.visit()
 	c = 0;
