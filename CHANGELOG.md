@@ -19,6 +19,7 @@
       be used instead of the callback.
   * The property `tree.columns` was added to Fancytree. Currently only reserved as
     recommended pattern to pass global meta-data for ext-table.
+  * [Added] ext-edit: new trigger mode `clickActive` for option `triggerStart: [...]`.
   * [Added] #798 Tooltip support for icons (dynamic option `iconTooltip`).
   * [Improved] ext-table no longer needs empty tbody/tr if thead is present.
   * [Fixed] #796 UMD requirements for node/CommonJS

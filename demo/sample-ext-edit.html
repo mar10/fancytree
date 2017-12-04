@@ -31,12 +31,13 @@
 $(function(){
 	$("#tree").fancytree({
 		extensions: ["edit"],
-		source: {url: "ajax-tree-plain.json"},
+		source: {url: "ajax-tree-products.json"},
+		// source: {url: "ajax-tree-plain.json"},
 		lazyLoad: function(event, data) {
 			data.result = { url: "ajax-sub2.json", debugDelay: 1000 };
 		},
 		edit: {
-			triggerStart: ["f2", "dblclick", "shift+click", "mac+enter"],
+			triggerStart: ["clickActive", "dblclick", "f2", "mac+enter", "shift+click"],
 			beforeEdit: function(event, data){
 				// Return false to prevent edit mode
 			},
@@ -122,6 +123,7 @@ $(function(){
 		</p>
 		<p>
 			Edit the node titles with `dblclick`, `Shift + click` [F2], or [Enter] (on Mac only).
+			Also a `slow click` (click again into already active node).
 		</p>
 		<p>
 			<b>Status:</b> production.
