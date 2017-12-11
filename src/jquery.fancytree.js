@@ -2503,6 +2503,9 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	 * @returns {FancytreeNode} matching node or null
 	 */
 	findNextNode: function(match, startNode, visibleOnly) {
+		match = (typeof match === "string") ? _makeNodeTitleStartMatcher(match) : match;
+		startNode = startNode || this.getFirstChild();
+
 		var stopNode = null,
 			parentChildren = startNode.parent.children,
 			matchingNode = null,
@@ -2536,9 +2539,6 @@ Fancytree.prototype = /** @lends Fancytree# */{
 					return walkVisible(parent, 0, fn);
 				}
 			};
-
-		match = (typeof match === "string") ? _makeNodeTitleStartMatcher(match) : match;
-		startNode = startNode || this.getFirstChild();
 
 		walkVisible(startNode.parent, parentChildren.indexOf(startNode), function(node){
 			// Stop iteration if we see the start node a second time
