@@ -24,6 +24,7 @@
   * [Improved] ext-table no longer needs empty tbody/tr if thead is present.
   * [Fixed] #796 UMD requirements for node/CommonJS
   * [Fixed] #803 jquery.fancytree.ui-deps.js does not override existing widgets.
+  * [Fixed] #815 `<mark>` element missing in filtered nodes (minified bundle, IE 11).
   * [Fixed] #816 findNextNode() doesn't set default for 'startNode' argument.
   * [Added] Material Design demo
   * [Added] Demo for Fancytree inside a jquery-confirm popup
