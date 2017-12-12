@@ -21,6 +21,7 @@
     recommended pattern to pass global meta-data for ext-table.
   * [Added] ext-edit: new trigger mode `clickActive` for option `triggerStart: [...]`.
   * [Added] #798 Tooltip support for icons (dynamic option `iconTooltip`).
+  * [Added] #808 Pass custom storage providers to ext-persist.
   * [Improved] ext-table no longer needs empty tbody/tr if thead is present.
   * [Fixed] #796 UMD requirements for node/CommonJS
   * [Fixed] #803 jquery.fancytree.ui-deps.js does not override existing widgets.
