@@ -30,6 +30,7 @@
   * [Added] Material Design demo
   * [Added] Demo for Fancytree inside a jquery-confirm popup
   * [Changed] String representation is now `"FancytreeNode@_4[title='My name']"`
+  * [Changed] Deprecated `tree.clearCookies()`. Use `tree.clearData()` instead.
 
 # 2.26.0 / 2017-11-04
   * **BREAKING CHANGES:**
