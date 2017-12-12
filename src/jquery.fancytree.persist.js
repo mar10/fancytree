@@ -39,13 +39,13 @@
 var cookieStore = null,
 	localStorageStore = window.localStorage ? {
 		get: function(key){ return window.localStorage.getItem(key); },
-		set: function(key, value){ return window.localStorage.setItem(key, value); },
-		remove: function(key){ return window.localStorage.removeItem(key); }
+		set: function(key, value){ window.localStorage.setItem(key, value); },
+		remove: function(key){ window.localStorage.removeItem(key); }
 	} : null,
 	sessionStorageStore = window.sessionStorage ? {
 		get: function(key){ return window.sessionStorage.getItem(key); },
-		set: function(key, value){ return window.sessionStorage.setItem(key, value); },
-		remove: function(key){ return window.sessionStorage.removeItem(key); }
+		set: function(key, value){ window.sessionStorage.setItem(key, value); },
+		remove: function(key){ window.sessionStorage.removeItem(key); }
 	} : null,
 	_assert = $.ui.fancytree.assert,
 	ACTIVE = "active",
@@ -58,7 +58,7 @@ if( typeof Cookies === "function" ) {
 	cookieStore = {
 		get: Cookies.get,
 		set: function(key, value) {
-			return Cookies.set(key, value, this.options.persist.cookie);
+			Cookies.set(key, value, this.options.persist.cookie);
 		},
 		remove: Cookies.remove
 	};
@@ -67,7 +67,7 @@ if( typeof Cookies === "function" ) {
 	cookieStore = {
 		get: $.cookie,
 		set: function(key, value) {
-			return $.cookie.set(key, value, this.options.persist.cookie);
+			$.cookie.set(key, value, this.options.persist.cookie);
 		},
 		remove: $.removeCookie
 	};
@@ -215,10 +215,9 @@ $.ui.fancytree.registerExtension({
 		if( value === undefined ) {
 			return store.get.call(this, key);
 		} else if ( value === null ) {
-			store.removeItem.call(this, key);
+			store.remove.call(this, key);
 		} else {
 			store.set.call(this, key, value);
-			// cookieSetter(key, value, this.options.persist.cookie);
 		}
 	},
 

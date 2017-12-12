@@ -45,8 +45,8 @@
 				// Sample for a custom store:
 				// store: {
 				// 	get: function(key){ this.info("get(" + key + ")"); return window.sessionStorage.getItem(key); },
-				// 	set: function(key, value){ this.info("set(" + key + ", " + value + ")"); return window.sessionStorage.setItem(key, value); },
-				// 	remove: function(key){ this.info("remove(" + key + ")"); return window.sessionStorage.removeItem(key); }
+				// 	set: function(key, value){ this.info("set(" + key + ", " + value + ")"); window.sessionStorage.setItem(key, value); },
+				// 	remove: function(key){ this.info("remove(" + key + ")"); window.sessionStorage.removeItem(key); }
 				// }
 			},
 			// don't use this in production code:
