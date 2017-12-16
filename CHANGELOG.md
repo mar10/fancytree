@@ -1,4 +1,7 @@
-# 2.27.0-0 / Unreleased
+# 2.27.1-0 / Unreleased
+  *
+
+# 2.27.0 / 2017-12-16
   * **BREAKING CHANGES:**
     - `node.type` is now a first-class property of FancytreeNode.
       Node data `{..., type: "foo"}` is now available as `node.type` (before: `node.data.type`).
@@ -30,7 +33,7 @@
   * [Added] Material Design demo
   * [Added] Demo for Fancytree inside a jquery-confirm popup
   * [Changed] String representation is now `"FancytreeNode@_4[title='My name']"`
-  * [Changed] Deprecated `tree.clearCookies()`. Use `tree.clearData()` instead.
+  * [DEPRECATED] `tree.clearCookies()`. Use `tree.clearData()` instead.
 
 # 2.26.0 / 2017-11-04
   * **BREAKING CHANGES:**
