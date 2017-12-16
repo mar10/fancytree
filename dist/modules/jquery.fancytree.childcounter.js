@@ -19,8 +19,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.26.0
- * @date 2017-11-04T17:52:53Z
+ * @version 2.27.0
+ * @date 2017-12-16T09:14:27Z
  */
 
 // To keep the global namespace clean, we wrap everything in a closure.
@@ -34,7 +34,7 @@
 		define( [ "jquery", "./jquery.fancytree" ], factory );
 	} else if ( typeof module === "object" && module.exports ) {
 		// Node/CommonJS
-		require("jquery.fancytree");
+		require("./jquery.fancytree");
 		module.exports = factory(require("jquery"));
 	} else {
 		// Browser globals
@@ -138,7 +138,7 @@ $.ui.fancytree.registerExtension({
 // Every extension must be registered by a unique name.
 	name: "childcounter",
 // Version information should be compliant with [semver](http://semver.org)
-	version: "2.26.0",
+	version: "2.27.0",
 
 // Extension specific options and their defaults.
 // This options will be available as `tree.options.childcounter.hideExpanded`

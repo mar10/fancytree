@@ -1,5 +1,5 @@
 /*!
- * Fancytree "awesome" skin.
+ * Fancytree "material" skin.
  *
  * DON'T EDIT THE CSS FILE DIRECTLY, since it is automatically generated from
  * the LESS templates.
@@ -10,19 +10,30 @@
 
 // We need to define this variable here (not in skin-common.less) to make it
 // work with grunt and webpack:
-@fancy-image-prefix: "./skin-awesome/";
-
+@fancy-image-prefix: "./skin-material/";
 
 /*******************************************************************************
  * Styles specific to this skin.
  *
  * This section is automatically generated from the `ui-fancytree.less` template.
  ******************************************************************************/
+/*
+https://material.io/guidelines/components/data-tables.html#data-tables-structure
+*/
+// local vars
+@fancy-cst-size: 24px;
+@fancy-cst-primary-color: #3f51b5;  // primary app color (of indigo-pink)
+@fancy-cst-secondary-color: #ff4081;  // secondary app color (of indigo-pink): checkbox
+@fancy-cst-black-87: #212121;  // 87% black: table content
+@fancy-cst-black-54: #757575;  // 54% black:  column headers
+@fancy-cst-select-bg: #f5f5f5;  // Grey 100: selected row backround
+@fancy-cst-hover-bg: #eeeeee;  // Grey 200: hovered row backround
 
+// Override the variable after the import.
+// NOTE: Variables are always resolved as the last definition, even if it is
+// after where it is used.
 @fancy-use-sprites: false;     // false: suppress all background images (i.e. icons)
 @fancy-loading-url: none;
-
-@fancy-cst-size: 10pt;
 
 @fancy-level-indent: @fancy-cst-size;  //@fancy-cst-size;
 @fancy-line-height: @fancy-cst-size;      // height of a nodes selection bar including borders
@@ -42,8 +53,8 @@
 @fancy-inline-sprites: false;
 
 @fancy-font-size: @fancy-cst-size;
-@fancy-font-family: tahoma, arial, helvetica;
-@fancy-font-color: #000;
+@fancy-font-family: "Roboto Regular", tahoma, arial, helvetica;
+@fancy-font-color: @fancy-cst-black-87;
 @fancy-font-color-dimm: silver;
 @fancy-font-error-color: red;
 
@@ -52,35 +63,60 @@ ul.fancytree-container ul
 {
 	padding: 0.3em 0 0 1em;
 	margin: 0;
+	font-size: @fancy-cst-size;
+	color: @fancy-cst-black-87;
 }
+
+ul.fancytree-container span.fancytree-icon.material-icons
+{
+	// font-size: @fancy-cst-size;
+	// color: @fancy-cst-black-87;
+}
+
 
 /*******************************************************************************
  * Node titles
  */
-span.fancytree-title {
-	border: 1px solid transparent; // reserve some space for status borders
-	border-radius: 0;
-}
-span.fancytree-focused span.fancytree-title {
-	outline: 1px dotted black;
-}
-// span.fancytree-selected span.fancytree-title,
-span.fancytree-active span.fancytree-title {
-	background-color: #D4D4D4; // gray
-}
-span.fancytree-selected span.fancytree-title {
-	// font-style: italic;
-}
-// .fancytree-treefocus span.fancytree-selected span.fancytree-title,
-.fancytree-treefocus span.fancytree-active span.fancytree-title {
-	color: white;
-	background-color: #3875D7; // blue
+
+ .fancytree-plain {
+	 span.fancytree-selected span.fancytree-title {
+		 background-color: @fancy-cst-select-bg;
+	 }
+	 span.fancytree-selected span.fancytree-title:hover,
+	 span.fancytree-active span.fancytree-title {
+		 background-color: @fancy-cst-hover-bg;
+	 }
 }
 
-// .fancytree-treefocus span.fancytree-selected span.fancytree-title{
-// 	color: white;
-// 	background-color: #99DEFD; // blue
-// }
+.fancytree-container span.fancytree-checkbox {
+	color: @fancy-cst-secondary-color;
+}
+
+/* Helper to allow spinning loader icon with bootstrap */
+.glyphicon-spin {
+    -webkit-animation: spin 1000ms infinite linear;
+    animation: spin 1000ms infinite linear;
+}
+@-webkit-keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(359deg);
+        transform: rotate(359deg);
+    }
+}
+@keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(359deg);
+        transform: rotate(359deg);
+    }
+}
 
 /*******************************************************************************
  * 'table' extension
@@ -88,15 +124,12 @@ span.fancytree-selected span.fancytree-title {
 table.fancytree-ext-table {
 	border-collapse: collapse;
 	tbody {
-	    tr.fancytree-focused {
-			background-color: #99DEFD;
+		tr.fancytree-focused, tr.fancytree-selected {
+			background-color: @fancy-cst-select-bg;
 		}
-	    tr.fancytree-active {
-			background-color: royalblue;
+		tr.fancytree-active, tr:hover {
+			background-color: @fancy-cst-hover-bg;
 		}
-	    // tr.fancytree-selected {
-		// 	background-color: #99DEFD;
-		// }
 	}
 }
 

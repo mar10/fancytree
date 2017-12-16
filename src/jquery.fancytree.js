@@ -2281,7 +2281,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 			// obj is a FancytreeNode
 			tree = obj.tree;
 			ctx = { node: obj, tree: tree, widget: tree.widget, options: tree.widget.options, originalEvent: originalEvent,
-			 		typeInfo: tree.types[obj.type] || {}};
+					typeInfo: tree.types[obj.type] || {}};
 		}else if(obj.widget){
 			// obj is a Fancytree
 			ctx = { node: null, tree: obj, widget: obj.widget, options: obj.widget.options, originalEvent: originalEvent };
@@ -2781,7 +2781,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 			callback = optsOrCallback.callback;
 		}
 		opts.callback = function(ctx, node, status){
- 			if( callback ) {
+			if( callback ) {
 				callback.call(ctx, node, status);
 			}
 			dfd.notifyWith(ctx, [{node: node, status: status}]);
@@ -5245,7 +5245,7 @@ $.extend($.ui.fancytree,
 			ctx = {
 				node: node, tree: tree, widget: tree.widget, options: tree.widget.options,
 				typeInfo: tree.types[node.type] || {}
-			 	};
+				};
 			res = treeOpt.call(tree, {type: optionName}, ctx);
 			if( res == null ) {
 				res = nodeOpt;

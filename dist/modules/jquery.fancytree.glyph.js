@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.26.0
- * @date 2017-11-04T17:52:53Z
+ * @version 2.27.0
+ * @date 2017-12-16T09:14:27Z
  */
 
 ;(function( factory ) {
@@ -19,7 +19,7 @@
 		define( [ "jquery", "./jquery.fancytree" ], factory );
 	} else if ( typeof module === "object" && module.exports ) {
 		// Node/CommonJS
-		require("jquery.fancytree");
+		require("./jquery.fancytree");
 		module.exports = factory(require("jquery"));
 	} else {
 		// Browser globals
@@ -36,91 +36,127 @@
 
 var FT = $.ui.fancytree,
 	PRESETS = {
-	"awesome3": {
-		checkbox: "icon-check-empty",
-		checkboxSelected: "icon-check",
-		checkboxUnknown: "icon-check icon-muted",
-		radio: "icon-circle-blank",
-		radioSelected: "icon-circle",
-		radioUnknown: "icon-circle icon-muted",
-		// radioUnknown: "icon-remove-circle-blank",
-		dragHelper: "icon-caret-right",
-		dropMarker: "icon-caret-right",
-		error: "icon-exclamation-sign",
-		expanderClosed: "icon-caret-right",
-		expanderLazy: "icon-angle-right",
-		expanderOpen: "icon-caret-down",
-		loading: "icon-refresh icon-spin",
-		nodata: "icon-meh",
-		noExpander: "",
-		// Default node icons.
-		// (Use tree.options.icon callback to define custom icons based on node data)
-		doc: "icon-file-alt",
-		docOpen: "icon-file-alt",
-		folder: "icon-folder-close-alt",
-		folderOpen: "icon-folder-open-alt"
-		},
-	"awesome4": {
-		checkbox: "fa fa-square-o",
-		checkboxSelected: "fa fa-check-square-o",
-		// checkboxUnknown: "fa fa-window-close-o",
-		checkboxUnknown: "fa fa-square",
-		radio: "fa fa-circle-o",
-		radioSelected: "fa fa-circle",
-		radioUnknown: "fa fa-dot-circle-o",
-		dragHelper: "fa fa-arrow-right",
-		dropMarker: "fa fa-long-arrow-right",
-		error: "fa fa-warning",
-		expanderClosed: "fa fa-caret-right",
-		expanderLazy: "fa fa-angle-right",
-		expanderOpen: "fa fa-caret-down",
-		loading: "fa fa-spinner fa-pulse",
-		nodata: "fa fa-meh-o",
-		noExpander: "",
-		// Default node icons.
-		// (Use tree.options.icon callback to define custom icons based on node data)
-		doc: "fa fa-file-o",
-		docOpen: "fa fa-file-o",
-		folder: "fa fa-folder-o",
-		folderOpen: "fa fa-folder-open-o"
-		},
-	"bootstrap3": {
-		checkbox: "glyphicon glyphicon-unchecked",
-		checkboxSelected: "glyphicon glyphicon-check",
-		checkboxUnknown: "glyphicon glyphicon-expand",
-		radio: "glyphicon glyphicon-remove-circle",
-		radioSelected: "glyphicon glyphicon-ok-circle",
-		radioUnknown: "glyphicon glyphicon-ban-circle",
-		dragHelper: "glyphicon glyphicon-play",
-		dropMarker: "glyphicon glyphicon-arrow-right",
-		error: "glyphicon glyphicon-warning-sign",
-		expanderClosed: "glyphicon glyphicon-menu-right",  // glyphicon-plus-sign
-		expanderLazy: "glyphicon glyphicon-menu-right",  // glyphicon-plus-sign
-		expanderOpen: "glyphicon glyphicon-menu-down",  // glyphicon-minus-sign
-		loading: "glyphicon glyphicon-refresh glyphicon-spin",
-		nodata: "glyphicon glyphicon-info-sign",
-		noExpander: "",
-		// Default node icons.
-		// (Use tree.options.icon callback to define custom icons based on node data)
-		doc: "glyphicon glyphicon-file",
-		docOpen: "glyphicon glyphicon-file",
-		folder: "glyphicon glyphicon-folder-close",
-		folderOpen: "glyphicon glyphicon-folder-open"
-		}
+		"awesome3": {  // Outdated!
+			_addClass: "",
+			checkbox: "icon-check-empty",
+			checkboxSelected: "icon-check",
+			checkboxUnknown: "icon-check icon-muted",
+			dragHelper: "icon-caret-right",
+			dropMarker: "icon-caret-right",
+			error: "icon-exclamation-sign",
+			expanderClosed: "icon-caret-right",
+			expanderLazy: "icon-angle-right",
+			expanderOpen: "icon-caret-down",
+			loading: "icon-refresh icon-spin",
+			nodata: "icon-meh",
+			noExpander: "",
+			radio: "icon-circle-blank",
+			radioSelected: "icon-circle",
+			// radioUnknown: "icon-circle icon-muted",
+			// Default node icons.
+			// (Use tree.options.icon callback to define custom icons based on node data)
+			doc: "icon-file-alt",
+			docOpen: "icon-file-alt",
+			folder: "icon-folder-close-alt",
+			folderOpen: "icon-folder-open-alt"
+			},
+		"awesome4": {
+			_addClass: "fa",
+			checkbox: "fa-square-o",
+			checkboxSelected: "fa-check-square-o",
+			checkboxUnknown: "fa-square",
+			dragHelper: "fa-arrow-right",
+			dropMarker: "fa-long-arrow-right",
+			error: "fa-warning",
+			expanderClosed: "fa-caret-right",
+			expanderLazy: "fa-angle-right",
+			expanderOpen: "fa-caret-down",
+			loading: "fa-spinner fa-pulse",
+			nodata: "fa-meh-o",
+			noExpander: "",
+			radio: "fa-circle-thin",  // "fa-circle-o"
+			radioSelected: "fa-circle",
+			// radioUnknown: "fa-dot-circle-o",
+			// Default node icons.
+			// (Use tree.options.icon callback to define custom icons based on node data)
+			doc: "fa-file-o",
+			docOpen: "fa-file-o",
+			folder: "fa-folder-o",
+			folderOpen: "fa-folder-open-o"
+			},
+		"bootstrap3": {
+			_addClass: "glyphicon",
+			checkbox: "glyphicon-unchecked",
+			checkboxSelected: "glyphicon-check",
+			checkboxUnknown: "glyphicon-expand",  // "glyphicon-share",
+			dragHelper: "glyphicon-play",
+			dropMarker: "glyphicon-arrow-right",
+			error: "glyphicon-warning-sign",
+			expanderClosed: "glyphicon-menu-right",  // glyphicon-plus-sign
+			expanderLazy: "glyphicon-menu-right",  // glyphicon-plus-sign
+			expanderOpen: "glyphicon-menu-down",  // glyphicon-minus-sign
+			loading: "glyphicon-refresh glyphicon-spin",
+			nodata: "glyphicon-info-sign",
+			noExpander: "",
+			radio: "glyphicon-remove-circle",  // "glyphicon-unchecked",
+			radioSelected: "glyphicon-ok-circle",  // "glyphicon-check",
+			// radioUnknown: "glyphicon-ban-circle",
+			// Default node icons.
+			// (Use tree.options.icon callback to define custom icons based on node data)
+			doc: "glyphicon-file",
+			docOpen: "glyphicon-file",
+			folder: "glyphicon-folder-close",
+			folderOpen: "glyphicon-folder-open"
+			},
+		"material": {
+			_addClass: "material-icons",
+			checkbox: { text: "check_box_outline_blank" },
+			checkboxSelected: { text: "check_box" },
+			checkboxUnknown: { text: "indeterminate_check_box" },
+			dragHelper: { text: "play_arrow" },
+			dropMarker: { text: "arrow-forward" },
+			error: { text: "warning" },
+			expanderClosed: { text: "chevron_right" },
+			expanderLazy: { text: "last_page" },
+			expanderOpen: { text: "expand_more" },
+			loading: { text: "autorenew", addClass: "glyphicon-spin" },
+			nodata: { text: "info" },
+			noExpander: { text: "" },
+			radio: { text: "radio_button_unchecked" },
+			radioSelected: { text: "radio_button_checked" },
+			// Default node icons.
+			// (Use tree.options.icon callback to define custom icons based on node data)
+			doc: { text: "insert_drive_file" },
+			docOpen: { text: "insert_drive_file" },
+			folder: { text: "folder" },
+			folderOpen: { text: "folder_open" }
+			}
 	};
 
 
-function _getIcon(opts, type){
-	return opts.map[type];
+function setIcon( span, baseClass, opts, type ) {
+	var map = opts.map,
+		icon = map[ type ],
+		$span = $( span ),
+		setClass = baseClass + " " + (map._addClass || "");
+
+	if( typeof icon === "string" ) {
+		$span.attr( "class", setClass + " " + icon );
+	} else {
+		if( icon.text ) {
+			$span.text( "" + icon.text );
+		}
+		$span.attr( "class", setClass + " " + ( icon.addClass || "" ) );
+	}
 }
 
 
 $.ui.fancytree.registerExtension({
 	name: "glyph",
-	version: "2.26.0",
+	version: "2.27.0",
 	// Default options for this extension.
 	options: {
-		preset: null,  // 'awesome3', 'awesome4', 'bootstrap3'
+		preset: null,  // 'awesome3', 'awesome4', 'bootstrap3', 'material'
 		map: {
 		}
 	},
@@ -140,11 +176,10 @@ $.ui.fancytree.registerExtension({
 		tree.$container.addClass("fancytree-ext-glyph");
 	},
 	nodeRenderStatus: function(ctx) {
-		var checkbox, className, icon, res, span,
+		var checkbox, icon, res, span,
 			node = ctx.node,
-			$span = $(node.span),
-			opts = ctx.options.glyph,
-			map = opts.map;
+			$span = $( node.span ),
+			opts = ctx.options.glyph;
 
 		res = this._super(ctx);
 
@@ -164,7 +199,8 @@ $.ui.fancytree.registerExtension({
 			}else{
 				icon = "noExpander";
 			}
-			span.className = "fancytree-expander " + map[icon];
+			// span.className = "fancytree-expander " + map[icon];
+			setIcon( span, "fancytree-expander", opts, icon );
 		}
 
 		if( node.tr ){
@@ -172,17 +208,15 @@ $.ui.fancytree.registerExtension({
 		}else{
 			span = $span.children("span.fancytree-checkbox").get(0);
 		}
-		if( span ){
-			checkbox = FT.evalOption("checkbox", node, node, ctx.options, false);
-			if( checkbox && !node.isStatusNode() ) {
-				className = "fancytree-checkbox ";
-				if( checkbox === "radio" || (node.parent && node.parent.radiogroup) ) {
-					className += "fancytree-radio ";
-					icon = node.selected ? "radioSelected" : (node.partsel ? "radioUnknown" : "radio");
-				} else {
-					icon = node.selected ? "checkboxSelected" : (node.partsel ? "checkboxUnknown" : "checkbox");
-				}
-				span.className = className + map[icon];
+		if( span ) {
+			checkbox = FT.evalOption("checkbox", node, node, opts, false);
+			if( (node.parent && node.parent.radiogroup ) || checkbox === "radio" ) {
+				icon = node.selected ? "radioSelected" : "radio";
+				setIcon( span, "fancytree-checkbox fancytree-radio", opts, icon );
+			} else {
+				icon = node.selected ? "checkboxSelected" : (node.partsel ? "checkboxUnknown" : "checkbox");
+				// span.className = "fancytree-checkbox " + map[icon];
+				setIcon( span, "fancytree-checkbox", opts, icon );
 			}
 		}
 
@@ -191,13 +225,13 @@ $.ui.fancytree.registerExtension({
 		span = $span.children("span.fancytree-icon").get(0);
 		if( span ){
 			if( node.statusNodeType ){
-				icon = _getIcon(opts, node.statusNodeType); // loading, error
+				icon = node.statusNodeType; // loading, error
 			}else if( node.folder ){
-				icon = node.expanded && node.hasChildren() ? _getIcon(opts, "folderOpen") : _getIcon(opts, "folder");
+				icon = ( node.expanded && node.hasChildren() ) ? "folderOpen" : "folder";
 			}else{
-				icon = node.expanded ? _getIcon(opts, "docOpen") : _getIcon(opts, "doc");
+				icon = node.expanded ? "docOpen" : "doc";
 			}
-			span.className = "fancytree-icon " + icon;
+			setIcon( span, "fancytree-icon", opts, icon );
 		}
 		return res;
 	},
@@ -212,13 +246,13 @@ $.ui.fancytree.registerExtension({
 			if(node.parent){
 				span = $("span.fancytree-expander", node.span).get(0);
 				if( span ) {
-					span.className = "fancytree-expander " + _getIcon(opts, status);
+					setIcon( span, "fancytree-expander", opts, status );
 				}
 			}else{ //
 				span = $(".fancytree-statusnode-" + status, node[this.nodeContainerAttrName])
 					.find("span.fancytree-icon").get(0);
 				if( span ) {
-					span.className = "fancytree-icon " + _getIcon(opts, status);
+					setIcon( span, "fancytree-icon", opts, status );
 				}
 			}
 		}

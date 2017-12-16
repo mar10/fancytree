@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.26.0
- * @date 2017-11-04T17:52:53Z
+ * @version 2.27.0
+ * @date 2017-12-16T09:14:27Z
  */
 
 ;(function( factory ) {
@@ -19,7 +19,7 @@
 		define( [ "jquery", "./jquery.fancytree" ], factory );
 	} else if ( typeof module === "object" && module.exports ) {
 		// Node/CommonJS
-		require("jquery.fancytree");
+		require("./jquery.fancytree");
 		module.exports = factory(require("jquery"));
 	} else {
 		// Browser globals
@@ -147,7 +147,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editEnd = function(applyChanges, _e
 		// If true/false was passed, honor this (except in rename mode, if unchanged)
 		eventData.save = false;
 	} else if( eventData.isNew ) {
-		// In create mode, we save everyting, except for empty text
+		// In create mode, we save everything, except for empty text
 		eventData.save = (newVal !== "");
 	} else {
 		// In rename mode, we save everyting, except for empty or unchanged text
@@ -266,15 +266,14 @@ $.ui.fancytree._FancytreeNodeClass.prototype.isEditing = function(){
  */
 $.ui.fancytree.registerExtension({
 	name: "edit",
-	version: "2.26.0",
+	version: "2.27.0",
 	// Default options for this extension.
 	options: {
 		adjustWidthOfs: 4,   // null: don't adjust input size to content
 		allowEmpty: false,   // Prevent empty input
 		inputCss: {minWidth: "3em"},
 		// triggerCancel: ["esc", "tab", "click"],
-		// triggerStart: ["f2", "dblclick", "shift+click", "mac+enter"],
-		triggerStart: ["f2", "shift+click", "mac+enter"],
+		triggerStart: ["f2", "mac+enter", "shift+click"],
 		trim: true,          // Trim whitespace before save
 		// Events:
 		beforeClose: $.noop, // Return false to prevent cancel/save (data.input is available)
@@ -294,6 +293,15 @@ $.ui.fancytree.registerExtension({
 	nodeClick: function(ctx) {
 		if( $.inArray("shift+click", ctx.options.edit.triggerStart) >= 0 ){
 			if( ctx.originalEvent.shiftKey ){
+				ctx.node.editStart();
+				return false;
+			}
+		}
+		if( $.inArray("clickActive", ctx.options.edit.triggerStart) >= 0 ){
+			// Only when click was inside title text (not aynwhere else in the row)
+			if( ctx.node.isActive() && !ctx.node.isEditing() &&
+				$(ctx.originalEvent.target).hasClass("fancytree-title")
+			){
 				ctx.node.editStart();
 				return false;
 			}

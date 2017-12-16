@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.26.0
- * @date 2017-11-04T17:52:53Z
+ * @version 2.27.0
+ * @date 2017-12-16T09:14:27Z
  */
 
 ;(function( factory ) {
@@ -24,7 +24,7 @@
 		], factory );
 	} else if ( typeof module === "object" && module.exports ) {
 		// Node/CommonJS
-		require("jquery.fancytree");
+		require("./jquery.fancytree");
 		module.exports = factory(require("jquery"));
 	} else {
 		// Browser globals
@@ -207,7 +207,7 @@ function _initDragAndDrop(tree) {
 				// Support glyph symbols instead of icons
 				if( glyph ) {
 					$helper.find(".fancytree-drag-helper-img")
-						.addClass(glyph.map.dragHelper);
+						.addClass(glyph.map._addClass + " " + glyph.map.dragHelper);
 				}
 				// Allow to modify the helper, e.g. to add multi-node-drag feedback
 				if( opts.initHelper ) {
@@ -265,7 +265,7 @@ function _initDragAndDrop(tree) {
 
 $.ui.fancytree.registerExtension({
 	name: "dnd",
-	version: "2.26.0",
+	version: "2.27.0",
 	// Default options for this extension.
 	options: {
 		// Make tree nodes accept draggables
@@ -334,9 +334,8 @@ $.ui.fancytree.registerExtension({
 //                .prependTo("body");
 
 			if( glyphOpt ) {
-				// instData.$dropMarker.addClass(glyph.map.dragHelper);
 				instData.$dropMarker
-					.addClass(glyphOpt.map.dropMarker);
+					.addClass(glyphOpt.map._addClass + " " + glyphOpt.map.dropMarker);
 			}
 		}
 		if( hitMode === "after" || hitMode === "before" || hitMode === "over" ){

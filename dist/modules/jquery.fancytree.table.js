@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.26.0
- * @date 2017-11-04T17:52:53Z
+ * @version 2.27.0
+ * @date 2017-12-16T09:14:27Z
  */
 
 ;(function( factory ) {
@@ -19,7 +19,7 @@
 		define( [ "jquery", "./jquery.fancytree" ], factory );
 	} else if ( typeof module === "object" && module.exports ) {
 		// Node/CommonJS
-		require("jquery.fancytree");
+		require("./jquery.fancytree");
 		module.exports = factory(require("jquery"));
 	} else {
 		// Browser globals
@@ -101,7 +101,7 @@ function findPrevRowNode(node){
 
 $.ui.fancytree.registerExtension({
 	name: "table",
-	version: "2.26.0",
+	version: "2.27.0",
 	// Default options for this extension.
 	options: {
 		checkboxColumnIdx: null, // render the checkboxes into the this column index (default: nodeColumnIdx)
@@ -136,8 +136,16 @@ $.ui.fancytree.registerExtension({
 		}
 
 		$table.addClass("fancytree-container fancytree-ext-table");
-		tree.tbody = $table.find(">tbody")[0];
-		$tbody = $(tree.tbody);
+		$tbody = $table.find(">tbody");
+		if( !$tbody.length ) {
+			// TODO: not sure if we can rely on browsers to insert missing <tbody> before <tr>s:
+			if( $table.find(">tr").length ) {
+				$.error("Expected table > tbody > tr. If you see this please open an issue.");
+			}
+			$tbody = $("<tbody>").appendTo($table);
+		}
+
+		tree.tbody = $tbody[0];
 
 		// Prepare row templates:
 		// Determine column count from table header if any
