@@ -1,5 +1,6 @@
 # 2.27.1-0 / Unreleased
   * #819: ext-filter: Handle nodes without title
+  * Re-rename clearData() to clearPersistData()
 
 # 2.27.0 / 2017-12-16
   * **BREAKING CHANGES:**
@@ -33,7 +34,7 @@
   * [Added] Material Design demo
   * [Added] Demo for Fancytree inside a jquery-confirm popup
   * [Changed] String representation is now `"FancytreeNode@_4[title='My name']"`
-  * [DEPRECATED] `tree.clearCookies()`. Use `tree.clearData()` instead.
+  * [DEPRECATED] `tree.clearCookies()`. Use <del>`tree.clearData()`</del> `tree.clearPersistData()` instead.
 
 # 2.26.0 / 2017-11-04
   * **BREAKING CHANGES:**

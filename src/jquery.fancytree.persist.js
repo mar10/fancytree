@@ -133,10 +133,10 @@ function _loadLazyNodes(tree, local, keyList, mode, dfd) {
  * Called like
  *     $("#tree").fancytree("getTree").clearCookies("active expanded focus selected");
  *
- * @alias Fancytree#clearData
+ * @alias Fancytree#clearPersistData
  * @requires jquery.fancytree.persist.js
  */
-$.ui.fancytree._FancytreeClass.prototype.clearData = function(types){
+$.ui.fancytree._FancytreeClass.prototype.clearPersistData = function(types){
 	var local = this.ext.persist,
 		prefix = local.cookiePrefix;
 
@@ -156,8 +156,8 @@ $.ui.fancytree._FancytreeClass.prototype.clearData = function(types){
 };
 
 $.ui.fancytree._FancytreeClass.prototype.clearCookies = function(types){
-	this.warn("'tree.clearCookies()' is deprecated since v2.27.0: use 'clearData()' instead.");
-	return this.clearData(types);
+	this.warn("'tree.clearCookies()' is deprecated since v2.27.0: use 'clearPersistData()' instead.");
+	return this.clearPersistData(types);
 };
 
 /**
