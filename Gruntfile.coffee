@@ -242,10 +242,10 @@ module.exports = (grunt) ->
         upload:
             # FTP upload the demo files (requires https://github.com/mar10/pyftpsync)
             stdin: true  # Allow interactive console
-            cmd: "pyftpsync --progress upload . ftp://www.wwwendt.de/tech/fancytree --exclude build,node_modules,.*,_* --delete-unmatched"
+            cmd: "pyftpsync upload . ftp://www.wwwendt.de/tech/fancytree --progress --exclude build,node_modules,.*,_* --delete-unmatched"
         upload_force:
             # FTP upload the demo files (requires https://github.com/mar10/pyftpsync)
-            cmd: "pyftpsync --progress upload . ftp://www.wwwendt.de/tech/fancytree --exclude build,node_modules,.*,_* --delete-unmatched --resolve=local --force"
+            cmd: "pyftpsync upload . ftp://www.wwwendt.de/tech/fancytree --progress --exclude build,node_modules,.*,_* --delete-unmatched --resolve=local --force"
 
     jsdoc:
         build:
