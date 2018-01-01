@@ -1009,6 +1009,27 @@ QUnit.test("Using ajax options for `source`; .click() expands a lazy folder", fu
 	});
 });
 
+QUnit.test("Call `postProcess` for non-ajax `source`", function(assert) {
+	tools.setup(assert);
+	assert.expect(3);
+
+	var done = assert.async();
+
+	$("#tree").fancytree({
+		source: [{title: "node 1", key: "id1"}, {title: "node 2", key: "id2"}],
+		generateIds: true,
+		postProcess: function(event, data){
+			assert.equal(data.response.length, 2, "receive `postProcess` callback");
+			data.result = [{title: "node 3", key: "id3"}];
+		},
+		init: function(event, data){
+			assert.ok(data.tree.getNodeByKey("id1") === null, "");
+			assert.ok(data.tree.getNodeByKey("id3") !== null, "");
+			done();
+		}
+	});
+});
+
 QUnit.test("Using $.ajax promise for `source`; .click() expands a lazy folder", function(assert) {
 	tools.setup(assert);
 	assert.expect(12);

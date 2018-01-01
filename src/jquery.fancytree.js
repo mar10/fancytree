@@ -2281,7 +2281,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 			// obj is a FancytreeNode
 			tree = obj.tree;
 			ctx = { node: obj, tree: tree, widget: tree.widget, options: tree.widget.options, originalEvent: originalEvent,
-			 		typeInfo: tree.types[obj.type] || {}};
+					typeInfo: tree.types[obj.type] || {}};
 		}else if(obj.widget){
 			// obj is a Fancytree
 			ctx = { node: null, tree: obj, widget: obj.widget, options: obj.widget.options, originalEvent: originalEvent };
@@ -2503,6 +2503,9 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	 * @returns {FancytreeNode} matching node or null
 	 */
 	findNextNode: function(match, startNode, visibleOnly) {
+		match = (typeof match === "string") ? _makeNodeTitleStartMatcher(match) : match;
+		startNode = startNode || this.getFirstChild();
+
 		var stopNode = null,
 			parentChildren = startNode.parent.children,
 			matchingNode = null,
@@ -2536,9 +2539,6 @@ Fancytree.prototype = /** @lends Fancytree# */{
 					return walkVisible(parent, 0, fn);
 				}
 			};
-
-		match = (typeof match === "string") ? _makeNodeTitleStartMatcher(match) : match;
-		startNode = startNode || this.getFirstChild();
 
 		walkVisible(startNode.parent, parentChildren.indexOf(startNode), function(node){
 			// Stop iteration if we see the start node a second time
@@ -2781,7 +2781,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 			callback = optsOrCallback.callback;
 		}
 		opts.callback = function(ctx, node, status){
- 			if( callback ) {
+			if( callback ) {
 				callback.call(ctx, node, status);
 			}
 			dfd.notifyWith(ctx, [{node: node, status: status}]);
@@ -3371,9 +3371,11 @@ $.extend(Fancytree.prototype,
 		} else {
 			if( ctx.options.postProcess ){
 				// #792: Call postProcess for non-deferred source
-				tree._triggerNodeEvent("postProcess", ctx, ctx.originalEvent, {
+				var res = tree._triggerNodeEvent("postProcess", ctx, ctx.originalEvent, {
 					response: source, error: null, dataType: typeof source
 				});
+
+				source = $.isArray(res) ? res : source;
 			}
 		}
 		// $.when(source) resolves also for non-deferreds
@@ -5243,7 +5245,7 @@ $.extend($.ui.fancytree,
 			ctx = {
 				node: node, tree: tree, widget: tree.widget, options: tree.widget.options,
 				typeInfo: tree.types[node.type] || {}
-			 	};
+				};
 			res = treeOpt.call(tree, {type: optionName}, ctx);
 			if( res == null ) {
 				res = nodeOpt;

@@ -42,6 +42,12 @@
 				// fireActivate: false,    // false: suppress `activate` event after active node was restored
 				// overrideSource: false,  // true: cookie takes precedence over `source` data attributes.
 				store: "auto" // 'cookie', 'local': use localStore, 'session': sessionStore
+				// Sample for a custom store:
+				// store: {
+				// 	get: function(key){ this.info("get(" + key + ")"); return window.sessionStorage.getItem(key); },
+				// 	set: function(key, value){ this.info("set(" + key + ", " + value + ")"); window.sessionStorage.setItem(key, value); },
+				// 	remove: function(key){ this.info("remove(" + key + ")"); window.sessionStorage.removeItem(key); }
+				// }
 			},
 			// don't use this in production code:
 			ajax: {
@@ -82,7 +88,7 @@
 			label: "Reset Cookie",
 			newline: false,
 			code: function(){
-				tree.clearCookies();
+				tree.clearPersistData();
 			}
 		});
 

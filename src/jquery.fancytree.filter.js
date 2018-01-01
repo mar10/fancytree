@@ -80,6 +80,9 @@ $.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(filter, bra
 		re = new RegExp(".*" + match + ".*", "i");
 		reHighlight = new RegExp(_escapeRegex(filter), "gi");
 		filter = function(node){
+			if( !node.title ) {
+				return false;
+			}
 			var text = escapeTitles ? node.title : extractHtmlText(node.title),
 				res = !!re.test(text);
 

@@ -1,4 +1,8 @@
-# 2.27.0-0 / Unreleased
+# 2.27.1-0 / Unreleased
+  * #819: ext-filter: Handle nodes without title
+  * Re-rename clearData() to clearPersistData()
+
+# 2.27.0 / 2017-12-16
   * **BREAKING CHANGES:**
     - `node.type` is now a first-class property of FancytreeNode.
       Node data `{..., type: "foo"}` is now available as `node.type` (before: `node.data.type`).
@@ -21,12 +25,16 @@
     recommended pattern to pass global meta-data for ext-table.
   * [Added] ext-edit: new trigger mode `clickActive` for option `triggerStart: [...]`.
   * [Added] #798 Tooltip support for icons (dynamic option `iconTooltip`).
+  * [Added] #808 Pass custom storage providers to ext-persist.
   * [Improved] ext-table no longer needs empty tbody/tr if thead is present.
   * [Fixed] #796 UMD requirements for node/CommonJS
   * [Fixed] #803 jquery.fancytree.ui-deps.js does not override existing widgets.
+  * [Fixed] #815 `<mark>` element missing in filtered nodes (minified bundle, IE 11).
+  * [Fixed] #816 findNextNode() doesn't set default for 'startNode' argument.
   * [Added] Material Design demo
   * [Added] Demo for Fancytree inside a jquery-confirm popup
   * [Changed] String representation is now `"FancytreeNode@_4[title='My name']"`
+  * [DEPRECATED] `tree.clearCookies()`. Use <del>`tree.clearData()`</del> `tree.clearPersistData()` instead.
 
 # 2.26.0 / 2017-11-04
   * **BREAKING CHANGES:**

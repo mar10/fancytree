@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.26.0
- * @date 2017-11-04T17:52:53Z
+ * @version 2.27.0
+ * @date 2017-12-16T09:14:27Z
  */
 
 
@@ -33,7 +33,7 @@
 		define( [ "jquery", "./jquery.fancytree" ], factory );
 	} else if ( typeof module === "object" && module.exports ) {
 		// Node/CommonJS
-		require("jquery.fancytree");
+		require("./jquery.fancytree");
 		module.exports = factory(require("jquery"));
 	} else {
 		// Browser globals
@@ -47,7 +47,7 @@
 /* *****************************************************************************
  * Private functions and variables
  */
-var
+var FT = $.ui.fancytree,
 	classDragSource = "fancytree-drag-source",
 	classDragRemove = "fancytree-drag-remove",
 	classDropAccept = "fancytree-drop-accept",
@@ -245,7 +245,7 @@ function handleDragOver(event, data) {
 			.toggleClass(classDropOver, hitMode === "over")
 			.toggleClass(classDropBefore, hitMode === "before")
 			.show()
-			.position($.ui.fancytree.fixPositionOptions({
+			.position(FT.fixPositionOptions({
 				my: "left" + offsetString(markerOffsetX) + " center",
 				at: "left " + markerAt,
 				of: $targetTitle
@@ -273,7 +273,7 @@ function handleDragOver(event, data) {
 
 $.ui.fancytree.registerExtension({
 	name: "dnd5",
-	version: "2.26.0",
+	version: "2.27.0",
 	// Default options for this extension.
 	options: {
 		autoExpandMS: 1500,          // Expand nodes after n milliseconds of hovering
@@ -305,7 +305,7 @@ $.ui.fancytree.registerExtension({
 			opts = ctx.options,
 			glyph = opts.glyph || null,
 			dndOpts = opts.dnd5,
-			getNode = $.ui.fancytree.getNode;
+			getNode = FT.getNode;
 
 		if( $.inArray("dnd", opts.extensions) >= 0 ) {
 			$.error("Extensions 'dnd' and 'dnd5' are mutually exclusive.");
@@ -317,7 +317,7 @@ $.ui.fancytree.registerExtension({
 		// Implement `opts.createNode` event to add the 'draggable' attribute
 		// #680: this must happen before calling super.treeInit()
 		if( dndOpts.dragStart ) {
-			$.ui.fancytree.overrideMethod(ctx.options, "createNode", function(event, data) {
+			FT.overrideMethod(ctx.options, "createNode", function(event, data) {
 				// Default processing if any
 				this._super.apply(this, arguments);
 
@@ -345,7 +345,8 @@ $.ui.fancytree.registerExtension({
 					"pointer-events": "none"
 				}).prependTo("body");
 			if( glyph ) {
-				$dropMarker.addClass(glyph.map.dropMarker);
+				FT.setSpanIcon($dropMarker[0], glyph.map._addClass, glyph.map.dropMarker);
+				// $dropMarker.addClass(glyph.map._addClass + " " + glyph.map.dropMarker);
 			}
 		}
 		// Enable drag support if dragStart() is specified:

@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.26.0
- * @date 2017-11-04T17:52:53Z
+ * @version 2.27.0
+ * @date 2017-12-16T09:14:27Z
  */
 
 ;(function( factory ) {
@@ -23,7 +23,7 @@
 		 ], factory );
 	} else if ( typeof module === "object" && module.exports ) {
 		// Node/CommonJS
-		require("jquery.fancytree.table");  // core + table
+		require("./jquery.fancytree.table");  // core + table
 		module.exports = factory(require("jquery"));
 	} else {
 		// Browser globals

@@ -401,6 +401,8 @@ module.exports = (grunt) ->
                 report: "min"
                 # preserveComments: "some"
                 preserveComments: /(?:^!|@(?:license|preserve|cc_on))/
+                output:
+                    ascii_only: true  # #815
             files: [
               {
                   src: ["**/jquery.fancytree*.js", "!*.min.js"]
@@ -421,6 +423,8 @@ module.exports = (grunt) ->
                 sourceMap: true
                 # preserveComments: "some"
                 preserveComments: /(?:^!|@(?:license|preserve|cc_on))/
+                output:
+                    ascii_only: true  # #815
             files: [
               {
                   src: ["jquery.fancytree-all-deps.js"]
