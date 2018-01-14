@@ -328,47 +328,6 @@ module.exports = (grunt) ->
             } ]
 
     "saucelabs-qunit":
-        ui_109:
-            options:
-                testname: "Fancytree qunit tests (jQuery 1.9, jQuery UI 1.9)"
-                urls: ["http://localhost:9999/test/unit/test-jQuery19-ui19.html"]
-                build: process.env.TRAVIS_JOB_ID
-                throttled: 5
-                recordVideo: false
-                videoUploadOnPass: false
-                # jQuery 1.9     dropped supports IE 6..?
-                # jQuery UI 1.9  supports IE 6+ and ?
-                browsers: [
-                  { browserName: "internet explorer", version: "8", platform: "Windows 7" }
-                ]
-        ui_110:
-            options:
-                testname: "Fancytree qunit tests (jQuery 1.10, jQuery UI 1.10)"
-                urls: ["http://localhost:9999/test/unit/test-jQuery110-ui110.html"]
-                build: process.env.TRAVIS_JOB_ID
-                throttled: 5
-                recordVideo: false
-                videoUploadOnPass: false
-                # jQuery 1.10    dropped support for IE 6
-                # jQuery UI 1.10 supports IE 7+ and ?
-                browsers: [
-                  { browserName: "internet explorer", version: "9", platform: "Windows 7" }
-                ]
-        ui_111:
-            options:
-                testname: "Fancytree qunit tests (jQuery 1.11, jQuery UI 1.11)"
-                urls: ["http://localhost:9999/test/unit/test-jQuery111-ui111.html"]
-                build: process.env.TRAVIS_JOB_ID
-                throttled: 5
-                recordVideo: false
-                videoUploadOnPass: false
-                # jQuery 1.11     supports IE + and latest Chrome/Edge/Firefox/Safari (-1)
-                # jQuery UI 1.11  supports IE 7+ and ?
-                browsers: [
-                  { browserName: "internet explorer", version: "10", platform: "Windows 8" }
-                  { browserName: "safari", version: "7", platform: "OS X 10.9" }
-                  { browserName: "safari", version: "8", platform: "OS X 10.10" }
-                ]
         ui_112:
             options:
                 testname: "Fancytree qunit tests (jQuery 3, jQuery UI 1.12)"
@@ -393,6 +352,47 @@ module.exports = (grunt) ->
                   { browserName: "safari", version: "9", platform: "OS X 10.11" }
                   { browserName: "safari", version: "10", platform: "OS X 10.12" }
                   # { browserName: "safari", version: "11", platform: "OS X 10.12" }
+                ]
+        ui_111:
+            options:
+                testname: "Fancytree qunit tests (jQuery 1.11, jQuery UI 1.11)"
+                urls: ["http://localhost:9999/test/unit/test-jQuery111-ui111.html"]
+                build: process.env.TRAVIS_JOB_ID
+                throttled: 5
+                recordVideo: false
+                videoUploadOnPass: false
+                # jQuery 1.11     supports IE + and latest Chrome/Edge/Firefox/Safari (-1)
+                # jQuery UI 1.11  supports IE 7+ and ?
+                browsers: [
+                  { browserName: "internet explorer", version: "10", platform: "Windows 8" }
+                  { browserName: "safari", version: "7", platform: "OS X 10.9" }
+                  { browserName: "safari", version: "8", platform: "OS X 10.10" }
+                ]
+        ui_110:
+            options:
+                testname: "Fancytree qunit tests (jQuery 1.10, jQuery UI 1.10)"
+                urls: ["http://localhost:9999/test/unit/test-jQuery110-ui110.html"]
+                build: process.env.TRAVIS_JOB_ID
+                throttled: 5
+                recordVideo: false
+                videoUploadOnPass: false
+                # jQuery 1.10    dropped support for IE 6
+                # jQuery UI 1.10 supports IE 7+ and ?
+                browsers: [
+                  { browserName: "internet explorer", version: "9", platform: "Windows 7" }
+                ]
+        ui_109:
+            options:
+                testname: "Fancytree qunit tests (jQuery 1.9, jQuery UI 1.9)"
+                urls: ["http://localhost:9999/test/unit/test-jQuery19-ui19.html"]
+                build: process.env.TRAVIS_JOB_ID
+                throttled: 5
+                recordVideo: false
+                videoUploadOnPass: false
+                # jQuery 1.9     dropped supports IE 6..?
+                # jQuery UI 1.9  supports IE 6+ and ?
+                browsers: [
+                  { browserName: "internet explorer", version: "8", platform: "Windows 7" }
                 ]
 
     uglify:
