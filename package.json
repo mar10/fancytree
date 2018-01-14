@@ -38,7 +38,8 @@
     "treegrid"
   ],
   "dependencies": {
-    "jquery": ">=1.9"
+    "jquery": ">=1.9",
+    "marked": "^0.3.12"
   },
   "devDependencies": {
     "grunt": "^1.0.0",
