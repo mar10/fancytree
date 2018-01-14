@@ -52,6 +52,30 @@ TOOLS.initQUnit = function() {
 		}
 	  });
 	});
+
+	// Log something if test fails
+	QUnit.testDone( function( details ) {
+		if( !details.failed || !details.total || !window.console ) {
+			return;
+		}
+		var result = {
+			"Module name": details.module,
+			"Test name": details.name,
+			"Assertions": {
+				"Total": details.total,
+				"Passed": details.passed,
+				"Failed": details.failed
+			},
+			"Skipped": details.skipped,
+			"Todo": details.todo,
+			"Runtime": details.runtime
+			};
+		window.console.error( JSON.stringify( result, null, 2 ) );
+	});
+
+	// Timeout async tests after 15 seconds
+	QUnit.config.testTimeout = 15000;
+
 	// Silence, please
 	$.ui.fancytree.debugLevel = 1;
 };
