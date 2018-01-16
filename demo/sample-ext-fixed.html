@@ -50,7 +50,7 @@
 	table.fancytree-container.fancytree-ext-fixed tbody tr td:nth-child(1) {
 		width: 22px;
 	}
-
+	
 	table.fancytree-ext-table tbody tr.fancytree-ext-fixed-hover {
 	  border-color: inherit;
 	  background: #f8fcfe;
@@ -63,6 +63,25 @@
 	  background: linear-gradient(to bottom, #f8fcfe 0%, #eff9fe 100%);
 	  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f8fcfe', endColorstr='#eff9fe', GradientType=0);
 	  outline: 1px solid #d8f0fa;
+	}
+
+	table.fancytree-ext-table tbody tr.fancytree-active.fancytree-ext-fixed-hover,
+	table.fancytree-ext-table tbody tr.fancytree-selected.fancytree-ext-fixed-hover {
+	  border-color: inherit;
+	  background: #f2f9fd;
+	  color: inherit;
+	  background: -moz-linear-gradient(top, #f2f9fd 0%, #c4e8fa 100%);
+	  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f2f9fd), color-stop(100%, #c4e8fa));
+	  background: -webkit-linear-gradient(top, #f2f9fd 0%, #c4e8fa 100%);
+	  background: -o-linear-gradient(top, #f2f9fd 0%, #c4e8fa 100%);
+	  background: -ms-linear-gradient(top, #f2f9fd 0%, #c4e8fa 100%);
+	  background: linear-gradient(to bottom, #f2f9fd 0%, #c4e8fa 100%);
+	  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f2f9fd', endColorstr='#c4e8fa', GradientType=0);
+	  outline: 1px solid #B6E6FB;
+	}
+	
+	table.fancytree-ext-table {
+	    width: 100%;
 	}
 
 	table.fancytree-ext-table tbody tr.fancytree-active.fancytree-ext-fixed-hover,
@@ -102,6 +121,7 @@
 		$("#treetable").fancytree({
 			extensions: ["table", "fixed"],
 			checkbox: true,
+			autoScroll: true,
 			fixed: {
 				fixCols: 4,	  // Fix leftmost n columns
 //		        fixColWidths: [16, 50, 200],
@@ -139,7 +159,7 @@
 				$tdList.eq(4).html("<input type='checkbox' name='like' value='" + node.key + "'>");
 
 				for (var i = 5; i < 34; i++) {
-					$tdList.eq(i).text("Body R" + idx + " C" + (i+1));
+					$tdList.eq(i).append($("<input>"));
 				}
 			},
 			collapse: function(event, data) {

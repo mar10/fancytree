@@ -2,6 +2,9 @@
   * #819: ext-filter: Handle nodes without title
   * Re-rename clearData() to clearPersistData()
 
+# ext-fixed / Unreleased
+    * [Added] New extension ext-fixed
+
 # 2.27.0 / 2017-12-16
   * **BREAKING CHANGES:**
     - `node.type` is now a first-class property of FancytreeNode.
