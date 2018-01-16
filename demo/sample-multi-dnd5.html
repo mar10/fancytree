@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+	<title>Test D'n'D - Fancytree</title>
+
+	<script src="../lib/jquery.js"></script>
+	<script src="../lib/jquery-ui.custom.js"></script>
+	<!-- <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+	<script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script> -->
+
+	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet">
+	<script src="../src/jquery.fancytree.js"></script>
+	<script src="../src/jquery.fancytree.dnd5.js"></script>
+
+	<!-- Start_Exclude: This block is not part of the sample code -->
+	<link href="../lib/prettify.css" rel="stylesheet">
+	<script src="../lib/prettify.js"></script>
+	<link href="../demo/sample.css" rel="stylesheet">
+	<script src="../demo/sample.js"></script>
+	<!-- End_Exclude -->
+
+<style type="text/css">
+	.draggable,
+	.droppable {
+		border: 1px solid green;
+		padding: 3px;
+		background-color: silver;
+	}
+	/* Prevent scrolling while DND */
+	ul.fancytree-container {
+/*
+		height: 200px;
+		overflow: auto;
+*/
+/*		position: inherit;*/
+	}
+</style>
+
+<script type="text/javascript">
+	$(function(){
+		var count = 1;
+		/*
+		TODO: option 'preventTextSelect'?
+			Already implemented, but doesn't always work:
+				}).on("selectstart" + ns, "span.fancytree-title", function(event){
+					// prevent mouse-drags to select text ranges
+					// tree.debug("<span title> got event " + event.type);
+					event.preventDefault();
+		TODO: disable auto-scroll by default:
+		  seems to have problems to calculate helper position,
+		  --> see here http://api.jqueryui.com/draggable/#event-drag
+			  for a possible fix?
+		  and enabling scrolling would always require custom changes, like
+		  setting the container height?
+		TODO: Revert always flies to top-left corner of container
+		*/
+		// Attach the fancytree widget to an existing <div id="tree"> element
+		// and pass the tree options as an argument to the fancytree() function:
+		$("#tree").fancytree({
+			extensions: ["dnd5"],
+			checkbox: true,
+//			debugLevel: 1,
+			source: {
+				url: "ajax-tree-products.json"
+			},
+			activate: function(event, data) {
+			},
+			lazyLoad: function(event, data) {
+				data.result = {url: "ajax-sub2.json"}
+			},
+			dnd5: {
+				preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
+				preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
+				autoExpandMS: 1000,
+				// focusOnClick: true,
+				// refreshPositions: true,
+				dragStart: function(node, data) {
+					// allow dragging `node`:
+					var $dragImage,
+						tree = data.tree,
+						dataTransfer = data.dataTransfer,
+						sourceNodes = data.tree.getSelectedNodes();
+
+					if( sourceNodes.length > 1 && dataTransfer.setDragImage ) {
+						// Mark selected nodes also as drag source (active node is already)
+						$(".fancytree-active,.fancytree-selected", tree.$container)
+							.addClass("fancytree-drag-source");
+
+						// Add a counter badge to helper if dragging more than one node
+						$dragImage = $(data.node.span)
+							.clone()
+							.find(".fancytree-title")
+							.prepend($("<span class='fancytree-childcounter'/>")
+								.text("+" + (sourceNodes.length - 1)))
+							.appendTo("body");
+
+						// IE 11 does not support this
+						dataTransfer.setDragImage( $dragImage[0], -10,  -10);
+						// $dragImage.remove();
+					}
+					return true;
+				},
+				dragEnter: function(node, data) {
+					data.node.info("dragEnter", data)
+				   return true;
+				},
+				dragEnd: function(node, data) {
+					data.node.info("dragEnd", data)
+				},
+				dragDrop: function(node, data) {
+					// This function MUST be defined to enable dropping of items on the tree.
+			        //
+			        // The source data is provided in several formats:
+			        //   `data.otherNode` (null if it's not a FancytreeNode from the same page)
+			        //   `data.otherNodeData` (Json object; null if it's not a FancytreeNode)
+			        //   `data.dataTransfer.getData()`
+			        //
+			        // We may access some meta data to decide what to do:
+			        //   `data.hitMode` ("before", "after", or "over").
+			        //   `data.dataTransfer.dropEffect`,`.effectAllowed`
+			        //   `data.originalEvent.shiftKey`, ...
+			        //
+			        // Example:
+
+			        var transfer = data.dataTransfer;
+
+			        node.debug("drop", data);
+
+			        if( data.otherNode ) {
+			          // Drop another Fancytree node from same frame
+			          // (maybe from another tree however)
+			          var sameTree = (data.otherNode.tree === data.tree);
+
+			          data.otherNode.moveTo(node, data.hitMode);
+			        } else if( data.otherNodeData ) {
+			          // Drop Fancytree node from different frame or window, so we only have
+			          // JSON representation available
+			          node.addChild(data.otherNodeData, data.hitMode);
+			        } else {
+			          // Drop a non-node
+			          node.addNode({
+			            title: transfer.getData("text")
+			          }, data.hitMode);
+			        }
+			        // Expand target node when a child was created:
+			        node.setExpanded();
+			      }
+			}
+		});
+
+	});
+	</script>
+</head>
+<body class="example">
+	<h1>Example: extended drag'n'drop sample</h1>
+	<div class="description">
+		This sample shows how to
+		<ul>
+		<li>implement drag'n'drop with multiple selected nodes
+		<li>allow modifier keys <kbd>Ctrl</kbd> or <kbd>Alt</kbd> to force copy
+			instead of move operations
+		</ul>
+	</div>
+	<div>
+		<label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
+	</div>
+	<!-- Add a <table> element where the tree should appear: -->
+	<p class="description">
+		Standard tree:
+	</p>
+	<div id="tree"></div>
+
+	<p class="droppable">
+		Droppable.
+	</p>
+
+	<!-- Start_Exclude: This block is not part of the sample code -->
+	<hr>
+	<p class="sample-links  no_code">
+		<a class="hideInsideFS" href="https://github.com/mar10/fancytree">jquery.fancytree.js project home</a>
+		<a class="hideOutsideFS" href="#">Link to this page</a>
+		<a class="hideInsideFS" href="index.html">Example Browser</a>
+		<a href="#" id="codeExample">View source code</a>
+	</p>
+	<pre id="sourceCode" class="prettyprint" style="display:none"></pre>
+	<!-- End_Exclude -->
+</body>
+</html>
