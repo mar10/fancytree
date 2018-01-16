@@ -6,7 +6,7 @@
 
 	<script src="//code.jquery.com/jquery-1.12.1.js"></script>
 	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-
+	<link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css"/>
 <style type="text/css">
 	/* Set alternating row colors (define BEFORE standard css). */
 /*
@@ -79,6 +79,10 @@
 	  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f2f9fd', endColorstr='#c4e8fa', GradientType=0);
 	  outline: 1px solid #B6E6FB;
 	}
+	
+	table.fancytree-ext-table {
+	    width: 100%;
+	}
 
 </style>
 	<link href="../src/skin-win7/ui.fancytree.css" rel="stylesheet" type="text/css">
@@ -102,6 +106,7 @@
 		$("#treetable").fancytree({
 			extensions: ["table", "fixed"],
 			checkbox: true,
+			autoScroll: true,
 			fixed: {
 				fixCols: 4,	  // Fix leftmost n columns
 //		        fixColWidths: [16, 50, 200],
@@ -139,7 +144,7 @@
 				$tdList.eq(4).html("<input type='checkbox' name='like' value='" + node.key + "'>");
 
 				for (var i = 5; i < 34; i++) {
-					$tdList.eq(i).text("Body R" + idx + " C" + (i+1));
+					$tdList.eq(i).append($("<input>"));
 				}
 			},
 			collapse: function(event, data) {
