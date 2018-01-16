@@ -339,7 +339,7 @@ module.exports = (grunt) ->
                 # jQuery 3        supports IE 9+ and latest Chrome/Edge/Firefox/Safari (-1)
                 # jQuery UI 1.12  supports IE 11 and latest Chrome/Edge/Firefox/Safari (-1)
                 browsers: [
-                  { browserName: "chrome", version: "dev", platform: "Windows 10" }
+                  # { browserName: "chrome", version: "dev", platform: "Windows 10" }
                   { browserName: "chrome", version: "latest", platform: "Windows 10" }
                   { browserName: "chrome", version: "latest-1", platform: "Windows 10" }
                   { browserName: "firefox", version: "dev", platform: "Windows 10" }
