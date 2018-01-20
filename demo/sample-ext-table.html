@@ -15,8 +15,14 @@
 	}
 */
 	/* custom alignment (set by 'renderColumns'' event) */
-	td.alignRight {
+	table.fancytree-ext-table {
+	   width: 80%;
+	}
+	table.fancytree-ext-table td:nth-child(4) {
 	   text-align: right;
+	}
+	table.fancytree-ext-table td:nth-child(5) {
+	   text-align: center;
 	}
 
 </style>
@@ -46,6 +52,9 @@
 			source: {
 				url: "ajax-tree-products.json"
 			},
+			tooltip: function(event, data){
+				return data.node.data.author;
+			},
 			lazyLoad: function(event, data) {
 				data.result = {url: "ajax-sub2.json"}
 			},
@@ -53,9 +62,9 @@
 				var node = data.node,
 					$tdList = $(node.tr).find(">td");
 				// (index #0 is rendered by fancytree by adding the checkbox)
-				$tdList.eq(1).text(node.getIndexHier()).addClass("alignRight");
+				$tdList.eq(1).text(node.getIndexHier());  //.addClass("alignRight");
 				// (index #2 is rendered by fancytree)
-				$tdList.eq(3).text(node.key);
+				$tdList.eq(3).text(node.data.qty);
 				$tdList.eq(4).html("<input type='checkbox' name='like' value='" + node.key + "'>");
 			}
 		});
@@ -103,7 +112,7 @@
 		<col width="30px"></col>
 		</colgroup>
 		<thead>
-			<tr> <th></th> <th>#</th> <th></th> <th>Key</th> <th>Like</th> </tr>
+			<tr> <th></th> <th>#</th> <th></th> <th>Qty</th> <th>Order</th> </tr>
 		</thead>
 		<tbody>
 		</tbody>
