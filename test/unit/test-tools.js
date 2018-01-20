@@ -408,9 +408,9 @@ function profileWrapper(fn, flag, opts){
 				if( opts.printTime ){
 					console.time(name);
 				}
-				start = new Date().getTime();
+				start = Date.now();
 				fn.apply(this, arguments);
-				elap = new Date().getTime() - start;
+				elap = Date.now() - start;
 
 				if(opts.printTime){
 					console.timeEnd(name);

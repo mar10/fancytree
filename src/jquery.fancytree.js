@@ -3168,7 +3168,7 @@ $.extend(Fancytree.prototype,
 				!SPECIAL_KEYCODES[which] &&  // #659
 				!$target.is(":input:enabled") ) {
 			// Allow to search for longer streaks if typed in quickly
-			stamp = new Date().getTime();
+			stamp = Date.now();
 			if( stamp - tree.lastQuicksearchTime > 500 ) {
 				tree.lastQuicksearchTerm = "";
 			}
@@ -3241,7 +3241,7 @@ $.extend(Fancytree.prototype,
 		var ajax, delay, dfd,
 			tree = ctx.tree,
 			node = ctx.node,
-			requestId = new Date().getTime();
+			requestId = Date.now();
 
 		if($.isFunction(source)){
 			source = source.call(tree, {type: "source"}, ctx);
