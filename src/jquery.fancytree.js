@@ -122,6 +122,11 @@ function consoleApply(method, args){
 	}
 }
 
+/* support: IE8 Polyfil for Date.now() */
+if( !Date.now ) {
+	Date.now = function now() { return new Date().getTime(); };
+}
+
 /*Return true if x is a FancytreeNode.*/
 function _isNode(x){
 	return !!(x.tree && x.statusNodeType !== undefined);

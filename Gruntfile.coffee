@@ -338,10 +338,14 @@ module.exports = (grunt) ->
         #     options:
         #         testname: "Triage"
         #         build: "triage"
-        #         urls: ["http://localhost:9999/test/unit/test-core.html"]
+        #         urls: ["http://localhost:9999/test/unit/test-jQuery19-ui19.html"]
+        #         # urls: ["http://localhost:9999/test/unit/test-jQuery1x-mig-ui1x.html"]
+        #         # urls: ["http://localhost:9999/test/unit/test-core.html"]
         #         browsers: [
         #           # Issue #825
-        #           { browserName: "chrome", version: "dev", platform: "Windows 10" }
+        #           # { browserName: "chrome", version: "dev", platform: "Windows 10" }
+        #           # { browserName: "internet explorer", version: "9", platform: "Windows 7" }
+        #           { browserName: "internet explorer", version: "8", platform: "Windows 7" }
         #         ]
         ui_112:
             options:
