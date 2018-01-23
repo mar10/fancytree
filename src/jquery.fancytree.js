@@ -108,7 +108,7 @@ function consoleApply(method, args){
 	var i, s,
 		fn = window.console ? window.console[method] : null;
 
-	if(fn){
+	if(fn && $.ui.fancytree.debugLevel !==0){
 		try{
 			fn.apply(window.console, args);
 		} catch(e) {
