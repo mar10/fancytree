@@ -1,7 +1,9 @@
-# 2.27.1-0 / Unreleased
-  * #819: ext-filter: Handle nodes without title
-  * Re-rename clearData() to clearPersistData()
+# 2.28.0-0 / Unreleased
   * [Added] #830 support for Font Awesome 5 (ext-glyph preset)
+  * [Changed] Re-rename clearData() to clearPersistData()
+  * [Changed] #828 Re-scale debugLevel from 0:quiet to 4:verbose, allowing to suppress warnings
+    and even errors.
+  * [Fixed] #819: ext-filter: Handle nodes without title
 
 # ext-fixed / Unreleased
     * [Added] New extension ext-fixed

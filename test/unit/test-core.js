@@ -6,6 +6,7 @@ jQuery(document).ready(function(){
 
 var TEST_DATA, TESTDATA_NODES, TESTDATA_TOPNODES, TESTDATA_VISIBLENODES,
 	$ = jQuery,
+	DEBUG_LEVEL = 1,
 	// Use tools from test-tools.js
 	tools = TEST_TOOLS;
 
@@ -58,7 +59,7 @@ tools.initQUnit();
 tools.createInfoSection();
 
 // Silence, please
-$.ui.fancytree.debugLevel = 1;
+$.ui.fancytree.debugLevel = DEBUG_LEVEL;
 
 
 /*******************************************************************************
@@ -82,7 +83,7 @@ QUnit.test("Static members", function(assert) {
 
 QUnit.test("Create Fancytree", function(assert) {
 	tools.setup(assert);
-	assert.expect(13);
+	assert.expect(14);
 
 	var tree, widget,
 		insideConstructor = true;
@@ -94,6 +95,7 @@ QUnit.test("Create Fancytree", function(assert) {
 			assert.ok(insideConstructor, "running synchronously");
 			widget = $("div#tree").data("ui-fancytree") || $("div#tree").data("fancytree");
 			tree = widget.tree;
+			assert.equal(tree.options.debugLevel, DEBUG_LEVEL, "Inherit global debugLevel");
 		}
 	});
 	insideConstructor = false;

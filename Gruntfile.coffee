@@ -317,7 +317,7 @@ module.exports = (grunt) ->
                 to : "buildType: \"production\""
             },{
                 from : /debugLevel:\s*[0-9]/g
-                to : "debugLevel: 1"
+                to : "debugLevel: 3"
             } ]
         release:
             src: ["dist/**/*.js"]
