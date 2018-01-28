@@ -1,6 +1,8 @@
 # 2.27.1-0 / Unreleased
   * #819: ext-filter: Handle nodes without title
   * Re-rename clearData() to clearPersistData()
+  * #828 Re-scale debugLevel from 0:quiet to 4:verbose, allowing to suppress warnings and
+    even errors.
 
 # ext-fixed / Unreleased
     * [Added] New extension ext-fixed
