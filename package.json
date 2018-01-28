@@ -38,8 +38,7 @@
     "treegrid"
   ],
   "dependencies": {
-    "jquery": ">=1.9",
-    "marked": "^0.3.12"
+    "jquery": ">=1.9"
   },
   "devDependencies": {
     "grunt": "^1.0.0",
@@ -64,7 +63,8 @@
     "grunt-yabs": "^1.1.0",
     "jsdoc": "~3.5.4",
     "jshint": "^2.9.4",
-    "qunitjs": "^1.21"
+    "qunitjs": "^1.21",
+    "marked": "^0.3.12"
   },
   "scripts": {
     "test": "grunt ci --verbose"
