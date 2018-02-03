@@ -21,12 +21,14 @@
 	<!-- End_Exclude -->
 
 <style type="text/css">
+/*
 	.draggable,
 	.droppable {
 		border: 1px solid green;
 		padding: 3px;
 		background-color: silver;
 	}
+*/
 	/* Prevent scrolling while DND */
 	ul.fancytree-container {
 /*
@@ -39,7 +41,9 @@
 
 <script type="text/javascript">
 	$(function(){
-		var count = 1;
+		var $dragImage,
+			count = 1;
+
 		/*
 		TODO: option 'preventTextSelect'?
 			Already implemented, but doesn't always work:
@@ -73,40 +77,19 @@
 				preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
 				preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
 				autoExpandMS: 1000,
+				multiSource: true,  // drag all selected nodes (plus current node)
 				// focusOnClick: true,
 				// refreshPositions: true,
 				dragStart: function(node, data) {
 					// allow dragging `node`:
-					var $dragImage,
-						tree = data.tree,
-						dataTransfer = data.dataTransfer,
-						sourceNodes = data.tree.getSelectedNodes();
-
-					if( sourceNodes.length > 1 && dataTransfer.setDragImage ) {
-						// Mark selected nodes also as drag source (active node is already)
-						$(".fancytree-active,.fancytree-selected", tree.$container)
-							.addClass("fancytree-drag-source");
-
-						// Add a counter badge to helper if dragging more than one node
-						$dragImage = $(data.node.span)
-							.clone()
-							.find(".fancytree-title")
-							.prepend($("<span class='fancytree-childcounter'/>")
-								.text("+" + (sourceNodes.length - 1)))
-							.appendTo("body");
-
-						// IE 11 does not support this
-						dataTransfer.setDragImage( $dragImage[0], -10,  -10);
-						// $dragImage.remove();
-					}
 					return true;
 				},
 				dragEnter: function(node, data) {
-					data.node.info("dragEnter", data)
-				   return true;
+					data.node.info("dragEnter", data);
+					return true;
 				},
 				dragEnd: function(node, data) {
-					data.node.info("dragEnd", data)
+					data.node.info("dragEnd", data);
 				},
 				dragDrop: function(node, data) {
 					// This function MUST be defined to enable dropping of items on the tree.
@@ -118,32 +101,30 @@
 			        //
 			        // We may access some meta data to decide what to do:
 			        //   `data.hitMode` ("before", "after", or "over").
-			        //   `data.dataTransfer.dropEffect`,`.effectAllowed`
+			        //   `data.dataTransfer.dropEffect`, `.effectAllowed`
 			        //   `data.originalEvent.shiftKey`, ...
 			        //
 			        // Example:
 
-			        var transfer = data.dataTransfer;
+					var dataTransfer = data.dataTransfer,
+						sourceNodes = data.otherNodeList,
+						event = data.originalEvent,
+						copyMode = event.ctrlKey || event.altKey;
 
+					if( copyMode ) {
+						$.each(sourceNodes, function(i, o){
+							o.copyTo(node, data.hitMode, function(n){
+								delete n.key;
+								n.selected = false;
+								n.title = "Copy of " + n.title;
+							});
+						});
+					} else {
+						$.each(sourceNodes, function(i, o){
+							o.moveTo(node, data.hitMode);
+						});
+					}
 			        node.debug("drop", data);
-
-			        if( data.otherNode ) {
-			          // Drop another Fancytree node from same frame
-			          // (maybe from another tree however)
-			          var sameTree = (data.otherNode.tree === data.tree);
-
-			          data.otherNode.moveTo(node, data.hitMode);
-			        } else if( data.otherNodeData ) {
-			          // Drop Fancytree node from different frame or window, so we only have
-			          // JSON representation available
-			          node.addChild(data.otherNodeData, data.hitMode);
-			        } else {
-			          // Drop a non-node
-			          node.addNode({
-			            title: transfer.getData("text")
-			          }, data.hitMode);
-			        }
-			        // Expand target node when a child was created:
 			        node.setExpanded();
 			      }
 			}
