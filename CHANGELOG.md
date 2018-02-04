@@ -1,4 +1,5 @@
 # 2.28.0-0 / Unreleased
+  * [Added] ext-dnd5 support for dragging multiple selected nodes.
   * [Added] #830 support for Font Awesome 5 (ext-glyph preset)
   * [Changed] Re-rename clearData() to clearPersistData()
   * [Changed] #828 Re-scale debugLevel from 0:quiet to 4:verbose, allowing to suppress warnings

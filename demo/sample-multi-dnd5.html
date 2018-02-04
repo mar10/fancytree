@@ -4,12 +4,14 @@
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 	<title>Test D'n'D - Fancytree</title>
 
-	<script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
-	<script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+	<script src="../lib/jquery.js"></script>
+	<script src="../lib/jquery-ui.custom.js"></script>
+	<!-- <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+	<script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script> -->
 
 	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet">
 	<script src="../src/jquery.fancytree.js"></script>
-	<script src="../src/jquery.fancytree.dnd.js"></script>
+	<script src="../src/jquery.fancytree.dnd5.js"></script>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
 	<link href="../lib/prettify.css" rel="stylesheet">
@@ -19,12 +21,14 @@
 	<!-- End_Exclude -->
 
 <style type="text/css">
+/*
 	.draggable,
 	.droppable {
 		border: 1px solid green;
 		padding: 3px;
 		background-color: silver;
 	}
+*/
 	/* Prevent scrolling while DND */
 	ul.fancytree-container {
 /*
@@ -37,7 +41,9 @@
 
 <script type="text/javascript">
 	$(function(){
-		var count = 1;
+		var $dragImage,
+			count = 1;
+
 		/*
 		TODO: option 'preventTextSelect'?
 			Already implemented, but doesn't always work:
@@ -56,85 +62,52 @@
 		// Attach the fancytree widget to an existing <div id="tree"> element
 		// and pass the tree options as an argument to the fancytree() function:
 		$("#tree").fancytree({
-			extensions: ["dnd"],
+			extensions: ["dnd5"],
 			checkbox: true,
-//			debugLevel: 3,
+//			debugLevel: 1,
 			source: {
-				url: "ajax-tree-plain.json"
+				url: "ajax-tree-products.json"
 			},
 			activate: function(event, data) {
 			},
 			lazyLoad: function(event, data) {
 				data.result = {url: "ajax-sub2.json"}
 			},
-			dnd: {
+			dnd5: {
 				preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
 				preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
-				autoExpandMS: 400,
+				autoExpandMS: 1000,
+				multiSource: true,  // drag all selected nodes (plus current node)
 				// focusOnClick: true,
-				refreshPositions: true,
-				draggable: {
-					appendTo: "body",  // We don't want to clip the helper inside container
-					// scroll: false,
-					// containment: "parent",  // $("ul.fancytree-container"),
-					// cursorAt: { left: 5 },
-					revert: "invalid"
-					// revert: function(dropped) {
-					// 	return
-					// }
-				},
+				// refreshPositions: true,
 				dragStart: function(node, data) {
 					// allow dragging `node`:
 					return true;
 				},
 				dragEnter: function(node, data) {
-				   return true;
+					data.node.info("dragEnter", data);
+					return true;
 				},
-				initHelper: function(node, data) {
-					// Helper was just created: modify markup
-					var helper = data.ui.helper,
-						sourceNodes = data.tree.getSelectedNodes();
-
-					// Store a list of active + all selected nodes
-					if( !node.isSelected() ) {
-						sourceNodes.unshift(node);
-					}
-					helper.data("sourceNodes", sourceNodes);
-					// Mark selected nodes also as drag source (active node is already)
-					$(".fancytree-active,.fancytree-selected", tree.$container)
-						.addClass("fancytree-drag-source");
-					// Add a counter badge to helper if dragging more than one node
-					if( sourceNodes.length > 1 ) {
-						helper.append($("<span class='fancytree-childcounter'/>")
-							.text("+" + (sourceNodes.length - 1)));
-					}
-					// Prepare an indicator for copy-mode
-					helper.prepend($("<span class='fancytree-dnd-modifier'/>")
-						.text("+").hide());
-				},
-				updateHelper: function(node, data) {
-					// Mouse was moved or key pressed: update helper according to modifiers
-
-					// NOTE: pressing modifier keys stops dragging in jQueryUI 1.11
-					// http://bugs.jqueryui.com/ticket/14461
-					var event = data.originalEvent,
-						tree = node.tree,
-						copyMode = event.ctrlKey || event.altKey;
-
-					// Adjust the drop marker icon
-//					data.dropMarker.toggleClass("fancytree-drop-copy", copyMode);
-
-					// Show/hide the helper's copy indicator (+)
-					data.ui.helper.find(".fancytree-dnd-modifier").toggle(copyMode);
-					// tree.debug("1", $(".fancytree-active,.fancytree-selected", tree.$container).length)
-					// tree.debug("2", $(".fancytree-active,.fancytree-selected").length)
-					// Dim the source node(s) in move-mode
-					$(".fancytree-drag-source", tree.$container)
-						.toggleClass("fancytree-drag-remove", !copyMode);
-					// data.dropMarker.toggleClass("fancytree-drop-move", !copyMode);
+				dragEnd: function(node, data) {
+					data.node.info("dragEnd", data);
 				},
 				dragDrop: function(node, data) {
-					var sourceNodes = data.ui.helper.data("sourceNodes"),
+					// This function MUST be defined to enable dropping of items on the tree.
+			        //
+			        // The source data is provided in several formats:
+			        //   `data.otherNode` (null if it's not a FancytreeNode from the same page)
+			        //   `data.otherNodeData` (Json object; null if it's not a FancytreeNode)
+			        //   `data.dataTransfer.getData()`
+			        //
+			        // We may access some meta data to decide what to do:
+			        //   `data.hitMode` ("before", "after", or "over").
+			        //   `data.dataTransfer.dropEffect`, `.effectAllowed`
+			        //   `data.originalEvent.shiftKey`, ...
+			        //
+			        // Example:
+
+					var dataTransfer = data.dataTransfer,
+						sourceNodes = data.otherNodeList,
 						event = data.originalEvent,
 						copyMode = event.ctrlKey || event.altKey;
 
@@ -146,30 +119,17 @@
 								n.title = "Copy of " + n.title;
 							});
 						});
-					}else{
+					} else {
 						$.each(sourceNodes, function(i, o){
 							o.moveTo(node, data.hitMode);
 						});
 					}
-				}
+			        node.debug("drop", data);
+			        node.setExpanded();
+			      }
 			}
 		});
 
-		$(".droppable").droppable({
-			drop: function(event, ui){
-				var node = $(ui.helper).data("ftSourceNode"),
-					tree = node.tree,
-					copyMode = event.ctrlKey || event.altKey,
-					sourceNodes = ui.helper.data("sourceNodes");
-
-				if( !copyMode ) {
-					$.each(sourceNodes, function(i, o){
-						o.remove();
-					});
-				}
-				$(this).append((copyMode ? "Copied " : "Moved ") + sourceNodes.length + " nodes. ");
-			}
-		});
 	});
 	</script>
 </head>
@@ -183,10 +143,6 @@
 			instead of move operations
 		</ul>
 	</div>
-	<p class="warning">
-		This sample uses the jQuery UI based 'ext-dnd' extension.<br>
-		See also the <a href="sample-multi-dnd5.html">ext-dnd5 sample</a>.
-	</p>
 	<div>
 		<label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
 	</div>

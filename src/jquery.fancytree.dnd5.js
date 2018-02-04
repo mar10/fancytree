@@ -59,6 +59,7 @@ var FT = $.ui.fancytree,
 	nodeMimeType = "application/x-fancytree-node",
 	$dropMarker = null,
 	SOURCE_NODE = null,
+	SOURCE_NODE_LIST = null,
 	DRAG_ENTER_RESPONSE = null,
 	LAST_HIT_MODE = null;
 
@@ -277,7 +278,10 @@ $.ui.fancytree.registerExtension({
 	// Default options for this extension.
 	options: {
 		autoExpandMS: 1500,          // Expand nodes after n milliseconds of hovering
-		setTextTypeJson: false,      // Allow dragging of nodes to different IE windows
+		dropMarkerInsertOffsetX: -16,// Additional offset for drop-marker with hitMode = "before"/"after"
+		dropMarkerOffsetX: -24,		 // Absolute position offset for .fancytree-drop-marker relatively to ..fancytree-title (icon/img near a node accepting drop)
+		multiSource: false,		     // true: Drag multiple (i.e. selected) nodes.
+		dragImage: null,		     // Callback(node, data) that can be used to call dataTransfer.setDragImage().
 		preventForeignNodes: false,  // Prevent dropping nodes from different Fancytrees
 		preventNonNodes: false,      // Prevent dropping items other than Fancytree nodes
 		preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
@@ -285,8 +289,7 @@ $.ui.fancytree.registerExtension({
 		scroll: true,                // Enable auto-scrolling while dragging
 		scrollSensitivity: 20,       // Active top/bottom margin in pixel
 		scrollSpeed: 5,              // Pixel per event
-		dropMarkerOffsetX: -24,		 // absolute position offset for .fancytree-drop-marker relatively to ..fancytree-title (icon/img near a node accepting drop)
-		dropMarkerInsertOffsetX: -16,// additional offset for drop-marker with hitMode = "before"/"after"
+		setTextTypeJson: false,      // Allow dragging of nodes to different IE windows
 		// Events (drag support)
 		dragStart: null,       // Callback(sourceNode, data), return true, to enable dnd drag
 		dragDrag: $.noop,      // Callback(sourceNode, data)
@@ -300,7 +303,7 @@ $.ui.fancytree.registerExtension({
 	},
 
 	treeInit: function(ctx){
-		var $temp,
+		var $dragImage, $extraHelper, $temp,
 			tree = ctx.tree,
 			opts = ctx.options,
 			glyph = opts.glyph || null,
@@ -371,11 +374,24 @@ $.ui.fancytree.registerExtension({
 				switch( event.type ) {
 
 				case "dragstart":
-					$(node.span).addClass(classDragSource);
-
 					// Store current source node in different formats
 					SOURCE_NODE = node;
 
+					// Also optionally store selected nodes
+					if( dndOpts.multiSource === false ) {
+						SOURCE_NODE_LIST = [node];
+					} else if( dndOpts.multiSource === true ) {
+						SOURCE_NODE_LIST = tree.getSelectedNodes();
+						if( !node.isSelected() ) {
+							SOURCE_NODE_LIST.unshift(node);
+						}
+					} else {
+						SOURCE_NODE_LIST = dndOpts.multiSource(node, data);
+					}
+					// Set visual feedback
+					$.each(SOURCE_NODE_LIST, function(idx, n){
+						$(n.span).addClass(classDragSource);
+					});
 					// Set payload
 					// Note:
 					// Transfer data is only accessible on dragstart and drop!
@@ -411,11 +427,34 @@ $.ui.fancytree.registerExtension({
 					dataTransfer.effectAllowed = "all";  // "copyMove"
 					// dataTransfer.dropEffect = "move";
 
-					// Set the title as drag image (otherwise it would contain the expander)
-					if( dataTransfer.setDragImage ) {
-						// IE 11 does not support this
-						dataTransfer.setDragImage($(node.span).find(".fancytree-title")[0], -10, -10);
-						// dataTransfer.setDragImage($(node.span)[0], -10, -10);
+					$extraHelper = null;
+
+					if( dndOpts.dragImage ) {
+						// Let caller set a custom drag image using dataTransfer.setDragImage()
+						// and/or modify visual feedback otherwise.
+						dndOpts.dragImage(node, data);
+
+					} else {
+						// Set the title as drag image (otherwise it would contain the expander)
+						$dragImage = $(node.span).find(".fancytree-title");
+
+						if( SOURCE_NODE_LIST && SOURCE_NODE_LIST.length > 1 ) {
+							// Add a counter badge to node title if dragging more than one node.
+							// We want this, because the element that is used as drag image
+							// must be *visible* in the DOM, so we cannot create some hidden
+							// custom markup.
+							// See https://kryogenix.org/code/browser/custom-drag-image.html
+							// Also, since IE 11 and Edge don't support setDragImage() alltogether,
+							// it gives som feedback to the user.
+							// The badge will be removed later on drag end.
+							$extraHelper = $("<span class='fancytree-childcounter'/>")
+								.text("+" + (SOURCE_NODE_LIST.length - 1))
+								.appendTo($dragImage);
+						}
+						if( dataTransfer.setDragImage ) {
+							// IE 11 and Edge do not support this
+							dataTransfer.setDragImage( $dragImage[0], -10,  -10);
+						}
 					}
 					// Let user modify above settings
 					return dndOpts.dragStart(node, data) !== false;
@@ -427,12 +466,20 @@ $.ui.fancytree.registerExtension({
 					break;
 
 				case "dragend":
-					$(node.span).removeClass(classDragSource + " " + classDragRemove);
+					// $(node.span).removeClass(classDragSource + " " + classDragRemove);
+					$("." + classDragSource).removeClass(classDragSource);
+					$("." + classDragRemove).removeClass(classDragRemove);
 					SOURCE_NODE = null;
+					SOURCE_NODE_LIST = null;
 					DRAG_ENTER_RESPONSE = null;
 //					data.dropEffect = dataTransfer.dropEffect;
 					data.isCancelled = (dataTransfer.dropEffect === "none");
 					$dropMarker.hide();
+					// Take this badge off of me - I can't use it anymore:
+					if( $extraHelper ) {
+						$extraHelper.remove();
+						$extraHelper = null;
+					}
 					dndOpts.dragEnd(node, data);
 					break;
 				}
@@ -454,6 +501,7 @@ $.ui.fancytree.registerExtension({
 						originalEvent: event,
 						dataTransfer: dataTransfer,
 						otherNode: SOURCE_NODE || null,
+						otherNodeList: SOURCE_NODE_LIST || null,
 						otherNodeData: null,    // set by drop event
 						dropEffect: undefined,  // set by drop event
 						isCancelled: undefined  // set by drop event
