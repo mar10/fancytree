@@ -134,7 +134,8 @@
 		],
 		"linebreak-style": [
 //      "error",
-			"warn",
+//			"warn",
+      "off",  // accept git autoconvert on windows
 			"unix"
 		],
 		"no-with": "error",
