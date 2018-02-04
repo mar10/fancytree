@@ -1,6 +1,7 @@
 # 2.27.1-0 / Unreleased
   * #819: ext-filter: Handle nodes without title
   * Re-rename clearData() to clearPersistData()
+  * [Added] ext-dnd5 support for dragging multiple selected nodes.
 
 # 2.27.0 / 2017-12-16
   * **BREAKING CHANGES:**
