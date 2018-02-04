@@ -48,6 +48,7 @@
  * Private functions and variables
  */
 var FT = $.ui.fancytree,
+	isMac = /Mac/.test(navigator.platform),
 	classDragSource = "fancytree-drag-source",
 	classDragRemove = "fancytree-drag-remove",
 	classDropAccept = "fancytree-drop-accept",
@@ -60,6 +61,7 @@ var FT = $.ui.fancytree,
 	$dropMarker = null,
 	SOURCE_NODE = null,
 	SOURCE_NODE_LIST = null,
+	$sourceList = null,
 	DRAG_ENTER_RESPONSE = null,
 	LAST_HIT_MODE = null;
 
@@ -171,7 +173,6 @@ function handleDragOver(event, data) {
 		targetNode = data.node,
 		sourceNode = data.otherNode,
 		markerAt = "center",
-		// $source = sourceNode ? $(sourceNode.span) : null,
 		$target = $(targetNode.span),
 		$targetTitle = $target.find("span.fancytree-title");
 
@@ -255,9 +256,7 @@ function handleDragOver(event, data) {
 		$dropMarker.hide();
 		// console.log("hide dropmarker")
 	}
-	// if( $source ){
-	// 	$source.toggleClass(classDragRemove, isMove);
-	// }
+
 	$(targetNode.span)
 		.toggleClass(classDropTarget, hitMode === "after" || hitMode === "before" || hitMode === "over")
 		.toggleClass(classDropAfter, hitMode === "after")
@@ -266,6 +265,47 @@ function handleDragOver(event, data) {
 		.toggleClass(classDropReject, hitMode === false);
 
 	return hitMode;
+}
+
+/* Guess dropEffect from modifier keys.
+ * Safari:
+ *     It seems that `dataTransfer.dropEffect` can only be set on dragStart, and will remain
+ *     even if the cursor changes when [Alt] or [Ctrl] are pressed (?)
+ * Using rules suggested here:
+ *     https://ux.stackexchange.com/a/83769
+ * @returns
+ *     'copy', 'link', 'move', or 'none'
+ */
+function getDropEffect(event, data) {
+	var dndOpts = data.options.dnd5,
+		res = dndOpts.dropEffectDefault
+		// dataTransfer = event.dataTransfer || event.originalEvent.dataTransfer,
+		;
+
+	// Use callback if any:
+	if( dndOpts.dropEffect ) {
+		return dndOpts.dropEffect(event, data);
+	}
+
+	if( isMac ) {
+		if( event.metaKey && event.altKey ) {  // Mac: [Control] + [Option]
+			return "link";
+		} else if( event.metaKey ) {  // Mac: [Command]
+			return "move";
+		} else if( event.altKey ) {  // Mac: [Option]
+			return "copy";
+		}
+	} else {
+		if( event.ctrlKey ) {  // Windows: [Ctrl]
+			return "copy";
+		} else if( event.shiftKey ) {  // Windows: [Shift]
+			return "move";
+		} else if( event.altKey ) {  // Windows: [Alt]
+			return "link";
+		}
+	}
+	data.tree.debug("getDropEffect: " + res);
+	return res;
 }
 
 /* *****************************************************************************
@@ -282,6 +322,8 @@ $.ui.fancytree.registerExtension({
 		dropMarkerOffsetX: -24,		 // Absolute position offset for .fancytree-drop-marker relatively to ..fancytree-title (icon/img near a node accepting drop)
 		multiSource: false,		     // true: Drag multiple (i.e. selected) nodes.
 		dragImage: null,		     // Callback(node, data) that can be used to call dataTransfer.setDragImage().
+		dropEffect: null,		     // Callback(node, data) that returns 'copy', 'link', 'move', or 'none'.
+		dropEffectDefault: "move",	 // Default dropEffect ('copy', 'link', or 'move').
 		preventForeignNodes: false,  // Prevent dropping nodes from different Fancytrees
 		preventNonNodes: false,      // Prevent dropping items other than Fancytree nodes
 		preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
@@ -359,8 +401,6 @@ $.ui.fancytree.registerExtension({
 				var json,
 					node = getNode(event),
 					dataTransfer = event.dataTransfer || event.originalEvent.dataTransfer,
-					isMove = dataTransfer.dropEffect === "move",
-					$source = node ? $(node.span) : null,
 					data = {
 						node: node,
 						tree: tree,
@@ -369,8 +409,11 @@ $.ui.fancytree.registerExtension({
 						dataTransfer: dataTransfer,
 //						dropEffect: undefined,  // set by dragend
 						isCancelled: undefined  // set by dragend
-					};
+					},
+					dropEffect = getDropEffect(event, data),
+					isMove = dropEffect === "move";
 
+				// console.log(event.type, "dropEffect: " + dropEffect);
 				switch( event.type ) {
 
 				case "dragstart":
@@ -388,10 +431,13 @@ $.ui.fancytree.registerExtension({
 					} else {
 						SOURCE_NODE_LIST = dndOpts.multiSource(node, data);
 					}
+					// Cache as array of jQuery objects for faster access:
+					$sourceList = $($.map(SOURCE_NODE_LIST, function(n){
+						return n.span;
+					}));
 					// Set visual feedback
-					$.each(SOURCE_NODE_LIST, function(idx, n){
-						$(n.span).addClass(classDragSource);
-					});
+					$sourceList.addClass(classDragSource);
+
 					// Set payload
 					// Note:
 					// Transfer data is only accessible on dragstart and drop!
@@ -425,7 +471,7 @@ $.ui.fancytree.registerExtension({
 
 					// Set the allowed and current drag mode (move, copy, or link)
 					dataTransfer.effectAllowed = "all";  // "copyMove"
-					// dataTransfer.dropEffect = "move";
+					// dropEffect = "move";
 
 					$extraHelper = null;
 
@@ -461,19 +507,18 @@ $.ui.fancytree.registerExtension({
 
 				case "drag":
 					// Called every few miliseconds
-					$source.toggleClass(classDragRemove, isMove);
+					$sourceList.toggleClass(classDragRemove, isMove);
 					dndOpts.dragDrag(node, data);
 					break;
 
 				case "dragend":
-					// $(node.span).removeClass(classDragSource + " " + classDragRemove);
-					$("." + classDragSource).removeClass(classDragSource);
-					$("." + classDragRemove).removeClass(classDragRemove);
+					$sourceList.removeClass(classDragSource + " " + classDragRemove);
 					SOURCE_NODE = null;
 					SOURCE_NODE_LIST = null;
 					DRAG_ENTER_RESPONSE = null;
-//					data.dropEffect = dataTransfer.dropEffect;
-					data.isCancelled = (dataTransfer.dropEffect === "none");
+					$sourceList = null;
+//					data.dropEffect = dropEffect;
+					data.isCancelled = (dropEffect === "none");
 					$dropMarker.hide();
 					// Take this badge off of me - I can't use it anymore:
 					if( $extraHelper ) {
@@ -493,6 +538,7 @@ $.ui.fancytree.registerExtension({
 					allowDrop = null,
 					node = getNode(event),
 					dataTransfer = event.dataTransfer || event.originalEvent.dataTransfer,
+					// dropEffect = getDropEffect(dataTransfer, opts),
 					data = {
 						node: node,
 						tree: tree,
@@ -566,6 +612,7 @@ $.ui.fancytree.registerExtension({
 					// The dragover event is fired when an element or text
 					// selection is being dragged over a valid drop target
 					// (every few hundred milliseconds).
+					// console.log(event.type, "dropEffect: " + dataTransfer.dropEffect)
 					LAST_HIT_MODE = handleDragOver(event, data);
 					allowDrop = !!LAST_HIT_MODE;
 					break;

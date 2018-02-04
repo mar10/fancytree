@@ -5,11 +5,14 @@
 	<title>Test D'n'D - Fancytree</title>
 
 	<script src="../lib/jquery.js"></script>
+<!--
 	<script src="../lib/jquery-ui.custom.js"></script>
-	<!-- <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
-	<script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script> -->
+	<script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+	<script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+-->
 
 	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet">
+	<script src="../src/jquery-ui-dependencies/jquery.fancytree.ui-deps.js"></script>
 	<script src="../src/jquery.fancytree.js"></script>
 	<script src="../src/jquery.fancytree.dnd5.js"></script>
 
@@ -21,14 +24,13 @@
 	<!-- End_Exclude -->
 
 <style type="text/css">
-/*
-	.draggable,
-	.droppable {
-		border: 1px solid green;
-		padding: 3px;
-		background-color: silver;
+	.fancytree-drag-source {
+		font-style: oblique;
 	}
-*/
+	.fancytree-drag-source.fancytree-drag-remove {
+		opacity: 0.5;
+	}
+
 	/* Prevent scrolling while DND */
 	ul.fancytree-container {
 /*
@@ -82,12 +84,24 @@
 				// refreshPositions: true,
 				dragStart: function(node, data) {
 					// allow dragging `node`:
+					data.dataTransfer.dropEffect = "move";
 					return true;
 				},
+				// dragDrag: function(node, data) {
+				// 	data.node.info("dragDrag", data);
+				// 	data.dataTransfer.dropEffect = "copy";
+				// 	return true;
+				// },
 				dragEnter: function(node, data) {
 					data.node.info("dragEnter", data);
+					data.dataTransfer.dropEffect = "link";
 					return true;
 				},
+				// dragOver: function(node, data) {
+				// 	data.node.info("dragOver", data);
+				// 	data.dataTransfer.dropEffect = "link";
+				// 	return true;
+				// },
 				dragEnd: function(node, data) {
 					data.node.info("dragEnd", data);
 				},
