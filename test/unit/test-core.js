@@ -6,6 +6,7 @@ jQuery(document).ready(function(){
 
 var TEST_DATA, TESTDATA_NODES, TESTDATA_TOPNODES, TESTDATA_VISIBLENODES,
 	$ = jQuery,
+	DEBUG_LEVEL = 1,
 	// Use tools from test-tools.js
 	tools = TEST_TOOLS;
 
@@ -58,7 +59,7 @@ tools.initQUnit();
 tools.createInfoSection();
 
 // Silence, please
-$.ui.fancytree.debugLevel = 1;
+$.ui.fancytree.debugLevel = DEBUG_LEVEL;
 
 
 /*******************************************************************************
@@ -82,7 +83,7 @@ QUnit.test("Static members", function(assert) {
 
 QUnit.test("Create Fancytree", function(assert) {
 	tools.setup(assert);
-	assert.expect(13);
+	assert.expect(14);
 
 	var tree, widget,
 		insideConstructor = true;
@@ -94,6 +95,7 @@ QUnit.test("Create Fancytree", function(assert) {
 			assert.ok(insideConstructor, "running synchronously");
 			widget = $("div#tree").data("ui-fancytree") || $("div#tree").data("fancytree");
 			tree = widget.tree;
+			assert.equal(tree.options.debugLevel, DEBUG_LEVEL, "Inherit global debugLevel");
 		}
 	});
 	insideConstructor = false;
@@ -1539,7 +1541,7 @@ QUnit.test("loadKeyPath (lazy, custom matcher)", function(assert) {
 
 QUnit.test("loadKeyPath (multiple lazy nodes with expand; issue #576)", function(assert) {
 	tools.setup(assert);
-	assert.expect(4);
+	assert.expect(6);
 
 	var done = assert.async();
 /*
@@ -1577,20 +1579,27 @@ https://github.com/mar10/fancytree/issues/576
 					"/30/30_2/30_2_2/30_2_2_2/30_2_2_2_2"];
 
 	tree.loadKeyPath(pathList, function(node, status){
-		tools.appendEvent(assert, status + " #" + (node.key ? node.key : node));
 		if(/*status === "loaded" ||*/ status === "ok"){
+			tools.appendEvent(assert, status + " #" + (node.key ? node.key : node));
 			node.makeVisible();
 			node.setSelected();
 		}
 	}).done(function(data){
 		tools.appendEvent(assert, "done 1.");
 
+		assert.ok($.inArray("ok #30_1_2_3_4", assert.EVENT_SEQUENCE) >= 0, "node 1 was loaded");
+		assert.ok($.inArray("ok #30_2_2_2_2", assert.EVENT_SEQUENCE) >= 0, "node 2 was loaded");
+		// assert.deepEqual(assert.EVENT_SEQUENCE,
+		// 		["ok #30_1_2_3_4",
+		// 		 "ok #30_2_2_2_2",
+		// 		 "done 1."], "event sequence");
+
 		pathList = ["/30/30_2/30_2_2/30_2_2_3/30_2_2_3_1",
 					"/30/30_3/30_3_3/30_3_3_4/30_3_3_4_1"];
 
 		tree.loadKeyPath(pathList, function(node, status){
-			tools.appendEvent(assert, status + " #" + (node.key ? node.key : node));
 			if(/*status === "loaded" || */status === "ok"){
+				tools.appendEvent(assert, status + " #" + (node.key ? node.key : node));
 				node.makeVisible();
 				node.setSelected();
 			}
@@ -1600,6 +1609,13 @@ https://github.com/mar10/fancytree/issues/576
 			assert.ok($.inArray("ok #30_2_2_2_2", assert.EVENT_SEQUENCE) >= 0, "node 2 was loaded");
 			assert.ok($.inArray("ok #30_2_2_3_1", assert.EVENT_SEQUENCE) >= 0, "node 3 was loaded");
 			assert.ok($.inArray("ok #30_3_3_4_1", assert.EVENT_SEQUENCE) >= 0, "node 4 was loaded");
+			// assert.deepEqual(assert.EVENT_SEQUENCE,
+			// 		["ok #30_1_2_3_4",
+			// 		 "ok #30_2_2_2_2",
+			// 		 "done 1.",
+			// 		 "ok #30_2_2_3_1",
+			// 		 "ok #30_3_3_4_1",
+			// 		 "done 2."], "event sequence");
 			done();
 		});
 	});

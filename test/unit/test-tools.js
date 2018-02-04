@@ -52,6 +52,30 @@ TOOLS.initQUnit = function() {
 		}
 	  });
 	});
+
+	// // Log something if test fails
+	// QUnit.testDone( function( details ) {
+	// 	if( !details.failed || !details.total || !window.console ) {
+	// 		return;
+	// 	}
+	// 	var result = {
+	// 		"Module name": details.module,
+	// 		"Test name": details.name,
+	// 		"Assertions": {
+	// 			"Total": details.total,
+	// 			"Passed": details.passed,
+	// 			"Failed": details.failed
+	// 		},
+	// 		"Skipped": details.skipped,
+	// 		"Todo": details.todo,
+	// 		"Runtime": details.runtime
+	// 		};
+	// 	window.console.error( JSON.stringify( result, null, 2 ) );
+	// });
+
+	// Timeout async tests after 30 seconds
+	QUnit.config.testTimeout = 30000;
+
 	// Silence, please
 	$.ui.fancytree.debugLevel = 1;
 };
@@ -384,9 +408,9 @@ function profileWrapper(fn, flag, opts){
 				if( opts.printTime ){
 					console.time(name);
 				}
-				start = new Date().getTime();
+				start = Date.now();
 				fn.apply(this, arguments);
-				elap = new Date().getTime() - start;
+				elap = Date.now() - start;
 
 				if(opts.printTime){
 					console.timeEnd(name);

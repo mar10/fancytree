@@ -73,7 +73,7 @@ var i, attr,
 	TREE_ATTRS = "columns types".split(" "),
 	// TREE_ATTR_MAP = {},
 	// Top-level FancytreeNode attributes, that can be set by dict
-	NODE_ATTRS = "checkbox expanded extraClasses folder icon iconTooltip key lazy radiogroup refKey selected statusNodeType title tooltip type unselectable unselectableIgnore unselectableStatus".split(" "),
+	NODE_ATTRS = "checkbox expanded extraClasses folder icon iconTooltip key lazy partsel radiogroup refKey selected statusNodeType title tooltip type unselectable unselectableIgnore unselectableStatus".split(" "),
 	NODE_ATTR_MAP = {},
 	// Mapping of lowercase -> real name (because HTML5 data-... attribute only supports lowercase)
 	NODE_ATTR_LOWERCASE_MAP = {},
@@ -120,6 +120,11 @@ function consoleApply(method, args){
 			fn(s);
 		}
 	}
+}
+
+/* support: IE8 Polyfil for Date.now() */
+if( !Date.now ) {
+	Date.now = function now() { return new Date().getTime(); };
 }
 
 /*Return true if x is a FancytreeNode.*/
@@ -653,12 +658,12 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		return n;
 	},
 	// TODO: deactivate()
-	/** Write to browser console if debugLevel >= 2 (prepending node info)
+	/** Write to browser console if debugLevel >= 4 (prepending node info)
 	 *
 	 * @param {*} msg string or object or array of such
 	 */
 	debug: function(msg){
-		if( this.tree.options.debugLevel >= 2 ) {
+		if( this.tree.options.debugLevel >= 4 ) {
 			Array.prototype.unshift.call(arguments, this.toString());
 			consoleApply("log", arguments);
 		}
@@ -677,6 +682,16 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	discardMarkup: function(includeSelf){
 		var fn = includeSelf ? "nodeRemoveMarkup" : "nodeRemoveChildMarkup";
 		this.tree._callHook(fn, this);
+	},
+	/** Write error to browser console if debugLevel >= 1 (prepending tree info)
+	*
+	* @param {*} msg string or object or array of such
+	*/
+	error: function(msg){
+		if( this.options.debugLevel >= 1 ) {
+			Array.prototype.unshift.call(arguments, this.toString());
+			consoleApply("error", arguments);
+		}
 	},
 	/**Find all nodes that match condition (excluding self).
 	 *
@@ -1052,12 +1067,12 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	hasFocus: function() {
 		return (this.tree.hasFocus() && this.tree.focusNode === this);
 	},
-	/** Write to browser console if debugLevel >= 1 (prepending node info)
+	/** Write to browser console if debugLevel >= 3 (prepending node info)
 	 *
 	 * @param {*} msg string or object or array of such
 	 */
 	info: function(msg){
-		if( this.tree.options.debugLevel >= 1 ) {
+		if( this.tree.options.debugLevel >= 3 ) {
 			Array.prototype.unshift.call(arguments, this.toString());
 			consoleApply("info", arguments);
 		}
@@ -2130,13 +2145,15 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		}
 		return true;
 	},
-	/** Write warning to browser console (prepending node info)
+	/** Write warning to browser console if debugLevel >= 2 (prepending node info)
 	 *
 	 * @param {*} msg string or object or array of such
 	 */
 	warn: function(msg){
-		Array.prototype.unshift.call(arguments, this.toString());
-		consoleApply("warn", arguments);
+		if( this.tree.options.debugLevel >= 2 ) {
+			Array.prototype.unshift.call(arguments, this.toString());
+			consoleApply("warn", arguments);
+ 		}
 	}
 };
 
@@ -2430,12 +2447,12 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	count: function() {
 		return this.rootNode.countChildren();
 	},
-	/** Write to browser console if debugLevel >= 2 (prepending tree name)
+	/** Write to browser console if debugLevel >= 4 (prepending tree name)
 	 *
 	 * @param {*} msg string or object or array of such
 	 */
 	debug: function(msg){
-		if( this.options.debugLevel >= 2 ) {
+		if( this.options.debugLevel >= 4 ) {
 			Array.prototype.unshift.call(arguments, this.toString());
 			consoleApply("log", arguments);
 		}
@@ -2464,14 +2481,6 @@ Fancytree.prototype = /** @lends Fancytree# */{
 			this.debug("enableUpdate(false)...");
 		}
 		return !flag; // return previous value
-	},
-	/** Write warning to browser console (prepending tree info)
-	 *
-	 * @param {*} msg string or object or array of such
-	 */
-	error: function(msg){
-		Array.prototype.unshift.call(arguments, this.toString());
-		consoleApply("error", arguments);
 	},
 	/**Find all nodes that matches condition.
 	 *
@@ -2703,11 +2712,11 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	hasFocus: function(){
 		return !!this._hasFocus;
 	},
-	/** Write to browser console if debugLevel >= 1 (prepending tree name)
+	/** Write to browser console if debugLevel >= 3 (prepending tree name)
 	 * @param {*} msg string or object or array of such
 	 */
 	info: function(msg){
-		if( this.options.debugLevel >= 1 ) {
+		if( this.options.debugLevel >= 3 ) {
 			Array.prototype.unshift.call(arguments, this.toString());
 			consoleApply("info", arguments);
 		}
@@ -3010,13 +3019,15 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	visit: function(fn) {
 		return this.rootNode.visit(fn, false);
 	},
-	/** Write warning to browser console (prepending tree info)
+	/** Write warning to browser console if debugLevel >= 2 (prepending tree info)
 	 *
 	 * @param {*} msg string or object or array of such
 	 */
 	warn: function(msg){
-		Array.prototype.unshift.call(arguments, this.toString());
-		consoleApply("warn", arguments);
+		if( this.options.debugLevel >= 2 ) {
+			Array.prototype.unshift.call(arguments, this.toString());
+			consoleApply("warn", arguments);
+		}
 	}
 };
 
@@ -3168,7 +3179,7 @@ $.extend(Fancytree.prototype,
 				!SPECIAL_KEYCODES[which] &&  // #659
 				!$target.is(":input:enabled") ) {
 			// Allow to search for longer streaks if typed in quickly
-			stamp = new Date().getTime();
+			stamp = Date.now();
 			if( stamp - tree.lastQuicksearchTime > 500 ) {
 				tree.lastQuicksearchTerm = "";
 			}
@@ -3241,7 +3252,7 @@ $.extend(Fancytree.prototype,
 		var ajax, delay, dfd,
 			tree = ctx.tree,
 			node = ctx.node,
-			requestId = new Date().getTime();
+			requestId = Date.now();
 
 		if($.isFunction(source)){
 			source = source.call(tree, {type: "source"}, ctx);
@@ -4679,7 +4690,7 @@ $.widget("ui.fancytree",
 		autoScroll: false,
 		checkbox: false,
 		clickFolderMode: 4,
-		debugLevel: null, // 0..2 (null: use global setting $.ui.fancytree.debugInfo)
+		debugLevel: null, // 0..4 (null: use global setting $.ui.fancytree.debugInfo)
 		disabled: false, // TODO: required anymore?
 		enableAspx: true,
 		escapeTitles: false,
@@ -4998,7 +5009,7 @@ $.extend($.ui.fancytree,
 	/** @type {string} */
 	buildType: "development", // Set to 'production' by 'grunt build'
 	/** @type {int} */
-	debugLevel: 2,            // Set to 1 by 'grunt build'
+	debugLevel: 4,            // Set to 3 by 'grunt build'
 							  // Used by $.ui.fancytree.debug() and as default for tree.options.debugLevel
 
 	_nextId: 1,
@@ -5061,18 +5072,18 @@ $.extend($.ui.fancytree,
 			}, timeout);
 		};
 	},
-	/** Write message to console if debugLevel >= 2
+	/** Write message to console if debugLevel >= 4
 	 * @param {string} msg
 	 */
 	debug: function(msg){
 		/*jshint expr:true */
-		($.ui.fancytree.debugLevel >= 2) && consoleApply("log", arguments);
+		($.ui.fancytree.debugLevel >= 4) && consoleApply("log", arguments);
 	},
-	/** Write error message to console.
+	/** Write error message to console if debugLevel >= 1.
 	 * @param {string} msg
 	 */
 	error: function(msg){
-		consoleApply("error", arguments);
+		($.ui.fancytree.debugLevel >= 1) && consoleApply("error", arguments);
 	},
 	/** Convert &lt;, &gt;, &amp;, &quot;, &#39;, &#x2F; to the equivalent entities.
 	 *
@@ -5325,12 +5336,12 @@ $.extend($.ui.fancytree,
 		}
 		return s.join("+");
 	},
-	/** Write message to console if debugLevel >= 1
+	/** Write message to console if debugLevel >= 3
 	 * @param {string} msg
 	 */
 	info: function(msg){
 		/*jshint expr:true */
-		($.ui.fancytree.debugLevel >= 1) && consoleApply("info", arguments);
+		($.ui.fancytree.debugLevel >= 3) && consoleApply("info", arguments);
 	},
 	/* @deprecated: use eventToString(event) instead.
 	 */
@@ -5493,11 +5504,11 @@ $.extend($.ui.fancytree,
 		e.innerHTML = s;
 		return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
 	},
-	/** Write warning message to console.
+	/** Write warning message to console if debugLevel >= 2.
 	 * @param {string} msg
 	 */
 	warn: function(msg){
-		consoleApply("warn", arguments);
+		($.ui.fancytree.debugLevel >= 2) && consoleApply("warn", arguments);
 	}
 });
 
