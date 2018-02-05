@@ -5,6 +5,7 @@
   * [Changed] #828 Re-scale debugLevel from 0:quiet to 4:verbose, allowing to suppress warnings
     and even errors.
   * [Fixed] #819: ext-filter: Handle nodes without title
+  * [Fixed] #835: ext-dnd5: Accept drop after drag
 
 # ext-fixed / Unreleased
     * [Added] New extension ext-fixed

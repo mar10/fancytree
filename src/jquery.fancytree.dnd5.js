@@ -65,6 +65,14 @@ var FT = $.ui.fancytree,
 	DRAG_ENTER_RESPONSE = null,
 	LAST_HIT_MODE = null;
 
+/* */
+function _clearGlobals() {
+	SOURCE_NODE = null;
+	SOURCE_NODE_LIST = null;
+	$sourceList = null;
+	DRAG_ENTER_RESPONSE = null;
+}
+
 /* Convert number to string and prepend +/-; return empty string for 0.*/
 function offsetString(n){
 	return n === 0 ? "" : (( n > 0 ) ? ("+" + n) : ("" + n));
@@ -204,16 +212,16 @@ function handleDragOver(event, data) {
 		// TODO: these are no-ops when moving nodes, but not in copy mode
 		if( dndOpts.preventVoidMoves ){
 			if(targetNode === sourceNode){
-				targetNode.debug("drop over source node prevented");
+				targetNode.debug("Drop over source node prevented.");
 				hitMode = null;
 			}else if(hitMode === "before" && sourceNode && targetNode === sourceNode.getNextSibling()){
-				targetNode.debug("drop after source node prevented");
+				targetNode.debug("Drop after source node prevented.");
 				hitMode = null;
 			}else if(hitMode === "after" && sourceNode && targetNode === sourceNode.getPrevSibling()){
-				targetNode.debug("drop before source node prevented");
+				targetNode.debug("Drop before source node prevented.");
 				hitMode = null;
 			}else if(hitMode === "over" && sourceNode && sourceNode.parent === targetNode && sourceNode.isLastSibling() ){
-				targetNode.debug("drop last child over own parent prevented");
+				targetNode.debug("Drop last child over own parent prevented.");
 				hitMode = null;
 			}
 		}
@@ -507,16 +515,14 @@ $.ui.fancytree.registerExtension({
 
 				case "drag":
 					// Called every few miliseconds
+					// data.tree.info("drag", SOURCE_NODE)
 					$sourceList.toggleClass(classDragRemove, isMove);
 					dndOpts.dragDrag(node, data);
 					break;
 
 				case "dragend":
 					$sourceList.removeClass(classDragSource + " " + classDragRemove);
-					SOURCE_NODE = null;
-					SOURCE_NODE_LIST = null;
-					DRAG_ENTER_RESPONSE = null;
-					$sourceList = null;
+					_clearGlobals();
 //					data.dropEffect = dropEffect;
 					data.isCancelled = (dropEffect === "none");
 					$dropMarker.hide();
@@ -571,11 +577,11 @@ $.ui.fancytree.registerExtension({
 						.removeClass(classDropAccept + " " + classDropReject);
 
 					if( dndOpts.preventNonNodes && !nodeData ) {
-						node.debug("Reject dropping a non-node");
+						node.debug("Reject dropping a non-node.");
 						DRAG_ENTER_RESPONSE = false;
 						break;
 					} else if( dndOpts.preventForeignNodes && (!SOURCE_NODE || SOURCE_NODE.tree !== node.tree ) ) {
-						node.debug("Reject dropping a foreign node");
+						node.debug("Reject dropping a foreign node.");
 						DRAG_ENTER_RESPONSE = false;
 						break;
 					}
@@ -598,6 +604,7 @@ $.ui.fancytree.registerExtension({
 
 					// Call dragEnter() to figure out if (and where) dropping is allowed
 					if( dndOpts.preventRecursiveMoves && node.isDescendantOf(data.otherNode) ){
+						node.debug("Reject dropping below own ancestor.");
 						res = false;
 					}else{
 						r = dndOpts.dragEnter(node, data);
@@ -675,6 +682,7 @@ $.ui.fancytree.registerExtension({
 
 					// Prevent browser's default drop handling
 					event.preventDefault();
+					_clearGlobals();
 					break;
 				}
 				// Dnd API madness: we must PREVENT default handling to enable dropping
