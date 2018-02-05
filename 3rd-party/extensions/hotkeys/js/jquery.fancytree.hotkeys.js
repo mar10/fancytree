@@ -4,7 +4,7 @@
  * Integrate the 'jQuery.Hotkeys' plugin as Fancytree extension:
  * https://github.com/jeresig/jquery.hotkeys/
  *
- * Copyright (c) 2008-2017, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  */

@@ -4,7 +4,7 @@
  * Drag-and-drop support (native HTML5).
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2017, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -304,7 +304,7 @@ function getDropEffect(event, data) {
 			return "link";
 		}
 	}
-	data.tree.debug("getDropEffect: " + res);
+	// data.tree.debug("getDropEffect: " + res);
 	return res;
 }
 
