@@ -4,7 +4,7 @@
  * Use glyph fonts as instead of icon sprites.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2017, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -83,6 +83,34 @@ var FT = $.ui.fancytree,
 			docOpen: "fa-file-o",
 			folder: "fa-folder-o",
 			folderOpen: "fa-folder-open-o"
+			},
+		"awesome5": {
+			// fontawesome 5 have several different base classes
+			// "far, fas, fal and fab" The rendered svg puts that prefix
+			// in a different location so we have to keep them separate here
+			_addClass: "",
+			checkbox: "far fa-square",
+			checkboxSelected: "far fa-check-square",
+			// checkboxUnknown: "far fa-window-close",
+			checkboxUnknown: "fas fa-square",
+			radio: "far fa-circle",
+			radioSelected: "fas fa-circle",
+			radioUnknown: "far fa-dot-circle",
+			dragHelper: "fas fa-arrow-right",
+			dropMarker: "fas fa-long-arrow-right",
+			error: "fas fa-exclamation-triangle",
+			expanderClosed: "fas fa-caret-right",
+			expanderLazy: "fas fa-angle-right",
+			expanderOpen: "fas fa-caret-down",
+			loading: "fas fa-spinner fa-pulse",
+			nodata: "far fa-meh",
+			noExpander: "",
+			// Default node icons.
+			// (Use tree.options.icon callback to define custom icons based on node data)
+			doc: "far fa-file",
+			docOpen: "far fa-file",
+			folder: "far fa-folder",
+			folderOpen: "far fa-folder-open"
 			},
 		"bootstrap3": {
 			_addClass: "glyphicon",

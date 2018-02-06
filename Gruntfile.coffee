@@ -317,7 +317,7 @@ module.exports = (grunt) ->
                 to : "buildType: \"production\""
             },{
                 from : /debugLevel:\s*[0-9]/g
-                to : "debugLevel: 1"
+                to : "debugLevel: 3"
             } ]
         release:
             src: ["dist/**/*.js"]
@@ -328,17 +328,33 @@ module.exports = (grunt) ->
             } ]
 
     "saucelabs-qunit":
+        options:
+            build: process.env.TRAVIS_JOB_ID
+            throttled: 5
+            recordVideo: false
+            videoUploadOnPass: false
+
+        # triage:
+        #     options:
+        #         testname: "Triage"
+        #         build: "triage"
+        #         urls: ["http://localhost:9999/test/unit/test-jQuery19-ui19.html"]
+        #         # urls: ["http://localhost:9999/test/unit/test-jQuery1x-mig-ui1x.html"]
+        #         # urls: ["http://localhost:9999/test/unit/test-core.html"]
+        #         browsers: [
+        #           # Issue #825
+        #           # { browserName: "chrome", version: "dev", platform: "Windows 10" }
+        #           # { browserName: "internet explorer", version: "9", platform: "Windows 7" }
+        #           { browserName: "internet explorer", version: "8", platform: "Windows 7" }
+        #         ]
         ui_112:
             options:
                 testname: "Fancytree qunit tests (jQuery 3, jQuery UI 1.12)"
                 urls: ["http://localhost:9999/test/unit/test-core.html"]
-                build: process.env.TRAVIS_JOB_ID
-                throttled: 5
-                recordVideo: false
-                videoUploadOnPass: false
                 # jQuery 3        supports IE 9+ and latest Chrome/Edge/Firefox/Safari (-1)
                 # jQuery UI 1.12  supports IE 11 and latest Chrome/Edge/Firefox/Safari (-1)
                 browsers: [
+                  # Issue #825
                   # { browserName: "chrome", version: "dev", platform: "Windows 10" }
                   { browserName: "chrome", version: "latest", platform: "Windows 10" }
                   { browserName: "chrome", version: "latest-1", platform: "Windows 10" }
@@ -351,16 +367,12 @@ module.exports = (grunt) ->
                   { browserName: "microsoftedge", version: "latest-1", platform: "Windows 10" }
                   { browserName: "safari", version: "9", platform: "OS X 10.11" }
                   { browserName: "safari", version: "10", platform: "OS X 10.12" }
-                  # { browserName: "safari", version: "11", platform: "OS X 10.12" }
+                  { browserName: "safari", version: "11", platform: "OS X 10.12" }
                 ]
         ui_111:
             options:
                 testname: "Fancytree qunit tests (jQuery 1.11, jQuery UI 1.11)"
                 urls: ["http://localhost:9999/test/unit/test-jQuery111-ui111.html"]
-                build: process.env.TRAVIS_JOB_ID
-                throttled: 5
-                recordVideo: false
-                videoUploadOnPass: false
                 # jQuery 1.11     supports IE + and latest Chrome/Edge/Firefox/Safari (-1)
                 # jQuery UI 1.11  supports IE 7+ and ?
                 browsers: [
@@ -372,10 +384,6 @@ module.exports = (grunt) ->
             options:
                 testname: "Fancytree qunit tests (jQuery 1.10, jQuery UI 1.10)"
                 urls: ["http://localhost:9999/test/unit/test-jQuery110-ui110.html"]
-                build: process.env.TRAVIS_JOB_ID
-                throttled: 5
-                recordVideo: false
-                videoUploadOnPass: false
                 # jQuery 1.10    dropped support for IE 6
                 # jQuery UI 1.10 supports IE 7+ and ?
                 browsers: [
@@ -385,10 +393,6 @@ module.exports = (grunt) ->
             options:
                 testname: "Fancytree qunit tests (jQuery 1.9, jQuery UI 1.9)"
                 urls: ["http://localhost:9999/test/unit/test-jQuery19-ui19.html"]
-                build: process.env.TRAVIS_JOB_ID
-                throttled: 5
-                recordVideo: false
-                videoUploadOnPass: false
                 # jQuery 1.9     dropped supports IE 6..?
                 # jQuery UI 1.9  supports IE 6+ and ?
                 browsers: [
@@ -491,6 +495,8 @@ module.exports = (grunt) ->
   ]
 
   grunt.registerTask "sauce", ["connect:sauce", "saucelabs-qunit"]
+  grunt.registerTask "sauce-triage", ["connect:sauce", "saucelabs-qunit:triage"]
+
   if parseInt(process.env.TRAVIS_PULL_REQUEST, 10) > 0
       # saucelab keys do not work on forks
       # http://support.saucelabs.com/entries/25614798

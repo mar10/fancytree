@@ -4,7 +4,7 @@
  * Integrate the 'jQuery contextMenu' plugin as Fancytree extension:
  * https://github.com/swisnl/jQuery-contextMenu
  *
- * Copyright (c) 2008-2017, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  */

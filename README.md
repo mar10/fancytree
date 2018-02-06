@@ -3,9 +3,10 @@
 [![Build Status](https://travis-ci.org/mar10/fancytree.svg?branch=master)](https://travis-ci.org/mar10/fancytree)
 [![Selenium Test Status](https://saucelabs.com/buildstatus/sauce-fancytree)](https://saucelabs.com/u/sauce-fancytree)
 [![npm](https://img.shields.io/npm/dm/jquery.fancytree.svg)](https://www.npmjs.com/package/jquery.fancytree)
+[![jsDelivr](https://data.jsdelivr.com/v1/package/npm/jquery.fancytree/badge)](https://www.jsdelivr.com/package/npm/jquery.fancytree)
 
 Fancytree (sequel of [DynaTree 1.x](https://code.google.com/p/dynatree/)) is a
-jQuery tree view / tree grid plugin with support for keyboard, inline editing,
+JavaScript tree view / tree grid plugin with support for keyboard, inline editing,
 filtering, checkboxes, drag'n'drop, and lazy loading.
 
 [ ![sample](doc/teaser2.png?raw=true) ](http://wwwendt.de/tech/fancytree/demo "Live demo")

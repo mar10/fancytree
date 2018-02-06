@@ -206,6 +206,16 @@ span.fancytree-node.fancytree-error span.fancytree-title {
 /*------------------------------------------------------------------------------
  * Drag'n'drop support
  *----------------------------------------------------------------------------*/
+/* ext-dnd5: */
+span.fancytree-childcounter {
+  color: #fff;
+  background: #337ab7;
+  border: 1px solid gray;
+  border-radius: 10px;
+  padding: 2px;
+  text-align: center;
+}
+/* ext-dnd: */
 div.fancytree-drag-helper span.fancytree-childcounter,
 div.fancytree-drag-helper span.fancytree-dnd-modifier {
   display: inline-block;

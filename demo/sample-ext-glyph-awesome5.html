@@ -2,29 +2,30 @@
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8">
-	<title>Fancytree - Example: Font Awesome 3</title>
+	<title>Fancytree - Example: Font Awesome 5</title>
 
 	<script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
 	<script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 
-	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
+	<!-- <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script> -->
+	<link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
 
 	<link href="../src/skin-awesome/ui.fancytree.css" rel="stylesheet" class="skinswitcher">
 	<script src="../src/jquery.fancytree.js"></script>
 	<script src="../src/jquery.fancytree.glyph.js"></script>
 
-	<!-- Start_Exclude: This block is not part of the sample code -->
+<!-- Start_Exclude: This block is not part of the sample code -->
 	<link href="../lib/prettify.css" rel="stylesheet">
 	<script src="../lib/prettify.js"></script>
 	<link href="../demo/sample.css" rel="stylesheet">
 	<script src="../demo/sample.js"></script>
 
 <style type="text/css">
-ul.fancytree-container {
-	/*font-size: 2em;*/
-}
+	ul.fancytree-container {
+		/*font-size: 2em;*/
+	}
 </style>
-	<!-- End_Exclude -->
+<!-- End_Exclude -->
 
 
 	<!-- Add code to initialize the tree when the document is loaded: -->
@@ -36,11 +37,11 @@ ul.fancytree-container {
 			checkbox: true,
 			selectMode: 3,
 			glyph: {
-				preset: "awesome3",
+				preset: "awesome5",
 				map: {}
 			},
-//			source: {url: "ajax-tree-plain.json", debugDelay: 1000},
-			source: {url: "ajax-tree-taxonomy.json", debugDelay: 1000},
+			source: {url: "ajax-tree-products.json", debugDelay: 1000},
+			// source: {url: "ajax-tree-taxonomy.json", debugDelay: 1000},
 			lazyLoad: function(event, ctx) {
 				ctx.result = {url: "ajax-sub2.json", debugDelay: 1000};
 			}
@@ -87,23 +88,19 @@ $(function(){
 </head>
 
 <body class="example">
-	<h1>Example: 'glyph' extension with awesome theme</h1>
+	<h1>Example: 'glyph' extension with font-awesome theme</h1>
 	<div class="description">
 		<p>
-			The 'glyph' extension adds <code>icon-...</code> classes to the
+			The 'glyph' extension adds <code>fa-...</code> classes to the
 			node's <code>span</code> tags, so scalable vector icons as provided by
-			<a href="http://fortawesome.github.io/Font-Awesome/" class="external" target="_blank">Font Awesome</a>
-			can be used.
-		</p>
-		<p>
-			<b>Status</b>: pre-alpha
+			<a href="http://fontawesome.io/" class="external" target="_blank">Font Awesome</a>
+			can be used.<br>
+			See also
+			<a href="https://github.com/mar10/fancytree/wiki/ExtGlyph"
+				class="external" target="_blank">ext-glyph</a>.
 		</p>
 	</div>
-<!--
-	<div>
-		<label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
-	</div>
--->
+
 	<hr>
 	Font size: <span id="curSize"></span>
 	<div id="fontSlider"></div>
@@ -111,7 +108,7 @@ $(function(){
 	<div id="tree">
 	</div>
 
-	<!-- Start_Exclude: This block is not part of the sample code -->
+<!-- Start_Exclude: This block is not part of the sample code -->
 	<p id="sampleButtons">
 	</p>
 	<hr>
@@ -122,6 +119,6 @@ $(function(){
 		<a href="#" id="codeExample">View source code</a>
 	</p>
 	<pre id="sourceCode" class="prettyprint" style="display:none"></pre>
-	<!-- End_Exclude -->
+<!-- End_Exclude -->
 </body>
 </html>
