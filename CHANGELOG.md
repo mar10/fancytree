@@ -1,14 +1,12 @@
 # 2.28.0-0 / Unreleased
   * [Added] ext-dnd5 support for dragging multiple selected nodes.
   * [Added] #830 support for Font Awesome 5 (ext-glyph preset)
+  * [Added] New extension ext-fixed (experimental)
   * [Changed] Re-rename clearData() to clearPersistData()
   * [Changed] #828 Re-scale debugLevel from 0:quiet to 4:verbose, allowing to suppress warnings
     and even errors.
   * [Fixed] #819: ext-filter: Handle nodes without title
-  * [Fixed] #835: ext-dnd5: Accept drop after drag
-
-# ext-fixed / Unreleased
-    * [Added] New extension ext-fixed
+  * [Fixed] #835: ext-dnd5: Accept drop externals after drag
 
 # 2.27.0 / 2017-12-16
   * **BREAKING CHANGES:**
