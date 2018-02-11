@@ -4,7 +4,7 @@
  * Allow multiple selection of nodes  by mouse or keyboard.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2017, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -35,32 +35,7 @@
  * Private functions and variables
  */
 
-var isMac = /Mac/.test(navigator.platform),
-	escapeHtml = $.ui.fancytree.escapeHtml,
-	unescapeHtml = $.ui.fancytree.unescapeHtml;
-
-
-/**
- * [ext-edit] Check if any node in this tree  in edit mode.
- *
- * @returns {FancytreeNode | null}
- * @alias Fancytree#isEditing
- * @requires jquery.fancytree.edit.js
- */
-$.ui.fancytree._FancytreeClass.prototype.isEditing = function(){
-	return this.ext.edit ? this.ext.edit.currentNode : null;
-};
-
-
-/**
- * [ext-edit] Check if this node is in edit mode.
- * @returns {Boolean} true if node is currently beeing edited
- * @alias FancytreeNode#isEditing
- * @requires jquery.fancytree.edit.js
- */
-$.ui.fancytree._FancytreeNodeClass.prototype.isEditing = function(){
-	return this.tree.ext.edit ? this.tree.ext.edit.currentNode === this : false;
-};
+// var isMac = /Mac/.test(navigator.platform);
 
 
 /*******************************************************************************
@@ -76,44 +51,64 @@ $.ui.fancytree.registerExtension({
 		// Events:
 		// beforeSelect: $.noop  // Return false to prevent cancel/save (data.input is available)
 	},
-	// Local attributes
-	currentNode: null,
 
 	treeInit: function(ctx){
 		this._superApply(arguments);
 		this.$container.addClass("fancytree-ext-multi");
 	},
 	nodeClick: function(ctx) {
-		if( $.inArray("shift+click", ctx.options.edit.triggerStart) >= 0 ){
-			if( ctx.originalEvent.shiftKey ){
-				ctx.node.editStart();
-				return false;
+		var //pluginOpts = ctx.options.multi,
+			tree = ctx.tree,
+			node = ctx.node,
+			activeNode = tree.getActiveNode(),
+			isCbClick = ctx.targetType === "checkbox",
+			isExpanderClick = ctx.targetType === "expander",
+			eventStr = $.ui.fancytree.eventToString(ctx.originalEvent);
+
+		switch( eventStr ) {
+		case "click":
+			if( isExpanderClick ) { break; }  // Default handler will expand/collapse
+			if( !isCbClick ) {
+				tree.selectAll(false);
+				// Select clicked node (radio-button  mode)
+				node.setSelected();
 			}
-		}
-		if( $.inArray("clickActive", ctx.options.edit.triggerStart) >= 0 ){
-			// Only when click was inside title text (not aynwhere else in the row)
-			if( ctx.node.isActive() && !ctx.node.isEditing() &&
-				$(ctx.originalEvent.target).hasClass("fancytree-title")
-			){
-				ctx.node.editStart();
-				return false;
-			}
+			// Default handler will toggle checkbox clicks and activate
+			break;
+		case "shift+click":
+			// node.debug("click")
+			tree.visitRows(function(n){
+				// n.debug("click2", n===node, node)
+				n.setSelected();
+				if( n === node ) { return false; }
+			}, {
+				start: activeNode,
+				reverse: activeNode.isBelowOf(node)
+			});
+			break;
+		case "ctrl+click":
+		case "meta+click":  // Mac: [Command]
+			node.toggleSelected();
+			return;
 		}
 		return this._superApply(arguments);
 	},
 	nodeKeydown: function(ctx) {
-		switch( ctx.originalEvent.which ) {
-		case 113: // [F2]
-			if( $.inArray("f2", ctx.options.edit.triggerStart) >= 0 ){
-				ctx.node.editStart();
-				return false;
-			}
+		var tree = ctx.tree,
+			node = ctx.node,
+			eventStr = $.ui.fancytree.eventToString(ctx.originalEvent);
+
+		switch( eventStr ) {
+		case "up":
+		case "down":
+			tree.selectAll(false);
+			node.navigate(event.which, true);
+			tree.getActiveNode().setSelected();
 			break;
-		case $.ui.keyCode.ENTER:
-			if( $.inArray("mac+enter", ctx.options.edit.triggerStart) >= 0 && isMac ){
-				ctx.node.editStart();
-				return false;
-			}
+		case "shift+up":
+		case "shift+down":
+			node.navigate(event.which, true);
+			tree.getActiveNode().setSelected();
 			break;
 		}
 		return this._superApply(arguments);

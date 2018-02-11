@@ -15,6 +15,7 @@
 	<script src="../src/jquery-ui-dependencies/jquery.fancytree.ui-deps.js"></script>
 	<script src="../src/jquery.fancytree.js"></script>
 	<script src="../src/jquery.fancytree.dnd5.js"></script>
+	<script src="../src/jquery.fancytree.multi.js"></script>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
 	<link href="../lib/prettify.css" rel="stylesheet">
@@ -43,28 +44,10 @@
 
 <script type="text/javascript">
 	$(function(){
-		var $dragImage,
-			count = 1;
-
-		/*
-		TODO: option 'preventTextSelect'?
-			Already implemented, but doesn't always work:
-				}).on("selectstart" + ns, "span.fancytree-title", function(event){
-					// prevent mouse-drags to select text ranges
-					// tree.debug("<span title> got event " + event.type);
-					event.preventDefault();
-		TODO: disable auto-scroll by default:
-		  seems to have problems to calculate helper position,
-		  --> see here http://api.jqueryui.com/draggable/#event-drag
-			  for a possible fix?
-		  and enabling scrolling would always require custom changes, like
-		  setting the container height?
-		TODO: Revert always flies to top-left corner of container
-		*/
 		// Attach the fancytree widget to an existing <div id="tree"> element
 		// and pass the tree options as an argument to the fancytree() function:
 		$("#tree").fancytree({
-			extensions: ["dnd5"],
+			extensions: ["dnd5", "multi"],
 			checkbox: true,
 //			debugLevel: 1,
 			source: {
