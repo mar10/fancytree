@@ -19,12 +19,6 @@
 	<!-- End_Exclude -->
 
 <style type="text/css">
-	span.pending span.fancytree-title {
-		font-style: italic;
-	}
-	span.pending span.fancytree-title:after {
-		content: "\2026"; /* ellipsis */
-	}
 </style>
 
 <script type="text/javascript">
@@ -33,15 +27,19 @@ $(function(){
 		extensions: ["multi"],
 		source: {url: "ajax-tree-products.json"},
 		checkbox: true,
+		unselectable: function(event, data) {
+			return data.node.isFolder();
+		},
 		multi: {
+			mode: "sameParent",
+		},
+		activate: function(event, data) {
+			$("#lblActive").text("" + data.node);
 		},
 		lazyLoad: function(event, data) {
 			data.result = { url: "ajax-sub2.json", debugDelay: 1000 };
 		},
 		init: function(event, data) {
-			// data.tree.visitRows(function(n){
-			// 	n.debug();
-			// }, {includeHidden: true});
 		},
 	});
 });
@@ -61,6 +59,9 @@ $(function(){
 			}, {includeHidden: false, start: node, includeSelf: true});
 
 		}
+	});
+	$("#cbCheckboxes").on("change", function(){
+		$("#tree").fancytree("option", "checkbox", $(this).is(":checked"));
 	});
 });
 </script>
@@ -88,9 +89,20 @@ $(function(){
 	<div>
 		<label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
 	</div>
+	<div>
+		<label for="lbMode">Mode:</label>
+		<select id="lbMode">
+			<option value="">Unrestricted</option>
+			<option value="sameParent">Same parent</option>
+			<option value="sameLevel">Same level</option>
+		</select>
+		<input id="cbCheckboxes" type="checkbox" checked>
+		<label for="cbCheckboxes">Show checkboxes</label>
+	</div>
 
 	<div id="tree">
 	</div>
+	<p>Active: <span id="lblActive">-</span></p>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
 	<p id="sampleButtons">

@@ -2030,7 +2030,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	triggerModify: function(operation, extra){
 		this.parent.triggerModifyChild(operation, this, extra);
 	},
-	/** Call fn(node) for all child nodes.<br>
+	/** Call fn(node) for all child nodes in hierarchical order (depth-first).<br>
 	 * Stop iteration, if fn() returns false. Skip current branch, if fn() returns "skip".<br>
 	 * Return false if iteration was stopped.
 	 *
@@ -3027,7 +3027,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 		}
 		return res;
 	},
-	/** Call fn(node) for all nodes.
+	/** Call fn(node) for all nodes in hierarchical order (depth-first).
 	 *
 	 * @param {function} fn the callback function.
 	 *     Return false to stop iteration, return "skip" to skip this node and children only.
@@ -3036,7 +3036,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	visit: function(fn) {
 		return this.rootNode.visit(fn, false);
 	},
-	/** Call fn(node) for all nodes in vertical order, top down.<br>
+	/** Call fn(node) for all nodes in vertical order, top down (or bottom up).<br>
 	 * Stop iteration, if fn() returns false.<br>
 	 * Return false if iteration was stopped.
 	 *
@@ -3100,7 +3100,37 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	/* Call fn(node) for all nodes in vertical order, bottom up.
 	 */
 	_visitRowsUp: function(fn, opts) {
-		$.error("Not yet implemented");
+		var children, idx, parent,
+			includeHidden = !!opts.includeHidden,
+			node = opts.start || this.rootNode.children[0];
+
+		while( true ) {
+			parent = node.parent;
+			children = parent.children;
+
+			if( children[0] === node ) {
+				// If this is already the first sibling, goto parent
+				node = parent;
+				children = parent.children;
+			} else {
+				// Otherwise, goto prev. sibling
+				idx = children.indexOf(node);
+				node = children[idx-1];
+				// If the prev. sibling has children, follow down to last descendant
+				while( (includeHidden || node.expanded) && node.children && node.children.length ) {
+					children = node.children;
+					parent = node;
+					node = children[children.length - 1];
+				}
+			}
+			// Skip invisible
+			if( !includeHidden && !$(node.span).is(":visible") ) {
+				continue;
+			}
+			if( fn(node) === false ) {
+				return false;
+			}
+		}
 	},
 	/** Write warning to browser console if debugLevel >= 2 (prepending tree info)
 	 *

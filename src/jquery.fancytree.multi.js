@@ -46,8 +46,8 @@ $.ui.fancytree.registerExtension({
 	version: "@VERSION",
 	// Default options for this extension.
 	options: {
-		singleParent: false,  // Prevent empty input
-		singleLevel: false,   // Prevent empty input
+		allowNoSelect: false,  //
+		mode: "sameParent",    //
 		// Events:
 		// beforeSelect: $.noop  // Return false to prevent cancel/save (data.input is available)
 	},
@@ -55,12 +55,15 @@ $.ui.fancytree.registerExtension({
 	treeInit: function(ctx){
 		this._superApply(arguments);
 		this.$container.addClass("fancytree-ext-multi");
+		if( ctx.options.selectMode === 1 ) {
+			$.error("Fancytree ext-multi: selectMode: 1 (single) is not compatible.");
+		}
 	},
 	nodeClick: function(ctx) {
 		var //pluginOpts = ctx.options.multi,
 			tree = ctx.tree,
 			node = ctx.node,
-			activeNode = tree.getActiveNode(),
+			activeNode = tree.getActiveNode() || tree.getFirstChild(),
 			isCbClick = ctx.targetType === "checkbox",
 			isExpanderClick = ctx.targetType === "expander",
 			eventStr = $.ui.fancytree.eventToString(ctx.originalEvent);
