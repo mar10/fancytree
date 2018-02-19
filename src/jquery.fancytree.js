@@ -1083,6 +1083,14 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	isActive: function() {
 		return (this.tree.activeNode === this);
 	},
+	/** Return true if node is vertically below `otherNode`, i.e. rendered in a subsequent row.
+	 * @param {FancytreeNode} otherNode
+	 * @returns {boolean}
+	 * @since 2.28
+	 */
+	isBelowOf: function(otherNode) {
+		return (this.getIndexHier(".", 5) > otherNode.getIndexHier(".", 5));
+	},
 	/** Return true if node is a direct child of otherNode.
 	 * @param {FancytreeNode} otherNode
 	 * @returns {boolean}
@@ -2022,7 +2030,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	triggerModify: function(operation, extra){
 		this.parent.triggerModifyChild(operation, this, extra);
 	},
-	/** Call fn(node) for all child nodes.<br>
+	/** Call fn(node) for all child nodes in hierarchical order (depth-first).<br>
 	 * Stop iteration, if fn() returns false. Skip current branch, if fn() returns "skip".<br>
 	 * Return false if iteration was stopped.
 	 *
@@ -2663,14 +2671,17 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	},
 	/**
 	 * Return node with a given key or null if not found.
+	 *
+	 * Not
 	 * @param {string} key
 	 * @param {FancytreeNode} [searchRoot] only search below this node
 	 * @returns {FancytreeNode | null}
 	 */
 	getNodeByKey: function(key, searchRoot) {
 		// Search the DOM by element ID (assuming this is faster than traversing all nodes).
-		// $("#...") has problems, if the key contains '.', so we use getElementById()
 		var el, match;
+		// TODO: use tree.keyMap if available
+		// TODO: check opts.generateIds === true
 		if(!searchRoot){
 			el = document.getElementById(this.options.idPrefix + key);
 			if( el ){
@@ -2678,15 +2689,12 @@ Fancytree.prototype = /** @lends Fancytree# */{
 			}
 		}
 		// Not found in the DOM, but still may be in an unrendered part of tree
-		// TODO: optimize with specialized loop
-		// TODO: consider keyMap?
 		searchRoot = searchRoot || this.rootNode;
 		match = null;
 		searchRoot.visit(function(node){
-//            window.console.log("getNodeByKey(" + key + "): ", node.key);
 			if(node.key === key) {
 				match = node;
-				return false;
+				return false;  // Stop iteration
 			}
 		}, true);
 		return match;
@@ -2960,6 +2968,15 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	render: function(force, deep) {
 		return this.rootNode.render(force, deep);
 	},
+	/**(De)select all nodes.
+	 * @param {boolean} [flag=true]
+	 * @since 2.28
+	 */
+	selectAll: function(flag) {
+		this.visit(function(node){
+			node.setSelected(flag);
+		});
+	},
 	// TODO: selectKey: function(key, select)
 	// TODO: serializeArray: function(stopOnParents)
 	/**
@@ -3010,7 +3027,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 		}
 		return res;
 	},
-	/** Call fn(node) for all nodes.
+	/** Call fn(node) for all nodes in hierarchical order (depth-first).
 	 *
 	 * @param {function} fn the callback function.
 	 *     Return false to stop iteration, return "skip" to skip this node and children only.
@@ -3018,6 +3035,102 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	 */
 	visit: function(fn) {
 		return this.rootNode.visit(fn, false);
+	},
+	/** Call fn(node) for all nodes in vertical order, top down (or bottom up).<br>
+	 * Stop iteration, if fn() returns false.<br>
+	 * Return false if iteration was stopped.
+	 *
+	 * @param {function} fn the callback function.
+	 *     Return false to stop iteration, return "skip" to skip this node and children only.
+	 * @param {object} [options]
+	 *     Defaults:
+	 *     {start: First top node, reverse: false, includeSelf: true, includeHidden: false}
+	 * @returns {boolean}
+	 * @since 2.28
+	 */
+	visitRows: function(fn, opts) {
+		if( opts && opts.reverse ) {
+			delete opts.reverse;
+			return this._visitRowsUp(fn, opts);
+		}
+		var i, nextIdx, parent, res, siblings,
+			siblingOfs = 0,
+			skipFirstNode = (opts.includeSelf === false),
+			includeHidden = !!opts.includeHidden,
+			node = opts.start || this.rootNode.children[0];
+
+		parent = node.parent;
+		while( parent ) {
+			// visit siblings
+			siblings = parent.children;
+			nextIdx = siblings.indexOf(node) + siblingOfs;
+
+			for( i=nextIdx; i<siblings.length; i++) {
+				node = siblings[i];
+				if( !skipFirstNode && fn(node) === false ) {
+					return false;
+				}
+				skipFirstNode = false;
+				// Dive into node's child nodes
+				if( node.children && node.children.length && (includeHidden || node.expanded) ) {
+					// Disable warning: Functions declared within loops referencing an outer
+					// scoped variable may lead to confusing semantics:
+					/*jshint -W083 */
+					res = node.visit(function(n) {
+						if( fn(n) === false ) {
+							return false;
+						}
+						if( !includeHidden && n.children && !n.expanded ) {
+							return "skip";
+						}
+					}, false);
+					/*jshint +W083 */
+					if( res === false ) {
+						return false;
+					}
+				}
+			}
+			// Visit parent nodes (bottom up)
+			node = parent;
+			parent = parent.parent;
+			siblingOfs = 1;  //
+		}
+		return true;
+	},
+	/* Call fn(node) for all nodes in vertical order, bottom up.
+	 */
+	_visitRowsUp: function(fn, opts) {
+		var children, idx, parent,
+			includeHidden = !!opts.includeHidden,
+			node = opts.start || this.rootNode.children[0];
+
+		while( true ) {
+			parent = node.parent;
+			children = parent.children;
+
+			if( children[0] === node ) {
+				// If this is already the first sibling, goto parent
+				node = parent;
+				children = parent.children;
+			} else {
+				// Otherwise, goto prev. sibling
+				idx = children.indexOf(node);
+				node = children[idx-1];
+				// If the prev. sibling has children, follow down to last descendant
+				while( (includeHidden || node.expanded) && node.children && node.children.length ) {
+					children = node.children;
+					parent = node;
+					node = children[children.length - 1];
+				}
+			}
+			// Skip invisible
+			if( !includeHidden && !$(node.span).is(":visible") ) {
+				continue;
+			}
+			if( fn(node) === false ) {
+				return false;
+			}
+		}
 	},
 	/** Write warning to browser console if debugLevel >= 2 (prepending tree info)
 	 *
@@ -3220,7 +3333,7 @@ $.extend(Fancytree.prototype,
 			case "right":
 			case "up":
 			case "down":
-				res = node.navigate(event.which, activate, true);
+				res = node.navigate(event.which, activate);
 				break;
 			default:
 				handled = false;
@@ -5306,7 +5419,7 @@ $.extend($.ui.fancytree,
 			tree.nodeSetActive(ctx, true);
 			break;
 		case "down":
-			res = node.navigate(event.which, activate, true);
+			res = node.navigate(event.which, activate);
 			break;
 		default:
 			handled = false;

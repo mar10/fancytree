@@ -2,6 +2,10 @@
   * [Added] ext-dnd5 support for dragging multiple selected nodes.
   * [Added] #830 support for Font Awesome 5 (ext-glyph preset)
   * [Added] New extension ext-fixed (experimental)
+  * [Added] New extension ext-multi (experimental)
+  * [Added] New method tree.visitRows()
+  * [Added] New method tree.selectAll()
+  * [Added] New method node.isBelowOf()
   * [Changed] Re-rename clearData() to clearPersistData()
   * [Changed] #828 Re-scale debugLevel from 0:quiet to 4:verbose, allowing to suppress warnings
     and even errors.
