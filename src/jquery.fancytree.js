@@ -5397,6 +5397,8 @@ $.extend($.ui.fancytree,
 		} else {  // support object syntax: { text: ligature, addClasse: classname }
 			if( icon.text ) {
 				$span.text( "" + icon.text );
+			} else if ( icon.html ) {
+				span.innerHTML = icon.html;
 			}
 			$span.attr( "class", baseClass + " " + ( icon.addClass || "" ) );
 		}

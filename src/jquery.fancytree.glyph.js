@@ -173,6 +173,8 @@ function setIcon( span, baseClass, opts, type ) {
 	} else {
 		if( icon.text ) {
 			$span.text( "" + icon.text );
+		} else if ( icon.html ) {
+			span.innerHTML = icon.html;
 		}
 		$span.attr( "class", setClass + " " + ( icon.addClass || "" ) );
 	}
