@@ -1,7 +1,7 @@
 /*!
  * jquery.fancytree.glyph.js
  *
- * Use glyph fonts as instead of icon sprites.
+ * Use glyph-fonts, ligature-fonts, or SVG icons instead of icon sprites.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
  * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
@@ -170,10 +170,11 @@ function setIcon( span, baseClass, opts, type ) {
 
 	if( typeof icon === "string" ) {
 		$span.attr( "class", setClass + " " + icon );
-	} else {
+	} else if ( icon ) {
 		if( icon.text ) {
 			$span.text( "" + icon.text );
 		} else if ( icon.html ) {
+			// $(span).append($(icon.html));
 			span.innerHTML = icon.html;
 		}
 		$span.attr( "class", setClass + " " + ( icon.addClass || "" ) );

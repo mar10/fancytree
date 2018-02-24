@@ -3914,7 +3914,10 @@ $.extend(Fancytree.prototype,
 				}
 			} else if ( icon.text ) {
 				ares.push("<span " + role + " class='fancytree-custom-icon " +
-					(icon.addClass || "") + "'" + iconTooltip + ">" + icon.text + "</span>");
+					(icon.addClass || "") + "'" + iconTooltip + ">" + FT.escapeHtml(icon.text) + "</span>");
+			} else if ( icon.html ) {
+				ares.push("<span " + role + " class='fancytree-custom-icon " +
+					(icon.addClass || "") + "'" + iconTooltip + ">" + icon.html + "</span>");
 			} else {
 				// standard icon: theme css will take care of this
 				ares.push("<span " + role + " class='fancytree-icon'" + iconTooltip + "></span>");
@@ -5246,7 +5249,8 @@ $.extend($.ui.fancytree,
 	 *     TYPE: 'title' | 'prefix' | 'expander' | 'checkbox' | 'icon' | undefined
 	 */
 	getEventTarget: function(event){
-		var tcn = event && event.target ? event.target.className : "",
+		var $target,
+			tcn = event && event.target ? event.target.className : "",
 			res = {node: this.getNode(event.target), type: undefined};
 		// We use a fast version of $(res.node).hasClass()
 		// See http://jsperf.com/test-for-classname/2
@@ -5262,13 +5266,21 @@ $.extend($.ui.fancytree,
 		}else if( /\bfancytree-node\b/.test(tcn) ){
 			// Somewhere near the title
 			res.type = "title";
-		}else if( event && $(event.target).is("ul[role=group]") ) {
-			// #nnn: Clicking right to a node may hit the surrounding UL
-			FT.info("Ignoring click on outer UL.");
-			res.node = null;
-		}else if( event && event.target && $(event.target).closest(".fancytree-title").length ) {
-			// #228: clicking an embedded element inside a title
-			res.type = "title";
+		}else if( event && event.target ) {
+			$target = $(event.target);
+			if( $target.is("ul[role=group]") ) {
+				// #nnn: Clicking right to a node may hit the surrounding UL
+				FT.info("Ignoring click on outer UL.");
+				res.node = null;
+			}else if( $target.closest(".fancytree-title").length ) {
+				// #228: clicking an embedded element inside a title
+				res.type = "title";
+			}else if( $target.closest(".fancytree-checkbox").length ) {
+				// E.g. <svg> inside checkbox span
+				res.type = "checkbox";
+			}else if( $target.closest(".fancytree-expander").length ) {
+				res.type = "expander";
+			}
 		}
 		return res;
 	},
