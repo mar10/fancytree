@@ -1,12 +1,12 @@
 # 2.28.0-0 / Unreleased
-  * [Added] ext-dnd5 support for dragging multiple selected nodes.
-  * [Added] #830 support for Font Awesome 5 (ext-glyph preset)
   * [Added] New extension ext-fixed (experimental)
   * [Added] New extension ext-multi (experimental)
+  * [Added] ext-dnd5 support for dragging multiple selected nodes.
+  * [Added] #830 support for Font Awesome 5 (ext-glyph preset)
+  * [Added] `icon` option supports `{html: "..."}` content (also available for glyph-ext mapping)
   * [Added] New method tree.visitRows()
   * [Added] New method tree.selectAll()
   * [Added] New method node.isBelowOf()
-  * [Added] `icon` option supports `{html: "..."}` content (also available for glyph-ext mapping)
   * [Changed] Re-rename clearData() to clearPersistData()
   * [Changed] #828 Re-scale debugLevel from 0:quiet to 4:verbose, allowing to suppress warnings
     and even errors.
