@@ -20,9 +20,11 @@
 	<script src="../demo/sample.js"></script>
 
 <style type="text/css">
-	.dimm-50 {
-		color: #888;
-	}
+.fancytree-custom-icon svg {
+	width: 1em;
+	height: 1em;
+	vertical-align: -.125em;
+}
 </style>
 <!-- End_Exclude -->
 
@@ -30,12 +32,16 @@
 	<!-- Add code to initialize the tree when the document is loaded: -->
 <script type="text/javascript">
 	$(function(){
-		// Convert class name to the ID in ths same way that Fontawesome's all.js does it:
+
+		// Convert class name to the ID in the same way that Font Awesome's all.js does it:
 		// E.g. "far fa-square" becomes #far-fa-square
-		// Then create <svg> tag that references this ID.
-		// Note that the icons are defined below, e.g. <i class="far fa-square" data-fa-symbol></i>
+		// Then create an <svg><use> tag that references this ID.
 		// This svg tag is returned as object { html: TAG }, which will be recognized by
 		// the glyph extension and inserted into the Fancytree spans.
+		// Note that the actual icons are defined below like
+		// <i class="far fa-square" data-fa-symbol></i>.
+		// Font Awesome's all.js converts those tags into <svg><symbol> markup with the ID,
+		// so they can be referenced instead of having to create them for every node.
 		function _svg(className, addClass) {
 			var id = className.replace(/ /g, "-"),
 				html = '<svg class="svg-inline--fa fa-w-20"><use xlink:href="#' + id + '"></use></svg>';
@@ -51,7 +57,7 @@
 				map: {
 					checkbox: _svg("far fa-square"),
 					checkboxSelected: _svg("far fa-check-square"),
-					checkboxUnknown: _svg("fas fa-square", "dimm-50"),
+					checkboxUnknown: _svg("fas fa-square", "fancytree-helper-indeterminate-cb"),
 					// checkboxUnknown: _svg("fas fa-square"),
 					radio: _svg("far fa-circle"),
 					radioSelected: _svg("fas fa-circle"),
@@ -74,14 +80,22 @@
 				}
 			},
 			icon: function(event, data) {
-				// For the sake of this example set specific icons.
-				// This may be slow, since the <i> tag needs to be converted for every node:
-				if( data.node.type === "book" ) {
-					return { html: "<i class='fas fa-book'></i>" };
-				}
-				// Here we reference cached SVG elements for better rendering performance:
-				if( data.node.type === "music" ) {
-					return _svg("fas fa-dot-circle");
+				// For the sake of this example set specific icons in different ways.
+				//
+				switch( data.node.title ) {
+					case "Art of War":
+						// Insert an SVG reference to an SVG symbol (defined below)
+						return { html: '<svg><use xlink:href="#svg-android-black"></use></svg>' };
+					case "The Hobbit":
+						// Insert an <i> tag that will be replaced with an inline SVG graphic
+						// by Font Awesome's all.js library.
+						// Note: We DON'T want this, since it will be slow for large trees!
+						return { html: "<i class='fas fa-book'></i>" };
+					case "The Little Prince":
+						// Here we use Font Awesome's auto conversion (as above), to create the
+						// <i> tags that where created separately below.
+						// The nodes nodes contain inline tags that reference those icons:
+						return _svg("fas fa-dot-circle");
 				}
 			},
 			source: {url: "ajax-tree-products.json", debugDelay: 1000},
@@ -130,10 +144,11 @@ $(function(){
 	</div>
 
 	<!--
-		Cached SVG icons
+		Cached SVG icons from Font Awesome 5
 		These are converted to <svg> elements and hidden by Font Awesomes all.js script.
 		They are the referenced from <svg> elements in side Fancytree.
 	-->
+	<!-- Used by ext-glyph mapping: -->
 	<i class="far fa-file" data-fa-symbol></i>
 	<i class="far fa-square" data-fa-symbol></i>
 	<i class="far fa-check-square" data-fa-symbol></i>
@@ -151,8 +166,16 @@ $(function(){
 	<i class="far fa-meh" data-fa-symbol></i>
 	<i class="far fa-folder" data-fa-symbol></i>
 	<i class="far fa-folder-open" data-fa-symbol></i>
-	<!-- Used by custom 'icon' option -->
+	<!-- Used by custom 'icon' demo -->
 	<i class="fas fa-dot-circle" data-fa-symbol></i>
+	<!-- Native SVG icon, also used by custom 'icon' demo -->
+	<svg style="display: none;">
+		<symbol id="svg-android-black"
+			fill="#000000" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg">
+			<path d="M0 0h24v24H0z" fill="none"/>
+			<path d="M6 18c0 .55.45 1 1 1h1v3.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V19h2v3.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V19h1c.55 0 1-.45 1-1V8H6v10zM3.5 8C2.67 8 2 8.67 2 9.5v7c0 .83.67 1.5 1.5 1.5S5 17.33 5 16.5v-7C5 8.67 4.33 8 3.5 8zm17 0c-.83 0-1.5.67-1.5 1.5v7c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5v-7c0-.83-.67-1.5-1.5-1.5zm-4.97-5.84l1.3-1.3c.2-.2.2-.51 0-.71-.2-.2-.51-.2-.71 0l-1.48 1.48C13.85 1.23 12.95 1 12 1c-.96 0-1.86.23-2.66.63L7.85.15c-.2-.2-.51-.2-.71 0-.2.2-.2.51 0 .71l1.31 1.31C6.97 3.26 6 5.01 6 7h12c0-1.99-.97-3.75-2.47-4.84zM10 5H9V4h1v1zm5 0h-1V4h1v1z"/>
+		</symbol>
+	</svg>
 
 	<hr>
 	Font size: <span id="curSize"></span>
