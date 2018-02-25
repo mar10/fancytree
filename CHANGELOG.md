@@ -11,6 +11,11 @@
   * [Changed] Re-rename clearData() to clearPersistData()
   * [Changed] #828 Re-scale debugLevel from 0:quiet to 4:verbose, allowing to suppress warnings
     and even errors.
+  * [Added] CSS helper classes:<br>
+    `.fancytree-helper-disabled`<br>
+    `.fancytree-helper-hidden` (replaces `ui-helper-hidden`)<br>
+    `.fancytree-helper-indeterminate-cb`<br>
+    `fancytree-helper-spin` for icon animations (replaces `glyphicon-spin`)
   * [Fixed] #819: ext-filter: Handle nodes without title.
   * [Fixed] #835: ext-dnd5: Accept drop externals after drag.
 

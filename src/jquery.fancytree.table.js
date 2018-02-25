@@ -454,7 +454,7 @@ $.ui.fancytree.registerExtension({
 	},
 	treeDestroy: function(ctx) {
 		this.$container.find("tbody").empty();
-		this.$source && this.$source.removeClass("ui-helper-hidden");
+		this.$source && this.$source.removeClass("fancytree-helper-hidden");
 		return this._superApply(arguments);
 	}
 	/*,

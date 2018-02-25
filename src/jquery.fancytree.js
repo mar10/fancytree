@@ -4562,7 +4562,7 @@ $.extend(Fancytree.prototype,
 	 */
 	treeDestroy: function(ctx) {
 		this.$div.find(">ul.fancytree-container").remove();
-		this.$source && this.$source.removeClass("ui-helper-hidden");
+		this.$source && this.$source.removeClass("fancytree-helper-hidden");
 	},
 	/** Widget was (re-)initialized.
 	 * @param {EventData} ctx
@@ -4621,7 +4621,7 @@ $.extend(Fancytree.prototype,
 			switch(type){
 			case "html":
 				$ul = $container.find(">ul:first");
-				$ul.addClass("ui-fancytree-source ui-helper-hidden");
+				$ul.addClass("ui-fancytree-source fancytree-helper-hidden");
 				source = $.ui.fancytree.parseHtml($ul);
 				// allow to init tree.data.foo from <ul data-foo=''>
 				this.data = $.extend(this.data, _getElementDataAsDict($ul));

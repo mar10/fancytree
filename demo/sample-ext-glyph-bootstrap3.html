@@ -69,15 +69,17 @@
 <!-- Add code to initialize the tree when the document is loaded: -->
 <script type="text/javascript">
 	var glyph_opts = {
-		preset: "bootstrap3",
-		map: {
-		}
-	};
+			preset: "bootstrap3",
+			map: {
+			}
+		};
+
 	$(function(){
 		// Initialize Fancytree
 		$("#tree").fancytree({
 			extensions: ["dnd", "edit", "glyph", "wide"],
 			checkbox: true,
+			selectMode: 3,
 			dnd: {
 				focusOnClick: true,
 				dragStart: function(node, data) { return true; },
@@ -85,8 +87,8 @@
 				dragDrop: function(node, data) { data.otherNode.copyTo(node, data.hitMode); }
 			},
 			glyph: glyph_opts,
-			selectMode: 2,
-			source: {url: "ajax-tree-taxonomy.json", debugDelay: 1000},
+			// source: {url: "ajax-tree-taxonomy.json", debugDelay: 1000},
+			source: {url: "ajax-tree-products.json", debugDelay: 1000},
 			toggleEffect: { effect: "drop", options: {direction: "left"}, duration: 400 },
 			wide: {
 				iconWidth: "1em",       // Adjust this if @fancy-icon-width != "16px"
@@ -120,7 +122,6 @@
 				checkboxColumnIdx: 1,
 				nodeColumnIdx: 2
 			},
-
 			activate: function(event, data) {
 			},
 			lazyLoad: function(event, data) {

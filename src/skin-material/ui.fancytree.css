@@ -12,8 +12,39 @@
 /*------------------------------------------------------------------------------
  * Helpers
  *----------------------------------------------------------------------------*/
-.ui-helper-hidden {
+.fancytree-helper-hidden {
   display: none;
+}
+.fancytree-helper-indeterminate-cb {
+  color: #777;
+}
+.fancytree-helper-disabled {
+  color: silver;
+}
+/* Helper to allow spinning loader icon with glyph-, ligature-, and SVG-icons. */
+.fancytree-helper-spin {
+  -webkit-animation: spin 1000ms infinite linear;
+  animation: spin 1000ms infinite linear;
+}
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+@keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
 }
 /*------------------------------------------------------------------------------
  * Container and UL / LI
@@ -476,31 +507,6 @@ ul.fancytree-container ul {
 }
 .fancytree-container span.fancytree-checkbox {
   color: #ff4081;
-}
-/* Helper to allow spinning loader icon with bootstrap */
-.glyphicon-spin {
-  -webkit-animation: spin 1000ms infinite linear;
-  animation: spin 1000ms infinite linear;
-}
-@-webkit-keyframes spin {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(359deg);
-    transform: rotate(359deg);
-  }
-}
-@keyframes spin {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(359deg);
-    transform: rotate(359deg);
-  }
 }
 /*******************************************************************************
  * 'table' extension
