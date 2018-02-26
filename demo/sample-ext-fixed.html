@@ -188,12 +188,16 @@
 		addSampleButton({
 			label: "Expand all",
 			code: function(){
-				var t = $.ui.fancytree.getTree();
+//				var tree = $.ui.fancytree.getTree();
 				var $tree = $("#treetable");
+				var tree = $tree.fancytree("getTree");
+
 				window.console.time("expand all");
-				$tree.fancytree("getTree").visit(function(n){
+				tree.enableUpdate(false);
+				tree.visit(function(n){
 					n.setExpanded();
 				});
+				tree.enableUpdate(true);
 				window.console.timeEnd("expand all");
 			}
 		});
