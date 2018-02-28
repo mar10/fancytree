@@ -4,7 +4,7 @@
  * Make node titles editable.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2017, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -13,7 +13,20 @@
  * @date @DATE
  */
 
-;(function($, window, document, undefined) {
+;(function( factory ) {
+	if ( typeof define === "function" && define.amd ) {
+		// AMD. Register as an anonymous module.
+		define( [ "jquery", "./jquery.fancytree" ], factory );
+	} else if ( typeof module === "object" && module.exports ) {
+		// Node/CommonJS
+		require("./jquery.fancytree");
+		module.exports = factory(require("jquery"));
+	} else {
+		// Browser globals
+		factory( jQuery );
+	}
+
+}( function( $ ) {
 
 "use strict";
 
@@ -134,7 +147,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editEnd = function(applyChanges, _e
 		// If true/false was passed, honor this (except in rename mode, if unchanged)
 		eventData.save = false;
 	} else if( eventData.isNew ) {
-		// In create mode, we save everyting, except for empty text
+		// In create mode, we save everything, except for empty text
 		eventData.save = (newVal !== "");
 	} else {
 		// In rename mode, we save everyting, except for empty or unchanged text
@@ -260,8 +273,7 @@ $.ui.fancytree.registerExtension({
 		allowEmpty: false,   // Prevent empty input
 		inputCss: {minWidth: "3em"},
 		// triggerCancel: ["esc", "tab", "click"],
-		// triggerStart: ["f2", "dblclick", "shift+click", "mac+enter"],
-		triggerStart: ["f2", "shift+click", "mac+enter"],
+		triggerStart: ["f2", "mac+enter", "shift+click"],
 		trim: true,          // Trim whitespace before save
 		// Events:
 		beforeClose: $.noop, // Return false to prevent cancel/save (data.input is available)
@@ -281,6 +293,15 @@ $.ui.fancytree.registerExtension({
 	nodeClick: function(ctx) {
 		if( $.inArray("shift+click", ctx.options.edit.triggerStart) >= 0 ){
 			if( ctx.originalEvent.shiftKey ){
+				ctx.node.editStart();
+				return false;
+			}
+		}
+		if( $.inArray("clickActive", ctx.options.edit.triggerStart) >= 0 ){
+			// Only when click was inside title text (not aynwhere else in the row)
+			if( ctx.node.isActive() && !ctx.node.isEditing() &&
+				$(ctx.originalEvent.target).hasClass("fancytree-title")
+			){
 				ctx.node.editStart();
 				return false;
 			}
@@ -312,4 +333,6 @@ $.ui.fancytree.registerExtension({
 		return this._superApply(arguments);
 	}
 });
-}(jQuery, window, document));
+// Value returned by `require('jquery.fancytree..')`
+return $.ui.fancytree;
+}));  // End of closure

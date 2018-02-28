@@ -6,7 +6,7 @@
  *
  * @see http://api.jqueryui.com/menu/
  *
- * Copyright (c) 2008-2017, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -15,15 +15,22 @@
  * @date @DATE
  */
 
-;(function($, window, document, undefined) {
+;(function( factory ) {
+	if ( typeof define === "function" && define.amd ) {
+		// AMD. Register as an anonymous module.
+		define( [ "jquery", "./jquery.fancytree" ], factory );
+	} else if ( typeof module === "object" && module.exports ) {
+		// Node/CommonJS
+		require("./jquery.fancytree");
+		module.exports = factory(require("jquery"));
+	} else {
+		// Browser globals
+		factory( jQuery );
+	}
+
+}( function( $ ) {
 
 "use strict";
-
-// prevent duplicate loading
-// if ( $.ui.fancytree && $.ui.fancytree.version ) {
-//     $.ui.fancytree.warn("Fancytree: duplicate include");
-//     return;
-// }
 
 $.ui.fancytree.registerExtension({
 	name: "menu",
@@ -109,11 +116,11 @@ $.ui.fancytree.registerExtension({
 			return;
 		}
 
-		$(document).bind("keydown.fancytree", function(event){
+		$(document).on("keydown.fancytree", function(event){
 			if( event.which === $.ui.keyCode.ESCAPE ){
 				tree.ext.menu._closeMenu(ctx);
 			}
-		}).bind("mousedown.fancytree", function(event){
+		}).on("mousedown.fancytree", function(event){
 			// Close menu when clicked outside menu
 			if( $(event.target).closest(".ui-menu-item").length === 0 ){
 				tree.ext.menu._closeMenu(ctx);
@@ -152,4 +159,6 @@ $.ui.fancytree.registerExtension({
 //		this._superApply(arguments);
 //	}
 });
-}(jQuery, window, document));
+// Value returned by `require('jquery.fancytree..')`
+return $.ui.fancytree;
+}));  // End of closure

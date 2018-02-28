@@ -4,7 +4,7 @@
  * Drag-and-drop support (jQuery UI draggable/droppable).
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2017, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -13,7 +13,25 @@
  * @date @DATE
  */
 
-;(function($, window, document, undefined) {
+;(function( factory ) {
+	if ( typeof define === "function" && define.amd ) {
+		// AMD. Register as an anonymous module.
+		define( [
+			"jquery",
+			"jquery-ui/ui/widgets/draggable",
+			"jquery-ui/ui/widgets/droppable",
+			"./jquery.fancytree"
+		], factory );
+	} else if ( typeof module === "object" && module.exports ) {
+		// Node/CommonJS
+		require("./jquery.fancytree");
+		module.exports = factory(require("jquery"));
+	} else {
+		// Browser globals
+		factory( jQuery );
+	}
+
+}( function( $ ) {
 
 "use strict";
 
@@ -189,7 +207,7 @@ function _initDragAndDrop(tree) {
 				// Support glyph symbols instead of icons
 				if( glyph ) {
 					$helper.find(".fancytree-drag-helper-img")
-						.addClass(glyph.map.dragHelper);
+						.addClass(glyph.map._addClass + " " + glyph.map.dragHelper);
 				}
 				// Allow to modify the helper, e.g. to add multi-node-drag feedback
 				if( opts.initHelper ) {
@@ -316,9 +334,8 @@ $.ui.fancytree.registerExtension({
 //                .prependTo("body");
 
 			if( glyphOpt ) {
-				// instData.$dropMarker.addClass(glyph.map.dragHelper);
 				instData.$dropMarker
-					.addClass(glyphOpt.map.dropMarker);
+					.addClass(glyphOpt.map._addClass + " " + glyphOpt.map.dropMarker);
 			}
 		}
 		if( hitMode === "after" || hitMode === "before" || hitMode === "over" ){
@@ -569,4 +586,6 @@ $.ui.fancytree.registerExtension({
 		 }
 	}
 });
-}(jQuery, window, document));
+// Value returned by `require('jquery.fancytree..')`
+return $.ui.fancytree;
+}));  // End of closure

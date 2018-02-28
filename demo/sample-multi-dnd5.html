@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+	<title>Test D'n'D - Fancytree</title>
+
+	<script src="../lib/jquery.js"></script>
+<!--
+	<script src="../lib/jquery-ui.custom.js"></script>
+	<script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+	<script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+-->
+
+	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet">
+	<script src="../src/jquery-ui-dependencies/jquery.fancytree.ui-deps.js"></script>
+	<script src="../src/jquery.fancytree.js"></script>
+	<script src="../src/jquery.fancytree.dnd5.js"></script>
+	<script src="../src/jquery.fancytree.multi.js"></script>
+
+	<!-- Start_Exclude: This block is not part of the sample code -->
+	<link href="../lib/prettify.css" rel="stylesheet">
+	<script src="../lib/prettify.js"></script>
+	<link href="../demo/sample.css" rel="stylesheet">
+	<script src="../demo/sample.js"></script>
+	<!-- End_Exclude -->
+
+<style type="text/css">
+	.fancytree-drag-source {
+		font-style: oblique;
+	}
+	.fancytree-drag-source.fancytree-drag-remove {
+		opacity: 0.5;
+	}
+
+	/* Prevent scrolling while DND */
+	ul.fancytree-container {
+/*
+		height: 200px;
+		overflow: auto;
+*/
+/*		position: inherit;*/
+	}
+</style>
+
+<script type="text/javascript">
+	$(function(){
+		// Attach the fancytree widget to an existing <div id="tree"> element
+		// and pass the tree options as an argument to the fancytree() function:
+		$("#tree").fancytree({
+			extensions: ["dnd5", "multi"],
+			checkbox: true,
+//			debugLevel: 1,
+			source: {
+				url: "ajax-tree-products.json"
+			},
+			activate: function(event, data) {
+			},
+			lazyLoad: function(event, data) {
+				data.result = {url: "ajax-sub2.json"}
+			},
+			dnd5: {
+				preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
+				preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
+				autoExpandMS: 1000,
+				multiSource: true,  // drag all selected nodes (plus current node)
+				// focusOnClick: true,
+				// refreshPositions: true,
+				dragStart: function(node, data) {
+					// allow dragging `node`:
+					data.dataTransfer.dropEffect = "move";
+					return true;
+				},
+				// dragDrag: function(node, data) {
+				// 	data.node.info("dragDrag", data);
+				// 	data.dataTransfer.dropEffect = "copy";
+				// 	return true;
+				// },
+				dragEnter: function(node, data) {
+					data.node.info("dragEnter", data);
+					data.dataTransfer.dropEffect = "link";
+					return true;
+				},
+				// dragOver: function(node, data) {
+				// 	data.node.info("dragOver", data);
+				// 	data.dataTransfer.dropEffect = "link";
+				// 	return true;
+				// },
+				dragEnd: function(node, data) {
+					data.node.info("dragEnd", data);
+				},
+				dragDrop: function(node, data) {
+					// This function MUST be defined to enable dropping of items on the tree.
+			        //
+			        // The source data is provided in several formats:
+			        //   `data.otherNode` (null if it's not a FancytreeNode from the same page)
+			        //   `data.otherNodeData` (Json object; null if it's not a FancytreeNode)
+			        //   `data.dataTransfer.getData()`
+			        //
+			        // We may access some meta data to decide what to do:
+			        //   `data.hitMode` ("before", "after", or "over").
+			        //   `data.dataTransfer.dropEffect`, `.effectAllowed`
+			        //   `data.originalEvent.shiftKey`, ...
+			        //
+			        // Example:
+
+					var dataTransfer = data.dataTransfer,
+						sourceNodes = data.otherNodeList,
+						event = data.originalEvent,
+						copyMode = event.ctrlKey || event.altKey;
+
+					if( copyMode ) {
+						$.each(sourceNodes, function(i, o){
+							o.copyTo(node, data.hitMode, function(n){
+								delete n.key;
+								n.selected = false;
+								n.title = "Copy of " + n.title;
+							});
+						});
+					} else {
+						$.each(sourceNodes, function(i, o){
+							o.moveTo(node, data.hitMode);
+						});
+					}
+			        node.debug("drop", data);
+			        node.setExpanded();
+			      }
+			}
+		});
+
+	});
+	</script>
+</head>
+<body class="example">
+	<h1>Example: extended drag'n'drop sample</h1>
+	<div class="description">
+		This sample shows how to
+		<ul>
+		<li>implement drag'n'drop with multiple selected nodes
+		<li>allow modifier keys <kbd>Ctrl</kbd> or <kbd>Alt</kbd> to force copy
+			instead of move operations
+		</ul>
+	</div>
+	<div>
+		<label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
+	</div>
+	<!-- Add a <table> element where the tree should appear: -->
+	<p class="description">
+		Standard tree:
+	</p>
+	<div id="tree"></div>
+
+	<p class="droppable">
+		Droppable.
+	</p>
+
+	<!-- Start_Exclude: This block is not part of the sample code -->
+	<hr>
+	<p class="sample-links  no_code">
+		<a class="hideInsideFS" href="https://github.com/mar10/fancytree">jquery.fancytree.js project home</a>
+		<a class="hideOutsideFS" href="#">Link to this page</a>
+		<a class="hideInsideFS" href="index.html">Example Browser</a>
+		<a href="#" id="codeExample">View source code</a>
+	</p>
+	<pre id="sourceCode" class="prettyprint" style="display:none"></pre>
+	<!-- End_Exclude -->
+</body>
+</html>

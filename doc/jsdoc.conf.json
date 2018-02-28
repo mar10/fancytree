@@ -14,7 +14,7 @@
 			"analytics" : { "ua": "UA-316028-1", "domain": "auto" },
 			"ghForkMe"  : { "url": "https://github.com/mar10/fancytree/" },
 			"footer"   	: "",
-			"copyright" : "Fancytree Copyright © 2008-2017 Martin Wendt and contributors."
+			"copyright" : "Fancytree Copyright © 2008-2018 Martin Wendt and contributors."
 		}
 	},
 	"markdown"  : {

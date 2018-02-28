@@ -15,17 +15,17 @@
 		</script>
 		<script type="text/javascript">
 			function ExpandAll3() {
-				var start = new Date().getTime();
+				var start = Date.now();
 
 				$("#tree").fancytree("getRootNode").visit(function(node) {
 					node.setExpanded(true);
 				});
 
-				var end = new Date().getTime();
+				var end = Date.now();
 				var time = end - start;
 				console.log('expand time: ' + time);
 
-				expanddone = new Date().getTime();
+				expanddone = Date.now();
 			}
 			$(function() {
 				//no animations and no render/create node events
@@ -59,7 +59,7 @@
 					});
 				});
 				$("#btnPageRender").click(function() {
-					var end = new Date().getTime();
+					var end = Date.now();
 					var holdingtime = end - expanddone;
 
 					$("#pagerender").text(holdingtime);

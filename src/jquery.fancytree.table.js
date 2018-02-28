@@ -4,7 +4,7 @@
  * Render tree as table (aka 'tree grid', 'table tree').
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2017, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -13,7 +13,20 @@
  * @date @DATE
  */
 
-;(function($, window, document, undefined) {
+;(function( factory ) {
+	if ( typeof define === "function" && define.amd ) {
+		// AMD. Register as an anonymous module.
+		define( [ "jquery", "./jquery.fancytree" ], factory );
+	} else if ( typeof module === "object" && module.exports ) {
+		// Node/CommonJS
+		require("./jquery.fancytree");
+		module.exports = factory(require("jquery"));
+	} else {
+		// Browser globals
+		factory( jQuery );
+	}
+
+}( function( $ ) {
 
 "use strict";
 
@@ -123,8 +136,16 @@ $.ui.fancytree.registerExtension({
 		}
 
 		$table.addClass("fancytree-container fancytree-ext-table");
-		tree.tbody = $table.find(">tbody")[0];
-		$tbody = $(tree.tbody);
+		$tbody = $table.find(">tbody");
+		if( !$tbody.length ) {
+			// TODO: not sure if we can rely on browsers to insert missing <tbody> before <tr>s:
+			if( $table.find(">tr").length ) {
+				$.error("Expected table > tbody > tr. If you see this please open an issue.");
+			}
+			$tbody = $("<tbody>").appendTo($table);
+		}
+
+		tree.tbody = $tbody[0];
 
 		// Prepare row templates:
 		// Determine column count from table header if any
@@ -433,7 +454,7 @@ $.ui.fancytree.registerExtension({
 	},
 	treeDestroy: function(ctx) {
 		this.$container.find("tbody").empty();
-		this.$source && this.$source.removeClass("ui-helper-hidden");
+		this.$source && this.$source.removeClass("fancytree-helper-hidden");
 		return this._superApply(arguments);
 	}
 	/*,
@@ -443,4 +464,6 @@ $.ui.fancytree.registerExtension({
 		$.ui.fancytree.focusTree = ctx.tree;
 	}*/
 });
-}(jQuery, window, document));
+// Value returned by `require('jquery.fancytree..')`
+return $.ui.fancytree;
+}));  // End of closure

@@ -4,8 +4,8 @@
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 	<title>Fancytree - Editable Nodes</title>
 
-	<script src="//code.jquery.com/jquery-1.12.1.js"></script>
-	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+	<script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+	<script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 
 	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet">
 	<script src="../src/jquery.fancytree.js"></script>
@@ -31,12 +31,13 @@
 $(function(){
 	$("#tree").fancytree({
 		extensions: ["edit"],
-		source: {url: "ajax-tree-plain.json"},
+		source: {url: "ajax-tree-products.json"},
+		// source: {url: "ajax-tree-plain.json"},
 		lazyLoad: function(event, data) {
 			data.result = { url: "ajax-sub2.json", debugDelay: 1000 };
 		},
 		edit: {
-			triggerStart: ["f2", "dblclick", "shift+click", "mac+enter"],
+			triggerStart: ["clickActive", "dblclick", "f2", "mac+enter", "shift+click"],
 			beforeEdit: function(event, data){
 				// Return false to prevent edit mode
 			},
@@ -122,6 +123,7 @@ $(function(){
 		</p>
 		<p>
 			Edit the node titles with `dblclick`, `Shift + click` [F2], or [Enter] (on Mac only).
+			Also a `slow click` (click again into already active node).
 		</p>
 		<p>
 			<b>Status:</b> production.

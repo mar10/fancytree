@@ -12,8 +12,8 @@
 @import "../skin-win8/ui.fancytree.less";
 
 
-// Override the variable after the import. 
-// NOTE: Variables are always resolved as the last definition, even if it is 
+// Override the variable after the import.
+// NOTE: Variables are always resolved as the last definition, even if it is
 // after where it is used.
 @fancy-use-sprites: true;      // false: suppress all background images (i.e. icons)
 
@@ -28,6 +28,10 @@
 @fancy-node-border-width: 1px;
 @fancy-node-border-radius: 0px;
 @fancy-node-outline-width: 1px;
+
+// We need to define this variable here (not in skin-common.less) to make it
+// work with grunt and webpack:
+@fancy-image-prefix: "./skin-win8-xxl/";
 
 ul.fancytree-container {
 //	font-family: tahoma, arial, helvetica;

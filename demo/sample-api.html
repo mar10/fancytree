@@ -39,7 +39,7 @@ $(function(){
 			$("#echoFocused").text("-");
 		},
 		lazyLoad: function(event, data){
-			// Simulate a slow ajax request
+			// Simulate a slow Ajax request
 			var dfd = new $.Deferred();
 			data.result = dfd.promise();
 			window.setTimeout(function(){

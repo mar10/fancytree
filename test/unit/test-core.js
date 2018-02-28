@@ -6,6 +6,7 @@ jQuery(document).ready(function(){
 
 var TEST_DATA, TESTDATA_NODES, TESTDATA_TOPNODES, TESTDATA_VISIBLENODES,
 	$ = jQuery,
+	DEBUG_LEVEL = 1,
 	// Use tools from test-tools.js
 	tools = TEST_TOOLS;
 
@@ -58,7 +59,7 @@ tools.initQUnit();
 tools.createInfoSection();
 
 // Silence, please
-$.ui.fancytree.debugLevel = 1;
+$.ui.fancytree.debugLevel = DEBUG_LEVEL;
 
 
 /*******************************************************************************
@@ -82,7 +83,7 @@ QUnit.test("Static members", function(assert) {
 
 QUnit.test("Create Fancytree", function(assert) {
 	tools.setup(assert);
-	assert.expect(13);
+	assert.expect(14);
 
 	var tree, widget,
 		insideConstructor = true;
@@ -94,6 +95,7 @@ QUnit.test("Create Fancytree", function(assert) {
 			assert.ok(insideConstructor, "running synchronously");
 			widget = $("div#tree").data("ui-fancytree") || $("div#tree").data("fancytree");
 			tree = widget.tree;
+			assert.equal(tree.options.debugLevel, DEBUG_LEVEL, "Inherit global debugLevel");
 		}
 	});
 	insideConstructor = false;
@@ -501,7 +503,7 @@ QUnit.test("FancytreeNode class methods", function(assert) {
 
 QUnit.test("Fancytree class methods", function(assert) {
 	tools.setup(assert);
-	assert.expect(14);
+	assert.expect(15);
 
 	$("#tree").fancytree({
 		source: TEST_DATA
@@ -557,8 +559,10 @@ QUnit.test("Fancytree class methods", function(assert) {
 //  reload: function(source) {
 //    render: function(force, deep) {
 	// tree.toString()
-	assert.equal(tree.toString(), "<Fancytree(#" + tree._id + ")>", "toString()");
+	assert.equal(tree.toString(), "Fancytree@" + tree._id, "toString()");
+	// assert.equal(tree.toString(), "<Fancytree(#" + tree._id + ")>", "toString()");
 	assert.equal("" + tree, tree.toString(), "toString() implicit");
+	assert.equal("" + tools.getNode("10_2_2"), "FancytreeNode@10_2_2[title='Sub-item 1.2.2']");
 
 	// tree.visit()
 	c = 0;
@@ -1007,6 +1011,27 @@ QUnit.test("Using ajax options for `source`; .click() expands a lazy folder", fu
 	});
 });
 
+QUnit.test("Call `postProcess` for non-ajax `source`", function(assert) {
+	tools.setup(assert);
+	assert.expect(3);
+
+	var done = assert.async();
+
+	$("#tree").fancytree({
+		source: [{title: "node 1", key: "id1"}, {title: "node 2", key: "id2"}],
+		generateIds: true,
+		postProcess: function(event, data){
+			assert.equal(data.response.length, 2, "receive `postProcess` callback");
+			data.result = [{title: "node 3", key: "id3"}];
+		},
+		init: function(event, data){
+			assert.ok(data.tree.getNodeByKey("id1") === null, "");
+			assert.ok(data.tree.getNodeByKey("id3") !== null, "");
+			done();
+		}
+	});
+});
+
 QUnit.test("Using $.ajax promise for `source`; .click() expands a lazy folder", function(assert) {
 	tools.setup(assert);
 	assert.expect(12);
@@ -1353,7 +1378,7 @@ QUnit.test("apply patch", function(assert) {
  */
 QUnit.module("keypath");
 
-QUnit.test("loadKeyPath (allready loaded)", function(assert) {
+QUnit.test("loadKeyPath (already loaded)", function(assert) {
 	tools.setup(assert);
 	assert.expect(1);
 
@@ -1387,7 +1412,7 @@ QUnit.test("loadKeyPath (lazy nodes)", function(assert) {
 	$("#tree").fancytree({
 		source: TEST_DATA,
 		lazyLoad: function(event, data){
-			// fake an async, deleayed Ajax request that generates 5 lazy nodes
+			// fake an async, delayed Ajax request that generates 5 lazy nodes
 			data.result = tools.fakeAjaxLoad(data.node, 5, 10);
 		}
 	});
@@ -1396,6 +1421,36 @@ QUnit.test("loadKeyPath (lazy nodes)", function(assert) {
 
 	tree.loadKeyPath("/30/30_3/30_3_2", function(node, status){
 		tools.appendEvent(assert, status + " #" + (node ? node.key : "null"));
+	}).done(function(data){
+		tools.appendEvent(assert, "done.");
+		assert.deepEqual(assert.EVENT_SEQUENCE,
+				["loaded #30",
+				 "loading #30",
+				 "loaded #30_3",
+				 "loading #30_3",
+				 "ok #30_3_2",
+				 "done."], "event sequence");
+		done();
+	});
+});
+
+QUnit.test("loadKeyPath (Progress event)", function(assert) {
+	tools.setup(assert);
+	assert.expect(1);
+
+	var done = assert.async();
+
+	$("#tree").fancytree({
+		source: TEST_DATA,
+		lazyLoad: function(event, data){
+			// fake an async, delayed Ajax request that generates 5 lazy nodes
+			data.result = tools.fakeAjaxLoad(data.node, 5, 10);
+		}
+	});
+	var tree = tools.getTree();
+
+	tree.loadKeyPath("/30/30_3/30_3_2").progress(function(data){
+		tools.appendEvent(assert, data.status + " #" + (data.node ? data.node.key : "null"));
 	}).done(function(data){
 		tools.appendEvent(assert, "done.");
 		assert.deepEqual(assert.EVENT_SEQUENCE,
@@ -1445,5 +1500,126 @@ QUnit.test("loadKeyPath (multiple lazy nodes with expand)", function(assert) {
 		done();
 	});
 });
+
+
+QUnit.test("loadKeyPath (lazy, custom matcher)", function(assert) {
+	tools.setup(assert);
+	assert.expect(1);
+
+	var done = assert.async();
+
+	$("#tree").fancytree({
+		source: TEST_DATA,
+		lazyLoad: function(event, data){
+			// fake an async, delayed Ajax request that generates 5 lazy nodes
+			data.result = tools.fakeAjaxLoad(data.node, 5, 10);
+		}
+	});
+	var tree = tools.getTree();
+	// TODO: test with numeric keys:
+
+	tree.loadKeyPath("/Lazy folder/Lazy folder_3/Lazy folder_3_2", {
+		matchKey: function(node, key){
+			return node.title === key;
+		},
+		callback: function(node, status){
+			tools.appendEvent(assert, status + " #" + (node ? node.key : "null"));
+		}
+	}).done(function(data){
+		tools.appendEvent(assert, "done.");
+		assert.deepEqual(assert.EVENT_SEQUENCE,
+				["loaded #30",
+				 "loading #30",
+				 "loaded #30_3",
+				 "loading #30_3",
+				 "ok #30_3_2",
+				 "done."], "event sequence");
+		done();
+	});
+});
+
+
+QUnit.test("loadKeyPath (multiple lazy nodes with expand; issue #576)", function(assert) {
+	tools.setup(assert);
+	assert.expect(6);
+
+	var done = assert.async();
+/*
+https://github.com/mar10/fancytree/issues/576
+/30/
+	30_1/
+		30_1_2/
+			30_1_2_3/
+				30_1_2_3_4   #1
+	30_2/
+		30_2_2/
+			30_2_2_2/
+				30_2_2_2_2    #2
+			30_2_2_3/
+				30_2_2_3_1	#3
+	30_3/
+		30_3_3/
+			30_3_3_4/
+				30_3_3_1	#4
+*/
+	$("#tree").fancytree({
+		selectMode: 2,
+		checkbox: true,
+		source: [
+			{key: "10", title: "Node 10", folder: true, lazy: true },
+			{key: "20", title: "Node 20", folder: true, lazy: true },
+			{key: "30", title: "Node 30", folder: true, lazy: true }
+		],
+		lazyLoad: function(event, data){
+			data.result = tools.fakeAjaxLoad(data.node, 5, [0, 30]);
+		}
+	});
+	var tree = tools.getTree(),
+		pathList = ["/30/30_1/30_1_2/30_1_2_3/30_1_2_3_4",
+					"/30/30_2/30_2_2/30_2_2_2/30_2_2_2_2"];
+
+	tree.loadKeyPath(pathList, function(node, status){
+		if(/*status === "loaded" ||*/ status === "ok"){
+			tools.appendEvent(assert, status + " #" + (node.key ? node.key : node));
+			node.makeVisible();
+			node.setSelected();
+		}
+	}).done(function(data){
+		tools.appendEvent(assert, "done 1.");
+
+		assert.ok($.inArray("ok #30_1_2_3_4", assert.EVENT_SEQUENCE) >= 0, "node 1 was loaded");
+		assert.ok($.inArray("ok #30_2_2_2_2", assert.EVENT_SEQUENCE) >= 0, "node 2 was loaded");
+		// assert.deepEqual(assert.EVENT_SEQUENCE,
+		// 		["ok #30_1_2_3_4",
+		// 		 "ok #30_2_2_2_2",
+		// 		 "done 1."], "event sequence");
+
+		pathList = ["/30/30_2/30_2_2/30_2_2_3/30_2_2_3_1",
+					"/30/30_3/30_3_3/30_3_3_4/30_3_3_4_1"];
+
+		tree.loadKeyPath(pathList, function(node, status){
+			if(/*status === "loaded" || */status === "ok"){
+				tools.appendEvent(assert, status + " #" + (node.key ? node.key : node));
+				node.makeVisible();
+				node.setSelected();
+			}
+		}).done(function(data){
+			tools.appendEvent(assert, "done 2.");
+			assert.ok($.inArray("ok #30_1_2_3_4", assert.EVENT_SEQUENCE) >= 0, "node 1 was loaded");
+			assert.ok($.inArray("ok #30_2_2_2_2", assert.EVENT_SEQUENCE) >= 0, "node 2 was loaded");
+			assert.ok($.inArray("ok #30_2_2_3_1", assert.EVENT_SEQUENCE) >= 0, "node 3 was loaded");
+			assert.ok($.inArray("ok #30_3_3_4_1", assert.EVENT_SEQUENCE) >= 0, "node 4 was loaded");
+			// assert.deepEqual(assert.EVENT_SEQUENCE,
+			// 		["ok #30_1_2_3_4",
+			// 		 "ok #30_2_2_2_2",
+			// 		 "done 1.",
+			// 		 "ok #30_2_2_3_1",
+			// 		 "ok #30_3_3_4_1",
+			// 		 "done 2."], "event sequence");
+			done();
+		});
+	});
+});
+
 
 });

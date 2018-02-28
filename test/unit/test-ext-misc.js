@@ -78,7 +78,7 @@ QUnit.test("sync load", function(assert) {
 		extensions: ["clones"],
 		source: TEST_DATA,
 		lazyLoad: function(event, data){
-			// fake an async, deleayed Ajax request that generates 5 lazy nodes
+			// fake an async, delayed Ajax request that generates 5 lazy nodes
 			data.result = tools.fakeAjaxLoad(data.node, 5, 10);
 		}
 	});

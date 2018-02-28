@@ -3020,7 +3020,4 @@ var effectsEffectBlind = $.effects.define( "blind", "hide", function( options, d
 	} );
 } );
 
-
-
-
 }));

@@ -58,7 +58,7 @@ ul.fancytree-container li.fancytree-lastsib {
   background-color: silver;
 }
 ul.fancytree-connectors.fancytree-container li {
-  background-image: url("data:image/gif;base64,R0lGODlhEAAQAPcAAAAAAIAAAACAAICAAAAAgIAAgACAgMDAwMDcwKbK8P///6Wlpf/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////78KCgpICAgP8AAAD/AP//AAAA//8A/wD//////yH5BAEAAP4ALAAAAAAQABAAAAgpAP0JFHhvoMGDCBMiLKiwocOBDB9KXDixosGIFidizPhwI8eGHj8KDAgAOw==");
+  background-image: url("../skin-bootstrap-n/vline.gif");
   background-position: 0 0;
 }
 ul.fancytree-container li.fancytree-lastsib,
@@ -253,27 +253,16 @@ span.fancytree-drag-source.fancytree-drag-remove {
   /*unicode-bidi: bidi-override;*/
   /* optional: reverse title letters */
 }
-.fancytree-container.fancytree-rtl span.fancytree-connector,
-.fancytree-container.fancytree-rtl span.fancytree-expander,
-.fancytree-container.fancytree-rtl span.fancytree-icon,
-.fancytree-container.fancytree-rtl span.fancytree-drag-helper-img,
-.fancytree-container.fancytree-rtl #fancytree-drop-marker {
-  background-image: url("icons-rtl.gif");
-}
 .fancytree-container.fancytree-rtl .fancytree-exp-n span.fancytree-expander,
 .fancytree-container.fancytree-rtl .fancytree-exp-nl span.fancytree-expander {
   background-image: none;
-}
-.fancytree-container.fancytree-rtl.fancytree-connectors .fancytree-exp-n span.fancytree-expander,
-.fancytree-container.fancytree-rtl.fancytree-connectors .fancytree-exp-nl span.fancytree-expander {
-  background-image: url("icons-rtl.gif");
 }
 ul.fancytree-container.fancytree-rtl ul {
   padding: 0 16px 0 0;
 }
 ul.fancytree-container.fancytree-rtl.fancytree-connectors li {
   background-position: right 0;
-  background-image: url("vline-rtl.gif");
+  background-image: url("../skin-bootstrap-n/vline-rtl.gif");
 }
 ul.fancytree-container.fancytree-rtl li.fancytree-lastsib,
 ul.fancytree-container.fancytree-rtl.fancytree-no-connector > li {
@@ -418,35 +407,35 @@ ul.fancytree-ext-wide span.fancytree-node span.fancytree-title {
 /*------------------------------------------------------------------------------
  * 'fixed' extension
  *----------------------------------------------------------------------------*/
-.fancytree-ext-fixed-wrapper .fancytree-fixed-hidden {
+.fancytree-ext-fixed-wrapper .fancytree-ext-fixed-hidden {
   display: none;
 }
-.fancytree-ext-fixed-wrapper div.scrollBorderBottom {
+.fancytree-ext-fixed-wrapper div.fancytree-ext-fixed-scroll-border-bottom {
   border-bottom: 3px solid rgba(0, 0, 0, 0.75);
 }
-.fancytree-ext-fixed-wrapper div.scrollBorderRight {
+.fancytree-ext-fixed-wrapper div.fancytree-ext-fixed-scroll-border-right {
   border-right: 3px solid rgba(0, 0, 0, 0.75);
 }
-.fancytree-ext-fixed-wrapper div.fancytree-fixed-wrapper-tl {
+.fancytree-ext-fixed-wrapper div.fancytree-ext-fixed-wrapper-tl {
   position: absolute;
   overflow: hidden;
   z-index: 3;
   top: 0px;
   left: 0px;
 }
-.fancytree-ext-fixed-wrapper div.fancytree-fixed-wrapper-tr {
+.fancytree-ext-fixed-wrapper div.fancytree-ext-fixed-wrapper-tr {
   position: absolute;
   overflow: hidden;
   z-index: 2;
   top: 0px;
 }
-.fancytree-ext-fixed-wrapper div.fancytree-fixed-wrapper-bl {
+.fancytree-ext-fixed-wrapper div.fancytree-ext-fixed-wrapper-bl {
   position: absolute;
   overflow: hidden;
   z-index: 2;
   left: 0px;
 }
-.fancytree-ext-fixed-wrapper div.fancytree-fixed-wrapper-br {
+.fancytree-ext-fixed-wrapper div.fancytree-ext-fixed-wrapper-br {
   position: absolute;
   overflow: scroll;
   z-index: 1;

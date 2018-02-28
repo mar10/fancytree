@@ -18,7 +18,7 @@
 	<!-- End_Exclude -->
 
 <script type="text/javascript">
-	$.ui.fancytree.debugLevel = 1; // silence debug output
+	$.ui.fancytree.debugLevel = 3; // silence debug output
 
 	function logEvent(event, data, msg){
 //        var args = $.isArray(args) ? args.join(", ") :
@@ -139,7 +139,7 @@
 			},
 			postProcess: function(event, data) {
 				logEvent(event, data);
-				// either modify the ajax response directly
+				// either modify the Ajax response directly
 				data.response[0].title += " - hello from postProcess";
 				// or setup and return a new response object
 //				data.result = [{title: "set by postProcess"}];
@@ -160,7 +160,7 @@
 				var s = data.tree.getSelectedNodes().join(", ");
 				$("#echoSelected").text(s);
 			}
-		}).bind("fancytreeactivate", function(event, data){
+		}).on("fancytreeactivate", function(event, data){
 			// alternative way to bind to 'activate' event
 //		    logEvent(event, data);
 		}).on("mouseenter mouseleave", ".fancytree-title", function(event){

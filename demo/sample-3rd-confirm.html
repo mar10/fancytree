@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+	<title>Fancytree - 3rd Party Example: jquery.confirm</title>
+
+	<!-- <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" /> -->
+	<script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+	<script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
+	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet">
+	<script src="../src/jquery.fancytree.js"></script>
+
+	<!-- jquery-contextmenu (http://craftpip.github.io/jquery-confirm/) -->
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css">
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.js"></script>
+
+	<!-- Start_Exclude: This block is not part of the sample code -->
+	<link href="../lib/prettify.css" rel="stylesheet">
+	<script src="../lib/prettify.js"></script>
+	<link href="sample.css" rel="stylesheet">
+	<script src="sample.js"></script>
+	<!-- End_Exclude -->
+
+<style type="text/css">
+div#tree {
+	width: 300px;
+	height: 200px;
+	overflow-y: scroll;
+}
+ul.fancytree-container {
+	border: 0;
+	outline: 0;
+}
+</style>
+
+<!-- Add code to initialize the tree when the document is loaded: -->
+<script type="text/javascript">
+$(function() {
+	$("#btnOpenPopup").click(function() {
+		$.confirm({
+			// theme: "material",
+			title: "Select Products",
+			// title: "Fancytree & jquery-confirm",
+			content: "<div id='tree'></div>",
+			escape: true,
+			useBootstrap: false,
+			boxWidth: 320,
+			onContentReady: function(){
+				$("#tree").fancytree({
+					checkbox: true,
+					source: {url: "ajax-tree-products.json"}
+				});
+			},
+			onAction: function(btnName){
+				var tree = $("#tree").fancytree("getTree"),
+					selNodes = tree.getSelectedNodes();
+				if( btnName === "ok" ) {
+					alert("Selected: " + selNodes.length + " nodes.");
+				}
+			}
+		});
+	});
+});
+</script>
+</head>
+
+<body class="example">
+
+<h1>Example: use 'jquery.confirm'</h1>
+
+<div class="description">
+	<p>
+		This example uses the
+		<a href="http://craftpip.github.io/jquery-confirm/" target="_blank" class="external">jquery-confirm plugin</a>,
+		which is maintained independantly from Fancytree.
+   </p>
+</div>
+
+Click here for a demo:
+<button id="btnOpenPopup">Select products...</button>
+
+<!-- Start_Exclude: This block is not part of the sample code -->
+<hr>
+
+<p class="sample-links  no_code">
+ <a class="hideInsideFS" href="https://github.com/mar10/fancytree">jquery.fancytree.js project home</a>
+ <a class="hideOutsideFS" href="#">Link to this page</a>
+ <a class="hideInsideFS" href="index.html">Example Browser</a>
+ <a href="#" id="codeExample">View source code</a>
+</p>
+
+<pre id="sourceCode" class="prettyprint" style="display:none"></pre>
+<!-- End_Exclude -->
+
+</body>
+</html>

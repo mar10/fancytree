@@ -20,7 +20,7 @@
 // @fancy-my-icon-size: 16px;
 
 //------------------------------------------------------------------------------
-// Original bootstrap colors 
+// Original bootstrap colors
 // See http://getbootstrap.com/css/#less-variables-colors and
 //     https://github.com/twbs/bootstrap/blob/master/less/variables.less
 @gray-base:              #000;
@@ -64,8 +64,8 @@
 
 //------------------------------------------------------------------------------
 
-// Override the variable after the import. 
-// NOTE: Variables are always resolved as the last definition, even if it is 
+// Override the variable after the import.
+// NOTE: Variables are always resolved as the last definition, even if it is
 // after where it is used.
 @fancy-use-sprites: false;     // false: suppress all background images (i.e. icons)
 @fancy-loading-url: none;
@@ -92,6 +92,10 @@
 @fancy-select-color: @brand-success;
 @fancy-hover-color: @table-bg-hover;
 
+// We need to define this variable here (not in skin-common.less) to make it
+// work with grunt and webpack:
+@fancy-image-prefix: "./skin-bootstrap/";
+
 /*******************************************************************************
  * Plain tree
  * Modifier classes on <ul> container:
@@ -104,7 +108,7 @@ ul.fancytree-container ul {
 }
 /* Prevent focus frame */
 .fancytree-container:focus {
-	outline: none; 
+	outline: none;
 }
 
 // Active and (optionally) selected nodes are white on colored bg. Undo this for input controls:
@@ -116,32 +120,6 @@ ul.fancytree-container ul {
 // Error status node
 .fancytree-container span.fancytree-statusnode-error span.fancytree-expander  {
 	color: @fancy-font-error-color;
-}
-
-/* Helper to allow spinning loader icon with bootstrap */
-.glyphicon-spin {
-    -webkit-animation: spin 1000ms infinite linear;
-    animation: spin 1000ms infinite linear;
-}
-@-webkit-keyframes spin {
-    0% {
-        -webkit-transform: rotate(0deg);
-        transform: rotate(0deg);
-    }
-    100% {
-        -webkit-transform: rotate(359deg);
-        transform: rotate(359deg);
-    }
-}
-@keyframes spin {
-    0% {
-        -webkit-transform: rotate(0deg);
-        transform: rotate(0deg);
-    }
-    100% {
-        -webkit-transform: rotate(359deg);
-        transform: rotate(359deg);
-    }
 }
 
 // ------------------------------------------------------------------------------
@@ -324,7 +302,7 @@ table.fancytree-ext-table {
 		&.fancytree-treefocus >tbody >tr.fancytree-selected >td {
 			background-color: @fancy-select-color;
 		}
-		&.table-hover >tbody >tr.fancytree-selected:hover >td { 
+		&.table-hover >tbody >tr.fancytree-selected:hover >td {
 			// dimmed, if inside inactive tree
 			background-color: lighten(@fancy-select-color, 5%);
 		}
@@ -343,8 +321,8 @@ table.fancytree-ext-table {
 		}
 	}
 
-	// General tree (slightly dimmed, since we also define colors for inactive 
-	// mode here). 
+	// General tree (slightly dimmed, since we also define colors for inactive
+	// mode here).
 
 	&.fancytree-container >tbody >tr.fancytree-active >td {
 		background-color: lighten(@fancy-active-color, 10%);
@@ -358,7 +336,7 @@ table.fancytree-ext-table {
 	// Reset to standard colors if tree has keyboard focus.
 	// We add .fancytree-container to increase specificity, so we can override
 	// .fancytree-colorize-selected defined above
-	
+
 	&.fancytree-treefocus.fancytree-container {
 		>tbody >tr.fancytree-focused span.fancytree-title {
 			outline: 1px dotted #000;

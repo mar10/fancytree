@@ -22,12 +22,18 @@
 
 // @fancy-line-ofs-top: (@fancy-line-height - @fancy-icon-height) / 2;
 
-@fancy-image-dir: ".";
+// webpack uses /dist/skin-common.less as root path
+// grunt-less uses /dist/skin-Xxx/ui.fancyree.less as root path
+// So we define our theme LESS files for webpack compatibility, i.e.
+// define the image path n every main LESS file instead of here.
+// Prefix may be set to "", "/", "./", or any other value
+// Note: this variable must be defined by the main LESS files:
+// @fancy-image-prefix: "";
 
 // Use 'url(...)' to link to the throbber image, or
 // use data-uri(...)' to inline the data in css instead:
-@fancy-loading-url: url("@{fancy-image-dir}/loading.gif");
-// @fancy-loading-url: data-uri("@{fancy-image-dir}/loading.gif");
+// @fancy-loading-url: url("@{fancy-image-prefix}loading.gif");
+@fancy-loading-url: data-uri("@{fancy-image-prefix}loading.gif");
 
 // Set to `true` to use `data-uri(...)` instead of a `url(...)` link:
 @fancy-inline-sprites: false;
@@ -48,10 +54,10 @@
 	background-image: none;
 }
 .setBgImageUrl(@url) when (@fancy-use-sprites) and not (@fancy-inline-sprites) {
-	background-image: url("@{fancy-image-dir}/@{url}");
+	background-image: url("@{fancy-image-prefix}@{url}");
 }
 .setBgImageUrl(@url) when (@fancy-use-sprites) and (@fancy-inline-sprites) {
-	background-image: data-uri("@{fancy-image-dir}/@{url}");
+	background-image: data-uri("@{fancy-image-prefix}@{url}");
 }
 .useSprite(@x, @y) when (@fancy-use-sprites){
 	.setBgPos(@x, @y);
@@ -85,7 +91,7 @@
  * Helpers
  *----------------------------------------------------------------------------*/
 // Redefine, in case jQuery-UI is not included
-.ui-helper-hidden { 
+.ui-helper-hidden {
 	display: none;
 }
 
@@ -137,21 +143,21 @@ ul.fancytree-container {
 // Style, when control is disabled
 .ui-fancytree-disabled ul.fancytree-container {
 	opacity: 0.5;
-//	filter: alpha(opacity=50); // Yields a css warning 
+//	filter: alpha(opacity=50); // Yields a css warning
 	background-color: silver;
 }
 
 ul.fancytree-connectors.fancytree-container {
 	li {
 		// Use 'data-uri(...)' to embed the image into CSS instead of linking to 'loading.gif':
-		background-image: data-uri("@{fancy-image-dir}/vline.gif");
+		background-image: data-uri("@{fancy-image-prefix}vline.gif");
 		background-position: 0 0;
 	}
 }
 
 // Suppress lines for last child node
 ul.fancytree-container li.fancytree-lastsib,
-// Suppress lines if level is fixed expanded (option minExpandLevel) 
+// Suppress lines if level is fixed expanded (option minExpandLevel)
 ul.fancytree-no-connector > li {
 	background-image: none;
 }
@@ -232,14 +238,14 @@ span.fancytree-expander {
 
 // --- End nodes (use connectors instead of expanders)
 
-.fancytree-exp-n span.fancytree-expander, 
+.fancytree-exp-n span.fancytree-expander,
 .fancytree-exp-nl span.fancytree-expander {
 	// .clearBgImage( @fancy-hide-connectors );
 	background-image: none;
 	cursor: default;
 }
 .fancytree-connectors {
-	.fancytree-exp-n span.fancytree-expander, 
+	.fancytree-exp-n span.fancytree-expander,
 	.fancytree-exp-nl span.fancytree-expander {
 		.setBgImageUrl("icons.gif");
 		margin-top: 0;
@@ -295,7 +301,7 @@ span.fancytree-expander {
 .fancytree-exp-edl span.fancytree-expander { // Expanded, delayed, last sibling
 	.useSprite(2, 6);
 }
-.fancytree-exp-el span.fancytree-expander:hover,  
+.fancytree-exp-el span.fancytree-expander:hover,
 .fancytree-exp-edl span.fancytree-expander:hover {
 	.useSprite(3, 6);
 }
@@ -452,7 +458,7 @@ span.fancytree-title {
 	// margin-left: @fancy-icon-spacing;
     border: @fancy-node-border-width solid transparent;  // avoid jumping, when a border is added on hover
     .rounded-corners(@fancy-node-border-radius);
-//  outline: 0; // @ Firefox, prevent dotted border after click 
+//  outline: 0; // @ Firefox, prevent dotted border after click
 // Set transparent border to prevent jumping when active node gets a border
 //	   (we can do this, because this theme doesn't use vertical lines)
 //	border: 1px solid white; // Note: 'transparent' would not work in IE6
@@ -550,7 +556,7 @@ span.fancytree-drop-reject {
 /*------------------------------------------------------------------------------
  * 'rtl' option
  *----------------------------------------------------------------------------*/
- 
+
 .fancytree-container.fancytree-rtl {
 	.fancytree-title {
 		/*unicode-bidi: bidi-override;*/ /* optional: reverse title letters */
@@ -560,15 +566,15 @@ span.fancytree-drop-reject {
 	span.fancytree-icon,
 	span.fancytree-drag-helper-img,
 	#fancytree-drop-marker {
-		background-image: url("icons-rtl.gif");
+		.setBgImageUrl("icons-rtl.gif");
 	}
-	.fancytree-exp-n span.fancytree-expander, 
+	.fancytree-exp-n span.fancytree-expander,
 	.fancytree-exp-nl span.fancytree-expander {
 		background-image: none;
 	}
-	&.fancytree-connectors .fancytree-exp-n span.fancytree-expander, 
+	&.fancytree-connectors .fancytree-exp-n span.fancytree-expander,
 	&.fancytree-connectors .fancytree-exp-nl span.fancytree-expander {
-		background-image: url("icons-rtl.gif");
+		.setBgImageUrl("icons-rtl.gif");
 	}
 }
 ul.fancytree-container.fancytree-rtl {
@@ -577,11 +583,11 @@ ul.fancytree-container.fancytree-rtl {
 	}
 	&.fancytree-connectors li {
 		background-position: right 0;
-		background-image: url("@{fancy-image-dir}/vline-rtl.gif");
+		background-image: url("@{fancy-image-prefix}vline-rtl.gif");
 	}
 	// Suppress lines for last child node
 	li.fancytree-lastsib,
-	// Suppress lines if level is fixed expanded (option minExpandLevel) 
+	// Suppress lines if level is fixed expanded (option minExpandLevel)
 	&.fancytree-no-connector > li {
 		background-image: none;
 	}
@@ -762,35 +768,35 @@ ul.fancytree-ext-wide {
  *----------------------------------------------------------------------------*/
 
 .fancytree-ext-fixed-wrapper {
-    .fancytree-fixed-hidden {
+    .fancytree-ext-fixed-hidden {
         display: none;
     }
-    div.scrollBorderBottom {
+    div.fancytree-ext-fixed-scroll-border-bottom {
         border-bottom: 3px solid rgba(0, 0, 0, 0.75);
     }
-    div.scrollBorderRight {
+    div.fancytree-ext-fixed-scroll-border-right {
         border-right: 3px solid rgba(0, 0, 0, 0.75);
     }
-    div.fancytree-fixed-wrapper-tl {
+    div.fancytree-ext-fixed-wrapper-tl {
         position: absolute;
         overflow: hidden;
         z-index: 3;
         top: 0px;
         left: 0px;
     }
-    div.fancytree-fixed-wrapper-tr {
+    div.fancytree-ext-fixed-wrapper-tr {
         position: absolute;
         overflow: hidden;
         z-index: 2;
         top: 0px;
     }
-    div.fancytree-fixed-wrapper-bl {
+    div.fancytree-ext-fixed-wrapper-bl {
         position: absolute;
         overflow: hidden;
         z-index: 2;
         left: 0px;
     }
-    div.fancytree-fixed-wrapper-br {
+    div.fancytree-ext-fixed-wrapper-br {
         position: absolute;
         overflow: scroll;
         z-index: 1;

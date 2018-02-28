@@ -3,7 +3,7 @@
  * Support for 100% wide selection bars.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2017, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -12,7 +12,20 @@
  * @date @DATE
  */
 
-;(function($, window, document, undefined) {
+;(function( factory ) {
+	if ( typeof define === "function" && define.amd ) {
+		// AMD. Register as an anonymous module.
+		define( [ "jquery", "./jquery.fancytree" ], factory );
+	} else if ( typeof module === "object" && module.exports ) {
+		// Node/CommonJS
+		require("./jquery.fancytree");
+		module.exports = factory(require("jquery"));
+	} else {
+		// Browser globals
+		factory( jQuery );
+	}
+
+}( function( $ ) {
 
 "use strict";
 
@@ -71,7 +84,7 @@ function renderLevelCss(containerId, depth, levelOfs, lineOfs, labelOfs, measure
 	// This breaks the left:0 and padding-left:nn settings of the title
 	rules.push(
 		"#" + containerId + " div.ui-effects-wrapper ul li span.fancytree-title, " +
-		"#" + containerId + " ul.fancytree-animating span.fancytree-title " +  // #716
+		"#" + containerId + " li.fancytree-animating span.fancytree-title " +  // #716
 		"{ padding-left: " + labelOfs + measureUnit + "; position: static; width: auto; }");
 	return rules.join("\n");
 }
@@ -191,4 +204,6 @@ $.ui.fancytree.registerExtension({
 		return res;
 	}
 });
-}(jQuery, window, document));
+// Value returned by `require('jquery.fancytree..')`
+return $.ui.fancytree;
+}));  // End of closure

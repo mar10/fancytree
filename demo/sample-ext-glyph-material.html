@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+	<title>Fancytree - Example: ext-glyph - material design</title>
+
+	<script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+	<script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
+	<link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+	<link rel="stylesheet" href="//code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+	<!-- <script defer src="//code.getmdl.io/1.3.0/material.min.js"></script> -->
+
+	<link href="../src/skin-material/ui.fancytree.css" rel="stylesheet" class="skinswitcher">
+	<script src="../src/jquery.fancytree.js"></script>
+	<script src="../src/jquery.fancytree.glyph.js"></script>
+	<script src="../src/jquery.fancytree.table.js"></script>
+	<script src="../src/jquery.fancytree.wide.js"></script>
+
+<!-- Start_Exclude: This block is not part of the sample code -->
+	<link href="../lib/prettify.css" rel="stylesheet">
+	<script src="../lib/prettify.js"></script>
+	<link href="../demo/sample.css" rel="stylesheet">
+	<script src="../demo/sample.js"></script>
+<!-- End_Exclude -->
+
+<style type="text/css">
+	ul.fancytree-container {
+		width: 315px;
+		border: 0;
+		outline: 0;  /* No focus frame */
+	}
+	table.fancytree-container {
+		table-layout: fixed;
+		outline: 0;  /* No focus frame */
+	}
+</style>
+
+<script type="text/javascript">
+	$(function(){
+
+		// --- Initialize Fancytree Grid -------------------------------------------
+		$("#tree").fancytree({
+			extensions: ["glyph", "wide"],
+			debugLevel: 4,
+			checkbox: true,
+			selectMode: 3,
+			tooltip: function(event, data) {
+				var node = data.node,
+					data = node.data;
+
+				if( data.author ) {
+					return node.title + ", " + data.author + ", " + data.year;
+				}
+			},
+			glyph: {
+				preset: "material",
+				map: {}
+			},
+			source: {url: "ajax-tree-products.json", debugDelay: 1000},
+			lazyLoad: function(event, data) {
+				data.result = {url: "ajax-sub2.json", debugDelay: 1000};
+			}
+		});
+		$("#btnReloadTree").click(function(){
+			$.ui.fancytree.getTree(0).reload();
+		});
+
+		// --- Initialize Fancytree Grid -------------------------------------------
+		$("#treegrid").fancytree({
+			extensions: ["glyph", "table", "wide"],
+			checkbox: true,
+			selectMode: 3,
+			glyph: {
+				preset: "material",
+				map: {}
+			},
+			table: {
+				checkboxColumnIdx: 0,
+				nodeColumnIdx: 1
+			},
+			source: {url: "ajax-tree-products.json", debugDelay: 1000},
+			lazyLoad: function(event, data) {
+				data.result = {url: "ajax-sub2.json", debugDelay: 1000};
+			},
+			renderColumns: function(event, data) {
+				var node = data.node,
+					data = node.data,
+					$tdList = $(node.tr).find(">td");
+
+				$tdList.eq(2).text(data.author);
+				$tdList.eq(3).text(data.year);
+				$tdList.eq(4).text(data.price ? data.price.toFixed(2) : "");
+			}
+		});
+		$("#btnGridExpandAll").click(function(){
+			$.ui.fancytree.getTree(1).visit(function(node){
+				node.setExpanded();
+			});
+		});
+		$("#btnGridCollapseAll").click(function(){
+			$.ui.fancytree.getTree(1).visit(function(node){
+				node.setExpanded(false);
+			});
+		});
+	});
+</script>
+</head>
+
+<body class="example">
+
+	<div class="demo-card-wide mdl-card mdl-shadow--2dp">
+	  <div class="mdl-card__title">
+		<h2 class="mdl-card__title-text">Example: 'glyph' extension with skin-material theme and material icons</h2>
+	  </div>
+	  <div class="mdl-card__supporting-text">
+		  The 'glyph' extension adds ligature font icons to the
+		node's <code>span</code> tags, so scalable vector icons as provided by
+		<a href="https://material.io/icons/" class="external" target="_blank">Material Design</a>
+		can be used.<br>
+		See also
+		<a href="https://github.com/mar10/fancytree/wiki/ExtGlyph"
+			class="external" target="_blank">ext-glyph</a>.
+	  </div>
+	  <div class="mdl-card__actions mdl-card--border">
+		<a id="btnReloadTree"
+			class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+		  Reload
+		</a>
+	  </div>
+	  <div class="mdl-card__menu">
+		<button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+		  <i class="material-icons">info</i>
+		</button>
+	  </div>
+	</div>
+
+	<!-- <div id="tree" class="demo-card-wide mdl-card mdl-shadow--2dp"> -->
+	<div id="tree" class="">
+	</div>
+
+	<hr>
+
+	<!-- Accent-colored raised button with ripple -->
+	<button id="btnGridExpandAll"
+		class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+	  Expand all
+	</button>
+	<button id="btnGridCollapseAll"
+		class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+	  Collapse all
+	</button>
+
+	<table id="treegrid" class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+	<!-- <table id="treegrid" class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp"> -->
+	  <colgroup>
+		<col style="width: 40px;">
+		<col style="width: 400px;">
+		<col style="width: 200px;">
+		<col style="width: 50px;">
+		<col style="width: 80px;">
+	  </colgroup>
+	  <thead>
+		<tr>
+		  <!-- NOTE: the first column will be inserted by MDL if mdl-data-table--selectable is set. -->
+		  <th class="mdl-data-table__cell--non-numeric"></th>
+		  <th class="mdl-data-table__cell--non-numeric">Item</th>
+		  <th class="mdl-data-table__cell--non-numeric">Author</th>
+		  <th>Year</th>
+		  <th>Unit price</th>
+		</tr>
+	  </thead>
+	  <tbody>
+		  <tr>
+			  <td class="mdl-data-table__cell--non-numeric"></td>
+			  <td class="mdl-data-table__cell--non-numeric"></td>
+			  <td class="mdl-data-table__cell--non-numeric"></td>
+			  <td></td>
+			  <td></td>
+		  </tr>
+	  </tbody>
+	</table>
+
+<!-- Start_Exclude: This block is not part of the sample code -->
+	<p id="sampleButtons">
+	</p>
+	<hr>
+	<p class="sample-links  no_code">
+		<a class="hideInsideFS" href="https://github.com/mar10/fancytree/">Fancytree project home</a>
+		<a class="hideOutsideFS" href="#">Link to this page</a>
+		<a class="hideInsideFS" href="index.html">Example Browser</a>
+		<a href="#" id="codeExample">View source code</a>
+	</p>
+	<pre id="sourceCode" class="prettyprint" style="display:none"></pre>
+<!-- End_Exclude -->
+</body>
+</html>

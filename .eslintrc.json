@@ -9,6 +9,9 @@
     	// "document": false,
      //    "jQuery": false,
      //    "window": false
+     "define": true,
+     "module": true,
+     "require": true
     },
 	"rules": {
 		"no-negated-in-lhs": "error",
@@ -41,8 +44,9 @@
 		"no-nested-ternary": "error",
 		"no-unreachable": "error",
 		"wrap-iife": [
-			"error",
-			"inside"
+			"warn",
+			"outside"
+			//"inside"
 		],
 		"no-caller": "error",
 		"quotes": [
@@ -130,7 +134,8 @@
 		],
 		"linebreak-style": [
 //      "error",
-			"warn",
+//			"warn",
+      "off",  // accept git autoconvert on windows
 			"unix"
 		],
 		"no-with": "error",

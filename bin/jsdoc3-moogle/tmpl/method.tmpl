@@ -9,6 +9,7 @@ var self = this;
 
     <?js if (data.kind !== 'namespace') { ?>
     <h4 class="name" id="<?js= id ?>">
+		<!-- Start MOOGLE Changes -->
 		<?js= data.attribs + (kind === 'class' ? 'new ' : '') + name + (data.signature || '') ?>
 
 		<a class="showHover" href="#<?js= id ?>">
@@ -17,6 +18,7 @@ var self = this;
 				</path>
 			</svg>
 		</a>
+		<!-- End MOOGLE Changes -->
 	</h4>
     <?js } ?>
 
