@@ -4,9 +4,9 @@
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 	<title>Fancytree - Example: Fixed Headers</title>
 
-	<script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
-	<script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-
+	<script src="//code.jquery.com/jquery-1.12.1.js"></script>
+	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+	<link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css"/>
 <style type="text/css">
 	/* Set alternating row colors (define BEFORE standard css). */
 /*
@@ -53,7 +53,7 @@
 	table.fancytree-container.fancytree-ext-fixed tbody tr td:nth-child(1) {
 		width: 22px;
 	}
-
+	
 	table.fancytree-ext-table tbody tr.fancytree-ext-fixed-hover {
 	  border-color: inherit;
 	  background: #f8fcfe;
@@ -66,6 +66,25 @@
 	  background: linear-gradient(to bottom, #f8fcfe 0%, #eff9fe 100%);
 	  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f8fcfe', endColorstr='#eff9fe', GradientType=0);
 	  outline: 1px solid #d8f0fa;
+	}
+
+	table.fancytree-ext-table tbody tr.fancytree-active.fancytree-ext-fixed-hover,
+	table.fancytree-ext-table tbody tr.fancytree-selected.fancytree-ext-fixed-hover {
+	  border-color: inherit;
+	  background: #f2f9fd;
+	  color: inherit;
+	  background: -moz-linear-gradient(top, #f2f9fd 0%, #c4e8fa 100%);
+	  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f2f9fd), color-stop(100%, #c4e8fa));
+	  background: -webkit-linear-gradient(top, #f2f9fd 0%, #c4e8fa 100%);
+	  background: -o-linear-gradient(top, #f2f9fd 0%, #c4e8fa 100%);
+	  background: -ms-linear-gradient(top, #f2f9fd 0%, #c4e8fa 100%);
+	  background: linear-gradient(to bottom, #f2f9fd 0%, #c4e8fa 100%);
+	  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f2f9fd', endColorstr='#c4e8fa', GradientType=0);
+	  outline: 1px solid #B6E6FB;
+	}
+	
+	table.fancytree-ext-table {
+	    width: 100%;
 	}
 
 	table.fancytree-ext-table tbody tr.fancytree-active.fancytree-ext-fixed-hover,
@@ -206,12 +225,16 @@
 		addSampleButton({
 			label: "Expand all",
 			code: function(){
-				var t = $.ui.fancytree.getTree();
+//				var tree = $.ui.fancytree.getTree();
 				var $tree = $("#treetable");
+				var tree = $tree.fancytree("getTree");
+
 				window.console.time("expand all");
-				$tree.fancytree("getTree").visit(function(n){
+				tree.enableUpdate(false);
+				tree.visit(function(n){
 					n.setExpanded();
 				});
+				tree.enableUpdate(true);
 				window.console.timeEnd("expand all");
 			}
 		});
