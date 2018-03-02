@@ -90,18 +90,18 @@
 				},
 				dragDrop: function(node, data) {
 					// This function MUST be defined to enable dropping of items on the tree.
-			        //
-			        // The source data is provided in several formats:
-			        //   `data.otherNode` (null if it's not a FancytreeNode from the same page)
-			        //   `data.otherNodeData` (Json object; null if it's not a FancytreeNode)
-			        //   `data.dataTransfer.getData()`
-			        //
-			        // We may access some meta data to decide what to do:
-			        //   `data.hitMode` ("before", "after", or "over").
-			        //   `data.dataTransfer.dropEffect`, `.effectAllowed`
-			        //   `data.originalEvent.shiftKey`, ...
-			        //
-			        // Example:
+					//
+					// The source data is provided in several formats:
+					//   `data.otherNode` (null if it's not a FancytreeNode from the same page)
+					//   `data.otherNodeData` (Json object; null if it's not a FancytreeNode)
+					//   `data.dataTransfer.getData()`
+					//
+					// We may access some meta data to decide what to do:
+					//   `data.hitMode` ("before", "after", or "over").
+					//   `data.dataTransfer.dropEffect`, `.effectAllowed`
+					//   `data.originalEvent.shiftKey`, ...
+					//
+					// Example:
 
 					var dataTransfer = data.dataTransfer,
 						sourceNodes = data.otherNodeList,
@@ -121,9 +121,9 @@
 							o.moveTo(node, data.hitMode);
 						});
 					}
-			        node.debug("drop", data);
-			        node.setExpanded();
-			      }
+					node.debug("drop", data);
+					node.setExpanded();
+				  }
 			}
 		});
 

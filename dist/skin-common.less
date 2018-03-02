@@ -41,7 +41,7 @@
 @fancy-font-size: 10pt;
 @fancy-font-family: tahoma, arial, helvetica;
 @fancy-font-color: black;
-@fancy-font-color-dimm: silver;
+@fancy-font-color-dimm: #c0c0c0;
 @fancy-font-error-color: red;
 
 //------------------------------------------------------------------------------
@@ -91,9 +91,43 @@
  * Helpers
  *----------------------------------------------------------------------------*/
 // Redefine, in case jQuery-UI is not included
-.ui-helper-hidden {
+// .ui-helper-hidden,
+.fancytree-helper-hidden {
 	display: none;
 }
+.fancytree-helper-indeterminate-cb {  // tri-state checkbox
+	color: #777;
+}
+.fancytree-helper-disabled {
+	color: @fancy-font-color-dimm;
+}
+
+/* Helper to allow spinning loader icon with glyph-, ligature-, and SVG-icons. */
+.fancytree-helper-spin {
+    -webkit-animation: spin 1000ms infinite linear;
+    animation: spin 1000ms infinite linear;
+}
+@-webkit-keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(359deg);
+        transform: rotate(359deg);
+    }
+}
+@keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(359deg);
+        transform: rotate(359deg);
+    }
+}
+
 
 /*------------------------------------------------------------------------------
  * Container and UL / LI
@@ -470,6 +504,17 @@ span.fancytree-node.fancytree-error span.fancytree-title {
 /*------------------------------------------------------------------------------
  * Drag'n'drop support
  *----------------------------------------------------------------------------*/
+ /* ext-dnd5: */
+ span.fancytree-childcounter {
+	 color: #fff;
+	 background: #337ab7;  // bootstrap blue
+	 border: 1px solid gray;
+	 border-radius: 10px;
+	 padding: 2px;
+	 text-align: center;
+ }
+
+ /* ext-dnd: */
 div.fancytree-drag-helper {
 	span.fancytree-childcounter,
 	span.fancytree-dnd-modifier {

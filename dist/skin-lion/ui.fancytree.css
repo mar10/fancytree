@@ -18,8 +18,39 @@
 /*------------------------------------------------------------------------------
  * Helpers
  *----------------------------------------------------------------------------*/
-.ui-helper-hidden {
+.fancytree-helper-hidden {
   display: none;
+}
+.fancytree-helper-indeterminate-cb {
+  color: #777;
+}
+.fancytree-helper-disabled {
+  color: #c0c0c0;
+}
+/* Helper to allow spinning loader icon with glyph-, ligature-, and SVG-icons. */
+.fancytree-helper-spin {
+  -webkit-animation: spin 1000ms infinite linear;
+  animation: spin 1000ms infinite linear;
+}
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+@keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
 }
 /*------------------------------------------------------------------------------
  * Container and UL / LI
@@ -344,6 +375,16 @@ span.fancytree-node.fancytree-error span.fancytree-title {
 /*------------------------------------------------------------------------------
  * Drag'n'drop support
  *----------------------------------------------------------------------------*/
+/* ext-dnd5: */
+span.fancytree-childcounter {
+  color: #fff;
+  background: #337ab7;
+  border: 1px solid gray;
+  border-radius: 10px;
+  padding: 2px;
+  text-align: center;
+}
+/* ext-dnd: */
 div.fancytree-drag-helper span.fancytree-childcounter,
 div.fancytree-drag-helper span.fancytree-dnd-modifier {
   display: inline-block;
@@ -488,7 +529,7 @@ table.fancytree-ext-columnview .fancytree-has-children span.fancytree-cv-right:h
  * 'filter' extension
  *----------------------------------------------------------------------------*/
 .fancytree-ext-filter-dimm span.fancytree-node span.fancytree-title {
-  color: silver;
+  color: #c0c0c0;
   font-weight: lighter;
 }
 .fancytree-ext-filter-dimm tr.fancytree-submatch span.fancytree-title,
@@ -507,7 +548,7 @@ table.fancytree-ext-columnview .fancytree-has-children span.fancytree-cv-right:h
 }
 .fancytree-ext-filter-hide tr.fancytree-submatch span.fancytree-title,
 .fancytree-ext-filter-hide span.fancytree-node.fancytree-submatch span.fancytree-title {
-  color: silver;
+  color: #c0c0c0;
   font-weight: lighter;
 }
 .fancytree-ext-filter-hide tr.fancytree-match span.fancytree-title,

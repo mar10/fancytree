@@ -2161,7 +2161,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		if( this.tree.options.debugLevel >= 2 ) {
 			Array.prototype.unshift.call(arguments, this.toString());
 			consoleApply("warn", arguments);
- 		}
+		}
 	}
 };
 

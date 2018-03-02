@@ -3,13 +3,13 @@
  * Support for 100% wide selection bars.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2017, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.27.0
- * @date 2017-12-16T09:14:27Z
+ * @version 2.28.0
+ * @date 2018-03-02T20:59:49Z
  */
 
 ;(function( factory ) {
@@ -122,7 +122,7 @@ function renderLevelCss(containerId, depth, levelOfs, lineOfs, labelOfs, measure
  */
 $.ui.fancytree.registerExtension({
 	name: "wide",
-	version: "2.27.0",
+	version: "2.28.0",
 	// Default options for this extension.
 	options: {
 		iconWidth: null,     // Adjust this if @fancy-icon-width != "16px"

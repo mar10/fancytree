@@ -90,7 +90,7 @@ $.ui.fancytree.registerExtension({
 			$head = $table.find("thead"),
 			$colgroup = $table.find("colgroup"),
 			headRowCount = $head.find("tr").length;
-		
+
 		this.$fixedWrapper = $tableWrapper;
 		$table.addClass(fcn.table);
 		$tableWrapper.addClass(fcn.wrapper);
@@ -136,14 +136,14 @@ $.ui.fancytree.registerExtension({
 				$bottomRightTable
 			)
 		);
-		
+
 		$bottomRightTable.on("keydown", function(evt) {
 			var node = tree.focusNode,
 				ctx = tree._makeHookContext(node || tree, evt),
 				res = tree._callHook("nodeKeydown", ctx);
 			return res;
 		});
-		
+
 		$bottomRightTable.on("click dblclick", "tr", function(evt) {
 			var $trLeft = $(this),
 				$trRight = $trLeft.data(fcn.counterpart),
@@ -168,9 +168,9 @@ $.ui.fancytree.registerExtension({
 			} finally {
 				tree.phase = prevPhase;
 			}
-			
+
 		});
-		
+
 		$tableWrapper.on("mouseenter", "." + fcn.bottomRight + " table tr, ." + fcn.bottomLeft + " table tr", function(evt) {
 			var $tr = $(this),
 				$trOther = $tr.data(fcn.counterpart);
@@ -187,7 +187,7 @@ $.ui.fancytree.registerExtension({
 			var $this = $(this),
 				newScroll = $this.scrollTop(),
 				scrollUp = event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0;
-			
+
 			newScroll += scrollUp ? -options.scrollSpeed : options.scrollSpeed;
 			$this.scrollTop(newScroll);
 			$bottomRightWrapper.scrollTop(newScroll);
@@ -219,7 +219,7 @@ $.ui.fancytree.registerExtension({
 		});
 		return res;
 	},
-	
+
 	treeLoad: function(ctx) {
 		var _this = this,
 			res = this._superApply(arguments);
@@ -232,7 +232,7 @@ $.ui.fancytree.registerExtension({
 		});
 		return res;
 	},
-	
+
 	_makeTableResizable: function() {
 		var $wrapper = this.$fixedWrapper,
 			fcn = this.options.fixed.classNames,
@@ -240,7 +240,7 @@ $.ui.fancytree.registerExtension({
 			$topRightWrapper = $wrapper.find("div." + fcn.topRight),
 			$bottomLeftWrapper = $wrapper.find("div." + fcn.bottomLeft),
 			$bottomRightWrapper = $wrapper.find("div." + fcn.bottomRight);
-		
+
 		function _makeResizable($table) {
 			$table.resizable({
 				handles: "e",
@@ -256,11 +256,11 @@ $.ui.fancytree.registerExtension({
 				}
 			});
 		}
-		
+
 		_makeResizable($topLeftWrapper.find("table"));
 		_makeResizable($bottomLeftWrapper.find("table"));
 	},
-	
+
 	/* Called by nodeRender to sync node order with tag order.*/
 //	nodeFixOrder: function(ctx) {
 //	},
@@ -268,10 +268,10 @@ $.ui.fancytree.registerExtension({
 	nodeLoadChildren: function(ctx, source) {
 		return this._superApply(arguments);
 	},
-	
+
 	nodeRemoveChildMarkup: function(ctx) {
 		var node = ctx.node;
-		
+
 		function _removeChild(elem) {
 			var children = elem.children;
 			if (children) {
@@ -284,54 +284,54 @@ $.ui.fancytree.registerExtension({
 				}
 			}
 		}
-		
+
 		_removeChild(node);
 		return this._superApply(arguments);
 	},
-	
+
 	nodeRemoveMarkup: function(ctx) {
 		var node = ctx.node;
-		
+
 		if (node.trRight) {
 			$(node.trRight).remove();
 		}
 		return this._superApply(arguments);
 	},
-	
+
 	nodeSetActive: function(ctx, flag, callOpts) {
 		var node = ctx.node,
 			cn = this.options._classNames;
-		
+
 		if (node.trRight) {
 			$(node.trRight).toggleClass(cn.active, flag).toggleClass(cn.focused, flag);
 		}
 		return this._superApply(arguments);
 	},
-	
+
 	nodeKeydown: function(ctx) {
 		return this._superApply(arguments);
 	},
-	
+
 	nodeSetFocus: function(ctx, flag) {
 		var node = ctx.node,
 			cn = this.options._classNames;
-		
+
 		if (node.trRight) {
 			$(node.trRight).toggleClass(cn.focused, flag);
 		}
 		return this._superApply(arguments);
 	},
-	
+
 	nodeRender: function(ctx, force, deep, collapsed, _recursive) {
 		var res = this._superApply(arguments),
 			node = ctx.node,
 			isRootNode = !node.parent;
-		
+
 		if (!isRootNode) {
 			var $trLeft = $(node.tr),
 				fcn = this.options.fixed.classNames,
 				$trRight = $trLeft.data(fcn.counterpart);
-			
+
 			if (!$trRight && $trLeft.length) {
 				var idx = $trLeft.index(),
 					fixedColCount = this.options.fixed.fixCols,
@@ -339,10 +339,10 @@ $.ui.fancytree.registerExtension({
 					$brTableBody = $("div." + fcn.bottomRight + " table tbody"),
 					$prevLeftNode = $blTableBody.find("tr:eq(" + Math.max(idx + 1, 0) + ")"),
 					prevRightNode = $prevLeftNode.data(fcn.counterpart);
-					
+
 				$trRight = $trLeft.clone(true);
 				var trRight = $trRight.get(0);
-				
+
 				if (prevRightNode) {
 					$(prevRightNode).before($trRight);
 				} else {
@@ -351,32 +351,32 @@ $.ui.fancytree.registerExtension({
 				$trRight.show();
 				trRight.ftnode = node;
 				node.trRight = trRight;
-				
+
 				$trLeft.find("td").slice(fixedColCount).remove();
 				$trRight.find("td").slice(0, fixedColCount).remove();
 				$trLeft.data(fcn.counterpart, $trRight);
 				$trRight.data(fcn.counterpart, $trLeft);
 			}
 		}
-		
+
 		return res;
 	},
 
 	nodeRenderTitle: function(ctx, title) {
 		return this._superApply(arguments);
 	},
-	
+
 	nodeRenderStatus: function(ctx) {
 		var res = this._superApply(arguments),
 			node = ctx.node;
-		
+
 		if (node.trRight) {
 			var $trRight = $(node.trRight),
 				$trLeft = $(node.tr),
 				fcn = this.options.fixed.classNames,
 				hovering = $trRight.hasClass(fcn.hover),
 				trClasses = $trLeft.attr("class");
-			
+
 			$trRight.attr("class", trClasses);
 			if (hovering) {
 				$trRight.addClass(fcn.hover);
@@ -385,7 +385,7 @@ $.ui.fancytree.registerExtension({
 		}
 		return res;
 	},
-	
+
 	nodeSetExpanded: function(ctx, flag, callOpts) {
 		var res,
 			_this = this,
@@ -396,7 +396,7 @@ $.ui.fancytree.registerExtension({
 			$rightTr = $leftTr.data(fcn.counterpart);
 
 		flag = typeof flag === "undefined" ? true : flag;
-		
+
 		if (!$rightTr) {
 			return this._superApply(arguments);
 		}
@@ -436,17 +436,17 @@ $.ui.fancytree.registerExtension({
 		}
 		return res;
 	},
-	
+
 	nodeSetStatus: function(ctx, status, message, details) {
 		return this._superApply(arguments);
 	},
-	
+
 	treeClear: function(ctx) {
 		var tree = ctx.tree,
 			$table = tree.widget.element,
 			$wrapper = this.$fixedWrapper,
 			fcn = this.options.fixed.classNames;
-		
+
 		$table.find("tr, td, th, thead").removeClass(fcn.hidden).css({
 			"min-width": "auto",
 			"height": "auto"
@@ -458,13 +458,13 @@ $.ui.fancytree.registerExtension({
 	treeRegisterNode: function(ctx, add, node) {
 		return this._superApply(arguments);
 	},
-	
+
 	treeDestroy: function(ctx) {
 		var tree = ctx.tree,
 			$table = tree.widget.element,
 			$wrapper = this.$fixedWrapper,
 			fcn = this.options.fixed.classNames;
-		
+
 		$table.find("tr, td, th, thead").removeClass(fcn.hidden).css({
 			"min-width": "auto",
 			"height": "auto"
@@ -478,22 +478,22 @@ $.ui.fancytree.registerExtension({
 			this.options.fixed.adjustColWidths.call(this);
 			return;
 		}
-		
+
 		var $wrapper = this.$fixedWrapper,
 			fcn = this.options.fixed.classNames,
 			$tlWrapper = $wrapper.find("div." + fcn.topLeft),
 			$blWrapper = $wrapper.find("div." + fcn.bottomLeft),
 			$trWrapper = $wrapper.find("div." + fcn.topRight),
 			$brWrapper = $wrapper.find("div." + fcn.bottomRight);
-		
+
 		function _adjust($topWrapper, $bottomWrapper) {
 			var $trTop = $topWrapper.find("thead tr").first(),
 				$trBottom = $bottomWrapper.find("tbody tr").first();
-			
+
 			$trTop.find("th").each(function(idx) {
 				var $thTop = $(this),
 					$tdBottom = $trBottom.find("td").eq(idx);
-				
+
 				var thTopWidth = $thTop.width(),
 					thTopOuterWidth = $thTop.outerWidth(),
 					tdBottomWidth = $tdBottom.width(),
@@ -504,11 +504,11 @@ $.ui.fancytree.registerExtension({
 				$tdBottom.css("min-width", newWidth - (tdBottomOuterWidth - tdBottomWidth));
 			});
 		}
-		
+
 		_adjust($tlWrapper, $blWrapper);
 		_adjust($trWrapper, $brWrapper);
 	},
-	
+
 	_adjustRowHeight: function($tr1, $tr2) {
 		var fcn = this.options.fixed.classNames;
 		if (!$tr2) {
@@ -539,7 +539,7 @@ $.ui.fancytree.registerExtension({
 			fixedHeight = Math.min(wrapperHeight, Math.max($topLeftTable.height(), $topRightTable.height()));
 //			vScrollbar = $bottomRightWrapper.get(0).scrollHeight > (wrapperHeight - fixedHeight),
 //			hScrollbar = $bottomRightWrapper.get(0).scrollWidth > (wrapperWidth - fixedWidth);
-			
+
 		$topLeftWrapper.css({
 			width: fixedWidth,
 			height: fixedHeight
