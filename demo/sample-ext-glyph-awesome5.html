@@ -7,7 +7,6 @@
 	<script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
 	<script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 
-	<!-- <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script> -->
 	<link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
 
 	<link href="../src/skin-awesome/ui.fancytree.css" rel="stylesheet" class="skinswitcher">
@@ -15,6 +14,9 @@
 	<script src="../src/jquery.fancytree.glyph.js"></script>
 
 <!-- Start_Exclude: This block is not part of the sample code -->
+	<!-- Used for font slider: -->
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
 	<link href="../lib/prettify.css" rel="stylesheet">
 	<script src="../lib/prettify.js"></script>
 	<link href="../demo/sample.css" rel="stylesheet">
@@ -40,7 +42,7 @@
 			source: {url: "ajax-tree-products.json", debugDelay: 1000},
 			// source: {url: "ajax-tree-taxonomy.json", debugDelay: 1000},
 			lazyLoad: function(event, ctx) {
-				ctx.result = {url: "ajax-sub2.json", debugDelay: 1000};
+				ctx.result = {url: "ajax-sub2.json", debugDelay: 2000};
 			}
 		});
 	});
@@ -61,23 +63,6 @@ $(function(){
 		change: setSize,
 		slide: setSize
 	 }).slider("value", 10);
-/*
-	$("#skinswitcher")
-		// .skinswitcher("option", "base", "../../src/")
-		.skinswitcher("addChoices", [
-			{name: "Awesome", value: "awesome", href: "skin-awesome/ui.fancytree.css"}
-			])
-		.skinswitcher("change", "awesome");
-*/
-/*
-	addSampleButton({
-		label: "Generate <input> elements",
-		code: function(){
-			$("#tree").fancytree("getTree").generateInput();
-			$("#tree2").fancytree("getTree").generateInput();
-		}
-	});
-*/
 });
 </script>
 <!-- End_Exclude -->
@@ -85,7 +70,7 @@ $(function(){
 </head>
 
 <body class="example">
-	<h1>Example: 'glyph' extension with font-awesome theme</h1>
+	<h1>Example: 'glyph' extension with 'font-awesome' theme and Font Awesome 5 Web Font/CSS icons</h1>
 	<div class="description">
 		<p>
 			The 'glyph' extension adds <code>fa-...</code> classes to the

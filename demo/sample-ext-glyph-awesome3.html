@@ -13,7 +13,10 @@
 	<script src="../src/jquery.fancytree.js"></script>
 	<script src="../src/jquery.fancytree.glyph.js"></script>
 
-	<!-- Start_Exclude: This block is not part of the sample code -->
+<!-- Start_Exclude: This block is not part of the sample code -->
+	<!-- Used for font slider: -->
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
 	<link href="../lib/prettify.css" rel="stylesheet">
 	<script src="../lib/prettify.js"></script>
 	<link href="../demo/sample.css" rel="stylesheet">
@@ -21,7 +24,7 @@
 
 <style type="text/css">
 </style>
-	<!-- End_Exclude -->
+<!-- End_Exclude -->
 
 
 	<!-- Add code to initialize the tree when the document is loaded: -->
@@ -60,23 +63,6 @@ $(function(){
 		change: setSize,
 		slide: setSize
 	 }).slider("value", 10);
-/*
-	$("#skinswitcher")
-		// .skinswitcher("option", "base", "../../src/")
-		.skinswitcher("addChoices", [
-			{name: "Awesome", value: "awesome", href: "skin-awesome/ui.fancytree.css"}
-			])
-		.skinswitcher("change", "awesome");
-*/
-/*
-	addSampleButton({
-		label: "Generate <input> elements",
-		code: function(){
-			$("#tree").fancytree("getTree").generateInput();
-			$("#tree2").fancytree("getTree").generateInput();
-		}
-	});
-*/
 });
 </script>
 <!-- End_Exclude -->
@@ -96,15 +82,14 @@ $(function(){
 			<b>Status</b>: pre-alpha
 		</p>
 	</div>
-<!--
-	<div>
-		<label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
-	</div>
--->
+
 	<hr>
+
 	Font size: <span id="curSize"></span>
 	<div id="fontSlider"></div>
+
 	<hr>
+
 	<div id="tree">
 	</div>
 
