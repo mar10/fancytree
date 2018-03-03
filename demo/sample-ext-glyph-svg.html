@@ -14,10 +14,15 @@
 	<script src="../src/jquery.fancytree.glyph.js"></script>
 
 <!-- Start_Exclude: This block is not part of the sample code -->
+	<!-- Used for font slider: -->
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
 	<link href="../lib/prettify.css" rel="stylesheet">
 	<script src="../lib/prettify.js"></script>
 	<link href="../demo/sample.css" rel="stylesheet">
 	<script src="../demo/sample.js"></script>
+
+<!-- End_Exclude -->
 
 <style type="text/css">
 .fancytree-custom-icon svg {
@@ -26,7 +31,6 @@
 	vertical-align: -.125em;
 }
 </style>
-<!-- End_Exclude -->
 
 
 	<!-- Add code to initialize the tree when the document is loaded: -->
@@ -44,8 +48,9 @@
 		// so they can be referenced instead of having to create them for every node.
 		function _svg(className, addClass) {
 			var id = className.replace(/ /g, "-"),
-				html = '<svg class="svg-inline--fa fa-w-20"><use xlink:href="#' + id + '"></use></svg>';
-			return { html:  html, addClass: addClass };
+				cn = addClass ? " " + addClass : "",
+				html = '<svg class="svg-inline--fa fa-w-20' + cn + '"><use xlink:href="#' + id + '"></use></svg>';
+			return { html:  html };
 		}
 		// Initialize Fancytree
 		$("#tree").fancytree({
@@ -90,18 +95,17 @@
 						// Insert an <i> tag that will be replaced with an inline SVG graphic
 						// by Font Awesome's all.js library.
 						// Note: We DON'T want this, since it will be slow for large trees!
-						return { html: "<i class='fas fa-book'></i>" };
+						return { html: '<i class="fas fa-book"></i>' };
 					case "The Little Prince":
 						// Here we use Font Awesome's auto conversion (as above), to create the
 						// <i> tags that where created separately below.
 						// The nodes nodes contain inline tags that reference those icons:
-						return _svg("fas fa-dot-circle");
+						return { html: '<svg class="fa-spin"><use xlink:href="#fas-fa-circle-notch"></use></svg>' };
 				}
 			},
 			source: {url: "ajax-tree-products.json", debugDelay: 1000},
-			// source: {url: "ajax-tree-taxonomy.json", debugDelay: 1000},
 			lazyLoad: function(event, data) {
-				data.result = {url: "ajax-sub2.json", debugDelay: 1000};
+				data.result = {url: "ajax-sub2.json", debugDelay: 3000};
 			}
 		});
 	});
@@ -129,13 +133,13 @@ $(function(){
 </head>
 
 <body class="example">
-	<h1>Example: 'glyph' extension with SVG icons</h1>
+	<h1>Example: 'glyph' extension with 'font-awesome' theme and Font Awesome 5 SVG/JS  icons</h1>
 	<div class="description">
 		<ul>
 		<li>
 			The 'glyph' extension adds <code>fa-...</code> classes to the
 			node's <code>span</code> tags, so scalable vector icons as provided by
-			<a href="http://fontawesome.io/" class="external" target="_blank">Font Awesome</a>
+			<a href="http://fontawesome.io/" class="external" target="_blank">Font Awesome 5+</a>
 			can be used.<br>
 			See also
 			<a href="https://github.com/mar10/fancytree/wiki/ExtGlyph"
@@ -145,27 +149,28 @@ $(function(){
 
 	<!--
 		Cached SVG icons from Font Awesome 5
-		These are converted to <svg> elements and hidden by Font Awesomes all.js script.
-		They are the referenced from <svg> elements in side Fancytree.
+		These are converted to <svg><symbol> elements and hidden by Font Awesome's all.js script.
+		We reference them in the Fancytree nodes, using <svg><use> elements.
 	-->
 	<!-- Used by ext-glyph mapping: -->
-	<i class="far fa-file" data-fa-symbol></i>
-	<i class="far fa-square" data-fa-symbol></i>
 	<i class="far fa-check-square" data-fa-symbol></i>
-	<i class="fas fa-square" data-fa-symbol></i>
 	<i class="far fa-circle" data-fa-symbol></i>
-	<i class="fas fa-circle" data-fa-symbol></i>
 	<i class="far fa-dot-circle" data-fa-symbol></i>
-	<i class="fas fa-arrow-right" data-fa-symbol></i>
-	<i class="fas fa-long-arrow-right" data-fa-symbol></i>
-	<i class="fas fa-exclamation-triangle" data-fa-symbol></i>
-	<i class="fas fa-caret-right" data-fa-symbol></i>
-	<i class="fas fa-angle-right" data-fa-symbol></i>
-	<i class="fas fa-caret-down" data-fa-symbol></i>
-	<i class="fas fa-spinner fa-pulse" data-fa-symbol></i>
-	<i class="far fa-meh" data-fa-symbol></i>
-	<i class="far fa-folder" data-fa-symbol></i>
+	<i class="far fa-file" data-fa-symbol></i>
 	<i class="far fa-folder-open" data-fa-symbol></i>
+	<i class="far fa-folder" data-fa-symbol></i>
+	<i class="far fa-meh" data-fa-symbol></i>
+	<i class="far fa-square" data-fa-symbol></i>
+	<i class="fas fa-angle-right" data-fa-symbol></i>
+	<i class="fas fa-arrow-right" data-fa-symbol></i>
+	<i class="fas fa-caret-down" data-fa-symbol></i>
+	<i class="fas fa-caret-right" data-fa-symbol></i>
+	<i class="fas fa-circle-notch fa-pulse" data-fa-symbol></i>
+	<i class="fas fa-circle" data-fa-symbol></i>
+	<i class="fas fa-exclamation-triangle" data-fa-symbol></i>
+	<i class="fas fa-long-arrow-right" data-fa-symbol></i>
+	<i class="fas fa-spinner fa-pulse" data-fa-symbol></i>
+	<i class="fas fa-square" data-fa-symbol></i>
 	<!-- Used by custom 'icon' demo -->
 	<i class="fas fa-dot-circle" data-fa-symbol></i>
 	<!-- Native SVG icon, also used by custom 'icon' demo -->
