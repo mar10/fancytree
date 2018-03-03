@@ -1,4 +1,6 @@
-# 2.28.0-0 / Unreleased
+# 2.28.1-0 / Unreleased
+
+# 2.28.0 / 2018-03-02
   * [Added] New extension ext-multi (experimental).
   * [Added] ext-dnd5 support for dragging multiple selected nodes.
   * [Added] #830 support for Font Awesome 5 (ext-glyph preset).
