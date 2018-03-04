@@ -72,7 +72,7 @@ var FT = $.ui.fancytree,
 			expanderLazy: "fa-angle-right",
 			expanderOpen: "fa-caret-down",
 			// We may prevent wobbling rotations on FF by creating a separate sub element:
-			loading: {html: '<span class="fa fa-spinner fa-pulse" />'},
+			loading: {html: "<span class='fa fa-spinner fa-pulse' />"},
 			nodata: "fa-meh-o",
 			noExpander: "",
 			radio: "fa-circle-thin",  // "fa-circle-o"
