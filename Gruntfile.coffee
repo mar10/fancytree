@@ -377,7 +377,8 @@ module.exports = (grunt) ->
                 # jQuery UI 1.11  supports IE 7+ and ?
                 browsers: [
                   { browserName: "internet explorer", version: "10", platform: "Windows 8" }
-                  { browserName: "safari", version: "7", platform: "OS X 10.9" }
+                  # Issue #842:
+#                  { browserName: "safari", version: "7", platform: "OS X 10.9" }
                   { browserName: "safari", version: "8", platform: "OS X 10.10" }
                 ]
         ui_110:
