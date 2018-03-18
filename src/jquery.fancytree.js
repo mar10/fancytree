@@ -5219,6 +5219,9 @@ $.extend($.ui.fancytree,
 	 *
 	 * See http://jqueryui.com/upgrade-guide/1.9/#deprecated-offset-option-merged-into-my-and-at
 	 * and http://jsfiddle.net/mar10/6xtu9a4e/
+	 *
+	 * @param {object} opts
+	 * @returns {object} the (potentially modified) original opts hash object
 	 */
 	fixPositionOptions: function(opts) {
 		if( opts.offset || ("" + opts.my + opts.at ).indexOf("%") >= 0 ) {
