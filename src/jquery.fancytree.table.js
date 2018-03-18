@@ -388,8 +388,11 @@ $.ui.fancytree.registerExtension({
 		$(node.tr).removeClass("fancytree-node");
 		// indent
 		indent = (node.getLevel() - 1) * opts.table.indentation;
-		$(node.span).css({paddingLeft: indent + "px"});  // #460
-		// $(node.span).css({marginLeft: indent + "px"});
+		if( opts.rtl ) {
+			$(node.span).css({paddingRight: indent + "px"});
+		} else {
+			$(node.span).css({paddingLeft: indent + "px"});
+		}
 	 },
 	/* Expand node, return Deferred.promise. */
 	nodeSetExpanded: function(ctx, flag, callOpts) {

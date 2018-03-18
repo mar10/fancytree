@@ -1,4 +1,5 @@
 # 2.28.1-0 / Unreleased
+  * [Fixed] #844 Fix RTL for ext-table
 
 # 2.28.0 / 2018-03-02
   * [Added] New extension ext-multi (experimental).
