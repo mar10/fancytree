@@ -4970,19 +4970,26 @@ $.widget("ui.fancytree",
 			var node = FT.getNode(event),
 				flag = (event.type === "focusin");
 
-			// tree.treeOnFocusInOut.call(tree, event);
-			// tree.debug("Tree container got event " + event.type, node, event, FT.getEventTarget(event));
-			if( flag && tree._getExpiringValue("focusin") ) {
-				// #789: IE 11 may send duplicate focusin events
-				FT.info("Ignored double focusin.");
+			if( !flag && node && $(event.target).is("a") ) {
+				// #764
+				node.debug("Ignored focusout on embedded <a> element.");
 				return;
 			}
-			tree._setExpiringValue("focusin", true, 50);
+			// tree.treeOnFocusInOut.call(tree, event);
+			// tree.debug("Tree container got event " + event.type, node, event, FT.getEventTarget(event));
+			if( flag ) {
+				if( tree._getExpiringValue("focusin") ) {
+					// #789: IE 11 may send duplicate focusin events
+					FT.info("Ignored double focusin.");
+					return;
+				}
+				tree._setExpiringValue("focusin", true, 50);
 
-			if( flag && !node ) {
-				// #789: IE 11 may send focusin before mousdown(?)
-				node = tree._getExpiringValue("mouseDownNode");
-				if( node ) { FT.info("Reconstruct mouse target for focusin from recent event."); }
+				if( !node ) {
+					// #789: IE 11 may send focusin before mousdown(?)
+					node = tree._getExpiringValue("mouseDownNode");
+					if( node ) { FT.info("Reconstruct mouse target for focusin from recent event."); }
+				}
 			}
 			if(node){
 				// For example clicking into an <input> that is part of a node

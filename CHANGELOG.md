@@ -1,5 +1,6 @@
 # 2.28.1-0 / Unreleased
   * [Fixed] #844 Fix RTL for ext-table
+  * [Fixed] #764 Fix clicks on embedded <a> tags when filter is on
 
 # 2.28.0 / 2018-03-02
   * [Added] New extension ext-multi (experimental).
