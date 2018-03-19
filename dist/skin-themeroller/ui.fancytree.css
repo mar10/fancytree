@@ -445,8 +445,7 @@ span.fancytree-drag-source.fancytree-drag-remove {
 .fancytree-container.fancytree-rtl span.fancytree-connector,
 .fancytree-container.fancytree-rtl span.fancytree-expander,
 .fancytree-container.fancytree-rtl span.fancytree-icon,
-.fancytree-container.fancytree-rtl span.fancytree-drag-helper-img,
-.fancytree-container.fancytree-rtl #fancytree-drop-marker {
+.fancytree-container.fancytree-rtl span.fancytree-drag-helper-img {
   background-image: url("../skin-themeroller/icons-rtl.gif");
 }
 .fancytree-container.fancytree-rtl .fancytree-exp-n span.fancytree-expander,
@@ -467,6 +466,9 @@ ul.fancytree-container.fancytree-rtl.fancytree-connectors li {
 ul.fancytree-container.fancytree-rtl li.fancytree-lastsib,
 ul.fancytree-container.fancytree-rtl.fancytree-no-connector > li {
   background-image: none;
+}
+#fancytree-drop-marker.fancytree-rtl {
+  background-image: url("../skin-themeroller/icons-rtl.gif");
 }
 /*------------------------------------------------------------------------------
  * 'table' extension

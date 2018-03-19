@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.28.0
- * @date 2018-03-02T20:59:49Z
+ * @version 2.28.1
+ * @date 2018-03-19T06:47:37Z
  */
 
 ;(function( factory ) {
@@ -71,7 +71,8 @@ var FT = $.ui.fancytree,
 			expanderClosed: "fa-caret-right",
 			expanderLazy: "fa-angle-right",
 			expanderOpen: "fa-caret-down",
-			loading: "fa-spinner fa-pulse",
+			// We may prevent wobbling rotations on FF by creating a separate sub element:
+			loading: {html: "<span class='fa fa-spinner fa-pulse' />"},
 			nodata: "fa-meh-o",
 			noExpander: "",
 			radio: "fa-circle-thin",  // "fa-circle-o"
@@ -185,7 +186,7 @@ function setIcon( span, baseClass, opts, type ) {
 
 $.ui.fancytree.registerExtension({
 	name: "glyph",
-	version: "2.28.0",
+	version: "2.28.1",
 	// Default options for this extension.
 	options: {
 		preset: null,  // 'awesome3', 'awesome4', 'bootstrap3', 'material'
