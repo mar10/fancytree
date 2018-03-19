@@ -1,4 +1,7 @@
 # 2.28.1-0 / Unreleased
+  *
+
+# 2.28.1 / 2018-03-19
   * [Fixed] #844 Fix RTL for ext-table
   * [Fixed] #845 Fix RTL for ext-dnd/ext-dnd5
   * [Fixed] #764 Fix clicks on embedded <a> tags when filter is on
