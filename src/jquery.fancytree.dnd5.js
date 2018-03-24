@@ -527,7 +527,9 @@ $.ui.fancytree.registerExtension({
 					break;
 
 				case "dragend":
-					$sourceList.removeClass(classDragSource + " " + classDragRemove);
+					if( $sourceList ) {
+						$sourceList.removeClass(classDragSource + " " + classDragRemove);
+					}
 					_clearGlobals();
 //					data.dropEffect = dropEffect;
 					data.isCancelled = (dropEffect === "none");

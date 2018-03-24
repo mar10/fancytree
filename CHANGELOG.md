@@ -1,5 +1,5 @@
 # 2.28.1-0 / Unreleased
-  *
+* [Fixed] #848 Drag End Error with dnd5 extension
 
 # 2.28.1 / 2018-03-19
   * [Fixed] #844 Fix RTL for ext-table
