@@ -1,16 +1,16 @@
 /*!
  * jquery.fancytree.glyph.js
  *
- * Use glyph fonts as instead of icon sprites.
+ * Use glyph-fonts, ligature-fonts, or SVG icons instead of icon sprites.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2017, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.27.0
- * @date 2017-12-16T09:14:27Z
+ * @version 2.28.1
+ * @date 2018-03-19T06:47:37Z
  */
 
 ;(function( factory ) {
@@ -64,14 +64,15 @@ var FT = $.ui.fancytree,
 			_addClass: "fa",
 			checkbox: "fa-square-o",
 			checkboxSelected: "fa-check-square-o",
-			checkboxUnknown: "fa-square",
+			checkboxUnknown: "fa-square fancytree-helper-indeterminate-cb",
 			dragHelper: "fa-arrow-right",
 			dropMarker: "fa-long-arrow-right",
 			error: "fa-warning",
 			expanderClosed: "fa-caret-right",
 			expanderLazy: "fa-angle-right",
 			expanderOpen: "fa-caret-down",
-			loading: "fa-spinner fa-pulse",
+			// We may prevent wobbling rotations on FF by creating a separate sub element:
+			loading: {html: "<span class='fa fa-spinner fa-pulse' />"},
 			nodata: "fa-meh-o",
 			noExpander: "",
 			radio: "fa-circle-thin",  // "fa-circle-o"
@@ -84,18 +85,46 @@ var FT = $.ui.fancytree,
 			folder: "fa-folder-o",
 			folderOpen: "fa-folder-open-o"
 			},
+		"awesome5": {
+			// fontawesome 5 have several different base classes
+			// "far, fas, fal and fab" The rendered svg puts that prefix
+			// in a different location so we have to keep them separate here
+			_addClass: "",
+			checkbox: "far fa-square",
+			checkboxSelected: "far fa-check-square",
+			// checkboxUnknown: "far fa-window-close",
+			checkboxUnknown: "fas fa-square fancytree-helper-indeterminate-cb",
+			radio: "far fa-circle",
+			radioSelected: "fas fa-circle",
+			radioUnknown: "far fa-dot-circle",
+			dragHelper: "fas fa-arrow-right",
+			dropMarker: "fas fa-long-arrow-right",
+			error: "fas fa-exclamation-triangle",
+			expanderClosed: "fas fa-caret-right",
+			expanderLazy: "fas fa-angle-right",
+			expanderOpen: "fas fa-caret-down",
+			loading: "fas fa-spinner fa-pulse",
+			nodata: "far fa-meh",
+			noExpander: "",
+			// Default node icons.
+			// (Use tree.options.icon callback to define custom icons based on node data)
+			doc: "far fa-file",
+			docOpen: "far fa-file",
+			folder: "far fa-folder",
+			folderOpen: "far fa-folder-open"
+			},
 		"bootstrap3": {
 			_addClass: "glyphicon",
 			checkbox: "glyphicon-unchecked",
 			checkboxSelected: "glyphicon-check",
-			checkboxUnknown: "glyphicon-expand",  // "glyphicon-share",
+			checkboxUnknown: "glyphicon-expand fancytree-helper-indeterminate-cb",  // "glyphicon-share",
 			dragHelper: "glyphicon-play",
 			dropMarker: "glyphicon-arrow-right",
 			error: "glyphicon-warning-sign",
 			expanderClosed: "glyphicon-menu-right",  // glyphicon-plus-sign
 			expanderLazy: "glyphicon-menu-right",  // glyphicon-plus-sign
 			expanderOpen: "glyphicon-menu-down",  // glyphicon-minus-sign
-			loading: "glyphicon-refresh glyphicon-spin",
+			loading: "glyphicon-refresh fancytree-helper-spin",
 			nodata: "glyphicon-info-sign",
 			noExpander: "",
 			radio: "glyphicon-remove-circle",  // "glyphicon-unchecked",
@@ -119,7 +148,7 @@ var FT = $.ui.fancytree,
 			expanderClosed: { text: "chevron_right" },
 			expanderLazy: { text: "last_page" },
 			expanderOpen: { text: "expand_more" },
-			loading: { text: "autorenew", addClass: "glyphicon-spin" },
+			loading: { text: "autorenew", addClass: "fancytree-helper-spin" },
 			nodata: { text: "info" },
 			noExpander: { text: "" },
 			radio: { text: "radio_button_unchecked" },
@@ -142,9 +171,13 @@ function setIcon( span, baseClass, opts, type ) {
 
 	if( typeof icon === "string" ) {
 		$span.attr( "class", setClass + " " + icon );
-	} else {
+	} else if ( icon ) {
 		if( icon.text ) {
-			$span.text( "" + icon.text );
+			// $span.text( "" + icon.text );
+			span.textContent = "" + icon.text;
+		} else if ( icon.html ) {
+			// $(span).append($(icon.html));
+			span.innerHTML = icon.html;
 		}
 		$span.attr( "class", setClass + " " + ( icon.addClass || "" ) );
 	}
@@ -153,7 +186,7 @@ function setIcon( span, baseClass, opts, type ) {
 
 $.ui.fancytree.registerExtension({
 	name: "glyph",
-	version: "2.27.0",
+	version: "2.28.1",
 	// Default options for this extension.
 	options: {
 		preset: null,  // 'awesome3', 'awesome4', 'bootstrap3', 'material'

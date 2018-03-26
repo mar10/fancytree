@@ -4,13 +4,13 @@
  * Render tree as table (aka 'tree grid', 'table tree').
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2017, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.27.0
- * @date 2017-12-16T09:14:27Z
+ * @version 2.28.1
+ * @date 2018-03-19T06:47:37Z
  */
 
 ;(function( factory ) {
@@ -101,7 +101,7 @@ function findPrevRowNode(node){
 
 $.ui.fancytree.registerExtension({
 	name: "table",
-	version: "2.27.0",
+	version: "2.28.1",
 	// Default options for this extension.
 	options: {
 		checkboxColumnIdx: null, // render the checkboxes into the this column index (default: nodeColumnIdx)
@@ -388,8 +388,11 @@ $.ui.fancytree.registerExtension({
 		$(node.tr).removeClass("fancytree-node");
 		// indent
 		indent = (node.getLevel() - 1) * opts.table.indentation;
-		$(node.span).css({paddingLeft: indent + "px"});  // #460
-		// $(node.span).css({marginLeft: indent + "px"});
+		if( opts.rtl ) {
+			$(node.span).css({paddingRight: indent + "px"});
+		} else {
+			$(node.span).css({paddingLeft: indent + "px"});
+		}
 	 },
 	/* Expand node, return Deferred.promise. */
 	nodeSetExpanded: function(ctx, flag, callOpts) {
@@ -454,7 +457,7 @@ $.ui.fancytree.registerExtension({
 	},
 	treeDestroy: function(ctx) {
 		this.$container.find("tbody").empty();
-		this.$source && this.$source.removeClass("ui-helper-hidden");
+		this.$source && this.$source.removeClass("fancytree-helper-hidden");
 		return this._superApply(arguments);
 	}
 	/*,

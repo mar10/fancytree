@@ -4,7 +4,7 @@
  * Add fixed colums and headers to ext.table.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2017, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -107,8 +107,8 @@ $.ui.fancytree.registerExtension({
 		}
 
 		if (fixedRowCount) {
-			$topLeftTable.append($head.clone());
-			$topRightTable.append($head.clone());
+			$topLeftTable.append($head.clone(true));
+			$topRightTable.append($head.clone(true));
 			$head.remove();
 		}
 
@@ -309,7 +309,7 @@ $.ui.fancytree.registerExtension({
 	},
 
 	nodeKeydown: function(ctx) {
-		return this._s(arguments);
+		return this._superApply(arguments);
 	},
 
 	nodeSetFocus: function(ctx, flag) {
@@ -332,7 +332,7 @@ $.ui.fancytree.registerExtension({
 				fcn = this.options.fixed.classNames,
 				$trRight = $trLeft.data(fcn.counterpart);
 
-			if (!$trRight) {
+			if (!$trRight && $trLeft.length) {
 				var idx = $trLeft.index(),
 					fixedColCount = this.options.fixed.fixCols,
 					$blTableBody = $("div." + fcn.bottomLeft + " table tbody"),
@@ -340,7 +340,7 @@ $.ui.fancytree.registerExtension({
 					$prevLeftNode = $blTableBody.find("tr:eq(" + Math.max(idx + 1, 0) + ")"),
 					prevRightNode = $prevLeftNode.data(fcn.counterpart);
 
-				$trRight = $trLeft.clone();
+				$trRight = $trLeft.clone(true);
 				var trRight = $trRight.get(0);
 
 				if (prevRightNode) {
@@ -358,6 +358,7 @@ $.ui.fancytree.registerExtension({
 				$trRight.data(fcn.counterpart, $trLeft);
 			}
 		}
+
 		return res;
 	},
 
@@ -430,6 +431,8 @@ $.ui.fancytree.registerExtension({
 			_this.ext.fixed._adjustColWidths();
 			_this.ext.fixed._adjustWrapperLayout();
 			res = this._superApply(arguments);
+		} else {
+			res = this._superApply(arguments);
 		}
 		return res;
 	},
@@ -471,6 +474,11 @@ $.ui.fancytree.registerExtension({
 	},
 
 	_adjustColWidths: function() {
+		if (this.options.fixed.adjustColWidths) {
+			this.options.fixed.adjustColWidths.call(this);
+			return;
+		}
+
 		var $wrapper = this.$fixedWrapper,
 			fcn = this.options.fixed.classNames,
 			$tlWrapper = $wrapper.find("div." + fcn.topLeft),
@@ -496,6 +504,7 @@ $.ui.fancytree.registerExtension({
 				$tdBottom.css("min-width", newWidth - (tdBottomOuterWidth - tdBottomWidth));
 			});
 		}
+
 		_adjust($tlWrapper, $blWrapper);
 		_adjust($trWrapper, $brWrapper);
 	},
@@ -507,7 +516,6 @@ $.ui.fancytree.registerExtension({
 		}
 		$tr1.css("height", "auto");
 		$tr2.css("height", "auto");
-
 		var row1Height = $tr1.outerHeight(),
 			row2Height = $tr2.outerHeight(),
 			newHeight = Math.max(row1Height, row2Height);
@@ -524,31 +532,39 @@ $.ui.fancytree.registerExtension({
 			$bottomRightWrapper = $wrapper.find("div." + fcn.bottomRight),
 			$topLeftTable = $topLeftWrapper.find("table"),
 			$topRightTable = $topRightWrapper.find("table"),
-			$bottomLeftTable = $bottomLeftWrapper.find("table"),
+//			$bottomLeftTable = $bottomLeftWrapper.find("table"),
 			wrapperWidth = $wrapper.width(),
 			wrapperHeight = $wrapper.height(),
-			fixedWidth = Math.min(wrapperWidth, Math.max($topLeftTable.outerWidth(), $bottomLeftTable.get(0).scrollWidth)),
-			fixedHeight = Math.min(wrapperHeight, Math.max($topLeftTable.height(), $topRightTable.height())),
-			vScrollbar = $bottomRightWrapper.get(0).scrollHeight > (wrapperHeight - fixedHeight),
-			hScrollbar = $bottomRightWrapper.get(0).scrollWidth > (wrapperWidth - fixedWidth);
+			fixedWidth = Math.min(wrapperWidth, $topLeftTable.width()),
+			fixedHeight = Math.min(wrapperHeight, Math.max($topLeftTable.height(), $topRightTable.height()));
+//			vScrollbar = $bottomRightWrapper.get(0).scrollHeight > (wrapperHeight - fixedHeight),
+//			hScrollbar = $bottomRightWrapper.get(0).scrollWidth > (wrapperWidth - fixedWidth);
 
 		$topLeftWrapper.css({
 			width: fixedWidth,
 			height: fixedHeight
 		});
 		$topRightWrapper.css({
-			width: wrapperWidth - fixedWidth - (vScrollbar ? 17 : 0),
+//			width: wrapperWidth - fixedWidth - (vScrollbar ? 17 : 0),
+//			width: "calc(100% - " + (fixedWidth + (vScrollbar ? 17 : 0)) + "px)",
+			width: "calc(100% - " + (fixedWidth + 17) + "px)",
 			height: fixedHeight,
 			left: fixedWidth
 		});
 		$bottomLeftWrapper.css({
 			width: fixedWidth,
-			height: vScrollbar ? wrapperHeight - fixedHeight - (hScrollbar ? 17 : 0) : "auto",
+//			height: vScrollbar ? wrapperHeight - fixedHeight - (hScrollbar ? 17 : 0) : "auto",
+//			height: vScrollbar ? ("calc(100% - " + (fixedHeight + (hScrollbar ? 17 : 0)) + "px)") : "auto",
+//			height: vScrollbar ? ("calc(100% - " + (fixedHeight + 17) + "px)") : "auto",
+			height: "calc(100% - " + (fixedHeight + 17) + "px)",
 			top: fixedHeight
 		});
 		$bottomRightWrapper.css({
-			width: wrapperWidth - fixedWidth,
-			height: vScrollbar ? wrapperHeight - fixedHeight : "auto",
+//			width: wrapperWidth - fixedWidth,
+//			height: vScrollbar ? wrapperHeight - fixedHeight : "auto",
+			width: "calc(100% - " + fixedWidth + "px)",
+//			height: vScrollbar ? ("calc(100% - " + fixedHeight + "px)") : "auto",
+			height: "calc(100% - " + fixedHeight + "px)",
 			top: fixedHeight,
 			left: fixedWidth
 		});

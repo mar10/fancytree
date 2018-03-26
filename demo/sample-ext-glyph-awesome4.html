@@ -2,9 +2,8 @@
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8">
-	<title>Fancytree - Example: font-awesome</title>
+	<title>Fancytree - Example: Font Awesome 4</title>
 
-	<link href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet">
 	<script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
 	<script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 
@@ -15,15 +14,14 @@
 	<script src="../src/jquery.fancytree.glyph.js"></script>
 
 <!-- Start_Exclude: This block is not part of the sample code -->
+	<!-- Used for font slider: -->
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 	<link href="../lib/prettify.css" rel="stylesheet">
 	<script src="../lib/prettify.js"></script>
 	<link href="../demo/sample.css" rel="stylesheet">
 	<script src="../demo/sample.js"></script>
 
 <style type="text/css">
-	ul.fancytree-container {
-		/*font-size: 2em;*/
-	}
 </style>
 <!-- End_Exclude -->
 
@@ -64,23 +62,6 @@ $(function(){
 		change: setSize,
 		slide: setSize
 	 }).slider("value", 10);
-/*
-	$("#skinswitcher")
-		// .skinswitcher("option", "base", "../../src/")
-		.skinswitcher("addChoices", [
-			{name: "Awesome", value: "awesome", href: "skin-awesome/ui.fancytree.css"}
-			])
-		.skinswitcher("change", "awesome");
-*/
-/*
-	addSampleButton({
-		label: "Generate <input> elements",
-		code: function(){
-			$("#tree").fancytree("getTree").generateInput();
-			$("#tree2").fancytree("getTree").generateInput();
-		}
-	});
-*/
 });
 </script>
 <!-- End_Exclude -->

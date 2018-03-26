@@ -4,7 +4,7 @@
  * Drag-and-drop support (jQuery UI draggable/droppable).
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2017, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -317,7 +317,7 @@ $.ui.fancytree.registerExtension({
 	},
 	/* Display drop marker according to hitMode ('after', 'before', 'over'). */
 	_setDndStatus: function(sourceNode, targetNode, helper, hitMode, accept) {
-		var markerOffsetX,
+		var markerOffsetX, pos,
 			markerAt = "center",
 			instData = this._local,
 			dndOpt = this.options.dnd ,
@@ -351,16 +351,22 @@ $.ui.fancytree.registerExtension({
 				break;
 			}
 
+			pos = {
+				my: "left" + offsetString(markerOffsetX) + " center",
+				at: "left " + markerAt,
+				of: $targetTitle
+			};
+			if( this.options.rtl ) {
+				pos.my = "right" + offsetString(-markerOffsetX) + " center";
+				pos.at = "right " + markerAt;
+			}
 			instData.$dropMarker
 				.toggleClass(classDropAfter, hitMode === "after")
 				.toggleClass(classDropOver, hitMode === "over")
 				.toggleClass(classDropBefore, hitMode === "before")
+				.toggleClass("fancytree-rtl", !!this.options.rtl)
 				.show()
-				.position($.ui.fancytree.fixPositionOptions({
-					my: "left" + offsetString(markerOffsetX) + " center",
-					at: "left " + markerAt,
-					of: $targetTitle
-					}));
+				.position($.ui.fancytree.fixPositionOptions(pos));
 		} else {
 			instData.$dropMarker.hide();
 		}

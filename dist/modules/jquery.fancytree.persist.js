@@ -6,13 +6,13 @@
  *
  * @depends: js-cookie or jquery-cookie
  *
- * Copyright (c) 2008-2017, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.27.0
- * @date 2017-12-16T09:14:27Z
+ * @version 2.28.1
+ * @date 2018-03-19T06:47:37Z
  */
 
 ;(function( factory ) {
@@ -133,10 +133,10 @@ function _loadLazyNodes(tree, local, keyList, mode, dfd) {
  * Called like
  *     $("#tree").fancytree("getTree").clearCookies("active expanded focus selected");
  *
- * @alias Fancytree#clearData
+ * @alias Fancytree#clearPersistData
  * @requires jquery.fancytree.persist.js
  */
-$.ui.fancytree._FancytreeClass.prototype.clearData = function(types){
+$.ui.fancytree._FancytreeClass.prototype.clearPersistData = function(types){
 	var local = this.ext.persist,
 		prefix = local.cookiePrefix;
 
@@ -156,8 +156,8 @@ $.ui.fancytree._FancytreeClass.prototype.clearData = function(types){
 };
 
 $.ui.fancytree._FancytreeClass.prototype.clearCookies = function(types){
-	this.warn("'tree.clearCookies()' is deprecated since v2.27.0: use 'clearData()' instead.");
-	return this.clearData(types);
+	this.warn("'tree.clearCookies()' is deprecated since v2.27.0: use 'clearPersistData()' instead.");
+	return this.clearPersistData(types);
 };
 
 /**
@@ -188,7 +188,7 @@ $.ui.fancytree._FancytreeClass.prototype.getPersistData = function(){
  */
 $.ui.fancytree.registerExtension({
 	name: "persist",
-	version: "2.27.0",
+	version: "2.28.1",
 	// Default options for this extension.
 	options: {
 		cookieDelimiter: "~",

@@ -10,10 +10,6 @@
 	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet">
 	<script src="../src/jquery.fancytree.js"></script>
 
-	<!-- Themeroller switcher -->
-	<link href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet">
-	<script src="//jqueryui.com/themeroller/themeswitchertool/"></script>
-
 	<!-- Start_Exclude: This block is not part of the sample code -->
 	<link href="../lib/prettify.css" rel="stylesheet">
 	<script src="../lib/prettify.js"></script>
@@ -25,29 +21,30 @@
 
 ul.fancytree-container {
 	border: 1px solid gray;
-	width: 200px;
+	width: 300px;
+	overflow: hidden;
+	/* The expand animations result in ugly focus outline artefacts, so hide those. */
+	outline: 0;
 }
-ul.fancytree-container >li {
+/* Display top level nodes as accordion header. */
+ul.fancytree-container >li >.fancytree-node span.fancytree-title {
+	box-sizing: border-box;
 	width: 100%;
+	padding: 4px;
+	margin: 0;
+	background-color: #ddd;
+	border: 1px solid #bbb;
+	font-weight: 550;
 }
-ul.fancytree-container >li >ul { /* don't indent level-2 nodes */
-	padding-left: 0;
-}
-ul.fancytree-container >li >.fancytree-node {
-	display: inline-block;
-	width: 100%;
-	background-color: #d0d0d0;
-}
-ul.fancytree-container >li >.fancytree-node .fancytree-title{
-	width: 100%;
-}
-/* Hide icons and expanders for top-level nodes*/
-ul.fancytree-container >li >.fancytree-node .fancytree-icon,
-ul.fancytree-container >li >.fancytree-node .fancytree-expander
-/*ul.fancytree-container >li >ul >li >span.fancytree-node span.fancytree-expander*/
-{
+/* Hide  expanders for top-level nodes */
+ul.fancytree-container >li >.fancytree-node .fancytree-expander {
 	display: none;
 }
+/* Don't indent level-2 nodes */
+ul.fancytree-container >li >ul {
+	padding-left: 0;
+}
+
 </style>
 
 <!-- Add code to initialize the tree when the document is loaded: -->
@@ -57,10 +54,20 @@ ul.fancytree-container >li >.fancytree-node .fancytree-expander
 		// and pass the tree options as an argument to the fancytree() function:
 		$("#tree").fancytree({
 			autoCollapse: true,
-			icon: false,
-			renderNode: function(event, data){
-				if(data.node.getLevel() === 1){
-					$(data.node.span).addClass("ui-accordion-header");
+			clickFolderMode: 3,
+			icon: function(event, data) {
+				return !data.node.isTopLevel();
+			},
+			source: {url: "ajax-tree-products.json"},
+			lazyLoad: function(event, data){
+				data.result = {url: "ajax-sub2.json"};
+			},
+			keydown: function(event, data){
+				switch( $.ui.fancytree.eventToString(data.originalEvent) ) {
+				case "return":
+				case "space":
+					data.node.toggleExpanded();
+					break;
 				}
 			}
 		});
@@ -68,40 +75,16 @@ ul.fancytree-container >li >.fancytree-node .fancytree-expander
 </script>
 </head>
 <body class="example">
-	<h1>Example: accordion</h1>
+	<h1>Example: Accordion</h1>
 	<div class="description">
-		This sample skin that mimics an accordion.
+		This sample adds some custom CSS to a standard Fancytree, to mimic an accordion
+		widget.
 	</div>
 	<div>
 		<label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
 	</div>
 	<!-- Add a <table> element where the tree should appear: -->
 	<div id="tree">
-	<ul>
-	<li class="folder">Foo
-		<ul>
-		<li>Node foo 1
-			<ul>
-			<li>Node foo 1.1
-			<li>Node foo 1.2
-			<li>Node foo 1.3
-			</ul>
-		<li>Node foo 2
-		<li>Node foo 3
-		</ul>
-	<li class="folder">Bar
-		<ul>
-		<li>Node bar 1
-		<li>Node bar 2
-		<li>Node bar 3
-		</ul>
-	<li class="folder">Baz
-		<ul>
-		<li>Node baz 1
-		<li>Node baz 2
-		<li>Node baz 3
-		</ul>
-	</ul>
 	</div>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->

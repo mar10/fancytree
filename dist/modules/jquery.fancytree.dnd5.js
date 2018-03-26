@@ -4,13 +4,13 @@
  * Drag-and-drop support (native HTML5).
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2017, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.27.0
- * @date 2017-12-16T09:14:27Z
+ * @version 2.28.1
+ * @date 2018-03-19T06:47:37Z
  */
 
 
@@ -48,6 +48,7 @@
  * Private functions and variables
  */
 var FT = $.ui.fancytree,
+	isMac = /Mac/.test(navigator.platform),
 	classDragSource = "fancytree-drag-source",
 	classDragRemove = "fancytree-drag-remove",
 	classDropAccept = "fancytree-drop-accept",
@@ -59,8 +60,18 @@ var FT = $.ui.fancytree,
 	nodeMimeType = "application/x-fancytree-node",
 	$dropMarker = null,
 	SOURCE_NODE = null,
+	SOURCE_NODE_LIST = null,
+	$sourceList = null,
 	DRAG_ENTER_RESPONSE = null,
 	LAST_HIT_MODE = null;
+
+/* */
+function _clearGlobals() {
+	SOURCE_NODE = null;
+	SOURCE_NODE_LIST = null;
+	$sourceList = null;
+	DRAG_ENTER_RESPONSE = null;
+}
 
 /* Convert number to string and prepend +/-; return empty string for 0.*/
 function offsetString(n){
@@ -161,8 +172,7 @@ function handleDragOver(event, data) {
 		return LAST_HIT_MODE;
 	}
 
-	var markerOffsetX, nodeOfs, relPosY, //res,
-		// eventHash = getEventHash(event),
+	var markerOffsetX, nodeOfs, pos, relPosY,
 		hitMode = null,
 		tree = data.tree,
 		options = tree.options,
@@ -170,7 +180,6 @@ function handleDragOver(event, data) {
 		targetNode = data.node,
 		sourceNode = data.otherNode,
 		markerAt = "center",
-		// $source = sourceNode ? $(sourceNode.span) : null,
 		$target = $(targetNode.span),
 		$targetTitle = $target.find("span.fancytree-title");
 
@@ -202,16 +211,16 @@ function handleDragOver(event, data) {
 		// TODO: these are no-ops when moving nodes, but not in copy mode
 		if( dndOpts.preventVoidMoves ){
 			if(targetNode === sourceNode){
-				targetNode.debug("drop over source node prevented");
+				targetNode.debug("Drop over source node prevented.");
 				hitMode = null;
 			}else if(hitMode === "before" && sourceNode && targetNode === sourceNode.getNextSibling()){
-				targetNode.debug("drop after source node prevented");
+				targetNode.debug("Drop after source node prevented.");
 				hitMode = null;
 			}else if(hitMode === "after" && sourceNode && targetNode === sourceNode.getPrevSibling()){
-				targetNode.debug("drop before source node prevented");
+				targetNode.debug("Drop before source node prevented.");
 				hitMode = null;
 			}else if(hitMode === "over" && sourceNode && sourceNode.parent === targetNode && sourceNode.isLastSibling() ){
-				targetNode.debug("drop last child over own parent prevented");
+				targetNode.debug("Drop last child over own parent prevented.");
 				hitMode = null;
 			}
 		}
@@ -240,23 +249,27 @@ function handleDragOver(event, data) {
 			break;
 		}
 
+		pos = {
+			my: "left" + offsetString(markerOffsetX) + " center",
+			at: "left " + markerAt,
+			of: $targetTitle
+		};
+		if( options.rtl ) {
+			pos.my = "right" + offsetString(-markerOffsetX) + " center";
+			pos.at = "right " + markerAt;
+			// console.log("rtl", pos);
+		}
 		$dropMarker
 			.toggleClass(classDropAfter, hitMode === "after")
 			.toggleClass(classDropOver, hitMode === "over")
 			.toggleClass(classDropBefore, hitMode === "before")
 			.show()
-			.position(FT.fixPositionOptions({
-				my: "left" + offsetString(markerOffsetX) + " center",
-				at: "left " + markerAt,
-				of: $targetTitle
-				}));
+			.position(FT.fixPositionOptions(pos));
 	} else {
 		$dropMarker.hide();
 		// console.log("hide dropmarker")
 	}
-	// if( $source ){
-	// 	$source.toggleClass(classDragRemove, isMove);
-	// }
+
 	$(targetNode.span)
 		.toggleClass(classDropTarget, hitMode === "after" || hitMode === "before" || hitMode === "over")
 		.toggleClass(classDropAfter, hitMode === "after")
@@ -267,17 +280,63 @@ function handleDragOver(event, data) {
 	return hitMode;
 }
 
+/* Guess dropEffect from modifier keys.
+ * Safari:
+ *     It seems that `dataTransfer.dropEffect` can only be set on dragStart, and will remain
+ *     even if the cursor changes when [Alt] or [Ctrl] are pressed (?)
+ * Using rules suggested here:
+ *     https://ux.stackexchange.com/a/83769
+ * @returns
+ *     'copy', 'link', 'move', or 'none'
+ */
+function getDropEffect(event, data) {
+	var dndOpts = data.options.dnd5,
+		res = dndOpts.dropEffectDefault
+		// dataTransfer = event.dataTransfer || event.originalEvent.dataTransfer,
+		;
+
+	// Use callback if any:
+	if( dndOpts.dropEffect ) {
+		return dndOpts.dropEffect(event, data);
+	}
+
+	if( isMac ) {
+		if( event.metaKey && event.altKey ) {  // Mac: [Control] + [Option]
+			return "link";
+		} else if( event.metaKey ) {  // Mac: [Command]
+			return "move";
+		} else if( event.altKey ) {  // Mac: [Option]
+			return "copy";
+		}
+	} else {
+		if( event.ctrlKey ) {  // Windows: [Ctrl]
+			return "copy";
+		} else if( event.shiftKey ) {  // Windows: [Shift]
+			return "move";
+		} else if( event.altKey ) {  // Windows: [Alt]
+			return "link";
+		}
+	}
+	// data.tree.debug("getDropEffect: " + res);
+	return res;
+}
+
 /* *****************************************************************************
  *
  */
 
 $.ui.fancytree.registerExtension({
 	name: "dnd5",
-	version: "2.27.0",
+	version: "2.28.1",
 	// Default options for this extension.
 	options: {
 		autoExpandMS: 1500,          // Expand nodes after n milliseconds of hovering
-		setTextTypeJson: false,      // Allow dragging of nodes to different IE windows
+		dropMarkerInsertOffsetX: -16,// Additional offset for drop-marker with hitMode = "before"/"after"
+		dropMarkerOffsetX: -24,		 // Absolute position offset for .fancytree-drop-marker relatively to ..fancytree-title (icon/img near a node accepting drop)
+		multiSource: false,		     // true: Drag multiple (i.e. selected) nodes.
+		dragImage: null,		     // Callback(node, data) that can be used to call dataTransfer.setDragImage().
+		dropEffect: null,		     // Callback(node, data) that returns 'copy', 'link', 'move', or 'none'.
+		dropEffectDefault: "move",	 // Default dropEffect ('copy', 'link', or 'move').
 		preventForeignNodes: false,  // Prevent dropping nodes from different Fancytrees
 		preventNonNodes: false,      // Prevent dropping items other than Fancytree nodes
 		preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
@@ -285,8 +344,7 @@ $.ui.fancytree.registerExtension({
 		scroll: true,                // Enable auto-scrolling while dragging
 		scrollSensitivity: 20,       // Active top/bottom margin in pixel
 		scrollSpeed: 5,              // Pixel per event
-		dropMarkerOffsetX: -24,		 // absolute position offset for .fancytree-drop-marker relatively to ..fancytree-title (icon/img near a node accepting drop)
-		dropMarkerInsertOffsetX: -16,// additional offset for drop-marker with hitMode = "before"/"after"
+		setTextTypeJson: false,      // Allow dragging of nodes to different IE windows
 		// Events (drag support)
 		dragStart: null,       // Callback(sourceNode, data), return true, to enable dnd drag
 		dragDrag: $.noop,      // Callback(sourceNode, data)
@@ -300,7 +358,7 @@ $.ui.fancytree.registerExtension({
 	},
 
 	treeInit: function(ctx){
-		var $temp,
+		var $dragImage, $extraHelper, $temp,
 			tree = ctx.tree,
 			opts = ctx.options,
 			glyph = opts.glyph || null,
@@ -349,6 +407,7 @@ $.ui.fancytree.registerExtension({
 				// $dropMarker.addClass(glyph.map._addClass + " " + glyph.map.dropMarker);
 			}
 		}
+		$dropMarker.toggleClass("fancytree-rtl", !!opts.rtl);
 		// Enable drag support if dragStart() is specified:
 		if( dndOpts.dragStart ) {
 			// Bind drag event handlers
@@ -356,8 +415,6 @@ $.ui.fancytree.registerExtension({
 				var json,
 					node = getNode(event),
 					dataTransfer = event.dataTransfer || event.originalEvent.dataTransfer,
-					isMove = dataTransfer.dropEffect === "move",
-					$source = node ? $(node.span) : null,
 					data = {
 						node: node,
 						tree: tree,
@@ -366,15 +423,34 @@ $.ui.fancytree.registerExtension({
 						dataTransfer: dataTransfer,
 //						dropEffect: undefined,  // set by dragend
 						isCancelled: undefined  // set by dragend
-					};
+					},
+					dropEffect = getDropEffect(event, data),
+					isMove = dropEffect === "move";
 
+				// console.log(event.type, "dropEffect: " + dropEffect);
 				switch( event.type ) {
 
 				case "dragstart":
-					$(node.span).addClass(classDragSource);
-
 					// Store current source node in different formats
 					SOURCE_NODE = node;
+
+					// Also optionally store selected nodes
+					if( dndOpts.multiSource === false ) {
+						SOURCE_NODE_LIST = [node];
+					} else if( dndOpts.multiSource === true ) {
+						SOURCE_NODE_LIST = tree.getSelectedNodes();
+						if( !node.isSelected() ) {
+							SOURCE_NODE_LIST.unshift(node);
+						}
+					} else {
+						SOURCE_NODE_LIST = dndOpts.multiSource(node, data);
+					}
+					// Cache as array of jQuery objects for faster access:
+					$sourceList = $($.map(SOURCE_NODE_LIST, function(n){
+						return n.span;
+					}));
+					// Set visual feedback
+					$sourceList.addClass(classDragSource);
 
 					// Set payload
 					// Note:
@@ -409,30 +485,58 @@ $.ui.fancytree.registerExtension({
 
 					// Set the allowed and current drag mode (move, copy, or link)
 					dataTransfer.effectAllowed = "all";  // "copyMove"
-					// dataTransfer.dropEffect = "move";
+					// dropEffect = "move";
 
-					// Set the title as drag image (otherwise it would contain the expander)
-					if( dataTransfer.setDragImage ) {
-						// IE 11 does not support this
-						dataTransfer.setDragImage($(node.span).find(".fancytree-title")[0], -10, -10);
-						// dataTransfer.setDragImage($(node.span)[0], -10, -10);
+					$extraHelper = null;
+
+					if( dndOpts.dragImage ) {
+						// Let caller set a custom drag image using dataTransfer.setDragImage()
+						// and/or modify visual feedback otherwise.
+						dndOpts.dragImage(node, data);
+
+					} else {
+						// Set the title as drag image (otherwise it would contain the expander)
+						$dragImage = $(node.span).find(".fancytree-title");
+
+						if( SOURCE_NODE_LIST && SOURCE_NODE_LIST.length > 1 ) {
+							// Add a counter badge to node title if dragging more than one node.
+							// We want this, because the element that is used as drag image
+							// must be *visible* in the DOM, so we cannot create some hidden
+							// custom markup.
+							// See https://kryogenix.org/code/browser/custom-drag-image.html
+							// Also, since IE 11 and Edge don't support setDragImage() alltogether,
+							// it gives som feedback to the user.
+							// The badge will be removed later on drag end.
+							$extraHelper = $("<span class='fancytree-childcounter'/>")
+								.text("+" + (SOURCE_NODE_LIST.length - 1))
+								.appendTo($dragImage);
+						}
+						if( dataTransfer.setDragImage ) {
+							// IE 11 and Edge do not support this
+							dataTransfer.setDragImage( $dragImage[0], -10,  -10);
+						}
 					}
 					// Let user modify above settings
 					return dndOpts.dragStart(node, data) !== false;
 
 				case "drag":
 					// Called every few miliseconds
-					$source.toggleClass(classDragRemove, isMove);
+					// data.tree.info("drag", SOURCE_NODE)
+					$sourceList.toggleClass(classDragRemove, isMove);
 					dndOpts.dragDrag(node, data);
 					break;
 
 				case "dragend":
-					$(node.span).removeClass(classDragSource + " " + classDragRemove);
-					SOURCE_NODE = null;
-					DRAG_ENTER_RESPONSE = null;
-//					data.dropEffect = dataTransfer.dropEffect;
-					data.isCancelled = (dataTransfer.dropEffect === "none");
+					$sourceList.removeClass(classDragSource + " " + classDragRemove);
+					_clearGlobals();
+//					data.dropEffect = dropEffect;
+					data.isCancelled = (dropEffect === "none");
 					$dropMarker.hide();
+					// Take this badge off of me - I can't use it anymore:
+					if( $extraHelper ) {
+						$extraHelper.remove();
+						$extraHelper = null;
+					}
 					dndOpts.dragEnd(node, data);
 					break;
 				}
@@ -446,6 +550,7 @@ $.ui.fancytree.registerExtension({
 					allowDrop = null,
 					node = getNode(event),
 					dataTransfer = event.dataTransfer || event.originalEvent.dataTransfer,
+					// dropEffect = getDropEffect(dataTransfer, opts),
 					data = {
 						node: node,
 						tree: tree,
@@ -454,6 +559,7 @@ $.ui.fancytree.registerExtension({
 						originalEvent: event,
 						dataTransfer: dataTransfer,
 						otherNode: SOURCE_NODE || null,
+						otherNodeList: SOURCE_NODE_LIST || null,
 						otherNodeData: null,    // set by drop event
 						dropEffect: undefined,  // set by drop event
 						isCancelled: undefined  // set by drop event
@@ -477,11 +583,11 @@ $.ui.fancytree.registerExtension({
 						.removeClass(classDropAccept + " " + classDropReject);
 
 					if( dndOpts.preventNonNodes && !nodeData ) {
-						node.debug("Reject dropping a non-node");
+						node.debug("Reject dropping a non-node.");
 						DRAG_ENTER_RESPONSE = false;
 						break;
 					} else if( dndOpts.preventForeignNodes && (!SOURCE_NODE || SOURCE_NODE.tree !== node.tree ) ) {
-						node.debug("Reject dropping a foreign node");
+						node.debug("Reject dropping a foreign node.");
 						DRAG_ENTER_RESPONSE = false;
 						break;
 					}
@@ -504,6 +610,7 @@ $.ui.fancytree.registerExtension({
 
 					// Call dragEnter() to figure out if (and where) dropping is allowed
 					if( dndOpts.preventRecursiveMoves && node.isDescendantOf(data.otherNode) ){
+						node.debug("Reject dropping below own ancestor.");
 						res = false;
 					}else{
 						r = dndOpts.dragEnter(node, data);
@@ -518,6 +625,7 @@ $.ui.fancytree.registerExtension({
 					// The dragover event is fired when an element or text
 					// selection is being dragged over a valid drop target
 					// (every few hundred milliseconds).
+					// console.log(event.type, "dropEffect: " + dataTransfer.dropEffect)
 					LAST_HIT_MODE = handleDragOver(event, data);
 					allowDrop = !!LAST_HIT_MODE;
 					break;
@@ -580,6 +688,7 @@ $.ui.fancytree.registerExtension({
 
 					// Prevent browser's default drop handling
 					event.preventDefault();
+					_clearGlobals();
 					break;
 				}
 				// Dnd API madness: we must PREVENT default handling to enable dropping

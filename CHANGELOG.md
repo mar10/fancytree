@@ -1,9 +1,31 @@
-# 2.27.1-0 / Unreleased
-  * #819: ext-filter: Handle nodes without title
-  * Re-rename clearData() to clearPersistData()
+# 2.28.1-0 / Unreleased
+* [Fixed] #848 Drag End Error with dnd5 extension
 
-# ext-fixed / Unreleased
-    * [Added] New extension ext-fixed
+# 2.28.1 / 2018-03-19
+  * [Fixed] #844 Fix RTL for ext-table
+  * [Fixed] #845 Fix RTL for ext-dnd/ext-dnd5
+  * [Fixed] #764 Fix clicks on embedded <a> tags when filter is on
+
+# 2.28.0 / 2018-03-02
+  * [Added] New extension ext-multi (experimental).
+  * [Added] ext-dnd5 support for dragging multiple selected nodes.
+  * [Added] #830 support for Font Awesome 5 (ext-glyph preset).
+  * [Added] ext-glyph supports SVG icons.
+  * [Added] `icon` option supports `{html: "..."}` content (also available for glyph-ext mapping).
+  * [Added] New method tree.visitRows()
+  * [Added] New method tree.selectAll()
+  * [Added] New method node.isBelowOf()
+  * [Added] New extension ext-fixed (experimental).
+  * [Changed] Re-rename clearData() to clearPersistData()
+  * [Changed] #828 Re-scale debugLevel from 0:quiet to 4:verbose, allowing to suppress warnings
+    and even errors.
+  * [Added] CSS helper classes:<br>
+    `.fancytree-helper-disabled`<br>
+    `.fancytree-helper-hidden` (replaces `ui-helper-hidden`)<br>
+    `.fancytree-helper-indeterminate-cb`<br>
+    `fancytree-helper-spin` for icon animations (replaces `glyphicon-spin`)
+  * [Fixed] #819: ext-filter: Handle nodes without title.
+  * [Fixed] #835: ext-dnd5: Accept drop externals after drag.
 
 # 2.27.0 / 2017-12-16
   * **BREAKING CHANGES:**

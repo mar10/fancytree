@@ -73,8 +73,8 @@ TOOLS.initQUnit = function() {
 	// 	window.console.error( JSON.stringify( result, null, 2 ) );
 	// });
 
-	// Timeout async tests after 15 seconds
-	QUnit.config.testTimeout = 15000;
+	// Timeout async tests after 30 seconds
+	QUnit.config.testTimeout = 30000;
 
 	// Silence, please
 	$.ui.fancytree.debugLevel = 1;
@@ -408,9 +408,9 @@ function profileWrapper(fn, flag, opts){
 				if( opts.printTime ){
 					console.time(name);
 				}
-				start = new Date().getTime();
+				start = Date.now();
 				fn.apply(this, arguments);
-				elap = new Date().getTime() - start;
+				elap = Date.now() - start;
 
 				if(opts.printTime){
 					console.timeEnd(name);
