@@ -355,7 +355,7 @@ module.exports = (grunt) ->
                 # jQuery UI 1.12  supports IE 11 and latest Chrome/Edge/Firefox/Safari (-1)
                 browsers: [
                   # Issue #825
-                  # { browserName: "chrome", version: "dev", platform: "Windows 10" }
+                  { browserName: "chrome", version: "dev", platform: "Windows 10" }
                   { browserName: "chrome", version: "latest", platform: "Windows 10" }
                   { browserName: "chrome", version: "latest-1", platform: "Windows 10" }
                   { browserName: "firefox", version: "dev", platform: "Windows 10" }
