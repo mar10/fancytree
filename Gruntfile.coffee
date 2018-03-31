@@ -367,7 +367,7 @@ module.exports = (grunt) ->
                   { browserName: "microsoftedge", version: "latest-1", platform: "Windows 10" }
                   { browserName: "safari", version: "9", platform: "OS X 10.11" }
                   { browserName: "safari", version: "10", platform: "OS X 10.12" }
-                  { browserName: "safari", version: "11", platform: "OS X 10.12" }
+                  { browserName: "safari", version: "11", platform: "OS X 10.13" }
                 ]
         ui_111:
             options:
