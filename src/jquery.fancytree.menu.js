@@ -68,7 +68,7 @@ $.ui.fancytree.registerExtension({
 
 //        tree.$container[0].oncontextmenu = function() {return false;};
 		// Replace the standard browser context menu with out own
-		tree.$container.delegate("span.fancytree-node", "contextmenu", function(event) {
+		tree.$container.on("contextmenu", "span.fancytree-node", function(event) {
 			var node = $.ui.fancytree.getNode(event),
 				ctx = {node: node, tree: node.tree, originalEvent: event, options: tree.options};
 			tree.ext.menu._openMenu(ctx);
