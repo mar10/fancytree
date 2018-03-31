@@ -3053,6 +3053,8 @@ Fancytree.prototype = /** @lends Fancytree# */{
 			delete opts.reverse;
 			return this._visitRowsUp(fn, opts);
 		}
+		opts = opts || {};
+		
 		var i, nextIdx, parent, res, siblings,
 			siblingOfs = 0,
 			skipFirstNode = (opts.includeSelf === false),

@@ -72,7 +72,7 @@ function findPrevRowNode(node){
 		// use the lowest descendant of the preceeding sibling
 		i = $.inArray(node, siblings);
 		prev = siblings[i - 1];
-		_assert(prev.tr);
+		// _assert(prev.tr);
 		// descend to lowest child (with a <tr> tag)
 		while(prev.children && prev.children.length){
 			last = prev.children[prev.children.length - 1];
@@ -97,24 +97,51 @@ function findPrevRowNode(node){
  * @requires jquery.fancytree.table.js
  */
 $.ui.fancytree._FancytreeClass.prototype.setViewport = function(opts){
-	var redraw = false,
+	var bottom, top, 
+		// lastPrevNode = null,
+		idx = 0,
+		stamp = Date.now(),
+		redraw = false,
 		vp = this.viewport;
-
+	
 	if( typeof opts === "boolean" ) {
 		redraw = vp.enabled !== opts;
 		vp.enabled = opts;
 	} else {
 		redraw = !vp.enabled;
 		vp.enabled = true;
-		if ( vp.top !== +opts.top ) { vp.top = opts.top; redraw = true; }
-		if ( vp.bottom !== +opts.bottom ) { vp.bottom = opts.bottom; redraw = true; }
+		top = opts.top == null ? vp.top : +opts.top;
+		bottom = opts.bottom == null ? vp.bottom : +opts.bottom;
+		if ( opts.count != null ) {
+			_assert(opts.bottom == null, "'count' and 'bottom' options are mutually exclusive.");
+			bottom = top + (+opts.count) - 1; 
+		}
+		if ( vp.top !== +top ) { vp.top = top; redraw = true; }
+		if ( vp.bottom !== +bottom ) { vp.bottom = bottom; redraw = true; }
 		if ( vp.left !== +opts.left ) { vp.left = opts.left; redraw = true; }
 		if ( vp.right !== +opts.right ) { vp.right = opts.right; redraw = true; }
 	}
 	if( redraw ) {
-		this.rows = null;  // make sure it will be re-calculated
-		this.redraw();
-	}
+		// Redraw the whole tree, erasing all node markup before and after
+		// the viewport
+		this.visitRows(function(node){
+			if( idx < top || idx > bottom ) {
+				if( node.tr ) {
+					$(node.tr).remove();
+					// TODO: faster?:
+					// node.tr.parentNode.removeChild(node.tr)
+					node.tr = null;
+				}
+			} else {
+				node.render();
+			}
+			idx++;
+		});
+		// this.debug("redraw() took " + (Date.now()-stamp) + "ms, " +
+		// 	opts.count + "/" + this.count() + " nodes.");
+		}
+	this.debug("setViewport(" + vp.top + ", +" + (1 + vp.bottom - vp.top)+ ") - took " + 
+			(Date.now()-stamp) + "ms");
 };
 
 
@@ -133,7 +160,7 @@ $.ui.fancytree._FancytreeClass.prototype.renumber = function(force){
 		rows = this.rows = [];
 
 	this.visit(function(node){
-		if( node.tr.style.display !== "none" ) {
+		if( node.tr &&  node.tr.style.display !== "none" ) {
 			node._rowIdx = i++;
 			rows.push(node);
 		}
@@ -143,23 +170,6 @@ $.ui.fancytree._FancytreeClass.prototype.renumber = function(force){
 	});
 	this.debug("renumber() took " + (Date.now()-stamp) + "ms, " +
 		rows.length + "/" + this.count() + " nodes.");
-};
-
-
-/**
- * [ext-table] Call fn(node) for all this and subsequent visible nodes.<br>
- * Stop iteration, if fn() returns false.<br>
- * Return false if iteration was stopped.
- *
- * @param {function} fn the callback function.
- *     Return false to stop iteration.
- * @returns {boolean}
- *
- * @alias Fancytree#visitRows
- * @requires jquery.fancytree.table.js
- */
-$.ui.fancytree._FancytreeClass.prototype.visitRows = function(callback){
-
 };
 
 
@@ -204,7 +214,7 @@ $.ui.fancytree.registerExtension({
 		if( !$tbody.length ) {
 			// TODO: not sure if we can rely on browsers to insert missing <tbody> before <tr>s:
 			if( $table.find(">tr").length ) {
-				$.error("Expected table > tbody > tr. If you see this please open an issue.");
+				$.error("Expected table > tbody > tr. If you see this, please open an issue.");
 			}
 			$tbody = $("<tbody>").appendTo($table);
 		}
@@ -292,7 +302,6 @@ $.ui.fancytree.registerExtension({
 	},
 	nodeRemoveChildMarkup: function(ctx) {
 		var node = ctx.node;
-//		node.debug("nodeRemoveChildMarkup()");
 		node.visit(function(n){
 			if(n.tr){
 				$(n.tr).remove();
@@ -302,7 +311,6 @@ $.ui.fancytree.registerExtension({
 	},
 	nodeRemoveMarkup: function(ctx) {
 		var node = ctx.node;
-//		node.debug("nodeRemoveMarkup()");
 		if(node.tr){
 			$(node.tr).remove();
 			node.tr = null;
@@ -311,7 +319,7 @@ $.ui.fancytree.registerExtension({
 	},
 	/* Override standard render. */
 	nodeRender: function(ctx, force, deep, collapsed, _recursive) {
-		var children, firstTr, i, l, modified, newRow, prevNode, prevTr, subCtx,
+		var children, firstTr, i, l, newRow, prevNode, prevTr, subCtx,
 			tree = ctx.tree,
 			node = ctx.node,
 			opts = ctx.options,
@@ -354,7 +362,6 @@ $.ui.fancytree.registerExtension({
 				}else if(deep && ctx.hasCollapsedParents){
 					// also hide this row if deep === true but any parent is collapsed
 					newRow.style.display = "none";
-//					newRow.style.color = "red";
 				}
 				if(!prevNode.tr){
 					_assert(!prevNode.parent, "prev. row must have a tr, or be system root");
@@ -368,14 +375,10 @@ $.ui.fancytree.registerExtension({
 					node.tr.id = opts.idPrefix + node.key;
 				}
 				node.tr.ftnode = node;
-				// if(opts.aria){
-				// 	$(node.tr).attr("aria-labelledby", "ftal_" + opts.idPrefix + node.key);
-				// }
 				node.span = $("span.fancytree-node", node.tr).get(0);
 				// Set icon, link, and title (normally this is only required on initial render)
 				this.nodeRenderTitle(ctx);
 				// Allow tweaking, binding, after node was created for the first time
-//				tree._triggerNodeEvent("createNode", ctx);
 				if ( opts.createNode ){
 					opts.createNode.call(tree, {type: "createNode"}, ctx);
 				}
@@ -390,7 +393,6 @@ $.ui.fancytree.registerExtension({
 			}
 		}
 		// Allow tweaking after node state was rendered
-//		tree._triggerNodeEvent("renderNode", ctx);
 		if ( opts.renderNode ){
 			opts.renderNode.call(tree, {type: "renderNode"}, ctx);
 		}
