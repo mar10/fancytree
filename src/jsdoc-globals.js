@@ -269,6 +269,8 @@ var FancytreeOptions = {};
  * @property {function} focusTree `data.tree` received keyboard focus
  * @property {function} <del>iconClass</del> @deprecated use tree option `icon` instead.
  * @property {function} init Widget was (re-)initialized.<br>
+ *     The initial node data was loaded and rendered, checkboxes fixed, and node activated.<br>
+ *     `data.status` is false on load error.<br>
  *     Note: if ext-persist is used, see also the `restore` event.
  * @property {function} keydown `data.node` received key. `event.which` contains the key. Return `false` to prevent default processing, i.e. navigation. Call `data.result = "preventNav";` to prevent navigation but still allow default handling inside embedded input controls.
  * @property {function} keypress (currently unused)

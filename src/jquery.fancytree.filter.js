@@ -364,7 +364,7 @@ $.ui.fancytree.registerExtension({
 			node.$subMatchBadge.hide();
 		}
 		// node.debug("nodeRenderStatus", node.titleWithHighlight, node.title)
-		// #601: also chek for $title.length, because we don't need to render
+		// #601: also check for $title.length, because we don't need to render
 		// if node.span is null (i.e. not rendered)
 		if( node.span && (!node.isEditing || !node.isEditing.call(node)) ) {
 			if( node.titleWithHighlight ) {

@@ -50,7 +50,8 @@
 				checkboxColumnIdx: 0  // render the checkboxes into the 1st column
             },
             viewport: {
-
+				enabled: true,
+				count: 5,
             },
 			source: {
 				url: "../test/ajax_101k.json"
@@ -68,7 +69,8 @@
 				// (index #0 is rendered by fancytree by adding the checkbox)
 				$tdList.eq(1).text(node.getIndexHier());  //.addClass("alignRight");
 				// (index #2 is rendered by fancytree)
-				$tdList.eq(3).text(node.data.qty);
+				$tdList.eq(3).text(node._rowIdx);
+				// $tdList.eq(3).text(node.data.qty);
 				$tdList.eq(4).html("<input type='checkbox' name='like' value='" + node.key + "'>");
 			}
 		});
@@ -76,7 +78,7 @@
 		$(document).on("change", "#vpStart,#vpCount", function(e){
             var tree = $.ui.fancytree.getTree(),
                 opts = {
-                    top: $("#vpStart").val(),
+                    start: $("#vpStart").val(),
                     count: $("#vpCount").val(),
                 };
             
@@ -102,7 +104,7 @@
 
 	<div>
 		<label for="vpStart">Viewport start:</label> <input id="vpStart" type="number" value="1">
-		<label for="vpCount">, count:</label> <input id="vpCount" type="number" value="8">
+		<label for="vpCount">, count:</label> <input id="vpCount" type="number" value="5">
 	</div>
 	<div>
 		<label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
@@ -118,7 +120,7 @@
 		<col width="30px"></col>
 		</colgroup>
 		<thead>
-			<tr> <th></th> <th>#</th> <th></th> <th>Qty</th> <th>Order</th> </tr>
+			<tr> <th></th> <th>#</th> <th></th> <th>RowIdx</th> <th>Order</th> </tr>
 		</thead>
 	</table>
 
