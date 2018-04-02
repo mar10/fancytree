@@ -62,131 +62,41 @@ function setChildRowVisibility(parent, flag) {
 	});
 }
 
-// /* Find node that is rendered in previous row. */
-// function findPrevRowNode(node){
-// 	var i, last, prev,
-// 		parent = node.parent,
-// 		siblings = parent ? parent.children : null;
+/* Find node that is rendered in previous row. */
+function findPrevRowNode(node){
+	var i, last, prev,
+		parent = node.parent,
+		siblings = parent ? parent.children : null;
 
-// 	if(siblings && siblings.length > 1 && siblings[0] !== node){
-// 		// use the lowest descendant of the preceeding sibling
-// 		i = $.inArray(node, siblings);
-// 		prev = siblings[i - 1];
-// 		// _assert(prev.tr);
-// 		// descend to lowest child (with a <tr> tag)
-// 		while(prev.children && prev.children.length){
-// 			last = prev.children[prev.children.length - 1];
-// 			if(!last.tr){
-// 				break;
-// 			}
-// 			prev = last;
-// 		}
-// 	}else{
-// 		// if there is no preceding sibling, use the direct parent
-// 		prev = parent;
-// 	}
-// 	return prev;
-// }
-
-/**
- * [ext-table] Define a subset of rows/columns to display and redraw.
- *
- * @param {object | boolean} options viewport boundaries and status.
- *
- * @alias Fancytree#setViewport
- * @requires jquery.fancytree.table.js
- */
-$.ui.fancytree._FancytreeClass.prototype.setViewport = function(opts){
-	var bottom, count, start, 
-		self = this,
-		idx = 0,
-		stamp = Date.now(),
-		redraw = false,
-		vp = this.viewport;
-	
-	if( typeof opts === "boolean" ) {
-		redraw = vp.enabled !== opts;
-		vp.enabled = opts;
-	} else {
-		redraw = !vp.enabled;
-		vp.enabled = true;
-		start = opts.start == null ? vp.start : +opts.start;
-		count = opts.count == null ? vp.count : +opts.count;
-		if ( vp.start !== +start ) { vp.start = start; redraw = true; }
-		if ( vp.count !== +count ) { vp.count = count; redraw = true; }
-		if ( vp.left !== +opts.left ) { vp.left = opts.left; redraw = true; }
-		if ( vp.right !== +opts.right ) { vp.right = opts.right; redraw = true; }
-	}
-	if( redraw ) {
-		// this.redraw(true, true);
-		// Redraw the whole tree, erasing all node markup before and after
-		// the viewport
-		bottom = start + count; 
-		this.visitRows(function(node){
-			if( idx < start || idx > bottom ) {
-				if( node.tr ) {
-					// TODO: vanilla:
-					$(node.tr).remove();
-					// node.tr.parentNode.removeChild(node.tr)
-					node.tr = null;
-				}
-			} else {
-				node.render();
+	if(siblings && siblings.length > 1 && siblings[0] !== node){
+		// use the lowest descendant of the preceeding sibling
+		i = $.inArray(node, siblings);
+		prev = siblings[i - 1];
+		_assert(prev.tr);
+		// descend to lowest child (with a <tr> tag)
+		while(prev.children && prev.children.length){
+			last = prev.children[prev.children.length - 1];
+			if(!last.tr){
+				break;
 			}
-			idx++;
-		});
-		this.debug("redraw() took " + (Date.now()-stamp) + "ms, " +
-			opts.count + "/" + this.count() + " nodes.");
-	}
-	this.debug("setViewport(" + vp.start + ", +" + count + ") - took " + 
-			(Date.now()-stamp) + "ms");
-};
-
-
-/**
- * [ext-table] Invalidate renumber status, i.e. trigger renumber next time.
- *
- * @alias Fancytree#renumberReset
- * @requires jquery.fancytree.table.js
- */
-$.ui.fancytree._FancytreeClass.prototype.renumberReset = function(){
-	this.debug("renumberReset()");
-	this.visibleRows = null;
-};
-
-
-/**
- * [ext-table] Renumber and collect all visible rows.
- *
- * @param {bool} [force=false] 
- * @param {FancytreeNode | int} [start=0]
- * @returns {$.Promise} The deferred will be resolved as soon as the (ajax)
- * @alias Fancytree#renumberVisible
- * @requires jquery.fancytree.table.js
- */
-$.ui.fancytree._FancytreeClass.prototype.renumberVisible = function(force, start){
-	if( (!this.options.viewport.enabled || this.visibleRows != null) && force !== true ) {
-		this.debug("renumberVisible() ignored.");
-		return false;
-	}
-	var i = 0,
-		stamp = Date.now(),
-		rows = this.visibleRows = [];
-
-	this.visit(function(node){
-		var hidden = node.tr && node.tr.style.display === "none";
-
-		if( !hidden ) {
-			node._rowIdx = i++;
-			rows.push(node);
+			prev = last;
 		}
-		if ( node.children && !node.expanded ) {
-			return "skip";
-		}
-	});
-	this.debug("renumberVisible(" + force + ") took " + (Date.now()-stamp) + "ms, " +
-		rows.length + "/" + this.count() + " nodes.");
-};
+	}else{
+		// if there is no preceding sibling, use the direct parent
+		prev = parent;
+	}
+	return prev;
+}
+
+/* Render callback for 'wide' mode. */
+// function _renderStatusNodeWide(event, data) {
+// 	var node = data.node,
+// 		nodeColumnIdx = data.options.table.nodeColumnIdx,
+// 		$tdList = $(node.tr).find(">td");
+
+// 	$tdList.eq(nodeColumnIdx).attr("colspan", data.tree.columnCount);
+// 	$tdList.not(":eq(" + nodeColumnIdx + ")").remove();
+// }
 
 
 $.ui.fancytree.registerExtension({
@@ -230,7 +140,7 @@ $.ui.fancytree.registerExtension({
 		if( !$tbody.length ) {
 			// TODO: not sure if we can rely on browsers to insert missing <tbody> before <tr>s:
 			if( $table.find(">tr").length ) {
-				$.error("Expected table > tbody > tr. If you see this, please open an issue.");
+				$.error("Expected table > tbody > tr. If you see this please open an issue.");
 			}
 			$tbody = $("<tbody>").appendTo($table);
 		}
@@ -286,15 +196,6 @@ $.ui.fancytree.registerExtension({
 		// #489: make sure $container is set to <table>, even if ext-dnd is listed before ext-table
 		tree.$container = $table;
 
-		tree.visibleRows = null;  // Set by renumberVisible()
-		tree.viewport = $.extend({
-			enabled: false,
-			start: 0,
-			count: 10,
-			left: 0,
-			right: 0
-		}, opts.viewport);
-
 		this._superApply(arguments);
 
 		// standard Fancytree created a root UL
@@ -311,22 +212,9 @@ $.ui.fancytree.registerExtension({
 				.attr("aria-readonly", true);
 		}
 	},
-	// treeLoad: function(ctx, source) {
-	// 	$.ui.fancytree.debug("*** treeLoad 1");
-	// 	return this._superApply(arguments).done(function(){
-	// 		$.ui.fancytree.debug("*** treeLoad 2");
-	// 		// ctx.tree.renumberReset();
-	// 	});
-	// },
-	nodeLoadChildren: function (ctx, source) {
-		$.ui.fancytree.debug("*** nodeLoadChildren 1");
-		return this._superApply(arguments).done(function () {
-			$.ui.fancytree.debug("*** nodeLoadChildren 2");
-			ctx.tree.renumberReset();
-		});
-	},
 	nodeRemoveChildMarkup: function(ctx) {
 		var node = ctx.node;
+//		node.debug("nodeRemoveChildMarkup()");
 		node.visit(function(n){
 			if(n.tr){
 				$(n.tr).remove();
@@ -336,6 +224,7 @@ $.ui.fancytree.registerExtension({
 	},
 	nodeRemoveMarkup: function(ctx) {
 		var node = ctx.node;
+//		node.debug("nodeRemoveMarkup()");
 		if(node.tr){
 			$(node.tr).remove();
 			node.tr = null;
@@ -344,37 +233,25 @@ $.ui.fancytree.registerExtension({
 	},
 	/* Override standard render. */
 	nodeRender: function(ctx, force, deep, collapsed, _recursive) {
-		var children, firstTr, i, l, newRow, outsideViewport, //prevNode, 
-			prevTr, subCtx,
+		var children, firstTr, i, l, newRow, prevNode, prevTr, subCtx,
 			tree = ctx.tree,
 			node = ctx.node,
 			opts = ctx.options,
-			viewport = tree.viewport.enabled ? tree.viewport : null,
-			start = viewport ? +viewport.start : 0,
-			bottom = viewport ? start + viewport.count - 1 : 0,
 			isRootNode = !node.parent;
 
 		if( tree._enableUpdate === false ) {
 			// $.ui.fancytree.debug("*** nodeRender _enableUpdate: false");
 			return;
 		}
-		// $.ui.fancytree.debug("*** nodeRender " + node + ", isRoot=" + isRootNode, "tr=" + node.tr, "hcp=" + ctx.hasCollapsedParents, "parent.tr=" + (node.parent && node.parent.tr));
 		if( !_recursive ){
-			$.ui.fancytree.debug("*** nodeRender root");
 			ctx.hasCollapsedParents = node.parent && !node.parent.expanded;
-			// Make sure visible row indices are correct
-			if( viewport ) {
-				tree.renumberVisible();
-			}
 		}
-
+		// $.ui.fancytree.debug("*** nodeRender " + node + ", isRoot=" + isRootNode, "tr=" + node.tr, "hcp=" + ctx.hasCollapsedParents, "parent.tr=" + (node.parent && node.parent.tr));
 		if( !isRootNode ){
-			outsideViewport = ( viewport && (node._rowIdx < start || node._rowIdx > bottom) );
-			node.debug("nodeRender idx=	" + node._rowIdx + ", viewport=" + viewport + ",outside=" + outsideViewport);
-			if( node.tr && (force || outsideViewport || node._rowIdx ) ) {
+			if( node.tr && force ) {
 				this.nodeRemoveMarkup(ctx);
 			}
-			if ( !node.tr && !outsideViewport ) {
+			if( !node.tr ) {
 				if( ctx.hasCollapsedParents && !deep ) {
 					// #166: we assume that the parent will be (recursively) rendered
 					// later anyway.
@@ -387,17 +264,17 @@ $.ui.fancytree.registerExtension({
 				// } else {
 				newRow = tree.rowFragment.firstChild.cloneNode(true);
 				// }
-				// prevNode = findPrevRowNode(node);
-				$.ui.fancytree.debug("*** nodeRender " + node);
-				// _assert(prevNode);
-				// if(collapsed === true && _recursive){
-				// 	// hide all child rows, so we can use an animation to show it later
-				// 	newRow.style.display = "none";
-				// }else if(deep && ctx.hasCollapsedParents){
-				// 	// also hide this row if deep === true but any parent is collapsed
-				// 	newRow.style.display = "none";
-				// }
-
+				prevNode = findPrevRowNode(node);
+				// $.ui.fancytree.debug("*** nodeRender " + node + ": prev: " + prevNode.key);
+				_assert(prevNode);
+				if(collapsed === true && _recursive){
+					// hide all child rows, so we can use an animation to show it later
+					newRow.style.display = "none";
+				}else if(deep && ctx.hasCollapsedParents){
+					// also hide this row if deep === true but any parent is collapsed
+					newRow.style.display = "none";
+//					newRow.style.color = "red";
+				}
 				if(!prevNode.tr){
 					_assert(!prevNode.parent, "prev. row must have a tr, or be system root");
 					// tree.tbody.appendChild(newRow);
@@ -410,11 +287,14 @@ $.ui.fancytree.registerExtension({
 					node.tr.id = opts.idPrefix + node.key;
 				}
 				node.tr.ftnode = node;
-				// TODO: vanilla
+				// if(opts.aria){
+				// 	$(node.tr).attr("aria-labelledby", "ftal_" + opts.idPrefix + node.key);
+				// }
 				node.span = $("span.fancytree-node", node.tr).get(0);
 				// Set icon, link, and title (normally this is only required on initial render)
 				this.nodeRenderTitle(ctx);
 				// Allow tweaking, binding, after node was created for the first time
+//				tree._triggerNodeEvent("createNode", ctx);
 				if ( opts.createNode ){
 					opts.createNode.call(tree, {type: "createNode"}, ctx);
 				}
@@ -429,6 +309,7 @@ $.ui.fancytree.registerExtension({
 			}
 		}
 		// Allow tweaking after node state was rendered
+//		tree._triggerNodeEvent("renderNode", ctx);
 		if ( opts.renderNode ){
 			opts.renderNode.call(tree, {type: "renderNode"}, ctx);
 		}
@@ -453,7 +334,6 @@ $.ui.fancytree.registerExtension({
 						// fix after a node was dropped over a collapsed
 						n.tr.style.display = "none";
 						setChildRowVisibility(n, false);
-						tree.renumberReset();  // Invalidate visible row cache
 					}
 					if(n.tr.previousSibling !== prevTr){
 						node.debug("_fixOrder: mismatch at node: " + n);
@@ -516,13 +396,10 @@ $.ui.fancytree.registerExtension({
 	 },
 	/* Expand node, return Deferred.promise. */
 	nodeSetExpanded: function(ctx, flag, callOpts) {
-		var node = ctx.node,
-			tree = ctx.tree;
-
 		// flag defaults to true
 		flag = (flag !== false);
 
-		if((node.expanded && flag) || (!node.expanded && !flag)) {
+		if((ctx.node.expanded && flag) || (!ctx.node.expanded && !flag)) {
 			// Expanded state isn't changed - just call base implementation
 			return this._superApply(arguments);
 		}
@@ -533,30 +410,29 @@ $.ui.fancytree.registerExtension({
 		callOpts = callOpts || {};
 
 		function _afterExpand(ok) {
-			setChildRowVisibility(node, flag);
+			setChildRowVisibility(ctx.node, flag);
 			if( ok ) {
-				if( flag && ctx.options.autoScroll && !callOpts.noAnimation && node.hasChildren() ) {
+				if( flag && ctx.options.autoScroll && !callOpts.noAnimation && ctx.node.hasChildren() ) {
 					// Scroll down to last child, but keep current node visible
-					node.getLastChild().scrollIntoView(true, {topNode: node}).always(function(){
+					ctx.node.getLastChild().scrollIntoView(true, {topNode: ctx.node}).always(function(){
 						if( !callOpts.noEvents ) {
-							tree._triggerNodeEvent(flag ? "expand" : "collapse", ctx);
+							ctx.tree._triggerNodeEvent(flag ? "expand" : "collapse", ctx);
 						}
-						dfd.resolveWith(node);
+						dfd.resolveWith(ctx.node);
 					});
 				} else {
 					if( !callOpts.noEvents ) {
-						tree._triggerNodeEvent(flag ? "expand" : "collapse", ctx);
+						ctx.tree._triggerNodeEvent(flag ? "expand" : "collapse", ctx);
 					}
-					dfd.resolveWith(node);
+					dfd.resolveWith(ctx.node);
 				}
 			} else {
 				if( !callOpts.noEvents ) {
-					tree._triggerNodeEvent(flag ? "expand" : "collapse", ctx);
+					ctx.tree._triggerNodeEvent(flag ? "expand" : "collapse", ctx);
 				}
-				dfd.rejectWith(node);
+				dfd.rejectWith(ctx.node);
 			}
 		}
-		tree.renumberReset();  // Invalidate visible row cache
 		// Call base-expand with disabled events and animation
 		this._super(ctx, flag, subOpts).done(function () {
 			_afterExpand(true);
@@ -577,19 +453,13 @@ $.ui.fancytree.registerExtension({
 	},
 	treeClear: function(ctx) {
 		this.nodeRemoveChildMarkup(this._makeHookContext(this.rootNode));
-		this.renumberReset();  // Invalidate visible row cache
 		return this._superApply(arguments);
 	},
 	treeDestroy: function(ctx) {
 		this.$container.find("tbody").empty();
 		this.$source && this.$source.removeClass("fancytree-helper-hidden");
-		this.renumberReset();  // Invalidate visible row cache
 		return this._superApply(arguments);
 	}
-	// treeRegisterNode: function(ctx, add, node) {
-	// 	this.renumberVisible();
-	// 	return this._superApply(arguments);
-	// }
 	/*,
 	treeSetFocus: function(ctx, flag) {
 //	        alert("treeSetFocus" + ctx.tree.$container);
