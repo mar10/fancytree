@@ -48,46 +48,6 @@ function insertSiblingAfter(referenceNode, newNode) {
 	referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
 }
 
-/* Show/hide all rows that are structural descendants of `parent`. */
-function setChildRowVisibility(parent, flag) {
-	parent.visit(function(node){
-		var tr = node.tr;
-		// currentFlag = node.hide ? false : flag; // fix for ext-filter
-		if(tr){
-			tr.style.display = (node.hide || !flag) ? "none" : "";
-		}
-		if(!node.expanded){
-			return "skip";
-		}
-	});
-}
-
-// /* Find node that is rendered in previous row. */
-// function findPrevRowNode(node){
-// 	var i, last, prev,
-// 		parent = node.parent,
-// 		siblings = parent ? parent.children : null;
-
-// 	if(siblings && siblings.length > 1 && siblings[0] !== node){
-// 		// use the lowest descendant of the preceeding sibling
-// 		i = $.inArray(node, siblings);
-// 		prev = siblings[i - 1];
-// 		// _assert(prev.tr);
-// 		// descend to lowest child (with a <tr> tag)
-// 		while(prev.children && prev.children.length){
-// 			last = prev.children[prev.children.length - 1];
-// 			if(!last.tr){
-// 				break;
-// 			}
-// 			prev = last;
-// 		}
-// 	}else{
-// 		// if there is no preceding sibling, use the direct parent
-// 		prev = parent;
-// 	}
-// 	return prev;
-// }
-
 /**
  * [ext-table] Define a subset of rows/columns to display and redraw.
  *
@@ -220,8 +180,6 @@ $.ui.fancytree.registerExtension({
 		if( opts.renderStatusColumns ) {
 			if( opts.renderStatusColumns === true ) {
 				opts.renderStatusColumns = opts.renderColumns;
-			// } else if( opts.renderStatusColumns === "wide" ) {
-			// 	opts.renderStatusColumns = _renderStatusNodeWide;
 			}
 		}
 
@@ -266,16 +224,6 @@ $.ui.fancytree.registerExtension({
 		tree.rowFragment = document.createDocumentFragment();
 		tree.rowFragment.appendChild($row.get(0));
 
-		// // If tbody contains a second row, use this as status node template
-		// $row = $tbody.children("tr:eq(1)");
-		// if( $row.length === 0 ) {
-		// 	tree.statusRowFragment = tree.rowFragment;
-		// } else {
-		// 	$row = $row.clone();
-		// 	tree.statusRowFragment = document.createDocumentFragment();
-		// 	tree.statusRowFragment.appendChild($row.get(0));
-		// }
-		//
 		$tbody.empty();
 
 		// Make sure that status classes are set on the node's <tr> elements
@@ -344,13 +292,13 @@ $.ui.fancytree.registerExtension({
 	},
 	/* Override standard render. */
 	nodeRender: function(ctx, force, deep, collapsed, _recursive) {
-		var children, firstTr, i, l, newRow, outsideViewport, //prevNode, 
+		var children, firstTr, i, l, newRow, outsideViewport, prevNode, prevTr, 
 			prevTr, subCtx,
 			tree = ctx.tree,
 			node = ctx.node,
 			opts = ctx.options,
 			viewport = tree.viewport.enabled ? tree.viewport : null,
-			start = viewport ? +viewport.start : 0,
+			start = (viewport && viewport.start > 0) ? +viewport.start : 0,
 			bottom = viewport ? start + viewport.count - 1 : 0,
 			isRootNode = !node.parent;
 
@@ -369,18 +317,20 @@ $.ui.fancytree.registerExtension({
 		}
 
 		if( !isRootNode ){
-			outsideViewport = ( viewport && (node._rowIdx < start || node._rowIdx > bottom) );
-			node.debug("nodeRender idx=	" + node._rowIdx + ", viewport=" + viewport + ",outside=" + outsideViewport);
+			outsideViewport = ( viewport && (node._rowIdx < start || tree.tbody.rows.length > viewport.count) );
+			// outsideViewport = ( viewport && (node._rowIdx < start || node._rowIdx > bottom) );
+			node.debug("nodeRender idx=	" + node._rowIdx + ", viewport=" + viewport + ",outside=" + outsideViewport, tree.tbody.rows.length);
 			if( node.tr && (force || outsideViewport || node._rowIdx ) ) {
+				node.debug("nodeRender removeMarkup");
 				this.nodeRemoveMarkup(ctx);
 			}
 			if ( !node.tr && !outsideViewport ) {
-				if( ctx.hasCollapsedParents && !deep ) {
-					// #166: we assume that the parent will be (recursively) rendered
-					// later anyway.
-					// node.debug("nodeRender ignored due to unrendered parent");
-					return;
-				}
+				// if( ctx.hasCollapsedParents && !deep ) {
+				// 	// #166: we assume that the parent will be (recursively) rendered
+				// 	// later anyway.
+				// 	// node.debug("nodeRender ignored due to unrendered parent");
+				// 	return;
+				// }
 				// Create new <tr> after previous row
 				// if( node.isStatusNode() ) {
 				// 	newRow = tree.statusRowFragment.firstChild.cloneNode(true);
@@ -397,13 +347,18 @@ $.ui.fancytree.registerExtension({
 				// 	// also hide this row if deep === true but any parent is collapsed
 				// 	newRow.style.display = "none";
 				// }
-
-				if(!prevNode.tr){
-					_assert(!prevNode.parent, "prev. row must have a tr, or be system root");
-					// tree.tbody.appendChild(newRow);
-					insertFirstChild(tree.tbody, newRow);  // #675
-				}else{
-					insertSiblingAfter(prevNode.tr, newRow);
+				prevTr = null;
+				if( node._rowIdx > 0 ) {
+					prevNode = tree.visibleRows[node._rowIdx - 1];
+					prevTr = prevNode && prevNode.tr;
+				}
+				if( prevTr ) {
+					insertSiblingAfter(prevTr, newRow);
+				} else {
+					insertFirstChild(tree.tbody, newRow);
+					// _assert(node._rowIdx > 0);
+					// node.debug("nodeRender: idx=" + node._rowIdx + ", prevNode=", prevNode);
+					// _assert(prevNode.tr);
 				}
 				node.tr = newRow;
 				if( node.key && opts.generateIds ){
@@ -437,33 +392,37 @@ $.ui.fancytree.registerExtension({
 		children = node.children;
 		if(children && (isRootNode || deep || node.expanded)){
 			for(i=0, l=children.length; i<l; i++) {
+				if (viewport && tree.tbody.rows.length > viewport.count) {
+					children[i].debug("BREAK")
+					return false;
+				}
 				subCtx = $.extend({}, ctx, {node: children[i]});
 				subCtx.hasCollapsedParents = subCtx.hasCollapsedParents || !node.expanded;
 				this.nodeRender(subCtx, force, deep, collapsed, true);
 			}
 		}
-		// Make sure, that <tr> order matches node.children order.
-		if(children && !_recursive){ // we only have to do it once, for the root branch
-			prevTr = node.tr || null;
-			firstTr = tree.tbody.firstChild;
-			// Iterate over all descendants
-			node.visit(function(n){
-				if(n.tr){
-					if(!n.parent.expanded && n.tr.style.display !== "none"){
-						// fix after a node was dropped over a collapsed
-						n.tr.style.display = "none";
-						setChildRowVisibility(n, false);
-						tree.renumberReset();  // Invalidate visible row cache
-					}
-					if(n.tr.previousSibling !== prevTr){
-						node.debug("_fixOrder: mismatch at node: " + n);
-						var nextTr = prevTr ? prevTr.nextSibling : firstTr;
-						tree.tbody.insertBefore(n.tr, nextTr);
-					}
-					prevTr = n.tr;
-				}
-			});
-		}
+		// // Make sure, that <tr> order matches node.children order.
+		// if(children && !_recursive){ // we only have to do it once, for the root branch
+		// 	prevTr = node.tr || null;
+		// 	firstTr = tree.tbody.firstChild;
+		// 	// Iterate over all descendants
+		// 	node.visit(function(n){
+		// 		if(n.tr){
+		// 			if(!n.parent.expanded && n.tr.style.display !== "none"){
+		// 				// fix after a node was dropped over a collapsed
+		// 				n.tr.style.display = "none";
+		// 				setChildRowVisibility(n, false);
+		// 				tree.renumberReset();  // Invalidate visible row cache
+		// 			}
+		// 			if(n.tr.previousSibling !== prevTr){
+		// 				node.debug("_fixOrder: mismatch at node: " + n);
+		// 				var nextTr = prevTr ? prevTr.nextSibling : firstTr;
+		// 				tree.tbody.insertBefore(n.tr, nextTr);
+		// 			}
+		// 			prevTr = n.tr;
+		// 		}
+		// 	});
+		// }
 		// Update element classes according to node state
 		// if(!isRootNode){
 		// 	this.nodeRenderStatus(ctx);

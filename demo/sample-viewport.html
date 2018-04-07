@@ -28,7 +28,7 @@
 </style>
 	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet">
 	<script src="../src/jquery.fancytree.js"></script>
-	<script src="../src/jquery.fancytree.table.js"></script>
+	<script src="../src/jquery.fancytree.grid.js"></script>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
 	<link href="../lib/prettify.css" rel="stylesheet">
@@ -57,9 +57,9 @@
 				url: "../test/ajax_101k.json"
 				// url: "ajax-tree-products.json"
 			},
-			tooltip: function(event, data){
-				return data.node.data.author;
-			},
+			// tooltip: function(event, data){
+			// 	return data.node.data.author;
+			// },
 			lazyLoad: function(event, data) {
 				data.result = {url: "ajax-sub2.json"}
 			},
@@ -103,7 +103,7 @@
 	</div>
 
 	<div>
-		<label for="vpStart">Viewport start:</label> <input id="vpStart" type="number" value="1">
+		<label for="vpStart">Viewport start:</label> <input id="vpStart" type="number" value="0">
 		<label for="vpCount">, count:</label> <input id="vpCount" type="number" value="5">
 	</div>
 	<div>

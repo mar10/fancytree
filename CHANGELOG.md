@@ -29,7 +29,10 @@
 
 # 'viewport' / Unreleased
   * Render sub-parts of a tree
-  
+  * Expand animations are no longer supported
+  * Rows are never hidden, but always removed: input must be persisted
+  * New callback `hideNode` to read input values into node model
+
 # 2.27.0 / 2017-12-16
   * **BREAKING CHANGES:**
     - `node.type` is now a first-class property of FancytreeNode.
