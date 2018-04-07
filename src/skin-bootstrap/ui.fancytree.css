@@ -399,7 +399,9 @@ table.fancytree-ext-columnview .fancytree-has-children span.fancytree-cv-right {
   visibility: visible;
 }
 .fancytree-ext-childcounter span.fancytree-icon,
-.fancytree-ext-filter span.fancytree-icon {
+.fancytree-ext-filter span.fancytree-icon,
+.fancytree-ext-childcounter span.fancytree-custom-icon,
+.fancytree-ext-filter span.fancytree-custom-icon {
   position: relative;
 }
 .fancytree-ext-childcounter span.fancytree-childcounter,

@@ -91,7 +91,8 @@ $.ui.fancytree._FancytreeNodeClass.prototype.updateCounters = function(){
 	node.data.childCounter = count;
 	if( (count || !extOpts.hideZeros) && (!node.isExpanded() || !extOpts.hideExpanded) ) {
 		if( !$badge.length ) {
-			$badge = $("<span class='fancytree-childcounter'/>").appendTo($("span.fancytree-icon", node.span));
+			$badge = $("<span class='fancytree-childcounter'/>")
+				.appendTo($("span.fancytree-icon,span.fancytree-custom-icon", node.span));
 		}
 		$badge.text(count);
 	} else {
@@ -206,7 +207,8 @@ $.ui.fancytree.registerExtension({
 		this._super(ctx, title);
 // Append a counter badge
 		if( (count || ! extOpts.hideZeros) && (!node.isExpanded() || !extOpts.hideExpanded) ){
-			$("span.fancytree-icon", node.span).append($("<span class='fancytree-childcounter'/>").text(count));
+			$("span.fancytree-icon,span.fancytree-custom-icon", node.span)
+				.append($("<span class='fancytree-childcounter'/>").text(count));
 		}
 	},
 // Overload the `setExpanded` hook, so the counters are updated
