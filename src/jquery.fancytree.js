@@ -4980,7 +4980,7 @@ $.widget("ui.fancytree",
 			if( flag ) {
 				if( tree._getExpiringValue("focusin") ) {
 					// #789: IE 11 may send duplicate focusin events
-					FT.info("Ignored double focusin.");
+					tree.info("Ignored double focusin.");
 					return;
 				}
 				tree._setExpiringValue("focusin", true, 50);
@@ -4988,7 +4988,7 @@ $.widget("ui.fancytree",
 				if( !node ) {
 					// #789: IE 11 may send focusin before mousdown(?)
 					node = tree._getExpiringValue("mouseDownNode");
-					if( node ) { FT.info("Reconstruct mouse target for focusin from recent event."); }
+					if( node ) { tree.info("Reconstruct mouse target for focusin from recent event."); }
 				}
 			}
 			if(node){
