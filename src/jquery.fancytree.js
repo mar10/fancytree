@@ -4233,7 +4233,7 @@ $.extend(Fancytree.prototype,
 				} else {
 					// The UI toggle() effect works with the ext-wide extension,
 					// while jQuery.animate() has problems when the title span
-					// has positon: absolute.
+					// has position: absolute.
 					// Since jQuery UI 1.12, the blind effect requires the parent
 					// element to have 'position: relative'.
 					// See #716, #717
@@ -4980,7 +4980,7 @@ $.widget("ui.fancytree",
 			if( flag ) {
 				if( tree._getExpiringValue("focusin") ) {
 					// #789: IE 11 may send duplicate focusin events
-					tree.info("Ignored double focusin.");
+					tree.debug("Ignored double focusin.");
 					return;
 				}
 				tree._setExpiringValue("focusin", true, 50);
@@ -4988,7 +4988,7 @@ $.widget("ui.fancytree",
 				if( !node ) {
 					// #789: IE 11 may send focusin before mousdown(?)
 					node = tree._getExpiringValue("mouseDownNode");
-					if( node ) { tree.info("Reconstruct mouse target for focusin from recent event."); }
+					if( node ) { tree.debug("Reconstruct mouse target for focusin from recent event."); }
 				}
 			}
 			if(node){
@@ -5259,7 +5259,7 @@ $.extend($.ui.fancytree,
 	 *     TYPE: 'title' | 'prefix' | 'expander' | 'checkbox' | 'icon' | undefined
 	 */
 	getEventTarget: function(event){
-		var $target,
+		var $target, tree,
 			tcn = event && event.target ? event.target.className : "",
 			res = {node: this.getNode(event.target), type: undefined};
 		// We use a fast version of $(res.node).hasClass()
@@ -5280,7 +5280,8 @@ $.extend($.ui.fancytree,
 			$target = $(event.target);
 			if( $target.is("ul[role=group]") ) {
 				// #nnn: Clicking right to a node may hit the surrounding UL
-				FT.info("Ignoring click on outer UL.");
+				tree = res.node && res.node.tree;
+				(tree || FT).debug("Ignoring click on outer UL.");
 				res.node = null;
 			}else if( $target.closest(".fancytree-title").length ) {
 				// #228: clicking an embedded element inside a title
