@@ -18,6 +18,36 @@ filtering, checkboxes, drag'n'drop, and lazy loading.
 See the [change log](https://github.com/mar10/fancytree/blob/master/CHANGELOG.md)
 for details.
 
+### API
+
+http://www.wwwendt.de/tech/fancytree/doc/jsdoc/Fancytree_Static.html#createTree
+
+### ES6 Module
+
+https://github.com/mar10/fancytree/wiki#use-a-module-loader
+
+```js
+// const $ = require('jquery');
+// import * as $ from "jquery";
+
+import $ from "jquery";
+
+import 'jquery.fancytree/dist/skin-lion/ui.fancytree.less';  // CSS or LESS
+
+import {createTree} from 'jquery.fancytree';
+
+import 'jquery.fancytree/dist/modules/jquery.fancytree.edit';
+import 'jquery.fancytree/dist/modules/jquery.fancytree.filter';
+
+const tree = createTree('#tree', {
+  extensions: ['edit', 'filter'],
+  source: {...},
+  ...
+});
+// Note: Loading and initialization may be asynchronous, so the nodes may not be accessible yet.
+
+```
+
 
 ### Get Started
 
