@@ -16,14 +16,16 @@ var $ = jQuery,
 	];
 
 /*******************************************************************************
- * QUnit setup
+ * Initialize QUnit
  */
 
-QUnit.log(function(data) {
-	if (window.console && window.console.log) {
-//		window.console.log(data.result + " :: " + data.message);
-	}
-});
+tools.initQUnit();
+
+// Create an Info section (will be expanded when tests are completed)
+tools.createInfoSection();
+
+// Silence, please
+$.ui.fancytree.debugLevel = 1;
 
 
 /*******************************************************************************

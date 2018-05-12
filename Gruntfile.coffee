@@ -388,17 +388,18 @@ module.exports = (grunt) ->
                 # jQuery 1.10    dropped support for IE 6
                 # jQuery UI 1.10 supports IE 7+ and ?
                 browsers: [
+                  { browserName: "internet explorer", version: "8", platform: "Windows 7" }
                   { browserName: "internet explorer", version: "9", platform: "Windows 7" }
                 ]
-        ui_109:
-            options:
-                testname: "Fancytree qunit tests (jQuery 1.9, jQuery UI 1.9)"
-                urls: ["http://localhost:9999/test/unit/test-jQuery19-ui19.html"]
-                # jQuery 1.9     dropped supports IE 6..?
-                # jQuery UI 1.9  supports IE 6+ and ?
-                browsers: [
-                  { browserName: "internet explorer", version: "8", platform: "Windows 7" }
-                ]
+        # ui_109:
+        #     options:
+        #         testname: "Fancytree qunit tests (jQuery 1.9, jQuery UI 1.9)"
+        #         urls: ["http://localhost:9999/test/unit/test-jQuery19-ui19.html"]
+        #         # jQuery 1.9     dropped supports IE 6..?
+        #         # jQuery UI 1.9  supports IE 6+ and ?
+        #         browsers: [
+        #           { browserName: "internet explorer", version: "8", platform: "Windows 7" }
+        #         ]
 
     uglify:
         src_to_build:
