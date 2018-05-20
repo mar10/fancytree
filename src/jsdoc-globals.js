@@ -199,7 +199,7 @@ var TreePatch = {};
  *     "": Tree control is not tabbable nor may it receive keyboard focus.
  * @property {boolean} titlesTabbable Add tabindex='0' to node title span, so it can receive keyboard focus
  * @property {object} toggleEffect Animation options, false:off
- *     (default: { effect: "blind", options: {direction: "vertical", scale: "box"}, duration: 200 })
+ *     (default: { effect: "slideToggle", duration: 200 })
  * @property {boolean|function} tooltip Add a `title` attribute to the node's title span markup,
  *     thus enabling a tooltip (default: false).<br>
  *     false: No automatic tooltip (but still honor `node.tooltip` attribute)<br>

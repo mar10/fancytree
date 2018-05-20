@@ -8,8 +8,8 @@ by Fancytree:
   - keycode.js
   - scroll-parent.js
   - unique-id.js
-  - effect.js
-  - effects/effect-blind.js
+  - <strike>effect.js</strike>
+  - <strike>effects/effect-blind.js</strike>
 
 During the build step, the file `jquery-ui.js` is added as part of jquery.fancytree-all-deps.js,
 then  minified and a source map generated.
@@ -41,7 +41,9 @@ the same, but any module can only export one object:<br>
 we want `require("jquery.fancytree")` to return the Fancytree widget.
 
 Therefore we modify the original `jquery-ui.js` download an replace the original
-UMD headers with a plain closure:
+UMD headers with a plain closure.
+It can then be included in jquery.fancytree-all-deps.min.js, in the same way as the other
+Fancytree extensions:
 
 ```js
 /*
