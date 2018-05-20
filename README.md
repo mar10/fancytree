@@ -31,6 +31,30 @@ for details.
   * [Contribute](https://github.com/mar10/fancytree/wiki/HowtoContribute)
 
 
+### ES6 Quickstart
+
+```js
+import $ from "jquery";
+
+import 'jquery.fancytree/dist/skin-lion/ui.fancytree.less';  // CSS or LESS
+
+import {createTree} from 'jquery.fancytree';
+
+import 'jquery.fancytree/dist/modules/jquery.fancytree.edit';
+import 'jquery.fancytree/dist/modules/jquery.fancytree.filter';
+
+const tree = createTree('#tree', {
+  extensions: ['edit', 'filter'],
+  source: {...},
+  ...
+});
+// Note: Loading and initialization may be asynchronous, so the nodes may not be accessible yet.
+```
+
+See [module loader support](https://github.com/mar10/fancytree/wiki#use-a-module-loader) and
+[API docs](http://www.wwwendt.de/tech/fancytree/doc/jsdoc/Fancytree_Static.html#createTree).
+
+
 ### Credits
 
 Thanks to all [contributors](https://github.com/mar10/fancytree/contributors).
