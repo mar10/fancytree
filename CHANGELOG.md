@@ -3,11 +3,13 @@
     `toggleEffect` now also accepts "toggle" or "slideToggle" to use jQuery effects instead of jQueryUI.<br>
     `toggleEffect: { effect: "slideToggle", duration: 200 }` is now the default.<br>
     'effects' component was removed from the bundled jquery.fancytree.ui-deps.js
+  * [Fixed] #746 Animation bug when expanding/collapsing nodes
   * [Fixed] #848 Drag End Error with dnd5 extension
   * [Fixed] #850 ext-childcounter doesn't work with custom icons
   * [Fixed] #859 Fix log level configuration problem
   * [Fixed] #865 toggleEffect animation (effect: blind) sometimes got stuck.
   * Stop testing jQuery UI 1.9
+  * Update to jQuery 3.3.1
 
 # 2.28.1 / 2018-03-19
   * [Fixed] #844 Fix RTL for ext-table
