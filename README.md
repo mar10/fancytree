@@ -18,18 +18,22 @@ filtering, checkboxes, drag'n'drop, and lazy loading.
 See the [change log](https://github.com/mar10/fancytree/blob/master/CHANGELOG.md)
 for details.
 
-### API
 
-http://www.wwwendt.de/tech/fancytree/doc/jsdoc/Fancytree_Static.html#createTree
+### Get Started
 
-### ES6 Module
+  * [Try the live demo](http://wwwendt.de/tech/fancytree/demo).
+  * [Read the documentation](https://github.com/mar10/fancytree/wiki).
+  * [Check the Q&A forum](https://groups.google.com/forum/#!forum/fancytree) or
+    [Stackoverflow](http://stackoverflow.com/questions/tagged/fancytree) if you have questions.
+  * Play with [jsFiddle](http://jsfiddle.net/mar10/KcxRd/),
+    [CodePen](https://codepen.io/mar10/pen/WMWrbq),
+    or [Plunker](http://plnkr.co/edit/8sdy3r?p=preview).
+  * [Contribute](https://github.com/mar10/fancytree/wiki/HowtoContribute)
 
-https://github.com/mar10/fancytree/wiki#use-a-module-loader
+
+### ES6 Quickstart
 
 ```js
-// const $ = require('jquery');
-// import * as $ from "jquery";
-
 import $ from "jquery";
 
 import 'jquery.fancytree/dist/skin-lion/ui.fancytree.less';  // CSS or LESS
@@ -45,20 +49,10 @@ const tree = createTree('#tree', {
   ...
 });
 // Note: Loading and initialization may be asynchronous, so the nodes may not be accessible yet.
-
 ```
 
-
-### Get Started
-
-  * [Try the live demo](http://wwwendt.de/tech/fancytree/demo).
-  * [Read the documentation](https://github.com/mar10/fancytree/wiki).
-  * [Check the Q&A forum](https://groups.google.com/forum/#!forum/fancytree) or
-    [Stackoverflow](http://stackoverflow.com/questions/tagged/fancytree) if you have questions.
-  * Play with [jsFiddle](http://jsfiddle.net/mar10/KcxRd/),
-    [CodePen](https://codepen.io/mar10/pen/WMWrbq),
-    or [Plunker](http://plnkr.co/edit/8sdy3r?p=preview).
-  * [Contribute](https://github.com/mar10/fancytree/wiki/HowtoContribute)
+See [module loader support](https://github.com/mar10/fancytree/wiki#use-a-module-loader) and
+[API docs](http://www.wwwendt.de/tech/fancytree/doc/jsdoc/Fancytree_Static.html#createTree).
 
 
 ### Credits
