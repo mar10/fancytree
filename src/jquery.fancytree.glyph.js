@@ -170,7 +170,7 @@ function setIcon( span, baseClass, opts, type, node ) {
 		setClass = baseClass + " " + (map._addClass || "");
 
     if ($.isFunction(icon)) {
-	    $span.attr("class", setClass + " " + icon.call(this, span, node));
+	    $span.attr("class", setClass + " " + icon.call(span, node));
 	}
 	else if( typeof icon === "string" ) {
         $span.attr( "class", setClass + " " + icon );
