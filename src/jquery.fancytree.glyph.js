@@ -163,15 +163,18 @@ var FT = $.ui.fancytree,
 	};
 
 
-function setIcon( span, baseClass, opts, type ) {
+function setIcon( span, baseClass, opts, type, node ) {
 	var map = opts.map,
 		icon = map[ type ],
 		$span = $( span ),
 		setClass = baseClass + " " + (map._addClass || "");
 
-	if( typeof icon === "string" ) {
-		$span.attr( "class", setClass + " " + icon );
-	} else if ( icon ) {
+    if ($.isFunction(icon)) {
+	    $span.attr("class", setClass + " " + icon.call(this, span, node));
+	}
+	else if( typeof icon === "string" ) {
+        $span.attr( "class", setClass + " " + icon );
+    } else if ( icon ) {
 		if( icon.text ) {
 			// $span.text( "" + icon.text );
 			span.textContent = "" + icon.text;
@@ -233,7 +236,7 @@ $.ui.fancytree.registerExtension({
 				icon = "noExpander";
 			}
 			// span.className = "fancytree-expander " + map[icon];
-			setIcon( span, "fancytree-expander", opts, icon );
+			setIcon( span, "fancytree-expander", opts, icon, node );
 		}
 
 		if( node.tr ){
@@ -245,11 +248,11 @@ $.ui.fancytree.registerExtension({
 			checkbox = FT.evalOption("checkbox", node, node, opts, false);
 			if( (node.parent && node.parent.radiogroup ) || checkbox === "radio" ) {
 				icon = node.selected ? "radioSelected" : "radio";
-				setIcon( span, "fancytree-checkbox fancytree-radio", opts, icon );
+				setIcon( span, "fancytree-checkbox fancytree-radio", opts, icon, node );
 			} else {
 				icon = node.selected ? "checkboxSelected" : (node.partsel ? "checkboxUnknown" : "checkbox");
 				// span.className = "fancytree-checkbox " + map[icon];
-				setIcon( span, "fancytree-checkbox", opts, icon );
+				setIcon( span, "fancytree-checkbox", opts, icon, node );
 			}
 		}
 
@@ -264,7 +267,7 @@ $.ui.fancytree.registerExtension({
 			}else{
 				icon = node.expanded ? "docOpen" : "doc";
 			}
-			setIcon( span, "fancytree-icon", opts, icon );
+			setIcon( span, "fancytree-icon", opts, icon, node );
 		}
 		return res;
 	},
@@ -279,13 +282,13 @@ $.ui.fancytree.registerExtension({
 			if(node.parent){
 				span = $("span.fancytree-expander", node.span).get(0);
 				if( span ) {
-					setIcon( span, "fancytree-expander", opts, status );
+					setIcon( span, "fancytree-expander", opts, status, node );
 				}
 			}else{ //
 				span = $(".fancytree-statusnode-" + status, node[this.nodeContainerAttrName])
 					.find("span.fancytree-icon").get(0);
 				if( span ) {
-					setIcon( span, "fancytree-icon", opts, status );
+					setIcon( span, "fancytree-icon", opts, status, node );
 				}
 			}
 		}
