@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.28.1
- * @date 2018-03-19T06:47:37Z
+ * @version 2.29.0
+ * @date 2018-06-16T11:23:53Z
  */
 
 ;(function( factory ) {
@@ -186,7 +186,7 @@ function setIcon( span, baseClass, opts, type ) {
 
 $.ui.fancytree.registerExtension({
 	name: "glyph",
-	version: "2.28.1",
+	version: "2.29.0",
 	// Default options for this extension.
 	options: {
 		preset: null,  // 'awesome3', 'awesome4', 'bootstrap3', 'material'

@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.28.1
- * @date 2018-03-19T06:47:37Z
+ * @version 2.29.0
+ * @date 2018-06-16T11:23:53Z
  */
 
 ;(function( factory ) {
@@ -54,34 +54,6 @@ function _removeArrayMember(arr, elem) {
 	}
 	return false;
 }
-
-
-// /**
-//  * Calculate a 32 bit FNV-1a hash
-//  * Found here: https://gist.github.com/vaiorabbit/5657561
-//  * Ref.: http://isthe.com/chongo/tech/comp/fnv/
-//  *
-//  * @param {string} str the input value
-//  * @param {boolean} [asString=false] set to true to return the hash value as
-//  *     8-digit hex string instead of an integer
-//  * @param {integer} [seed] optionally pass the hash of the previous chunk
-//  * @returns {integer | string}
-//  */
-// function hashFnv32a(str, asString, seed) {
-// 	/*jshint bitwise:false */
-// 	var i, l,
-// 		hval = (seed === undefined) ? 0x811c9dc5 : seed;
-
-// 	for (i = 0, l = str.length; i < l; i++) {
-// 		hval ^= str.charCodeAt(i);
-// 		hval += (hval << 1) + (hval << 4) + (hval << 7) + (hval << 8) + (hval << 24);
-// 	}
-// 	if( asString ){
-// 		// Convert to 8 digit hex string
-// 		return ("0000000" + (hval >>> 0).toString(16)).substr(-8);
-// 	}
-// 	return hval >>> 0;
-// }
 
 
 /**
@@ -154,14 +126,9 @@ function hashMurmur3(key, asString, seed) {
 	return h1 >>> 0;
 }
 
-// console.info(hashMurmur3("costarring"));
-// console.info(hashMurmur3("costarring", true));
-// console.info(hashMurmur3("liquid"));
-// console.info(hashMurmur3("liquid", true));
-
 
 /*
- * Return a unique key for node by calculationg the hash of the parents refKey-list
+ * Return a unique key for node by calculating the hash of the parents refKey-list.
  */
 function calcUniqueKey(node) {
 	var key,
@@ -174,7 +141,7 @@ function calcUniqueKey(node) {
 
 
 /**
- * [ext-clones] Return a list of clone-nodes or null.
+ * [ext-clones] Return a list of clone-nodes (i.e. same refKey) or null.
  * @param {boolean} [includeSelf=false]
  * @returns {FancytreeNode[] | null}
  *
@@ -355,7 +322,7 @@ $.ui.fancytree._FancytreeClass.prototype.changeRefKey = function(oldRefKey, newR
  */
 $.ui.fancytree.registerExtension({
 	name: "clones",
-	version: "2.28.1",
+	version: "2.29.0",
 	// Default options for this extension.
 	options: {
 		highlightActiveClones: true, // set 'fancytree-active-clone' on active clones and all peers

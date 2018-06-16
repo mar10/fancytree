@@ -19,8 +19,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.28.1
- * @date 2018-03-19T06:47:37Z
+ * @version 2.29.0
+ * @date 2018-06-16T11:23:53Z
  */
 
 // To keep the global namespace clean, we wrap everything in a closure.
@@ -91,7 +91,8 @@ $.ui.fancytree._FancytreeNodeClass.prototype.updateCounters = function(){
 	node.data.childCounter = count;
 	if( (count || !extOpts.hideZeros) && (!node.isExpanded() || !extOpts.hideExpanded) ) {
 		if( !$badge.length ) {
-			$badge = $("<span class='fancytree-childcounter'/>").appendTo($("span.fancytree-icon", node.span));
+			$badge = $("<span class='fancytree-childcounter'/>")
+				.appendTo($("span.fancytree-icon,span.fancytree-custom-icon", node.span));
 		}
 		$badge.text(count);
 	} else {
@@ -138,7 +139,7 @@ $.ui.fancytree.registerExtension({
 // Every extension must be registered by a unique name.
 	name: "childcounter",
 // Version information should be compliant with [semver](http://semver.org)
-	version: "2.28.1",
+	version: "2.29.0",
 
 // Extension specific options and their defaults.
 // This options will be available as `tree.options.childcounter.hideExpanded`
@@ -206,7 +207,8 @@ $.ui.fancytree.registerExtension({
 		this._super(ctx, title);
 // Append a counter badge
 		if( (count || ! extOpts.hideZeros) && (!node.isExpanded() || !extOpts.hideExpanded) ){
-			$("span.fancytree-icon", node.span).append($("<span class='fancytree-childcounter'/>").text(count));
+			$("span.fancytree-icon,span.fancytree-custom-icon", node.span)
+				.append($("<span class='fancytree-childcounter'/>").text(count));
 		}
 	},
 // Overload the `setExpanded` hook, so the counters are updated

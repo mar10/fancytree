@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.28.1
- * @date 2018-03-19T06:47:37Z
+ * @version 2.29.0
+ * @date 2018-06-16T11:23:53Z
  */
 
 ;(function( factory ) {
@@ -101,7 +101,7 @@ function findPrevRowNode(node){
 
 $.ui.fancytree.registerExtension({
 	name: "table",
-	version: "2.28.1",
+	version: "2.29.0",
 	// Default options for this extension.
 	options: {
 		checkboxColumnIdx: null, // render the checkboxes into the this column index (default: nodeColumnIdx)

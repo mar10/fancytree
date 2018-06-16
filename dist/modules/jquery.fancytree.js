@@ -7,8 +7,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.28.1
- * @date 2018-03-19T06:47:37Z
+ * @version 2.29.0
+ * @date 2018-06-16T11:23:53Z
  */
 
 /** Core Fancytree module.
@@ -4233,20 +4233,48 @@ $.extend(Fancytree.prototype,
 				} else {
 					// The UI toggle() effect works with the ext-wide extension,
 					// while jQuery.animate() has problems when the title span
-					// has positon: absolute.
+					// has position: absolute.
 					// Since jQuery UI 1.12, the blind effect requires the parent
 					// element to have 'position: relative'.
 					// See #716, #717
 					$(node.li).addClass(cn.animating);  // #717
-//					node.info("fancytree-animating start: " + node.li.className);
-					$(node.ul)
-						.addClass(cn.animating)  // # 716
-						.toggle(effect.effect, effect.options, effect.duration, function(){
-//							node.info("fancytree-animating end: " + node.li.className);
+
+					if (!$.isFunction($(node.ul)[effect.effect]) ) {
+						// The UI toggle() effect works with the ext-wide extension,
+						// while jQuery.animate() has problems when the title span
+						// has positon: absolute.
+						// Since jQuery UI 1.12, the blind effect requires the parent
+						// element to have 'position: relative'.
+						// See #716, #717
+						tree.debug("use specified effect (" + effect.effect + ") with the jqueryui.toggle method");
+
+						// try to stop an animation that might be already in progress
+						$(node.ul).stop(true, true); //< does not work after resetLazy has been called for a node whose animation wasn't complete and effect was "blind"
+
+						// dirty fix to remove a defunct animation (effect: "blind") after resetLazy has been called
+						$(node.ul).parent().find(".ui-effects-placeholder").remove();
+
+						$(node.ul).toggle(effect.effect, effect.options, effect.duration, function() {
+							node.info("fancytree-animating end: " + node.li.className);
 							$(this).removeClass(cn.animating);  // #716
 							$(node.li).removeClass(cn.animating);  // #717
 							callback();
 						});
+
+					} else {
+						tree.debug("use jquery." + effect.effect + " method");
+
+						$(node.ul)[effect.effect]({
+							duration: effect.duration,
+							always: function() {
+										node.info("fancytree-animating end: " + node.li.className);
+										$(this).removeClass(cn.animating);  // #716
+										$(node.li).removeClass(cn.animating);  // #717
+										callback();
+									}
+						});
+					}
+
 					return;
 				}
 			}
@@ -4814,7 +4842,8 @@ $.widget("ui.fancytree",
 		// fx: { height: "toggle", duration: 200 },
 		// toggleEffect: { effect: "drop", options: {direction: "left"}, duration: 200 },
 		// toggleEffect: { effect: "slide", options: {direction: "up"}, duration: 200 },
-		toggleEffect: { effect: "blind", options: {direction: "vertical", scale: "box"}, duration: 200 },
+		//toggleEffect: { effect: "blind", options: {direction: "vertical", scale: "box"}, duration: 200 },
+		toggleEffect: { effect: "slideToggle", duration: 200 }, //< "toggle" or "slideToggle" to use jQuery instead of jQueryUI for toggleEffect animation
 		generateIds: false,
 		icon: true,
 		idPrefix: "ft_",
@@ -4980,7 +5009,7 @@ $.widget("ui.fancytree",
 			if( flag ) {
 				if( tree._getExpiringValue("focusin") ) {
 					// #789: IE 11 may send duplicate focusin events
-					FT.info("Ignored double focusin.");
+					tree.debug("Ignored double focusin.");
 					return;
 				}
 				tree._setExpiringValue("focusin", true, 50);
@@ -4988,7 +5017,7 @@ $.widget("ui.fancytree",
 				if( !node ) {
 					// #789: IE 11 may send focusin before mousdown(?)
 					node = tree._getExpiringValue("mouseDownNode");
-					if( node ) { FT.info("Reconstruct mouse target for focusin from recent event."); }
+					if( node ) { tree.debug("Reconstruct mouse target for focusin from recent event."); }
 				}
 			}
 			if(node){
@@ -5128,7 +5157,7 @@ $.extend($.ui.fancytree,
 	/** @lends Fancytree_Static# */
 	{
 	/** @type {string} */
-	version: "2.28.1",      // Set to semver by 'grunt release'
+	version: "2.29.0",      // Set to semver by 'grunt release'
 	/** @type {string} */
 	buildType: "production", // Set to 'production' by 'grunt build'
 	/** @type {int} */
@@ -5259,7 +5288,7 @@ $.extend($.ui.fancytree,
 	 *     TYPE: 'title' | 'prefix' | 'expander' | 'checkbox' | 'icon' | undefined
 	 */
 	getEventTarget: function(event){
-		var $target,
+		var $target, tree,
 			tcn = event && event.target ? event.target.className : "",
 			res = {node: this.getNode(event.target), type: undefined};
 		// We use a fast version of $(res.node).hasClass()
@@ -5280,7 +5309,8 @@ $.extend($.ui.fancytree,
 			$target = $(event.target);
 			if( $target.is("ul[role=group]") ) {
 				// #nnn: Clicking right to a node may hit the surrounding UL
-				FT.info("Ignoring click on outer UL.");
+				tree = res.node && res.node.tree;
+				(tree || FT).debug("Ignoring click on outer UL.");
 				res.node = null;
 			}else if( $target.closest(".fancytree-title").length ) {
 				// #228: clicking an embedded element inside a title

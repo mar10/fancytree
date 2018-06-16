@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.28.1
- * @date 2018-03-19T06:47:37Z
+ * @version 2.29.0
+ * @date 2018-06-16T11:23:53Z
  */
 
 
@@ -327,7 +327,7 @@ function getDropEffect(event, data) {
 
 $.ui.fancytree.registerExtension({
 	name: "dnd5",
-	version: "2.28.1",
+	version: "2.29.0",
 	// Default options for this extension.
 	options: {
 		autoExpandMS: 1500,          // Expand nodes after n milliseconds of hovering
@@ -527,7 +527,9 @@ $.ui.fancytree.registerExtension({
 					break;
 
 				case "dragend":
-					$sourceList.removeClass(classDragSource + " " + classDragRemove);
+					if( $sourceList ) {
+						$sourceList.removeClass(classDragSource + " " + classDragRemove);
+					}
 					_clearGlobals();
 //					data.dropEffect = dropEffect;
 					data.isCancelled = (dropEffect === "none");
