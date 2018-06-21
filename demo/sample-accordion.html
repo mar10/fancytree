@@ -71,7 +71,12 @@ ul.fancytree-container >li >ul {
 				}
 			}
 		});
+		// For our demo: toggle auto-collapse mode:
+		$("input[name=autoCollapse]").on("change", function(e){
+			$.ui.fancytree.getTree().options.autoCollapse = $(this).is(":checked");
+		});
 	});
+
 </script>
 </head>
 <body class="example">
@@ -82,6 +87,10 @@ ul.fancytree-container >li >ul {
 	</div>
 	<div>
 		<label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
+		<label>
+			<input type="checkbox" name="autoCollapse" checked="checked">
+			Auto-Collapse
+		</label>
 	</div>
 	<!-- Add a <table> element where the tree should appear: -->
 	<div id="tree">
