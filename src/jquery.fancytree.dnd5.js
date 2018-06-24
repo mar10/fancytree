@@ -69,6 +69,9 @@ var FT = $.ui.fancytree,
 function _clearGlobals() {
 	SOURCE_NODE = null;
 	SOURCE_NODE_LIST = null;
+	if( $sourceList ) {
+		$sourceList.removeClass(classDragSource + " " + classDragRemove);
+	}
 	$sourceList = null;
 	DRAG_ENTER_RESPONSE = null;
 }
@@ -527,9 +530,6 @@ $.ui.fancytree.registerExtension({
 					break;
 
 				case "dragend":
-					if( $sourceList ) {
-						$sourceList.removeClass(classDragSource + " " + classDragRemove);
-					}
 					_clearGlobals();
 //					data.dropEffect = dropEffect;
 					data.isCancelled = (dropEffect === "none");

@@ -1,5 +1,7 @@
 # 2.29.1-0 / Unreleased
-  * Fix ES6 import dependency on jquery for jquery.fancytree.ui-deps.js
+  * [Fixed] ES6 import dependency on jquery for jquery.fancytree.ui-deps.js
+  * [Fixed] #848 Drag End Error with dnd5 extension (again):
+    fancytree-drag-remove class not removed on drop/dragend
 
 # 2.29.0 / 2018-06-16
   * [Changed]
