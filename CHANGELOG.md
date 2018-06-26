@@ -2,6 +2,8 @@
   * [Fixed] ES6 import dependency on jquery for jquery.fancytree.ui-deps.js
   * [Fixed] #848 Drag End Error with dnd5 extension (again):
     fancytree-drag-remove class not removed on drop/dragend
+  * [Fixed] #875 ext-dnd5: Unwanted expanding of folder node when a node is dragged
+    before/after it
   * [Fixed] ext-ariagrid default actions
 
 # 2.29.0 / 2018-06-16
