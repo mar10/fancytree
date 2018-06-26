@@ -90,10 +90,16 @@
 					// We could switch to cell-mode here:
 					// data.tree.getFirstChild().setActive(true, {cell: 1});
 				},
-				defaultCellAction: function( event, data ) {
+				lazyLoad: function(event, data) {
+					data.result = {url: "ajax-sub2.json"}
+				},
+				defaultGridAction: function( event, data ) {
 					// Called when ENTER is pressed in cell-mode.
 					// Return false to prevent default
-					if ( data.colIdx === 4 ) {
+					console.log(event.type, data);
+					if( !data.activeTd ) {
+						alert( "Custom default action for row: " + data.node.title );
+					} else if ( data.colIdx === 4 ) {
 						// eslint-disable-next-line no-alert
 						alert( "Custom default action: " + data.node.title );
 						return false;
@@ -104,7 +110,7 @@
 						$tdList = $( node.tr ).find( ">td" );
 
 					// The row template inserts controls, so we have to remove
-					// them herer for folders:
+					// them here for folders:
 					if ( node.isFolder() ) {
 						$tdList.eq( 2 ).empty();
 						$tdList.eq( 3 ).empty();
@@ -125,29 +131,19 @@
 	<div class="description">
 		<p>
 			This Fancytree Tree Grid has uses a prototypical extension to
-			explore ARIA support as discussed here:<br>
-<!--
-			<a href="https://github.com/aleventhal/treegrid-example">
-				aleventhal/treegrid-example </a>,
-			<a href="https://github.com/aleventhal/treegrid-tab-active-cells">
-				aleventhal/treegrid-tab-active-cells </a>
-			<br>
-			and here
--->
+			explore ARIA support as discussed here:
+
 			<a href="https://rawgit.com/w3c/aria-practices/treegrid/examples/treegrid/treegrid-1.html">
 				w3c/aria-practices/treegrid/examples/treegrid/treegrid-1.html
 			</a>
-		</p> <p>
-			Extended mode adds this behavior:
-			<ul>
-				<li>Embedded inputs get the focus, but we distinguish cell-nav-mode
-				and cell-edit-mode. cell-nav-mode steals <kbd>Up</kbd>, <kbd>Down</kbd>,
-				<kbd>Left</kbd>, <kbd>Right</kbd>, <kbd>Home</kbd>, <kbd>End</kbd>
-				fromt input controls to always allow cell navigation.</li>
-				<li><kbd>Enter</kbd>: In row-mode: switch to cell-nav-mode. In cell-nav-mode: execute default action or switch to cell-edit-mode for embedded text input.
-				In cell-edit-mode: switch back to cell-nav-mode.</li>
-				<li><kbd>Esc</kbd>: In cell-nav-mode: switch to row-mode. In cell-edit-mode: switch to cell-nav-mode.</li>
-			</ul>
+
+			See also the <a href="https://github.com/mar10/fancytree/wiki/ExtTable#ext-ariagrid">Documentation</a>.
+
+			See also
+			<a href="https://github.com/w3c/aria-practices/issues/91">here</a>
+			and
+			<a href="https://rawgit.com/jongund/aria-practices/treegrid/examples/treegrid/treegrid-1.html">here</a>
+
 <!--
 		</p><p>
 			<strong>Note:</strong> please
