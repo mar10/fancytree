@@ -4,6 +4,9 @@
     fancytree-drag-remove class not removed on drop/dragend
   * [Fixed] #875 ext-dnd5: Unwanted expanding of folder node when a node is dragged
     before/after it
+  * [Fixed] #876 `triggerStart: []` does not override the default settings.<br>
+    **NOTE:** Options of type `Array` will now override the default option.
+    Before, arrays were merged with the default.
   * [Fixed] ext-ariagrid default actions
 
 # 2.29.0 / 2018-06-16
