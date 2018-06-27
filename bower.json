@@ -1,7 +1,7 @@
 {
   "name": "jquery.fancytree",
   "description": "JavaScript tree view / tree grid plugin with support for keyboard, inline editing, filtering, checkboxes, drag'n'drop, and lazy loading",
-  "version": "2.29.1",
+  "version": "2.29.2-0",
   "main": [
     "dist/jquery.fancytree-all-deps.min.js"
   ],
