@@ -7,8 +7,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.29.0
- * @date 2018-06-16T11:23:53Z
+ * @version 2.29.1
+ * @date 2018-06-27T18:51:43Z
  */
 
 /** Core Fancytree module.
@@ -150,6 +150,62 @@ function isVersionAtLeast(dottedVersion, major, minor, patch){
 	}
 	return true;
 }
+
+
+/**
+ * Deep-merge a list of objects (but replace array-type options).
+ *
+ * jQuery's $.extend(true, ...) method does a deep merge, that also merges Arrays.
+ * This variant is used to merge extension defaults with user options, and should
+ * merge objects, but override arrays (for example the `triggerStart: [...]` option
+ * of ext-edit). Also `null` values are copied over and not skipped.
+ *
+ * See issue #876
+ *
+ * Example:
+ * _simpleDeepMerge({}, o1, o2);
+ */
+ function _simpleDeepMerge() {
+	var options, name, src, copy, clone,
+		target = arguments[ 0 ] || {},
+		i = 1,
+		length = arguments.length;
+
+	// Handle case when target is a string or something (possible in deep copy)
+	if ( typeof target !== "object" && !$.isFunction( target ) ) {
+		target = {};
+	}
+	if ( i === length ) {
+		throw "need at least two args";
+	}
+	for ( ; i < length; i++ ) {
+		// Only deal with non-null/undefined values
+		if ( ( options = arguments[ i ] ) != null ) {
+			// Extend the base object
+			for ( name in options ) {
+				src = target[ name ];
+				copy = options[ name ];
+				// Prevent never-ending loop
+				if ( target === copy ) {
+					continue;
+				}
+				// Recurse if we're merging plain objects
+				// (NOTE: unlike $.extend, we don't merge arrays, but relace them)
+				if ( copy && jQuery.isPlainObject( copy ) ) {
+					clone = src && jQuery.isPlainObject( src ) ? src : {};
+					// Never move original objects, clone them
+					target[ name ] = _simpleDeepMerge( clone, copy );
+					// Don't bring in undefined values
+				} else if ( copy !== undefined ) {
+					target[ name ] = copy;
+				}
+			}
+		}
+	}
+	// Return the modified object
+	return target;
+}
+
 
 /** Return a wrapper that calls sub.methodName() and exposes
  *  this             : tree
@@ -1701,7 +1757,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	scheduleAction: function(mode, ms) {
 		if( this.tree.timer ) {
 			clearTimeout(this.tree.timer);
-//            this.tree.debug("clearTimeout(%o)", this.tree.timer);
+			this.tree.debug("clearTimeout(%o)", this.tree.timer);
 		}
 		this.tree.timer = null;
 		var self = this; // required for closures
@@ -4911,7 +4967,15 @@ $.widget("ui.fancytree",
 			}
 			// Add extension options as tree.options.EXTENSION
 //			_assert(!this.tree.options[extName], "Extension name must not exist as option name: " + extName);
-			this.tree.options[extName] = $.extend(true, {}, extension.options, this.tree.options[extName]);
+
+			// console.info("extend " + extName, extension.options, this.tree.options[extName])
+			// issue #876: we want to replace custom array-options, not merge them
+			this.tree.options[extName] = _simpleDeepMerge({}, extension.options, this.tree.options[extName]);
+			// this.tree.options[extName] = $.extend(true, {}, extension.options, this.tree.options[extName]);
+
+			// console.info("extend " + extName + " =>", this.tree.options[extName])
+			// console.info("extend " + extName + " org default =>", extension.options)
+
 			// Add a namespace tree.ext.EXTENSION, to hold instance data
 			_assert(this.tree.ext[extName] === undefined, "Extension name must not exist as Fancytree.ext attribute: '" + extName + "'");
 //			this.tree[extName] = extension;
@@ -5157,7 +5221,7 @@ $.extend($.ui.fancytree,
 	/** @lends Fancytree_Static# */
 	{
 	/** @type {string} */
-	version: "2.29.0",      // Set to semver by 'grunt release'
+	version: "2.29.1",      // Set to semver by 'grunt release'
 	/** @type {string} */
 	buildType: "production", // Set to 'production' by 'grunt build'
 	/** @type {int} */

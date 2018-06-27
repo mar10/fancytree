@@ -1757,7 +1757,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	scheduleAction: function(mode, ms) {
 		if( this.tree.timer ) {
 			clearTimeout(this.tree.timer);
-           	this.tree.debug("clearTimeout(%o)", this.tree.timer);
+			this.tree.debug("clearTimeout(%o)", this.tree.timer);
 		}
 		this.tree.timer = null;
 		var self = this; // required for closures

@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.29.0
- * @date 2018-06-16T11:23:53Z
+ * @version 2.29.1
+ * @date 2018-06-27T18:51:43Z
  */
 
 ;(function( factory ) {
@@ -48,7 +48,7 @@ for(i=0; i<EVENT_NAMES.length; i++){ EVENT_NAME_MAP[EVENT_NAMES[i]] = true; }
  */
 $.ui.fancytree.registerExtension({
 	name: "debug",
-	version: "2.29.0",
+	version: "2.29.1",
 	// Default options for this extension.
 	options: {
 		logTarget: null,   // optional redirect logging to this <div> tag

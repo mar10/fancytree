@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.29.0
- * @date 2018-06-16T11:23:53Z
+ * @version 2.29.1
+ * @date 2018-06-27T18:51:43Z
  */
 
 
@@ -63,14 +63,19 @@ var FT = $.ui.fancytree,
 	SOURCE_NODE_LIST = null,
 	$sourceList = null,
 	DRAG_ENTER_RESPONSE = null,
-	LAST_HIT_MODE = null;
+	LAST_HIT_MODE = null,
+	DRAG_OVER_STAMP = null;  // Time when a node entered the 'over' hitmode
 
 /* */
 function _clearGlobals() {
 	SOURCE_NODE = null;
 	SOURCE_NODE_LIST = null;
+	if( $sourceList ) {
+		$sourceList.removeClass(classDragSource + " " + classDragRemove);
+	}
 	$sourceList = null;
 	DRAG_ENTER_RESPONSE = null;
+	DRAG_OVER_STAMP = null;
 }
 
 /* Convert number to string and prepend +/-; return empty string for 0.*/
@@ -327,7 +332,7 @@ function getDropEffect(event, data) {
 
 $.ui.fancytree.registerExtension({
 	name: "dnd5",
-	version: "2.29.0",
+	version: "2.29.1",
 	// Default options for this extension.
 	options: {
 		autoExpandMS: 1500,          // Expand nodes after n milliseconds of hovering
@@ -527,9 +532,6 @@ $.ui.fancytree.registerExtension({
 					break;
 
 				case "dragend":
-					if( $sourceList ) {
-						$sourceList.removeClass(classDragSource + " " + classDragRemove);
-					}
 					_clearGlobals();
 //					data.dropEffect = dropEffect;
 					data.isCancelled = (dropEffect === "none");
@@ -573,6 +575,7 @@ $.ui.fancytree.registerExtension({
 					// The dragenter event is fired when a dragged element or
 					// text selection enters a valid drop target.
 
+					DRAG_OVER_STAMP = null;
 					if( !node ) {
 						// Sometimes we get dragenter for the container element
 						tree.debug("Ignore non-node " + event.type + ": " + event.target.tagName + "." + event.target.className);
@@ -593,20 +596,6 @@ $.ui.fancytree.registerExtension({
 						DRAG_ENTER_RESPONSE = false;
 						break;
 					}
-
-					// NOTE: dragenter is fired BEFORE the dragleave event
-					// of the previous element!
-					// https://www.w3.org/Bugs/Public/show_bug.cgi?id=19041
-					setTimeout(function(){
-						// node.info("DELAYED " + event.type, event.target, DRAG_ENTER_RESPONSE);
-						// Auto-expand node (only when 'over' the node, not 'before', or 'after')
-						if( dndOpts.autoExpandMS &&
-							node.hasChildren() !== false && !node.expanded &&
-							(!dndOpts.dragExpand || dndOpts.dragExpand(node, data) !== false)
-							) {
-							node.scheduleAction("expand", dndOpts.autoExpandMS);
-						}
-					}, 0);
 
 					$dropMarker.show();
 
@@ -630,6 +619,37 @@ $.ui.fancytree.registerExtension({
 					// console.log(event.type, "dropEffect: " + dataTransfer.dropEffect)
 					LAST_HIT_MODE = handleDragOver(event, data);
 					allowDrop = !!LAST_HIT_MODE;
+
+					// console.log(event.type, LAST_HIT_MODE, DRAG_OVER_STAMP)
+
+					if( LAST_HIT_MODE === "over" &&
+						!node.expanded && node.hasChildren() !== false ) {
+						if( !DRAG_OVER_STAMP ) {
+							DRAG_OVER_STAMP = Date.now();
+						} else if( dndOpts.autoExpandMS &&
+								(Date.now() - DRAG_OVER_STAMP) > dndOpts.autoExpandMS &&
+								(!dndOpts.dragExpand || dndOpts.dragExpand(node, data) !== false)
+								) {
+								node.setExpanded();
+							}
+					} else {
+						DRAG_OVER_STAMP = null;
+					}
+					// // NOTE: dragenter is fired BEFORE the dragleave event
+					// // of the previous element!
+					// // https://www.w3.org/Bugs/Public/show_bug.cgi?id=19041
+					// setTimeout(function(){
+					// 	node.info("DELAYED " + event.type, event.target, DRAG_ENTER_RESPONSE);
+					// 	// Auto-expand node (only when 'over' the node, not 'before', or 'after')
+					// 	if( dndOpts.autoExpandMS &&
+					// 		node.hasChildren() !== false && !node.expanded &&
+					// 		(!dndOpts.dragExpand || dndOpts.dragExpand(node, data) !== false)
+					// 		// res.over
+					// 		) {
+					// 		node.scheduleAction("expand", dndOpts.autoExpandMS);
+					// 	}
+					// }, 0);
+
 					break;
 
 				case "dragleave":

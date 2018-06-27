@@ -3,14 +3,13 @@
 * Includes: widget.js, position.js, keycode.js, scroll-parent.js, unique-id.js
 * Copyright jQuery Foundation and other contributors; Licensed MIT */
 
-;(function( factory ) {
+(function( factory ) {
 	if ( typeof define === "function" && define.amd ) {
+
 		// AMD. Register as an anonymous module.
-		define( [ "jquery" ], factory );
-	} else if ( typeof module === "object" && module.exports ) {
-		// Node/CommonJS
-		module.exports = factory(require("jquery"));
+		define([ "jquery" ], factory );
 	} else {
+
 		// Browser globals
 		factory( jQuery );
 	}
