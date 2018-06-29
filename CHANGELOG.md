@@ -1,5 +1,7 @@
 # 2.30.0-0 / Unreleased
   * [Added] ext-multi is now deployed with jquery.fancytree-all.*.js (still experimental)
+  * [Fixed] #877 postProcess may now also return this form `{..., children: []}`
+    (before, only `[...]` was handled correctly)
 
 # 2.29.1 / 2018-06-27
   * [Fixed] ES6 import dependency on jquery for jquery.fancytree.ui-deps.js

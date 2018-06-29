@@ -3477,11 +3477,17 @@ $.extend(Fancytree.prototype,
 				// but it is also called for JSONP
 				if( ctx.options.postProcess ){
 					try {
+						// The handler may either
+						//   - modify `ctx.response` in-place (and leave `ctx.result` undefined)
+						//     => res = undefined
+						//   - return a replacement in `ctx.result`
+						//     => res = <new data>
+						// If res contains an `error` property, an error status is displayed
 						res = tree._triggerNodeEvent("postProcess", ctx, ctx.originalEvent, {
 							response: data, error: null, dataType: this.dataType
 						});
 					} catch(e) {
-						res = { error: e, message: "" + e, details: "postProcess failed"};
+						res = { error: e, message: "" + e, details: "postProcess failed" };
 					}
 					if( res.error ) {
 						errorObj = $.isPlainObject(res.error) ? res.error : {message: res.error};
@@ -3489,7 +3495,11 @@ $.extend(Fancytree.prototype,
 						source.rejectWith(this, [errorObj]);
 						return;
 					}
-					data = $.isArray(res) ? res : data;
+					if(  $.isArray(res) || ($.isPlainObject(res) && $.isArray(res.children)) ) {
+						// Use `ctx.result` if valid
+						// (otherwise use existing data, which may have been modified in-place)
+						data = res;
+					}
 
 				} else if (data && data.hasOwnProperty("d") && ctx.options.enableAspx ) {
 					// Process ASPX WebMethod JSON object inside "d" property
