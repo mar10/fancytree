@@ -3443,11 +3443,11 @@ $.extend(Fancytree.prototype,
 			if(ajax.debugDelay){
 				// simulate a slow server
 				delay = ajax.debugDelay;
+				delete ajax.debugDelay;  // remove debug option
 				if($.isArray(delay)){ // random delay range [min..max]
 					delay = delay[0] + Math.random() * (delay[1] - delay[0]);
 				}
 				node.warn("nodeLoadChildren waiting debugDelay " + Math.round(delay) + " ms ...");
-				ajax.debugDelay = false;
 				dfd = $.Deferred(function (dfd) {
 					setTimeout(function () {
 						$.ajax(ajax)
