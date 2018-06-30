@@ -1791,27 +1791,36 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	 */
 	scrollIntoView: function(effects, options) {
 		if( options !== undefined && _isNode(options) ) {
-			this.warn("scrollIntoView() with 'topNode' option is deprecated since 2014-05-08. Use 'options.topNode' instead.");
-			options = {topNode: options};
+			throw "scrollIntoView() with 'topNode' option is deprecated since 2014-05-08. Use 'options.topNode' instead.";
 		}
-		// this.$scrollParent = (this.options.scrollParent === "auto") ? $ul.scrollParent() : $(this.options.scrollParent);
-		// this.$scrollParent = this.$scrollParent.length ? this.$scrollParent || this.$container;
-
-		var topNodeY, nodeY, horzScrollbarHeight, containerOffsetTop,
-			// The scroll parent is typically the plain tree's <UL> container.
-			// For ext-table, we choose the nearest parent that has `position: relative` set.
-			// (This default can be overridden by the `scrollParent` option.)
-			$defaultScrollParent = this.tree.tbody ? this.tree.$container.scrollParent() : this.tree.$container,
-			opts = $.extend({
+		// The scroll parent is typically the plain tree's <UL> container.
+		// For ext-table, we choose the nearest parent that has `position: relative`
+		// and `overflow` set.
+		// (This default can be overridden by the local or global `scrollParent` option.)
+		var opts = $.extend({
 				effects: (effects === true) ? {duration: 200, queue: false} : effects,
 				scrollOfs: this.tree.options.scrollOfs,
-				scrollParent: this.tree.options.scrollParent || $defaultScrollParent,
+				scrollParent: this.tree.options.scrollParent,
 				topNode: null
 			}, options),
+			$scrollParent = opts.scrollParent;
+
+		if( !$scrollParent ) {
+			$scrollParent = this.tree.tbody ? this.tree.$container.scrollParent() : this.tree.$container;
+		} else if( !$scrollParent.jquery ) {
+			// Make sure we have a jQuery object
+			$scrollParent = $($scrollParent);
+		}
+		if( $scrollParent[0] === document ) {
+			// `document` may returned by $().scrollParent(), if nothing is found,
+			// but would not work:
+			$scrollParent = $(window);
+		}
+
+		var topNodeY, nodeY, horzScrollbarHeight, containerOffsetTop,
 			dfd = new $.Deferred(),
 			that = this,
 			nodeHeight = $(this.span).height(),
-			$scrollParent = $(opts.scrollParent),
 			topOfs = opts.scrollOfs.top || 0,
 			bottomOfs = opts.scrollOfs.bottom || 0,
 			containerHeight = $scrollParent.height(),
