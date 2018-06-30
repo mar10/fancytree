@@ -309,7 +309,7 @@ module.exports = (grunt) ->
 
     replace: # grunt-text-replace
         production:
-            src: ["build/**/*.js"]
+            src: ["build/**/*.{js,less,css}"]
             overwrite : true
             replacements: [ {
                 from : /@DATE/g
@@ -323,7 +323,7 @@ module.exports = (grunt) ->
                 to : "debugLevel: 3"
             } ]
         release:
-            src: ["dist/**/*.js"]
+            src: ["dist/**/*.{js,less,css}"]
             overwrite : true
             replacements: [ {
                 from : /@VERSION/g
