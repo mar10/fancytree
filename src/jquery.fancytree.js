@@ -3566,10 +3566,14 @@ $.extend(Fancytree.prototype,
 			if( ctx.options.postProcess ){
 				// #792: Call postProcess for non-deferred source
 				var res = tree._triggerNodeEvent("postProcess", ctx, ctx.originalEvent, {
-					response: source, error: null, dataType: typeof source
-				});
+						response: source, error: null, dataType: typeof source
+					});
 
-				source = $.isArray(res) ? res : source;
+				if(  $.isArray(res) || ($.isPlainObject(res) && $.isArray(res.children)) ) {
+					// Use `ctx.result` if valid
+					// (otherwise use existing data, which may have been modified in-place)
+					source = res;
+				}
 			}
 		}
 		// $.when(source) resolves also for non-deferreds
