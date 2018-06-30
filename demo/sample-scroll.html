@@ -9,8 +9,7 @@
 	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet">
 
 	<script src="../src/jquery.fancytree.js"></script>
-	<script src="../src/jquery.fancytree.columnview.js"></script>
-	<script src="../src/jquery.fancytree.dnd.js"></script>
+	<script src="../src/jquery.fancytree.dnd5.js"></script>
 	<script src="../src/jquery.fancytree.table.js"></script>
 
 
@@ -43,9 +42,14 @@
 		// Attach the fancytree widget to an existing <div id="tree"> element
 		// and pass the tree options as an argument to the fancytree() function:
 		$("#tree").fancytree({
-			extensions: [],
+			extensions: ["dnd5"],
 			checkbox: true,
 			autoScroll: true,
+			dnd5: {
+				dragStart: function(node, data) { return true; },
+				dragEnter: function(node, data) { return true; },
+				dragDrop: function(node, data) { data.otherNode.copyTo(node, data.hitMode); }
+			},
 			source: {
 				url: "ajax-tree-products.json"
 				// url: "../test/unit/ajax-tree-plain.json"
@@ -54,14 +58,20 @@
 				data.result = { url: "ajax-sub2.json" }
 			}
 		});
+
 		$("#treegrid").fancytree({
-			extensions: ["table"],
+			extensions: ["dnd5", "table"],
 			checkbox: true,
 			autoScroll: true,
 			table: {
 				indentation: 20,      // indent 20px per node level
 				nodeColumnIdx: 2,     // render the node title into the 2nd column
 				checkboxColumnIdx: 0  // render the checkboxes into the 1st column
+			},
+			dnd5: {
+				dragStart: function(node, data) { return true; },
+				dragEnter: function(node, data) { return true; },
+				dragDrop: function(node, data) { data.otherNode.copyTo(node, data.hitMode); }
 			},
 			source: {
 				url: "ajax-tree-products.json"

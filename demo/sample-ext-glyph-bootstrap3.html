@@ -19,7 +19,7 @@
 	<link href="../src/skin-bootstrap/ui.fancytree.css" rel="stylesheet" class="skinswitcher">
 
 	<script src="../src/jquery.fancytree.js"></script>
-	<script src="../src/jquery.fancytree.dnd.js"></script>
+	<script src="../src/jquery.fancytree.dnd5.js"></script>
 	<script src="../src/jquery.fancytree.edit.js"></script>
 	<script src="../src/jquery.fancytree.glyph.js"></script>
 	<script src="../src/jquery.fancytree.table.js"></script>
@@ -76,13 +76,12 @@
 	$(function(){
 		// Initialize Fancytree
 		$("#tree").fancytree({
-			extensions: ["dnd", "edit", "glyph", "wide"],
+			extensions: ["dnd5", "edit", "glyph", "wide"],
 			checkbox: true,
 			selectMode: 3,
-			dnd: {
-				focusOnClick: true,
+			dnd5: {
 				dragStart: function(node, data) { return true; },
-				dragEnter: function(node, data) { return false; },
+				dragEnter: function(node, data) { return true; },
 				dragDrop: function(node, data) { data.otherNode.copyTo(node, data.hitMode); }
 			},
 			glyph: glyph_opts,
@@ -107,10 +106,9 @@
 		});
 
 		$("#treetable").fancytree({
-			extensions: ["dnd", "edit", "glyph", "table"],
+			extensions: ["dnd5", "edit", "glyph", "table"],
 			checkbox: true,
-			dnd: {
-				focusOnClick: true,
+			dnd5: {
 				dragStart: function(node, data) { return true; },
 				dragEnter: function(node, data) { return true; },
 				dragDrop: function(node, data) { data.otherNode.copyTo(node, data.hitMode); }

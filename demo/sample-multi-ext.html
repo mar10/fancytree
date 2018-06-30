@@ -13,7 +13,7 @@
 
 	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet">
 	<script src="../src/jquery.fancytree.js"></script>
-	<script src="../src/jquery.fancytree.dnd.js"></script>
+	<script src="../src/jquery.fancytree.dnd5.js"></script>
 	<script src="../src/jquery.fancytree.edit.js"></script>
 	<script src="../src/jquery.fancytree.gridnav.js"></script>
 	<script src="../src/jquery.fancytree.table.js"></script>
@@ -72,9 +72,9 @@ $(function(){
 		// source: SOURCE,
 		source: { url: "ajax-tree-products.json"},
 
-		extensions: ["edit", "dnd", "table", "gridnav"],
+		extensions: ["edit", "dnd5", "table", "gridnav"],
 
-		dnd: {
+		dnd5: {
 			preventVoidMoves: true,
 			preventRecursiveMoves: true,
 			autoExpandMS: 400,

@@ -9,7 +9,7 @@
 
 	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet">
 	<script src="../src/jquery.fancytree.js"></script>
-	<script src="../src/jquery.fancytree.dnd.js"></script>
+	<script src="../src/jquery.fancytree.dnd5.js"></script>
 	<script src="../src/jquery.fancytree.wide.js"></script>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
@@ -30,11 +30,11 @@
 <script type="text/javascript">
 	$(function(){
 		$("#tree").fancytree({
-			extensions: ["dnd", "wide"],
+			extensions: ["dnd5", "wide"],
 			autoScroll: true,
 			checkbox: true,
 			source: {url: "ajax-tree-local.json"},
-			toggleEffect: { effect: "blind", options: {direction: "vertical", scale: "box"}, duration: 200 },
+			// toggleEffect: { effect: "blind", options: {direction: "vertical", scale: "box"}, duration: 200 },
 			// toggleEffect: { effect: "drop", options: {direction: "left"}, duration: 400 },
 			// toggleEffect: false,
 			wide: {
@@ -42,6 +42,11 @@
 				// iconSpacing: "6px", // Adjust this if @fancy-icon-spacing != "3px"
 				// labelSpacing: "6px",   // Adjust this if padding between icon and label !=  "3px"
 				// levelOfs: "32px"     // Adjust this if ul padding != "16px"
+			},
+			dnd5: {
+				dragStart: function(node, data) { return true; },
+				dragEnter: function(node, data) { return true; },
+				dragDrop: function(node, data) { data.otherNode.copyTo(node, data.hitMode); }
 			},
 			lazyLoad: function(event, data) {
 				data.result = {url: "ajax-sub2.json"}

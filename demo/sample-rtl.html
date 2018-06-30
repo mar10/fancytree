@@ -9,7 +9,7 @@
 
 	<link href="../src/skin-xp/ui.fancytree.css" rel="stylesheet">
 	<script src="../src/jquery.fancytree.js"></script>
-	<script src="../src/jquery.fancytree.dnd.js"></script>
+	<script src="../src/jquery.fancytree.dnd5.js"></script>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
 	<link href="../lib/prettify.css" rel="stylesheet">
@@ -22,17 +22,12 @@
 	<script type="text/javascript">
 		$(function(){
 			$("#tree").fancytree({
-				extensions: ["dnd"],
+				extensions: ["dnd5"],
 				rtl: true,
 				source: {url: "ajax-tree-products.json"},
-				dnd: {
-					focusOnClick: true,
-					dragStart: function(node, data) {
-						return true;
-					},
-					dragEnter: function(node, data) {
-						return true;
-					},
+				dnd5: {
+					dragStart: function(node, data) { return true; },
+					dragEnter: function(node, data) { return true; },
 					dragDrop: function(node, data) {
 						data.otherNode.moveTo(node, data.hitMode);
 					}
