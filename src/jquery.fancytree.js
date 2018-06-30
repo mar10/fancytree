@@ -1798,22 +1798,26 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		// this.$scrollParent = this.$scrollParent.length ? this.$scrollParent || this.$container;
 
 		var topNodeY, nodeY, horzScrollbarHeight, containerOffsetTop,
+			// The scroll parent is typically the plain tree's <UL> container.
+			// For ext-table, we choose the nearest parent that has `position: relative` set.
+			// (This default can be overridden by the `scrollParent` option.)
+			$defaultScrollParent = this.tree.tbody ? this.tree.$container.scrollParent() : this.tree.$container,
 			opts = $.extend({
 				effects: (effects === true) ? {duration: 200, queue: false} : effects,
 				scrollOfs: this.tree.options.scrollOfs,
-				scrollParent: this.tree.options.scrollParent || this.tree.$container,
+				scrollParent: this.tree.options.scrollParent || $defaultScrollParent,
 				topNode: null
 			}, options),
 			dfd = new $.Deferred(),
 			that = this,
 			nodeHeight = $(this.span).height(),
-			$container = $(opts.scrollParent),
+			$scrollParent = $(opts.scrollParent),
 			topOfs = opts.scrollOfs.top || 0,
 			bottomOfs = opts.scrollOfs.bottom || 0,
-			containerHeight = $container.height(),// - topOfs - bottomOfs,
-			scrollTop = $container.scrollTop(),
-			$animateTarget = $container,
-			isParentWindow = $container[0] === window,
+			containerHeight = $scrollParent.height(),
+			scrollTop = $scrollParent.scrollTop(),
+			$animateTarget = $scrollParent,
+			isParentWindow = $scrollParent[0] === window,
 			topNode = opts.topNode || null,
 			newScrollTop = null;
 
@@ -1830,13 +1834,13 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			$animateTarget = $("html,body");
 
 		} else {
-			_assert($container[0] !== document && $container[0] !== document.body,
+			_assert($scrollParent[0] !== document && $scrollParent[0] !== document.body,
 				"scrollParent should be a simple element or `window`, not document or body.");
 
-			containerOffsetTop = $container.offset().top,
+			containerOffsetTop = $scrollParent.offset().top,
 			nodeY = $(this.span).offset().top - containerOffsetTop + scrollTop; // relative to scroll parent
 			topNodeY = topNode ? $(topNode.span).offset().top - containerOffsetTop + scrollTop : 0;
-			horzScrollbarHeight = Math.max(0, ($container.innerHeight() - $container[0].clientHeight));
+			horzScrollbarHeight = Math.max(0, ($scrollParent.innerHeight() - $scrollParent[0].clientHeight));
 			containerHeight -= horzScrollbarHeight;
 		}
 

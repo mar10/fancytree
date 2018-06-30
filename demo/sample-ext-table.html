@@ -14,7 +14,10 @@
 		background-color: #f4f4f8;
 	}
 */
-	/* custom alignment (set by 'renderColumns'' event) */
+	/* custom alignment (class is set by row template) */
+	td.alignCenter {
+	   text-align: center;
+	}
 	td.alignRight {
 	   text-align: right;
 	}
@@ -35,7 +38,7 @@
 	$(function(){
 		// Attach the fancytree widget to an existing <div id="tree"> element
 		// and pass the tree options as an argument to the fancytree() function:
-		$("#treetable").fancytree({
+		$("#treegrid").fancytree({
 			extensions: ["table"],
 			checkbox: true,
 			table: {
@@ -53,21 +56,23 @@
 				var node = data.node,
 					$tdList = $(node.tr).find(">td");
 				// (index #0 is rendered by fancytree by adding the checkbox)
-				$tdList.eq(1).text(node.getIndexHier()).addClass("alignRight");
+				$tdList.eq(1).text(node.getIndexHier());
 				// (index #2 is rendered by fancytree)
 				$tdList.eq(3).text(node.key);
-				$tdList.eq(4).html("<input type='checkbox' name='like' value='" + node.key + "'>");
+				// Rendered by row template:
+//				$tdList.eq(4).html("<input type='checkbox' name='like' value='" + node.key + "'>");
 			}
 		});
 		/* Handle custom checkbox clicks */
-		$("#treetable").delegate("input[name=like]", "click", function(e){
+		$("#treegrid").on("click", "input[name=like]", function(e){
 			var node = $.ui.fancytree.getNode(e),
-			   $input = $(e.target);
+				$input = $(e.target);
+
 			e.stopPropagation();  // prevent fancytree activate for this row
 			if($input.is(":checked")){
-				alert("like " + $input.val());
+				alert("like " + node);
 			}else{
-				alert("dislike " + $input.val());
+				alert("dislike " + node);
 			}
 		});
 	});
@@ -94,10 +99,10 @@
 	</div>
 
 	<!-- Add a <table> element where the tree should appear: -->
-	<table id="treetable">
+	<table id="treegrid">
 		<colgroup>
 		<col width="30px"></col>
-		<col width="30px"></col>
+		<col width="70px"></col>
 		<col width="*"></col>
 		<col width="50px"></col>
 		<col width="30px"></col>
@@ -105,7 +110,17 @@
 		<thead>
 			<tr> <th></th> <th>#</th> <th></th> <th>Key</th> <th>Like</th> </tr>
 		</thead>
+		<!-- Otionally define a row that serves as template, when new nodes are created: -->
 		<tbody>
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="alignRight"></td>
+				<td class="alignCenter">
+					<input type="checkbox" name="like">
+				</td>
+			</tr>
 		</tbody>
 	</table>
 
