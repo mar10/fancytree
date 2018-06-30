@@ -1,4 +1,8 @@
 # 2.30.0-0 / Unreleased
+  * [Changed] ext-edit trigger 'clickActive' now only triggers if no modifier keys
+    (shift, meta, control, ...) are pressed.<br>
+    Trigger 'shift+click' now only triggers if no other modifier key (control, ...)
+    is pressed.
   * [Added] ext-multi is now deployed with jquery.fancytree-all.js (still experimental)
   * [Fixed] #877 postProcess may now also return the object form `{..., children: []}`
     (before, only an array `[...]` was handled correctly).
