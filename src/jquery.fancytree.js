@@ -4176,6 +4176,7 @@ $.extend(Fancytree.prototype,
 			opts = ctx.options,
 			noEvents = (callOpts.noEvents === true),
 			noFocus = (callOpts.noFocus === true),
+			scroll = ((callOpts.scrollIntoView !== false)),
 			isActive = (node === tree.activeNode);
 
 		// flag defaults to true
@@ -4196,9 +4197,12 @@ $.extend(Fancytree.prototype,
 				tree.nodeSetActive(subCtx, false);
 				_assert(tree.activeNode === null, "deactivate was out of sync?");
 			}
+
 			if(opts.activeVisible){
 				// If no focus is set (noFocus: true) and there is no focused node, this node is made visible.
-				node.makeVisible({scrollIntoView: noFocus && tree.focusNode == null});
+				// scroll = noFocus && tree.focusNode == null;
+				// #863: scroll by default (unless `scrollIntoView: false` was passed)
+				node.makeVisible({scrollIntoView: scroll});
 			}
 			tree.activeNode = node;
 			tree.nodeRenderStatus(ctx);
