@@ -4,6 +4,7 @@
     Trigger 'shift+click' now only triggers if no other modifier key (control, ...)
     is pressed.
   * [Added] ext-multi is now deployed with jquery.fancytree-all.js (still experimental)
+  * [Added] tree.activateKey(key, opts) now has an `opts` argument
   * [Fixed] #877 postProcess may now also return the object form `{..., children: []}`
     (before, only an array `[...]` was handled correctly).
   * [Fixed] autoScroll, node.scrollIntoView(), and .makeVisible() now work for tables as well.

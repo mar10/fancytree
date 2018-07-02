@@ -2457,14 +2457,15 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	 * If activeVisible option is set, all parents will be expanded as necessary.
 	 * Pass key = false, to deactivate the current node only.
 	 * @param {string} key
+	 * @param {object} [opts] additional options. Defaults to {noEvents: false, noFocus: false}
 	 * @returns {FancytreeNode} activated node (null, if not found)
 	 */
-	activateKey: function(key) {
+	activateKey: function(key, opts) {
 		var node = this.getNodeByKey(key);
 		if(node){
-			node.setActive();
+			node.setActive(true, opts);
 		}else if(this.activeNode){
-			this.activeNode.setActive(false);
+			this.activeNode.setActive(false, opts);
 		}
 		return node;
 	},
