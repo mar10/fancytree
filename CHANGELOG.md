@@ -5,6 +5,7 @@
     is pressed.
   * [Added] ext-multi is now deployed with jquery.fancytree-all.js (still experimental)
   * [Added] tree.activateKey(key, opts) now has an `opts` argument
+  * [Fixed] ES6 import dependency on jquery for jquery.fancytree.ui-deps.js
   * [Fixed] #863 setActive() sometimes does not scroll node into view
   * [Fixed] #877 postProcess may now also return the object form `{..., children: []}`
     (before, only an array `[...]` was handled correctly).
@@ -13,7 +14,6 @@
     (jquery.fancytree.debug.js => jquery.fancytree.logger.js)
 
 # 2.29.1 / 2018-06-27
-  * [Fixed] ES6 import dependency on jquery for jquery.fancytree.ui-deps.js
   * [Fixed] #848 Drag End Error with dnd5 extension (again):
     fancytree-drag-remove class not removed on drop/dragend
   * [Fixed] #875 ext-dnd5: Unwanted expanding of folder node when a node is dragged
