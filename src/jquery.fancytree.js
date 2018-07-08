@@ -3588,7 +3588,7 @@ $.extend(Fancytree.prototype,
 		}
 		// $.when(source) resolves also for non-deferreds
 		return $.when(source).done(function(children){
-			var metaData;
+			var metaData, noDataRes;
 
 			if( $.isPlainObject(children) ){
 				// We got {foo: 'abc', children: [...]}
@@ -3610,6 +3610,19 @@ $.extend(Fancytree.prototype,
 			}
 			_assert($.isArray(children), "expected array of children");
 			node._setChildren(children);
+
+			if( tree.options.noData && children.length === 0 ) {
+				if( $.isFunction(tree.options.noData) ) {
+					noDataRes = tree.options.noData.call(tree, {type: "noData"}, ctx);
+				} else if( tree.options.noData === true && node.isRootNode() ) {
+					noDataRes = tree.options.strings.noData;
+				} else if( typeof tree.options.noData === "string" && node.isRootNode() ) {
+					noDataRes = tree.options.noData;
+				}
+				if( noDataRes ) {
+					node.setStatus("nodata", noDataRes);
+				}
+			}
 			// trigger fancytreeloadchildren
 			tree._triggerNodeEvent("loadChildren", node);
 		});
@@ -4620,7 +4633,7 @@ $.extend(Fancytree.prototype,
 			break;
 		case "nodata":
 			_setStatusNode({
-				title: tree.options.strings.noData,
+				title: message || tree.options.strings.noData,
 				// icon: false,
 				checkbox: false,
 				tooltip: details
@@ -4939,6 +4952,7 @@ $.widget("ui.fancytree",
 		keyboard: true,
 		keyPathSeparator: "/",
 		minExpandLevel: 1,
+		noData: true,               // (bool, string, or callback) display message, when no data available
 		quicksearch: false,
 		rtl: false,
 		scrollOfs: {top: 0, bottom: 0},

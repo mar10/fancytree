@@ -5,6 +5,8 @@
     is pressed.
   * [Added] ext-multi is now deployed with jquery.fancytree-all.js (still experimental)
   * [Added] tree.activateKey(key, opts) now has an `opts` argument
+  * [Added] `noData` option (bool, string, or callback)
+  * [Added] ext-table `mergeStatusColumns` option
   * [Fixed] ES6 import dependency on jquery for jquery.fancytree.ui-deps.js
   * [Fixed] #863 setActive() sometimes does not scroll node into view
   * [Fixed] #877 postProcess may now also return the object form `{..., children: []}`
