@@ -104,16 +104,16 @@ $.ui.fancytree.registerExtension({
 	version: "@VERSION",
 	// Default options for this extension.
 	options: {
-		checkboxColumnIdx: null, // render the checkboxes into the this column index (default: nodeColumnIdx)
-		// customStatus: false,	 // true: generate renderColumns events for status nodes
-		indentation: 16,         // indent every node level by 16px
-		nodeColumnIdx: 0         // render node expander, icon, and title to this column (default: #0)
+		checkboxColumnIdx: null,    // render the checkboxes into the this column index (default: nodeColumnIdx)
+		mergeStatusColumns: true,   // display 'noData', 'loading', 'error'
+		indentation: 16,            // indent every node level by 16px
+		nodeColumnIdx: 0            // render node expander, icon, and title to this column (default: #0)
 	},
 	// Overide virtual methods for this extension.
 	// `this`       : is this extension object
 	// `this._super`: the virtual function that was overriden (member of prev. extension or Fancytree)
 	treeInit: function(ctx){
-		var i, columnCount, n, $row, $tbody,
+		var i, n, $row, $tbody,
 			tree = ctx.tree,
 			opts = ctx.options,
 			tableOpts = opts.table,
@@ -149,21 +149,21 @@ $.ui.fancytree.registerExtension({
 
 		// Prepare row templates:
 		// Determine column count from table header if any
-		columnCount = $("thead >tr:last >th", $table).length;
+		tree.columnCount = $("thead >tr:last >th", $table).length;
 		// Read TR templates from tbody if any
 		$row = $tbody.children("tr:first");
 		if( $row.length ) {
 			n = $row.children("td").length;
-			if( columnCount && n !== columnCount ) {
-				tree.warn("Column count mismatch between thead (" + columnCount + ") and tbody (" + n + "): using tbody.");
-				columnCount = n;
+			if( tree.columnCount && n !== tree.columnCount ) {
+				tree.warn("Column count mismatch between thead (" + tree.columnCount + ") and tbody (" + n + "): using tbody.");
+				tree.columnCount = n;
 			}
 			$row = $row.clone();
 		} else {
 			// Only thead is defined: create default row markup
-			_assert(columnCount >= 1, "Need either <thead> or <tbody> with <td> elements to determine column count.");
+			_assert(tree.columnCount >= 1, "Need either <thead> or <tbody> with <td> elements to determine column count.");
 			$row = $("<tr />");
-			for(i=0; i<columnCount; i++) {
+			for(i=0; i<tree.columnCount; i++) {
 				$row.append("<td />");
 			}
 		}
@@ -351,6 +351,7 @@ $.ui.fancytree.registerExtension({
 	},
 	nodeRenderTitle: function(ctx, title) {
 		var $cb, res,
+			tree = ctx.tree,
 			node = ctx.node,
 			opts = ctx.options,
 			isStatusNode = node.isStatusNode();
@@ -372,6 +373,13 @@ $.ui.fancytree.registerExtension({
 			if( opts.renderStatusColumns ) {
 				// Let user code write column content
 				opts.renderStatusColumns.call(ctx.tree, {type: "renderStatusColumns"}, ctx);
+			} else if( opts.table.mergeStatusColumns && node.isTopLevel() ) {
+				var $tdList = $(node.tr).find(">td");
+				$tdList.eq(0)
+					.prop("colspan", tree.columnCount)
+					.text(node.title)
+					.addClass("fancytree-status-merged")
+					.nextAll().remove();
 			} // else: default rendering for status node: leave other cells empty
 		} else if ( opts.renderColumns ) {
 			opts.renderColumns.call(ctx.tree, {type: "renderColumns"}, ctx);

@@ -657,6 +657,16 @@ table.fancytree-ext-table {
 		display: inline-block;  // #117
 		box-sizing: border-box;  // #562
 	}
+	td.fancytree-status-merged {
+		text-align: center;
+		font-weight: bold;
+		font-style: italic;
+//		line-height: 100px;
+		color: @fancy-font-color-dimm;
+	}
+	tr.fancytree-statusnode-error td.fancytree-status-merged {
+		color: @fancy-font-error-color;
+	}
 }
 
 /*------------------------------------------------------------------------------
