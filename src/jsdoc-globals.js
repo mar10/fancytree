@@ -185,7 +185,7 @@ var TreePatch = {};
  * @property {boolean} keyboard Support keyboard navigation (default: true).
  * @property {string} keyPathSeparator (default: "/")
  * @property {Integer} minExpandLevel 2: top-level nodes are not collapsible (default: 1)
- * @property {boolean|string|function} noData Display a special message when the tree loader
+ * @property {boolean|string|function} nodata Display a special message when the tree loader
  *     returned no data (default: true)
  *     @since 2.30
  * @property {boolean} quicksearch navigate to next node by typing the first letters (default: false)

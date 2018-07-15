@@ -105,7 +105,7 @@ $.ui.fancytree.registerExtension({
 	// Default options for this extension.
 	options: {
 		checkboxColumnIdx: null,    // render the checkboxes into the this column index (default: nodeColumnIdx)
-		mergeStatusColumns: true,   // display 'noData', 'loading', 'error'
+		mergeStatusColumns: true,   // display 'nodata', 'loading', 'error' centered in a single, merged TR
 		indentation: 16,            // indent every node level by 16px
 		nodeColumnIdx: 0            // render node expander, icon, and title to this column (default: #0)
 	},

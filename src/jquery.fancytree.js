@@ -3611,13 +3611,13 @@ $.extend(Fancytree.prototype,
 			_assert($.isArray(children), "expected array of children");
 			node._setChildren(children);
 
-			if( tree.options.noData && children.length === 0 ) {
-				if( $.isFunction(tree.options.noData) ) {
-					noDataRes = tree.options.noData.call(tree, {type: "noData"}, ctx);
-				} else if( tree.options.noData === true && node.isRootNode() ) {
-					noDataRes = tree.options.strings.noData;
-				} else if( typeof tree.options.noData === "string" && node.isRootNode() ) {
-					noDataRes = tree.options.noData;
+			if( tree.options.nodata && children.length === 0 ) {
+				if( $.isFunction(tree.options.nodata) ) {
+					noDataRes = tree.options.nodata.call(tree, {type: "nodata"}, ctx);
+				} else if( tree.options.nodata === true && node.isRootNode() ) {
+					noDataRes = tree.options.strings.nodata;
+				} else if( typeof tree.options.nodata === "string" && node.isRootNode() ) {
+					noDataRes = tree.options.nodata;
 				}
 				if( noDataRes ) {
 					node.setStatus("nodata", noDataRes);
@@ -4952,7 +4952,7 @@ $.widget("ui.fancytree",
 		keyboard: true,
 		keyPathSeparator: "/",
 		minExpandLevel: 1,
-		noData: true,               // (bool, string, or callback) display message, when no data available
+		nodata: true,               // (bool, string, or callback) display message, when no data available
 		quicksearch: false,
 		rtl: false,
 		scrollOfs: {top: 0, bottom: 0},
