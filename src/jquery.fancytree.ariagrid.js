@@ -48,10 +48,6 @@
   - In strict mode, how can a user leave an embedded text input, if it is
 	the only control in a row?
 
-  - If rows are hidden I suggest aria-hidden="true" on them (may be optional)
-	=> aria-hidden currently not set (instead: style="display: none") needs to
-	be added to ext-table
-
   - enable treeOpts.aria by default
 	=> requires some benchmarks, confirm it does not affect performance too much
 
@@ -72,7 +68,7 @@ var FT = $.ui.fancytree,
 	clsFancytreeCellMode = "fancytree-cell-mode",
 	clsFancytreeCellNavMode = "fancytree-cell-nav-mode",
 	// Define which keys are handled by embedded control, and should *not* be
-	// passed to tree navigation handler:
+	// passed to tree navigation handler in extended mode:
 	INPUT_KEYS = {
 		"text": [ "left", "right", "home", "end", "backspace" ],
 		"number": [ "up", "down", "left", "right", "home", "end", "backspace" ],
@@ -280,9 +276,10 @@ $.ui.fancytree.registerExtension({
 		// End of internal flags
 		extendedMode: false,
 		cellFocus: "allow",
-		// TODO: document `defaultCellAction` event
+		// TODO: document `defaultGridAction` event
 		// TODO: use a global tree option `name` or `title` instead?:
 		label: "Tree Grid"  // Added as `aria-label` attribute
+		// defaultAction: $.noop
 	},
 
 	treeInit: function( ctx ) {
@@ -403,11 +400,14 @@ $.ui.fancytree.registerExtension({
 				.attr( "aria-setsize", node.parent.children.length )
 				.attr( "aria-posinset", node.getIndex() + 1 );
 
-			if ( $tr.is( ":hidden" ) ) {
-				$tr.attr( "aria-hidden", true );
-			} else {
-				$tr.removeAttr( "aria-hidden" );
-			}
+			// 2018-06-24: not required according to
+			// https://github.com/w3c/aria-practices/issues/132#issuecomment-397698250
+			// if ( $tr.is( ":hidden" ) ) {
+			// 	$tr.attr( "aria-hidden", true );
+			// } else {
+			// 	$tr.removeAttr( "aria-hidden" );
+			// }
+
 			// this.debug("nodeRenderStatus: " + this.$activeTd + ", " + $tr.attr("aria-expanded"));
 			// In cell-mode, move aria-expanded attribute from TR to first child TD
 			if ( this.$activeTd && $tr.attr( "aria-expanded" ) != null ) {
@@ -445,7 +445,8 @@ $.ui.fancytree.registerExtension({
 		return this._superApply( arguments );
 	},
 	nodeKeydown: function( ctx ) {
-		var handleKeys, inputType, $td,
+		var handleKeys, inputType, res, $td,
+			$embeddedCheckbox = null,
 			tree = ctx.tree,
 			node = ctx.node,
 			treeOpts = ctx.options,
@@ -463,6 +464,10 @@ $.ui.fancytree.registerExtension({
 			inputType = $target.prop( "type" );
 		} else if ( $target.is( "a" ) ) {
 			inputType = "link";
+		}
+		if ( $activeTd && $activeTd.find( ":checkbox:enabled" ).length === 1 ) {
+			$embeddedCheckbox = $activeTd.find( ":checkbox:enabled" );
+			inputType = "checkbox";
 		}
 		ctx.tree.debug( "nodeKeydown(" + eventString + "), activeTd: '" +
 			( $activeTd && $activeTd.text() ) + "', inputType: " + inputType );
@@ -504,7 +509,11 @@ $.ui.fancytree.registerExtension({
 				// Cell mode: move to neighbour
 				$td = findNeighbourTd( tree, $activeTd, eventString );
 				// Note: $td may be null if we move outside bounds. In this case
-				// we switch back to row-mode
+				// we switch back to row-mode (i.e. call activateCell(null) ).
+				if ( !$td && "left right".indexOf( eventString ) < 0  ) {
+					// Only switch to row-mode if left/right hits the bounds
+					return false;
+				}
 				if ( $td || opts.cellFocus !== "force" ) {
 					tree.activateCell( $td );
 				}
@@ -528,11 +537,19 @@ $.ui.fancytree.registerExtension({
 			break;
 
 		case "return":
-			// Let caller override the default action:
-			if ( tree._triggerNodeEvent( "defaultCellAction", node, event,
-					{ activeTd: tree.$activeTd, colIdx: colIdx }) === false ) {
+			// Let caller override the default action.
+			// This event is triggered in row-mode and cell-mode
+			// if( opts.defaultAction.call(node, {type: "defaultAction"}, eventData) === false ) {
+			// 	return false;
+			// }
+			res = tree._triggerNodeEvent( "defaultGridAction", node, event, {
+				activeTd: tree.$activeTd ? tree.$activeTd[ 0 ] : null,
+				colIdx: colIdx
+			});
+			if ( res === false ) {
 				return false;
 			}
+			// Implement default actions (for cell-mode only).
 			if ( $activeTd ) {
 				// Apply 'default action' for embedded cell control
 				if ( colIdx === this.nodeColumnIdx ) {
@@ -541,9 +558,9 @@ $.ui.fancytree.registerExtension({
 				} else if ( colIdx === this.checkboxColumnIdx ) {
 					node.toggleSelected();
 					return false;
-				} else if ( $activeTd.find( ":checkbox:enabled" ).length ) {
+				} else if ( $embeddedCheckbox ) {
 					// Embedded checkboxes are always toggled (ignoring `autoFocusInput`)
-					$activeTd.find( ":checkbox:enabled" ).click();
+					$embeddedCheckbox.prop( "checked", !$embeddedCheckbox.prop( "checked" ) );
 					return false;
 				} else if ( opts.extendedMode && tree.forceNavMode && $target.is( ":input" ) ) {
 					tree.forceNavMode = false;
@@ -579,8 +596,8 @@ $.ui.fancytree.registerExtension({
 			if ( $activeTd ) {
 				if ( colIdx === this.checkboxColumnIdx ) {
 					node.toggleSelected();
-				} else if ( $activeTd.find( ":checkbox:enabled" ).length ) {
-					$activeTd.find( ":checkbox:enabled" ).click();
+				} else if ( $embeddedCheckbox ) {
+					$embeddedCheckbox.prop( "checked", !$embeddedCheckbox.prop( "checked" ) );
 				}
 				return false;  // no default handling
 			}

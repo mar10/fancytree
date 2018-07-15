@@ -4,7 +4,7 @@
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 	<title>Fancytree - Example: Table</title>
 
-	<script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+	<script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
 	<script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 
 <style type="text/css">
@@ -18,14 +18,15 @@
 	table.fancytree-ext-table {
 	   width: 80%;
 	}
-	table.fancytree-ext-table td:nth-child(4) {
-	   text-align: right;
-	}
-	table.fancytree-ext-table td:nth-child(5) {
+	/* custom alignment (class is set by row template) */
+	td.alignCenter {
 	   text-align: center;
 	}
-
+	td.alignRight {
+	   text-align: right;
+	}
 </style>
+
 	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet">
 	<script src="../src/jquery.fancytree.js"></script>
 	<script src="../src/jquery.fancytree.table.js"></script>
@@ -41,7 +42,7 @@
 	$(function(){
 		// Attach the fancytree widget to an existing <div id="tree"> element
 		// and pass the tree options as an argument to the fancytree() function:
-		$("#treetable").fancytree({
+		$("#treegrid").fancytree({
 			extensions: ["table"],
 			checkbox: true,
 			table: {
@@ -61,22 +62,25 @@
 			renderColumns: function(event, data) {
 				var node = data.node,
 					$tdList = $(node.tr).find(">td");
+
 				// (index #0 is rendered by fancytree by adding the checkbox)
-				$tdList.eq(1).text(node.getIndexHier());  //.addClass("alignRight");
+				$tdList.eq(1).text(node.getIndexHier());
 				// (index #2 is rendered by fancytree)
 				$tdList.eq(3).text(node.data.qty);
-				$tdList.eq(4).html("<input type='checkbox' name='like' value='" + node.key + "'>");
+				// Rendered by row template:
+//				$tdList.eq(4).html("<input type='checkbox' name='like' value='" + node.key + "'>");
 			}
 		});
 		/* Handle custom checkbox clicks */
-		$("#treetable").on("click", "input[name=like]", function(e){
+		$("#treegrid").on("click", "input[name=like]", function(e){
 			var node = $.ui.fancytree.getNode(e),
-			   $input = $(e.target);
+				$input = $(e.target);
+
 			e.stopPropagation();  // prevent fancytree activate for this row
 			if($input.is(":checked")){
-				alert("like " + $input.val());
+				alert("like " + node);
 			}else{
-				alert("dislike " + $input.val());
+				alert("dislike " + node);
 			}
 		});
 	});
@@ -103,10 +107,10 @@
 	</div>
 
 	<!-- Add a <table> element where the tree should appear: -->
-	<table id="treetable">
+	<table id="treegrid">
 		<colgroup>
 		<col width="30px"></col>
-		<col width="30px"></col>
+		<col width="70px"></col>
 		<col width="*"></col>
 		<col width="50px"></col>
 		<col width="30px"></col>
@@ -114,7 +118,17 @@
 		<thead>
 			<tr> <th></th> <th>#</th> <th></th> <th>Qty</th> <th>Order</th> </tr>
 		</thead>
+		<!-- Otionally define a row that serves as template, when new nodes are created: -->
 		<tbody>
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="alignRight"></td>
+				<td class="alignCenter">
+					<input type="checkbox" name="like">
+				</td>
+			</tr>
 		</tbody>
 	</table>
 

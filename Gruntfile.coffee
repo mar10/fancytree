@@ -62,6 +62,7 @@ module.exports = (grunt) ->
 #                "src/jquery.fancytree.fixed.js"
                 "src/jquery.fancytree.glyph.js"
                 "src/jquery.fancytree.gridnav.js"
+                "src/jquery.fancytree.multi.js"
                 "src/jquery.fancytree.persist.js"
                 "src/jquery.fancytree.table.js"
                 "src/jquery.fancytree.themeroller.js"
@@ -96,6 +97,7 @@ module.exports = (grunt) ->
                 # "build/jquery.fancytree.fixed.min.js"
                 "build/jquery.fancytree.glyph.min.js"
                 "build/jquery.fancytree.gridnav.min.js"
+                "build/jquery.fancytree.multi.min.js"
                 "build/jquery.fancytree.persist.min.js"
                 "build/jquery.fancytree.table.min.js"
                 "build/jquery.fancytree.themeroller.min.js"
@@ -143,6 +145,7 @@ module.exports = (grunt) ->
                 # "src/jquery.fancytree.fixed.js"
                 "src/jquery.fancytree.glyph.js"
                 "src/jquery.fancytree.gridnav.js"
+                "src/jquery.fancytree.multi.js"
                 "src/jquery.fancytree.persist.js"
                 "src/jquery.fancytree.table.js"
                 "src/jquery.fancytree.themeroller.js"
@@ -306,7 +309,7 @@ module.exports = (grunt) ->
 
     replace: # grunt-text-replace
         production:
-            src: ["build/**/*.js"]
+            src: ["build/**/*.{js,less,css}"]
             overwrite : true
             replacements: [ {
                 from : /@DATE/g
@@ -320,7 +323,7 @@ module.exports = (grunt) ->
                 to : "debugLevel: 3"
             } ]
         release:
-            src: ["dist/**/*.js"]
+            src: ["dist/**/*.{js,less,css}"]
             overwrite : true
             replacements: [ {
                 from : /@VERSION/g
@@ -355,7 +358,7 @@ module.exports = (grunt) ->
                 # jQuery UI 1.12  supports IE 11 and latest Chrome/Edge/Firefox/Safari (-1)
                 browsers: [
                   # Issue #825
-                  # { browserName: "chrome", version: "dev", platform: "Windows 10" }
+                  { browserName: "chrome", version: "dev", platform: "Windows 10" }
                   { browserName: "chrome", version: "latest", platform: "Windows 10" }
                   { browserName: "chrome", version: "latest-1", platform: "Windows 10" }
                   { browserName: "firefox", version: "dev", platform: "Windows 10" }
@@ -367,7 +370,7 @@ module.exports = (grunt) ->
                   { browserName: "microsoftedge", version: "latest-1", platform: "Windows 10" }
                   { browserName: "safari", version: "9", platform: "OS X 10.11" }
                   { browserName: "safari", version: "10", platform: "OS X 10.12" }
-                  { browserName: "safari", version: "11", platform: "OS X 10.12" }
+                  { browserName: "safari", version: "11", platform: "OS X 10.13" }
                 ]
         ui_111:
             options:
@@ -378,7 +381,7 @@ module.exports = (grunt) ->
                 browsers: [
                   { browserName: "internet explorer", version: "10", platform: "Windows 8" }
                   # Issue #842:
-#                  { browserName: "safari", version: "7", platform: "OS X 10.9" }
+                  { browserName: "safari", version: "7", platform: "OS X 10.9" }
                   { browserName: "safari", version: "8", platform: "OS X 10.10" }
                 ]
         ui_110:
@@ -388,17 +391,18 @@ module.exports = (grunt) ->
                 # jQuery 1.10    dropped support for IE 6
                 # jQuery UI 1.10 supports IE 7+ and ?
                 browsers: [
+                  { browserName: "internet explorer", version: "8", platform: "Windows 7" }
                   { browserName: "internet explorer", version: "9", platform: "Windows 7" }
                 ]
-        ui_109:
-            options:
-                testname: "Fancytree qunit tests (jQuery 1.9, jQuery UI 1.9)"
-                urls: ["http://localhost:9999/test/unit/test-jQuery19-ui19.html"]
-                # jQuery 1.9     dropped supports IE 6..?
-                # jQuery UI 1.9  supports IE 6+ and ?
-                browsers: [
-                  { browserName: "internet explorer", version: "8", platform: "Windows 7" }
-                ]
+        # ui_109:
+        #     options:
+        #         testname: "Fancytree qunit tests (jQuery 1.9, jQuery UI 1.9)"
+        #         urls: ["http://localhost:9999/test/unit/test-jQuery19-ui19.html"]
+        #         # jQuery 1.9     dropped supports IE 6..?
+        #         # jQuery UI 1.9  supports IE 6+ and ?
+        #         browsers: [
+        #           { browserName: "internet explorer", version: "8", platform: "Windows 7" }
+        #         ]
 
     uglify:
         src_to_build:

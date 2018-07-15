@@ -8,7 +8,14 @@
  * Common Styles for Fancytree Skins.
  *
  * This section is automatically generated from the `skin-common.less` template.
- ******************************************************************************/
+ *
+ * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
+ * Released under the MIT license
+ * https://github.com/mar10/fancytree/wiki/LicenseInfo
+ *
+ * @version @VERSION
+ * @date @DATE
+******************************************************************************/
 /*------------------------------------------------------------------------------
  * Helpers
  *----------------------------------------------------------------------------*/
@@ -319,6 +326,15 @@ table.fancytree-ext-table span.fancytree-node {
   display: inline-block;
   box-sizing: border-box;
 }
+table.fancytree-ext-table td.fancytree-status-merged {
+  text-align: center;
+  font-weight: bold;
+  font-style: italic;
+  color: #333333;
+}
+table.fancytree-ext-table tr.fancytree-statusnode-error td.fancytree-status-merged {
+  color: #d9534f;
+}
 /*------------------------------------------------------------------------------
  * 'columnview' extension
  *----------------------------------------------------------------------------*/
@@ -399,7 +415,9 @@ table.fancytree-ext-columnview .fancytree-has-children span.fancytree-cv-right {
   visibility: visible;
 }
 .fancytree-ext-childcounter span.fancytree-icon,
-.fancytree-ext-filter span.fancytree-icon {
+.fancytree-ext-filter span.fancytree-icon,
+.fancytree-ext-childcounter span.fancytree-custom-icon,
+.fancytree-ext-filter span.fancytree-custom-icon {
   position: relative;
 }
 .fancytree-ext-childcounter span.fancytree-childcounter,

@@ -4,16 +4,17 @@
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 	<title>Multiple Extensions - Fancytree</title>
 
-	<link href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet">
-	<script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
-	<script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+	<script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
 
+	<!-- This demo uses an 3rd-party, jQuery UI based context menu -->
+	<link href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet">
+	<script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 	<!-- jquery-contextmenu (https://github.com/mar10/jquery-ui-contextmenu/) -->
 	<script src="//cdn.jsdelivr.net/npm/ui-contextmenu/jquery.ui-contextmenu.min.js"></script>
 
 	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet">
 	<script src="../src/jquery.fancytree.js"></script>
-	<script src="../src/jquery.fancytree.dnd.js"></script>
+	<script src="../src/jquery.fancytree.dnd5.js"></script>
 	<script src="../src/jquery.fancytree.edit.js"></script>
 	<script src="../src/jquery.fancytree.gridnav.js"></script>
 	<script src="../src/jquery.fancytree.table.js"></script>
@@ -72,9 +73,9 @@ $(function(){
 		// source: SOURCE,
 		source: { url: "ajax-tree-products.json"},
 
-		extensions: ["edit", "dnd", "table", "gridnav"],
+		extensions: ["edit", "dnd5", "table", "gridnav"],
 
-		dnd: {
+		dnd5: {
 			preventVoidMoves: true,
 			preventRecursiveMoves: true,
 			autoExpandMS: 400,

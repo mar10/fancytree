@@ -185,6 +185,9 @@ var TreePatch = {};
  * @property {boolean} keyboard Support keyboard navigation (default: true).
  * @property {string} keyPathSeparator (default: "/")
  * @property {Integer} minExpandLevel 2: top-level nodes are not collapsible (default: 1)
+ * @property {boolean|string|function} nodata Display a special message when the tree loader
+ *     returned no data (default: true)
+ *     @since 2.30
  * @property {boolean} quicksearch navigate to next node by typing the first letters (default: false)
  * @property {object} scrollOfs optional margins for node.scrollIntoView() (default: {top: 0, bottom: 0})
  * @property {jQuery} scrollParent scrollable container for node.scrollIntoView() (default: $container)
@@ -199,7 +202,7 @@ var TreePatch = {};
  *     "": Tree control is not tabbable nor may it receive keyboard focus.
  * @property {boolean} titlesTabbable Add tabindex='0' to node title span, so it can receive keyboard focus
  * @property {object} toggleEffect Animation options, false:off
- *     (default: { effect: "blind", options: {direction: "vertical", scale: "box"}, duration: 200 })
+ *     (default: { effect: "slideToggle", duration: 200 })
  * @property {boolean|function} tooltip Add a `title` attribute to the node's title span markup,
  *     thus enabling a tooltip (default: false).<br>
  *     false: No automatic tooltip (but still honor `node.tooltip` attribute)<br>
@@ -263,6 +266,9 @@ var FancytreeOptions = {};
  * @property {function} createNode Allow tweaking and binding, after node was created for the first time (NOTE: this event is only available as callback, but not for bind())
  * @property {function} dblclick `data.node` was double-clicked. `data.targetType` contains the region ("checkbox", "expander", "icon", "prefix", "title"). Return `false` to prevent default processing, i.e. expanding, etc.
  * @property {function} deactivate `data.node` was deactivated
+ * @property {function} defaultGridAction (used by ext-aria) The user hit enter on the active row or cell.<br>
+ *     `data.activeTd` contains the currently active &lt;td> element or null<br>
+ *     `data.colIdx` contains the 0-based column index or -1
  * @property {function} enhanceTitle Allow extending the `&lt;span class='fancytree-title'>` markup, for example by adding badges, ... (NOTE: this event is only available as callback, but not for bind())
  * @property {function} expand `data.node` was expanded
  * @property {function} focus `data.node` received keyboard focus

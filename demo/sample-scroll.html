@@ -4,13 +4,12 @@
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 	<title>Fancytree - Example: Scrolling</title>
 
-	<script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+	<script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
 	<script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet">
 
 	<script src="../src/jquery.fancytree.js"></script>
-	<script src="../src/jquery.fancytree.columnview.js"></script>
-	<script src="../src/jquery.fancytree.dnd.js"></script>
+	<script src="../src/jquery.fancytree.dnd5.js"></script>
 	<script src="../src/jquery.fancytree.table.js"></script>
 
 
@@ -21,12 +20,18 @@
 	<script src="sample.js"></script>
 	<!-- End_Exclude -->
 <style type="text/css">
-ul.fancytree-container {
-	width: 200px;
-	height: 120px;
-	overflow: auto;
-	position: relative;
-}
+	ul.fancytree-container {
+		width: 200px;
+		height: 120px;
+		overflow: auto;
+		position: relative;
+	}
+	.fixed-size {
+		width: 400px;
+		height: 250px;
+		overflow: auto;
+		position: relative;
+	}
 </style>
 	<!-- Add code to initialize the tree when the document is loaded: -->
 <script type="text/javascript">
@@ -37,22 +42,52 @@ ul.fancytree-container {
 		// Attach the fancytree widget to an existing <div id="tree"> element
 		// and pass the tree options as an argument to the fancytree() function:
 		$("#tree").fancytree({
-			extensions: [],
+			extensions: ["dnd5"],
 			checkbox: true,
 			autoScroll: true,
+			dnd5: {
+				dragStart: function(node, data) { return true; },
+				dragEnter: function(node, data) { return true; },
+				dragDrop: function(node, data) { data.otherNode.copyTo(node, data.hitMode); }
+			},
 			source: {
-				url: "../test/unit/ajax-tree-plain.json"
+				url: "ajax-tree-products.json"
+				// url: "../test/unit/ajax-tree-plain.json"
 			},
 			lazyLoad: function(event, data) {
-				data.result = {url: "../test/unit/ajax-sub2.json"}
+				data.result = { url: "ajax-sub2.json" }
+			}
+		});
+
+		$("#treegrid").fancytree({
+			extensions: ["dnd5", "table"],
+			checkbox: true,
+			autoScroll: true,
+			table: {
+				indentation: 20,      // indent 20px per node level
+				nodeColumnIdx: 2,     // render the node title into the 2nd column
+				checkboxColumnIdx: 0  // render the checkboxes into the 1st column
 			},
-			// init: function(event, data) {
-			// 	data.tree.getFirstChild().setFocus();
-			// },
-			// expand: function(event, data){
-			// 	// scroll down to last node, but keep current node visible
-			// 	data.node.getLastChild().scrollIntoView(true, {topNode: data.node});
-			// }
+			dnd5: {
+				dragStart: function(node, data) { return true; },
+				dragEnter: function(node, data) { return true; },
+				dragDrop: function(node, data) { data.otherNode.copyTo(node, data.hitMode); }
+			},
+			source: {
+				url: "ajax-tree-products.json"
+			},
+			lazyLoad: function(event, data) {
+				data.result = { url: "ajax-sub2.json" }
+			},
+			renderColumns: function(event, data) {
+				var node = data.node,
+					$tdList = $(node.tr).find(">td");
+				// (index #0 is rendered by fancytree by adding the checkbox)
+				$tdList.eq(1).text(node.getIndexHier()).addClass("alignRight");
+				// (index #2 is rendered by fancytree)
+				$tdList.eq(3).text(node.key);
+				// $tdList.eq(4).html("<input type='checkbox' name='like' value='" + node.key + "'>");
+			}
 		});
 	});
 		</script>
@@ -64,16 +99,47 @@ ul.fancytree-container {
 	<div>
 		<label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
 	</div>
-	<!-- Add a <table> element where the tree should appear: -->
+
 	<p class="description">
 		Standard tree:
 	</p>
+	<!--
+		Add a <div> element where the tree should appear:
+		A CSS rule at the top of this file makes the <UL> container scrollable.
+	-->
 	<div id="tree"></div>
 
-	<!-- Add a <table> element where the tree should appear: -->
 	<p class="description">
 		Table tree:
 	</p>
+	<!--
+		Add a <table> element where the tree grid should appear:
+		Note that we need a scrollable container.
+	-->
+	<div class="fixed-size">
+		<table id="treegrid">
+			<colgroup>
+			<col width="30px"></col>
+			<col width="30px"></col>
+			<col width="*"></col>
+			<col width="50px"></col>
+			<col width="30px"></col>
+			</colgroup>
+			<thead>
+				<tr> <th></th> <th>#</th> <th></th> <th>Key</th> <th>Like</th> </tr>
+			</thead>
+			<!-- Optionally define a row that serves as template, when new nodes are created: -->
+			<tbody>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td><input type="checkbox" name="like"></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 	<!-- Start_Exclude: This block is not part of the sample code -->
 	<hr>
 	<p class="sample-links  no_code">

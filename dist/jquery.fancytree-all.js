@@ -7,8 +7,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.28.1
- * @date 2018-03-19T06:47:37Z
+ * @version 2.29.1
+ * @date 2018-06-27T18:51:43Z
  */
 
 /** Core Fancytree module.
@@ -150,6 +150,62 @@ function isVersionAtLeast(dottedVersion, major, minor, patch){
 	}
 	return true;
 }
+
+
+/**
+ * Deep-merge a list of objects (but replace array-type options).
+ *
+ * jQuery's $.extend(true, ...) method does a deep merge, that also merges Arrays.
+ * This variant is used to merge extension defaults with user options, and should
+ * merge objects, but override arrays (for example the `triggerStart: [...]` option
+ * of ext-edit). Also `null` values are copied over and not skipped.
+ *
+ * See issue #876
+ *
+ * Example:
+ * _simpleDeepMerge({}, o1, o2);
+ */
+ function _simpleDeepMerge() {
+	var options, name, src, copy, clone,
+		target = arguments[ 0 ] || {},
+		i = 1,
+		length = arguments.length;
+
+	// Handle case when target is a string or something (possible in deep copy)
+	if ( typeof target !== "object" && !$.isFunction( target ) ) {
+		target = {};
+	}
+	if ( i === length ) {
+		throw "need at least two args";
+	}
+	for ( ; i < length; i++ ) {
+		// Only deal with non-null/undefined values
+		if ( ( options = arguments[ i ] ) != null ) {
+			// Extend the base object
+			for ( name in options ) {
+				src = target[ name ];
+				copy = options[ name ];
+				// Prevent never-ending loop
+				if ( target === copy ) {
+					continue;
+				}
+				// Recurse if we're merging plain objects
+				// (NOTE: unlike $.extend, we don't merge arrays, but relace them)
+				if ( copy && jQuery.isPlainObject( copy ) ) {
+					clone = src && jQuery.isPlainObject( src ) ? src : {};
+					// Never move original objects, clone them
+					target[ name ] = _simpleDeepMerge( clone, copy );
+					// Don't bring in undefined values
+				} else if ( copy !== undefined ) {
+					target[ name ] = copy;
+				}
+			}
+		}
+	}
+	// Return the modified object
+	return target;
+}
+
 
 /** Return a wrapper that calls sub.methodName() and exposes
  *  this             : tree
@@ -1701,7 +1757,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	scheduleAction: function(mode, ms) {
 		if( this.tree.timer ) {
 			clearTimeout(this.tree.timer);
-//            this.tree.debug("clearTimeout(%o)", this.tree.timer);
+			this.tree.debug("clearTimeout(%o)", this.tree.timer);
 		}
 		this.tree.timer = null;
 		var self = this; // required for closures
@@ -4233,20 +4289,48 @@ $.extend(Fancytree.prototype,
 				} else {
 					// The UI toggle() effect works with the ext-wide extension,
 					// while jQuery.animate() has problems when the title span
-					// has positon: absolute.
+					// has position: absolute.
 					// Since jQuery UI 1.12, the blind effect requires the parent
 					// element to have 'position: relative'.
 					// See #716, #717
 					$(node.li).addClass(cn.animating);  // #717
-//					node.info("fancytree-animating start: " + node.li.className);
-					$(node.ul)
-						.addClass(cn.animating)  // # 716
-						.toggle(effect.effect, effect.options, effect.duration, function(){
-//							node.info("fancytree-animating end: " + node.li.className);
+
+					if (!$.isFunction($(node.ul)[effect.effect]) ) {
+						// The UI toggle() effect works with the ext-wide extension,
+						// while jQuery.animate() has problems when the title span
+						// has positon: absolute.
+						// Since jQuery UI 1.12, the blind effect requires the parent
+						// element to have 'position: relative'.
+						// See #716, #717
+						tree.debug("use specified effect (" + effect.effect + ") with the jqueryui.toggle method");
+
+						// try to stop an animation that might be already in progress
+						$(node.ul).stop(true, true); //< does not work after resetLazy has been called for a node whose animation wasn't complete and effect was "blind"
+
+						// dirty fix to remove a defunct animation (effect: "blind") after resetLazy has been called
+						$(node.ul).parent().find(".ui-effects-placeholder").remove();
+
+						$(node.ul).toggle(effect.effect, effect.options, effect.duration, function() {
+							node.info("fancytree-animating end: " + node.li.className);
 							$(this).removeClass(cn.animating);  // #716
 							$(node.li).removeClass(cn.animating);  // #717
 							callback();
 						});
+
+					} else {
+						tree.debug("use jquery." + effect.effect + " method");
+
+						$(node.ul)[effect.effect]({
+							duration: effect.duration,
+							always: function() {
+										node.info("fancytree-animating end: " + node.li.className);
+										$(this).removeClass(cn.animating);  // #716
+										$(node.li).removeClass(cn.animating);  // #717
+										callback();
+									}
+						});
+					}
+
 					return;
 				}
 			}
@@ -4814,7 +4898,8 @@ $.widget("ui.fancytree",
 		// fx: { height: "toggle", duration: 200 },
 		// toggleEffect: { effect: "drop", options: {direction: "left"}, duration: 200 },
 		// toggleEffect: { effect: "slide", options: {direction: "up"}, duration: 200 },
-		toggleEffect: { effect: "blind", options: {direction: "vertical", scale: "box"}, duration: 200 },
+		//toggleEffect: { effect: "blind", options: {direction: "vertical", scale: "box"}, duration: 200 },
+		toggleEffect: { effect: "slideToggle", duration: 200 }, //< "toggle" or "slideToggle" to use jQuery instead of jQueryUI for toggleEffect animation
 		generateIds: false,
 		icon: true,
 		idPrefix: "ft_",
@@ -4882,7 +4967,15 @@ $.widget("ui.fancytree",
 			}
 			// Add extension options as tree.options.EXTENSION
 //			_assert(!this.tree.options[extName], "Extension name must not exist as option name: " + extName);
-			this.tree.options[extName] = $.extend(true, {}, extension.options, this.tree.options[extName]);
+
+			// console.info("extend " + extName, extension.options, this.tree.options[extName])
+			// issue #876: we want to replace custom array-options, not merge them
+			this.tree.options[extName] = _simpleDeepMerge({}, extension.options, this.tree.options[extName]);
+			// this.tree.options[extName] = $.extend(true, {}, extension.options, this.tree.options[extName]);
+
+			// console.info("extend " + extName + " =>", this.tree.options[extName])
+			// console.info("extend " + extName + " org default =>", extension.options)
+
 			// Add a namespace tree.ext.EXTENSION, to hold instance data
 			_assert(this.tree.ext[extName] === undefined, "Extension name must not exist as Fancytree.ext attribute: '" + extName + "'");
 //			this.tree[extName] = extension;
@@ -4980,7 +5073,7 @@ $.widget("ui.fancytree",
 			if( flag ) {
 				if( tree._getExpiringValue("focusin") ) {
 					// #789: IE 11 may send duplicate focusin events
-					FT.info("Ignored double focusin.");
+					tree.debug("Ignored double focusin.");
 					return;
 				}
 				tree._setExpiringValue("focusin", true, 50);
@@ -4988,7 +5081,7 @@ $.widget("ui.fancytree",
 				if( !node ) {
 					// #789: IE 11 may send focusin before mousdown(?)
 					node = tree._getExpiringValue("mouseDownNode");
-					if( node ) { FT.info("Reconstruct mouse target for focusin from recent event."); }
+					if( node ) { tree.debug("Reconstruct mouse target for focusin from recent event."); }
 				}
 			}
 			if(node){
@@ -5128,7 +5221,7 @@ $.extend($.ui.fancytree,
 	/** @lends Fancytree_Static# */
 	{
 	/** @type {string} */
-	version: "2.28.1",      // Set to semver by 'grunt release'
+	version: "2.29.1",      // Set to semver by 'grunt release'
 	/** @type {string} */
 	buildType: "production", // Set to 'production' by 'grunt build'
 	/** @type {int} */
@@ -5259,7 +5352,7 @@ $.extend($.ui.fancytree,
 	 *     TYPE: 'title' | 'prefix' | 'expander' | 'checkbox' | 'icon' | undefined
 	 */
 	getEventTarget: function(event){
-		var $target,
+		var $target, tree,
 			tcn = event && event.target ? event.target.className : "",
 			res = {node: this.getNode(event.target), type: undefined};
 		// We use a fast version of $(res.node).hasClass()
@@ -5280,7 +5373,8 @@ $.extend($.ui.fancytree,
 			$target = $(event.target);
 			if( $target.is("ul[role=group]") ) {
 				// #nnn: Clicking right to a node may hit the surrounding UL
-				FT.info("Ignoring click on outer UL.");
+				tree = res.node && res.node.tree;
+				(tree || FT).debug("Ignoring click on outer UL.");
 				res.node = null;
 			}else if( $target.closest(".fancytree-title").length ) {
 				// #228: clicking an embedded element inside a title
@@ -5674,8 +5768,8 @@ return $.ui.fancytree;
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.28.1
- * @date 2018-03-19T06:47:37Z
+ * @version 2.29.1
+ * @date 2018-06-27T18:51:43Z
  */
 
 // To keep the global namespace clean, we wrap everything in a closure.
@@ -5746,7 +5840,8 @@ $.ui.fancytree._FancytreeNodeClass.prototype.updateCounters = function(){
 	node.data.childCounter = count;
 	if( (count || !extOpts.hideZeros) && (!node.isExpanded() || !extOpts.hideExpanded) ) {
 		if( !$badge.length ) {
-			$badge = $("<span class='fancytree-childcounter'/>").appendTo($("span.fancytree-icon", node.span));
+			$badge = $("<span class='fancytree-childcounter'/>")
+				.appendTo($("span.fancytree-icon,span.fancytree-custom-icon", node.span));
 		}
 		$badge.text(count);
 	} else {
@@ -5793,7 +5888,7 @@ $.ui.fancytree.registerExtension({
 // Every extension must be registered by a unique name.
 	name: "childcounter",
 // Version information should be compliant with [semver](http://semver.org)
-	version: "2.28.1",
+	version: "2.29.1",
 
 // Extension specific options and their defaults.
 // This options will be available as `tree.options.childcounter.hideExpanded`
@@ -5861,7 +5956,8 @@ $.ui.fancytree.registerExtension({
 		this._super(ctx, title);
 // Append a counter badge
 		if( (count || ! extOpts.hideZeros) && (!node.isExpanded() || !extOpts.hideExpanded) ){
-			$("span.fancytree-icon", node.span).append($("<span class='fancytree-childcounter'/>").text(count));
+			$("span.fancytree-icon,span.fancytree-custom-icon", node.span)
+				.append($("<span class='fancytree-childcounter'/>").text(count));
 		}
 	},
 // Overload the `setExpanded` hook, so the counters are updated
@@ -5892,8 +5988,8 @@ return $.ui.fancytree;
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.28.1
- * @date 2018-03-19T06:47:37Z
+ * @version 2.29.1
+ * @date 2018-06-27T18:51:43Z
  */
 
 ;(function( factory ) {
@@ -5937,34 +6033,6 @@ function _removeArrayMember(arr, elem) {
 	}
 	return false;
 }
-
-
-// /**
-//  * Calculate a 32 bit FNV-1a hash
-//  * Found here: https://gist.github.com/vaiorabbit/5657561
-//  * Ref.: http://isthe.com/chongo/tech/comp/fnv/
-//  *
-//  * @param {string} str the input value
-//  * @param {boolean} [asString=false] set to true to return the hash value as
-//  *     8-digit hex string instead of an integer
-//  * @param {integer} [seed] optionally pass the hash of the previous chunk
-//  * @returns {integer | string}
-//  */
-// function hashFnv32a(str, asString, seed) {
-// 	/*jshint bitwise:false */
-// 	var i, l,
-// 		hval = (seed === undefined) ? 0x811c9dc5 : seed;
-
-// 	for (i = 0, l = str.length; i < l; i++) {
-// 		hval ^= str.charCodeAt(i);
-// 		hval += (hval << 1) + (hval << 4) + (hval << 7) + (hval << 8) + (hval << 24);
-// 	}
-// 	if( asString ){
-// 		// Convert to 8 digit hex string
-// 		return ("0000000" + (hval >>> 0).toString(16)).substr(-8);
-// 	}
-// 	return hval >>> 0;
-// }
 
 
 /**
@@ -6037,14 +6105,9 @@ function hashMurmur3(key, asString, seed) {
 	return h1 >>> 0;
 }
 
-// console.info(hashMurmur3("costarring"));
-// console.info(hashMurmur3("costarring", true));
-// console.info(hashMurmur3("liquid"));
-// console.info(hashMurmur3("liquid", true));
-
 
 /*
- * Return a unique key for node by calculationg the hash of the parents refKey-list
+ * Return a unique key for node by calculating the hash of the parents refKey-list.
  */
 function calcUniqueKey(node) {
 	var key,
@@ -6057,7 +6120,7 @@ function calcUniqueKey(node) {
 
 
 /**
- * [ext-clones] Return a list of clone-nodes or null.
+ * [ext-clones] Return a list of clone-nodes (i.e. same refKey) or null.
  * @param {boolean} [includeSelf=false]
  * @returns {FancytreeNode[] | null}
  *
@@ -6238,7 +6301,7 @@ $.ui.fancytree._FancytreeClass.prototype.changeRefKey = function(oldRefKey, newR
  */
 $.ui.fancytree.registerExtension({
 	name: "clones",
-	version: "2.28.1",
+	version: "2.29.1",
 	// Default options for this extension.
 	options: {
 		highlightActiveClones: true, // set 'fancytree-active-clone' on active clones and all peers
@@ -6373,8 +6436,8 @@ return $.ui.fancytree;
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.28.1
- * @date 2018-03-19T06:47:37Z
+ * @version 2.29.1
+ * @date 2018-06-27T18:51:43Z
  */
 
 ;(function( factory ) {
@@ -6629,7 +6692,7 @@ function _initDragAndDrop(tree) {
 
 $.ui.fancytree.registerExtension({
 	name: "dnd",
-	version: "2.28.1",
+	version: "2.29.1",
 	// Default options for this extension.
 	options: {
 		// Make tree nodes accept draggables
@@ -6971,8 +7034,8 @@ return $.ui.fancytree;
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.28.1
- * @date 2018-03-19T06:47:37Z
+ * @version 2.29.1
+ * @date 2018-06-27T18:51:43Z
  */
 
 
@@ -7025,14 +7088,19 @@ var FT = $.ui.fancytree,
 	SOURCE_NODE_LIST = null,
 	$sourceList = null,
 	DRAG_ENTER_RESPONSE = null,
-	LAST_HIT_MODE = null;
+	LAST_HIT_MODE = null,
+	DRAG_OVER_STAMP = null;  // Time when a node entered the 'over' hitmode
 
 /* */
 function _clearGlobals() {
 	SOURCE_NODE = null;
 	SOURCE_NODE_LIST = null;
+	if( $sourceList ) {
+		$sourceList.removeClass(classDragSource + " " + classDragRemove);
+	}
 	$sourceList = null;
 	DRAG_ENTER_RESPONSE = null;
+	DRAG_OVER_STAMP = null;
 }
 
 /* Convert number to string and prepend +/-; return empty string for 0.*/
@@ -7289,7 +7357,7 @@ function getDropEffect(event, data) {
 
 $.ui.fancytree.registerExtension({
 	name: "dnd5",
-	version: "2.28.1",
+	version: "2.29.1",
 	// Default options for this extension.
 	options: {
 		autoExpandMS: 1500,          // Expand nodes after n milliseconds of hovering
@@ -7489,7 +7557,6 @@ $.ui.fancytree.registerExtension({
 					break;
 
 				case "dragend":
-					$sourceList.removeClass(classDragSource + " " + classDragRemove);
 					_clearGlobals();
 //					data.dropEffect = dropEffect;
 					data.isCancelled = (dropEffect === "none");
@@ -7533,6 +7600,7 @@ $.ui.fancytree.registerExtension({
 					// The dragenter event is fired when a dragged element or
 					// text selection enters a valid drop target.
 
+					DRAG_OVER_STAMP = null;
 					if( !node ) {
 						// Sometimes we get dragenter for the container element
 						tree.debug("Ignore non-node " + event.type + ": " + event.target.tagName + "." + event.target.className);
@@ -7553,20 +7621,6 @@ $.ui.fancytree.registerExtension({
 						DRAG_ENTER_RESPONSE = false;
 						break;
 					}
-
-					// NOTE: dragenter is fired BEFORE the dragleave event
-					// of the previous element!
-					// https://www.w3.org/Bugs/Public/show_bug.cgi?id=19041
-					setTimeout(function(){
-						// node.info("DELAYED " + event.type, event.target, DRAG_ENTER_RESPONSE);
-						// Auto-expand node (only when 'over' the node, not 'before', or 'after')
-						if( dndOpts.autoExpandMS &&
-							node.hasChildren() !== false && !node.expanded &&
-							(!dndOpts.dragExpand || dndOpts.dragExpand(node, data) !== false)
-							) {
-							node.scheduleAction("expand", dndOpts.autoExpandMS);
-						}
-					}, 0);
 
 					$dropMarker.show();
 
@@ -7590,6 +7644,37 @@ $.ui.fancytree.registerExtension({
 					// console.log(event.type, "dropEffect: " + dataTransfer.dropEffect)
 					LAST_HIT_MODE = handleDragOver(event, data);
 					allowDrop = !!LAST_HIT_MODE;
+
+					// console.log(event.type, LAST_HIT_MODE, DRAG_OVER_STAMP)
+
+					if( LAST_HIT_MODE === "over" &&
+						!node.expanded && node.hasChildren() !== false ) {
+						if( !DRAG_OVER_STAMP ) {
+							DRAG_OVER_STAMP = Date.now();
+						} else if( dndOpts.autoExpandMS &&
+								(Date.now() - DRAG_OVER_STAMP) > dndOpts.autoExpandMS &&
+								(!dndOpts.dragExpand || dndOpts.dragExpand(node, data) !== false)
+								) {
+								node.setExpanded();
+							}
+					} else {
+						DRAG_OVER_STAMP = null;
+					}
+					// // NOTE: dragenter is fired BEFORE the dragleave event
+					// // of the previous element!
+					// // https://www.w3.org/Bugs/Public/show_bug.cgi?id=19041
+					// setTimeout(function(){
+					// 	node.info("DELAYED " + event.type, event.target, DRAG_ENTER_RESPONSE);
+					// 	// Auto-expand node (only when 'over' the node, not 'before', or 'after')
+					// 	if( dndOpts.autoExpandMS &&
+					// 		node.hasChildren() !== false && !node.expanded &&
+					// 		(!dndOpts.dragExpand || dndOpts.dragExpand(node, data) !== false)
+					// 		// res.over
+					// 		) {
+					// 		node.scheduleAction("expand", dndOpts.autoExpandMS);
+					// 	}
+					// }, 0);
+
 					break;
 
 				case "dragleave":
@@ -7677,8 +7762,8 @@ return $.ui.fancytree;
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.28.1
- * @date 2018-03-19T06:47:37Z
+ * @version 2.29.1
+ * @date 2018-06-27T18:51:43Z
  */
 
 ;(function( factory ) {
@@ -7934,7 +8019,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.isEditing = function(){
  */
 $.ui.fancytree.registerExtension({
 	name: "edit",
-	version: "2.28.1",
+	version: "2.29.1",
 	// Default options for this extension.
 	options: {
 		adjustWidthOfs: 4,   // null: don't adjust input size to content
@@ -8016,8 +8101,8 @@ return $.ui.fancytree;
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.28.1
- * @date 2018-03-19T06:47:37Z
+ * @version 2.29.1
+ * @date 2018-06-27T18:51:43Z
  */
 
 ;(function( factory ) {
@@ -8311,7 +8396,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.isMatched = function(){
  */
 $.ui.fancytree.registerExtension({
 	name: "filter",
-	version: "2.28.1",
+	version: "2.29.1",
 	// Default options for this extension.
 	options: {
 		autoApply: true,   // Re-apply last filter if lazy data is loaded
@@ -8403,8 +8488,8 @@ return $.ui.fancytree;
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.28.1
- * @date 2018-03-19T06:47:37Z
+ * @version 2.29.1
+ * @date 2018-06-27T18:51:43Z
  */
 
 ;(function( factory ) {
@@ -8580,7 +8665,7 @@ function setIcon( span, baseClass, opts, type ) {
 
 $.ui.fancytree.registerExtension({
 	name: "glyph",
-	version: "2.28.1",
+	version: "2.29.1",
 	// Default options for this extension.
 	options: {
 		preset: null,  // 'awesome3', 'awesome4', 'bootstrap3', 'material'
@@ -8701,8 +8786,8 @@ return $.ui.fancytree;
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.28.1
- * @date 2018-03-19T06:47:37Z
+ * @version 2.29.1
+ * @date 2018-06-27T18:51:43Z
  */
 
 ;(function( factory ) {
@@ -8825,11 +8910,11 @@ function findNeighbourTd($target, keyCode){
  */
 $.ui.fancytree.registerExtension({
 	name: "gridnav",
-	version: "2.28.1",
+	version: "2.29.1",
 	// Default options for this extension.
 	options: {
-		autofocusInput:   false,  // Focus first embedded input if node gets activated
-		handleCursorKeys: true   // Allow UP/DOWN in inputs to move to prev/next node
+		autofocusInput: false,  // Focus first embedded input if node gets activated
+		handleCursorKeys: true  // Allow UP/DOWN in inputs to move to prev/next node
 	},
 
 	treeInit: function(ctx){
@@ -8926,8 +9011,8 @@ return $.ui.fancytree;
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.28.1
- * @date 2018-03-19T06:47:37Z
+ * @version 2.29.1
+ * @date 2018-06-27T18:51:43Z
  */
 
 ;(function( factory ) {
@@ -9103,7 +9188,7 @@ $.ui.fancytree._FancytreeClass.prototype.getPersistData = function(){
  */
 $.ui.fancytree.registerExtension({
 	name: "persist",
-	version: "2.28.1",
+	version: "2.29.1",
 	// Default options for this extension.
 	options: {
 		cookieDelimiter: "~",
@@ -9354,8 +9439,8 @@ return $.ui.fancytree;
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.28.1
- * @date 2018-03-19T06:47:37Z
+ * @version 2.29.1
+ * @date 2018-06-27T18:51:43Z
  */
 
 ;(function( factory ) {
@@ -9446,7 +9531,7 @@ function findPrevRowNode(node){
 
 $.ui.fancytree.registerExtension({
 	name: "table",
-	version: "2.28.1",
+	version: "2.29.1",
 	// Default options for this extension.
 	options: {
 		checkboxColumnIdx: null, // render the checkboxes into the this column index (default: nodeColumnIdx)
@@ -9829,8 +9914,8 @@ return $.ui.fancytree;
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.28.1
- * @date 2018-03-19T06:47:37Z
+ * @version 2.29.1
+ * @date 2018-06-27T18:51:43Z
  */
 
 ;(function( factory ) {
@@ -9855,7 +9940,7 @@ return $.ui.fancytree;
  */
 $.ui.fancytree.registerExtension({
 	name: "themeroller",
-	version: "2.28.1",
+	version: "2.29.1",
 	// Default options for this extension.
 	options: {
 		activeClass: "ui-state-active",      // Class added to active node
@@ -9940,8 +10025,8 @@ return $.ui.fancytree;
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.28.1
- * @date 2018-03-19T06:47:37Z
+ * @version 2.29.1
+ * @date 2018-06-27T18:51:43Z
  */
 
 ;(function( factory ) {
@@ -10054,7 +10139,7 @@ function renderLevelCss(containerId, depth, levelOfs, lineOfs, labelOfs, measure
  */
 $.ui.fancytree.registerExtension({
 	name: "wide",
-	version: "2.28.1",
+	version: "2.29.1",
 	// Default options for this extension.
 	options: {
 		iconWidth: null,     // Adjust this if @fancy-icon-width != "16px"
