@@ -191,8 +191,8 @@ function isVersionAtLeast(dottedVersion, major, minor, patch){
 				}
 				// Recurse if we're merging plain objects
 				// (NOTE: unlike $.extend, we don't merge arrays, but relace them)
-				if ( copy && jQuery.isPlainObject( copy ) ) {
-					clone = src && jQuery.isPlainObject( src ) ? src : {};
+				if ( copy && $.isPlainObject( copy ) ) {
+					clone = src && $.isPlainObject( src ) ? src : {};
 					// Never move original objects, clone them
 					target[ name ] = _simpleDeepMerge( clone, copy );
 					// Don't bring in undefined values
