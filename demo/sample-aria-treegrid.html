@@ -54,6 +54,21 @@
 */
 	</style>
 
+<!-- Start_Exclude: This block is not part of the sample code -->
+<script>
+	$(function () {
+		addSampleButton({
+			label: "Activate cell 4/3",
+			newline: false,
+			code: function () {
+				var node = $("#treegrid").fancytree("getNodeByKey", "_4");
+				node.setActive(true, {cell: 3});
+			}
+		});
+	});
+</script>
+<!-- End_Exclude -->
+
 	<script type="text/javascript">
 		/*global $ */
 		$( function() {
@@ -64,9 +79,6 @@
 			$( "#optionsForm [name=cellFocus]" ).change( function( e ) {
 				store.setItem( "cellFocus", $( this ).find( ":selected" ).val() );
 			}).val( store.getItem( "cellFocus" ) || "allow" );
-			$( "#optionsForm [name=extendedMode]" ).change( function( e ) {
-				store.setItem( "extendedMode", $( this ).prop( "checked" ) || "" );
-			}).prop( "checked", !!store.getItem( "extendedMode" ) );
 
 			// --- Fancytree widget --------------------------------------------
 
@@ -83,7 +95,6 @@
 				},
 				ariagrid: {
 					cellFocus: $( "#optionsForm [name=cellFocus]" ).find( ":selected" ).val(),
-					extendedMode: $( "#optionsForm [name=extendedMode]" ).is( ":checked" ),
 					label: "Fancytree ARIA sample"
 				},
 				init: function( event, data ) {
@@ -93,10 +104,16 @@
 				lazyLoad: function(event, data) {
 					data.result = {url: "ajax-sub2.json"}
 				},
+				activate: function(event, data) {
+					data.node.debug(event.type, data);
+				},
+				activateCell: function(event, data) {
+					data.node.debug(event.type, data);
+				},
 				defaultGridAction: function( event, data ) {
 					// Called when ENTER is pressed in cell-mode.
 					// Return false to prevent default
-					console.log(event.type, data);
+					data.node.debug(event.type, data);
 					if( !data.activeTd ) {
 						alert( "Custom default action for row: " + data.node.title );
 					} else if ( data.colIdx === 4 ) {
@@ -164,7 +181,6 @@
 					<option value="force">force</option>
 				</select>
 			</label>
-			<label>Extended mode <input type="checkbox" name="extendedMode"></label>
 			(Please reload page for changes to take effect.)
 		</form>
 		<hr>
@@ -201,6 +217,8 @@
 	</div>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
+	<p id="sampleButtons">
+	</p>
 	<hr>
 	<p class="sample-links  no_code">
 		<a class="hideInsideFS" href="https://github.com/mar10/fancytree">jquery.fancytree.js project home</a>
