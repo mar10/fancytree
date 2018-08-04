@@ -38,10 +38,10 @@
 			background-color: #eee;
 		}
 		table.fancytree-cell-mode > tbody > tr > td.fancytree-active-cell {
-			background-color: #3875d7;
+			background-color: #cbe8f6;
 		}
 		table.fancytree-cell-mode.fancytree-cell-nav-mode > tbody > tr > td.fancytree-active-cell {
-			background-color: #cbe8f6;
+			background-color: #3875d7;
 		}
 		/* --- Debug helpers: ----------------------------------------------- */
 /*
@@ -74,11 +74,12 @@
 		$( function() {
 			// --- Demo GUI: ---------------------------------------------------
 
-			var store = window.sessionStorage;
-
 			$( "#optionsForm [name=cellFocus]" ).change( function( e ) {
-				store.setItem( "cellFocus", $( this ).find( ":selected" ).val() );
-			}).val( store.getItem( "cellFocus" ) || "allow" );
+				var value = $( this ).find( ":selected" ).val();
+
+				window.sessionStorage.setItem( "cellFocus", value );
+				$( "#treegrid" ).fancytree("option", "ariagrid.cellFocus", value);
+			}).val( window.sessionStorage.getItem( "cellFocus" ) || "allow" );
 
 			// --- Fancytree widget --------------------------------------------
 
@@ -116,6 +117,7 @@
 					data.node.debug(event.type, data);
 					if( !data.activeTd ) {
 						alert( "Custom default action for row: " + data.node.title );
+						// we don't return false, so default action is applied:
 					} else if ( data.colIdx === 4 ) {
 						// eslint-disable-next-line no-alert
 						alert( "Custom default action: " + data.node.title );
@@ -179,6 +181,7 @@
 					<option value="start">start</option>
 					<option value="allow" selected="selected">allow</option>
 					<option value="force">force</option>
+					<option value="off">off</option>
 				</select>
 			</label>
 			(Please reload page for changes to take effect.)
