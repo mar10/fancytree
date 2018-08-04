@@ -489,7 +489,6 @@ table.fancytree-ext-table span.fancytree-node {
 }
 table.fancytree-ext-table td.fancytree-status-merged {
   text-align: center;
-  font-weight: bold;
   font-style: italic;
   color: #c0c0c0;
 }
