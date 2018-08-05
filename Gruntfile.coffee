@@ -235,6 +235,11 @@ module.exports = (grunt) ->
         dev:
             # src: [ "src/**/*.js", "test/**/*.js", "build/**/*.js" ]
             src: [ "src/jquery.fancytree.ariagrid.js" ]
+        fix:
+            options:
+                fix: true
+            # src: [ "src/**/*.js", "test/**/*.js", "build/**/*.js" ]
+            src: [ "src/jquery.fancytree.ariagrid.js" ]
 
     exec:
         tabfix:
