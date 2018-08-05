@@ -38,10 +38,10 @@
 			background-color: #eee;
 		}
 		table.fancytree-cell-mode > tbody > tr > td.fancytree-active-cell {
-			background-color: #3875d7;
+			background-color: #cbe8f6;
 		}
 		table.fancytree-cell-mode.fancytree-cell-nav-mode > tbody > tr > td.fancytree-active-cell {
-			background-color: #cbe8f6;
+			background-color: #3875d7;
 		}
 		/* --- Debug helpers: ----------------------------------------------- */
 /*
@@ -54,19 +54,32 @@
 */
 	</style>
 
+<!-- Start_Exclude: This block is not part of the sample code -->
+<script>
+	$(function () {
+		addSampleButton({
+			label: "Activate cell 4/3",
+			newline: false,
+			code: function () {
+				var node = $("#treegrid").fancytree("getNodeByKey", "_4");
+				node.setActive(true, {cell: 3});
+			}
+		});
+	});
+</script>
+<!-- End_Exclude -->
+
 	<script type="text/javascript">
 		/*global $ */
 		$( function() {
 			// --- Demo GUI: ---------------------------------------------------
 
-			var store = window.sessionStorage;
-
 			$( "#optionsForm [name=cellFocus]" ).change( function( e ) {
-				store.setItem( "cellFocus", $( this ).find( ":selected" ).val() );
-			}).val( store.getItem( "cellFocus" ) || "allow" );
-			$( "#optionsForm [name=extendedMode]" ).change( function( e ) {
-				store.setItem( "extendedMode", $( this ).prop( "checked" ) || "" );
-			}).prop( "checked", !!store.getItem( "extendedMode" ) );
+				var value = $( this ).find( ":selected" ).val();
+
+				window.sessionStorage.setItem( "cellFocus", value );
+				$( "#treegrid" ).fancytree("option", "ariagrid.cellFocus", value);
+			}).val( window.sessionStorage.getItem( "cellFocus" ) || "allow" );
 
 			// --- Fancytree widget --------------------------------------------
 
@@ -83,7 +96,6 @@
 				},
 				ariagrid: {
 					cellFocus: $( "#optionsForm [name=cellFocus]" ).find( ":selected" ).val(),
-					extendedMode: $( "#optionsForm [name=extendedMode]" ).is( ":checked" ),
 					label: "Fancytree ARIA sample"
 				},
 				init: function( event, data ) {
@@ -93,12 +105,19 @@
 				lazyLoad: function(event, data) {
 					data.result = {url: "ajax-sub2.json"}
 				},
+				activate: function(event, data) {
+					data.node.debug(event.type, data);
+				},
+				activateCell: function(event, data) {
+					data.node.debug(event.type, data);
+				},
 				defaultGridAction: function( event, data ) {
 					// Called when ENTER is pressed in cell-mode.
 					// Return false to prevent default
-					console.log(event.type, data);
+					data.node.debug(event.type, data);
 					if( !data.activeTd ) {
 						alert( "Custom default action for row: " + data.node.title );
+						// we don't return false, so default action is applied:
 					} else if ( data.colIdx === 4 ) {
 						// eslint-disable-next-line no-alert
 						alert( "Custom default action: " + data.node.title );
@@ -162,9 +181,9 @@
 					<option value="start">start</option>
 					<option value="allow" selected="selected">allow</option>
 					<option value="force">force</option>
+					<option value="off">off</option>
 				</select>
 			</label>
-			<label>Extended mode <input type="checkbox" name="extendedMode"></label>
 			(Please reload page for changes to take effect.)
 		</form>
 		<hr>
@@ -201,6 +220,8 @@
 	</div>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
+	<p id="sampleButtons">
+	</p>
 	<hr>
 	<p class="sample-links  no_code">
 		<a class="hideInsideFS" href="https://github.com/mar10/fancytree">jquery.fancytree.js project home</a>

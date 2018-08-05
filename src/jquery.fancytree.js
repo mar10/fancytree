@@ -1893,8 +1893,11 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	},
 
 	/**Activate this node.
+	 *
+	 * The `cell` option requires the ext-table and ext-ariagrid extensions.
+	 *
 	 * @param {boolean} [flag=true] pass false to deactivate
-	 * @param {object} [opts] additional options. Defaults to {noEvents: false, noFocus: false}
+	 * @param {object} [opts] additional options. Defaults to {noEvents: false, noFocus: false, cell: null}
 	 * @returns {$.Promise}
 	 */
 	setActive: function(flag, opts){
@@ -4839,7 +4842,13 @@ $.extend(Fancytree.prototype,
 			}
 		}
 	},
-	/** Widget option was set using `$().fancytree("option", "foo", "bar")`.
+	/** Widget option was set using `$().fancytree("option", "KEY", VALUE)`.
+	 *
+	 * Note: `key` may reference a nested option, e.g. 'dnd5.scroll'.
+	 * In this case `value`contains the complete, modified `dnd5` option hash.
+	 * We can check for changed values like
+	 *     if( value.scroll !== tree.options.dnd5.scroll ) {...}
+	 *
 	 * @param {EventData} ctx
 	 * @param {string} key option name
 	 * @param {any} value option value
@@ -5067,7 +5076,7 @@ $.widget("ui.fancytree",
 		this._bind();
 	},
 
-	/* Use the _setOption method to respond to changes to options */
+	/* Use the _setOption method to respond to changes to options. */
 	_setOption: function(key, value) {
 		return this.tree._callHook("treeSetOption", this.tree, key, value);
 	},
