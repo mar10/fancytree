@@ -186,12 +186,12 @@ function activateEmbeddedLink( $td ) {
  * See also FancytreeNode#setActive(flag, {cell: idx})
  *
  * @param {jQuery | Element | integer} [$td]
- * @param {bool|null} [editMode=null]
+ * @param {Event|null} [orgEvent=null]
  * @alias Fancytree#activateCell
  * @requires jquery.fancytree.ariagrid.js
  * @since 2.23
 */
-$.ui.fancytree._FancytreeClass.prototype.activateCell = function( $td, editMode ) {
+$.ui.fancytree._FancytreeClass.prototype.activateCell = function( $td, orgEvent ) {
 	var colIdx, $input, $tr, res,
 		tree = this,
 		$prevTd = this.$activeTd || null,
@@ -201,17 +201,17 @@ $.ui.fancytree._FancytreeClass.prototype.activateCell = function( $td, editMode 
 		$prevTr = $prevTd ? $prevTd.closest( "tr" ) : null;
 
 	anyNode.debug( "activateCell(" + ( $prevTd ? $prevTd.text() : "null" ) +
-		" -> " + ( $td ? $td.text() : "OFF" ) + ", editMode=" + editMode );
+		" -> " + ( $td ? $td.text() : "OFF" ) );
 
 	// Make available as event
 
 	if ( $td ) {
 		FT.assert( $td.length, "Invalid active cell" );
 		colIdx = getColIdx( $( newNode.tr ), $td );
-		res = this._triggerNodeEvent( "activateCell", newNode, event, {
+		res = this._triggerNodeEvent( "activateCell", newNode, orgEvent, {
 			activeTd: tree.$activeTd,
 			colIdx: colIdx,
-			mode: editMode ? "cell-edit" : "cell-nav"
+			mode: null  // editMode ? "cell-edit" : "cell-nav"
 		});
 		if ( res === false ) {
 			return false;
@@ -249,7 +249,7 @@ $.ui.fancytree._FancytreeClass.prototype.activateCell = function( $td, editMode 
 			setActiveDescendant( this, $td );
 		}
 	} else {
-		res = this._triggerNodeEvent( "activateCell", prevNode, event, {
+		res = this._triggerNodeEvent( "activateCell", prevNode, orgEvent, {
 			activeTd: null,
 			colIdx: null,
 			mode: "row"
