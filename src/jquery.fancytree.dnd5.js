@@ -613,6 +613,10 @@ $.ui.fancytree.registerExtension({
 					break;
 
 				case "dragover":
+					if( !node ) {
+						tree.debug("Ignore non-node " + event.type + ": " + event.target.tagName + "." + event.target.className);
+						break;
+					}
 					// The dragover event is fired when an element or text
 					// selection is being dragged over a valid drop target
 					// (every few hundred milliseconds).
