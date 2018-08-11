@@ -2540,7 +2540,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	},
 	/** Enable (or disable) the tree control.
 	 *
-	 * @param {boolean} flag
+	 * @param {boolean} [flag=true] pass false to disable
 	 * @since 2.30
 	 */
 	enable: function(flag){
@@ -2572,6 +2572,23 @@ Fancytree.prototype = /** @lends Fancytree# */{
 			this.debug("enableUpdate(false)...");
 		}
 		return !flag; // return previous value
+	},
+	/** Expand (or collapse) all parent nodes.
+	 *
+	 * This convenience method uses `tree.visit()` and `tree.setExpanded()`
+	 * internally.
+	 *
+	 * @param {boolean} [flag=true] pass false to collapse
+	 * @param {object} [opts] passed to setExpanded()
+	 * @since 2.30
+	 */
+	expandAll: function(flag, opts){
+		flag = (flag !== false);
+		this.visit(function(node){
+			if( node.hasChildren() !== false && node.isExpanded() !== flag ) {
+				node.setExpanded(flag, opts);
+			}
+		});
 	},
 	/**Find all nodes that matches condition.
 	 *

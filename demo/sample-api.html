@@ -71,18 +71,14 @@ $(function(){
 		label: "Expand all",
 		newline: false,
 		code: function(){
-			$("#tree").fancytree("getTree").visit(function(node){
-				node.setExpanded();
-			});
+			$("#tree").fancytree("getTree").expandAll();
 		}
 	});
 	addSampleButton({
 		label: "Collapse all",
 		newline: false,
 		code: function(){
-			$("#tree").fancytree("getTree").visit(function(node){
-				node.setExpanded(false);
-			});
+			$("#tree").fancytree("getTree").expandAll(false);
 		}
 	});
 	addSampleButton({
