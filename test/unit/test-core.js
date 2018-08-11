@@ -865,7 +865,7 @@ QUnit.test("multi select", function(assert) {
 	assert.equal($result.find("input[type=radio]").length, 1,
 		"only active node created");
 	assert.equal($result.find("input[type=checkbox]").length, 0,
-		"disable generation of selcted nodes");
+		"disable generation of selected nodes");
 
 	tree.generateFormElements(true, false);
 
