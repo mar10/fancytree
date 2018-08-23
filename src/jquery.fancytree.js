@@ -2770,9 +2770,18 @@ Fancytree.prototype = /** @lends Fancytree# */{
 		return this.focusNode;
 	},
 	/**
+	 * Return current option value.
+	 * (Note: this is the preferred variant of `$().fancytree("option", "KEY")`)
+	 *
+	 * @param {string} name option name (may contain '.')
+	 * @returns {any}
+	 */
+	getOption: function(optionName) {
+		return this.widget.option(optionName);
+	},
+	/**
 	 * Return node with a given key or null if not found.
 	 *
-	 * Not
 	 * @param {string} key
 	 * @param {FancytreeNode} [searchRoot] only search below this node
 	 * @returns {FancytreeNode | null}
@@ -3084,6 +3093,15 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	 */
 	setFocus: function(flag) {
 		return this._callHook("treeSetFocus", this, flag);
+	},
+	/**
+	 * Set current option value.
+	 * (Note: this is the preferred variant of `$().fancytree("option", "KEY", VALUE)`)
+	 * @param {string} name option name (may contain '.')
+	 * @param {any} new value
+	 */
+	setOption: function(optionName, value) {
+		return this.widget.option(optionName, value);
 	},
 	/**
 	 * Return all nodes as nested list of {@link NodeData}.

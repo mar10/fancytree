@@ -77,7 +77,7 @@
 				var value = $( this ).find( ":selected" ).val();
 
 				window.sessionStorage.setItem( "cellFocus", value );
-				$( "#treegrid" ).fancytree("option", "ariagrid.cellFocus", value);
+				$.ui.fancytree.getTree( "#treegrid" ).setOption("ariagrid.cellFocus", value);
 			}).val( window.sessionStorage.getItem( "cellFocus" ) || "allow" );
 
 			// --- Fancytree widget --------------------------------------------

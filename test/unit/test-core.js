@@ -503,7 +503,7 @@ QUnit.test("FancytreeNode class methods", function(assert) {
 
 QUnit.test("Fancytree class methods", function(assert) {
 	tools.setup(assert);
-	assert.expect(15);
+	assert.expect(17);
 
 	$("#tree").fancytree({
 		source: TEST_DATA
@@ -554,6 +554,10 @@ QUnit.test("Fancytree class methods", function(assert) {
 			["10_2", "10_2_1", "10_2_2"], "getSelectedNodes()");
 	assert.deepEqual(tools.getNodeKeyArray(tree.getSelectedNodes(true)),
 			["10_2"], "getSelectedNodes(true)");
+
+	assert.equal(tree.getOption("clickFolderMode"), 4, "getOption()");
+	tree.setOption("someTreeOption", 42);
+	assert.equal(tree.getOption("someTreeOption"), 42, "setOption()");
 
 //  reactivate: function(source) {
 //  reload: function(source) {

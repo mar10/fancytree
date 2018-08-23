@@ -61,7 +61,7 @@ $(function(){
 		}
 	});
 	$("#cbCheckboxes").on("change", function(){
-		$("#tree").fancytree("option", "checkbox", $(this).is(":checked"));
+		$.ui.fancytree.getTree( "#tree" ).setOption("checkbox", $(this).is(":checked"));
 	});
 });
 </script>
