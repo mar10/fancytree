@@ -60,32 +60,25 @@ $(function(){
 		label: "Disable",
 		id: "btnDisable",
 		code: function(){
-			if( $("#tree").fancytree("option", "disabled") ){
-				$("#tree").fancytree("enable");
-				$("#btnDisable").text("Disable");
-			}else{
-				$("#tree").fancytree("disable");
-				$("#btnDisable").text("Enable");
-			}
+			var tree = $("#tree").fancytree("getTree"),
+				wasEnabled = !tree.options.disabled;
 
+			tree.enable(!wasEnabled);
+			$("#btnDisable").text(wasEnabled ? "Enable" : "Disable");
 		}
 	});
 	addSampleButton({
 		label: "Expand all",
 		newline: false,
 		code: function(){
-			$("#tree").fancytree("getTree").visit(function(node){
-				node.setExpanded();
-			});
+			$("#tree").fancytree("getTree").expandAll();
 		}
 	});
 	addSampleButton({
 		label: "Collapse all",
 		newline: false,
 		code: function(){
-			$("#tree").fancytree("getTree").visit(function(node){
-				node.setExpanded(false);
-			});
+			$("#tree").fancytree("getTree").expandAll(false);
 		}
 	});
 	addSampleButton({

@@ -2538,8 +2538,18 @@ Fancytree.prototype = /** @lends Fancytree# */{
 			consoleApply("log", arguments);
 		}
 	},
-	// TODO: disable()
-	// TODO: enable()
+	/** Enable (or disable) the tree control.
+	 *
+	 * @param {boolean} [flag=true] pass false to disable
+	 * @since 2.30
+	 */
+	enable: function(flag){
+		if( flag === false ) {
+			this.widget.disable();
+		} else {
+			this.widget.enable();
+		}
+	},
 	/** Temporarily suppress rendering to improve performance on bulk-updates.
 	 *
 	 * @param {boolean} flag
@@ -2562,6 +2572,23 @@ Fancytree.prototype = /** @lends Fancytree# */{
 			this.debug("enableUpdate(false)...");
 		}
 		return !flag; // return previous value
+	},
+	/** Expand (or collapse) all parent nodes.
+	 *
+	 * This convenience method uses `tree.visit()` and `tree.setExpanded()`
+	 * internally.
+	 *
+	 * @param {boolean} [flag=true] pass false to collapse
+	 * @param {object} [opts] passed to setExpanded()
+	 * @since 2.30
+	 */
+	expandAll: function(flag, opts){
+		flag = (flag !== false);
+		this.visit(function(node){
+			if( node.hasChildren() !== false && node.isExpanded() !== flag ) {
+				node.setExpanded(flag, opts);
+			}
+		});
 	},
 	/**Find all nodes that matches condition.
 	 *
@@ -2743,9 +2770,18 @@ Fancytree.prototype = /** @lends Fancytree# */{
 		return this.focusNode;
 	},
 	/**
+	 * Return current option value.
+	 * (Note: this is the preferred variant of `$().fancytree("option", "KEY")`)
+	 *
+	 * @param {string} name option name (may contain '.')
+	 * @returns {any}
+	 */
+	getOption: function(optionName) {
+		return this.widget.option(optionName);
+	},
+	/**
 	 * Return node with a given key or null if not found.
 	 *
-	 * Not
 	 * @param {string} key
 	 * @param {FancytreeNode} [searchRoot] only search below this node
 	 * @returns {FancytreeNode | null}
@@ -3057,6 +3093,15 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	 */
 	setFocus: function(flag) {
 		return this._callHook("treeSetFocus", this, flag);
+	},
+	/**
+	 * Set current option value.
+	 * (Note: this is the preferred variant of `$().fancytree("option", "KEY", VALUE)`)
+	 * @param {string} name option name (may contain '.')
+	 * @param {any} new value
+	 */
+	setOption: function(optionName, value) {
+		return this.widget.option(optionName, value);
 	},
 	/**
 	 * Return all nodes as nested list of {@link NodeData}.

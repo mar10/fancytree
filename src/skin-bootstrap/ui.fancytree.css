@@ -321,6 +321,7 @@ ul.fancytree-container.fancytree-rtl.fancytree-no-connector > li {
  *----------------------------------------------------------------------------*/
 table.fancytree-ext-table {
   border-collapse: collapse;
+  /* ext-ariagrid */
 }
 table.fancytree-ext-table span.fancytree-node {
   display: inline-block;
@@ -333,6 +334,15 @@ table.fancytree-ext-table td.fancytree-status-merged {
 }
 table.fancytree-ext-table tr.fancytree-statusnode-error td.fancytree-status-merged {
   color: #d9534f;
+}
+table.fancytree-ext-table.fancytree-ext-ariagrid.fancytree-cell-mode > tbody > tr.fancytree-active > td {
+  background-color: #eee;
+}
+table.fancytree-ext-table.fancytree-ext-ariagrid.fancytree-cell-mode > tbody > tr > td.fancytree-active-cell {
+  background-color: #cbe8f6;
+}
+table.fancytree-ext-table.fancytree-ext-ariagrid.fancytree-cell-mode.fancytree-cell-nav-mode > tbody > tr > td.fancytree-active-cell {
+  background-color: #3875d7;
 }
 /*------------------------------------------------------------------------------
  * 'columnview' extension
