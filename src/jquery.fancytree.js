@@ -833,6 +833,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			}
 		});
 		this.fixSelection3FromEndNodes(callOpts);
+		this._changeSelectStatusAttrs(flag);
 	},
 	/**
 	 * Fix selection status for multi-hier mode.
