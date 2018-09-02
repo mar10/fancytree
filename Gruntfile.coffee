@@ -237,11 +237,11 @@ module.exports = (grunt) ->
             src: [ "src/jquery.fancytree.ariagrid.js" ]
 
     exec:
-        tabfix:
-            # Cleanup whitespace according to http://contribute.jquery.org/style-guide/js/
-            # (requires https://github.com/mar10/tabfix)
-#              cmd: "tabfix -t --line=UNIX -r -m*.js,*.css,*.html,*.json -inode_modules src demo test"
-            cmd: "tabfix -t -r -m*.js,*.css,*.html,*.json -inode_modules src demo test"
+#         tabfix:
+#             # Cleanup whitespace according to http://contribute.jquery.org/style-guide/js/
+#             # (requires https://github.com/mar10/tabfix)
+# #              cmd: "tabfix -t --line=UNIX -r -m*.js,*.css,*.html,*.json -inode_modules src demo test"
+#             cmd: "tabfix -t -r -m*.js,*.css,*.html,*.json -inode_modules src demo test"
         upload:
             # FTP upload the demo files (requires https://github.com/mar10/pyftpsync)
             stdin: true  # Allow interactive console
@@ -490,7 +490,7 @@ module.exports = (grunt) ->
 
   grunt.registerTask "server", ["connect:forever"]
   grunt.registerTask "dev", ["connect:dev", "watch"]
-  grunt.registerTask "tabfix", ["exec:tabfix"]
+  # grunt.registerTask "tabfix", ["exec:tabfix"]
   grunt.registerTask "test", [
       "jshint:beforeConcat",
       "eslint:dev",
@@ -535,7 +535,7 @@ module.exports = (grunt) ->
       ]
 
   grunt.registerTask "make_dist", [
-      "exec:tabfix"
+      # "exec:tabfix"
       "build"
       "clean:dist"
       "copy:dist"
