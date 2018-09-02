@@ -1,5 +1,5 @@
 /*!
- * jquery.fancytree.debug.js
+ * jquery.fancytree.logger.js
  *
  * Miscellaneous debug extensions.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.29.1
- * @date 2018-06-27T18:51:43Z
+ * @version 2.30.0
+ * @date 2018-09-02T15:42:49Z
  */
 
 ;(function( factory ) {
@@ -47,8 +47,8 @@ for(i=0; i<EVENT_NAMES.length; i++){ EVENT_NAME_MAP[EVENT_NAMES[i]] = true; }
  * Extension code
  */
 $.ui.fancytree.registerExtension({
-	name: "debug",
-	version: "2.29.1",
+	name: "logger",
+	version: "2.30.0",
 	// Default options for this extension.
 	options: {
 		logTarget: null,   // optional redirect logging to this <div> tag
