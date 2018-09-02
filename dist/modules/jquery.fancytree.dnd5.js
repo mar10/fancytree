@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.29.1
- * @date 2018-06-27T18:51:43Z
+ * @version 2.30.0
+ * @date 2018-09-02T15:42:49Z
  */
 
 
@@ -332,7 +332,7 @@ function getDropEffect(event, data) {
 
 $.ui.fancytree.registerExtension({
 	name: "dnd5",
-	version: "2.29.1",
+	version: "2.30.0",
 	// Default options for this extension.
 	options: {
 		autoExpandMS: 1500,          // Expand nodes after n milliseconds of hovering
@@ -613,6 +613,10 @@ $.ui.fancytree.registerExtension({
 					break;
 
 				case "dragover":
+					if( !node ) {
+						tree.debug("Ignore non-node " + event.type + ": " + event.target.tagName + "." + event.target.className);
+						break;
+					}
 					// The dragover event is fired when an element or text
 					// selection is being dragged over a valid drop target
 					// (every few hundred milliseconds).
