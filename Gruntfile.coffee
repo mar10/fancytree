@@ -233,6 +233,9 @@ module.exports = (grunt) ->
         dist:
             src: "dist/jquery.js"
         dev:
+            options:
+                fix: false
+                maxWarnings: 100
             src: [
               "src/jquery.fancytree.js"
               "src/jquery.fancytree.*.js"

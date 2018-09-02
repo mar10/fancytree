@@ -5,10 +5,16 @@
 #   It is also the prettier's default
 # - Double quotes are default in prettier and mandatory in Black
 # - Trailing comma produces smaller diffs
+# BUT:
+# As a first step, we keep the current whitespace setting:
+# - use tabs
+# - tabWitdh 4
 
 printWidth: 80
-useTabs: false
-tabWidth: 2
+useTabs: true
+tabWidth: 4
+# useTabs: false
+# tabWidth: 2
 semi: true
 singleQuote: false
 trailingComma: "es5"
