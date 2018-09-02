@@ -1,4 +1,7 @@
-# 2.30.0-0 / Unreleased
+# 2.30.1-0 / Unreleased
+  *
+
+# 2.30.0 / 2018-09-02
   * [Changed] ext-edit trigger 'clickActive' now only triggers if no modifier keys
     (shift, meta, control, ...) are pressed.<br>
     Trigger 'shift+click' now only triggers if no other modifier key (control, ...)
