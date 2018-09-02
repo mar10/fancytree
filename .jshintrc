@@ -1,6 +1,8 @@
 
 {
-	"bitwise": true,
+	"-W014": true,  // Misleading line break before '?'
+
+  "bitwise": true,
 	"camelcase": true,
 	"curly": true,
 	"eqeqeq": true,
@@ -11,7 +13,7 @@
 	"noarg": true,
 	"nonew": true,
 	"onevar": true,
-	"quotmark": "double",
+	// "quotmark": "double",
 	"trailing": true,
 	"undef": true,
 	"unused": "vars",
