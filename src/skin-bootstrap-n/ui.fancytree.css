@@ -320,6 +320,8 @@ ul.fancytree-container.fancytree-rtl.fancytree-no-connector > li {
  * 'table' extension
  *----------------------------------------------------------------------------*/
 table.fancytree-ext-table {
+  font-family: tahoma, arial, helvetica;
+  font-size: 10pt;
   border-collapse: collapse;
   /* ext-ariagrid */
 }

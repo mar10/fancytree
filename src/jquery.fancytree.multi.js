@@ -47,7 +47,7 @@ $.ui.fancytree.registerExtension({
 	// Default options for this extension.
 	options: {
 		allowNoSelect: false,  //
-		mode: "sameParent",    //
+		mode: "sameParent"    //
 		// Events:
 		// beforeSelect: $.noop  // Return false to prevent cancel/save (data.input is available)
 	},
