@@ -1811,9 +1811,10 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			// Make sure we have a jQuery object
 			$scrollParent = $($scrollParent);
 		}
-		if( $scrollParent[0] === document ) {
+		if( $scrollParent[0] === document || $scrollParent[0] === document.body ) {
 			// `document` may returned by $().scrollParent(), if nothing is found,
-			// but would not work:
+			// but would not work: (see #894)
+			this.debug("scrollIntoView(): normalizing scrollParent to 'window':", $scrollParent[0]);
 			$scrollParent = $(window);
 		}
 

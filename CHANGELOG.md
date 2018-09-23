@@ -1,5 +1,5 @@
 # 2.30.1-0 / Unreleased
-  *
+  * [Fixed] #894: Fancytree assertion failed: scrollParent should be a simple element or `window`, not document or body.
 
 # 2.30.0 / 2018-09-02
   * [Changed] ext-edit trigger 'clickActive' now only triggers if no modifier keys
