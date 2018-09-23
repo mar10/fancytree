@@ -361,7 +361,8 @@ module.exports = (grunt) ->
                   { browserName: "chrome", version: "dev", platform: "Windows 10" }
                   { browserName: "chrome", version: "latest", platform: "Windows 10" }
                   { browserName: "chrome", version: "latest-1", platform: "Windows 10" }
-                  { browserName: "firefox", version: "dev", platform: "Windows 10" }
+                  # FF.dev is problematic: https://support.saucelabs.com/hc/en-us/articles/225253808-Firefox-Dev-Beta-Browser-Won-t-Start
+                  # { browserName: "firefox", version: "dev", platform: "Windows 10" }
                   { browserName: "firefox", version: "latest", platform: "Windows 10" }
                   { browserName: "firefox", version: "latest-1", platform: "Windows 10" }
                   { browserName: "firefox", version: "latest", platform: "Linux" }
