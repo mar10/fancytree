@@ -371,6 +371,7 @@ module.exports = (grunt) ->
                   { browserName: "safari", version: "9", platform: "OS X 10.11" }
                   { browserName: "safari", version: "10", platform: "OS X 10.12" }
                   { browserName: "safari", version: "11", platform: "OS X 10.13" }
+                  # { browserName: "safari", version: "12", platform: "OS X 10.14" }
                 ]
         ui_111:
             options:
@@ -381,7 +382,7 @@ module.exports = (grunt) ->
                 browsers: [
                   { browserName: "internet explorer", version: "10", platform: "Windows 8" }
                   # Issue #842:
-                  { browserName: "safari", version: "7", platform: "OS X 10.9" }
+                  # { browserName: "safari", version: "7", platform: "OS X 10.9" }
                   { browserName: "safari", version: "8", platform: "OS X 10.10" }
                 ]
         ui_110:
