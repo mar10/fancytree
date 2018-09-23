@@ -4396,7 +4396,7 @@ $.extend(Fancytree.prototype,
 						// Since jQuery UI 1.12, the blind effect requires the parent
 						// element to have 'position: relative'.
 						// See #716, #717
-						tree.debug("use specified effect (" + effect.effect + ") with the jqueryui.toggle method");
+						// tree.debug("use specified effect (" + effect.effect + ") with the jqueryui.toggle method");
 
 						// try to stop an animation that might be already in progress
 						$(node.ul).stop(true, true); //< does not work after resetLazy has been called for a node whose animation wasn't complete and effect was "blind"
@@ -4405,7 +4405,7 @@ $.extend(Fancytree.prototype,
 						$(node.ul).parent().find(".ui-effects-placeholder").remove();
 
 						$(node.ul).toggle(effect.effect, effect.options, effect.duration, function() {
-							node.info("fancytree-animating end: " + node.li.className);
+							// node.debug("fancytree-animating end: " + node.li.className);
 							$(this).removeClass(cn.animating);  // #716
 							$(node.li).removeClass(cn.animating);  // #717
 							callback();
@@ -4417,7 +4417,7 @@ $.extend(Fancytree.prototype,
 						$(node.ul)[effect.effect]({
 							duration: effect.duration,
 							always: function() {
-										node.info("fancytree-animating end: " + node.li.className);
+										// node.debug("fancytree-animating end: " + node.li.className);
 										$(this).removeClass(cn.animating);  // #716
 										$(node.li).removeClass(cn.animating);  // #717
 										callback();
