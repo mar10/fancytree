@@ -2430,7 +2430,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	 * @param {string} [message] optional error message (defaults to a descriptve error message)
 	 */
 	_requireExtension: function(name, required, before, message) {
-		before = !!before;
+		if( before != null ) { before = !!before; }
 		var thisName = this._local.name,
 			extList = this.options.extensions,
 			isBefore = $.inArray(name, extList) < $.inArray(thisName, extList),
