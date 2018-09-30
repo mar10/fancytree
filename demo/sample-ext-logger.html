@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+	<title>Fancytree - Example: Logger</title>
+
+	<script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+	<script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
+	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet">
+	<script src="../src/jquery.fancytree.js"></script>
+	<script src="../src/jquery.fancytree.logger.js"></script>
+	<script src="../src/jquery.fancytree.persist.js"></script>
+
+	<!-- Start_Exclude: This block is not part of the sample code -->
+	<link href="../lib/prettify.css" rel="stylesheet">
+	<script src="../lib/prettify.js"></script>
+	<link href="sample.css" rel="stylesheet">
+	<script src="sample.js"></script>
+	<!-- End_Exclude -->
+
+<style type="text/css">
+</style>
+
+<!-- Add code to initialize the tree when the document is loaded: -->
+<script type="text/javascript">
+	$(function(){
+		// Attach the fancytree widget to an existing <div id="tree"> element
+		// and pass the tree options as an argument to the fancytree() function:
+		$("#tree").fancytree({
+			extensions: ["persist", "logger"],
+			checkbox: true,
+			selectMode: 3,
+			source: {url: "ajax-tree-products.json"},
+			logger: {
+			},
+			ajax: {
+				// debugDelay: [200, 1000]  // don't use this in production code
+			},
+			init: function(event, data) {
+			},
+			lazyLoad: function(event, data) {
+				data.result = {url: "ajax-sub2.json"};
+			}
+		});
+		var tree = $("#tree").fancytree("getTree");
+
+		addSampleButton({
+			label: "Reset Cookie",
+			newline: false,
+			code: function(){
+				tree.clearPersistData();
+			}
+		});
+
+	});
+</script>
+</head>
+<body class="example">
+	<h1>Example: 'logger' extension</h1>
+	<div class="description">
+		<p>
+			Log misc. events (useful for debugging).
+		</p>
+		<p>
+			Hit <kbd>F12</kbd> to open the browser's console.
+		</p>
+	</div>
+
+	<div>
+		<label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
+	</div>
+
+	<p id="sampleButtons">
+	</p>
+
+	<!-- Add a <table> element where the tree should appear: -->
+	<div id="tree">
+	</div>
+
+	<!-- Start_Exclude: This block is not part of the sample code -->
+	<hr>
+	<p class="sample-links  no_code">
+		<a class="hideInsideFS" href="https://github.com/mar10/fancytree">jquery.fancytree.js project home</a>
+		<a class="hideOutsideFS" href="#">Link to this page</a>
+		<a class="hideInsideFS" href="index.html">Example Browser</a>
+		<a href="#" id="codeExample">View source code</a>
+	</p>
+	<pre id="sourceCode" class="prettyprint" style="display:none"></pre>
+	<!-- End_Exclude -->
+</body>
+</html>
