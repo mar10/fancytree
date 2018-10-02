@@ -5681,7 +5681,7 @@ $.extend($.ui.fancytree,
 		this.warn("keyEventToString() is deprecated: use eventToString()");
 		return this.eventToString(event);
 	},
-	/** Return a wrapped handler method, that provides `this.super`.
+	/** Return a wrapped handler method, that provides `this._super`.
 	 *
 	 * @example
 		// Implement `opts.createNode` event to add the 'draggable' attribute
@@ -5695,20 +5695,21 @@ $.extend($.ui.fancytree,
 	 * @param {object} instance
 	 * @param {string} methodName
 	 * @param {function} handler
+	 * @param {object} [self] optional context
 	 */
-	overrideMethod: function(instance, methodName, handler){
+	overrideMethod: function(instance, methodName, handler, self){
 		var prevSuper,
 			_super = instance[methodName] || $.noop;
 
-		// context = context || this;
+		self = self || this;
 
 		instance[methodName] = function() {
 			try {
-				prevSuper = this._super;
-				this._super = _super;
-				return handler.apply(this, arguments);
+				prevSuper = self._super;
+				self._super = _super;
+				return handler.apply(self, arguments);
 			} finally {
-				this._super = prevSuper;
+				self._super = prevSuper;
 			}
 		};
 	},

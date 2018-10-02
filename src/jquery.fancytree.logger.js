@@ -35,8 +35,10 @@
  */
 var i,
 	FT = $.ui.fancytree,
+	PREFIX = "ft-logger: ",
+	logLine = window.console.log,
 	HOOK_NAMES = "nodeClick nodeCollapseSiblings".split(" "),
-	TREE_EVENT_NAMES = "blurTree create init focusTree restore".split(" "),
+	TREE_EVENT_NAMES = "beforeRestore blurTree create init focusTree restore".split(" "),
 	NODE_EVENT_NAMES = "activate beforeActivate beforeExpand beforeSelect blur click collapse createNode dblclick deactivate expand enhanceTitle focus keydown keypress lazyLoad loadChildren loadError modifyChild postProcess renderNode renderTitle select".split(" "),
 	EVENT_NAMES = TREE_EVENT_NAMES.concat(NODE_EVENT_NAMES),
 	HOOK_NAME_MAP = {},
@@ -64,49 +66,59 @@ function getBrowserInfo() {
 
 function logEvent(event, data) {
 	var res,
-		logName = "event." + event.type,
+		/* jshint validthis: true */
+		self = this,
+		// logName = PREFIX + "event." + event.type,
 		opts = data.options.logger,
-		obj = data.node || data.tree;
+		tree = data.tree,
+		// widget = data.widget,
+		obj = data.node || tree,
+		logName = PREFIX + "event." + event.type + " (" + obj + ")";
 
 	if( !opts.traceEvents || (opts.traceEvents !== true && $.inArray(name, opts.traceEvents) < 0) ) {
-		return;
+		return self._super.apply(self, arguments);
 	}
-	if( opts.timings === true || (opts.timings && $.inArray(name, opts.timings) >= 0 ) ) {
+	if( self._super && opts.timings === true || (opts.timings && $.inArray(name, opts.timings) >= 0 ) ) {
 		// if( name === "nodeRender" ) { logName += obj; }  // allow timing for recursive calls
-		logName += " (" + obj + ")";
+		// logName += " (" + obj + ")";
 		window.console.time(logName);
-		res = self._super.apply(this, arguments);
+		res = self._super.apply(self, arguments);
 		window.console.timeEnd(logName);
 	} else {
-		obj.info(logName, data);
+		// obj.info(logName, data);
+		logLine(logName, event, data);
+		res = self._super.apply(self, arguments);
 	}
+	return res;
 }
 
 function logHook(name, self, args, extra) {
 	var res,
-		logName = "hook." + name,
 		ctx = args[0],
 		opts = ctx.options.logger,
-		obj = ctx.node || ctx.tree;
+		obj = ctx.node || ctx.tree,
+		logName = PREFIX + "hook." + name + " (" + obj + ")";
 
 	if( !opts.traceHooks || (opts.traceHooks !== true && $.inArray(name, opts.traceHooks) < 0) ) {
 		return self._superApply.call(self, args);
 	}
 	if( opts.timings === true || (opts.timings && $.inArray(name, opts.timings) >= 0 ) ) {
 		// if( name === "nodeRender" ) { logName += obj; }  // allow timing for recursive calls
-		logName += " (" + obj + ")";
+		// logName += " (" + obj + ")";
 		window.console.time(logName);
 		res = self._superApply.call(self, args);
 		window.console.timeEnd(logName);
-		return res;
 	} else {
 		if( extra ) {
-			obj.info(logName, extra, ctx);
+			// obj.info(logName, extra, ctx);
+			logLine(logName, extra, ctx);
 		} else {
-			obj.info(logName, ctx);
+			// obj.info(logName, ctx);
+			logLine(logName, ctx);
 		}
-		return self._superApply.call(self, args);
+		res = self._superApply.call(self, args);
 	}
+	return res;
 }
 
 
@@ -120,35 +132,40 @@ $.ui.fancytree.registerExtension({
 	options: {
 		logTarget: null,   // optional redirect logging to this <div> tag
 		traceEvents: true, // `true`or list of hook names
+		traceUnhandledEvents: false,
 		traceHooks: false,  // `true`or list of event names
 		timings: false  // `true`or list of event names
 	},
 	// Overide virtual methods for this extension.
 	// `this`       : is this Fancytree object
 	// `this._super`: the virtual function that was overridden (member of prev. extension or Fancytree)
-	treeInit: function(ctx) {
+	treeCreate: function(ctx) {
+		var tree = ctx.tree,
+			opts = ctx.options;
+
 		if( this.options.extensions[this.options.extensions.length-1] !== "logger" ) {
 			throw "Fancytree 'logger' extension must be listed as last entry.";
 		}
-		ctx.tree.warn("Fancytree logger extension is enabled (this may be slow).", ctx.options.logger);
+		tree.warn("Fancytree logger extension is enabled (this may be slow).", opts.logger);
 
-		console.info("Fancytree v" + $.ui.fancytree.version + ", buildType='" + $.ui.fancytree.buildType + "'");
-		console.info("jQuery UI " + jQuery.ui.version + " (uiBackCompat=" + $.uiBackCompat + ")");
-		console.info("jQuery " + jQuery.fn.jquery);
-		console.info("Browser: " + getBrowserInfo());
+		tree.debug("Fancytree v" + $.ui.fancytree.version + ", buildType='" + $.ui.fancytree.buildType + "'");
+		tree.debug("jQuery UI " + jQuery.ui.version + " (uiBackCompat=" + $.uiBackCompat + ")");
+		tree.debug("jQuery " + jQuery.fn.jquery);
+		tree.debug("Browser: " + getBrowserInfo());
 
+		function _log(event, data) {
+			logLine(PREFIX + "event." + event.type + " (unhandled)", event, data);
+		}
 		$.each(EVENT_NAMES, function(i, name){
-			// ctx.tree.overrideMethod(ctx.tree, name, logEvent);
-			$.ui.fancytree.overrideMethod(ctx.options, name, logEvent);
-			// $.ui.fancytree.overrideMethod(ctx.options, "createNode", function(event, data) {
-			// 	// Default processing if any
-			// 	this._super.apply(this, arguments);
-			// 	// Add 'draggable' attribute
-			// 	data.node.span.draggable = true;
-			// });
+			if( typeof opts[name] === "function" ) {
+				// tree.info(PREFIX + "override '" + name + "' event");
+				$.ui.fancytree.overrideMethod(opts, name, logEvent, ctx.widget);
+			} else if ( opts.logger.traceUnhandledEvents ) {
+				opts[name] = _log;
+			}
 		});
 
-		return logHook("treeInit", this, arguments);
+		return logHook("treeCreate", this, arguments);
 	},
 	nodeClick: function(ctx) {
 		return logHook("nodeClick", this, arguments, FT.eventToString(ctx.originalEvent));
@@ -204,11 +221,14 @@ $.ui.fancytree.registerExtension({
 	treeClear: function(ctx) {
 		return logHook("treeClear", this, arguments);
 	},
-	treeCreate: function(ctx) {
-		return logHook("treeCreate", this, arguments);
-	},
+	// treeCreate: function(ctx) {
+	// 	return logHook("treeCreate", this, arguments);
+	// },
 	treeDestroy: function(ctx) {
 		return logHook("treeDestroy", this, arguments);
+	},
+	treeInit: function(ctx) {
+		return logHook("treeInit", this, arguments);
 	},
 	treeLoad: function(ctx, source) {
 		return logHook("treeLoad", this, arguments);

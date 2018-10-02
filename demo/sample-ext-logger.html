@@ -28,16 +28,20 @@
 		// Attach the fancytree widget to an existing <div id="tree"> element
 		// and pass the tree options as an argument to the fancytree() function:
 		$("#tree").fancytree({
+			// extensions: ["logger"],
 			extensions: ["persist", "logger"],
 			checkbox: true,
 			selectMode: 3,
 			source: {url: "ajax-tree-products.json"},
+			ajax: {debugDelay: 1000},
 			logger: {
-			},
-			ajax: {
-				// debugDelay: [200, 1000]  // don't use this in production code
+				// traceEvents: true,
+				traceUnhandledEvents: true,
+    			// // traceHooks: true,  // ["treeCreate", "treeInit"],
+			    // timings: true
 			},
 			init: function(event, data) {
+				data.tree.info("Got init");
 			},
 			lazyLoad: function(event, data) {
 				data.result = {url: "ajax-sub2.json"};
