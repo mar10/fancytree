@@ -1811,9 +1811,10 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			// Make sure we have a jQuery object
 			$scrollParent = $($scrollParent);
 		}
-		if( $scrollParent[0] === document ) {
+		if( $scrollParent[0] === document || $scrollParent[0] === document.body ) {
 			// `document` may returned by $().scrollParent(), if nothing is found,
-			// but would not work:
+			// but would not work: (see #894)
+			this.debug("scrollIntoView(): normalizing scrollParent to 'window':", $scrollParent[0]);
 			$scrollParent = $(window);
 		}
 
@@ -2429,7 +2430,7 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	 * @param {string} [message] optional error message (defaults to a descriptve error message)
 	 */
 	_requireExtension: function(name, required, before, message) {
-		before = !!before;
+		if( before != null ) { before = !!before; }
 		var thisName = this._local.name,
 			extList = this.options.extensions,
 			isBefore = $.inArray(name, extList) < $.inArray(thisName, extList),
@@ -4395,7 +4396,7 @@ $.extend(Fancytree.prototype,
 						// Since jQuery UI 1.12, the blind effect requires the parent
 						// element to have 'position: relative'.
 						// See #716, #717
-						tree.debug("use specified effect (" + effect.effect + ") with the jqueryui.toggle method");
+						// tree.debug("use specified effect (" + effect.effect + ") with the jqueryui.toggle method");
 
 						// try to stop an animation that might be already in progress
 						$(node.ul).stop(true, true); //< does not work after resetLazy has been called for a node whose animation wasn't complete and effect was "blind"
@@ -4404,7 +4405,7 @@ $.extend(Fancytree.prototype,
 						$(node.ul).parent().find(".ui-effects-placeholder").remove();
 
 						$(node.ul).toggle(effect.effect, effect.options, effect.duration, function() {
-							node.info("fancytree-animating end: " + node.li.className);
+							// node.debug("fancytree-animating end: " + node.li.className);
 							$(this).removeClass(cn.animating);  // #716
 							$(node.li).removeClass(cn.animating);  // #717
 							callback();
@@ -4416,7 +4417,7 @@ $.extend(Fancytree.prototype,
 						$(node.ul)[effect.effect]({
 							duration: effect.duration,
 							always: function() {
-										node.info("fancytree-animating end: " + node.li.className);
+										// node.debug("fancytree-animating end: " + node.li.className);
 										$(this).removeClass(cn.animating);  // #716
 										$(node.li).removeClass(cn.animating);  // #717
 										callback();
@@ -5680,7 +5681,7 @@ $.extend($.ui.fancytree,
 		this.warn("keyEventToString() is deprecated: use eventToString()");
 		return this.eventToString(event);
 	},
-	/** Return a wrapped handler method, that provides `this.super`.
+	/** Return a wrapped handler method, that provides `this._super`.
 	 *
 	 * @example
 		// Implement `opts.createNode` event to add the 'draggable' attribute
@@ -5694,20 +5695,21 @@ $.extend($.ui.fancytree,
 	 * @param {object} instance
 	 * @param {string} methodName
 	 * @param {function} handler
+	 * @param {object} [self] optional context
 	 */
-	overrideMethod: function(instance, methodName, handler){
+	overrideMethod: function(instance, methodName, handler, self){
 		var prevSuper,
 			_super = instance[methodName] || $.noop;
 
-		// context = context || this;
+		self = self || this;
 
 		instance[methodName] = function() {
 			try {
-				prevSuper = this._super;
-				this._super = _super;
-				return handler.apply(this, arguments);
+				prevSuper = self._super;
+				self._super = _super;
+				return handler.apply(self, arguments);
 			} finally {
-				this._super = prevSuper;
+				self._super = prevSuper;
 			}
 		};
 	},

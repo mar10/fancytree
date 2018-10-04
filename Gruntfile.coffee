@@ -374,6 +374,7 @@ module.exports = (grunt) ->
                   { browserName: "chrome", version: "dev", platform: "Windows 10" }
                   { browserName: "chrome", version: "latest", platform: "Windows 10" }
                   { browserName: "chrome", version: "latest-1", platform: "Windows 10" }
+                  # FF.dev is problematic: https://support.saucelabs.com/hc/en-us/articles/225253808-Firefox-Dev-Beta-Browser-Won-t-Start
                   # { browserName: "firefox", version: "dev", platform: "Windows 10" }
                   { browserName: "firefox", version: "latest", platform: "Windows 10" }
                   { browserName: "firefox", version: "latest-1", platform: "Windows 10" }
@@ -384,6 +385,7 @@ module.exports = (grunt) ->
                   { browserName: "safari", version: "9", platform: "OS X 10.11" }
                   { browserName: "safari", version: "10", platform: "OS X 10.12" }
                   { browserName: "safari", version: "11", platform: "OS X 10.13" }
+                  # { browserName: "safari", version: "12", platform: "OS X 10.14" }
                 ]
         ui_111:
             options:
@@ -394,7 +396,7 @@ module.exports = (grunt) ->
                 browsers: [
                   { browserName: "internet explorer", version: "10", platform: "Windows 8" }
                   # Issue #842:
-                  { browserName: "safari", version: "7", platform: "OS X 10.9" }
+                  # { browserName: "safari", version: "7", platform: "OS X 10.9" }
                   { browserName: "safari", version: "8", platform: "OS X 10.10" }
                 ]
         ui_110:
