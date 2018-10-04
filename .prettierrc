@@ -1,0 +1,27 @@
+# Style guide rationale:
+# Width 80 is default (and explicitly recommended) by prettier
+# - 2 space indentation and trailing semicolons seem to be most popular
+#     https://hackernoon.com/what-javascript-code-style-is-the-most-popular-5a3f5bec1f6f
+#   It is also the prettier's default
+# - Double quotes are default in prettier and mandatory in Black
+# - Trailing comma produces smaller diffs
+# BUT:
+# As a first step, we keep the current whitespace setting:
+# - use tabs
+# - tabWitdh 4
+
+printWidth: 80
+useTabs: true
+tabWidth: 4
+# useTabs: false
+# tabWidth: 2
+semi: true
+singleQuote: false
+trailingComma: "es5"
+bracketSpacing: true  # because it's prettier's default
+#requirePragma: true
+
+#overrides:
+#  - files: "*.test.js"
+#    options:
+#      semi: true

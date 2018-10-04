@@ -1,4 +1,5 @@
 # 2.30.1-0 / Unreleased
+  * Apply and enforce 'prettier' codestyle
   * [Fixed] #894: Fancytree assertion failed: scrollParent should be a simple element or `window`, not document or body.
   * [Fixed] #896 _requireExtension: order managment
   * [Changed] #897 Set font for table extension
@@ -19,7 +20,6 @@
   * [Fixed] #863 setActive() sometimes does not scroll node into view
   * [Fixed] #877 postProcess may now also return the object form `{..., children: []}`
   * [Fixed] #884 ReferenceError: jQuery is not defined at _simpleDeepMerge
-    (before, only an array `[...]` was handled correctly).
   * [Fixed] autoScroll, node.scrollIntoView(), and .makeVisible() now work for tables as well.
   * [Changed] #879 Rename ext-debug to ext-logger
     (jquery.fancytree.debug.js => jquery.fancytree.logger.js)
