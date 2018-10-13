@@ -65,8 +65,6 @@
 
 		tree.$container.attr("aria-activedescendant", id);
 	}
-})(function($) {
-	"use strict";
 
 	/* Calculate TD column index (considering colspans).*/
 	function getColIdx($tr, $td) {
@@ -420,8 +418,7 @@
 				if ($(event.target).is(":input")) {
 					return;
 				}
-				tree.activateCell($td);
-				return;
+				return false;
 			}
 			return this._superApply(arguments);
 		},
