@@ -4,8 +4,12 @@
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 	<title>Fancytree - Example: Viewport</title>
 
-	<script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
-	<script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+  <script src="../lib/jquery.js"></script>
+	<script src="../src/jquery-ui-dependencies/jquery.fancytree.ui-deps.js"></script>
+<!--
+  <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+  <script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+-->
 
 <style type="text/css">
 	/* Set alternating row colors (define BEFORE standard css). */
@@ -81,7 +85,7 @@
                     start: $("#vpStart").val(),
                     count: $("#vpCount").val(),
                 };
-            
+
 			tree.setViewport(opts);
 		});
 	});
