@@ -262,7 +262,10 @@ var FancytreeOptions = {};
  * @property {function} click `data.node` was clicked. `data.targetType` contains the region ("checkbox", "expander", "icon", "prefix", "title"). Return `false` to prevent default processing, i.e. activating, expanding, selecting, etc.
  * @property {function} clickPaging `data.node` is a 'paging' status node and was activated. Use data.node.replaceWith() to load additional nodes.
  * @property {function} collapse `data.node` was collapsed
- * @property {function} create Widget was created (called only once, even if re-initialized).
+ * @property {function} create Widget was created.<br>
+ *     Source data may *not* be loaded or rendered yet:
+ *     see also the `init` event, which is fired later.<br>
+ *     Note: called only once, but not when re-initialized.<br>
  * @property {function} createNode Allow tweaking and binding, after node was created for the first time (NOTE: this event is only available as callback, but not for bind())
  * @property {function} dblclick `data.node` was double-clicked. `data.targetType` contains the region ("checkbox", "expander", "icon", "prefix", "title"). Return `false` to prevent default processing, i.e. expanding, etc.
  * @property {function} deactivate `data.node` was deactivated
@@ -275,9 +278,10 @@ var FancytreeOptions = {};
  * @property {function} focusTree `data.tree` received keyboard focus
  * @property {function} <del>iconClass</del> @deprecated use tree option `icon` instead.
  * @property {function} init Widget was (re-)initialized.<br>
- *     The initial node data was loaded and rendered, checkboxes fixed, and node activated.<br>
+ *     The tree widget was initialized, source data was loaded, visible nodes are rendered,
+ *     selection propagation applied, and node activated.<br>
  *     `data.status` is false on load error.<br>
- *     Note: if ext-persist is used, see also the `restore` event.
+ *     Note: if ext-persist is used, see also the `restore` event, which is fired later.
  * @property {function} keydown `data.node` received key. `event.which` contains the key. Return `false` to prevent default processing, i.e. navigation. Call `data.result = "preventNav";` to prevent navigation but still allow default handling inside embedded input controls.
  * @property {function} keypress (currently unused)
  * @property {function} lazyLoad `data.node` is a lazy node that is expanded for the first time. The new child data must be returned in the `data.result` property (see `source` option for available formats).

@@ -652,6 +652,8 @@ ul.fancytree-container.fancytree-rtl {
  *----------------------------------------------------------------------------*/
 
 table.fancytree-ext-table {
+	font-family: @fancy-font-family;
+	font-size: @fancy-font-size;
 	border-collapse: collapse;
 	span.fancytree-node {
 		display: inline-block;  // #117
@@ -659,7 +661,7 @@ table.fancytree-ext-table {
 	}
 	td.fancytree-status-merged {
 		text-align: center;
-		font-weight: bold;
+		// font-weight: bold;
 		font-style: italic;
 //		line-height: 100px;
 		color: @fancy-font-color-dimm;
@@ -667,7 +669,20 @@ table.fancytree-ext-table {
 	tr.fancytree-statusnode-error td.fancytree-status-merged {
 		color: @fancy-font-error-color;
 	}
+	/* ext-ariagrid */
+	&.fancytree-ext-ariagrid.fancytree-cell-mode {
+		> tbody > tr.fancytree-active > td {
+			background-color: #eee;
+		}
+		> tbody > tr > td.fancytree-active-cell {
+			background-color: #cbe8f6;
+		}
+		&.fancytree-cell-nav-mode > tbody > tr > td.fancytree-active-cell {
+			background-color: #3875d7;
+		}
+	}
 }
+
 
 /*------------------------------------------------------------------------------
  * 'columnview' extension

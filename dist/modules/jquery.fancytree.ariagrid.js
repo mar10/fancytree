@@ -12,8 +12,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.29.1
- * @date 2018-06-27T18:51:43Z
+ * @version 2.30.0
+ * @date 2018-09-02T15:42:49Z
  */
 
 ( function( factory ) {
@@ -37,24 +37,6 @@
 
 "use strict";
 
-/*
-  - References:
-	- https://github.com/w3c/aria-practices/issues/132
-	- https://rawgit.com/w3c/aria-practices/treegrid/examples/treegrid/treegrid-1.html
-	- https://github.com/mar10/fancytree/issues/709
-
-  TODO:
-
-  - In strict mode, how can a user leave an embedded text input, if it is
-	the only control in a row?
-
-  - enable treeOpts.aria by default
-	=> requires some benchmarks, confirm it does not affect performance too much
-
-  - make ext-ariagrid part of ext-table (enable behavior with treeOpts.aria option)
-	=> Requires stable specification
-*/
-
 
 /*******************************************************************************
  * Private functions and variables
@@ -63,12 +45,12 @@
 // Allow these navigation keys even when input controls are focused
 
 var FT = $.ui.fancytree,
-	// TODO: define attribute- and class-names for better compression:
 	clsFancytreeActiveCell = "fancytree-active-cell",
 	clsFancytreeCellMode = "fancytree-cell-mode",
 	clsFancytreeCellNavMode = "fancytree-cell-nav-mode",
-	// Define which keys are handled by embedded control, and should *not* be
-	// passed to tree navigation handler in extended mode:
+	VALID_MODES = [ "allow", "force", "start", "off" ],
+	// Define which keys are handled by embedded <input> control, and should
+	// *not* be passed to tree navigation handler in cell-edit mode:
 	INPUT_KEYS = {
 		"text": [ "left", "right", "home", "end", "backspace" ],
 		"number": [ "up", "down", "left", "right", "home", "end", "backspace" ],
@@ -81,7 +63,7 @@ var FT = $.ui.fancytree,
 	NAV_KEYS = [ "up", "down", "left", "right", "home", "end" ];
 
 
-/* Calculate TD column index (considering colspans).*/
+/* Set aria-activedescendant on container to active cell's ID (generate one if required).*/
 function setActiveDescendant( tree, $target ) {
 	var id = $target ? $target.uniqueId().attr( "id" ) : "";
 
@@ -177,35 +159,65 @@ function findNeighbourTd( tree, $target, keyCode ) {
 	return ( $tdNext && $tdNext.length ) ? $tdNext : null;
 }
 
+/* Return a descriptive string of the current mode. */
+function getGridNavMode( tree ) {
+	if ( tree.$activeTd ) {
+		return tree.forceNavMode ? "cell-nav" : "cell-edit";
+	}
+	return "row";
+}
+
+
+/* .*/
+function activateEmbeddedLink( $td ) {
+	// $td.find( "a" )[ 0 ].click();  // does not work (always)?
+	// $td.find( "a" ).click();
+    var event = document.createEvent( "MouseEvent" );
+    event = new CustomEvent( "click" );
+    var a = $td.find( "a" )[ 0 ];  // document.getElementById('nameOfID');
+    a.dispatchEvent( event );
+}
+
+
 /**
- * [ext-ariagrid] Set active cell and activate cell-mode if needed.
+ * [ext-ariagrid] Set active cell and activate cell-nav or cell-edit mode if needed.
  * Pass $td=null to enter row-mode.
  *
  * See also FancytreeNode#setActive(flag, {cell: idx})
  *
  * @param {jQuery | Element | integer} [$td]
+ * @param {Event|null} [orgEvent=null]
  * @alias Fancytree#activateCell
  * @requires jquery.fancytree.ariagrid.js
  * @since 2.23
 */
-$.ui.fancytree._FancytreeClass.prototype.activateCell = function( $td ) {
-	var $input, $tr,
-		treeOpts = this.options,
-		opts = treeOpts.ariagrid,
+$.ui.fancytree._FancytreeClass.prototype.activateCell = function( $td, orgEvent ) {
+	var colIdx, $input, $tr, res,
+		tree = this,
 		$prevTd = this.$activeTd || null,
+		newNode = $td ? FT.getNode( $td ) : null,
+		prevNode = $prevTd ? FT.getNode( $prevTd ) : null,
+		anyNode = newNode || prevNode,
 		$prevTr = $prevTd ? $prevTd.closest( "tr" ) : null;
 
-	// this.debug( "activateCell: " + ( $prevTd ? $prevTd.text() : "null" ) +
-	// 	" -> " + ( $td ? $td.text() : "OFF" ) );
+	anyNode.debug( "activateCell(" + ( $prevTd ? $prevTd.text() : "null" ) +
+		" -> " + ( $td ? $td.text() : "OFF" ) );
 
-	// TODO: make available as event
-	// if( this._triggerNodeEvent("cellActivate", node, event, {activeTd: tree.$activeTd, colIdx: colIdx}) === false ) {
-	// 	return false;
-	// }
+	// Make available as event
 
 	if ( $td ) {
 		FT.assert( $td.length, "Invalid active cell" );
+		colIdx = getColIdx( $( newNode.tr ), $td );
+		res = this._triggerNodeEvent( "activateCell", newNode, orgEvent, {
+			activeTd: tree.$activeTd,
+			colIdx: colIdx,
+			mode: null  // editMode ? "cell-edit" : "cell-nav"
+		});
+		if ( res === false ) {
+			return false;
+		}
 		this.$container.addClass( clsFancytreeCellMode );
+		this.$container.toggleClass( clsFancytreeCellNavMode, !!this.forceNavMode );
 		$tr = $td.closest( "tr" );
 		if ( $prevTd ) {
 			// cell-mode => cell-mode
@@ -223,13 +235,13 @@ $.ui.fancytree._FancytreeClass.prototype.activateCell = function( $td ) {
 			}
 		}
 		$tr.find( ">td :input:enabled,a" ).attr( "tabindex", "0" );
-		FT.getNode( $td ).setActive();
+		newNode.setActive();
 		$td.addClass( clsFancytreeActiveCell );
 		this.$activeTd = $td;
 
 		$input = $td.find( ":input:enabled,a" );
 		this.debug( "Focus input", $input );
-		if ( opts.autoFocusInput && $input.length ) {
+		if ( $input.length ) {
 			$input.focus();
 			setActiveDescendant( this, $input );
 		} else {
@@ -237,6 +249,14 @@ $.ui.fancytree._FancytreeClass.prototype.activateCell = function( $td ) {
 			setActiveDescendant( this, $td );
 		}
 	} else {
+		res = this._triggerNodeEvent( "activateCell", prevNode, orgEvent, {
+			activeTd: null,
+			colIdx: null,
+			mode: "row"
+		});
+		if ( res === false ) {
+			return false;
+		}
 		// $td == null: switch back to row-mode
 		this.$container.removeClass( clsFancytreeCellMode + " " + clsFancytreeCellNavMode );
 		// console.log("activateCell: set row-mode for " + this.activeNode, $prevTd);
@@ -266,20 +286,14 @@ $.ui.fancytree._FancytreeClass.prototype.activateCell = function( $td ) {
  */
 $.ui.fancytree.registerExtension({
 	name: "ariagrid",
-	version: "2.29.1",
+	version: "2.30.0",
 	// Default options for this extension.
 	options: {
-		// Internal behavior flags, currently controlled via `extendedMode`
-		autoFocusInput: true,  // true: user must hit Enter to focus control
+		// Internal behavior flags
 		activateCellOnDoubelclick: true,
-		enterToCellMode: false,
-		// End of internal flags
-		extendedMode: false,
 		cellFocus: "allow",
-		// TODO: document `defaultGridAction` event
 		// TODO: use a global tree option `name` or `title` instead?:
 		label: "Tree Grid"  // Added as `aria-label` attribute
-		// defaultAction: $.noop
 	},
 
 	treeInit: function( ctx ) {
@@ -292,17 +306,15 @@ $.ui.fancytree.registerExtension({
 		if ( !treeOpts.aria ) {
 			$.error( "ext-ariagrid requires `aria: true`" );
 		}
-
+		if ( $.inArray( opts.cellFocus, VALID_MODES ) < 0 ) {
+			$.error( "Invalid `cellFocus` option" );
+		}
 		this._superApply( arguments );
 
-		this.$activeTd = null;
-		this.forceNavMode = false;
-		if ( opts.extendedMode ) {
-			opts.autoFocusInput = true;  // false;
-			opts.enterToCellMode = true;
-			opts.activateCellOnDoubelclick = true;
-			this.forceNavMode = true;
-		}
+		// The combination of $activeTd and forceNavMode determines the current
+		// navigation mode:
+		this.$activeTd = null;  // active cell (null in row-mode)
+		this.forceNavMode = true;
 
 		this.$container
 			.addClass( "fancytree-ext-ariagrid" )
@@ -311,6 +323,8 @@ $.ui.fancytree.registerExtension({
 		this.$container.find( "thead > tr > th" )
 			.attr( "role", "columnheader" );
 
+		// Store table options for easier evaluation of default actions
+		// depending of active cell column
 		this.nodeColumnIdx = treeOpts.table.nodeColumnIdx;
 		this.checkboxColumnIdx = treeOpts.table.checkboxColumnIdx;
 		if ( this.checkboxColumnIdx == null ) {
@@ -328,13 +342,14 @@ $.ui.fancytree.registerExtension({
 			// 	", last cell: " + ( tree.$activeTd ? tree.$activeTd.text() : null ) );
 			// tree.debug( "focusin: target", event.target );
 
+			// TODO: add ":input" as delegate filter instead of testing here
 			if ( node && !$td.is( tree.$activeTd ) && $( event.target ).is( ":input" ) ) {
 				node.debug( "Activate cell on INPUT focus event" );
 				tree.activateCell( $td );
 			}
 
 		}).on( "fancytreeinit", function( event, data ) {
-			if ( opts.cellFocus === "start" ) {
+			if ( opts.cellFocus === "start" || opts.cellFocus === "force" ) {
 				tree.debug( "Enforce cell-mode on init" );
 				tree.debug( "init", ( tree.getActiveNode() || tree.getFirstChild() ) );
 				( tree.getActiveNode() || tree.getFirstChild() )
@@ -344,7 +359,7 @@ $.ui.fancytree.registerExtension({
 
 		}).on( "fancytreefocustree", function( event, data ) {
 			// Enforce cell-mode when container gets focus
-			if ( ( opts.cellFocus === "force" ) && !tree.activeTd ) {
+			if ( opts.cellFocus === "force" && !tree.activeTd ) {
 				var node = tree.getActiveNode() || tree.getFirstChild();
 				tree.debug( "Enforce cell-mode on focusTree event" );
 				node.setActive( true, { cell: 0 });
@@ -367,6 +382,9 @@ $.ui.fancytree.registerExtension({
 		if ( tree.$activeTd ) {
 			// If already in cell-mode, activate new cell
 			tree.activateCell( $td );
+			if ( $( event.target ).is( ":input" ) ) {
+				return;
+			}
 			return false;
 		}
 		return this._superApply( arguments );
@@ -424,12 +442,10 @@ $.ui.fancytree.registerExtension({
 		var $td,
 			node = ctx.node,
 			tree = ctx.tree,
-			// treeOpts = ctx.options,
-			// opts = treeOpts.ariagrid,
 			$tr = $( node.tr );
 
 		flag = ( flag !== false );
-		// node.debug( "nodeSetActive(" + flag + ")" );
+		node.debug( "nodeSetActive(" + flag + ")", callOpts );
 		// Support custom `cell` option
 		if ( flag && callOpts && callOpts.cell != null ) {
 			// `cell` may be a col-index, <td>, or `$(td)`
@@ -457,8 +473,11 @@ $.ui.fancytree.registerExtension({
 			$activeTd = this.$activeTd,
 			$activeTr = $activeTd ? $activeTd.closest( "tr" ) : null,
 			colIdx = $activeTd ? getColIdx( $activeTr, $activeTd ) : -1,
-			forceNav = $activeTd && opts.extendedMode &&
-				tree.forceNavMode && $.inArray( eventString, NAV_KEYS ) >= 0;
+			forceNav = $activeTd && tree.forceNavMode && $.inArray( eventString, NAV_KEYS ) >= 0;
+
+		if ( opts.cellFocus === "off" ) {
+			return this._superApply( arguments );
+		}
 
 		if ( $target.is( ":input:enabled" ) ) {
 			inputType = $target.prop( "type" );
@@ -522,29 +541,28 @@ $.ui.fancytree.registerExtension({
 			break;
 
 		case "esc":
-			if ( opts.extendedMode && $activeTd && !tree.forceNavMode ) {
-				// Extended mode: switch from cell-edit-mode to cell-nav-mode
+			if ( $activeTd && !tree.forceNavMode ) {
+				// Switch from cell-edit-mode to cell-nav-mode
 				// $target.closest( "td" ).focus();
 				tree.forceNavMode = true;
-				tree.$container.addClass( clsFancytreeCellNavMode );
-				tree.debug( "Enter cell-edit-mode" );
+				tree.debug( "Enter cell-nav-mode" );
+				tree.$container.toggleClass( clsFancytreeCellNavMode, !!tree.forceNavMode );
 				return false;
-			} else if ( opts.extendedMode && $activeTd && opts.cellFocus !== "force" ) {
-				// Extended mode: switch back from cell-mode to row-mode
+			} else if ( $activeTd && opts.cellFocus !== "force" ) {
+				// Switch back from cell-mode to row-mode
 				tree.activateCell( null );
 				return false;
 			}
+			// tree.$container.toggleClass( clsFancytreeCellNavMode, !!tree.forceNavMode );
 			break;
 
 		case "return":
-			// Let caller override the default action.
+			// Let user override the default action.
 			// This event is triggered in row-mode and cell-mode
-			// if( opts.defaultAction.call(node, {type: "defaultAction"}, eventData) === false ) {
-			// 	return false;
-			// }
 			res = tree._triggerNodeEvent( "defaultGridAction", node, event, {
 				activeTd: tree.$activeTd ? tree.$activeTd[ 0 ] : null,
-				colIdx: colIdx
+				colIdx: colIdx,
+				mode: getGridNavMode( tree )
 			});
 			if ( res === false ) {
 				return false;
@@ -554,44 +572,32 @@ $.ui.fancytree.registerExtension({
 				// Apply 'default action' for embedded cell control
 				if ( colIdx === this.nodeColumnIdx ) {
 					node.toggleExpanded();
-					return false;
+
 				} else if ( colIdx === this.checkboxColumnIdx ) {
+					// TODO: only in checkbox mode!
 					node.toggleSelected();
-					return false;
+
 				} else if ( $embeddedCheckbox ) {
 					// Embedded checkboxes are always toggled (ignoring `autoFocusInput`)
 					$embeddedCheckbox.prop( "checked", !$embeddedCheckbox.prop( "checked" ) );
-					return false;
-				} else if ( opts.extendedMode && tree.forceNavMode && $target.is( ":input" ) ) {
+
+				} else if ( tree.forceNavMode && $target.is( ":input" ) ) {
 					tree.forceNavMode = false;
 					tree.$container.removeClass( clsFancytreeCellNavMode );
 					tree.debug( "enable cell-edit-mode" );
-					// Switch from input-mode back to cell-mode
-					// setTimeout( function() {
-					// 	$activeTd.focus();
-					// }, 0 );
-				// } else if ( !opts.autoFocusInput && !inputType &&
-				// 		$activeTd.find( ":input:enabled" ).length ) {
-				// 	// autoFocusInput is off:
-				// 	// If we don't focus embedded inputs on navigation by default,
-				// 	// we do it as ENTER default action
-				// 	$target.find( ":input:enabled" ).focus();
-				// 	return false;
-				} else if ( $activeTd.find( "a" ).length ) {
-					$activeTd.find( "a" )[ 0 ].click();
-					return false;
+
+				} else if ( $activeTd.find( "a" ).length === 1 ) {
+					activateEmbeddedLink( $activeTd );
 				}
-				return false;
 			} else {
-				// ENTER in row-mode
-				if ( opts.enterToCellMode ) {
-					// Switch from row-mode to cell-mode
-					$td = $( node.tr ).find( ">td:nth(" + this.nodeColumnIdx + ")" );
-					tree.activateCell( $td );
-					return false;  // no default handling
-				}
+				// ENTER in row-mode: Switch from row-mode to cell-mode
+				// TODO: it was also suggested to expand/collapse instead
+				//    https://github.com/w3c/aria-practices/issues/132#issuecomment-407634891
+				$td = $( node.tr ).find( ">td:nth(" + this.nodeColumnIdx + ")" );
+				tree.activateCell( $td );
 			}
-			break;
+			return false;  // no default handling
+
 		case "space":
 			if ( $activeTd ) {
 				if ( colIdx === this.checkboxColumnIdx ) {
@@ -602,16 +608,24 @@ $.ui.fancytree.registerExtension({
 				return false;  // no default handling
 			}
 			break;
+
 		default:
-			// Allow to focus input by typing alphanum keys:
-			// TODO: not so easy to simulate keytrokes on inputs!
-			//       http://stackoverflow.com/questions/6124692/jquery-simulating-keypress-event-on-an-input-field
-			// if ( opts.extendedMode && $activeTd &&
-			// 		eventString.length === 1 &&
-			// 		!$target.is(":input") && $activeTd.find(":input:enabled").length ) {
-			// 	alert("in");
-			// 	return false;  // no default handling
-			// }
+			// Allow to focus input by typing alphanum keys
+		}
+		return this._superApply( arguments );
+	},
+	treeSetOption: function( ctx, key, value ) {
+		var tree = ctx.tree,
+			opts = tree.options.ariagrid;
+
+		if ( key === "ariagrid" ) {
+			// User called `$().fancytree("option", "ariagrid.SUBKEY", VALUE)`
+			if ( value.cellFocus !== opts.cellFocus ) {
+				if ( $.inArray( value.cellFocus, VALID_MODES ) < 0 ) {
+					$.error( "Invalid `cellFocus` option" );
+				}
+				// TODO: fix current focus and mode
+			}
 		}
 		return this._superApply( arguments );
 	}

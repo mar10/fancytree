@@ -2,7 +2,14 @@
  * Common Styles for Fancytree Skins.
  *
  * This section is automatically generated from the `skin-common.less` template.
- ******************************************************************************/
+ *
+ * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
+ * Released under the MIT license
+ * https://github.com/mar10/fancytree/wiki/LicenseInfo
+ *
+ * @version 2.30.0
+ * @date 2018-09-02T15:42:49Z
+******************************************************************************/
 
 // Variables (defaults, may be overwritten by the including .less files)
 @fancy-use-sprites: true;      // false: suppress all background images (i.e. icons)
@@ -650,7 +657,30 @@ table.fancytree-ext-table {
 		display: inline-block;  // #117
 		box-sizing: border-box;  // #562
 	}
+	td.fancytree-status-merged {
+		text-align: center;
+		// font-weight: bold;
+		font-style: italic;
+//		line-height: 100px;
+		color: @fancy-font-color-dimm;
+	}
+	tr.fancytree-statusnode-error td.fancytree-status-merged {
+		color: @fancy-font-error-color;
+	}
+	/* ext-ariagrid */
+	&.fancytree-ext-ariagrid.fancytree-cell-mode {
+		> tbody > tr.fancytree-active > td {
+			background-color: #eee;
+		}
+		> tbody > tr > td.fancytree-active-cell {
+			background-color: #cbe8f6;
+		}
+		&.fancytree-cell-nav-mode > tbody > tr > td.fancytree-active-cell {
+			background-color: #3875d7;
+		}
+	}
 }
+
 
 /*------------------------------------------------------------------------------
  * 'columnview' extension

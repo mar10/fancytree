@@ -2064,9 +2064,16 @@
 				// Make sure we have a jQuery object
 				$scrollParent = $($scrollParent);
 			}
-			if ($scrollParent[0] === document) {
+			if (
+				$scrollParent[0] === document ||
+				$scrollParent[0] === document.body
+			) {
 				// `document` may returned by $().scrollParent(), if nothing is found,
-				// but would not work:
+				// but would not work: (see #894)
+				this.debug(
+					"scrollIntoView(): normalizing scrollParent to 'window':",
+					$scrollParent[0]
+				);
 				$scrollParent = $(window);
 			}
 
@@ -2170,8 +2177,11 @@
 		},
 
 		/**Activate this node.
+		 *
+		 * The `cell` option requires the ext-table and ext-ariagrid extensions.
+		 *
 		 * @param {boolean} [flag=true] pass false to deactivate
-		 * @param {object} [opts] additional options. Defaults to {noEvents: false, noFocus: false}
+		 * @param {object} [opts] additional options. Defaults to {noEvents: false, noFocus: false, cell: null}
 		 * @returns {$.Promise}
 		 */
 		setActive: function(flag, opts) {
@@ -2749,7 +2759,9 @@
 	 * @param {string} [message] optional error message (defaults to a descriptve error message)
 	 */
 		_requireExtension: function(name, required, before, message) {
-			before = !!before;
+			if (before != null) {
+				before = !!before;
+			}
 			var thisName = this._local.name,
 				extList = this.options.extensions,
 				isBefore =
@@ -2882,8 +2894,18 @@
 				consoleApply("log", arguments);
 			}
 		},
-		// TODO: disable()
-		// TODO: enable()
+		/** Enable (or disable) the tree control.
+		 *
+		 * @param {boolean} [flag=true] pass false to disable
+		 * @since 2.30
+		 */
+		enable: function(flag) {
+			if (flag === false) {
+				this.widget.disable();
+			} else {
+				this.widget.enable();
+			}
+		},
 		/** Temporarily suppress rendering to improve performance on bulk-updates.
 		 *
 		 * @param {boolean} flag
@@ -2905,6 +2927,26 @@
 				this.debug("enableUpdate(false)...");
 			}
 			return !flag; // return previous value
+		},
+		/** Expand (or collapse) all parent nodes.
+		 *
+		 * This convenience method uses `tree.visit()` and `tree.setExpanded()`
+		 * internally.
+		 *
+		 * @param {boolean} [flag=true] pass false to collapse
+		 * @param {object} [opts] passed to setExpanded()
+		 * @since 2.30
+		 */
+		expandAll: function(flag, opts) {
+			flag = flag !== false;
+			this.visit(function(node) {
+				if (
+					node.hasChildren() !== false &&
+					node.isExpanded() !== flag
+				) {
+					node.setExpanded(flag, opts);
+				}
+			});
 		},
 		/**Find all nodes that matches condition.
 		 *
@@ -3114,9 +3156,18 @@
 			return this.focusNode;
 		},
 		/**
+		 * Return current option value.
+		 * (Note: this is the preferred variant of `$().fancytree("option", "KEY")`)
+		 *
+		 * @param {string} name option name (may contain '.')
+		 * @returns {any}
+		 */
+		getOption: function(optionName) {
+			return this.widget.option(optionName);
+		},
+		/**
 		 * Return node with a given key or null if not found.
 		 *
-		 * Not
 		 * @param {string} key
 		 * @param {FancytreeNode} [searchRoot] only search below this node
 		 * @returns {FancytreeNode | null}
@@ -3457,6 +3508,15 @@
 		 */
 		setFocus: function(flag) {
 			return this._callHook("treeSetFocus", this, flag);
+		},
+		/**
+		 * Set current option value.
+		 * (Note: this is the preferred variant of `$().fancytree("option", "KEY", VALUE)`)
+		 * @param {string} name option name (may contain '.')
+		 * @param {any} new value
+		 */
+		setOption: function(optionName, value) {
+			return this.widget.option(optionName, value);
 		},
 		/**
 		 * Return all nodes as nested list of {@link NodeData}.
@@ -5090,11 +5150,7 @@
 								// Since jQuery UI 1.12, the blind effect requires the parent
 								// element to have 'position: relative'.
 								// See #716, #717
-								tree.debug(
-									"use specified effect (" +
-										effect.effect +
-										") with the jqueryui.toggle method"
-								);
+								// tree.debug("use specified effect (" + effect.effect + ") with the jqueryui.toggle method");
 
 								// try to stop an animation that might be already in progress
 								$(node.ul).stop(true, true); //< does not work after resetLazy has been called for a node whose animation wasn't complete and effect was "blind"
@@ -5110,10 +5166,7 @@
 									effect.options,
 									effect.duration,
 									function() {
-										node.info(
-											"fancytree-animating end: " +
-												node.li.className
-										);
+										// node.debug("fancytree-animating end: " + node.li.className);
 										$(this).removeClass(cn.animating); // #716
 										$(node.li).removeClass(cn.animating); // #717
 										callback();
@@ -5127,10 +5180,7 @@
 								$(node.ul)[effect.effect]({
 									duration: effect.duration,
 									always: function() {
-										node.info(
-											"fancytree-animating end: " +
-												node.li.className
-										);
+										// node.debug("fancytree-animating end: " + node.li.className);
 										$(this).removeClass(cn.animating); // #716
 										$(node.li).removeClass(cn.animating); // #717
 										callback();
@@ -5673,7 +5723,13 @@
 					}
 				}
 			},
-			/** Widget option was set using `$().fancytree("option", "foo", "bar")`.
+			/** Widget option was set using `$().fancytree("option", "KEY", VALUE)`.
+			 *
+			 * Note: `key` may reference a nested option, e.g. 'dnd5.scroll'.
+			 * In this case `value`contains the complete, modified `dnd5` option hash.
+			 * We can check for changed values like
+			 *     if( value.scroll !== tree.options.dnd5.scroll ) {...}
+			 *
 			 * @param {EventData} ctx
 			 * @param {string} key option name
 			 * @param {any} value option value
@@ -5949,7 +6005,7 @@
 				this._bind();
 			},
 
-			/* Use the _setOption method to respond to changes to options */
+			/* Use the _setOption method to respond to changes to options. */
 			_setOption: function(key, value) {
 				return this.tree._callHook(
 					"treeSetOption",
@@ -6607,7 +6663,7 @@
 				);
 				return this.eventToString(event);
 			},
-			/** Return a wrapped handler method, that provides `this.super`.
+			/** Return a wrapped handler method, that provides `this._super`.
 	 *
 	 * @example
 		// Implement `opts.createNode` event to add the 'draggable' attribute
@@ -6621,20 +6677,21 @@
 	 * @param {object} instance
 	 * @param {string} methodName
 	 * @param {function} handler
+	 * @param {object} [self] optional context
 	 */
-			overrideMethod: function(instance, methodName, handler) {
+			overrideMethod: function(instance, methodName, handler, self) {
 				var prevSuper,
 					_super = instance[methodName] || $.noop;
 
-				// context = context || this;
+				self = self || this;
 
 				instance[methodName] = function() {
 					try {
-						prevSuper = this._super;
-						this._super = _super;
-						return handler.apply(this, arguments);
+						prevSuper = self._super;
+						self._super = _super;
+						return handler.apply(self, arguments);
 					} finally {
-						this._super = prevSuper;
+						self._super = prevSuper;
 					}
 				};
 			},

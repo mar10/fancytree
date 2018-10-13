@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.29.1
- * @date 2018-06-27T18:51:43Z
+ * @version 2.30.0
+ * @date 2018-09-02T15:42:49Z
  */
 
 ;(function( factory ) {
@@ -266,7 +266,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.isEditing = function(){
  */
 $.ui.fancytree.registerExtension({
 	name: "edit",
-	version: "2.29.1",
+	version: "2.30.0",
 	// Default options for this extension.
 	options: {
 		adjustWidthOfs: 4,   // null: don't adjust input size to content
@@ -291,13 +291,16 @@ $.ui.fancytree.registerExtension({
 		this.$container.addClass("fancytree-ext-edit");
 	},
 	nodeClick: function(ctx) {
-		if( $.inArray("shift+click", ctx.options.edit.triggerStart) >= 0 ){
+		var eventStr = $.ui.fancytree.eventToString(ctx.originalEvent),
+			triggerStart = ctx.options.edit.triggerStart;
+
+		if( eventStr === "shift+click" && $.inArray("shift+click", triggerStart) >= 0 ){
 			if( ctx.originalEvent.shiftKey ){
 				ctx.node.editStart();
 				return false;
 			}
 		}
-		if( $.inArray("clickActive", ctx.options.edit.triggerStart) >= 0 ){
+		if( eventStr === "click" && $.inArray("clickActive", triggerStart) >= 0 ){
 			// Only when click was inside title text (not aynwhere else in the row)
 			if( ctx.node.isActive() && !ctx.node.isEditing() &&
 				$(ctx.originalEvent.target).hasClass("fancytree-title")

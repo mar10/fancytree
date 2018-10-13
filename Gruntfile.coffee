@@ -233,15 +233,28 @@ module.exports = (grunt) ->
         dist:
             src: "dist/jquery.js"
         dev:
-            # src: [ "src/**/*.js", "test/**/*.js", "build/**/*.js" ]
-            src: [ "src/jquery.fancytree.ariagrid.js" ]
+            options:
+                fix: false
+                maxWarnings: 100
+            src: [
+              "src/jquery.fancytree.js"
+              "src/jquery.fancytree.*.js"
+              "test/test-*.js"
+              ]
+        fix:
+            options:
+                fix: true
+            src: [
+              "src/jquery.fancytree.js"
+              "src/jquery.fancytree.*.js"
+              "test/test-*.js"
+              ]
 
     exec:
-        tabfix:
-            # Cleanup whitespace according to http://contribute.jquery.org/style-guide/js/
-            # (requires https://github.com/mar10/tabfix)
-#              cmd: "tabfix -t --line=UNIX -r -m*.js,*.css,*.html,*.json -inode_modules src demo test"
-            cmd: "tabfix -t -r -m*.js,*.css,*.html,*.json -inode_modules src demo test"
+        # tabfix:
+        #     # Cleanup whitespace according to http://contribute.jquery.org/style-guide/js/
+        #     # (requires https://github.com/mar10/tabfix)
+        #     cmd: "tabfix -t -r -m*.js,*.css,*.html,*.json -inode_modules src demo test"
         upload:
             # FTP upload the demo files (requires https://github.com/mar10/pyftpsync)
             stdin: true  # Allow interactive console
@@ -361,7 +374,8 @@ module.exports = (grunt) ->
                   { browserName: "chrome", version: "dev", platform: "Windows 10" }
                   { browserName: "chrome", version: "latest", platform: "Windows 10" }
                   { browserName: "chrome", version: "latest-1", platform: "Windows 10" }
-                  { browserName: "firefox", version: "dev", platform: "Windows 10" }
+                  # FF.dev is problematic: https://support.saucelabs.com/hc/en-us/articles/225253808-Firefox-Dev-Beta-Browser-Won-t-Start
+                  # { browserName: "firefox", version: "dev", platform: "Windows 10" }
                   { browserName: "firefox", version: "latest", platform: "Windows 10" }
                   { browserName: "firefox", version: "latest-1", platform: "Windows 10" }
                   { browserName: "firefox", version: "latest", platform: "Linux" }
@@ -371,6 +385,7 @@ module.exports = (grunt) ->
                   { browserName: "safari", version: "9", platform: "OS X 10.11" }
                   { browserName: "safari", version: "10", platform: "OS X 10.12" }
                   { browserName: "safari", version: "11", platform: "OS X 10.13" }
+                  # { browserName: "safari", version: "12", platform: "OS X 10.14" }
                 ]
         ui_111:
             options:
@@ -381,7 +396,7 @@ module.exports = (grunt) ->
                 browsers: [
                   { browserName: "internet explorer", version: "10", platform: "Windows 8" }
                   # Issue #842:
-                  { browserName: "safari", version: "7", platform: "OS X 10.9" }
+                  # { browserName: "safari", version: "7", platform: "OS X 10.9" }
                   { browserName: "safari", version: "8", platform: "OS X 10.10" }
                 ]
         ui_110:
@@ -490,7 +505,8 @@ module.exports = (grunt) ->
 
   grunt.registerTask "server", ["connect:forever"]
   grunt.registerTask "dev", ["connect:dev", "watch"]
-  grunt.registerTask "tabfix", ["exec:tabfix"]
+  grunt.registerTask "prettier", ["eslint:fix"]
+  # grunt.registerTask "tabfix", ["exec:tabfix"]
   grunt.registerTask "test", [
       "jshint:beforeConcat",
       "eslint:dev",
@@ -514,6 +530,7 @@ module.exports = (grunt) ->
 
   grunt.registerTask "build", [
       "less:development"
+      "prettier"
       "test"
       "jsdoc:build"
       "docco:docs"
@@ -535,7 +552,7 @@ module.exports = (grunt) ->
       ]
 
   grunt.registerTask "make_dist", [
-      "exec:tabfix"
+      # "exec:tabfix"
       "build"
       "clean:dist"
       "copy:dist"
