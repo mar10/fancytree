@@ -462,7 +462,8 @@ span.fancytree-icon { // Default icon
 .fancytree-loading span.fancytree-expander,
 .fancytree-loading span.fancytree-expander:hover,
 .fancytree-statusnode-loading span.fancytree-icon,
-.fancytree-statusnode-loading span.fancytree-icon:hover {
+.fancytree-statusnode-loading span.fancytree-icon:hover,
+span.fancytree-icon.fancytree-icon-loading {
 	background-image: @fancy-loading-url;
 	.useSprite(0, 0);
 }
@@ -721,11 +722,12 @@ table.fancytree-ext-columnview {
 		display: inline-block; // #117
 	}
 	span.fancytree-node.fancytree-expanded {
-		background-color: #CBE8F6;
+		background-color: #e0e0e0;
 	}
-	// table.fancytree-ext-columnview span.fancytree-node.fancytree-active {
-	// 	background-color: royalblue;
-	// }
+  span.fancytree-node.fancytree-active {
+		background-color: #CBE8F6;
+		// background-color: royalblue;
+	}
 	.fancytree-has-children span.fancytree-cv-right {
 		position: absolute;
 		right: 3px;

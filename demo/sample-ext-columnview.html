@@ -21,10 +21,10 @@
 <style type="text/css">
 	table.fancytree-ext-columnview {
 		border-collapse: collapse;
-		width: 100%;
+    width: 100%;
 	}
-	table.fancytree-container tbody tr td{
-		max-width: 300px; /* width does not work */
+	table.fancytree-container tbody tr:first-child td {
+    height: 200px;
 	}
 	span.fancytree-node{
 		white-space: nowrap; /* prevent long lines to wrap */
@@ -76,7 +76,7 @@
 			extensions: ["columnview"],
 			checkbox: true,
 			source: {
-				url: "ajax-tree-plain.json"
+				url: "ajax-tree-products.json"
 			},
 			lazyLoad: function(event, data) {
 				data.result = {url: "ajax-sub2.json"};
@@ -133,15 +133,16 @@
 	<!-- Add a <table> element where the tree should appear: -->
 	<table id="columnview">
 		<colgroup>
-		<col width="300px"></col>
-		<col width="300px"></col>
-		<col width="300px"></col>
+		<col width="33%"></col>
+		<col width="33%"></col>
+		<col width="33%"></col>
 		</colgroup>
 		<thead>
 			<tr> <th>1</th> <th>2</th> <th>3</th> </tr>
 		</thead>
 		<tbody>
-			<tr> <td>?</td> <td>?</td> <td>?</td> </tr>
+      <tr> <td>?</td> <td>?</td> <td>?</td> </tr>
+      <!-- The following rows are only used for the custom select badge functionality: -->
 			<tr> <td id="tags" colspan="3">Selected nodes: </td> </tr>
 			<tr> <td id="preview" colspan="3">preview</td> </tr>
 		</tbody>
