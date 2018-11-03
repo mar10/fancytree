@@ -163,6 +163,18 @@
 			}
 			return this._superApply(arguments);
 		},
+		nodeRemoveChildren: function(ctx) {
+			// #899: node's children removed: remove child marker...
+			$(ctx.node.span)
+				.find("span.fancytree-cv-right")
+				.remove();
+			// ...and clear right columns
+			ctx.tree.$tdList
+				.eq(ctx.node.getLevel())
+				.nextAll()
+				.empty();
+			return this._superApply(arguments);
+		},
 		nodeRender: function(ctx, force, deep, collapsed, _recursive) {
 			// Render standard nested <ul> - <li> hierarchy
 			this._super(ctx, force, deep, collapsed, _recursive);

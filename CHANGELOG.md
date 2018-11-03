@@ -2,6 +2,8 @@
   * Apply and enforce 'prettier' codestyle
   * [Fixed] #894: Fancytree assertion failed: scrollParent should be a simple element or `window`, not document or body.
   * [Fixed] #896 _requireExtension: order managment
+  * [Fixed] #899 Creating duplicate icon when removing node using extension columnview
+  * [Fixed] #900 ColumnView Extension - Toggle between parent and children not working
   * [Changed] #897 Set font for table extension
 
 # 2.30.0 / 2018-09-02
