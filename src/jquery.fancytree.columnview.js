@@ -108,6 +108,7 @@
 				// Adjust keyboard behaviour:
 				.on("fancytreekeydown", function(event, data) {
 					var next = null,
+						handled = true,
 						node = data.node || data.tree.getFirstChild();
 
 					if (node.getLevel() >= tree.columnCount) {
@@ -139,11 +140,13 @@
 						case "up":
 							next = node.getPrevSibling();
 							break;
+						default:
+							handled = false;
 					}
 					if (next) {
 						next.setActive();
 					}
-					return false;
+					return !handled;
 				});
 		},
 		nodeSetExpanded: function(ctx, flag, callOpts) {
