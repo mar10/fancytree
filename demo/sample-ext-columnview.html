@@ -78,6 +78,9 @@
 			source: {
 				url: "ajax-tree-products.json"
 			},
+			init: function(event, data) {
+				data.tree.findFirst("C64").setActive();
+			},
 			lazyLoad: function(event, data) {
 				data.result = {url: "ajax-sub2.json"};
 			},
@@ -123,7 +126,10 @@
 			Display tree data in a column view as known from Apple Macintosh / OSX.
 		</p>
 		<p>
-			<b>Status</b>: experimental
+			<b>Status</b>: experimental.
+			<b>Details:</b>
+			<a href="https://github.com/mar10/fancytree/wiki/ExtColumnView"
+				target="_blank" class="external">ext-columnview</a>.
 		</p>
 	</div>
 	<div>
