@@ -46,23 +46,28 @@
 	span.selTag{
 		border: 1px outset #dec;
 		display: inline-block;
-		padding: 0 5px;
+		padding: 1px 3px;
 		margin: 1px 5px;
 		background-color: #dec;
 		border-radius: 5px;
 		cursor: pointer;
+    vertical-align: bottom;
+    position: relative;
 	}
 	span.selTag button.close{
 		border: 1px solid transparent;
-		border-radius: 4px;
+		border-radius: 5px;
 		padding: 0px 1px 2px 1px;
-		margin-left: 8px;
+    position: absolute;
+    top: 0;
+    right: 0;
 		background-color: transparent;
 		visibility: hidden;
 	}
 	span.selTag:hover button.close{
 		border-color: gray;
 		background-color: #f99;
+		opacity: 0.8;
 		visibility: visible;
 	}
 </style>
