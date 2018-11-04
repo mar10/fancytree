@@ -1,14 +1,18 @@
 # 2.30.1-0 / Unreleased
-  * Apply and enforce 'prettier' codestyle
+  * [Changed] Apply and enforce 'prettier' codestyle
+  * [Changed] #897 Set font for table extension
   * [Fixed] #894: Fancytree assertion failed: scrollParent should be a simple element or `window`, not document or body.
   * [Fixed] #896 _requireExtension: order managment
-  * [Changed] #897 Set font for table extension
+  * [Fixed] #899 Creating duplicate icon when removing node using extension columnview
+  * [Fixed] #900 ColumnView Extension - Toggle between parent and children not working
 
 # 2.30.0 / 2018-09-02
   * [Changed] ext-edit trigger 'clickActive' now only triggers if no modifier keys
     (shift, meta, control, ...) are pressed.<br>
     Trigger 'shift+click' now only triggers if no other modifier key (control, ...)
     is pressed.
+  * [Changed] #879 Rename ext-debug to ext-logger
+    (jquery.fancytree.debug.js => jquery.fancytree.logger.js)
   * [Added] ext-multi is now deployed with jquery.fancytree-all.js (still experimental)
   * [Added] tree.activateKey(key, opts) now has an `opts` argument
   * [Added] `nodata` option (bool, string, or callback)
@@ -21,8 +25,6 @@
   * [Fixed] #877 postProcess may now also return the object form `{..., children: []}`
   * [Fixed] #884 ReferenceError: jQuery is not defined at _simpleDeepMerge
   * [Fixed] autoScroll, node.scrollIntoView(), and .makeVisible() now work for tables as well.
-  * [Changed] #879 Rename ext-debug to ext-logger
-    (jquery.fancytree.debug.js => jquery.fancytree.logger.js)
 
 # 2.29.1 / 2018-06-27
   * [Fixed] #848 Drag End Error with dnd5 extension (again):

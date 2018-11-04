@@ -288,17 +288,6 @@ $(function(){
 		/* jshint ignore:end */
 	}
 
-/*	if ( document.URL.toLowerCase().indexOf("wwwendt.de/") >= 0 ) {
-		_gaq.push(["_setAccount", "UA-316028-1"]);
-		_gaq.push(["_trackPageview"]);
-
-		(function() {
-			var s, ga = document.createElement("script"); ga.type = "text/javascript"; ga.async = true;
-			ga.src = ("https:" === document.location.protocol ? "https://ssl" : "http://www") + ".google-analytics.com/ga.js";
-			s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(ga, s);
-		})();
-	}
-*/
 	// Show some elements only, if (not) inside the Example Browser
 	if (top.location === window.location){
 		$(".hideOutsideFS").hide();

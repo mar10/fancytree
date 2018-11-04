@@ -338,7 +338,8 @@ span.fancytree-icon {
 .fancytree-loading span.fancytree-expander,
 .fancytree-loading span.fancytree-expander:hover,
 .fancytree-statusnode-loading span.fancytree-icon,
-.fancytree-statusnode-loading span.fancytree-icon:hover {
+.fancytree-statusnode-loading span.fancytree-icon:hover,
+span.fancytree-icon.fancytree-icon-loading {
   background-image: url("../skin-themeroller/loading.gif");
   background-position: 0px 0px;
 }
@@ -540,6 +541,9 @@ table.fancytree-ext-columnview span.fancytree-node {
   display: inline-block;
 }
 table.fancytree-ext-columnview span.fancytree-node.fancytree-expanded {
+  background-color: #e0e0e0;
+}
+table.fancytree-ext-columnview span.fancytree-node.fancytree-active {
   background-color: #CBE8F6;
 }
 table.fancytree-ext-columnview .fancytree-has-children span.fancytree-cv-right {
