@@ -240,6 +240,7 @@ module.exports = (grunt) ->
               "src/jquery.fancytree.js"
               "src/jquery.fancytree.*.js"
               "test/test-*.js"
+              "demo/sample.js"
               ]
         fix:
             options:
@@ -248,6 +249,7 @@ module.exports = (grunt) ->
               "src/jquery.fancytree.js"
               "src/jquery.fancytree.*.js"
               "test/test-*.js"
+              "demo/sample.js"
               ]
 
     exec:
