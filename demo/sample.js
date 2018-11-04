@@ -295,7 +295,7 @@
 				jQuery.ui.version +
 				", jQuery " +
 				jQuery.fn.jquery;
-/*
+			/*
 		info += "\n<br>";
 		info += "document.compatMode: " + document.compatMode + "\n";
 		for(e in jQuery.support){
