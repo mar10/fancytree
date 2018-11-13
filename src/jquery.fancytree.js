@@ -61,7 +61,7 @@
 			9: "tab",
 			10: "return",
 			13: "return",
-			// 16: null, 17: null, 18: null, // ignore shift, ctrl, alt
+			// 16: null, 17: null, 18: null,  // ignore shift, ctrl, alt
 			19: "pause",
 			20: "capslock",
 			27: "esc",
@@ -78,6 +78,7 @@
 			46: "del",
 			59: ";",
 			61: "=",
+			// 91: null, 93: null,  // ignore left and right meta
 			96: "0",
 			97: "1",
 			98: "2",
@@ -119,6 +120,13 @@
 			220: "\\",
 			221: "]",
 			222: "'",
+		},
+		MODIFIERS = {
+			16: "shift",
+			17: "ctrl",
+			18: "alt",
+			91: "meta",
+			93: "meta",
 		},
 		MOUSE_BUTTONS = { 0: "", 1: "left", 2: "middle", 3: "right" },
 		// Boolean attributes that can be set with equivalent class names in the LI tags
@@ -3805,8 +3813,8 @@
 					ctx.targetType === "title" &&
 					ctx.options.clickFolderMode === 4
 				) {
-					//			this.nodeSetFocus(ctx);
-					//			this._callHook("nodeSetActive", ctx, true);
+					// this.nodeSetFocus(ctx);
+					// this._callHook("nodeSetActive", ctx, true);
 					this._callHook("nodeToggleExpanded", ctx);
 				}
 				// TODO: prevent text selection on dblclicks
@@ -3830,19 +3838,18 @@
 					tree = ctx.tree,
 					opts = ctx.options,
 					which = event.which,
-					whichChar = String.fromCharCode(which),
-					clean = !(
-						event.altKey ||
-						event.ctrlKey ||
-						event.metaKey ||
-						event.shiftKey
-					),
+					// #909: Use event.key, to get unicode characters.
+					// We can't use `/\w/.test(key)`, because that would
+					// only detect plain ascii alpha-numerics. But we still need
+					// to ignore modifier-only, whitespace, cursor-keys, etc.
+					key = event.key || String.fromCharCode(which),
+					isAlnum = !MODIFIERS[which] && !SPECIAL_KEYCODES[which],
 					$target = $(event.target),
 					handled = true,
 					activate = !(event.ctrlKey || !opts.autoActivate);
 
 				// (node || FT).debug("ftnode.nodeKeydown(" + event.type + "): ftnode:" + this + ", charCode:" + event.charCode + ", keyCode: " + event.keyCode + ", which: " + event.which);
-				// FT.debug("eventToString", which, '"' + String.fromCharCode(which) + '"', '"' + FT.eventToString(event) + '"');
+				// FT.debug( "eventToString(): " + FT.eventToString(event) + ", key='" + key + "', isAlnum: " + isAlnum );
 
 				// Set focus to active (or first node) if no other node has the focus yet
 				if (!node) {
@@ -3856,9 +3863,7 @@
 
 				if (
 					opts.quicksearch &&
-					clean &&
-					/\w/.test(whichChar) &&
-					!SPECIAL_KEYCODES[which] && // #659
+					isAlnum &&
 					!$target.is(":input:enabled")
 				) {
 					// Allow to search for longer streaks if typed in quickly
@@ -3867,7 +3872,7 @@
 						tree.lastQuicksearchTerm = "";
 					}
 					tree.lastQuicksearchTime = stamp;
-					tree.lastQuicksearchTerm += whichChar;
+					tree.lastQuicksearchTerm += key;
 					// tree.debug("quicksearch find", tree.lastQuicksearchTerm);
 					matchNode = tree.findNextNode(
 						tree.lastQuicksearchTerm,

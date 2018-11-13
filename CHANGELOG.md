@@ -5,6 +5,7 @@
   * [Fixed] #896 _requireExtension: order managment
   * [Fixed] #899 Creating duplicate icon when removing node using extension columnview
   * [Fixed] #900 ColumnView Extension - Toggle between parent and children not working
+  * [Fixed] #909 With quicksearch enabled, does not search for non-Latin character
 
 # 2.30.0 / 2018-09-02
   * [Changed] ext-edit trigger 'clickActive' now only triggers if no modifier keys
