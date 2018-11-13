@@ -1,4 +1,7 @@
-# 2.30.1-0 / Unreleased
+# 2.30.2-0 / Unreleased
+  *
+
+# 2.30.1 / 2018-11-13
   * [Changed] Apply and enforce 'prettier' codestyle
   * [Changed] #897 Set font for table extension
   * [Fixed] #883: Font Awesome 4 animation spinner stays visible
