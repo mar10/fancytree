@@ -61,9 +61,7 @@
 				$el.addClass("ui-widget ui-widget-content ui-corner-all");
 			}
 
-			$el.on("mouseenter mouseleave", ".fancytree-node", function(
-				event
-			) {
+			$el.on("mouseenter mouseleave", ".fancytree-node", function(event) {
 				var node = $.ui.fancytree.getNode(event.target),
 					flag = event.type === "mouseenter";
 
