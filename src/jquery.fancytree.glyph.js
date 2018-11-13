@@ -173,14 +173,16 @@
 			setClass = baseClass + " " + (map._addClass || "");
 
 		if (typeof icon === "string") {
+			// #883: remove inner html that may be added by prev. mode
+			span.innerHTML = "";
 			$span.attr("class", setClass + " " + icon);
 		} else if (icon) {
 			if (icon.text) {
-				// $span.text( "" + icon.text );
 				span.textContent = "" + icon.text;
 			} else if (icon.html) {
-				// $(span).append($(icon.html));
 				span.innerHTML = icon.html;
+			} else {
+				span.innerHTML = "";
 			}
 			$span.attr("class", setClass + " " + (icon.addClass || ""));
 		}

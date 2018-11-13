@@ -1,6 +1,7 @@
 # 2.30.1-0 / Unreleased
   * [Changed] Apply and enforce 'prettier' codestyle
   * [Changed] #897 Set font for table extension
+  * [Fixed] #883: Font Awesome 4 animation spinner stays visible
   * [Fixed] #894: Fancytree assertion failed: scrollParent should be a simple element or `window`, not document or body.
   * [Fixed] #896 _requireExtension: order managment
   * [Fixed] #899 Creating duplicate icon when removing node using extension columnview
