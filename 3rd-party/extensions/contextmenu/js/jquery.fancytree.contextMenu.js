@@ -27,12 +27,14 @@
 						show: function(options) {
 							options.prevKeyboard = tree.options.keyboard;
 							tree.options.keyboard = false;
-							events.show(node, options);
+							if($.isFunction(events.show))
+								events.show(node, options);
 						},
 						hide: function(options) {
 							tree.options.keyboard = options.prevKeyboard;
 							node.setFocus(true);
-							events.hide(node, options);
+							if($.isFunction(events.hide))
+								events.hide(node, options);
 						}
 					},
 					build: function($trigger, e) {
@@ -78,7 +80,7 @@
 					ctx.options.contextMenu.selector || "fancytree-title",
 					ctx.options.contextMenu.menu,
 					ctx.options.contextMenu.actions,
-					ctx.options.contextMenu.events);
+					ctx.options.contextMenu.events || {});
 		}
 	});
 }(jQuery, document));
