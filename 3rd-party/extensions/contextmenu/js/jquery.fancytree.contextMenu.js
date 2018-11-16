@@ -27,6 +27,8 @@
 						show: function(options) {
 							options.prevKeyboard = tree.options.keyboard;
 							tree.options.keyboard = false;
+							node.setFocus(true);
+							node.setActive(true);
 							if($.isFunction(events.show))
 								events.show(node, options);
 						},
