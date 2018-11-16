@@ -11,7 +11,7 @@
 (function($, document) {
 	"use strict";
 
-	var initContextMenu = function(tree, selector, menu, actions) {
+	var initContextMenu = function(tree, selector, menu, actions, events) {
 		tree.$container.on("mousedown.contextMenu", function(event) {
 			var node = $.ui.fancytree.getNode(event);
 
@@ -27,10 +27,12 @@
 						show: function(options) {
 							options.prevKeyboard = tree.options.keyboard;
 							tree.options.keyboard = false;
+							events.show(node, options);
 						},
 						hide: function(options) {
 							tree.options.keyboard = options.prevKeyboard;
 							node.setFocus(true);
+							events.hide(node, options);
 						}
 					},
 					build: function($trigger, e) {
@@ -67,14 +69,16 @@
 		contextMenu: {
 			selector: "fancytree-title",
 			menu: {},
-			actions: {}
+			actions: {},
+			events: {}
 		},
 		treeInit: function(ctx) {
 			this._superApply(arguments);
 			initContextMenu(ctx.tree,
 					ctx.options.contextMenu.selector || "fancytree-title",
 					ctx.options.contextMenu.menu,
-					ctx.options.contextMenu.actions);
+					ctx.options.contextMenu.actions,
+					ctx.options.contextMenu.events);
 		}
 	});
 }(jQuery, document));
