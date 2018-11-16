@@ -287,8 +287,17 @@
 		treeLoad: function(ctx, source) {
 			return logHook("treeLoad", this, arguments);
 		},
-		treeSetFocus: function(ctx, flag) {
+		treeRegisterNode: function(ctx, add, node) {
+			return logHook("treeRegisterNode", this, arguments);
+		},
+		treeSetFocus: function(ctx, flag, callOpts) {
 			return logHook("treeSetFocus", this, arguments);
+		},
+		treeSetOption: function(ctx, key, value) {
+			return logHook("treeSetOption", this, arguments);
+		},
+		treeStructureChanged: function(ctx, type) {
+			return logHook("treeStructureChanged", this, arguments);
 		},
 	});
 

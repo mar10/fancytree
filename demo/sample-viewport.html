@@ -1,142 +1,146 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
-	<title>Fancytree - Example: Viewport</title>
+  <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+  <title>Fancytree - Example: Viewport</title>
 
   <script src="../lib/jquery.js"></script>
-	<script src="../src/jquery-ui-dependencies/jquery.fancytree.ui-deps.js"></script>
+  <script src="../src/jquery-ui-dependencies/jquery.fancytree.ui-deps.js"></script>
 <!--
   <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
   <script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 -->
 
 <style type="text/css">
-	/* Set alternating row colors (define BEFORE standard css). */
+  /* Set alternating row colors (define BEFORE standard css). */
 /*
-	table.fancytree-ext-table tbody tr:nth-child(even){
-		background-color: #f4f4f8;
-	}
+  table.fancytree-ext-table tbody tr:nth-child(even){
+    background-color: #f4f4f8;
+  }
 */
-	/* custom alignment (set by 'renderColumns'' event) */
-	table.fancytree-ext-table {
-	   width: 80%;
-	}
-	table.fancytree-ext-table td:nth-child(4) {
-	   text-align: right;
-	}
-	table.fancytree-ext-table td:nth-child(5) {
-	   text-align: center;
-	}
+  /* custom alignment (set by 'renderColumns'' event) */
+  table.fancytree-ext-table {
+     width: 80%;
+  }
+  table.fancytree-ext-table td:nth-child(4) {
+     text-align: right;
+  }
+  table.fancytree-ext-table td:nth-child(5) {
+     text-align: center;
+  }
 
 </style>
-	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet">
-	<script src="../src/jquery.fancytree.js"></script>
-	<script src="../src/jquery.fancytree.grid.js"></script>
+  <link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet">
+  <script src="../src/jquery.fancytree.js"></script>
+  <script src="../src/jquery.fancytree.grid.js"></script>
+  <script src="../src/jquery.fancytree.logger.js"></script>
 
-	<!-- Start_Exclude: This block is not part of the sample code -->
-	<link href="../lib/prettify.css" rel="stylesheet">
-	<script src="../lib/prettify.js"></script>
-	<link href="sample.css" rel="stylesheet">
-	<script src="sample.js"></script>
-	<!-- End_Exclude -->
+  <!-- Start_Exclude: This block is not part of the sample code -->
+  <link href="../lib/prettify.css" rel="stylesheet">
+  <script src="../lib/prettify.js"></script>
+  <link href="sample.css" rel="stylesheet">
+  <script src="sample.js"></script>
+  <!-- End_Exclude -->
 
 <script type="text/javascript">
-	$(function(){
-		// Attach the fancytree widget to an existing <div id="tree"> element
-		// and pass the tree options as an argument to the fancytree() function:
-		$("#treetable").fancytree({
-			extensions: ["table"],
-            checkbox: true,
-			table: {
-				indentation: 20,      // indent 20px per node level
-				nodeColumnIdx: 2,     // render the node title into the 2nd column
-				checkboxColumnIdx: 0  // render the checkboxes into the 1st column
-            },
-            viewport: {
-				enabled: true,
-				count: 5,
-            },
-			source: {
-				url: "../test/ajax_101k.json"
-				// url: "ajax-tree-products.json"
-			},
-			// tooltip: function(event, data){
-			// 	return data.node.data.author;
-			// },
-			lazyLoad: function(event, data) {
-				data.result = {url: "ajax-sub2.json"}
-			},
-			renderColumns: function(event, data) {
-				var node = data.node,
-					$tdList = $(node.tr).find(">td");
-				// (index #0 is rendered by fancytree by adding the checkbox)
-				$tdList.eq(1).text(node.getIndexHier());  //.addClass("alignRight");
-				// (index #2 is rendered by fancytree)
-				$tdList.eq(3).text(node._rowIdx);
-				// $tdList.eq(3).text(node.data.qty);
-				$tdList.eq(4).html("<input type='checkbox' name='like' value='" + node.key + "'>");
-			}
-		});
-		/* Handle inputs */
-		$(document).on("change", "#vpStart,#vpCount", function(e){
-            var tree = $.ui.fancytree.getTree(),
-                opts = {
-                    start: $("#vpStart").val(),
-                    count: $("#vpCount").val(),
-                };
+  $(function(){
+    // Attach the fancytree widget to an existing <div id="tree"> element
+    // and pass the tree options as an argument to the fancytree() function:
+    $("#treetable").fancytree({
+      extensions: ["grid"],
+      checkbox: true,
+      table: {
+        indentation: 20,      // indent 20px per node level
+        nodeColumnIdx: 2,     // render the node title into the 2nd column
+        checkboxColumnIdx: 0  // render the checkboxes into the 1st column
+      },
+      viewport: {
+        enabled: true,
+        count: 5,
+      },
+      source: {
+        url: "../test/ajax_101k.json"
+        // url: "ajax-tree-products.json"
+      },
+      // tooltip: function(event, data){
+      // 	return data.node.data.author;
+      // },
+      lazyLoad: function(event, data) {
+        data.result = {url: "ajax-sub2.json"}
+      },
+      renderColumns: function(event, data) {
+        var node = data.node,
+          $tdList = $(node.tr).find(">td");
+        // (index #0 is rendered by fancytree by adding the checkbox)
+        $tdList.eq(1).text(node.getIndexHier());  //.addClass("alignRight");
+        // (index #2 is rendered by fancytree)
+        $tdList.eq(3).text(node._rowIdx);
+        // $tdList.eq(3).text(node.data.qty);
+        $tdList.eq(4).html("<input type='checkbox' name='like' value='" + node.key + "'>");
+      }
+    });
+    /* Handle inputs */
+    $(document).on("change", "#vpStart,#vpCount", function(e){
+      var tree = $.ui.fancytree.getTree(),
+          opts = {
+              start: $("#vpStart").val(),
+              count: $("#vpCount").val(),
+          };
 
-			tree.setViewport(opts);
-		});
-	});
+      tree.setViewport(opts);
+    });
+  });
 </script>
 </head>
 
 <body class="example">
-	<h1>Example: Viewport Feature</h1>
-	<div class="description">
-		<p>
-			Restict rendering of DOM elements to sub range.
-		</p>
-		<p>
-			<b>Status:</b> experimental.
-			<b>Details:</b>
-			<a href="https://github.com/mar10/fancytree/wiki/ExtTable"
-				target="_blank" class="external">ext-table</a>.
-		</p>
-	</div>
+  <h1>Example: Viewport Feature</h1>
+  <div class="description">
+    <p>
+      Restict rendering of DOM elements to sub range.
+    </p>
+    <p>
+      <b>Status:</b> experimental.
+      <b>Details:</b>
+      <a href="https://github.com/mar10/fancytree/wiki/ExtTable"
+        target="_blank" class="external">ext-table</a>.
+    </p>
+  </div>
 
-	<div>
-		<label for="vpStart">Viewport start:</label> <input id="vpStart" type="number" value="0">
-		<label for="vpCount">, count:</label> <input id="vpCount" type="number" value="5">
-	</div>
-	<div>
-		<label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
-	</div>
+  <div>
+    <label for="vpStart">Viewport start:</label>
+    <input id="vpStart" type="number" value="0" min="0">
 
-	<!-- Add a <table> element where the tree should appear: -->
-	<table id="treetable">
-		<colgroup>
-		<col width="30px"></col>
-		<col width="30px"></col>
-		<col width="*"></col>
-		<col width="50px"></col>
-		<col width="30px"></col>
-		</colgroup>
-		<thead>
-			<tr> <th></th> <th>#</th> <th></th> <th>RowIdx</th> <th>Order</th> </tr>
-		</thead>
-	</table>
+    <label for="vpCount">, count:</label>
+    <input id="vpCount" type="number" value="5" min="1">
+  </div>
+  <div>
+    <label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
+  </div>
 
-	<!-- Start_Exclude: This block is not part of the sample code -->
-	<hr>
-	<p class="sample-links  no_code">
-		<a class="hideInsideFS" href="https://github.com/mar10/fancytree">jquery.fancytree.js project home</a>
-		<a class="hideOutsideFS" href="#">Link to this page</a>
-		<a class="hideInsideFS" href="index.html">Example Browser</a>
-		<a href="#" id="codeExample">View source code</a>
-	</p>
-	<pre id="sourceCode" class="prettyprint" style="display:none"></pre>
-	<!-- End_Exclude -->
+  <!-- Add a <table> element where the tree should appear: -->
+  <table id="treetable">
+    <colgroup>
+    <col width="30px"></col>
+    <col width="30px"></col>
+    <col width="*"></col>
+    <col width="50px"></col>
+    <col width="30px"></col>
+    </colgroup>
+    <thead>
+      <tr> <th></th> <th>#</th> <th></th> <th>RowIdx</th> <th>Order</th> </tr>
+    </thead>
+  </table>
+
+  <!-- Start_Exclude: This block is not part of the sample code -->
+  <hr>
+  <p class="sample-links  no_code">
+    <a class="hideInsideFS" href="https://github.com/mar10/fancytree">jquery.fancytree.js project home</a>
+    <a class="hideOutsideFS" href="#">Link to this page</a>
+    <a class="hideInsideFS" href="index.html">Example Browser</a>
+    <a href="#" id="codeExample">View source code</a>
+  </p>
+  <pre id="sourceCode" class="prettyprint" style="display:none"></pre>
+  <!-- End_Exclude -->
 </body>
 </html>

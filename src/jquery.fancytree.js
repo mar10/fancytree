@@ -2758,14 +2758,14 @@
 			return null;
 		},
 		/* Check if current extensions dependencies are met and throw an error if not.
-	 *
-	 * This method may be called inside the `treeInit` hook for custom extensions.
-	 *
-	 * @param {string} extension name of the required extension
-	 * @param {boolean} [required=true] pass `false` if the extension is optional, but we want to check for order if it is present
-	 * @param {boolean} [before] `true` if `name` must be included before this, `false` otherwise (use `null` if order doesn't matter)
-	 * @param {string} [message] optional error message (defaults to a descriptve error message)
-	 */
+		 *
+		 * This method may be called inside the `treeInit` hook for custom extensions.
+		 *
+		 * @param {string} extension name of the required extension
+		 * @param {boolean} [required=true] pass `false` if the extension is optional, but we want to check for order iff it is present
+		 * @param {boolean} [before] `true` if `name` must be included before this, `false` otherwise (use `null` if order doesn't matter)
+		 * @param {string} [message] optional error message (defaults to a descriptive error message)
+		 */
 		_requireExtension: function(name, required, before, message) {
 			if (before != null) {
 				before = !!before;
@@ -3586,10 +3586,13 @@
 		 * @param {object} [options]
 		 *     Defaults:
 		 *     {start: First top node, reverse: false, includeSelf: true, includeHidden: false}
-		 * @returns {boolean}
+		 * @returns {boolean} false if iteration was cancelled
 		 * @since 2.28
 		 */
 		visitRows: function(fn, opts) {
+			if (!this.rootNode.children) {
+				return false;
+			}
 			if (opts && opts.reverse) {
 				delete opts.reverse;
 				return this._visitRowsUp(fn, opts);
@@ -3649,7 +3652,7 @@
 			return true;
 		},
 		/* Call fn(node) for all nodes in vertical order, bottom up.
-	 */
+		 */
 		_visitRowsUp: function(fn, opts) {
 			var children,
 				idx,
@@ -5124,6 +5127,11 @@
 						effect = opts.toggleEffect;
 
 					node.expanded = flag;
+					tree._callHook(
+						"treeStructureChanged",
+						ctx,
+						flag ? "expand" : "collapse"
+					);
 					// Create required markup, but make sure the top UL is hidden, so we
 					// can animate later
 					tree._callHook("nodeRender", ctx, false, false, true);
@@ -5434,6 +5442,11 @@
 						} else {
 							node.children.shift();
 						}
+						tree._callHook(
+							"treeStructureChanged",
+							ctx,
+							"clearStatusNode"
+						);
 					}
 				}
 				function _setStatusNode(data, type) {
@@ -5447,6 +5460,11 @@
 						tree._callHook("nodeRenderTitle", firstChild);
 					} else {
 						node._setChildren([data]);
+						tree._callHook(
+							"treeStructureChanged",
+							ctx,
+							"setStatusNode"
+						);
 						node.children[0].statusNodeType = type;
 						tree.render();
 					}
@@ -5550,6 +5568,7 @@
 				tree.$div.find(">ul.fancytree-container").empty();
 				// TODO: call destructors and remove reference loops
 				tree.rootNode.children = null;
+				tree._callHook("treeStructureChanged", ctx, "clear");
 			},
 			/** Widget was created (called only once, even it re-initialized).
 			 * @param {EventData} ctx
@@ -5677,6 +5696,11 @@
 				// Trigger fancytreeinit after nodes have been loaded
 				dfd = this.nodeLoadChildren(rootCtx, source)
 					.done(function() {
+						tree._callHook(
+							"treeStructureChanged",
+							ctx,
+							"loadChildren"
+						);
 						tree.render();
 						if (ctx.options.selectMode === 3) {
 							tree.rootNode.fixSelection3FromEndNodes();
@@ -5697,7 +5721,13 @@
 			 * @param {boolean} add
 			 * @param {FancytreeNode} node
 			 */
-			treeRegisterNode: function(ctx, add, node) {},
+			treeRegisterNode: function(ctx, add, node) {
+				ctx.tree._callHook(
+					"treeStructureChanged",
+					ctx,
+					add ? "addNode" : "removeNode"
+				);
+			},
 			/** Widget got focus.
 			 * @param {EventData} ctx
 			 * @param {boolean} [flag=true]
@@ -5806,6 +5836,10 @@
 					tree.render(true, false); // force, not-deep
 				}
 			},
+			/** A Node was added, removed, moved, or it's visibility changed.
+			 * @param {EventData} ctx
+			 */
+			treeStructureChanged: function(ctx, type) {},
 		}
 	);
 
