@@ -6667,28 +6667,28 @@
 				return this.eventToString(event);
 			},
 			/** Return a wrapped handler method, that provides `this._super`.
-	 *
-	 * @example
-		// Implement `opts.createNode` event to add the 'draggable' attribute
-		$.ui.fancytree.overrideMethod(ctx.options, "createNode", function(event, data) {
-			// Default processing if any
-			this._super.apply(this, arguments);
-			// Add 'draggable' attribute
-			data.node.span.draggable = true;
-		});
-	 *
-	 * @param {object} instance
-	 * @param {string} methodName
-	 * @param {function} handler
-	 * @param {object} [self] optional context
-	 */
-			overrideMethod: function(instance, methodName, handler, self) {
+			 *
+			 * @example
+				// Implement `opts.createNode` event to add the 'draggable' attribute
+				$.ui.fancytree.overrideMethod(ctx.options, "createNode", function(event, data) {
+					// Default processing if any
+					this._super.apply(this, arguments);
+					// Add 'draggable' attribute
+					data.node.span.draggable = true;
+				});
+			*
+			* @param {object} instance
+			* @param {string} methodName
+			* @param {function} handler
+			* @param {object} [context] optional context
+			*/
+			overrideMethod: function(instance, methodName, handler, context) {
 				var prevSuper,
 					_super = instance[methodName] || $.noop;
 
-				self = self || this;
-
 				instance[methodName] = function() {
+					var self = context || this;
+
 					try {
 						prevSuper = self._super;
 						self._super = _super;
