@@ -490,6 +490,10 @@
 					// console.log(event.type, "dropEffect: " + dropEffect);
 					switch (event.type) {
 						case "dragstart":
+							if (!node) {
+								tree.info("Ignored dragstart on a non-node.");
+								return false;
+							}
 							// Store current source node in different formats
 							SOURCE_NODE = node;
 
