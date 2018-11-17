@@ -1,5 +1,5 @@
 # 2.30.2-0 / Unreleased
-  *
+  * [Fixed] #910 ext-dnd5 throws error for draggable column headers
 
 # 2.30.1 / 2018-11-13
   * [Changed] Apply and enforce 'prettier' codestyle

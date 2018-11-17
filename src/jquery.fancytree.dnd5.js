@@ -81,10 +81,10 @@
 	}
 
 	/* Convert a dragEnter() or dragOver() response to a canonical form.
- * Return false or plain object
- * @param {string|object|boolean} r
- * @return {object|false}
- */
+	 * Return false or plain object
+	 * @param {string|object|boolean} r
+	 * @return {object|false}
+	 */
 	function normalizeDragEnterResponse(r) {
 		var res;
 
@@ -178,7 +178,7 @@
 		}
 		// Bail out with previous response if we get an invalid dragover
 		if (!data.node) {
-			data.tree.warn("Ignore dragover for non-node"); //, event, data);
+			data.tree.warn("Ignored dragover for non-node"); //, event, data);
 			return LAST_HIT_MODE;
 		}
 
@@ -197,8 +197,7 @@
 			$targetTitle = $target.find("span.fancytree-title");
 
 		if (DRAG_ENTER_RESPONSE === false) {
-			tree.info("Ignore dragover, since dragenter returned false"); //, event, data);
-			// $.error("assert failed: dragenter returned false");
+			tree.debug("Ignored dragover, since dragenter returned false.");
 			return false;
 		} else if (typeof DRAG_ENTER_RESPONSE === "string") {
 			$.error("assert failed: dragenter returned string");
@@ -322,14 +321,14 @@
 	}
 
 	/* Guess dropEffect from modifier keys.
- * Safari:
- *     It seems that `dataTransfer.dropEffect` can only be set on dragStart, and will remain
- *     even if the cursor changes when [Alt] or [Ctrl] are pressed (?)
- * Using rules suggested here:
- *     https://ux.stackexchange.com/a/83769
- * @returns
- *     'copy', 'link', 'move', or 'none'
- */
+	 * Safari:
+	 *     It seems that `dataTransfer.dropEffect` can only be set on dragStart, and will remain
+	 *     even if the cursor changes when [Alt] or [Ctrl] are pressed (?)
+	 * Using rules suggested here:
+	 *     https://ux.stackexchange.com/a/83769
+	 * @returns
+	 *     'copy', 'link', 'move', or 'none'
+	 */
 	function getDropEffect(event, data) {
 		var dndOpts = data.options.dnd5,
 			res = dndOpts.dropEffectDefault;
@@ -431,7 +430,6 @@
 				) {
 					// Default processing if any
 					this._super.apply(this, arguments);
-
 					data.node.span.draggable = true;
 				});
 			}
@@ -481,7 +479,7 @@
 							options: tree.options,
 							originalEvent: event,
 							dataTransfer: dataTransfer,
-							//						dropEffect: undefined,  // set by dragend
+							// dropEffect: undefined,  // set by dragend
 							isCancelled: undefined, // set by dragend
 						},
 						dropEffect = getDropEffect(event, data),
@@ -490,6 +488,10 @@
 					// console.log(event.type, "dropEffect: " + dropEffect);
 					switch (event.type) {
 						case "dragstart":
+							if (!node) {
+								tree.info("Ignored dragstart on a non-node.");
+								return false;
+							}
 							// Store current source node in different formats
 							SOURCE_NODE = node;
 
@@ -790,7 +792,7 @@
 									break;
 								}
 								if (!$(node.span).hasClass(classDropOver)) {
-									node.debug("Ignore dragleave (multi)"); //, event.currentTarget);
+									node.debug("Ignore dragleave (multi).");
 									break;
 								}
 								$(node.span).removeClass(
