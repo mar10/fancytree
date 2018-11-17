@@ -2076,7 +2076,7 @@
 				$scrollParent[0] === document ||
 				$scrollParent[0] === document.body
 			) {
-				// `document` may returned by $().scrollParent(), if nothing is found,
+				// `document` may be returned by $().scrollParent(), if nothing is found,
 				// but would not work: (see #894)
 				this.debug(
 					"scrollIntoView(): normalizing scrollParent to 'window':",
@@ -2985,78 +2985,38 @@
 		 * @param {FancytreeNode} [startNode] defaults to first node
 		 * @returns {FancytreeNode} matching node or null
 		 */
-		findNextNode: function(match, startNode, visibleOnly) {
+		findNextNode: function(match, startNode) {
+			//, visibleOnly) {
+			var res = null,
+				firstNode = this.getFirstChild();
+
 			match =
 				typeof match === "string"
 					? _makeNodeTitleStartMatcher(match)
 					: match;
-			startNode = startNode || this.getFirstChild();
+			startNode = startNode || firstNode;
 
-			var stopNode = null,
-				parentChildren = startNode.parent.children,
-				matchingNode = null,
-				walkVisible = function(parent, idx, fn) {
-					var i,
-						grandParent,
-						parentChildren = parent.children,
-						siblingCount = parentChildren.length,
-						node = parentChildren[idx];
-					// visit node itself
-					if (node && fn(node) === false) {
-						return false;
-					}
-					// visit descendants
-					if (node && node.children && node.expanded) {
-						if (walkVisible(node, 0, fn) === false) {
-							return false;
-						}
-					}
-					// visit subsequent siblings
-					for (i = idx + 1; i < siblingCount; i++) {
-						if (walkVisible(parent, i, fn) === false) {
-							return false;
-						}
-					}
-					// visit parent's subsequent siblings
-					grandParent = parent.parent;
-					if (grandParent) {
-						return walkVisible(
-							grandParent,
-							grandParent.children.indexOf(parent) + 1,
-							fn
-						);
-					} else {
-						// wrap-around: restart with first node
-						return walkVisible(parent, 0, fn);
-					}
-				};
-
-			walkVisible(
-				startNode.parent,
-				parentChildren.indexOf(startNode),
-				function(node) {
-					// Stop iteration if we see the start node a second time
-					if (node === stopNode) {
-						return false;
-					}
-					stopNode = stopNode || node;
-					// Ignore nodes hidden by a filter
-					if (!$(node.span).is(":visible")) {
-						node.debug("quicksearch: skipping hidden node");
-						return;
-					}
-					// Test if we found a match, but search for a second match if this
-					// was the currently active node
-					if (match(node)) {
-						// node.debug("quicksearch match " + node.title, startNode);
-						matchingNode = node;
-						if (matchingNode !== startNode) {
-							return false;
-						}
-					}
+			function _checkNode(n) {
+				// console.log("_check " + n)
+				if (match(n)) {
+					res = n;
 				}
-			);
-			return matchingNode;
+				if (res || n === startNode) {
+					return false;
+				}
+			}
+			this.visitRows(_checkNode, {
+				start: startNode,
+				includeSelf: false,
+			});
+			// Wrap around search
+			if (!res && startNode !== firstNode) {
+				this.visitRows(_checkNode, {
+					start: firstNode,
+					includeSelf: true,
+				});
+			}
+			return res;
 		},
 		// TODO: fromDict
 		/**
@@ -6703,28 +6663,28 @@
 				return this.eventToString(event);
 			},
 			/** Return a wrapped handler method, that provides `this._super`.
-	 *
-	 * @example
-		// Implement `opts.createNode` event to add the 'draggable' attribute
-		$.ui.fancytree.overrideMethod(ctx.options, "createNode", function(event, data) {
-			// Default processing if any
-			this._super.apply(this, arguments);
-			// Add 'draggable' attribute
-			data.node.span.draggable = true;
-		});
-	 *
-	 * @param {object} instance
-	 * @param {string} methodName
-	 * @param {function} handler
-	 * @param {object} [self] optional context
-	 */
-			overrideMethod: function(instance, methodName, handler, self) {
+			 *
+			 * @example
+				// Implement `opts.createNode` event to add the 'draggable' attribute
+				$.ui.fancytree.overrideMethod(ctx.options, "createNode", function(event, data) {
+					// Default processing if any
+					this._super.apply(this, arguments);
+					// Add 'draggable' attribute
+					data.node.span.draggable = true;
+				});
+			*
+			* @param {object} instance
+			* @param {string} methodName
+			* @param {function} handler
+			* @param {object} [context] optional context
+			*/
+			overrideMethod: function(instance, methodName, handler, context) {
 				var prevSuper,
 					_super = instance[methodName] || $.noop;
 
-				self = self || this;
-
 				instance[methodName] = function() {
+					var self = context || this;
+
 					try {
 						prevSuper = self._super;
 						self._super = _super;

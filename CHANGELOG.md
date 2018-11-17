@@ -1,6 +1,15 @@
 # 2.30.2-0 / Unreleased
   * [Fixed] #910 ext-dnd5 throws error for draggable column headers
 
+# 'viewport' / Unreleased
+  * Render sub-parts of a tree
+  * Expand animations are no longer supported
+  * Rows are never hidden, but always removed: input must be persisted
+  * New hook `treeStructureChanged`
+  * TODO: New callback `hideNode` to read input values into node model
+  * TODO: Enable Aria by default
+  * TODO: Enable gridnav by default
+
 # 2.30.1 / 2018-11-13
   * [Changed] Apply and enforce 'prettier' codestyle
   * [Changed] #897 Set font for table extension
@@ -79,12 +88,6 @@
     `fancytree-helper-spin` for icon animations (replaces `glyphicon-spin`)
   * [Fixed] #819: ext-filter: Handle nodes without title.
   * [Fixed] #835: ext-dnd5: Accept drop externals after drag.
-
-# 'viewport' / Unreleased
-  * Render sub-parts of a tree
-  * Expand animations are no longer supported
-  * Rows are never hidden, but always removed: input must be persisted
-  * New callback `hideNode` to read input values into node model
 
 # 2.27.0 / 2017-12-16
   * **BREAKING CHANGES:**

@@ -32,6 +32,8 @@
 </style>
   <link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet">
   <script src="../src/jquery.fancytree.js"></script>
+  <script src="../src/jquery.fancytree.edit.js"></script>
+  <script src="../src/jquery.fancytree.filter.js"></script>
   <script src="../src/jquery.fancytree.grid.js"></script>
   <script src="../src/jquery.fancytree.logger.js"></script>
 
@@ -47,8 +49,9 @@
     // Attach the fancytree widget to an existing <div id="tree"> element
     // and pass the tree options as an argument to the fancytree() function:
     $("#treetable").fancytree({
-      extensions: ["grid"],
+      extensions: ["edit", "filter", "grid"],
       checkbox: true,
+      quicksearch: true,
       table: {
         indentation: 20,      // indent 20px per node level
         nodeColumnIdx: 2,     // render the node title into the 2nd column

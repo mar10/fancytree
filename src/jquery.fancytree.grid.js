@@ -150,18 +150,6 @@
 			visibleNodeList.push(node);
 		});
 		window.console.timeEnd("_renumberVisibleNodes()");
-		// this.debug(
-		// 	"_renumberVisibleNodes(" +
-		// 		!!force +
-		// 		") took " +
-		// 		(Date.now() - stamp) +
-		// 		"ms, " +
-		// 		visibleNodeList.length +
-		// 		"/" +
-		// 		this.count() +
-		// 		" nodes, renderCount=." +
-		// 		renderCount
-		// );
 	};
 
 	/**
@@ -176,10 +164,8 @@
 		this._renumberVisibleNodes(force);
 
 		var i = 0,
-			// stamp = Date.now(),
 			vp = this.viewport,
 			visibleNodeList = this.visibleNodeList,
-			// opts = this.options,
 			start = vp.start,
 			bottom = vp.start + vp.count,
 			tr,
@@ -199,15 +185,16 @@
 		// Redraw the whole tree, erasing all node markup before and after
 		// the viewport
 
-		for (i = start; i <= bottom; i++) {
+		for (i = start; i < bottom; i++) {
 			var node = visibleNodeList[i];
 
 			tr = trList[trIdx];
 
 			if (!node) {
-				// $(trList[trIdx]).find(">td").empty();
+				// TODO: make trailing empty rows configurable (custom template or remove TRs)
 				var newRow = this.rowFragment.firstChild.cloneNode(true);
 				this.tbody.replaceChild(newRow, tr);
+				trIdx++;
 				continue;
 			}
 			if (tr !== node.tr) {
@@ -223,18 +210,6 @@
 			trIdx++;
 		}
 		window.console.timeEnd("redrawViewport()");
-		// this.debug(
-		// 	"redrawViewport(" +
-		// 		!!force +
-		// 		") took " +
-		// 		(Date.now() - stamp) +
-		// 		"ms, " +
-		// 		visibleNodeList.length +
-		// 		"/" +
-		// 		this.count() +
-		// 		" nodes, renderCount=." +
-		// 		renderCount
-		// );
 	};
 
 	$.ui.fancytree.registerExtension({
@@ -337,6 +312,31 @@
 
 			// #489: make sure $container is set to <table>, even if ext-dnd is listed before ext-grid
 			tree.$container = $table;
+
+			// Scrolling is implemented completely different here
+			$.ui.fancytree.overrideMethod(
+				$.ui.fancytree._FancytreeNodeClass.prototype,
+				"scrollIntoView",
+				function(effects, options) {
+					var node = this,
+						tree = node.tree,
+						vp = tree.viewport;
+
+					if (!tree.viewport) {
+						return node._super.apply(this, arguments);
+					}
+					if (node._rowIdx < vp.start) {
+						tree.setViewport({ start: node._rowIdx });
+					} else if (node._rowIdx >= vp.start + vp.count) {
+						tree.setViewport({
+							start: node._rowIdx - vp.count + 1,
+						});
+					}
+					return $.Deferred(function() {
+						this.resolveWith(node);
+					}).promise();
+				}
+			);
 
 			tree.visibleNodeList = null; // Set by _renumberVisibleNodes()
 			tree.viewport = {};
