@@ -108,7 +108,7 @@
 	 * @requires jquery.fancytree.grid.js
 	 */
 	$.ui.fancytree._FancytreeClass.prototype._renumberReset = function() {
-		this.debug("_renumberReset()");
+		// this.debug("_renumberReset()");
 		this.visibleNodeList = null;
 	};
 
@@ -128,7 +128,7 @@
 			(!this.options.viewport.enabled || this.visibleNodeList != null) &&
 			force !== true
 		) {
-			this.debug("_renumberVisibleNodes() ignored.");
+			// this.debug("_renumberVisibleNodes() ignored.");
 			return false;
 		}
 		window.console.time("_renumberVisibleNodes()");
@@ -160,6 +160,10 @@
 	 * @requires jquery.fancytree.grid.js
 	 */
 	$.ui.fancytree._FancytreeClass.prototype.redrawViewport = function(force) {
+		if (this._enableUpdate === false) {
+			// tree.debug("no render", tree._enableUpdate);
+			return;
+		}
 		window.console.time("redrawViewport()");
 		this._renumberVisibleNodes(force);
 
@@ -175,6 +179,7 @@
 
 		// Reset previous data
 		this.visit(function(node) {
+			// node.debug("redrawViewport(): _rowIdx=" + node._rowIdx);
 			node.span = null;
 			if (node.tr) {
 				delete node.tr.ftnode;
@@ -247,7 +252,7 @@
 			if (opts.renderStatusColumns === true) {
 				opts.renderStatusColumns = opts.renderColumns;
 			}
-			// Note: we re-use CSS rules fromext-table
+			// Note: we also re-use CSS rules from ext-table
 			$table.addClass(
 				"fancytree-container fancytree-ext-grid fancytree-ext-table"
 			);
@@ -320,18 +325,23 @@
 				function(effects, options) {
 					var node = this,
 						tree = node.tree,
-						vp = tree.viewport;
+						topNode = options && options.topNode,
+						vp = tree.viewport,
+						start = vp.start;
 
 					if (!tree.viewport) {
 						return node._super.apply(this, arguments);
 					}
 					if (node._rowIdx < vp.start) {
-						tree.setViewport({ start: node._rowIdx });
+						start = node._rowIdx;
 					} else if (node._rowIdx >= vp.start + vp.count) {
-						tree.setViewport({
-							start: node._rowIdx - vp.count + 1,
-						});
+						start = node._rowIdx - vp.count + 1;
 					}
+					if (topNode && topNode._rowIdx < start) {
+						start = topNode._rowIdx;
+					}
+					tree.setViewport({ start: start });
+					// Return a resolved promise
 					return $.Deferred(function() {
 						this.resolveWith(node);
 					}).promise();
@@ -348,7 +358,7 @@
 						count: 10,
 						left: 0,
 						right: 0,
-						keepEmptyRows: false,
+						keepEmptyRows: true,
 					},
 					opts.viewport
 				)
@@ -419,7 +429,7 @@
 				node = ctx.node;
 
 			if (tree._enableUpdate === false) {
-				// node.debug("*** nodeRender _enableUpdate: false");
+				node.debug("nodeRender(): _enableUpdate: false");
 				return;
 			}
 			var opts = ctx.options,
@@ -430,11 +440,15 @@
 
 			_assert(viewport);
 
-			// node.debug("*** nodeRender " + node + ", isRoot=" + isRootNode, "tr=" + node.tr, "hcp=" + ctx.hasCollapsedParents, "parent.tr=" + (node.parent && node.parent.tr));
+			// node.debug("nodeRender(): " + node + ", isRoot=" + isRootNode, "tr=" + node.tr, "hcp=" + ctx.hasCollapsedParents, "parent.tr=" + (node.parent && node.parent.tr));
 			if (!_recursive) {
-				node.debug("*** nodeRender root");
+				node.debug("nodeRender(): start top node");
+				if (isRootNode && viewport) {
+					node.debug("nodeRender(): redrawViewport() instead");
+					return ctx.tree.redrawViewport();
+				}
 				ctx.hasCollapsedParents = node.parent && !node.parent.expanded;
-				// Make sure visible row indices are correct
+				// Make sure visible row indices are up-to-date
 				if (viewport) {
 					tree._renumberVisibleNodes();
 				}
@@ -446,25 +460,31 @@
 					(node._rowIdx < start ||
 						node._rowIdx >= start + viewport.count);
 
-				node.debug(
-					"nodeRender idx=" +
-						node._rowIdx +
-						", outside=" +
-						outsideViewport +
-						", TR count=" +
-						tree.tbody.rows.length
-				);
+				// node.debug(
+				// 	"nodeRender(): idx=" +
+				// 		node._rowIdx +
+				// 		", outside=" +
+				// 		outsideViewport +
+				// 		", TR count=" +
+				// 		tree.tbody.rows.length
+				// );
 				if (outsideViewport) {
-					node.debug("*** nodeRender outsideViewport: ignored");
+					node.debug("nodeRender(): outsideViewport: ignored");
 					return;
 				}
 				if (!node.tr) {
-					node.tr = tree.tbody.rows[node._rowIdx - start];
+					if (node._rowIdx != null) {
+						node.warn("nodeRender(): creating new TR!");
+						node.tr = tree.tbody.rows[node._rowIdx - start];
+					} else {
+						// node.warn("nodeRender(): ignoring hidden");
+						return;
+					}
 				}
-				_assert(
-					node.tr,
-					"nodeRender() called for node.tr == null: " + node
-				);
+				// _assert(
+				// 	node.tr,
+				// 	"nodeRender() called for node.tr == null: " + node
+				// );
 				node.tr.ftnode = node;
 
 				if (node.key && opts.generateIds) {

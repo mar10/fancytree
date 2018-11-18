@@ -12,15 +12,22 @@
 -->
 
 <style type="text/css">
+  /* Ext-grid breaks if another extension hides rows. */
+  table.fancytree-ext-grid tbody tr.fancytree-hide {
+      display: table-row;
+  }
+
   /* Set alternating row colors (define BEFORE standard css). */
-/*
   table.fancytree-ext-table tbody tr:nth-child(even){
     background-color: #f4f4f8;
   }
-*/
+
   /* custom alignment (set by 'renderColumns'' event) */
   table.fancytree-ext-table {
      width: 80%;
+     border-collapse: collapse;
+     border: 1px dotted #f4f4f8;
+     caption-side: bottom;
   }
   table.fancytree-ext-table td:nth-child(4) {
      text-align: right;
@@ -48,10 +55,22 @@
   $(function(){
     // Attach the fancytree widget to an existing <div id="tree"> element
     // and pass the tree options as an argument to the fancytree() function:
+
+    // var sourceUrl = getUrlParam("source");
+    // if( sourceUrl ){
+    //   sourceUrl = "https://cdn.jsdelivr.net/gh/mar10/assets@master/fancytree/" + sourceUrl;
+    // } else {
+    //   sourceUrl = "ajax-tree-products.json";
+    // }
+
+    // var sourceUrl = getUrlParam("source");
+    var sourceUrl = "https://cdn.jsdelivr.net/gh/mar10/assets@master/fancytree/ajax_101k.json";
+
     $("#treetable").fancytree({
       extensions: ["edit", "filter", "grid"],
       checkbox: true,
       quicksearch: true,
+      autoScroll: true,
       table: {
         indentation: 20,      // indent 20px per node level
         nodeColumnIdx: 2,     // render the node title into the 2nd column
@@ -61,13 +80,19 @@
         enabled: true,
         count: 5,
       },
+      filter: {
+        autoExpand: true,
+      },
       source: {
-        url: "../test/ajax_101k.json"
-        // url: "ajax-tree-products.json"
+        url: sourceUrl,
+        cache: true
       },
       // tooltip: function(event, data){
       // 	return data.node.data.author;
       // },
+      init: function(event, data) {
+        $("#treetable caption").text("Loaded " + data.tree.count() + " nodes.");
+      },
       lazyLoad: function(event, data) {
         data.result = {url: "ajax-sub2.json"}
       },
@@ -92,6 +117,26 @@
 
       tree.setViewport(opts);
     });
+
+		$("input[name=search]").on("search", function(e){
+			var n,
+				tree = $.ui.fancytree.getTree(),
+        match = $.trim($(this).val());
+
+      // Pass a string to perform case insensitive matching
+      n = tree.filterNodes(match, { mode: "hide" });
+      $("span.matches").text(n ? "(" + n + " matches)" : "");
+    });
+
+    $("#expandAll").on("click", function(e){
+      $.ui.fancytree.getTree().expandAll();
+    });
+    $("#collapseAll").on("click", function(e){
+      $.ui.fancytree.getTree().expandAll(false);
+    });
+    $("#redraw").on("click", function(e){
+      $.ui.fancytree.getTree().redrawViewport(true);
+    });
   });
 </script>
 </head>
@@ -100,8 +145,21 @@
   <h1>Example: Viewport Feature</h1>
   <div class="description">
     <p>
-      Restict rendering of DOM elements to sub range.
+      Restrict rendering of DOM elements to sub range.
     </p>
+    <p>
+      This example loads a data model with
+      <a href="https://cdn.jsdelivr.net/gh/mar10/assets@master/fancytree/ajax_101k.json">more than 100k nodes</a>
+      completely into the client browser, however only the rows visible in the
+      current viewport are renderded.
+    </p>
+<!--
+    <p>
+      Click here for different source data sets:
+      <a href=".">Standard</a>,
+      <a href=".?source=ajax_101k.json">more than 100k nodes</a>.
+    </p>
+    -->
     <p>
       <b>Status:</b> experimental.
       <b>Details:</b>
@@ -118,11 +176,23 @@
     <input id="vpCount" type="number" value="5" min="1">
   </div>
   <div>
-    <label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
+    <label for="skinswitcher">Skin:</label>
+    <select id="skinswitcher"></select>
+  </div>
+  <div>
+    <label for="filter">Filter:</label>
+    <input type="search" name="search" placeholder="Search text" autocomplete="off">
+    <span class="matches"></span>
+  </div>
+  <div>
+    <button type="button" id="expandAll">Expand all</button>
+    <button type="button" id="collapseAll">Collapse all</button>
+    <button type="button" id="redraw">Redraw viewport</button>
   </div>
 
   <!-- Add a <table> element where the tree should appear: -->
   <table id="treetable">
+    <caption>Loading&hellip;</caption>
     <colgroup>
     <col width="30px"></col>
     <col width="30px"></col>
