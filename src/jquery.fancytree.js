@@ -1202,19 +1202,18 @@
 			});
 			return res.join(separator);
 		},
-		/** Return the parent keys separated by options.keyPathSeparator, e.g. "id_1/id_17/id_32".
+		/** Return the parent keys separated by options.keyPathSeparator, e.g. "/id_1/id_17/id_32".
+		 *
+		 * (Unlike `node.getPath()`, this method prepends a "/" and inverts the first argument.)
+		 *
+		 * @see FancytreeNode#getPath
 		 * @param {boolean} [excludeSelf=false]
 		 * @returns {string}
 		 */
 		getKeyPath: function(excludeSelf) {
-			var path = [],
-				sep = this.tree.options.keyPathSeparator;
-			this.visitParents(function(n) {
-				if (n.parent) {
-					path.unshift(n.key);
-				}
-			}, !excludeSelf);
-			return sep + path.join(sep);
+			var sep = this.tree.options.keyPathSeparator;
+
+			return sep + this.getPath(!excludeSelf, "key", sep);
 		},
 		/** Return the last child of this node or null.
 		 * @returns {FancytreeNode | null}
@@ -1277,6 +1276,30 @@
 				dtn = dtn.parent;
 			}
 			return l;
+		},
+		/** Return a string representing the hierachical node path, e.g. "a/b/c".
+		 * @param {boolean} [includeSelf=true]
+		 * @param {string | function} [part="title"] node property name or callback
+		 * @param {string} [separator="/"]
+		 * @returns {string}
+		 * @since v2.31
+		 */
+		getPath: function(includeSelf, part, separator) {
+			includeSelf = includeSelf !== false;
+			part = part || "title";
+			separator = separator || "/";
+
+			var val,
+				path = [],
+				isFunc = $.isFunction(part);
+
+			this.visitParents(function(n) {
+				if (n.parent) {
+					val = isFunc ? part(n) : n[part];
+					path.unshift(val);
+				}
+			}, includeSelf);
+			return path.join(separator);
 		},
 		/** Return the predecessor node (under the same parent) or null.
 		 * @returns {FancytreeNode | null}

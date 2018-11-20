@@ -19,7 +19,7 @@
 
   /* Set alternating row colors (define BEFORE standard css). */
   table.fancytree-ext-table tbody tr:nth-child(even){
-    background-color: #f4f4f8;
+    background-color: #fafafa;
   }
 
   /* custom alignment (set by 'renderColumns'' event) */
@@ -28,6 +28,13 @@
      border-collapse: collapse;
      border: 1px dotted #f4f4f8;
      caption-side: bottom;
+  }
+  table.fancytree-ext-table thead th.parent-path {
+     text-align: left;
+     font-weight: normal;
+  }
+  table.fancytree-ext-table td:nth-child(2) {
+     width: 50px;
   }
   table.fancytree-ext-table td:nth-child(4) {
      text-align: right;
@@ -72,20 +79,20 @@
       quicksearch: true,
       autoScroll: true,
       table: {
-        indentation: 20,      // indent 20px per node level
-        nodeColumnIdx: 2,     // render the node title into the 2nd column
-        checkboxColumnIdx: 0  // render the checkboxes into the 1st column
+        indentation: 20,       // indent 20px per node level
+        nodeColumnIdx: 2,      // render the node title into the 2nd column
+        checkboxColumnIdx: 0,  // render the checkboxes into the 1st column
       },
       viewport: {
         enabled: true,
-        count: 5,
+        count: 15,
       },
       filter: {
         autoExpand: true,
       },
       source: {
         url: sourceUrl,
-        cache: true
+        cache: true,
       },
       // tooltip: function(event, data){
       // 	return data.node.data.author;
@@ -105,7 +112,14 @@
         $tdList.eq(3).text(node._rowIdx);
         // $tdList.eq(3).text(node.data.qty);
         $tdList.eq(4).html("<input type='checkbox' name='like' value='" + node.key + "'>");
-      }
+      },
+      updateViewport: function(event, data) {
+        var tree = data.tree,
+          topNode = tree.visibleNodeList[tree.viewport.start],
+          path = (topNode && !topNode.isTopLevel()) ? topNode.getPath(false) + "/" : "";
+
+        tree.$container.find("thead th.parent-path").text(path);
+      },
     });
     /* Handle inputs */
     $(document).on("change", "#vpStart,#vpCount", function(e){
@@ -159,7 +173,7 @@
       <a href=".">Standard</a>,
       <a href=".?source=ajax_101k.json">more than 100k nodes</a>.
     </p>
-    -->
+-->
     <p>
       <b>Status:</b> experimental.
       <b>Details:</b>
@@ -173,7 +187,7 @@
     <input id="vpStart" type="number" value="0" min="0">
 
     <label for="vpCount">, count:</label>
-    <input id="vpCount" type="number" value="5" min="1">
+    <input id="vpCount" type="number" value="15" min="1">
   </div>
   <div>
     <label for="skinswitcher">Skin:</label>
@@ -201,7 +215,8 @@
     <col width="30px"></col>
     </colgroup>
     <thead>
-      <tr> <th></th> <th>#</th> <th></th> <th>RowIdx</th> <th>Order</th> </tr>
+      <tr> <th></th> <th>#</th> <th class="parent-path"></th> <th>RowIdx</th> <th>Order</th> </tr>
+      <!-- <tr> <th></th> <th></th> <th class="parent-path"></th> <th></th> <th></th> </tr> -->
     </thead>
   </table>
 

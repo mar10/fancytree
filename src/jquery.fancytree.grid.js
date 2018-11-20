@@ -46,6 +46,7 @@
 		var i,
 			count,
 			start,
+			reason = "",
 			redraw = false,
 			vp = this.viewport,
 			trList = this.tbody.children,
@@ -57,26 +58,36 @@
 		if (typeof opts === "boolean") {
 			redraw = vp.enabled !== opts;
 			vp.enabled = opts;
+			if (redraw) {
+				reason += "enable";
+			}
 		} else {
 			redraw = !vp.enabled || opts.force;
+			if (redraw) {
+				reason += "force";
+			}
 			vp.enabled = true;
 			start = opts.start == null ? vp.start : Math.max(0, +opts.start);
 			count = opts.count == null ? vp.count : Math.max(1, +opts.count);
 			if (vp.start !== +start) {
 				vp.start = start;
 				redraw = true;
+				reason += "start";
 			}
 			if (vp.count !== +count) {
 				vp.count = count;
 				redraw = true;
+				reason += "count";
 			}
 			// if (vp.left !== +opts.left) {
 			// 	vp.left = opts.left;
 			// 	redraw = true;
+			// 	reason += "left";
 			// }
 			// if (vp.right !== +opts.right) {
 			// 	vp.right = opts.right;
 			// 	redraw = true;
+			// 	reason += "right";
 			// }
 		}
 		if (!redraw) {
@@ -98,6 +109,9 @@
 
 		// Update visible node cache if needed
 		this.redrawViewport(true);
+		this._triggerTreeEvent("updateViewport", null, {
+			scrollOnly: reason === "start",
+		});
 		return true;
 	};
 
@@ -223,7 +237,6 @@
 		// Default options for this extension.
 		options: {
 			checkboxColumnIdx: null, // render the checkboxes into the this column index (default: nodeColumnIdx)
-			// customStatus: false,	 // true: generate renderColumns events for status nodes
 			indentation: 16, // indent every node level by 16px
 			nodeColumnIdx: 0, // render node expander, icon, and title to this column (default: #0)
 		},
@@ -241,11 +254,6 @@
 				tableOpts = opts.table,
 				$table = tree.widget.element;
 
-			if (tableOpts.customStatus != null) {
-				$.error(
-					"The 'customStatus' option is deprecated since v2.15.0. Use 'renderStatusColumns' only instead."
-				);
-			}
 			if ($.inArray("table", opts.extensions) >= 0) {
 				$.error("ext-grid and ext-table are mutually exclusive.");
 			}
@@ -380,20 +388,6 @@
 					.attr("aria-readonly", true);
 			}
 		},
-		// treeLoad: function(ctx, source) {
-		// 	$.ui.fancytree.debug("*** treeLoad 1");
-		// 	return this._superApply(arguments).done(function(){
-		// 		$.ui.fancytree.debug("*** treeLoad 2");
-		// 		// ctx.tree._renumberReset();
-		// 	});
-		// },
-		// nodeLoadChildren: function(ctx, source) {
-		// 	ctx.node.debug("*** nodeLoadChildren 1");
-		// 	return this._superApply(arguments).done(function() {
-		// 		ctx.node.debug("*** nodeLoadChildren 2");
-		// 		ctx.tree._renumberReset();
-		// 	});
-		// },
 		nodeRemoveChildMarkup: function(ctx) {
 			var node = ctx.node;
 
@@ -420,10 +414,7 @@
 			var children,
 				i,
 				l,
-				// newRow,
 				outsideViewport,
-				// prevNode,
-				// prevTr,
 				subCtx,
 				tree = ctx.tree,
 				node = ctx.node;
@@ -658,17 +649,6 @@
 				});
 			return dfd.promise();
 		},
-		// nodeSetStatus: function(ctx, status, message, details) {
-		// 	this._renumberReset(); // Invalidate visible row cache
-		// 	// if (status === "ok") {
-		// 	// 	var node = ctx.node,
-		// 	// 		firstChild = node.children ? node.children[0] : null;
-		// 	// 	if (firstChild && firstChild.isStatusNode()) {
-		// 	// 		$(firstChild.tr).remove();
-		// 	// 	}
-		// 	// }
-		// 	return this._superApply(arguments);
-		// },
 		treeClear: function(ctx) {
 			// this.nodeRemoveChildMarkup(this._makeHookContext(this.rootNode));
 			// this._renumberReset(); // Invalidate visible row cache
@@ -680,10 +660,6 @@
 			this._renumberReset(); // Invalidate visible row cache
 			return this._superApply(arguments);
 		},
-		// treeRegisterNode: function(ctx, add, node) {
-		// 	this._renumberVisibleNodes();
-		// 	return this._superApply(arguments);
-		// }
 		treeStructureChanged: function(ctx, type) {
 			// debugger;
 			if (type !== "addNode" || ctx.tree.visibleNodeList) {
@@ -691,12 +667,6 @@
 				this._renumberReset(); // Invalidate visible row cache
 			}
 		},
-		/*,
-	treeSetFocus: function(ctx, flag) {
-//	        alert("treeSetFocus" + ctx.tree.$container);
-		ctx.tree.$container.focus();
-		$.ui.fancytree.focusTree = ctx.tree;
-	}*/
 	});
 	// Value returned by `require('jquery.fancytree..')`
 	return $.ui.fancytree;

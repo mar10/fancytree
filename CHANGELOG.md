@@ -7,6 +7,8 @@
   * Rows are never hidden, but always removed: input must be persisted
   * New hook `treeStructureChanged`
   * New method `tree.findRelatedNode()`
+  * New method `node.getPath()`
+  * New event `updateViewport`
   * TODO: New callback `hideNode` to read input values into node model
   * TODO: Enable Aria by default
   * TODO: Enable gridnav by default

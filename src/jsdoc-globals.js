@@ -300,6 +300,7 @@ var FancytreeOptions = {};
  * @property {function} renderTitle Allow replacing the `&lt;span class='fancytree-title'>` markup (NOTE: this event is only available as callback, but not for bind())
  * @property {function} restore ext-persist has expanded, selected, and activated the previous state
  * @property {function} select `data.node` was (de)selected. Current status is `data.node.isSelected()`
- *
+ * @property {function} updateViewport ext-grid has redrawn the viewport.<br>
+ *     `data.scrollOnly`: true if only the `start` value has changed.
  */
 var FancytreeEvents = {};
