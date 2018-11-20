@@ -1,5 +1,6 @@
 # 2.30.2-0 / Unreleased
   * [Fixed] #910 ext-dnd5 throws error for draggable column headers
+  * [Fixed] overrideMethod()'s calling context
 
 # 'viewport' / Unreleased
   * Render sub-parts of a tree
