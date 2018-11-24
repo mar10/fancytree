@@ -2752,7 +2752,10 @@
 				isMissing = required && this.ext[name] == null,
 				badOrder = !isMissing && before != null && before !== isBefore;
 
-			_assert(thisName && thisName !== name, "invalid or same name");
+			_assert(
+				thisName && thisName !== name,
+				"invalid or same name '" + thisName + "' (require yourself?)"
+			);
 
 			if (isMissing || badOrder) {
 				if (!message) {

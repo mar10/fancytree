@@ -46,6 +46,8 @@
 </style>
   <link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet">
   <script src="../src/jquery.fancytree.js"></script>
+  <script src="../src/jquery.fancytree.ariagrid.js"></script>
+  <script src="../src/jquery.fancytree.dnd5.js"></script>
   <script src="../src/jquery.fancytree.edit.js"></script>
   <script src="../src/jquery.fancytree.filter.js"></script>
   <script src="../src/jquery.fancytree.grid.js"></script>
@@ -74,10 +76,47 @@
     var sourceUrl = "https://cdn.jsdelivr.net/gh/mar10/assets@master/fancytree/ajax_101k.json";
 
     $("#treetable").fancytree({
-      extensions: ["edit", "filter", "grid"],
+      extensions: ["dnd5", "edit", "filter", "grid", "ariagrid"],
       checkbox: true,
       quicksearch: true,
       autoScroll: true,
+      ariagrid: {
+        // Internal behavior flags
+        activateCellOnDoubelclick: true,
+        cellFocus: "allow",
+        // TODO: use a global tree option `name` or `title` instead?:
+        label: "Tree Grid", // Added as `aria-label` attribute
+      },
+      dnd5: {
+        autoExpandMS: 1500,
+        dragStart: function(node, data) {
+          return true;
+        },
+        dragEnter: function(node, data) {
+          return true;
+        },
+        dragDrop: function(node, data) {
+          var transfer = data.dataTransfer;
+
+          if( data.otherNode ) {
+            data.otherNode.moveTo(node, data.hitMode);
+          } else {
+            node.addNode({
+              title: transfer.getData("text")
+            }, data.hitMode);
+          }
+          // Expand target node when a child was created:
+          if (data.hitMode === "over") {
+            node.setExpanded();
+          }
+        },
+      },
+      edit: {
+        // triggerStart: ["f2", "mac+enter", "shift+click"],
+      },
+      filter: {
+        autoExpand: true,
+      },
       table: {
         indentation: 20,       // indent 20px per node level
         nodeColumnIdx: 2,      // render the node title into the 2nd column
@@ -86,9 +125,6 @@
       viewport: {
         enabled: true,
         count: 15,
-      },
-      filter: {
-        autoExpand: true,
       },
       source: {
         url: sourceUrl,

@@ -312,7 +312,11 @@
 				opts = treeOpts.ariagrid;
 
 			// ariagrid requires the table extension to be loaded before itself
-			this._requireExtension("table", true, true);
+			if (tree.ext.grid) {
+				this._requireExtension("grid", true, true);
+			} else {
+				this._requireExtension("table", true, true);
+			}
 			if (!treeOpts.aria) {
 				$.error("ext-ariagrid requires `aria: true`");
 			}
