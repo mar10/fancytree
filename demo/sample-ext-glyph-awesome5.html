@@ -11,6 +11,7 @@
 
 	<link href="../src/skin-awesome/ui.fancytree.css" rel="stylesheet" class="skinswitcher">
 	<script src="../src/jquery.fancytree.js"></script>
+	<script src="../src/jquery.fancytree.dnd5.js"></script>
 	<script src="../src/jquery.fancytree.glyph.js"></script>
 
 <!-- Start_Exclude: This block is not part of the sample code -->
@@ -32,9 +33,18 @@
 	$(function(){
 		// Initialize Fancytree
 		$("#tree").fancytree({
-			extensions: ["glyph"],
+			extensions: ["dnd5", "glyph"],
 			checkbox: true,
 			selectMode: 3,
+      dnd5: {
+        autoExpandMS: 1500,
+        dragStart: function(node, data) {
+          return true;
+        },
+        dragEnter: function(node, data) {
+          return true;
+        },
+      },
 			glyph: {
 				preset: "awesome5",
 				map: {}
