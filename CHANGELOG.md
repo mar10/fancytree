@@ -1,6 +1,7 @@
 # 2.30.2-0 / Unreleased
   * [Fixed] #910 ext-dnd5 throws error for draggable column headers
   * [Fixed] overrideMethod()'s calling context
+  * [Fixed] #912 ext-dnd5 + ext-glyph awesome5 does not show the icons when dragging an item
 
 # 2.30.1 / 2018-11-13
   * [Changed] Apply and enforce 'prettier' codestyle
