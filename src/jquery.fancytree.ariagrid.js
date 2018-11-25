@@ -101,11 +101,16 @@
 
 	/* Find adjacent cell for a given direction. Skip empty cells and consider merged cells */
 	function findNeighbourTd(tree, $target, keyCode) {
-		var $td = $target.closest("td"),
+		var nextNode,
+			node,
+			navMap = { "ctrl+home": "first", "ctrl+end": "last" },
+			$td = $target.closest("td"),
 			$tr = $td.parent(),
 			treeOpts = tree.options,
 			colIdx = getColIdx($tr, $td),
 			$tdNext = null;
+
+		keyCode = navMap[keyCode] || keyCode;
 
 		switch (keyCode) {
 			case "left":
@@ -116,30 +121,14 @@
 				break;
 			case "up":
 			case "down":
-				while (true) {
-					$tr = keyCode === "up" ? $tr.prev() : $tr.next();
-					if (!$tr.length) {
-						break;
-					}
-					// Skip hidden rows
-					if ($tr.is(":hidden")) {
-						continue;
-					}
-					// Find adjacent cell in the same column
-					$tdNext = findTdAtColIdx($tr, colIdx);
-					break;
-				}
-				break;
 			case "ctrl+home":
-				$tdNext = findTdAtColIdx($tr.siblings().first(), colIdx);
-				if ($tdNext.is(":hidden")) {
-					$tdNext = findNeighbourTd(tree, $tdNext.parent(), "down");
-				}
-				break;
 			case "ctrl+end":
-				$tdNext = findTdAtColIdx($tr.siblings().last(), colIdx);
-				if ($tdNext.is(":hidden")) {
-					$tdNext = findNeighbourTd(tree, $tdNext.parent(), "up");
+				node = $tr[0].ftnode;
+				nextNode = tree.findRelatedNode(node, keyCode);
+				if (nextNode) {
+					nextNode.makeVisible();
+					nextNode.setFocus();
+					$tdNext = findTdAtColIdx($(nextNode.tr), colIdx);
 				}
 				break;
 			case "home":
