@@ -3878,7 +3878,15 @@
 					// only detect plain ascii alpha-numerics. But we still need
 					// to ignore modifier-only, whitespace, cursor-keys, etc.
 					key = event.key || String.fromCharCode(which),
-					isAlnum = !MODIFIERS[which] && !SPECIAL_KEYCODES[which],
+					specialModifiers = !!(
+						event.altKey ||
+						event.ctrlKey ||
+						event.metaKey
+					),
+					isAlnum =
+						!MODIFIERS[which] &&
+						!SPECIAL_KEYCODES[which] &&
+						!specialModifiers,
 					$target = $(event.target),
 					handled = true,
 					activate = !(event.ctrlKey || !opts.autoActivate);
