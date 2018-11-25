@@ -98,7 +98,7 @@
 				radioSelected: "fas fa-circle",
 				radioUnknown: "far fa-dot-circle",
 				dragHelper: "fas fa-arrow-right",
-				dropMarker: "fas fa-long-arrow-right",
+				dropMarker: "fas fa-long-arrow-alt-right",
 				error: "fas fa-exclamation-triangle",
 				expanderClosed: "fas fa-caret-right",
 				expanderLazy: "fas fa-angle-right",
