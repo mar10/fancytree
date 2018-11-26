@@ -1671,6 +1671,7 @@
 				}
 			}
 			var pos,
+				tree = this.tree,
 				prevParent = this.parent,
 				targetParent =
 					mode === "child" ? targetNode : targetNode.parent;
@@ -1752,10 +1753,10 @@
 				targetParent.triggerModifyChild("add", this);
 			}
 			// Handle cross-tree moves
-			if (this.tree !== targetNode.tree) {
+			if (tree !== targetNode.tree) {
 				// Fix node.tree for all source nodes
 				//			_assert(false, "Cross-tree move is not yet implemented.");
-				this.warn("Cross-tree moveTo is experimantal!");
+				this.warn("Cross-tree moveTo is experimental!");
 				this.visit(function(n) {
 					// TODO: fix selection state and activation, ...
 					n.tree = targetNode.tree;
@@ -1766,6 +1767,7 @@
 			// if( !targetParent.expanded ){
 			//   prevParent.ul.removeChild(this.li);
 			// }
+			tree._callHook("treeStructureChanged", tree, "moveTo");
 
 			// Update HTML markup
 			if (!prevParent.isDescendantOf(targetParent)) {
