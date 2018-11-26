@@ -39,7 +39,7 @@
 		TREE_EVENT_NAMES = "beforeRestore blurTree create init focusTree restore updateViewport".split(
 			" "
 		),
-		NODE_EVENT_NAMES = "activate beforeActivate beforeExpand beforeSelect blur click collapse createNode dblclick deactivate expand enhanceTitle focus keydown keypress lazyLoad loadChildren loadError modifyChild postProcess renderNode renderTitle select".split(
+		NODE_EVENT_NAMES = "activate activateCell beforeActivate beforeExpand beforeSelect blur click collapse createNode dblclick deactivate defaultGridAction expand enhanceTitle focus keydown keypress lazyLoad loadChildren loadError modifyChild postProcess renderNode renderTitle select".split(
 			" "
 		),
 		EVENT_NAMES = TREE_EVENT_NAMES.concat(NODE_EVENT_NAMES),

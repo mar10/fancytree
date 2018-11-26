@@ -127,7 +127,7 @@
 				nextNode = tree.findRelatedNode(node, keyCode);
 				if (nextNode) {
 					nextNode.makeVisible();
-					nextNode.setFocus();
+					nextNode.setActive();
 					$tdNext = findTdAtColIdx($(nextNode.tr), colIdx);
 				}
 				break;
@@ -193,7 +193,7 @@
 		anyNode.debug(
 			"activateCell(" +
 				($prevTd ? $prevTd.text() : "null") +
-				" -> " +
+				") -> " +
 				($td ? $td.text() : "OFF")
 		);
 
