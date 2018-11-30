@@ -11,7 +11,7 @@
 (function($, document) {
 	"use strict";
 
-	var initContextMenu = function(tree, selector, menu, actions, events) {
+	var initContextMenu = function(tree, selector, menu, actions, events, options) {
 		tree.$container.on("mousedown.contextMenu", function(event) {
 			var node = $.ui.fancytree.getNode(event);
 
@@ -20,8 +20,8 @@
 
 				node.setFocus(true);
 				node.setActive(true);
-
-				$.contextMenu({
+				
+				var opt = {
 					selector: "." + selector,
 					events: {
 						show: function(options) {
@@ -62,7 +62,12 @@
 							items: menuItems
 						};
 					}
-				});
+				};
+				for( var k in options ){
+                    opt[k] = options[k];
+                }
+
+				$.contextMenu(opt);
 			}
 		});
 	};
@@ -74,7 +79,8 @@
 			selector: "fancytree-title",
 			menu: {},
 			actions: {},
-			events: {}
+			events: {},
+			options: {}
 		},
 		treeInit: function(ctx) {
 			this._superApply(arguments);
@@ -82,7 +88,8 @@
 					ctx.options.contextMenu.selector || "fancytree-title",
 					ctx.options.contextMenu.menu,
 					ctx.options.contextMenu.actions,
-					ctx.options.contextMenu.events || {});
+					ctx.options.contextMenu.events || {},
+					ctx.options.contextMenu.options);
 		}
 	});
 }(jQuery, document));
