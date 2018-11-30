@@ -6244,6 +6244,29 @@
 			getTree: function() {
 				return this.tree;
 			},
+			/** Returns source
+			* @returns {Source}
+			*/
+			getSource: function(){
+                function getChilds(root) {
+                    let title=root.toDict()['title'];
+                    let fakeRoot = {title: title };
+                    let childs = root.children;
+                    let datachilds=[];
+                    if (childs == null){
+                        return fakeRoot;
+                    }else{
+                        for(let i=0; i < childs.length;i++){
+                            let child = childs[i];
+                            let childWithChildren = getChilds(child);
+                            datachilds.push(childWithChildren);
+                        }
+                    }
+                    fakeRoot['children'] = datachilds;
+                    return fakeRoot;
+                }
+                return getChilds(this.tree.rootNode).children;
+            }
 		}
 	);
 
