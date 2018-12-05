@@ -149,9 +149,9 @@
 		if (instOpts.trim) {
 			$input.val($.trim($input.val()));
 		}
-		
+
 		if (typeof applyChanges === "object" && applyChanges.title) {
-			newVal = applyChanges.title;	
+			newVal = applyChanges.title;
 		} else if (typeof applyChanges !== "boolean") {
 			newVal = applyChanges;
 		} else {
@@ -198,11 +198,10 @@
 			node.setTitle(
 				tree.options.escapeTitles ? newVal : escapeHtml(newVal)
 			);
-			
-			if (typeof applyChanges === "object")
-            {
-                node.applyPatch(applyChanges);
-            }
+
+			if (typeof applyChanges === "object") {
+				node.applyPatch(applyChanges);
+			}
 
 			node.setFocus();
 		} else {
