@@ -128,7 +128,8 @@
 
 	/**
 	 * [ext-edit] Stop inline editing.
-	 * @param {Boolean} [applyChanges=false] false: cancel edit, true: save (if modified)
+	 * @param {Boolean|Object|String} [applyChanges=false] false: cancel edit, true: save (if modified), string: the new title, object: save and apply the object information
+	 * @param {Event} _event
 	 * @alias FancytreeNode#editEnd
 	 * @requires jquery.fancytree.edit.js
 	 */
@@ -148,7 +149,14 @@
 		if (instOpts.trim) {
 			$input.val($.trim($input.val()));
 		}
-		newVal = $input.val();
+		
+		if (typeof applyChanges === 'object' && applyChanges.title) {
+			newVal = applyChanges.title;	
+		} else if (typeof applyChanges !== 'boolean') {
+			newVal = applyChanges;
+		} else {
+			newVal = $input.val();
+		}
 
 		eventData.dirty = newVal !== node.title;
 		eventData.originalEvent = _event;
@@ -175,6 +183,7 @@
 			return false;
 		}
 		if (
+			typeof applyChanges === 'boolean' &&
 			eventData.save &&
 			instOpts.save.call(node, { type: "save" }, eventData) === false
 		) {
@@ -189,6 +198,12 @@
 			node.setTitle(
 				tree.options.escapeTitles ? newVal : escapeHtml(newVal)
 			);
+			
+			if (typeof applyChanges === 'object')
+            {
+                node.applyPatch(applyChanges);
+            }
+
 			node.setFocus();
 		} else {
 			if (eventData.isNew) {
