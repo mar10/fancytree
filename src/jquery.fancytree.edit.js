@@ -150,9 +150,9 @@
 			$input.val($.trim($input.val()));
 		}
 		
-		if (typeof applyChanges === 'object' && applyChanges.title) {
+		if (typeof applyChanges === "object" && applyChanges.title) {
 			newVal = applyChanges.title;	
-		} else if (typeof applyChanges !== 'boolean') {
+		} else if (typeof applyChanges !== "boolean") {
 			newVal = applyChanges;
 		} else {
 			newVal = $input.val();
@@ -183,7 +183,7 @@
 			return false;
 		}
 		if (
-			typeof applyChanges === 'boolean' &&
+			typeof applyChanges === "boolean" &&
 			eventData.save &&
 			instOpts.save.call(node, { type: "save" }, eventData) === false
 		) {
@@ -199,7 +199,7 @@
 				tree.options.escapeTitles ? newVal : escapeHtml(newVal)
 			);
 			
-			if (typeof applyChanges === 'object')
+			if (typeof applyChanges === "object")
             {
                 node.applyPatch(applyChanges);
             }
