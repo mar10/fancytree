@@ -205,8 +205,6 @@
 		local.relatedNode = null;
 		// Re-enable mouse and keyboard handling
 		tree.widget._bind();
-		// Set keyboard focus, even if setFocus() claims 'nothing to do'
-		$(tree.$container).focus();
 		eventData.input = null;
 		instOpts.close.call(node, { type: "close" }, eventData);
 		return true;

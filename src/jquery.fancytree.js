@@ -5292,18 +5292,6 @@
 								.find(".fancytree-title")
 								.focus();
 						}
-					} else {
-						// We cannot set KB focus to a node, so use the tree container
-						// #563, #570: IE scrolls on every call to .focus(), if the container
-						// is partially outside the viewport. So do it only, when absolutely
-						// neccessary:
-						if (
-							$(document.activeElement).closest(
-								".fancytree-container"
-							).length === 0
-						) {
-							$(tree.$container).focus();
-						}
 					}
 					if (opts.aria) {
 						// Set active descendant to node's span ID (create one, if needed)
@@ -5317,6 +5305,20 @@
 					}
 					// $(node.span).find(".fancytree-title").focus();
 					this._triggerNodeEvent("focus", ctx);
+
+					// determine if we have focus on or inside tree container
+					var hasFancytreeFocus =
+						document.activeElement === tree.$container.get(0) ||
+						$(document.activeElement, tree.$container).length >= 1;
+
+					if (!hasFancytreeFocus) {
+						// We cannot set KB focus to a node, so use the tree container
+						// #563, #570: IE scrolls on every call to .focus(), if the container
+						// is partially outside the viewport. So do it only, when absolutely
+						// necessary.
+						$(tree.$container).focus();
+					}
+
 					// if( opts.autoActivate ){
 					// 	tree.nodeSetActive(ctx, true);
 					// }
