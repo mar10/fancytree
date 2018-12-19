@@ -34,6 +34,33 @@
 	var FT = $.ui.fancytree,
 		_assert = FT.assert;
 
+	function _addScrollbar(table) {
+		var sbWidth = 10,
+			$table = $(table),
+			position = $table.position(),
+			// top = $table.find("tbody").position().top,
+
+			$sb = $("<div>", {
+				class: "fancytree-scrollbar",
+				css: {
+					border: "1px solid gray",
+					position: "absolute",
+					top: position.top,
+					left: position.left + $table.width(),
+					width: sbWidth,
+					height: $table.find("tbody").height(),
+				},
+			});
+
+		$table
+			.css({
+				"margin-right": sbWidth,
+			})
+			.after($sb);
+
+		return $sb;
+	}
+
 	/**
 	 * [ext-grid] Define a subset of rows/columns to display and redraw.
 	 *
@@ -371,6 +398,7 @@
 					opts.viewport
 				)
 			);
+			tree.$scrollbar = _addScrollbar($table);
 
 			this._superApply(arguments);
 
