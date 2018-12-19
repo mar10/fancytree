@@ -2059,12 +2059,19 @@
 					},
 					options
 				),
-				$scrollParent = opts.scrollParent;
+				$scrollParent = opts.scrollParent,
+				$container = this.tree.$container,
+				overflowY = $container.css("overflow-y");
 
 			if (!$scrollParent) {
-				$scrollParent = this.tree.tbody
-					? this.tree.$container.scrollParent()
-					: this.tree.$container;
+				if (this.tree.tbody) {
+					$scrollParent = $container.scrollParent();
+				} else if (overflowY === "scroll" || overflowY === "auto") {
+					$scrollParent = $container;
+				} else {
+					// #922 plain tree in a non-fixed-sized UL scrolls inside its parent
+					$scrollParent = $container.scrollParent();
+				}
 			} else if (!$scrollParent.jquery) {
 				// Make sure we have a jQuery object
 				$scrollParent = $($scrollParent);
