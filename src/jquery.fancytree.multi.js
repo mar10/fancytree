@@ -104,7 +104,8 @@
 		nodeKeydown: function(ctx) {
 			var tree = ctx.tree,
 				node = ctx.node,
-				eventStr = $.ui.fancytree.eventToString(ctx.originalEvent);
+				event = ctx.originalEvent,
+				eventStr = $.ui.fancytree.eventToString(event);
 
 			switch (eventStr) {
 				case "up":
