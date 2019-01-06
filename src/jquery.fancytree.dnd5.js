@@ -612,7 +612,7 @@
 
 						case "dragend":
 							_clearGlobals();
-							//					data.dropEffect = dropEffect;
+							// data.dropEffect = dropEffect;
 							data.isCancelled = dropEffect === "none";
 							$dropMarker.hide();
 							// Take this badge off of me - I can't use it anymore:
@@ -633,6 +633,7 @@
 					function(event) {
 						var json,
 							nodeData,
+							isSourceFtNode,
 							r,
 							res,
 							allowDrop = null,
@@ -681,7 +682,18 @@
 										classDropAccept + " " + classDropReject
 									);
 
-								if (dndOpts.preventNonNodes && !nodeData) {
+								// Data is only readable in the dragstart and drop event,
+								// but we can check for the type:
+								isSourceFtNode =
+									$.inArray(
+										nodeMimeType,
+										dataTransfer.types
+									) >= 0;
+
+								if (
+									dndOpts.preventNonNodes &&
+									!isSourceFtNode
+								) {
 									node.debug("Reject dropping a non-node.");
 									DRAG_ENTER_RESPONSE = false;
 									break;
@@ -808,7 +820,7 @@
 								break;
 
 							case "drop":
-								// Data is only readable in the (dragenter and) drop event:
+								// Data is only readable in the (dragstart and) drop event:
 
 								if (
 									$.inArray(

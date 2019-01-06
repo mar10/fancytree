@@ -5,6 +5,7 @@
   * [Fixed] #919 ext-multi: JavaScript error (event is not defined) in nodeKeydown
   * [Fixed] #922 scrollIntoView for plain trees that don't have a scrollbar
   * [Fixed] #924 ext-edit: Fix caret position for mouse-click in input
+  * [Fixed] #928 ext-dnd5: Fix `preventNonNodes` option
 
 # 2.30.1 / 2018-11-13
   * [Changed] Apply and enforce 'prettier' codestyle
