@@ -6511,7 +6511,7 @@
 					el = $(".fancytree-container").eq(el); // el was an integer: return nth instance
 				} else if (typeof el === "string") {
 					el = $(el).eq(0); // el was a selector: use first match
-				} else if (el.selector !== undefined) {
+				} else if (el instanceof $) {
 					el = el.eq(0); // el was a jQuery object: use the first DOM element
 				} else if (el.originalEvent !== undefined) {
 					el = $(el.target); // el was an Event

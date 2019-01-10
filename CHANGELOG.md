@@ -6,6 +6,7 @@
   * [Fixed] #922 scrollIntoView for plain trees that don't have a scrollbar
   * [Fixed] #924 ext-edit: Fix caret position for mouse-click in input
   * [Fixed] #928 ext-dnd5: Fix `preventNonNodes` option
+  * [Fixed] #929 Fix `.getTree()` for jQuery 3
 
 # 2.30.1 / 2018-11-13
   * [Changed] Apply and enforce 'prettier' codestyle
