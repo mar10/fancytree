@@ -408,7 +408,7 @@ module.exports = (grunt) ->
                 # jQuery 1.10    dropped support for IE 6
                 # jQuery UI 1.10 supports IE 7+ and ?
                 browsers: [
-                  { browserName: "internet explorer", version: "8", platform: "Windows 7" }
+                  # { browserName: "internet explorer", version: "8", platform: "Windows 7" }
                   { browserName: "internet explorer", version: "9", platform: "Windows 7" }
                 ]
         # ui_109:

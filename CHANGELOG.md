@@ -1,4 +1,5 @@
 # 2.30.2-0 / Unreleased
+  * Stop testing on IE 8 (no longer available on Saucelabs)
   * [Fixed] #910 ext-dnd5 throws error for draggable column headers
   * [Fixed] overrideMethod()'s calling context
   * [Fixed] #912 ext-dnd5 + ext-glyph awesome5 does not show the icons when dragging an item
