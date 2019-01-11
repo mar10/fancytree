@@ -601,13 +601,12 @@
 								}
 							}
 							// Let user modify above settings
-							if (dndOpts.dragStart(node, data)!==false) {
+							if (dndOpts.dragStart(node, data) !== false) {
 								return true;
-							} else {
-								// Clear dragged node to be safe
-								_clearGlobals();
-								return false;
 							}
+							// Clear dragged node to be safe
+							_clearGlobals();
+							return false;
 							
 						case "drag":
 							// Called every few miliseconds
