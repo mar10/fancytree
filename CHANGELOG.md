@@ -1,4 +1,6 @@
-# 2.30.2-0 / Unreleased
+# 2.30.3-0 / Unreleased
+
+# 2.30.2 / 2019-01-13
   * Stop testing on IE 8 (no longer available on Saucelabs)
   * [Fixed] #910 ext-dnd5 throws error for draggable column headers
   * [Fixed] overrideMethod()'s calling context
@@ -8,6 +10,7 @@
   * [Fixed] #924 ext-edit: Fix caret position for mouse-click in input
   * [Fixed] #928 ext-dnd5: Fix `preventNonNodes` option
   * [Fixed] #929 Fix `.getTree()` for jQuery 3
+  * [Fixed] #930 ext-dnd5: If drag does not start, no drag data should be stored
 
 # 2.30.1 / 2018-11-13
   * [Changed] Apply and enforce 'prettier' codestyle
