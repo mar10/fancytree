@@ -607,7 +607,7 @@
 							// Clear dragged node to be safe
 							_clearGlobals();
 							return false;
-							
+
 						case "drag":
 							// Called every few miliseconds
 							// data.tree.info("drag", SOURCE_NODE)
