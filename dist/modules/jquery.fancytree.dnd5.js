@@ -599,7 +599,7 @@
 								}
 							}
 							// Let user modify above settings
-							return dndOpts.dragStart(node, data) !== false;		 							if (dndOpts.dragStart(node, data) !== false) {
+							return dndOpts.dragStart(node, data) !== false;
 
 						case "drag":
 							// Called every few miliseconds
