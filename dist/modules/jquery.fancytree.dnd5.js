@@ -4,13 +4,13 @@
  * Drag-and-drop support (native HTML5).
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2019, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.30.1
- * @date 2018-11-13T18:58:18Z
+ * @version 2.30.2
+ * @date 2019-01-13T08:17:01Z
  */
 
 /*
@@ -81,10 +81,10 @@
 	}
 
 	/* Convert a dragEnter() or dragOver() response to a canonical form.
- * Return false or plain object
- * @param {string|object|boolean} r
- * @return {object|false}
- */
+	 * Return false or plain object
+	 * @param {string|object|boolean} r
+	 * @return {object|false}
+	 */
 	function normalizeDragEnterResponse(r) {
 		var res;
 
@@ -178,7 +178,7 @@
 		}
 		// Bail out with previous response if we get an invalid dragover
 		if (!data.node) {
-			data.tree.warn("Ignore dragover for non-node"); //, event, data);
+			data.tree.warn("Ignored dragover for non-node"); //, event, data);
 			return LAST_HIT_MODE;
 		}
 
@@ -197,8 +197,7 @@
 			$targetTitle = $target.find("span.fancytree-title");
 
 		if (DRAG_ENTER_RESPONSE === false) {
-			tree.info("Ignore dragover, since dragenter returned false"); //, event, data);
-			// $.error("assert failed: dragenter returned false");
+			tree.debug("Ignored dragover, since dragenter returned false.");
 			return false;
 		} else if (typeof DRAG_ENTER_RESPONSE === "string") {
 			$.error("assert failed: dragenter returned string");
@@ -322,14 +321,14 @@
 	}
 
 	/* Guess dropEffect from modifier keys.
- * Safari:
- *     It seems that `dataTransfer.dropEffect` can only be set on dragStart, and will remain
- *     even if the cursor changes when [Alt] or [Ctrl] are pressed (?)
- * Using rules suggested here:
- *     https://ux.stackexchange.com/a/83769
- * @returns
- *     'copy', 'link', 'move', or 'none'
- */
+	 * Safari:
+	 *     It seems that `dataTransfer.dropEffect` can only be set on dragStart, and will remain
+	 *     even if the cursor changes when [Alt] or [Ctrl] are pressed (?)
+	 * Using rules suggested here:
+	 *     https://ux.stackexchange.com/a/83769
+	 * @returns
+	 *     'copy', 'link', 'move', or 'none'
+	 */
 	function getDropEffect(event, data) {
 		var dndOpts = data.options.dnd5,
 			res = dndOpts.dropEffectDefault;
@@ -373,7 +372,7 @@
 
 	$.ui.fancytree.registerExtension({
 		name: "dnd5",
-		version: "2.30.1",
+		version: "2.30.2",
 		// Default options for this extension.
 		options: {
 			autoExpandMS: 1500, // Expand nodes after n milliseconds of hovering
@@ -431,7 +430,6 @@
 				) {
 					// Default processing if any
 					this._super.apply(this, arguments);
-
 					data.node.span.draggable = true;
 				});
 			}
@@ -481,7 +479,7 @@
 							options: tree.options,
 							originalEvent: event,
 							dataTransfer: dataTransfer,
-							//						dropEffect: undefined,  // set by dragend
+							// dropEffect: undefined,  // set by dragend
 							isCancelled: undefined, // set by dragend
 						},
 						dropEffect = getDropEffect(event, data),
@@ -490,6 +488,10 @@
 					// console.log(event.type, "dropEffect: " + dropEffect);
 					switch (event.type) {
 						case "dragstart":
+							if (!node) {
+								tree.info("Ignored dragstart on a non-node.");
+								return false;
+							}
 							// Store current source node in different formats
 							SOURCE_NODE = node;
 
@@ -599,7 +601,12 @@
 								}
 							}
 							// Let user modify above settings
-							return dndOpts.dragStart(node, data) !== false;
+							if (dndOpts.dragStart(node, data) !== false) {
+								return true;
+							}
+							// Clear dragged node to be safe
+							_clearGlobals();
+							return false;
 
 						case "drag":
 							// Called every few miliseconds
@@ -610,7 +617,7 @@
 
 						case "dragend":
 							_clearGlobals();
-							//					data.dropEffect = dropEffect;
+							// data.dropEffect = dropEffect;
 							data.isCancelled = dropEffect === "none";
 							$dropMarker.hide();
 							// Take this badge off of me - I can't use it anymore:
@@ -631,6 +638,7 @@
 					function(event) {
 						var json,
 							nodeData,
+							isSourceFtNode,
 							r,
 							res,
 							allowDrop = null,
@@ -679,7 +687,18 @@
 										classDropAccept + " " + classDropReject
 									);
 
-								if (dndOpts.preventNonNodes && !nodeData) {
+								// Data is only readable in the dragstart and drop event,
+								// but we can check for the type:
+								isSourceFtNode =
+									$.inArray(
+										nodeMimeType,
+										dataTransfer.types
+									) >= 0;
+
+								if (
+									dndOpts.preventNonNodes &&
+									!isSourceFtNode
+								) {
 									node.debug("Reject dropping a non-node.");
 									DRAG_ENTER_RESPONSE = false;
 									break;
@@ -790,7 +809,7 @@
 									break;
 								}
 								if (!$(node.span).hasClass(classDropOver)) {
-									node.debug("Ignore dragleave (multi)"); //, event.currentTarget);
+									node.debug("Ignore dragleave (multi).");
 									break;
 								}
 								$(node.span).removeClass(
@@ -806,7 +825,7 @@
 								break;
 
 							case "drop":
-								// Data is only readable in the (dragenter and) drop event:
+								// Data is only readable in the (dragstart and) drop event:
 
 								if (
 									$.inArray(
