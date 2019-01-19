@@ -161,6 +161,13 @@ module.exports = (grunt) ->
                 port: 8080
                 base: "./"
                 keepalive: false
+                # middleware: (connect) ->
+                #     return [
+                #         (req, res, next) ->
+                #             res.setHeader('Access-Control-Allow-Origin', '*')
+                #             res.setHeader('Access-Control-Allow-Methods', '*')
+                #             next()
+                #     ]
         sauce:
             options:
                 hostname: "localhost"
@@ -291,6 +298,8 @@ module.exports = (grunt) ->
             ]
 
     qunit:
+        options:
+            httpBase: "http://localhost:8080"
         build: [
             "test/unit/test-core-build.html"
         ]
@@ -495,6 +504,7 @@ module.exports = (grunt) ->
       "eslint:dev",
       # "csslint",
       # "htmllint",
+      "connect:dev"  # start server
       "qunit:develop"
   ]
 
@@ -516,6 +526,7 @@ module.exports = (grunt) ->
   grunt.registerTask "build", [
       "less:development"
       "format"
+      # `test` also starts the connect:dev server
       "test"
       "jsdoc:build"
       "docco:docs"
@@ -536,6 +547,7 @@ module.exports = (grunt) ->
       ]
 
   grunt.registerTask "make_dist", [
+      # `build` also starts the connect:dev server
       "build"
       "clean:dist"
       "copy:dist"
