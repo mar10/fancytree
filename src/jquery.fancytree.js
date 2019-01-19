@@ -44,8 +44,8 @@
 		attr,
 		FT = null, // initialized below
 		TEST_IMG = new RegExp(/\.|\//), // strings are considered image urls if they contain '.' or '/'
-		REX_HTML = /[&<>"'\/]/g, // Escape those characters
-		REX_TOOLTIP = /[<>"'\/]/g, // Don't escape `&` in tooltips
+		REX_HTML = /[&<>"'/]/g, // Escape those characters
+		REX_TOOLTIP = /[<>"'/]/g, // Don't escape `&` in tooltips
 		RECURSIVE_REQUEST_ERROR = "$recursive_request",
 		ENTITY_MAP = {
 			"&": "&amp;",
