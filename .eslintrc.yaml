@@ -18,14 +18,81 @@ globals:
 # Custom rules (see https://eslint.org/docs/rules/ )
 # 0:off, 1:warn, 2:error
 rules:
+  # --- Best Practices ---------------------------------------------------------
+  block-scoped-var: warn
+  # complexity: [warn, 20]
+  # consistent-return: warn
+  no-alert: error
+  no-caller: error
+  guard-for-in: warn
+  no-else-return: warn
+  # no-empty-function: warn
+  no-extend-native: error
+  no-eval: error
+  no-floating-decimal: error
+  no-implied-eval: error
+  # no-invalid-this: warn
+  no-labels: warn
+  no-lone-blocks: warn
+  no-loop-func: warn
+  no-new: error
+  no-new-func: warn
+  no-new-wrappers: warn
+  no-octal-escape: warn
+  no-return-assign: warn
+  no-script-url: warn
+  no-self-compare: warn
+  no-sequences: warn
+  no-throw-literal: warn
+  no-unmodified-loop-condition: warn
+  no-unused-expressions: error
+  no-useless-call: warn
+  no-useless-catch: warn
+  no-useless-return: warn
+  no-with: warn
+  prefer-promise-reject-errors: warn
+  radix: error
+  # vars-on-top: warn
+  wrap-iife:
+    - error
+    - any
+  yoda: warn
+
+  # --- Strict Mode ------------------------------------------------------------
+  # strict: error
+
+  # --- Variables --------------------------------------------------------------
+  # init-declarations: ["warn", "always"]
+  no-label-var: error
+  no-shadow: warn
+  no-shadow-restricted-names: error
+  no-undef: error
+  no-undef-init: warn
+  no-undefined: error
+  no-use-before-define: error
+    # - error
+    # - functions: false
+
+  # --- Stylistic Issues -------------------------------------------------------
   camelcase: error
-  curly: error
-  eqeqeq: error
+  consistent-this: warn
+  func-name-matching: warn
   new-cap:
       - error
       - { "capIsNewExceptionPattern": "^\\$\\.." }  # Allow `d = $.Deferred()`
   no-bitwise: error
-  no-caller: error
+  no-multi-assign: warn
+  no-negated-condition: warn
+  no-unneeded-ternary: warn
+  no-new-object: error
+  one-var:  # see also no-use-before-define
+    - warn
+    - always
+  # one-var-declaration-per-line: warn
+
+  # --- Possible Errors --------------------------------------------------------
+  curly: error
+  eqeqeq: error
   no-cond-assign:
     - error
     - except-parens
@@ -35,22 +102,9 @@ rules:
   no-empty:
     - error
     - {allowEmptyCatch: true}
-  no-eval: error
+  # no-extra-parens: [warn, all, {conditionalAssign: false }]
   no-nested-ternary: warn
-  no-new: error
-  no-undef: error
-  no-unused-expressions: error
   no-unused-vars:
     - error
     # Allow unused vars in catch() and if start with '_'
     - {args: none, caughtErrors: none, varsIgnorePattern: "^_" }
-  no-use-before-define:
-    - error
-    - functions: false
-  one-var:
-    - warn
-    - always
-  wrap-iife:
-    - error
-    - any
-  yoda: warn
