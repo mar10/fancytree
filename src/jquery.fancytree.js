@@ -959,7 +959,7 @@
 				case true:
 					changed = !this.selected || !this.partsel;
 					this.selected = true;
-					this.partsel = true;
+					this.partsel = true && !this.radiogroup;
 					break;
 				case undefined:
 					changed = this.selected || !this.partsel;
@@ -970,7 +970,7 @@
 					_assert(false, "invalid state: " + state);
 			}
 			// this.debug("fixSelection3AfterLoad() _changeSelectStatusAttrs()", state, changed);
-			if (changed) {
+			if (changed || this.radiogroup) {
 				this.renderStatus();
 			}
 			return changed;
@@ -2433,13 +2433,13 @@
 				res = true,
 				children = this.children;
 
-			if (includeSelf === true) {
+			if (includeSelf === true || this.radiogroup) {
 				res = fn(this);
 				if (res === false || res === "skip") {
 					return res;
 				}
 			}
-			if (children) {
+			if (children && !this.radiogroup) {
 				for (i = 0, l = children.length; i < l; i++) {
 					res = children[i].visit(fn, true);
 					if (res === false) {
@@ -5397,8 +5397,7 @@
 				} else if (
 					opts.selectMode === 3 &&
 					parent &&
-					!parent.radiogroup &&
-					!node.radiogroup
+					!parent.radiogroup
 				) {
 					// multi-hierarchical selection mode
 					node.selected = flag;
