@@ -4,7 +4,7 @@
  * Miscellaneous debug extensions.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2019, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -47,7 +47,7 @@
 		EVENT_NAME_MAP = {};
 
 	/*
-*/
+	 */
 	for (i = 0; i < HOOK_NAMES.length; i++) {
 		HOOK_NAME_MAP[HOOK_NAMES[i]] = true;
 	}
@@ -63,7 +63,7 @@
 				/(opera|chrome|safari|firefox|msie)\/?\s*(\.?\d+(\.\d+)*)/i
 			);
 
-		if (m && (tem = ua.match(/version\/([\.\d]+)/i)) !== null) {
+		if (m && (tem = ua.match(/version\/([.\d]+)/i)) !== null) {
 			m[2] = tem[1];
 		}
 		m = m ? [m[1], m[2]] : [n, navigator.appVersion, "-?"];

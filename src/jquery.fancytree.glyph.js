@@ -4,7 +4,7 @@
  * Use glyph-fonts, ligature-fonts, or SVG icons instead of icon sprites.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2019, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -265,11 +265,12 @@
 						icon
 					);
 				} else {
+					// eslint-disable-next-line no-nested-ternary
 					icon = node.selected
 						? "checkboxSelected"
 						: node.partsel
-							? "checkboxUnknown"
-							: "checkbox";
+						? "checkboxUnknown"
+						: "checkbox";
 					// span.className = "fancytree-checkbox " + map[icon];
 					setIcon(span, "fancytree-checkbox", opts, icon);
 				}

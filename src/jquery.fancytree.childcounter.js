@@ -14,7 +14,7 @@
  * Add a child counter bubble to tree nodes.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2019, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -45,10 +45,10 @@
 	"use strict";
 
 	// The [coding guidelines](http://contribute.jquery.org/style-guide/js/)
-	// require jshint compliance.
+	// require jshint /eslint compliance.
 	// But for this sample, we want to allow unused variables for demonstration purpose.
 
-	/*jshint unused:false */
+	/*eslint-disable no-unused-vars */
 
 	// Adding methods
 	// --------------

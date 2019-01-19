@@ -4,7 +4,7 @@
  * Allow multiple selection of nodes  by mouse or keyboard.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2019, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -104,7 +104,8 @@
 		nodeKeydown: function(ctx) {
 			var tree = ctx.tree,
 				node = ctx.node,
-				eventStr = $.ui.fancytree.eventToString(ctx.originalEvent);
+				event = ctx.originalEvent,
+				eventStr = $.ui.fancytree.eventToString(event);
 
 			switch (eventStr) {
 				case "up":

@@ -1,10 +1,9 @@
-/* *****************************************************************************
+/******************************************************************************
  * Virtual objects for jsdoc documentation
  */
 
 // Allow unused variables for demonstration
-/*jshint unused:false */
-/*eslint unused:false */
+/* eslint-disable no-unused-vars, one-var */
 
 /**
  * Context object passed to events and hook functions.
@@ -22,7 +21,6 @@
  * @property {any} response (only for postProcess event) Original ajax response
  */
 var EventData = {};
-
 
 /**
  * Data object passed to FancytreeNode() constructor.
@@ -106,7 +104,6 @@ var EventData = {};
  */
 var NodeData = {};
 
-
 /**
  * Data object similar to {@link NodeData}, but with additional options.
  * May be passed to {@link FancytreeNode#applyPatch}
@@ -121,7 +118,6 @@ var NodeData = {};
  */
 var NodePatch = {};
 
-
 /**
  * List of [key, {@link NodePatch}]  tuples.
  * May be passed to {@link Fancytree#applyPatch}.
@@ -131,7 +127,6 @@ var NodePatch = {};
  *
  */
 var TreePatch = {};
-
 
 /**
  * @name FancytreeOptions
@@ -229,8 +224,6 @@ var TreePatch = {};
  *     If defined, `unselectable: true` is implied.
  */
 var FancytreeOptions = {};
-
-
 
 /** Fancytree events
  * @name FancytreeEvents

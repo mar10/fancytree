@@ -1,0 +1,56 @@
+
+extends:
+  - "eslint:recommended"
+  - "jquery"
+  - "plugin:prettier/recommended"
+
+# Accept `window`, etc.
+env:
+  browser: true
+
+# Known globals (`false`: read-only)
+globals:
+  define: false
+  require: false
+  module: false
+  jQuery: false
+
+# Custom rules (see https://eslint.org/docs/rules/ )
+# 0:off, 1:warn, 2:error
+rules:
+  camelcase: error
+  curly: error
+  eqeqeq: error
+  new-cap:
+      - error
+      - { "capIsNewExceptionPattern": "^\\$\\.." }  # Allow `d = $.Deferred()`
+  no-bitwise: error
+  no-caller: error
+  no-cond-assign:
+    - error
+    - except-parens
+  no-constant-condition:
+    - error
+    - { "checkLoops": false }
+  no-empty:
+    - error
+    - {allowEmptyCatch: true}
+  no-eval: error
+  no-nested-ternary: warn
+  no-new: error
+  no-undef: error
+  no-unused-expressions: error
+  no-unused-vars:
+    - error
+    # Allow unused vars in catch() and if start with '_'
+    - {args: none, caughtErrors: none, varsIgnorePattern: "^_" }
+  no-use-before-define:
+    - error
+    - functions: false
+  one-var:
+    - warn
+    - always
+  wrap-iife:
+    - error
+    - any
+  yoda: warn

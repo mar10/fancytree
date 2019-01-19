@@ -3,7 +3,7 @@
  * Tree view control with support for lazy loading and much more.
  * https://github.com/mar10/fancytree/
  *
- * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2019, Martin Wendt (http://wwWendt.de)
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
@@ -44,8 +44,8 @@
 		attr,
 		FT = null, // initialized below
 		TEST_IMG = new RegExp(/\.|\//), // strings are considered image urls if they contain '.' or '/'
-		REX_HTML = /[&<>"'\/]/g, // Escape those characters
-		REX_TOOLTIP = /[<>"'\/]/g, // Don't escape `&` in tooltips
+		REX_HTML = /[&<>"'/]/g, // Escape those characters
+		REX_TOOLTIP = /[<>"'/]/g, // Don't escape `&` in tooltips
 		RECURSIVE_REQUEST_ERROR = "$recursive_request",
 		ENTITY_MAP = {
 			"&": "&amp;",
@@ -1046,11 +1046,12 @@
 							}
 						}
 					}
+					// eslint-disable-next-line no-nested-ternary
 					state = allSelected
 						? true
 						: someSelected
-							? undefined
-							: false;
+						? undefined
+						: false;
 				} else {
 					// This is an end-node: simply report the status
 					unselState = FT.evalOption(
@@ -1110,6 +1111,7 @@
 						}
 					}
 				}
+				// eslint-disable-next-line no-nested-ternary
 				state = allSelected ? true : someSelected ? undefined : false;
 				node._changeSelectStatusAttrs(state);
 			});
@@ -1527,6 +1529,7 @@
 		isVisible: function() {
 			var i,
 				l,
+				n,
 				hasFilter = this.tree.enableFilter,
 				parents = this.getParentList(false, false);
 
@@ -1547,7 +1550,7 @@
 			}
 
 			for (i = 0, l = parents.length; i < l; i++) {
-				var n = parents[i];
+				n = parents[i];
 
 				if (!n.expanded) {
 					this.debug("isVisible: HIDDEN (parent collapsed)");
@@ -2036,12 +2039,19 @@
 					},
 					options
 				),
-				$scrollParent = opts.scrollParent;
+				$scrollParent = opts.scrollParent,
+				$container = this.tree.$container,
+				overflowY = $container.css("overflow-y");
 
 			if (!$scrollParent) {
-				$scrollParent = this.tree.tbody
-					? this.tree.$container.scrollParent()
-					: this.tree.$container;
+				if (this.tree.tbody) {
+					$scrollParent = $container.scrollParent();
+				} else if (overflowY === "scroll" || overflowY === "auto") {
+					$scrollParent = $container;
+				} else {
+					// #922 plain tree in a non-fixed-sized UL scrolls inside its parent
+					$scrollParent = $container.scrollParent();
+				}
 			} else if (!$scrollParent.jquery) {
 				// Make sure we have a jQuery object
 				$scrollParent = $($scrollParent);
@@ -2058,7 +2068,7 @@
 				);
 				$scrollParent = $(window);
 			}
-
+			// eslint-disable-next-line one-var
 			var topNodeY,
 				nodeY,
 				horzScrollbarHeight,
@@ -2094,11 +2104,9 @@
 					"scrollParent should be a simple element or `window`, not document or body."
 				);
 
-				(containerOffsetTop = $scrollParent.offset().top),
-					(nodeY =
-						$(this.span).offset().top -
-						containerOffsetTop +
-						scrollTop); // relative to scroll parent
+				containerOffsetTop = $scrollParent.offset().top;
+				nodeY =
+					$(this.span).offset().top - containerOffsetTop + scrollTop; // relative to scroll parent
 				topNodeY = topNode
 					? $(topNode.span).offset().top -
 					  containerOffsetTop +
@@ -2231,6 +2239,8 @@
 				function(a, b) {
 					var x = a.title.toLowerCase(),
 						y = b.title.toLowerCase();
+
+					// eslint-disable-next-line no-nested-ternary
 					return x === y ? 0 : x > y ? 1 : -1;
 				};
 			cl.sort(cmp);
@@ -2899,12 +2909,9 @@
 		 */
 		enableUpdate: function(flag) {
 			flag = flag !== false;
-			// Confusing use of '!'
-			/*jshint -W018 */
 			if (!!this._enableUpdate === !!flag) {
 				return flag;
 			}
-			/*jshint +W018 */
 			this._enableUpdate = flag;
 			if (flag) {
 				this.debug("enableUpdate(true): redraw "); //, this._dirtyRoots);
@@ -3368,6 +3375,8 @@
 				i,
 				key,
 				node,
+				nodeKey,
+				remain,
 				remainMap,
 				tmpParent,
 				segList,
@@ -3464,8 +3473,8 @@
 			}
 			// remainMap contains parent nodes, each with a list of relative sub-paths.
 			// We start loading all of them now, and pass the the list to each loader.
-			for (var nodeKey in remainMap) {
-				var remain = remainMap[nodeKey];
+			for (nodeKey in remainMap) {
+				remain = remainMap[nodeKey];
 				// console.log("for(): remain=", remain, "remainMap=", remainMap);
 				// key = remain.segList.shift();
 				// node = __findChild(remain.parent, key);
@@ -3868,7 +3877,7 @@
 				// TODO: return promise?
 				var matchNode,
 					stamp,
-					res,
+					_res,
 					focusNode,
 					event = ctx.originalEvent,
 					node = ctx.node,
@@ -3959,7 +3968,7 @@
 					case "right":
 					case "up":
 					case "down":
-						res = node.navigate(event.which, activate);
+						_res = node.navigate(event.which, activate);
 						break;
 					default:
 						handled = false;
@@ -3990,6 +3999,7 @@
 				var ajax,
 					delay,
 					dfd,
+					res,
 					tree = ctx.tree,
 					node = ctx.node,
 					requestId = Date.now();
@@ -4141,10 +4151,7 @@
 					});
 				}
 				// #383: accept and convert ECMAScript 6 Promise
-				if (
-					$.isFunction(source.then) &&
-					$.isFunction(source["catch"])
-				) {
+				if ($.isFunction(source.then) && $.isFunction(source.catch)) {
 					dfd = source;
 					source = new $.Deferred();
 					dfd.then(
@@ -4219,7 +4226,7 @@
 				} else {
 					if (ctx.options.postProcess) {
 						// #792: Call postProcess for non-deferred source
-						var res = tree._triggerNodeEvent(
+						res = tree._triggerNodeEvent(
 							"postProcess",
 							ctx,
 							ctx.originalEvent,
@@ -4373,7 +4380,7 @@
 			 * @param {EventData} ctx
 			 */
 			nodeRemoveChildren: function(ctx) {
-				var subCtx,
+				var //subCtx,
 					tree = ctx.tree,
 					node = ctx.node,
 					children = node.children;
@@ -4393,7 +4400,7 @@
 				this.nodeRemoveChildMarkup(ctx);
 				// Unlink children to support GC
 				// TODO: also delete this.children (not possible using visit())
-				subCtx = $.extend({}, ctx);
+				// subCtx = $.extend({}, ctx);
 				node.triggerModifyChild("remove", null);
 				node.visit(function(n) {
 					n.parent = null;
@@ -5619,8 +5626,9 @@
 			 */
 			treeDestroy: function(ctx) {
 				this.$div.find(">ul.fancytree-container").remove();
-				this.$source &&
+				if (this.$source) {
 					this.$source.removeClass("fancytree-helper-hidden");
+				}
 			},
 			/** Widget was (re-)initialized.
 			 * @param {EventData} ctx
@@ -5794,7 +5802,9 @@
 						// #712: Use last mousedowned node ('click' event fires after focusin)
 						targetNode =
 							this._lastMousedownNode || this.getFirstChild();
-						targetNode && targetNode.setFocus();
+						if (targetNode) {
+							targetNode.setFocus();
+						}
 					}
 				}
 			},
@@ -6397,9 +6407,11 @@
 				return function() {
 					var args = arguments;
 					ctx = ctx || this;
+					// eslint-disable-next-line no-unused-expressions
 					invokeAsap && !timer && fn.apply(ctx, args);
 					clearTimeout(timer);
 					timer = setTimeout(function() {
+						// eslint-disable-next-line no-unused-expressions
 						invokeAsap || fn.apply(ctx, args);
 						timer = null;
 					}, timeout);
@@ -6409,16 +6421,17 @@
 			 * @param {string} msg
 			 */
 			debug: function(msg) {
-				/*jshint expr:true */
-				$.ui.fancytree.debugLevel >= 4 &&
+				if ($.ui.fancytree.debugLevel >= 4) {
 					consoleApply("log", arguments);
+				}
 			},
 			/** Write error message to console if debugLevel >= 1.
 			 * @param {string} msg
 			 */
 			error: function(msg) {
-				$.ui.fancytree.debugLevel >= 1 &&
+				if ($.ui.fancytree.debugLevel >= 1) {
 					consoleApply("error", arguments);
+				}
 			},
 			/** Convert &lt;, &gt;, &amp;, &quot;, &#39;, &#x2F; to the equivalent entities.
 			 *
@@ -6575,7 +6588,7 @@
 					el = $(".fancytree-container").eq(el); // el was an integer: return nth instance
 				} else if (typeof el === "string") {
 					el = $(el).eq(0); // el was a selector: use first match
-				} else if (el.selector !== undefined) {
+				} else if (el instanceof $) {
 					el = el.eq(0); // el was a jQuery object: use the first DOM element
 				} else if (el.originalEvent !== undefined) {
 					el = $(el.target); // el was an Event
@@ -6730,9 +6743,9 @@
 			 * @param {string} msg
 			 */
 			info: function(msg) {
-				/*jshint expr:true */
-				$.ui.fancytree.debugLevel >= 3 &&
+				if ($.ui.fancytree.debugLevel >= 3) {
 					consoleApply("info", arguments);
+				}
 			},
 			/* @deprecated: use eventToString(event) instead.
 			 */
@@ -6859,8 +6872,7 @@
 							if (allData.hasOwnProperty(lowerCaseAttr)) {
 								allData[
 									NODE_ATTR_LOWERCASE_MAP[lowerCaseAttr]
-								] =
-									allData[lowerCaseAttr];
+								] = allData[lowerCaseAttr];
 								delete allData[lowerCaseAttr];
 							}
 						}
@@ -6919,8 +6931,9 @@
 			 * @param {string} msg
 			 */
 			warn: function(msg) {
-				$.ui.fancytree.debugLevel >= 2 &&
+				if ($.ui.fancytree.debugLevel >= 2) {
 					consoleApply("warn", arguments);
+				}
 			},
 		}
 	);

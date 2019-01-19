@@ -4,13 +4,13 @@
  * Use glyph-fonts, ligature-fonts, or SVG icons instead of icon sprites.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2019, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.30.1
- * @date 2018-11-13T18:58:18Z
+ * @version 2.30.2
+ * @date 2019-01-13T08:17:01Z
  */
 
 (function(factory) {
@@ -98,7 +98,7 @@
 				radioSelected: "fas fa-circle",
 				radioUnknown: "far fa-dot-circle",
 				dragHelper: "fas fa-arrow-right",
-				dropMarker: "fas fa-long-arrow-right",
+				dropMarker: "fas fa-long-arrow-alt-right",
 				error: "fas fa-exclamation-triangle",
 				expanderClosed: "fas fa-caret-right",
 				expanderLazy: "fas fa-angle-right",
@@ -190,7 +190,7 @@
 
 	$.ui.fancytree.registerExtension({
 		name: "glyph",
-		version: "2.30.1",
+		version: "2.30.2",
 		// Default options for this extension.
 		options: {
 			preset: null, // 'awesome3', 'awesome4', 'bootstrap3', 'material'

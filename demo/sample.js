@@ -156,15 +156,14 @@
  * By Felix Kling
  */
 (function($) {
-	var _gaq = _gaq || [],
-		SAMPLE_BUTTON_DEFAULTS = {
-			id: undefined,
-			label: "Sample",
-			newline: true,
-			code: function() {
-				alert("not implemented");
-			},
-		};
+	var SAMPLE_BUTTON_DEFAULTS = {
+		id: undefined,
+		label: "Sample",
+		newline: true,
+		code: function() {
+			alert("not implemented");
+		},
+	};
 
 	$.fn.clickToggle = function(func1, func2) {
 		var funcs = [func1, func2];
@@ -333,7 +332,7 @@
 	$(function() {
 		// Log to Google Analytics, when not running locally
 		if (document.URL.toLowerCase().indexOf("wwwendt.de/") >= 0) {
-			/* jshint ignore:start */
+			/* eslint-disable */
 			(function(i, s, o, g, r, a, m) {
 				i["GoogleAnalyticsObject"] = r;
 				(i[r] =
@@ -355,7 +354,7 @@
 			);
 			ga("create", "UA-316028-1", "auto");
 			ga("send", "pageview");
-			/* jshint ignore:end */
+			/* eslint-enable */
 		}
 
 		// Show some elements only, if (not) inside the Example Browser

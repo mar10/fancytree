@@ -2,10 +2,6 @@
 Build scripts for Fancytree
 ###
 
-# jshint directives for the generated JS:
-
-###jshint node: true, unused: false ###
-
 "use strict"
 
 module.exports = (grunt) ->
@@ -168,6 +164,13 @@ module.exports = (grunt) ->
                 port: 8080
                 base: "./"
                 keepalive: false
+                # middleware: (connect) ->
+                #     return [
+                #         (req, res, next) ->
+                #             res.setHeader('Access-Control-Allow-Origin', '*')
+                #             res.setHeader('Access-Control-Allow-Methods', '*')
+                #             next()
+                #     ]
         sauce:
             options:
                 hostname: "localhost"
@@ -228,38 +231,40 @@ module.exports = (grunt) ->
                 output: "doc/annotated-src"
 
     eslint:
+        options:
+            maxWarnings: 100
+            # format: "stylish"
         # options:
         #   # See https://github.com/sindresorhus/grunt-eslint/issues/119
         #   quiet: true
         # We have to explicitly declare "src" property otherwise "newer"
         # task wouldn't work properly :/
-        dist:
-            src: "dist/jquery.js"
-        dev:
+        build:
             options:
-                fix: false
-                maxWarnings: 100
+                ignore: false
             src: [
-              "src/jquery.fancytree.js"
-              "src/jquery.fancytree.*.js"
-              "test/test-*.js"
-              "demo/sample.js"
+              "build/jquery.fancytree.js"
+              "build/jquery.fancytree-all.js"
+              "build/modules/*.js"
+              ]
+        dev:
+            src: [
+              "src/*.js"
+              "3rd-party/**/jquery.fancytree.*.js"
+              # "test/**/test-*.js"
+              "demo/**/*.js"
               ]
         fix:
             options:
                 fix: true
             src: [
-              "src/jquery.fancytree.js"
-              "src/jquery.fancytree.*.js"
-              "test/test-*.js"
-              "demo/sample.js"
+              "src/*.js"
+              "3rd-party/**/jquery.fancytree.*.js"
+              # "test/**/test-*.js"
+              "demo/**/*.js"
               ]
 
     exec:
-        # tabfix:
-        #     # Cleanup whitespace according to http://contribute.jquery.org/style-guide/js/
-        #     # (requires https://github.com/mar10/tabfix)
-        #     cmd: "tabfix -t -r -m*.js,*.css,*.html,*.json -inode_modules src demo test"
         upload:
             # FTP upload the demo files (requires https://github.com/mar10/pyftpsync)
             stdin: true  # Allow interactive console
@@ -276,22 +281,6 @@ module.exports = (grunt) ->
                 template: "bin/jsdoc3-moogle",
                 configure: "doc/jsdoc.conf.json"
                 verbose: true
-
-    jshint:
-        options:
-            # Linting according to http://contribute.jquery.org/style-guide/js/
-            jshintrc: ".jshintrc"
-        beforeConcat: [
-            # "Gruntfile.js"
-            "src/*.js"
-            "3rd-party/**/jquery.fancytree.*.js"
-            "test/unit/*.js"
-            "demo/**/*.js"
-            ]
-        afterConcat: [
-            "build/jquery.fancytree.js"
-            "build/jquery.fancytree-all.js"
-            ]
 
     less:
         development:
@@ -312,6 +301,8 @@ module.exports = (grunt) ->
             ]
 
     qunit:
+        options:
+            httpBase: "http://localhost:8080"
         build: [
             "test/unit/test-core-build.html"
         ]
@@ -411,7 +402,7 @@ module.exports = (grunt) ->
                 # jQuery 1.10    dropped support for IE 6
                 # jQuery UI 1.10 supports IE 7+ and ?
                 browsers: [
-                  { browserName: "internet explorer", version: "8", platform: "Windows 7" }
+                  # { browserName: "internet explorer", version: "8", platform: "Windows 7" }
                   { browserName: "internet explorer", version: "9", platform: "Windows 7" }
                 ]
         # ui_109:
@@ -472,11 +463,11 @@ module.exports = (grunt) ->
         less:
             files: "src/**/*.less"
             tasks: ["less:development"]
-        jshint:
+        eslint:
             options:
                 atBegin: true
             files: ["src/*.js", "test/unit/*.js", "demo/**/*.js"]
-            tasks: ["jshint:beforeConcat", "eslint:dev"]
+            tasks: ["eslint:dev"]
 
     yabs:
         release:
@@ -510,13 +501,13 @@ module.exports = (grunt) ->
 
   grunt.registerTask "server", ["connect:forever"]
   grunt.registerTask "dev", ["connect:dev", "watch"]
-  grunt.registerTask "prettier", ["eslint:fix"]
-  # grunt.registerTask "tabfix", ["exec:tabfix"]
+  # grunt.registerTask "prettier", ["eslint:fix"]
+  grunt.registerTask "format", ["eslint:fix"]
   grunt.registerTask "test", [
-      "jshint:beforeConcat",
       "eslint:dev",
       # "csslint",
       # "htmllint",
+      "connect:dev"  # start server
       "qunit:develop"
   ]
 
@@ -532,10 +523,13 @@ module.exports = (grunt) ->
 
   grunt.registerTask "default", ["test"]
   grunt.registerTask "ci", ["test"]  # Called by 'npm test'
+  # Update package.json to latest versions (interactive)
+  grunt.registerTask "dev-update", ["devUpdate"]
 
   grunt.registerTask "build", [
       "less:development"
-      "prettier"
+      "format"
+      # `test` also starts the connect:dev server
       "test"
       "jsdoc:build"
       "docco:docs"
@@ -550,20 +544,19 @@ module.exports = (grunt) ->
       "uglify:all_deps"
       "clean:post_build"
       "replace:production"
-      "jshint:afterConcat"
+      "eslint:build"
       "copy:ui_deps"
-      # "uglify:build"
       "qunit:build"
       ]
 
   grunt.registerTask "make_dist", [
-      # "exec:tabfix"
+      # `build` also starts the connect:dev server
       "build"
       "clean:dist"
       "copy:dist"
       "clean:build"
       "replace:release"
-      # "jshint:dist"  # should rather use grunt-jsvalidate for minified output
+      # "eslint:dist"  # should rather use grunt-jsvalidate for minified output
       "qunit:dist"
       ]
 

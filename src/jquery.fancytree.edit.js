@@ -4,7 +4,7 @@
  * Make node titles editable.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2019, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -77,6 +77,12 @@
 
 		// Disable standard Fancytree mouse- and key handling
 		tree.widget._unbind();
+
+		local.lastDraggableAttrValue = node.span.draggable;
+		if (local.lastDraggableAttrValue) {
+			node.span.draggable = false;
+		}
+
 		// #116: ext-dnd prevents the blur event, so we have to catch outer clicks
 		$(document).on("mousedown.fancytree-edit", function(event) {
 			if (!$(event.target).hasClass("fancytree-edit-input")) {
@@ -205,6 +211,11 @@
 		local.relatedNode = null;
 		// Re-enable mouse and keyboard handling
 		tree.widget._bind();
+
+		if (local.lastDraggableAttrValue) {
+			node.span.draggable = true;
+		}
+
 		// Set keyboard focus, even if setFocus() claims 'nothing to do'
 		$(tree.$container).focus();
 		eventData.input = null;

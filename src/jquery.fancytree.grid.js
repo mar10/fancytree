@@ -73,6 +73,7 @@
 		var i,
 			count,
 			start,
+			newRow,
 			reason = "",
 			redraw = false,
 			vp = this.viewport,
@@ -128,7 +129,7 @@
 			}
 		} else if (trCount < count) {
 			for (i = 0; i < count - trCount; i++) {
-				var newRow = this.rowFragment.firstChild.cloneNode(true);
+				newRow = this.rowFragment.firstChild.cloneNode(true);
 				this.tbody.appendChild(newRow);
 			}
 		}
@@ -214,7 +215,7 @@
 			start = vp.start,
 			bottom = vp.start + vp.count,
 			tr,
-			renderCount = 0,
+			_renderCount = 0,
 			trIdx = 0,
 			trList = this.tbody.children;
 
@@ -246,7 +247,7 @@
 			if (tr !== node.tr) {
 				node.tr = tr;
 				node.render();
-				renderCount++;
+				_renderCount++;
 
 				// TODO:
 				// Implement scrolling by re-using existing markup
@@ -684,7 +685,9 @@
 		},
 		treeDestroy: function(ctx) {
 			this.$container.find("tbody").empty();
-			this.$source && this.$source.removeClass("fancytree-helper-hidden");
+			if (this.$source) {
+				this.$source.removeClass("fancytree-helper-hidden");
+			}
 			this._renumberReset(); // Invalidate visible row cache
 			return this._superApply(arguments);
 		},

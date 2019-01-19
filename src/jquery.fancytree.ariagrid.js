@@ -7,7 +7,7 @@
  *
  * @requires ext-table
  *
- * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2019, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -157,9 +157,9 @@
 	function activateEmbeddedLink($td) {
 		// $td.find( "a" )[ 0 ].click();  // does not work (always)?
 		// $td.find( "a" ).click();
-		var event = document.createEvent("MouseEvent");
+		var event = document.createEvent("MouseEvent"),
+			a = $td.find("a")[0]; // document.getElementById('nameOfID');
 		event = new CustomEvent("click");
-		var a = $td.find("a")[0]; // document.getElementById('nameOfID');
 		a.dispatchEvent(event);
 	}
 

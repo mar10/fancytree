@@ -4,7 +4,7 @@
  * Drag-and-drop support (native HTML5).
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2019, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -77,6 +77,7 @@
 
 	/* Convert number to string and prepend +/-; return empty string for 0.*/
 	function offsetString(n) {
+		// eslint-disable-next-line no-nested-ternary
 		return n === 0 ? "" : n > 0 ? "+" + n : "" + n;
 	}
 
@@ -601,7 +602,12 @@
 								}
 							}
 							// Let user modify above settings
-							return dndOpts.dragStart(node, data) !== false;
+							if (dndOpts.dragStart(node, data) !== false) {
+								return true;
+							}
+							// Clear dragged node to be safe
+							_clearGlobals();
+							return false;
 
 						case "drag":
 							// Called every few miliseconds
@@ -612,7 +618,7 @@
 
 						case "dragend":
 							_clearGlobals();
-							//					data.dropEffect = dropEffect;
+							// data.dropEffect = dropEffect;
 							data.isCancelled = dropEffect === "none";
 							$dropMarker.hide();
 							// Take this badge off of me - I can't use it anymore:
@@ -633,6 +639,7 @@
 					function(event) {
 						var json,
 							nodeData,
+							isSourceFtNode,
 							r,
 							res,
 							allowDrop = null,
@@ -681,7 +688,18 @@
 										classDropAccept + " " + classDropReject
 									);
 
-								if (dndOpts.preventNonNodes && !nodeData) {
+								// Data is only readable in the dragstart and drop event,
+								// but we can check for the type:
+								isSourceFtNode =
+									$.inArray(
+										nodeMimeType,
+										dataTransfer.types
+									) >= 0;
+
+								if (
+									dndOpts.preventNonNodes &&
+									!isSourceFtNode
+								) {
 									node.debug("Reject dropping a non-node.");
 									DRAG_ENTER_RESPONSE = false;
 									break;
@@ -808,7 +826,7 @@
 								break;
 
 							case "drop":
-								// Data is only readable in the (dragenter and) drop event:
+								// Data is only readable in the (dragstart and) drop event:
 
 								if (
 									$.inArray(

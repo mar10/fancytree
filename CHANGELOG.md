@@ -1,7 +1,18 @@
-# 2.30.2-0 / Unreleased
+# 2.30.3-0 / Unreleased
+  * Replace jshint/jscs with eslint
+  * Now testing on Puppeteer/Chromium instead of PhantonJS
+
+# 2.30.2 / 2019-01-13
+  * Stop testing on IE 8 (no longer available on Saucelabs)
   * [Fixed] #910 ext-dnd5 throws error for draggable column headers
   * [Fixed] overrideMethod()'s calling context
   * [Fixed] #912 ext-dnd5 + ext-glyph awesome5 does not show the icons when dragging an item
+  * [Fixed] #919 ext-multi: JavaScript error (event is not defined) in nodeKeydown
+  * [Fixed] #922 scrollIntoView for plain trees that don't have a scrollbar
+  * [Fixed] #924 ext-edit: Fix caret position for mouse-click in input
+  * [Fixed] #928 ext-dnd5: Fix `preventNonNodes` option
+  * [Fixed] #929 Fix `.getTree()` for jQuery 3
+  * [Fixed] #930 ext-dnd5: If drag does not start, no drag data should be stored
 
 # 'viewport' / Unreleased
   * Render sub-parts of a tree
