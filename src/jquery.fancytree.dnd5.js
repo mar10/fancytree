@@ -77,6 +77,7 @@
 
 	/* Convert number to string and prepend +/-; return empty string for 0.*/
 	function offsetString(n) {
+		// eslint-disable-next-line no-nested-ternary
 		return n === 0 ? "" : n > 0 ? "+" + n : "" + n;
 	}
 

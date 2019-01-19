@@ -168,9 +168,9 @@
 	function activateEmbeddedLink($td) {
 		// $td.find( "a" )[ 0 ].click();  // does not work (always)?
 		// $td.find( "a" ).click();
-		var event = document.createEvent("MouseEvent");
+		var event = document.createEvent("MouseEvent"),
+			a = $td.find("a")[0]; // document.getElementById('nameOfID');
 		event = new CustomEvent("click");
-		var a = $td.find("a")[0]; // document.getElementById('nameOfID');
 		a.dispatchEvent(event);
 	}
 

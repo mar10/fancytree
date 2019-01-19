@@ -422,8 +422,8 @@
 						ctx
 					);
 				} else if (opts.table.mergeStatusColumns && node.isTopLevel()) {
-					var $tdList = $(node.tr).find(">td");
-					$tdList
+					$(node.tr)
+						.find(">td")
 						.eq(0)
 						.prop("colspan", tree.columnCount)
 						.text(node.title)
@@ -541,7 +541,9 @@
 		},
 		treeDestroy: function(ctx) {
 			this.$container.find("tbody").empty();
-			this.$source && this.$source.removeClass("fancytree-helper-hidden");
+			if (this.$source) {
+				this.$source.removeClass("fancytree-helper-hidden");
+			}
 			return this._superApply(arguments);
 		},
 		/*,

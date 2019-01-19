@@ -63,7 +63,7 @@
 				/(opera|chrome|safari|firefox|msie)\/?\s*(\.?\d+(\.\d+)*)/i
 			);
 
-		if (m && (tem = ua.match(/version\/([\.\d]+)/i)) !== null) {
+		if (m && (tem = ua.match(/version\/([.\d]+)/i)) !== null) {
 			m[2] = tem[1];
 		}
 		m = m ? [m[1], m[2]] : [n, navigator.appVersion, "-?"];

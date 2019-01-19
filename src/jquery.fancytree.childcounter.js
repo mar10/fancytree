@@ -45,10 +45,10 @@
 	"use strict";
 
 	// The [coding guidelines](http://contribute.jquery.org/style-guide/js/)
-	// require jshint compliance.
+	// require jshint /eslint compliance.
 	// But for this sample, we want to allow unused variables for demonstration purpose.
 
-	/*jshint unused:false */
+	/*eslint-disable no-unused-vars */
 
 	// Adding methods
 	// --------------

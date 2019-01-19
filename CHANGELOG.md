@@ -1,4 +1,5 @@
 # 2.30.3-0 / Unreleased
+  * Replace jshint/jscs with eslint
 
 # 2.30.2 / 2019-01-13
   * Stop testing on IE 8 (no longer available on Saucelabs)

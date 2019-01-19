@@ -3,7 +3,7 @@ doc
 lib
 node_modules
 test/**
-!test/unit/**
+!test/unit/**/*.js
 *.min.js
 build/**
 dist/**

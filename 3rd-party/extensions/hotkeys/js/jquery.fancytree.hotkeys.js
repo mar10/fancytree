@@ -17,7 +17,7 @@
 				$(tree.$container).on(event, null, key, function(evt) {
 					var node = tree.getActiveNode();
 					return handler(node, evt);
-                    // return false from the handler will stop default handling.
+					// return false from the handler will stop default handling.
 				});
 			});
 		});
@@ -26,10 +26,10 @@
 	$.ui.fancytree.registerExtension({
 		name: "hotkeys",
 		version: "@VERSION",
-		hotkeys: { },
+		hotkeys: {},
 		treeInit: function(ctx) {
 			this._superApply(arguments);
 			initHotkeys(this, ctx.options.hotkeys);
-		}
+		},
 	});
-}(jQuery, document));
+})(jQuery, document);

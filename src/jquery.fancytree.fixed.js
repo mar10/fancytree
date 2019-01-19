@@ -13,6 +13,9 @@
  * @date @DATE
  */
 
+// Allow to use multiple var statements inside a function
+/* eslint-disable one-var */
+
 (function(factory) {
 	if (typeof define === "function" && define.amd) {
 		// AMD. Register as an anonymous module.
@@ -320,10 +323,12 @@
 			var node = ctx.node;
 
 			function _removeChild(elem) {
-				var children = elem.children;
+				var i,
+					child,
+					children = elem.children;
 				if (children) {
-					for (var i = 0; i < children.length; i++) {
-						var child = children[i];
+					for (i = 0; i < children.length; i++) {
+						child = children[i];
 						if (child.trRight) {
 							$(child.trRight).remove();
 						}

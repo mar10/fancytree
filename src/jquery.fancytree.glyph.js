@@ -265,6 +265,7 @@
 						icon
 					);
 				} else {
+					// eslint-disable-next-line no-nested-ternary
 					icon = node.selected
 						? "checkboxSelected"
 						: node.partsel

@@ -225,31 +225,46 @@ module.exports = (grunt) ->
                 output: "doc/annotated-src"
 
     eslint:
+        options:
+            maxWarnings: 100
+            # format: "stylish"
         # options:
         #   # See https://github.com/sindresorhus/grunt-eslint/issues/119
         #   quiet: true
         # We have to explicitly declare "src" property otherwise "newer"
         # task wouldn't work properly :/
-        dist:
-            src: "dist/jquery.js"
-        dev:
+        build:
             options:
-                fix: false
-                maxWarnings: 100
+                ignore: false
             src: [
-              "src/jquery.fancytree.js"
-              "src/jquery.fancytree.*.js"
-              "test/test-*.js"
-              "demo/sample.js"
+              "build/jquery.fancytree.js"
+              "build/jquery.fancytree-all.js"
+              "build/modules/*.js"
+              ]
+        dev:
+            src: [
+              "src/*.js"
+              "3rd-party/**/jquery.fancytree.*.js"
+              # "test/**/test-*.js"
+              "demo/**/*.js"
+              ]
+        dist:
+            options:
+                ignore: false
+            src: [
+              "dist/jquery.fancytree.js"
+              "dist/jquery.fancytree-all.js"
+              "dist/modules/*.js"
+              # "dist/jquery.js"
               ]
         fix:
             options:
                 fix: true
             src: [
-              "src/jquery.fancytree.js"
-              "src/jquery.fancytree.*.js"
-              "test/test-*.js"
-              "demo/sample.js"
+              "src/*.js"
+              "3rd-party/**/jquery.fancytree.*.js"
+              # "test/**/test-*.js"
+              "demo/**/*.js"
               ]
 
     exec:
@@ -274,21 +289,21 @@ module.exports = (grunt) ->
                 configure: "doc/jsdoc.conf.json"
                 verbose: true
 
-    jshint:
-        options:
-            # Linting according to http://contribute.jquery.org/style-guide/js/
-            jshintrc: ".jshintrc"
-        beforeConcat: [
-            # "Gruntfile.js"
-            "src/*.js"
-            "3rd-party/**/jquery.fancytree.*.js"
-            "test/unit/*.js"
-            "demo/**/*.js"
-            ]
-        afterConcat: [
-            "build/jquery.fancytree.js"
-            "build/jquery.fancytree-all.js"
-            ]
+    # jshint:
+    #     options:
+    #         # Linting according to http://contribute.jquery.org/style-guide/js/
+    #         jshintrc: ".jshintrc"
+    #     beforeConcat: [
+    #         # "Gruntfile.js"
+    #         "src/*.js"
+    #         "3rd-party/**/jquery.fancytree.*.js"
+    #         "test/unit/*.js"
+    #         "demo/**/*.js"
+    #         ]
+    #     afterConcat: [
+    #         "build/jquery.fancytree.js"
+    #         "build/jquery.fancytree-all.js"
+    #         ]
 
     less:
         development:
@@ -469,11 +484,11 @@ module.exports = (grunt) ->
         less:
             files: "src/**/*.less"
             tasks: ["less:development"]
-        jshint:
+        eslint:
             options:
                 atBegin: true
             files: ["src/*.js", "test/unit/*.js", "demo/**/*.js"]
-            tasks: ["jshint:beforeConcat", "eslint:dev"]
+            tasks: ["eslint:dev"]
 
     yabs:
         release:
@@ -508,9 +523,8 @@ module.exports = (grunt) ->
   grunt.registerTask "server", ["connect:forever"]
   grunt.registerTask "dev", ["connect:dev", "watch"]
   grunt.registerTask "prettier", ["eslint:fix"]
-  # grunt.registerTask "tabfix", ["exec:tabfix"]
   grunt.registerTask "test", [
-      "jshint:beforeConcat",
+      # "jshint:beforeConcat",
       "eslint:dev",
       # "csslint",
       # "htmllint",
@@ -547,7 +561,8 @@ module.exports = (grunt) ->
       "uglify:all_deps"
       "clean:post_build"
       "replace:production"
-      "jshint:afterConcat"
+      "eslint:build"
+      # "jshint:afterConcat"
       "copy:ui_deps"
       # "uglify:build"
       "qunit:build"
