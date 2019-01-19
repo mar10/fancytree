@@ -1045,8 +1045,8 @@
 					state = allSelected
 						? true
 						: someSelected
-							? undefined
-							: false;
+						? undefined
+						: false;
 				} else {
 					// This is an end-node: simply report the status
 					unselState = FT.evalOption(
@@ -6802,8 +6802,7 @@
 							if (allData.hasOwnProperty(lowerCaseAttr)) {
 								allData[
 									NODE_ATTR_LOWERCASE_MAP[lowerCaseAttr]
-								] =
-									allData[lowerCaseAttr];
+								] = allData[lowerCaseAttr];
 								delete allData[lowerCaseAttr];
 							}
 						}

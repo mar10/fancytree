@@ -269,8 +269,8 @@
 					icon = node.selected
 						? "checkboxSelected"
 						: node.partsel
-							? "checkboxUnknown"
-							: "checkbox";
+						? "checkboxUnknown"
+						: "checkbox";
 					// span.className = "fancytree-checkbox " + map[icon];
 					setIcon(span, "fancytree-checkbox", opts, icon);
 				}

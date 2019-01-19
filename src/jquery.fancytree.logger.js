@@ -47,7 +47,7 @@
 		EVENT_NAME_MAP = {};
 
 	/*
-*/
+	 */
 	for (i = 0; i < HOOK_NAMES.length; i++) {
 		HOOK_NAME_MAP[HOOK_NAMES[i]] = true;
 	}

@@ -88,8 +88,8 @@
 	}
 
 	/* Recursively load lazy nodes
- * @param {string} mode 'load', 'expand', false
- */
+	 * @param {string} mode 'load', 'expand', false
+	 */
 	function _loadLazyNodes(tree, local, keyList, mode, dfd) {
 		var i,
 			key,
