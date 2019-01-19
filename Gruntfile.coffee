@@ -2,10 +2,6 @@
 Build scripts for Fancytree
 ###
 
-# jshint directives for the generated JS:
-
-###jshint node: true, unused: false ###
-
 "use strict"
 
 module.exports = (grunt) ->
@@ -248,15 +244,6 @@ module.exports = (grunt) ->
               # "test/**/test-*.js"
               "demo/**/*.js"
               ]
-        dist:
-            options:
-                ignore: false
-            src: [
-              "dist/jquery.fancytree.js"
-              "dist/jquery.fancytree-all.js"
-              "dist/modules/*.js"
-              # "dist/jquery.js"
-              ]
         fix:
             options:
                 fix: true
@@ -268,10 +255,6 @@ module.exports = (grunt) ->
               ]
 
     exec:
-        # tabfix:
-        #     # Cleanup whitespace according to http://contribute.jquery.org/style-guide/js/
-        #     # (requires https://github.com/mar10/tabfix)
-        #     cmd: "tabfix -t -r -m*.js,*.css,*.html,*.json -inode_modules src demo test"
         upload:
             # FTP upload the demo files (requires https://github.com/mar10/pyftpsync)
             stdin: true  # Allow interactive console
@@ -288,22 +271,6 @@ module.exports = (grunt) ->
                 template: "bin/jsdoc3-moogle",
                 configure: "doc/jsdoc.conf.json"
                 verbose: true
-
-    # jshint:
-    #     options:
-    #         # Linting according to http://contribute.jquery.org/style-guide/js/
-    #         jshintrc: ".jshintrc"
-    #     beforeConcat: [
-    #         # "Gruntfile.js"
-    #         "src/*.js"
-    #         "3rd-party/**/jquery.fancytree.*.js"
-    #         "test/unit/*.js"
-    #         "demo/**/*.js"
-    #         ]
-    #     afterConcat: [
-    #         "build/jquery.fancytree.js"
-    #         "build/jquery.fancytree-all.js"
-    #         ]
 
     less:
         development:
@@ -522,9 +489,9 @@ module.exports = (grunt) ->
 
   grunt.registerTask "server", ["connect:forever"]
   grunt.registerTask "dev", ["connect:dev", "watch"]
-  grunt.registerTask "prettier", ["eslint:fix"]
+  # grunt.registerTask "prettier", ["eslint:fix"]
+  grunt.registerTask "format", ["eslint:fix"]
   grunt.registerTask "test", [
-      # "jshint:beforeConcat",
       "eslint:dev",
       # "csslint",
       # "htmllint",
@@ -543,10 +510,12 @@ module.exports = (grunt) ->
 
   grunt.registerTask "default", ["test"]
   grunt.registerTask "ci", ["test"]  # Called by 'npm test'
+  # Update package.json to latest versions (interactive)
+  grunt.registerTask "dev-update", ["devUpdate"]
 
   grunt.registerTask "build", [
       "less:development"
-      "prettier"
+      "format"
       "test"
       "jsdoc:build"
       "docco:docs"
@@ -562,20 +531,17 @@ module.exports = (grunt) ->
       "clean:post_build"
       "replace:production"
       "eslint:build"
-      # "jshint:afterConcat"
       "copy:ui_deps"
-      # "uglify:build"
       "qunit:build"
       ]
 
   grunt.registerTask "make_dist", [
-      # "exec:tabfix"
       "build"
       "clean:dist"
       "copy:dist"
       "clean:build"
       "replace:release"
-      "eslint:dist"  # should rather use grunt-jsvalidate for minified output
+      # "eslint:dist"  # should rather use grunt-jsvalidate for minified output
       "qunit:dist"
       ]
 

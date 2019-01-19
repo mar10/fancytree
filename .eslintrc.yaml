@@ -18,39 +18,39 @@ globals:
 # Custom rules (see https://eslint.org/docs/rules/ )
 # 0:off, 1:warn, 2:error
 rules:
-  no-bitwise: error
-  no-empty:
-    - error
-    - {allowEmptyCatch: true}
   camelcase: error
   curly: error
-#   eqeqeq: error
-#   no-unused-expressions: error
-  wrap-iife:
-    - error
-    - any
-  no-use-before-define:
-    - error
-    - functions: false
+  eqeqeq: error
   new-cap:
       - error
       - { "capIsNewExceptionPattern": "^\\$\\.." }  # Allow `d = $.Deferred()`
+  no-bitwise: error
   no-caller: error
-  no-new: error
-  no-undef: error
-  one-var:
-    - warn
-    - always
+  no-cond-assign:
+    - error
+    - except-parens
   no-constant-condition:
     - error
     - { "checkLoops": false }
-  no-nested-ternary: 1
+  no-empty:
+    - error
+    - {allowEmptyCatch: true}
+  no-eval: error
+  no-nested-ternary: warn
+  no-new: error
+  no-undef: error
+  no-unused-expressions: error
   no-unused-vars:
     - error
     # Allow unused vars in catch() and if start with '_'
     - {args: none, caughtErrors: none, varsIgnorePattern: "^_" }
-  no-cond-assign:
+  no-use-before-define:
     - error
-    - except-parens
-  no-eval: error
+    - functions: false
+  one-var:
+    - warn
+    - always
+  wrap-iife:
+    - error
+    - any
   yoda: warn
