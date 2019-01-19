@@ -4,20 +4,6 @@ extends:
   - "jquery"
   - "plugin:prettier/recommended"
 
-# jQuery's JSHint recommendations:
-# boss: true
-# curly: true
-# eqeqeq: true
-# eqnull: true
-# expr: true
-# immed: true
-# noarg: true
-# quotmark: double
-# smarttabs: true
-# trailing: true
-# undef: true
-# unused: true
-
 # Accept `window`, etc.
 env:
   browser: true
@@ -32,24 +18,26 @@ globals:
 # Custom rules (see https://eslint.org/docs/rules/ )
 # 0:off, 1:warn, 2:error
 rules:
-  no-bitwise: 2
+  no-bitwise: error
   no-empty:
-    - 2
+    - error
     - {allowEmptyCatch: true}
-#   camelcase: 2
-#   curly: 2
-#   eqeqeq: 2
-#   no-unused-expressions: 2
-#   wrap-iife:
-#     - 2
-#     - any
-#   no-use-before-define:
-#     - 2
-#     - functions: false
-#   new-cap: 2
-#   no-caller: 2
-#   no-new: 2
-#   no-undef: 2
+  camelcase: error
+  curly: error
+#   eqeqeq: error
+#   no-unused-expressions: error
+  wrap-iife:
+    - error
+    - any
+  no-use-before-define:
+    - error
+    - functions: false
+  new-cap:
+      - error
+      - { "capIsNewExceptionPattern": "^\\$\\.." }  # Allow `d = $.Deferred()`
+  no-caller: error
+  no-new: error
+  no-undef: error
   one-var:
     - warn
     - always
@@ -58,11 +46,11 @@ rules:
     - { "checkLoops": false }
   no-nested-ternary: 1
   no-unused-vars:
-    - 2
+    - error
     # Allow unused vars in catch() and if start with '_'
     - {args: none, caughtErrors: none, varsIgnorePattern: "^_" }
-#   no-cond-assign:
-#     - 2
-#     - except-parens
-  # no-eq-null: 2
-  no-eval: 0
+  no-cond-assign:
+    - error
+    - except-parens
+  no-eval: error
+  yoda: warn

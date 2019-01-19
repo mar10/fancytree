@@ -575,7 +575,7 @@ module.exports = (grunt) ->
       "copy:dist"
       "clean:build"
       "replace:release"
-      # "jshint:dist"  # should rather use grunt-jsvalidate for minified output
+      "eslint:dist"  # should rather use grunt-jsvalidate for minified output
       "qunit:dist"
       ]
 

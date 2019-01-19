@@ -156,15 +156,14 @@
  * By Felix Kling
  */
 (function($) {
-	var _gaq = _gaq || [],
-		SAMPLE_BUTTON_DEFAULTS = {
-			id: undefined,
-			label: "Sample",
-			newline: true,
-			code: function() {
-				alert("not implemented");
-			},
-		};
+	var SAMPLE_BUTTON_DEFAULTS = {
+		id: undefined,
+		label: "Sample",
+		newline: true,
+		code: function() {
+			alert("not implemented");
+		},
+	};
 
 	$.fn.clickToggle = function(func1, func2) {
 		var funcs = [func1, func2];
