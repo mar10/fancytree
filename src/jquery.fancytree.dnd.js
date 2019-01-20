@@ -550,7 +550,7 @@
 					draggable: draggable,
 				}),
 				res = null,
-				that = this,
+				self = this,
 				$nodeTag = $(node.span);
 
 			if (dnd.smartRevert) {
@@ -599,9 +599,9 @@
 									event.type === "keydown" &&
 									event.which === $.ui.keyCode.ESCAPE
 								) {
-									that.ext.dnd._cancelDrag();
+									self.ext.dnd._cancelDrag();
 								} else if (event.type === "mousedown") {
-									that.ext.dnd._cancelDrag();
+									self.ext.dnd._cancelDrag();
 								}
 							}
 						);

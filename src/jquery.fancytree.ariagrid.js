@@ -170,6 +170,7 @@
 		// $td.find( "a" ).click();
 		var event = document.createEvent("MouseEvent"),
 			a = $td.find("a")[0]; // document.getElementById('nameOfID');
+
 		event = new CustomEvent("click");
 		a.dispatchEvent(event);
 	}

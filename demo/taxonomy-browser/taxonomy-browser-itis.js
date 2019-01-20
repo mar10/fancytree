@@ -13,7 +13,7 @@
 /* global Handlebars */
 /* eslint-disable no-console */
 
-(function($, window, document, undefined) {
+(function($, window, document) {
 	"use strict";
 
 	/*******************************************************************************
@@ -60,7 +60,7 @@
 	 */
 	function _delay(tag, ms, callback) {
 		/*jshint -W040:true */
-		var that = this;
+		var self = this;
 
 		tag = "" + (tag || "default");
 		if (timerMap[tag] != null) {
@@ -74,7 +74,7 @@
 		// console.log("Start timer '" + tag + "'");
 		timerMap[tag] = setTimeout(function() {
 			// console.log("Execute timer '" + tag + "'");
-			callback.call(that);
+			callback.call(self);
 		}, +ms);
 	}
 
@@ -308,9 +308,9 @@
 					};
 					res.commonNames = $.map(
 						o.commonNameList.commonNames,
-						function(o) {
-							return o && o.commonName
-								? { name: o.commonName, language: o.language }
+						function(x) {
+							return x && x.commonName
+								? { name: x.commonName, language: x.language }
 								: undefined;
 						}
 					);

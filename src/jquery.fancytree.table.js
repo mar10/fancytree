@@ -125,15 +125,15 @@
 				$table = tree.widget.element;
 
 			if (tableOpts.customStatus != null) {
-				if (opts.renderStatusColumns != null) {
-					$.error(
-						"The 'customStatus' option is deprecated since v2.15.0. Use 'renderStatusColumns' only instead."
-					);
-				} else {
+				if (opts.renderStatusColumns == null) {
 					tree.warn(
 						"The 'customStatus' option is deprecated since v2.15.0. Use 'renderStatusColumns' instead."
 					);
 					opts.renderStatusColumns = tableOpts.customStatus;
+				} else {
+					$.error(
+						"The 'customStatus' option is deprecated since v2.15.0. Use 'renderStatusColumns' only instead."
+					);
 				}
 			}
 			if (opts.renderStatusColumns) {
@@ -279,7 +279,15 @@
 				if (node.tr && force) {
 					this.nodeRemoveMarkup(ctx);
 				}
-				if (!node.tr) {
+				if (node.tr) {
+					if (force) {
+						// Set icon, link, and title (normally this is only required on initial render)
+						this.nodeRenderTitle(ctx); // triggers renderColumns()
+					} else {
+						// Update element classes according to node state
+						this.nodeRenderStatus(ctx);
+					}
+				} else {
 					if (ctx.hasCollapsedParents && !deep) {
 						// #166: we assume that the parent will be (recursively) rendered
 						// later anyway.
@@ -303,15 +311,15 @@
 						newRow.style.display = "none";
 						//					newRow.style.color = "red";
 					}
-					if (!prevNode.tr) {
+					if (prevNode.tr) {
+						insertSiblingAfter(prevNode.tr, newRow);
+					} else {
 						_assert(
 							!prevNode.parent,
 							"prev. row must have a tr, or be system root"
 						);
 						// tree.tbody.appendChild(newRow);
 						insertFirstChild(tree.tbody, newRow); // #675
-					} else {
-						insertSiblingAfter(prevNode.tr, newRow);
 					}
 					node.tr = newRow;
 					if (node.key && opts.generateIds) {
@@ -328,14 +336,6 @@
 					//				tree._triggerNodeEvent("createNode", ctx);
 					if (opts.createNode) {
 						opts.createNode.call(tree, { type: "createNode" }, ctx);
-					}
-				} else {
-					if (force) {
-						// Set icon, link, and title (normally this is only required on initial render)
-						this.nodeRenderTitle(ctx); // triggers renderColumns()
-					} else {
-						// Update element classes according to node state
-						this.nodeRenderStatus(ctx);
 					}
 				}
 			}

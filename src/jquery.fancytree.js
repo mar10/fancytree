@@ -265,7 +265,7 @@
 			target = {};
 		}
 		if (i === length) {
-			throw "need at least two args";
+			throw Error("need at least two args");
 		}
 		for (; i < length; i++) {
 			// Only deal with non-null/undefined values
@@ -389,11 +389,10 @@
 			return $.Deferred(function() {
 				this.resolve();
 			}).promise();
-		} else {
-			return $.Deferred(function() {
-				this.resolveWith(context, argArray);
-			}).promise();
 		}
+		return $.Deferred(function() {
+			this.resolveWith(context, argArray);
+		}).promise();
 	}
 
 	function _getRejectedPromise(context, argArray) {
@@ -401,11 +400,10 @@
 			return $.Deferred(function() {
 				this.reject();
 			}).promise();
-		} else {
-			return $.Deferred(function() {
-				this.rejectWith(context, argArray);
-			}).promise();
 		}
+		return $.Deferred(function() {
+			this.rejectWith(context, argArray);
+		}).promise();
 	}
 
 	function _makeResolveFunc(deferred, context) {
@@ -1527,7 +1525,7 @@
 		load: function(forceReload) {
 			var res,
 				source,
-				that = this,
+				self = this,
 				wasExpanded = this.isExpanded();
 
 			_assert(this.isLazy(), "load() requires a lazy node");
@@ -1553,11 +1551,11 @@
 			if (wasExpanded) {
 				this.expanded = true;
 				res.always(function() {
-					that.render();
+					self.render();
 				});
 			} else {
 				res.always(function() {
-					that.renderStatus(); // fix expander icon to 'loaded'
+					self.renderStatus(); // fix expander icon to 'loaded'
 				});
 			}
 			return res;
@@ -1570,7 +1568,7 @@
 		 */
 		makeVisible: function(opts) {
 			var i,
-				that = this,
+				self = this,
 				deferreds = [],
 				dfd = new $.Deferred(),
 				parents = this.getParentList(false, false),
@@ -1580,15 +1578,15 @@
 
 			// Expand bottom-up, so only the top node is animated
 			for (i = len - 1; i >= 0; i--) {
-				// that.debug("pushexpand" + parents[i]);
+				// self.debug("pushexpand" + parents[i]);
 				deferreds.push(parents[i].setExpanded(true, opts));
 			}
 			$.when.apply($, deferreds).done(function() {
 				// All expands have finished
-				// that.debug("expand DONE", scroll);
+				// self.debug("expand DONE", scroll);
 				if (scroll) {
-					that.scrollIntoView(effects).done(function() {
-						// that.debug("scroll DONE");
+					self.scrollIntoView(effects).done(function() {
+						// self.debug("scroll DONE");
 						dfd.resolve();
 					});
 				} else {
@@ -1956,7 +1954,7 @@
 			var res,
 				parent = this.parent,
 				pos = $.inArray(this, parent.children),
-				that = this;
+				self = this;
 
 			_assert(
 				this.isPagingNode(),
@@ -1966,7 +1964,7 @@
 			res = this.tree._callHook("nodeLoadChildren", this, source);
 			res.done(function(data) {
 				// New nodes are currently children of `this`.
-				var children = that.children;
+				var children = self.children;
 				// Prepend newly loaded child nodes to `this`
 				// Move new children after self
 				for (i = 0; i < children.length; i++) {
@@ -1978,14 +1976,14 @@
 				);
 
 				// Remove self
-				that.children = null;
-				that.remove();
+				self.children = null;
+				self.remove();
 				// Redraw new nodes
 				parent.render();
 				// TODO: set node.partload = false if this was tha last paging node?
 				// parent.addPagingNode(false);
 			}).fail(function() {
-				that.setExpanded();
+				self.setExpanded();
 			});
 			return res;
 			// $.error("Not implemented: replaceWith()");
@@ -2043,7 +2041,9 @@
 		 */
 		scrollIntoView: function(effects, options) {
 			if (options !== undefined && _isNode(options)) {
-				throw "scrollIntoView() with 'topNode' option is deprecated since 2014-05-08. Use 'options.topNode' instead.";
+				throw Error(
+					"scrollIntoView() with 'topNode' option is deprecated since 2014-05-08. Use 'options.topNode' instead."
+				);
 			}
 			// The scroll parent is typically the plain tree's <UL> container.
 			// For ext-table, we choose the nearest parent that has `position: relative`
@@ -2096,7 +2096,7 @@
 				horzScrollbarHeight,
 				containerOffsetTop,
 				dfd = new $.Deferred(),
-				that = this,
+				self = this,
 				nodeHeight = $(this.span).height(),
 				topOfs = opts.scrollOfs.top || 0,
 				bottomOfs = opts.scrollOfs.bottom || 0,
@@ -2170,7 +2170,7 @@
 				// this.debug("    scrollIntoView(), SET newScrollTop=" + newScrollTop);
 				if (opts.effects) {
 					opts.effects.complete = function() {
-						dfd.resolveWith(that);
+						dfd.resolveWith(self);
 					};
 					$animateTarget.stop(true).animate(
 						{
@@ -3030,10 +3030,9 @@
 							grandParent.children.indexOf(parent) + 1,
 							fn
 						);
-					} else {
-						// wrap-around: restart with first node
-						return walkVisible(parent, 0, fn);
 					}
+					// wrap-around: restart with first node
+					return walkVisible(parent, 0, fn);
 				};
 
 			walkVisible(
@@ -6055,7 +6054,7 @@
 			},
 			/* Add mouse and kyboard handlers to the container */
 			_bind: function() {
-				var that = this,
+				var self = this,
 					opts = this.options,
 					tree = this.tree,
 					ns = tree._ns;
@@ -6166,7 +6165,7 @@
 					})
 					.on("mousedown" + ns, function(event) {
 						var et = FT.getEventTarget(event);
-						// that.tree.debug("event(" + event.type + "): node: ", et.node);
+						// self.tree.debug("event(" + event.type + "): node: ", et.node);
 						// #712: Store the clicked node, so we can use it when we get a focusin event
 						//       ('click' event fires after focusin)
 						// tree.debug("event(" + event.type + "): node: ", et.node);
@@ -6185,15 +6184,15 @@
 						var ctx,
 							et = FT.getEventTarget(event),
 							node = et.node,
-							tree = that.tree,
+							tree = self.tree,
 							prevPhase = tree.phase;
 
-						// that.tree.debug("event(" + event.type + "): node: ", node);
+						// self.tree.debug("event(" + event.type + "): node: ", node);
 						if (!node) {
 							return true; // Allow bubbling of other events
 						}
 						ctx = tree._makeHookContext(node, event);
-						// that.tree.debug("event(" + event.type + "): node: ", node);
+						// self.tree.debug("event(" + event.type + "): node: ", node);
 						try {
 							tree.phase = "userEvent";
 							switch (event.type) {
