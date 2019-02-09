@@ -2595,24 +2595,18 @@
 		this.$div = widget.element;
 		this.options = widget.options;
 		if (this.options) {
-			if (
-				$.isFunction(this.options.lazyload) &&
-				!$.isFunction(this.options.lazyLoad)
-			) {
-				this.options.lazyLoad = function() {
-					FT.warn(
-						"The 'lazyload' event is deprecated since 2014-02-25. Use 'lazyLoad' (with uppercase L) instead."
-					);
-					return widget.options.lazyload.apply(this, arguments);
-				};
+			if (this.options.lazyload !== undefined) {
+				$.error(
+					"The 'lazyload' event is deprecated since 2014-02-25. Use 'lazyLoad' (with uppercase L) instead."
+				);
 			}
-			if ($.isFunction(this.options.loaderror)) {
+			if (this.options.loaderror !== undefined) {
 				$.error(
 					"The 'loaderror' event was renamed since 2014-07-03. Use 'loadError' (with uppercase E) instead."
 				);
 			}
 			if (this.options.fx !== undefined) {
-				FT.warn(
+				$.error(
 					"The 'fx' option was replaced by 'toggleEffect' since 2014-11-30."
 				);
 			}
