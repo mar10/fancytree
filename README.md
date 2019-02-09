@@ -10,7 +10,7 @@ Fancytree (sequel of [DynaTree 1.x](https://code.google.com/p/dynatree/)) is a
 JavaScript tree view / tree grid plugin with support for keyboard, inline editing,
 filtering, checkboxes, drag'n'drop, and lazy loading.
 
-[ ![sample](doc/teaser2.png?raw=true) ](http://wwwendt.de/tech/fancytree/demo "Live demo")
+[ ![sample](doc/teaser2.png?raw=true) ](https://wwWendt.de/tech/fancytree/demo "Live demo")
 
 
 ### Status
@@ -22,7 +22,7 @@ for details.
 
 ### Get Started
 
-  * [Try the live demo](http://wwwendt.de/tech/fancytree/demo).
+  * [Try the live demo](https://wwWendt.de/tech/fancytree/demo).
   * [Read the documentation](https://github.com/mar10/fancytree/wiki).
   * [Check the Q&A forum](https://groups.google.com/forum/#!forum/fancytree) or
     [Stackoverflow](http://stackoverflow.com/questions/tagged/fancytree) if you have questions.
@@ -53,7 +53,7 @@ const tree = createTree('#tree', {
 ```
 
 See [module loader support](https://github.com/mar10/fancytree/wiki#use-a-module-loader) and
-[API docs](http://www.wwwendt.de/tech/fancytree/doc/jsdoc/Fancytree_Static.html#createTree).
+[API docs](https://wwWendt.de/tech/fancytree/doc/jsdoc/Fancytree_Static.html#createTree).
 
 
 ### Credits

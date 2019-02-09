@@ -17,7 +17,7 @@ TEST_DATA = [
 		{key: "2", title: "item1 with key and tooltip", tooltip: "Look, a tool tip!" },
 		{key: "3", title: "<span>item2 with <b>html</b> inside a span tag</span>" },
 		{key: "4", title: "this nodes uses 'nolink', so no &lt;a> tag is generated", nolink: true},
-		{key: "5", title: "using href", href: "http://www.wwWendt.de/" },
+		{key: "5", title: "using href", href: "https://wwWendt.de/" },
 		{key: "6", title: "node with some extra classes (will be added to the generated markup)", extraClasses: "my-extra-class" },
 		{key: "10", title: "Folder 1", folder: true, children: [
 			{key: "10_1", title: "Sub-item 1.1", children: [

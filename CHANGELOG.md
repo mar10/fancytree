@@ -151,7 +151,7 @@
       See [the docs](https://github.com/mar10/fancytree/wiki/TutorialIntegration)
       for details.
     - All modules now return the
-      [$.ui.fancytree object](http://www.wwwendt.de/tech/fancytree/doc/jsdoc/Fancytree_Static.html).
+      [$.ui.fancytree object](https://wwWendt.de/tech/fancytree/doc/jsdoc/Fancytree_Static.html).
     - [Added] new static method `$.ui.fancytree.createTree(elem, opts)`
   * [Added] Source map files for `jquery.fancytree-all-deps.min.js`
   * [Added] New extension ext-fixed (work-in-progress, experimental)
