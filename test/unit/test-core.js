@@ -83,7 +83,7 @@ QUnit.test("Static members", function(assert) {
 
 QUnit.test("Create Fancytree", function(assert) {
 	tools.setup(assert);
-	assert.expect(14);
+	assert.expect(16);
 
 	var tree, widget,
 		insideConstructor = true;
@@ -112,11 +112,34 @@ QUnit.test("Create Fancytree", function(assert) {
 	assert.ok($.ui.fancytree.getTree(0) === tree, "getTree(0) exists");
 	assert.ok($.ui.fancytree.getTree("#tree") === tree, "getTree('#tree') exists");
 
+	assert.ok($.ui.fancytree.getTree("#ft-id-" + tree._id) === tree, "getTree('#ft-id-<ID>') exists");
+	assert.ok($.ui.fancytree.getTree(tree._id) === tree, "getTree('<ID>') exists");
+
 	assert.ok($.ui.fancytree.getTree(1) === null, "getTree(1) does not exist");
 	assert.ok($.ui.fancytree.getTree("#foobar") === null, "getTree(#foobar) does not exist");
 
 	assert.equal($("div#tree ul").length, 2, "collapsed children are NOT rendered");
 	assert.equal($("div#tree li").length, TESTDATA_VISIBLENODES, "collapsed nodes are NOT rendered");
+});
+
+
+QUnit.test("Create Fancytree - fixed id", function(assert) {
+	tools.setup(assert);
+	assert.expect(6);
+
+	$("#tree").fancytree({
+		source: TEST_DATA,
+		treeId: "foo",
+	});
+
+	var tree = $.ui.fancytree.getTree();
+	assert.equal(tree._id, "foo", "tree id is 'foo'");
+
+	assert.ok($.ui.fancytree.getTree(0) === tree, "getTree(0) exists");
+	assert.ok($.ui.fancytree.getTree("#tree") === tree, "getTree('#tree') exists");
+	assert.ok($.ui.fancytree.getTree("foo") === tree, "getTree('foo') exists");
+	assert.ok($.ui.fancytree.getTree("#ft-id-foo") === tree, "getTree('#ft-id-foo') exists");
+	assert.ok($.ui.fancytree.getTree("#foo") === null, "getTree('#foo') does not exist");
 });
 
 

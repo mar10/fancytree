@@ -2622,7 +2622,7 @@
 		// allow to init tree.data.foo from <div data-foo=''>
 		this.data = _getElementDataAsDict(this.$div);
 		// TODO: use widget.uuid instead?
-		this._id = $.ui.fancytree._nextId++;
+		this._id = "" + (this.options.treeId || $.ui.fancytree._nextId++);
 		// TODO: use widget.eventNamespace instead?
 		this._ns = ".fancytree-" + this._id; // append for namespaced events
 		this.activeNode = null;
@@ -2656,6 +2656,7 @@
 
 		// Create root markup
 		$ul = $("<ul>", {
+			id: "ft-id-" + this._id,
 			class: "ui-fancytree fancytree-container fancytree-plain",
 		}).appendTo(this.$div);
 		this.$container = $ul;
@@ -5885,6 +5886,7 @@
 				tabindex: "0",
 				titlesTabbable: false,
 				tooltip: false,
+				treeId: null,
 				_classNames: {
 					node: "fancytree-node",
 					folder: "fancytree-folder",
@@ -6492,14 +6494,17 @@
 			 * @param {Element | jQueryObject | Event | integer | string} [el]
 			 * @returns {Fancytree} matching tree or null
 			 * @example
-			 * $.ui.fancytree.getTree();   // Get first Fancytree instance on page
+			 * $.ui.fancytree.getTree();  // Get first Fancytree instance on page
 			 * $.ui.fancytree.getTree(1);  // Get second Fancytree instance on page
-			 * $.ui.fancytree.getTree("#tree"); // Get tree for this matching element
+			 * $.ui.fancytree.getTree(event);  // Get tree for this mouse- or keyboard event
+			 * $.ui.fancytree.getTree("foo");  // Get tree for this `opts.treeId`
+			 * $.ui.fancytree.getTree("#tree");  // Get tree for this matching element
 			 *
 			 * @since 2.13
 			 */
 			getTree: function(el) {
-				var widget;
+				var widget,
+					orgEl = el;
 
 				if (el instanceof Fancytree) {
 					return el; // el already was a Fancytree
@@ -6510,7 +6515,11 @@
 				if (typeof el === "number") {
 					el = $(".fancytree-container").eq(el); // el was an integer: return nth instance
 				} else if (typeof el === "string") {
-					el = $(el).eq(0); // el was a selector: use first match
+					// `el` may be a treeId or a selector:
+					el = $("#ft-id-" + orgEl).eq(0);
+					if (!el.length) {
+						el = $(orgEl).eq(0); // el was a selector: use first match
+					}
 				} else if (el instanceof $) {
 					el = el.eq(0); // el was a jQuery object: use the first DOM element
 				} else if (el.originalEvent !== undefined) {
