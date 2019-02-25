@@ -3676,6 +3676,8 @@
 					node = children[idx - 1];
 					// If the prev. sibling has children, follow down to last descendant
 					while (
+						// See: https://github.com/eslint/eslint/issues/11302
+						// eslint-disable-next-line no-unmodified-loop-condition
 						(includeHidden || node.expanded) &&
 						node.children &&
 						node.children.length
