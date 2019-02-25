@@ -272,21 +272,23 @@
 			if ((options = arguments[i]) != null) {
 				// Extend the base object
 				for (name in options) {
-					src = target[name];
-					copy = options[name];
-					// Prevent never-ending loop
-					if (target === copy) {
-						continue;
-					}
-					// Recurse if we're merging plain objects
-					// (NOTE: unlike $.extend, we don't merge arrays, but relace them)
-					if (copy && $.isPlainObject(copy)) {
-						clone = src && $.isPlainObject(src) ? src : {};
-						// Never move original objects, clone them
-						target[name] = _simpleDeepMerge(clone, copy);
-						// Don't bring in undefined values
-					} else if (copy !== undefined) {
-						target[name] = copy;
+					if (options.hasOwnProperty(name)) {
+						src = target[name];
+						copy = options[name];
+						// Prevent never-ending loop
+						if (target === copy) {
+							continue;
+						}
+						// Recurse if we're merging plain objects
+						// (NOTE: unlike $.extend, we don't merge arrays, but replace them)
+						if (copy && $.isPlainObject(copy)) {
+							clone = src && $.isPlainObject(src) ? src : {};
+							// Never move original objects, clone them
+							target[name] = _simpleDeepMerge(clone, copy);
+							// Don't bring in undefined values
+						} else if (copy !== undefined) {
+							target[name] = copy;
+						}
 					}
 				}
 			}
@@ -786,12 +788,14 @@
 				IGNORE_MAP = { children: true, expanded: true, parent: true }; // TODO: should be global
 
 			for (name in patch) {
-				v = patch[name];
-				if (!IGNORE_MAP[name] && !$.isFunction(v)) {
-					if (NODE_ATTR_MAP[name]) {
-						this[name] = v;
-					} else {
-						this.data[name] = v;
+				if (patch.hasOwnProperty(name)) {
+					v = patch[name];
+					if (!IGNORE_MAP[name] && !$.isFunction(v)) {
+						if (NODE_ATTR_MAP[name]) {
+							this[name] = v;
+						} else {
+							this.data[name] = v;
+						}
 					}
 				}
 			}
@@ -3444,24 +3448,26 @@
 			// remainMap contains parent nodes, each with a list of relative sub-paths.
 			// We start loading all of them now, and pass the the list to each loader.
 			for (nodeKey in remainMap) {
-				remain = remainMap[nodeKey];
-				// console.log("for(): remain=", remain, "remainMap=", remainMap);
-				// key = remain.segList.shift();
-				// node = __findChild(remain.parent, key);
-				// if (node == null) {  // #576
-				// 	// Issue #576, refactored for v2.27:
-				// 	// The root cause was, that sometimes the wrong parent was used here
-				// 	// to find the next segment.
-				// 	// Falling back to getNodeByKey() was a hack that no longer works if a custom
-				// 	// matcher is used, because we cannot assume that a single segment-key is unique
-				// 	// throughout the tree.
-				// 	self.error("loadKeyPath: error loading child by key '" + key + "' (parent: " + target.parent + ")", target);
-				// 	// 	node = self.getNodeByKey(key);
-				// 	continue;
-				// }
-				subDfd = new $.Deferred();
-				deferredList.push(subDfd);
-				__lazyload(subDfd, remain.parent, remain.pathSegList);
+				if (remainMap.hasOwnProperty(nodeKey)) {
+					remain = remainMap[nodeKey];
+					// console.log("for(): remain=", remain, "remainMap=", remainMap);
+					// key = remain.segList.shift();
+					// node = __findChild(remain.parent, key);
+					// if (node == null) {  // #576
+					// 	// Issue #576, refactored for v2.27:
+					// 	// The root cause was, that sometimes the wrong parent was used here
+					// 	// to find the next segment.
+					// 	// Falling back to getNodeByKey() was a hack that no longer works if a custom
+					// 	// matcher is used, because we cannot assume that a single segment-key is unique
+					// 	// throughout the tree.
+					// 	self.error("loadKeyPath: error loading child by key '" + key + "' (parent: " + target.parent + ")", target);
+					// 	// 	node = self.getNodeByKey(key);
+					// 	continue;
+					// }
+					subDfd = new $.Deferred();
+					deferredList.push(subDfd);
+					__lazyload(subDfd, remain.parent, remain.pathSegList);
+				}
 			}
 			// Return a promise that is resolved, when ALL paths were loaded
 			return $.when.apply($, deferredList).promise();
