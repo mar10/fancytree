@@ -2166,7 +2166,9 @@
 				}
 			}
 
-			if (newScrollTop !== null) {
+			if (newScrollTop === null) {
+				dfd.resolveWith(this);
+			} else {
 				// this.debug("    scrollIntoView(), SET newScrollTop=" + newScrollTop);
 				if (opts.effects) {
 					opts.effects.complete = function() {
@@ -2182,8 +2184,6 @@
 					$animateTarget[0].scrollTop = newScrollTop;
 					dfd.resolveWith(this);
 				}
-			} else {
-				dfd.resolveWith(this);
 			}
 			return dfd.promise();
 		},
@@ -4478,8 +4478,11 @@
 					}
 					// Create <li><span /> </li>
 					// node.debug("render...");
-					if (!node.li) {
-						//	            node.debug("render... really");
+					if (node.li) {
+						// this.nodeRenderTitle(ctx);
+						this.nodeRenderStatus(ctx);
+					} else {
+						// node.debug("render... really");
 						firstTime = true;
 						node.li = document.createElement("li");
 						node.li.ftnode = node;
@@ -4505,9 +4508,6 @@
 								ctx
 							);
 						}
-					} else {
-						// this.nodeRenderTitle(ctx);
-						this.nodeRenderStatus(ctx);
 					}
 					// Allow tweaking after node state was rendered
 					if (opts.renderNode) {
@@ -4564,14 +4564,14 @@
 						for (i = 0, l = children.length - 1; i < l; i++) {
 							childNode1 = children[i];
 							childNode2 = childLI.ftnode;
-							if (childNode1 !== childNode2) {
+							if (childNode1 === childNode2) {
+								childLI = childLI.nextSibling;
+							} else {
 								// node.debug("_fixOrder: mismatch at index " + i + ": " + childNode1 + " != " + childNode2);
 								node.ul.insertBefore(
 									childNode1.li,
 									childNode2.li
 								);
-							} else {
-								childLI = childLI.nextSibling;
 							}
 						}
 					}
@@ -4856,10 +4856,10 @@
 					cnList.push(cn.expanded);
 				}
 				if (aria) {
-					if (hasChildren !== false) {
-						$ariaElem.attr("aria-expanded", Boolean(node.expanded));
-					} else {
+					if (hasChildren === false) {
 						$ariaElem.removeAttr("aria-expanded");
+					} else {
+						$ariaElem.attr("aria-expanded", Boolean(node.expanded));
 					}
 				}
 				if (node.folder) {
@@ -5153,7 +5153,20 @@
 							// See #716, #717
 							$(node.li).addClass(cn.animating); // #717
 
-							if (!$.isFunction($(node.ul)[effect.effect])) {
+							if ($.isFunction($(node.ul)[effect.effect])) {
+								tree.debug(
+									"use jquery." + effect.effect + " method"
+								);
+								$(node.ul)[effect.effect]({
+									duration: effect.duration,
+									always: function() {
+										// node.debug("fancytree-animating end: " + node.li.className);
+										$(this).removeClass(cn.animating); // #716
+										$(node.li).removeClass(cn.animating); // #717
+										callback();
+									},
+								});
+							} else {
 								// The UI toggle() effect works with the ext-wide extension,
 								// while jQuery.animate() has problems when the title span
 								// has positon: absolute.
@@ -5182,22 +5195,7 @@
 										callback();
 									}
 								);
-							} else {
-								tree.debug(
-									"use jquery." + effect.effect + " method"
-								);
-
-								$(node.ul)[effect.effect]({
-									duration: effect.duration,
-									always: function() {
-										// node.debug("fancytree-animating end: " + node.li.className);
-										$(this).removeClass(cn.animating); // #716
-										$(node.li).removeClass(cn.animating); // #717
-										callback();
-									},
-								});
 							}
-
 							return;
 						}
 					}
@@ -5971,15 +5969,15 @@
 				//
 				if (opts.icons !== undefined) {
 					// 2015-11-16
-					if (opts.icon !== true) {
-						$.error(
-							"'icons' tree option is deprecated since v2.14.0: use 'icon' only instead"
-						);
-					} else {
+					if (opts.icon === true) {
 						this.tree.warn(
 							"'icons' tree option is deprecated since v2.14.0: use 'icon' instead"
 						);
 						opts.icon = opts.icons;
+					} else {
+						$.error(
+							"'icons' tree option is deprecated since v2.14.0: use 'icon' only instead"
+						);
 					}
 				}
 				if (opts.iconClass !== undefined) {
@@ -6580,7 +6578,7 @@
 						res = nodeOpt;
 					}
 				} else {
-					res = nodeOpt != null ? nodeOpt : treeOpt;
+					res = nodeOpt == null ? treeOpt : nodeOpt;
 				}
 				if (res == null) {
 					res = defaultValue; // no option set at all: return default
