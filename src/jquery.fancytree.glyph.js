@@ -170,12 +170,13 @@
 		var map = opts.map,
 			icon = map[type],
 			$span = $(span),
+			$counter = $span.find(".fancytree-childcounter"),
 			setClass = baseClass + " " + (map._addClass || "");
 
 		if (typeof icon === "string") {
 			// #883: remove inner html that may be added by prev. mode
 			span.innerHTML = "";
-			$span.attr("class", setClass + " " + icon);
+			$span.attr("class", setClass + " " + icon).append($counter);
 		} else if (icon) {
 			if (icon.text) {
 				span.textContent = "" + icon.text;
@@ -184,7 +185,9 @@
 			} else {
 				span.innerHTML = "";
 			}
-			$span.attr("class", setClass + " " + (icon.addClass || ""));
+			$span
+				.attr("class", setClass + " " + (icon.addClass || ""))
+				.append($counter);
 		}
 	}
 
