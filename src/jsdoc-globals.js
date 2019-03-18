@@ -155,7 +155,7 @@ var TreePatch = {};
  *     Recommended place to store shared data for column rendering.
  *     See also <a href="https://github.com/mar10/fancytree/wiki/ExtTable">table extension</a>.
  *     @since 2.27
- * @property {Integer} debugLevel 0..4 (null: use global setting $.ui.fancytree.debugInfo)
+ * @property {Integer} debugLevel 0..4 (null: use global setting $.ui.fancytree.debugLevel)
  * @property {function} defaultKey callback(node) is called for new nodes without a key. Must return a new unique key. (default null: generates default keys like that: "_" + counter)
  * @property {boolean} enableAspx Accept passing ajax data in a property named `d` (default: true).
  * @property {boolean} escapeTitles Make sure all HTML tags are escaped (default: false).

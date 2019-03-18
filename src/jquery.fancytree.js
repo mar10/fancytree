@@ -5860,7 +5860,7 @@
 				autoScroll: false,
 				checkbox: false,
 				clickFolderMode: 4,
-				debugLevel: null, // 0..4 (null: use global setting $.ui.fancytree.debugInfo)
+				debugLevel: null, // 0..4 (null: use global setting $.ui.fancytree.debugLevel)
 				disabled: false, // TODO: required anymore?
 				enableAspx: true,
 				escapeTitles: false,
