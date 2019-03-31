@@ -1855,9 +1855,8 @@
 				} catch (e) {} // #272
 				if (activate === false) {
 					return node.setFocus();
-				} else {
-					return node.setActive();
 				}
+				return node.setActive();
 			}
 			this.warn("Could not find related node '" + where + "'.");
 			return _getResolvedPromise();

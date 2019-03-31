@@ -493,13 +493,12 @@
 					return;
 				}
 				if (!node.tr) {
-					if (node._rowIdx != null) {
-						node.warn("nodeRender(): creating new TR!");
-						node.tr = tree.tbody.rows[node._rowIdx - start];
-					} else {
+					if (node._rowIdx == null) {
 						// node.warn("nodeRender(): ignoring hidden");
 						return;
 					}
+					node.warn("nodeRender(): creating new TR!");
+					node.tr = tree.tbody.rows[node._rowIdx - start];
 				}
 				// _assert(
 				// 	node.tr,
