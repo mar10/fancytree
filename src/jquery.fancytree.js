@@ -3,7 +3,7 @@
  * Tree view control with support for lazy loading and much more.
  * https://github.com/mar10/fancytree/
  *
- * Copyright (c) 2008-2019, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2019, Martin Wendt (https://wwWendt.de)
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
@@ -265,28 +265,30 @@
 			target = {};
 		}
 		if (i === length) {
-			throw "need at least two args";
+			throw Error("need at least two args");
 		}
 		for (; i < length; i++) {
 			// Only deal with non-null/undefined values
 			if ((options = arguments[i]) != null) {
 				// Extend the base object
 				for (name in options) {
-					src = target[name];
-					copy = options[name];
-					// Prevent never-ending loop
-					if (target === copy) {
-						continue;
-					}
-					// Recurse if we're merging plain objects
-					// (NOTE: unlike $.extend, we don't merge arrays, but relace them)
-					if (copy && $.isPlainObject(copy)) {
-						clone = src && $.isPlainObject(src) ? src : {};
-						// Never move original objects, clone them
-						target[name] = _simpleDeepMerge(clone, copy);
-						// Don't bring in undefined values
-					} else if (copy !== undefined) {
-						target[name] = copy;
+					if (options.hasOwnProperty(name)) {
+						src = target[name];
+						copy = options[name];
+						// Prevent never-ending loop
+						if (target === copy) {
+							continue;
+						}
+						// Recurse if we're merging plain objects
+						// (NOTE: unlike $.extend, we don't merge arrays, but replace them)
+						if (copy && $.isPlainObject(copy)) {
+							clone = src && $.isPlainObject(src) ? src : {};
+							// Never move original objects, clone them
+							target[name] = _simpleDeepMerge(clone, copy);
+							// Don't bring in undefined values
+						} else if (copy !== undefined) {
+							target[name] = copy;
+						}
 					}
 				}
 			}
@@ -389,11 +391,10 @@
 			return $.Deferred(function() {
 				this.resolve();
 			}).promise();
-		} else {
-			return $.Deferred(function() {
-				this.resolveWith(context, argArray);
-			}).promise();
 		}
+		return $.Deferred(function() {
+			this.resolveWith(context, argArray);
+		}).promise();
 	}
 
 	function _getRejectedPromise(context, argArray) {
@@ -401,11 +402,10 @@
 			return $.Deferred(function() {
 				this.reject();
 			}).promise();
-		} else {
-			return $.Deferred(function() {
-				this.rejectWith(context, argArray);
-			}).promise();
 		}
+		return $.Deferred(function() {
+			this.rejectWith(context, argArray);
+		}).promise();
 	}
 
 	function _makeResolveFunc(deferred, context) {
@@ -793,12 +793,14 @@
 				IGNORE_MAP = { children: true, expanded: true, parent: true }; // TODO: should be global
 
 			for (name in patch) {
-				v = patch[name];
-				if (!IGNORE_MAP[name] && !$.isFunction(v)) {
-					if (NODE_ATTR_MAP[name]) {
-						this[name] = v;
-					} else {
-						this.data[name] = v;
+				if (patch.hasOwnProperty(name)) {
+					v = patch[name];
+					if (!IGNORE_MAP[name] && !$.isFunction(v)) {
+						if (NODE_ATTR_MAP[name]) {
+							this[name] = v;
+						} else {
+							this.data[name] = v;
+						}
 					}
 				}
 			}
@@ -1581,7 +1583,7 @@
 		load: function(forceReload) {
 			var res,
 				source,
-				that = this,
+				self = this,
 				wasExpanded = this.isExpanded();
 
 			_assert(this.isLazy(), "load() requires a lazy node");
@@ -1607,11 +1609,11 @@
 			if (wasExpanded) {
 				this.expanded = true;
 				res.always(function() {
-					that.render();
+					self.render();
 				});
 			} else {
 				res.always(function() {
-					that.renderStatus(); // fix expander icon to 'loaded'
+					self.renderStatus(); // fix expander icon to 'loaded'
 				});
 			}
 			return res;
@@ -1624,7 +1626,7 @@
 		 */
 		makeVisible: function(opts) {
 			var i,
-				that = this,
+				self = this,
 				deferreds = [],
 				dfd = new $.Deferred(),
 				parents = this.getParentList(false, false),
@@ -1634,15 +1636,15 @@
 
 			// Expand bottom-up, so only the top node is animated
 			for (i = len - 1; i >= 0; i--) {
-				// that.debug("pushexpand" + parents[i]);
+				// self.debug("pushexpand" + parents[i]);
 				deferreds.push(parents[i].setExpanded(true, opts));
 			}
 			$.when.apply($, deferreds).done(function() {
 				// All expands have finished
-				// that.debug("expand DONE", scroll);
+				// self.debug("expand DONE", scroll);
 				if (scroll) {
-					that.scrollIntoView(effects).done(function() {
-						// that.debug("scroll DONE");
+					self.scrollIntoView(effects).done(function() {
+						// self.debug("scroll DONE");
 						dfd.resolve();
 					});
 				} else {
@@ -1934,7 +1936,7 @@
 			var res,
 				parent = this.parent,
 				pos = $.inArray(this, parent.children),
-				that = this;
+				self = this;
 
 			_assert(
 				this.isPagingNode(),
@@ -1944,7 +1946,7 @@
 			res = this.tree._callHook("nodeLoadChildren", this, source);
 			res.done(function(data) {
 				// New nodes are currently children of `this`.
-				var children = that.children;
+				var children = self.children;
 				// Prepend newly loaded child nodes to `this`
 				// Move new children after self
 				for (i = 0; i < children.length; i++) {
@@ -1956,14 +1958,14 @@
 				);
 
 				// Remove self
-				that.children = null;
-				that.remove();
+				self.children = null;
+				self.remove();
 				// Redraw new nodes
 				parent.render();
 				// TODO: set node.partload = false if this was tha last paging node?
 				// parent.addPagingNode(false);
 			}).fail(function() {
-				that.setExpanded();
+				self.setExpanded();
 			});
 			return res;
 			// $.error("Not implemented: replaceWith()");
@@ -2021,7 +2023,9 @@
 		 */
 		scrollIntoView: function(effects, options) {
 			if (options !== undefined && _isNode(options)) {
-				throw "scrollIntoView() with 'topNode' option is deprecated since 2014-05-08. Use 'options.topNode' instead.";
+				throw Error(
+					"scrollIntoView() with 'topNode' option is deprecated since 2014-05-08. Use 'options.topNode' instead."
+				);
 			}
 			// The scroll parent is typically the plain tree's <UL> container.
 			// For ext-table, we choose the nearest parent that has `position: relative`
@@ -2074,7 +2078,7 @@
 				horzScrollbarHeight,
 				containerOffsetTop,
 				dfd = new $.Deferred(),
-				that = this,
+				self = this,
 				nodeHeight = $(this.span).height(),
 				topOfs = opts.scrollOfs.top || 0,
 				bottomOfs = opts.scrollOfs.bottom || 0,
@@ -2144,11 +2148,13 @@
 				}
 			}
 
-			if (newScrollTop !== null) {
+			if (newScrollTop === null) {
+				dfd.resolveWith(this);
+			} else {
 				// this.debug("    scrollIntoView(), SET newScrollTop=" + newScrollTop);
 				if (opts.effects) {
 					opts.effects.complete = function() {
-						dfd.resolveWith(that);
+						dfd.resolveWith(self);
 					};
 					$animateTarget.stop(true).animate(
 						{
@@ -2160,8 +2166,6 @@
 					$animateTarget[0].scrollTop = newScrollTop;
 					dfd.resolveWith(this);
 				}
-			} else {
-				dfd.resolveWith(this);
 			}
 			return dfd.promise();
 		},
@@ -2573,24 +2577,18 @@
 		this.$div = widget.element;
 		this.options = widget.options;
 		if (this.options) {
-			if (
-				$.isFunction(this.options.lazyload) &&
-				!$.isFunction(this.options.lazyLoad)
-			) {
-				this.options.lazyLoad = function() {
-					FT.warn(
-						"The 'lazyload' event is deprecated since 2014-02-25. Use 'lazyLoad' (with uppercase L) instead."
-					);
-					return widget.options.lazyload.apply(this, arguments);
-				};
+			if (this.options.lazyload !== undefined) {
+				$.error(
+					"The 'lazyload' event is deprecated since 2014-02-25. Use 'lazyLoad' (with uppercase L) instead."
+				);
 			}
-			if ($.isFunction(this.options.loaderror)) {
+			if (this.options.loaderror !== undefined) {
 				$.error(
 					"The 'loaderror' event was renamed since 2014-07-03. Use 'loadError' (with uppercase E) instead."
 				);
 			}
 			if (this.options.fx !== undefined) {
-				FT.warn(
+				$.error(
 					"The 'fx' option was replaced by 'toggleEffect' since 2014-11-30."
 				);
 			}
@@ -2606,7 +2604,7 @@
 		// allow to init tree.data.foo from <div data-foo=''>
 		this.data = _getElementDataAsDict(this.$div);
 		// TODO: use widget.uuid instead?
-		this._id = $.ui.fancytree._nextId++;
+		this._id = "" + (this.options.treeId || $.ui.fancytree._nextId++);
 		// TODO: use widget.eventNamespace instead?
 		this._ns = ".fancytree-" + this._id; // append for namespaced events
 		this.activeNode = null;
@@ -2640,6 +2638,7 @@
 
 		// Create root markup
 		$ul = $("<ul>", {
+			id: "ft-id-" + this._id,
 			class: "ui-fancytree fancytree-container fancytree-plain",
 		}).appendTo(this.$div);
 		this.$container = $ul;
@@ -3474,24 +3473,26 @@
 			// remainMap contains parent nodes, each with a list of relative sub-paths.
 			// We start loading all of them now, and pass the the list to each loader.
 			for (nodeKey in remainMap) {
-				remain = remainMap[nodeKey];
-				// console.log("for(): remain=", remain, "remainMap=", remainMap);
-				// key = remain.segList.shift();
-				// node = __findChild(remain.parent, key);
-				// if (node == null) {  // #576
-				// 	// Issue #576, refactored for v2.27:
-				// 	// The root cause was, that sometimes the wrong parent was used here
-				// 	// to find the next segment.
-				// 	// Falling back to getNodeByKey() was a hack that no longer works if a custom
-				// 	// matcher is used, because we cannot assume that a single segment-key is unique
-				// 	// throughout the tree.
-				// 	self.error("loadKeyPath: error loading child by key '" + key + "' (parent: " + target.parent + ")", target);
-				// 	// 	node = self.getNodeByKey(key);
-				// 	continue;
-				// }
-				subDfd = new $.Deferred();
-				deferredList.push(subDfd);
-				__lazyload(subDfd, remain.parent, remain.pathSegList);
+				if (remainMap.hasOwnProperty(nodeKey)) {
+					remain = remainMap[nodeKey];
+					// console.log("for(): remain=", remain, "remainMap=", remainMap);
+					// key = remain.segList.shift();
+					// node = __findChild(remain.parent, key);
+					// if (node == null) {  // #576
+					// 	// Issue #576, refactored for v2.27:
+					// 	// The root cause was, that sometimes the wrong parent was used here
+					// 	// to find the next segment.
+					// 	// Falling back to getNodeByKey() was a hack that no longer works if a custom
+					// 	// matcher is used, because we cannot assume that a single segment-key is unique
+					// 	// throughout the tree.
+					// 	self.error("loadKeyPath: error loading child by key '" + key + "' (parent: " + target.parent + ")", target);
+					// 	// 	node = self.getNodeByKey(key);
+					// 	continue;
+					// }
+					subDfd = new $.Deferred();
+					deferredList.push(subDfd);
+					__lazyload(subDfd, remain.parent, remain.pathSegList);
+				}
 			}
 			// Return a promise that is resolved, when ALL paths were loaded
 			return $.when.apply($, deferredList).promise();
@@ -3715,6 +3716,8 @@
 					node = children[idx - 1];
 					// If the prev. sibling has children, follow down to last descendant
 					while (
+						// See: https://github.com/eslint/eslint/issues/11302
+						// eslint-disable-next-line no-unmodified-loop-condition
 						(includeHidden || node.expanded) &&
 						node.children &&
 						node.children.length
@@ -4523,8 +4526,11 @@
 					}
 					// Create <li><span /> </li>
 					// node.debug("render...");
-					if (!node.li) {
-						//	            node.debug("render... really");
+					if (node.li) {
+						// this.nodeRenderTitle(ctx);
+						this.nodeRenderStatus(ctx);
+					} else {
+						// node.debug("render... really");
 						firstTime = true;
 						node.li = document.createElement("li");
 						node.li.ftnode = node;
@@ -4550,9 +4556,6 @@
 								ctx
 							);
 						}
-					} else {
-						// this.nodeRenderTitle(ctx);
-						this.nodeRenderStatus(ctx);
 					}
 					// Allow tweaking after node state was rendered
 					if (opts.renderNode) {
@@ -4609,14 +4612,14 @@
 						for (i = 0, l = children.length - 1; i < l; i++) {
 							childNode1 = children[i];
 							childNode2 = childLI.ftnode;
-							if (childNode1 !== childNode2) {
+							if (childNode1 === childNode2) {
+								childLI = childLI.nextSibling;
+							} else {
 								// node.debug("_fixOrder: mismatch at index " + i + ": " + childNode1 + " != " + childNode2);
 								node.ul.insertBefore(
 									childNode1.li,
 									childNode2.li
 								);
-							} else {
-								childLI = childLI.nextSibling;
 							}
 						}
 					}
@@ -4901,10 +4904,10 @@
 					cnList.push(cn.expanded);
 				}
 				if (aria) {
-					if (hasChildren !== false) {
-						$ariaElem.attr("aria-expanded", Boolean(node.expanded));
-					} else {
+					if (hasChildren === false) {
 						$ariaElem.removeAttr("aria-expanded");
+					} else {
+						$ariaElem.attr("aria-expanded", Boolean(node.expanded));
 					}
 				}
 				if (node.folder) {
@@ -5203,7 +5206,20 @@
 							// See #716, #717
 							$(node.li).addClass(cn.animating); // #717
 
-							if (!$.isFunction($(node.ul)[effect.effect])) {
+							if ($.isFunction($(node.ul)[effect.effect])) {
+								tree.debug(
+									"use jquery." + effect.effect + " method"
+								);
+								$(node.ul)[effect.effect]({
+									duration: effect.duration,
+									always: function() {
+										// node.debug("fancytree-animating end: " + node.li.className);
+										$(this).removeClass(cn.animating); // #716
+										$(node.li).removeClass(cn.animating); // #717
+										callback();
+									},
+								});
+							} else {
 								// The UI toggle() effect works with the ext-wide extension,
 								// while jQuery.animate() has problems when the title span
 								// has positon: absolute.
@@ -5232,22 +5248,7 @@
 										callback();
 									}
 								);
-							} else {
-								tree.debug(
-									"use jquery." + effect.effect + " method"
-								);
-
-								$(node.ul)[effect.effect]({
-									duration: effect.duration,
-									always: function() {
-										// node.debug("fancytree-animating end: " + node.li.className);
-										$(this).removeClass(cn.animating); // #716
-										$(node.li).removeClass(cn.animating); // #717
-										callback();
-									},
-								});
 							}
-
 							return;
 						}
 					}
@@ -5930,7 +5931,7 @@
 				autoScroll: false,
 				checkbox: false,
 				clickFolderMode: 4,
-				debugLevel: null, // 0..4 (null: use global setting $.ui.fancytree.debugInfo)
+				debugLevel: null, // 0..4 (null: use global setting $.ui.fancytree.debugLevel)
 				disabled: false, // TODO: required anymore?
 				enableAspx: true,
 				escapeTitles: false,
@@ -5962,6 +5963,7 @@
 				tabindex: "0",
 				titlesTabbable: false,
 				tooltip: false,
+				treeId: null,
 				_classNames: {
 					node: "fancytree-node",
 					folder: "fancytree-folder",
@@ -6046,15 +6048,15 @@
 				//
 				if (opts.icons !== undefined) {
 					// 2015-11-16
-					if (opts.icon !== true) {
-						$.error(
-							"'icons' tree option is deprecated since v2.14.0: use 'icon' only instead"
-						);
-					} else {
+					if (opts.icon === true) {
 						this.tree.warn(
 							"'icons' tree option is deprecated since v2.14.0: use 'icon' instead"
 						);
 						opts.icon = opts.icons;
+					} else {
+						$.error(
+							"'icons' tree option is deprecated since v2.14.0: use 'icon' only instead"
+						);
 					}
 				}
 				if (opts.iconClass !== undefined) {
@@ -6125,7 +6127,7 @@
 			},
 			/* Add mouse and kyboard handlers to the container */
 			_bind: function() {
-				var that = this,
+				var self = this,
 					opts = this.options,
 					tree = this.tree,
 					ns = tree._ns;
@@ -6236,7 +6238,7 @@
 					})
 					.on("mousedown" + ns, function(event) {
 						var et = FT.getEventTarget(event);
-						// that.tree.debug("event(" + event.type + "): node: ", et.node);
+						// self.tree.debug("event(" + event.type + "): node: ", et.node);
 						// #712: Store the clicked node, so we can use it when we get a focusin event
 						//       ('click' event fires after focusin)
 						// tree.debug("event(" + event.type + "): node: ", et.node);
@@ -6255,15 +6257,15 @@
 						var ctx,
 							et = FT.getEventTarget(event),
 							node = et.node,
-							tree = that.tree,
+							tree = self.tree,
 							prevPhase = tree.phase;
 
-						// that.tree.debug("event(" + event.type + "): node: ", node);
+						// self.tree.debug("event(" + event.type + "): node: ", node);
 						if (!node) {
 							return true; // Allow bubbling of other events
 						}
 						ctx = tree._makeHookContext(node, event);
-						// that.tree.debug("event(" + event.type + "): node: ", node);
+						// self.tree.debug("event(" + event.type + "): node: ", node);
 						try {
 							tree.phase = "userEvent";
 							switch (event.type) {
@@ -6569,14 +6571,17 @@
 			 * @param {Element | jQueryObject | Event | integer | string} [el]
 			 * @returns {Fancytree} matching tree or null
 			 * @example
-			 * $.ui.fancytree.getTree();   // Get first Fancytree instance on page
+			 * $.ui.fancytree.getTree();  // Get first Fancytree instance on page
 			 * $.ui.fancytree.getTree(1);  // Get second Fancytree instance on page
-			 * $.ui.fancytree.getTree("#tree"); // Get tree for this matching element
+			 * $.ui.fancytree.getTree(event);  // Get tree for this mouse- or keyboard event
+			 * $.ui.fancytree.getTree("foo");  // Get tree for this `opts.treeId`
+			 * $.ui.fancytree.getTree("#tree");  // Get tree for this matching element
 			 *
 			 * @since 2.13
 			 */
 			getTree: function(el) {
-				var widget;
+				var widget,
+					orgEl = el;
 
 				if (el instanceof Fancytree) {
 					return el; // el already was a Fancytree
@@ -6587,7 +6592,11 @@
 				if (typeof el === "number") {
 					el = $(".fancytree-container").eq(el); // el was an integer: return nth instance
 				} else if (typeof el === "string") {
-					el = $(el).eq(0); // el was a selector: use first match
+					// `el` may be a treeId or a selector:
+					el = $("#ft-id-" + orgEl).eq(0);
+					if (!el.length) {
+						el = $(orgEl).eq(0); // el was a selector: use first match
+					}
 				} else if (el instanceof $) {
 					el = el.eq(0); // el was a jQuery object: use the first DOM element
 				} else if (el.originalEvent !== undefined) {
@@ -6648,7 +6657,7 @@
 						res = nodeOpt;
 					}
 				} else {
-					res = nodeOpt != null ? nodeOpt : treeOpt;
+					res = nodeOpt == null ? treeOpt : nodeOpt;
 				}
 				if (res == null) {
 					res = defaultValue; // no option set at all: return default

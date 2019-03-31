@@ -1,6 +1,11 @@
-# 2.30.3-0 / Unreleased
+# 2.31.0-0 / Unreleased
+  * [Added] New tree option `.treeId`
+  * [Changed] `.getTree()` now also accepts the tree id string
   * Replace jshint/jscs with eslint
   * Now testing on Puppeteer/Chromium instead of PhantonJS
+  * [DEPRECATED] loaderror and lazyload options now throw an error
+  * [Fixed] #918 SVG font awesome 5 glyphs remove badge counter when parent node is collapsed
+
 
 # 2.30.2 / 2019-01-13
   * Stop testing on IE 8 (no longer available on Saucelabs)
@@ -165,7 +170,7 @@
       See [the docs](https://github.com/mar10/fancytree/wiki/TutorialIntegration)
       for details.
     - All modules now return the
-      [$.ui.fancytree object](http://www.wwwendt.de/tech/fancytree/doc/jsdoc/Fancytree_Static.html).
+      [$.ui.fancytree object](https://wwWendt.de/tech/fancytree/doc/jsdoc/Fancytree_Static.html).
     - [Added] new static method `$.ui.fancytree.createTree(elem, opts)`
   * [Added] Source map files for `jquery.fancytree-all-deps.min.js`
   * [Added] New extension ext-fixed (work-in-progress, experimental)

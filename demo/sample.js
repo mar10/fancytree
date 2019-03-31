@@ -18,7 +18,8 @@
 		init: "lion"
 	});
  */
-/*globals alert, prettyPrint */
+/* globals prettyPrint */
+/* eslint-disable no-alert */
 
 (function($) {
 	var PLUGIN_NAME = "skinswitcher",
@@ -100,9 +101,8 @@
 				if (typeof value !== "undefined") {
 					opts[name] = value;
 					return this;
-				} else {
-					return opts[name];
 				}
+				return opts[name];
 			},
 			addChoices: function(choices) {
 				var $combo = $(this);
@@ -141,11 +141,10 @@
 			);
 		} else if (typeof method === "object" || !method) {
 			return methods.init.apply(this, arguments);
-		} else {
-			$.error(
-				"Method " + method + " does not exist on jQuery." + PLUGIN_NAME
-			);
 		}
+		$.error(
+			"Method " + method + " does not exist on jQuery." + PLUGIN_NAME
+		);
 	};
 })(jQuery);
 

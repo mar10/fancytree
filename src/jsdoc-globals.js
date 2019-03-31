@@ -155,7 +155,7 @@ var TreePatch = {};
  *     Recommended place to store shared data for column rendering.
  *     See also <a href="https://github.com/mar10/fancytree/wiki/ExtTable">table extension</a>.
  *     @since 2.27
- * @property {Integer} debugLevel 0..4 (null: use global setting $.ui.fancytree.debugInfo)
+ * @property {Integer} debugLevel 0..4 (null: use global setting $.ui.fancytree.debugLevel)
  * @property {function} defaultKey callback(node) is called for new nodes without a key. Must return a new unique key. (default null: generates default keys like that: "_" + counter)
  * @property {boolean} enableAspx Accept passing ajax data in a property named `d` (default: true).
  * @property {boolean} escapeTitles Make sure all HTML tags are escaped (default: false).
@@ -208,6 +208,13 @@ var TreePatch = {};
  *     Note: If a separate tooltip widget is used, it may be more efficient to use that widget
  *     API instead, instead of duplicating tree markup.
  *     (<a href="http://api.jqueryui.com/tooltip/#option-content">For example jQuery UI Tooltip</a>.)
+ * @property {string} treeId optional fixed tree id and namespace (default: null)<br>
+ *     By default, the `tree._id` is an integer, starting as `1` and automatically
+ *     incremented every time a new Fancytree is instantiated.<br>
+ *     The `tree._id` is used to define the hidden root node's id, persistence keys, form control ids,
+ *     and can be passed to `$.ui.fancytree.getTree()`.<br>
+ *     Also, `tree._ns` is calculated as `".fancytree-" + tree._id` and used for namespaced events.
+ *     @since 2.31
  * @property {object} types Made available as `tree.types`.<br>
  *     Shared data for nodes with the same `node.type` attribute.
  *     See also <a href="https://github.com/mar10/fancytree/wiki/TutorialNodeTypes">node types</a>.

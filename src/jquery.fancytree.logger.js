@@ -4,7 +4,7 @@
  * Miscellaneous debug extensions.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2019, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2019, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -104,7 +104,7 @@
 		return res;
 	}
 
-	function logHook(name, self, args, extra) {
+	function logHook(name, this_, args, extra) {
 		var res,
 			ctx = args[0],
 			opts = ctx.options.logger,
@@ -115,7 +115,7 @@
 			!opts.traceHooks ||
 			(opts.traceHooks !== true && $.inArray(name, opts.traceHooks) < 0)
 		) {
-			return self._superApply.call(self, args);
+			return this_._superApply(this_, args);
 		}
 		if (
 			opts.timings === true ||
@@ -124,7 +124,7 @@
 			// if( name === "nodeRender" ) { logName += obj; }  // allow timing for recursive calls
 			// logName += " (" + obj + ")";
 			window.console.time(logName);
-			res = self._superApply.call(self, args);
+			res = this_._superApply.call(this_, args);
 			window.console.timeEnd(logName);
 		} else {
 			if (extra) {
@@ -134,7 +134,7 @@
 				// obj.info(logName, ctx);
 				logLine(logName, ctx);
 			}
-			res = self._superApply.call(self, args);
+			res = this_._superApply.call(this_, args);
 		}
 		return res;
 	}
@@ -164,7 +164,9 @@
 				this.options.extensions[this.options.extensions.length - 1] !==
 				"logger"
 			) {
-				throw "Fancytree 'logger' extension must be listed as last entry.";
+				throw Error(
+					"Fancytree 'logger' extension must be listed as last entry."
+				);
 			}
 			tree.warn(
 				"Fancytree logger extension is enabled (this may be slow).",

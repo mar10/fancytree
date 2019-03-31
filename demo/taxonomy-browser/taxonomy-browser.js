@@ -1,7 +1,7 @@
 /*!
  * Fancytree Taxonomy Browser
  *
- * Copyright (c) 2015, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2015, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -13,7 +13,7 @@
 /* global Handlebars */
 /* eslint-disable no-console */
 
-(function($, window, document, undefined) {
+(function($, window, document) {
 	"use strict";
 
 	/*******************************************************************************
@@ -73,7 +73,7 @@
 	 */
 	function _delay(tag, ms, callback) {
 		/*jshint -W040:true */
-		var that = this;
+		var self = this;
 
 		tag = "" + (tag || "default");
 		if (timerMap[tag] != null) {
@@ -87,7 +87,7 @@
 		// console.log("Start timer '" + tag + "'");
 		timerMap[tag] = setTimeout(function() {
 			// console.log("Execute timer '" + tag + "'");
-			callback.call(that);
+			callback.call(self);
 		}, +ms);
 	}
 
@@ -208,17 +208,17 @@
 			if (loadTreeNodes) {
 				// console.log("updateBreadcrumb - loadKeyPath", keyList);
 				taxonTree.loadKeyPath("/" + keyList.join("/"), function(
-					node,
+					n,
 					status
 				) {
-					// console.log("... updateBreadcrumb - loadKeyPath " + node.title + ": " + status);
+					// console.log("... updateBreadcrumb - loadKeyPath " + n.title + ": " + status);
 					switch (status) {
 						case "loaded":
-							node.makeVisible();
+							n.makeVisible();
 							break;
 						case "ok":
-							node.setActive();
-							// node.makeVisible();
+							n.setActive();
+							// n.makeVisible();
 							break;
 					}
 				});

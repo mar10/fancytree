@@ -4,7 +4,7 @@
  * Drag-and-drop support (jQuery UI draggable/droppable).
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2019, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2019, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -550,7 +550,7 @@
 					draggable: draggable,
 				}),
 				res = null,
-				that = this,
+				self = this,
 				$nodeTag = $(node.span);
 
 			if (dnd.smartRevert) {
@@ -599,9 +599,9 @@
 									event.type === "keydown" &&
 									event.which === $.ui.keyCode.ESCAPE
 								) {
-									that.ext.dnd._cancelDrag();
+									self.ext.dnd._cancelDrag();
 								} else if (event.type === "mousedown") {
-									that.ext.dnd._cancelDrag();
+									self.ext.dnd._cancelDrag();
 								}
 							}
 						);

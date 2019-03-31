@@ -6,7 +6,7 @@
   "homepage": "https://github.com/mar10/fancytree",
   "author": {
     "name": "Martin Wendt",
-    "url": "http://careers.stackoverflow.com/martin-wendt"
+    "url": "https://wwWendt.de"
   },
   "repository": {
     "type": "git",
@@ -41,9 +41,9 @@
     "jquery": ">=1.9"
   },
   "devDependencies": {
-    "eslint": "^5.12.1",
+    "eslint": "^5.15.0",
     "eslint-config-jquery": "^1.0.1",
-    "eslint-config-prettier": "^3.5.0",
+    "eslint-config-prettier": "^3.6.0",
     "eslint-plugin-prettier": "^3.0.1",
     "grunt": "^1.0.3",
     "grunt-contrib-clean": "^2.0.0",
@@ -65,9 +65,9 @@
     "grunt-text-replace": "^0.4.0",
     "grunt-yabs": "^1.1.4",
     "jsdoc": "~3.5.4",
-    "marked": "^0.6.0",
-    "prettier": "^1.15.3",
-    "qunit": "^2.9"
+    "marked": "^0.6.1",
+    "prettier": "^1.16.4",
+    "qunit": "^2.9.2"
   },
   "scripts": {
     "test": "grunt ci --verbose"
