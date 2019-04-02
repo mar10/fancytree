@@ -891,7 +891,7 @@
 		 * @param {*} msg string or object or array of such
 		 */
 		error: function(msg) {
-			if (this.options.debugLevel >= 1) {
+			if (this.tree.options.debugLevel >= 1) {
 				Array.prototype.unshift.call(arguments, this.toString());
 				consoleApply("error", arguments);
 			}
@@ -2939,6 +2939,16 @@
 				this.debug("enableUpdate(false)...");
 			}
 			return !flag; // return previous value
+		},
+		/** Write error to browser console if debugLevel >= 1 (prepending tree info)
+		 *
+		 * @param {*} msg string or object or array of such
+		 */
+		error: function(msg) {
+			if (this.options.debugLevel >= 1) {
+				Array.prototype.unshift.call(arguments, this.toString());
+				consoleApply("error", arguments);
+			}
 		},
 		/** Expand (or collapse) all parent nodes.
 		 *

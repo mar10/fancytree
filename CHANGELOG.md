@@ -5,6 +5,7 @@
   * Now testing on Puppeteer/Chromium instead of PhantonJS
   * [DEPRECATED] loaderror and lazyload options now throw an error
   * [Fixed] #918 SVG font awesome 5 glyphs remove badge counter when parent node is collapsed
+  * [Fixed] missing tree.error() and broken node.error()
 
 
 # 2.30.2 / 2019-01-13
