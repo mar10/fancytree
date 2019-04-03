@@ -4,7 +4,7 @@
  * Render tree as table (aka 'tree grid', 'table tree').
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2019, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -32,8 +32,15 @@
 	 * Private functions and variables
 	 */
 	var FT = $.ui.fancytree,
-		_assert = FT.assert;
+		_assert = FT.assert,
+		EPS = 3.0;
 
+	/*
+	 * [ext-grid] ...
+	 *
+	 * @alias Fancytree#_addScrollbar
+	 * @requires jquery.fancytree.grid.js
+	 */
 	function _addScrollbar(table) {
 		var sbWidth = 10,
 			$table = $(table),
@@ -61,6 +68,42 @@
 		return $sb;
 	}
 
+	/*
+	 * [ext-grid] Invalidate renumber status, i.e. trigger renumber next time.
+	 *
+	 * @alias Fancytree#_renumberReset
+	 * @requires jquery.fancytree.grid.js
+	 */
+	$.ui.fancytree._FancytreeClass.prototype._renumberReset = function() {
+		// this.debug("_renumberReset()");
+		this.visibleNodeList = null;
+	};
+
+	/*
+	 * [ext-grid] ...
+	 *
+	 * @alias Fancytree#_shiftViewport
+	 * @requires jquery.fancytree.grid.js
+	 */
+	$.ui.fancytree._FancytreeClass.prototype._shiftViewport = function(
+		mode,
+		ofs
+	) {
+		this.debug("_shiftViewport", mode, ofs);
+		switch (mode) {
+			case "vscroll":
+				if (ofs) {
+					this.setViewport({
+						start: this.viewport.start + (ofs > 0 ? 1 : -1),
+					});
+				}
+				break;
+
+			default:
+				throw Error("Invalid  mode: " + mode);
+		}
+	};
+
 	/**
 	 * [ext-grid] Define a subset of rows/columns to display and redraw.
 	 *
@@ -80,22 +123,26 @@
 			trList = this.tbody.children,
 			trCount = trList.length;
 
-		this.debug("setViewport(" + vp.start + ", +" + count + ")");
-
 		// Sanitize viewport settings and check if we need to redraw
 		if (typeof opts === "boolean") {
+			this.debug("setViewport( " + opts + ")");
 			redraw = vp.enabled !== opts;
 			vp.enabled = opts;
 			if (redraw) {
 				reason += "enable";
 			}
 		} else {
+			this.debug("setViewport(" + opts.start + ", +" + opts.count + ")");
 			redraw = !vp.enabled || opts.force;
 			if (redraw) {
 				reason += "force";
 			}
 			vp.enabled = true;
 			start = opts.start == null ? vp.start : Math.max(0, +opts.start);
+			// Don't scroll down below bottom node
+			if (start > 0 && !opts.count && this.visibleNodeList) {
+				start = Math.min(start, this.visibleNodeList.length - vp.count);
+			}
 			count = opts.count == null ? vp.count : Math.max(1, +opts.count);
 			if (vp.start !== +start) {
 				vp.start = start;
@@ -122,6 +169,7 @@
 			return false;
 		}
 		// Make sure we have the correct count of TRs
+		var prevPhase = this.isVpUpdating;
 		if (trCount > count) {
 			for (i = 0; i < trCount - count; i++) {
 				delete this.tbody.lastChild.ftnode;
@@ -138,20 +186,113 @@
 		// Update visible node cache if needed
 		this.redrawViewport(true);
 		this._triggerTreeEvent("updateViewport", null, {
+			reason: reason,
 			scrollOnly: reason === "start",
 		});
+		this.isVpUpdating = prevPhase;
 		return true;
 	};
 
-	/*
-	 * [ext-grid] Invalidate renumber status, i.e. trigger renumber next time.
+	/**
+	 * [ext-grid] Calculate the viewport count from current scroll wrapper height.
 	 *
-	 * @alias Fancytree#_renumberReset
+	 * @alias Fancytree#adjustViewportSize
 	 * @requires jquery.fancytree.grid.js
 	 */
-	$.ui.fancytree._FancytreeClass.prototype._renumberReset = function() {
-		// this.debug("_renumberReset()");
-		this.visibleNodeList = null;
+	$.ui.fancytree._FancytreeClass.prototype.adjustViewportSize = function() {
+		_assert(
+			this.scrollWrapper,
+			"No parent div.fancytree-grid-container found."
+		);
+		if (this.isVpUpdating) {
+			this.debug("Ignoring adjustViewportSize() during VP update.");
+			return;
+		}
+		// Calculate how many rows fit into current container height
+		var $table = this.$container,
+			wrapper = this.scrollWrapper,
+			trHeight = $table.find(">tbody>tr:first").height(),
+			tableHeight = $table.height(),
+			headHeight = tableHeight - this.viewport.count * trHeight,
+			free = wrapper.offsetHeight - headHeight,
+			newCount = Math.floor(free / trHeight);
+
+		// Add margins to the table, to make sure the wrapper becomes
+		// scrollable
+		// $table.(wrapper).height(treeHeight + 2.0 * EPS);
+		// console.info(
+		// 	"set container height",
+		// 	$(this)
+		// 		.parent(".fancytree-grid-container")
+		// 		.height()
+		// );
+
+		this.setViewport({ count: newCount });
+	};
+
+
+	/*
+	 * [ext-grid] Calculate the scroll container dimension from the current tree table.
+	 *
+	 * @alias Fancytree#initViewportWrapper
+	 * @requires jquery.fancytree.grid.js
+	 */
+	$.ui.fancytree._FancytreeClass.prototype._initViewportWrapper = function() {
+		var wrapper = this.scrollWrapper,
+			$wrapper = $(wrapper),
+			tree = this;
+
+		// if (!$wrapper) {
+		// 	return;
+		// } else if (this.isVpUpdating) {
+		// 	this.debug("Ignoring initViewportWrapper() during VP update.");
+		// 	return;
+		// }
+		$wrapper.on("scroll", function(e) {
+			var viewport = tree.viewport,
+				curTop = $wrapper.scrollTop(),
+				dy = curTop - EPS;
+
+			tree.debug("scroll", curTop, dy);
+			if (tree.isVpUpdating) {
+				tree.debug("ignore scroll during vp update");
+				return;
+			} else if (dy === 0) {
+				tree.debug("ignore 0-scroll");
+				return;
+			}
+
+			tree._shiftViewport("vscroll", dy);
+			if (viewport.start === 0) {
+				$wrapper.scrollTop(0); // Prevent scroll-up
+			} else if (
+				viewport.start + viewport.count >=
+				tree.visibleNodeList.length
+			) {
+				tree.info(
+					"prevent scroll down",
+					viewport.start,
+					viewport.count,
+					tree.visibleNodeList.length
+				);
+				$wrapper.scrollTop(2.0 * EPS); // Prevent scroll-down
+			} else {
+				$wrapper.scrollTop(EPS);
+			}
+			tree.debug("scrollTop ->", $wrapper.scrollTop());
+		});
+		// if (!data.scrollOnly) {
+		// 	var treeHeight = $(this).height();
+		// 	$(this)
+		// 		.parent(".fancytree-grid-container")
+		// 		.height(treeHeight + 2.0 * EPS);
+		// 	console.info(
+		// 		"set container height",
+		// 		$(this)
+		// 			.parent(".fancytree-grid-container")
+		// 			.height()
+		// 	);
+		// }
 	};
 
 	/*
@@ -217,7 +358,8 @@
 			tr,
 			_renderCount = 0,
 			trIdx = 0,
-			trList = this.tbody.children;
+			trList = this.tbody.children,
+			prevPhase = this.isVpUpdating;
 
 		// Reset previous data
 		this.visit(function(node) {
@@ -256,6 +398,7 @@
 			}
 			trIdx++;
 		}
+		this.isVpUpdating = prevPhase;
 		window.console.timeEnd("redrawViewport()");
 	};
 
@@ -280,7 +423,8 @@
 				tree = ctx.tree,
 				opts = ctx.options,
 				tableOpts = opts.table,
-				$table = tree.widget.element;
+				$table = tree.widget.element,
+				$scrollWrapper = $table.parent(".fancytree-grid-container");
 
 			if ($.inArray("table", opts.extensions) >= 0) {
 				$.error("ext-grid and ext-table are mutually exclusive.");
@@ -353,8 +497,14 @@
 
 			// #489: make sure $container is set to <table>, even if ext-dnd is listed before ext-grid
 			tree.$container = $table;
+			if ($scrollWrapper.length) {
+				tree.scrollWrapper = $scrollWrapper[0];
+				this._initViewportWrapper();
+			} else {
+				tree.scrollWrapper = null;
+			}
 
-			// Scrolling is implemented completely different here
+			// Scrolling is implemented completely differently here
 			$.ui.fancytree.overrideMethod(
 				$.ui.fancytree._FancytreeNodeClass.prototype,
 				"scrollIntoView",
@@ -390,6 +540,7 @@
 				$.extend(
 					{
 						enabled: false,
+						autoSize: true,
 						start: 0,
 						count: 10,
 						left: 0,
