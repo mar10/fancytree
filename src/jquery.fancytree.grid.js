@@ -33,7 +33,7 @@
 	 */
 	var FT = $.ui.fancytree,
 		_assert = FT.assert,
-		EPS = 3.0;
+		EPS = 1.0;
 
 	/*
 	 * [ext-grid] ...
@@ -214,12 +214,10 @@
 			trHeight = $table.find(">tbody>tr:first").height(),
 			tableHeight = $table.height(),
 			headHeight = tableHeight - this.viewport.count * trHeight,
-			free = wrapper.offsetHeight - headHeight,
+			wrapperHeight = wrapper.offsetHeight,
+			free = wrapperHeight - headHeight,
 			newCount = Math.floor(free / trHeight);
 
-		// Add margins to the table, to make sure the wrapper becomes
-		// scrollable
-		// $table.(wrapper).height(treeHeight + 2.0 * EPS);
 		// console.info(
 		// 	"set container height",
 		// 	$(this)
@@ -228,8 +226,12 @@
 		// );
 
 		this.setViewport({ count: newCount });
+		// Add bottom margin to the table, to make sure the wrapper becomes
+		// scrollable
+		var mb = wrapperHeight - $table.height() - 2.0 * EPS;
+		this.debug("margin-bottom=" + mb);
+		$table.css("margin-bottom", mb);
 	};
-
 
 	/*
 	 * [ext-grid] Calculate the scroll container dimension from the current tree table.
@@ -250,36 +252,25 @@
 		// }
 		$wrapper.on("scroll", function(e) {
 			var viewport = tree.viewport,
-				curTop = $wrapper.scrollTop(),
-				dy = curTop - EPS;
+				curTop = wrapper.scrollTop,
+				homeTop = viewport.start === 0 ? 0 : EPS,
+				dy = viewport.start === 0 ? 1 : curTop - EPS; //homeTop;
 
-			tree.debug("scroll", curTop, dy);
+			tree.debug("scroll: scrollTop=" + curTop + ", dy=" + dy, homeTop);
 			if (tree.isVpUpdating) {
-				tree.debug("ignore scroll during vp update");
+				tree.debug("Ignoring scroll during VP update.");
 				return;
-			} else if (dy === 0) {
-				tree.debug("ignore 0-scroll");
+			} else if (curTop === homeTop) {
+				tree.debug("Ignoring scroll to neutral " + homeTop + ".");
 				return;
 			}
-
+			tree.debug("scrollTop(" + homeTop + ")...");
+			setTimeout(function() {
+				wrapper.scrollTop = homeTop;
+			}, 0);
 			tree._shiftViewport("vscroll", dy);
-			if (viewport.start === 0) {
-				$wrapper.scrollTop(0); // Prevent scroll-up
-			} else if (
-				viewport.start + viewport.count >=
-				tree.visibleNodeList.length
-			) {
-				tree.info(
-					"prevent scroll down",
-					viewport.start,
-					viewport.count,
-					tree.visibleNodeList.length
-				);
-				$wrapper.scrollTop(2.0 * EPS); // Prevent scroll-down
-			} else {
-				$wrapper.scrollTop(EPS);
-			}
-			tree.debug("scrollTop ->", $wrapper.scrollTop());
+
+			tree.debug("scrollTop(): " + wrapper.scrollTop);
 		});
 		// if (!data.scrollOnly) {
 		// 	var treeHeight = $(this).height();
@@ -550,7 +541,7 @@
 					opts.viewport
 				)
 			);
-			tree.$scrollbar = _addScrollbar($table);
+			// tree.$scrollbar = _addScrollbar($table);
 
 			this._superApply(arguments);
 

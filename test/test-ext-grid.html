@@ -45,31 +45,30 @@
 
   /* Support scrolling  */
   div.fancytree-grid-container {
-    /* position: relative;
-    bottom: 10px; */
+    /* position: relative; */
+    /* bottom: 10px;  */
     overflow-y: scroll;
     overflow-x: auto;
     padding: 0;
     border: 1px solid gray;
     /* background-color: red; */
-    height: 300px;
+    /* height: 300px; */
   }
+
+  div.fancytree-grid-container > table.fancytree-ext-grid > thead {
+    /* position: fixed; */
+    /* top: 0; */
+  }
+
   div.fancytree-grid-container > table.fancytree-ext-grid {
     width: 100%;
-    margin: 1px 0 30px 0;  /* 1px above and below. */
-    /* height: 301px;
-    max-height: 301px; */
-    /* position: absolute;
-    top: 10px; */
+    border: 0;
+    margin: 1px 0 1px 0;  /* 1px above and below. */
   }
-  /* div.fancytree-grid-container > table.fancytree-ext-grid > tbody {
-    position: absolute;
-    width: 100%;
-    top: 32px;
-  } */
 
 </style>
-  <link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet">
+
+<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet">
   <script src="../src/jquery.fancytree.js"></script>
   <script src="../src/jquery.fancytree.ariagrid.js"></script>
   <script src="../src/jquery.fancytree.dnd5.js"></script>
@@ -197,8 +196,7 @@
 
     $(window).on("resize", function(e){
       console.log(e.type, e);
-      var
-        BOTTOM_OFS = 20,
+      var BOTTOM_OFS = 20,
         $wrapper = $("div.fancytree-grid-container"),
         tree = $.ui.fancytree.getTree();
 
@@ -206,7 +204,7 @@
       $wrapper.height(window.innerHeight - $wrapper[0].offsetTop - BOTTOM_OFS);
       // Re-calculate viewport.count from current wrapper height:
       tree.adjustViewportSize();
-    });
+    }).resize();
 
 
     /* Handle inputs */
