@@ -6742,8 +6742,6 @@
 			 * @returns {NodeData[]}
 			 */
 			parseHtml: function($ul) {
-				// TODO: understand this:
-				/*jshint validthis:true */
 				var classes,
 					className,
 					extraClasses,
