@@ -87,7 +87,18 @@
 <script type="text/javascript">
   $(function(){
 
-    // var sourceUrl = getUrlParam("source");
+			// --- Demo GUI: ---------------------------------------------------
+
+			$( "#optionsForm [name=cellFocus]" ).change( function( e ) {
+				var value = $( this ).find( ":selected" ).val();
+
+				window.sessionStorage.setItem( "cellFocus", value );
+				$.ui.fancytree.getTree( "#treegrid" ).setOption("ariagrid.cellFocus", value);
+			}).val( window.sessionStorage.getItem( "cellFocus" ) || "allow" );
+
+			// --- Fancytree widget --------------------------------------------
+
+      // var sourceUrl = getUrlParam("source");
     // if( sourceUrl ){
     //   sourceUrl = "https://cdn.jsdelivr.net/gh/mar10/assets@master/fancytree/" + sourceUrl;
     // } else {
@@ -107,7 +118,7 @@
       ariagrid: {
         // Internal behavior flags
         activateCellOnDoubelclick: true,
-        cellFocus: "allow",
+        cellFocus: $( "#optionsForm [name=cellFocus]" ).find( ":selected" ).val(),
         // TODO: use a global tree option `name` or `title` instead?:
         label: "Tree Grid", // Added as `aria-label` attribute
       },
@@ -164,6 +175,13 @@
       },
       lazyLoad: function(event, data) {
         data.result = {url: "ajax-sub2.json"}
+      },
+      activateCell: function(event, data) {
+        data.node.debug(event.type, data);
+      },
+      defaultGridAction: function( event, data ) {
+        // Called when ENTER is pressed in cell-mode.
+        data.node.debug(event.type, data);
       },
       renderColumns: function(event, data) {
         var node = data.node,
@@ -284,7 +302,20 @@
     <label for="filter">Filter:</label>
     <input type="search" name="search" placeholder="Search text" autocomplete="off">
     <span class="matches"></span>
+
+		<form id="optionsForm">
+			<label>Cell Navigation:
+				<select name="cellFocus">
+					<option value="start">start</option>
+					<option value="allow" selected="selected">allow</option>
+					<option value="force">force</option>
+					<option value="off">off</option>
+				</select>
+			</label>
+			(Please reload page for changes to take effect.)
+		</form>
   </div>
+
   <div>
     <button type="button" id="expandAll">Expand all</button>
     <button type="button" id="collapseAll">Collapse all</button>

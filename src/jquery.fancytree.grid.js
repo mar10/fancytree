@@ -256,7 +256,16 @@
 				homeTop = viewport.start === 0 ? 0 : EPS,
 				dy = viewport.start === 0 ? 1 : curTop - EPS; //homeTop;
 
-			tree.debug("scroll: scrollTop=" + curTop + ", dy=" + dy, homeTop);
+			tree.debug(
+				"Got 'scroll' event: scrollTop=" +
+					curTop +
+					", homeTop=" +
+					homeTop +
+					", start=" +
+					viewport.start +
+					", dy=" +
+					dy
+			);
 			if (tree.isVpUpdating) {
 				tree.debug("Ignoring scroll during VP update.");
 				return;
@@ -264,13 +273,14 @@
 				tree.debug("Ignoring scroll to neutral " + homeTop + ".");
 				return;
 			}
-			tree.debug("scrollTop(" + homeTop + ")...");
+			tree._shiftViewport("vscroll", dy);
+			homeTop = viewport.start === 0 ? 0 : EPS;
 			setTimeout(function() {
+				tree.debug(
+					"scrollTop(" + wrapper.scrollTop + " -> " + homeTop + ")..."
+				);
 				wrapper.scrollTop = homeTop;
 			}, 0);
-			tree._shiftViewport("vscroll", dy);
-
-			tree.debug("scrollTop(): " + wrapper.scrollTop);
 		});
 		// if (!data.scrollOnly) {
 		// 	var treeHeight = $(this).height();
