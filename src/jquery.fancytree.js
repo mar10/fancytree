@@ -6737,13 +6737,13 @@
 
 				if (et === "click" || et === "dblclick") {
 					s.push(MOUSE_BUTTONS[event.button] + et);
-				} else {
-					if (!IGNORE_KEYCODES[which]) {
-						s.push(
-							SPECIAL_KEYCODES[which] ||
-								String.fromCharCode(which).toLowerCase()
-						);
-					}
+				} else if (et === "wheel") {
+					s.push(et);
+				} else if (!IGNORE_KEYCODES[which]) {
+					s.push(
+						SPECIAL_KEYCODES[which] ||
+							String.fromCharCode(which).toLowerCase()
+					);
 				}
 				return s.join("+");
 			},

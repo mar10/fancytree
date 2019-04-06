@@ -33,6 +33,7 @@
 	 */
 	var FT = $.ui.fancytree,
 		_assert = FT.assert,
+		SCROLL_MODE =  "wheel",  // 'wheel' | 'scroll'
 		EPS = 1.0;
 
 	/*
@@ -77,6 +78,19 @@
 	$.ui.fancytree._FancytreeClass.prototype._renumberReset = function() {
 		// this.debug("_renumberReset()");
 		this.visibleNodeList = null;
+	};
+
+	/*
+	 * [ext-grid] Return true if viewport cannot be scrolled down any further.
+	 *
+	 * @alias Fancytree#isViewportBottom
+	 * @requires jquery.fancytree.grid.js
+	 */
+	$.ui.fancytree._FancytreeClass.prototype.isViewportBottom = function() {
+		return (
+			this.viewport.start + this.viewport.count >=
+			this.visibleNodeList.length
+		);
 	};
 
 	/*
@@ -226,11 +240,13 @@
 		// );
 
 		this.setViewport({ count: newCount });
-		// Add bottom margin to the table, to make sure the wrapper becomes
-		// scrollable
-		var mb = wrapperHeight - $table.height() - 2.0 * EPS;
-		this.debug("margin-bottom=" + mb);
-		$table.css("margin-bottom", mb);
+		if (SCROLL_MODE === "scroll") {
+			// Add bottom margin to the table, to make sure the wrapper becomes
+			// scrollable
+			var mb = wrapperHeight - $table.height() - 2.0 * EPS;
+			this.debug("margin-bottom=" + mb);
+			$table.css("margin-bottom", mb);
+		}
 	};
 
 	/*
@@ -244,56 +260,69 @@
 			$wrapper = $(wrapper),
 			tree = this;
 
-		// if (!$wrapper) {
-		// 	return;
-		// } else if (this.isVpUpdating) {
-		// 	this.debug("Ignoring initViewportWrapper() during VP update.");
-		// 	return;
-		// }
-		$wrapper.on("scroll", function(e) {
-			var viewport = tree.viewport,
-				curTop = wrapper.scrollTop,
-				homeTop = viewport.start === 0 ? 0 : EPS,
-				dy = viewport.start === 0 ? 1 : curTop - EPS; //homeTop;
+		if (SCROLL_MODE === "scroll") {
+			$wrapper.on("scroll", function(e) {
+				var viewport = tree.viewport,
+					curTop = wrapper.scrollTop,
+					homeTop = viewport.start === 0 ? 0 : EPS,
+					dy = viewport.start === 0 ? 1 : curTop - EPS; //homeTop;
 
-			tree.debug(
-				"Got 'scroll' event: scrollTop=" +
-					curTop +
-					", homeTop=" +
-					homeTop +
-					", start=" +
-					viewport.start +
-					", dy=" +
-					dy
-			);
-			if (tree.isVpUpdating) {
-				tree.debug("Ignoring scroll during VP update.");
-				return;
-			} else if (curTop === homeTop) {
-				tree.debug("Ignoring scroll to neutral " + homeTop + ".");
-				return;
-			}
-			tree._shiftViewport("vscroll", dy);
-			homeTop = viewport.start === 0 ? 0 : EPS;
-			setTimeout(function() {
 				tree.debug(
-					"scrollTop(" + wrapper.scrollTop + " -> " + homeTop + ")..."
+					"Got 'scroll' event: scrollTop=" +
+						curTop +
+						", homeTop=" +
+						homeTop +
+						", start=" +
+						viewport.start +
+						", dy=" +
+						dy
 				);
-				wrapper.scrollTop = homeTop;
-			}, 0);
-		});
-		// if (!data.scrollOnly) {
-		// 	var treeHeight = $(this).height();
-		// 	$(this)
-		// 		.parent(".fancytree-grid-container")
-		// 		.height(treeHeight + 2.0 * EPS);
-		// 	console.info(
-		// 		"set container height",
-		// 		$(this)
-		// 			.parent(".fancytree-grid-container")
-		// 			.height()
-		// 	);
-		// }
+				if (tree.isVpUpdating) {
+					tree.debug("Ignoring scroll during VP update.");
+					return;
+				} else if (curTop === homeTop) {
+					tree.debug("Ignoring scroll to neutral " + homeTop + ".");
+					return;
+				}
+				tree._shiftViewport("vscroll", dy);
+				homeTop = viewport.start === 0 ? 0 : EPS;
+				setTimeout(function() {
+					tree.debug(
+						"scrollTop(" +
+							wrapper.scrollTop +
+							" -> " +
+							homeTop +
+							")..."
+					);
+					wrapper.scrollTop = homeTop;
+				}, 0);
+			});
+		}
+		if (SCROLL_MODE === "wheel") {
+			this.$container.on("wheel", function(e) {
+				var orgEvent = e.originalEvent,
+					viewport = tree.viewport,
+					dy = orgEvent.deltaY; // * orgEvent.wheelDeltaY;
+
+				if (!dy) {
+					return true;
+				}
+				if (dy < 0 && viewport.start === 0) {
+					return true;
+				}
+				if (dy > 0 && tree.isViewportBottom()) {
+					return true;
+				}
+				tree.debug(
+					"Got 'wheel' event: dy=" +
+						dy +
+						", mode=" +
+						orgEvent.deltaMode
+				);
+				tree._shiftViewport("vscroll", dy);
+				return false;
+			});
+		}
 	};
 
 	/*
@@ -641,7 +670,7 @@
 				// 		tree.tbody.rows.length
 				// );
 				if (outsideViewport) {
-					node.debug("nodeRender(): outsideViewport: ignored");
+					// node.debug("nodeRender(): outsideViewport: ignored");
 					return;
 				}
 				if (!node.tr) {

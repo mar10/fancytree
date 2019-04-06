@@ -48,6 +48,8 @@
     /* position: relative; */
     /* bottom: 10px;  */
     overflow-y: scroll;
+    box-sizing: border-box;
+    /* overflow-y: hide; */
     overflow-x: auto;
     padding: 0;
     border: 1px solid gray;
@@ -105,9 +107,9 @@
     //   sourceUrl = "ajax-tree-products.json";
     // }
     // var sourceUrl = getUrlParam("source");
-    var sourceUrl = "../test/ajax10k_nodes.json";
+    // var sourceUrl = "../test/ajax10k_nodes.json";
     // var sourceUrl = "ajax10k_nodes.json";
-    // var sourceUrl = "https://cdn.jsdelivr.net/gh/mar10/assets@master/fancytree/ajax_101k.json";
+    var sourceUrl = "https://cdn.jsdelivr.net/gh/mar10/assets@master/fancytree/ajax_101k.json";
 
 
     $("#treetable").fancytree({
@@ -327,7 +329,7 @@
   <div class="fancytree-grid-container">
 
     <table id="treetable">
-      <caption>Loading&hellip;</caption>
+      <!-- <caption>Loading&hellip;</caption> -->
       <colgroup>
         <col width="30px"></col>
         <col width="30px"></col>
