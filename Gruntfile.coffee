@@ -356,6 +356,7 @@ module.exports = (grunt) ->
         #           # { browserName: "internet explorer", version: "9", platform: "Windows 7" }
         #           { browserName: "internet explorer", version: "8", platform: "Windows 7" }
         #         ]
+
         ui_112:
             options:
                 testname: "Fancytree qunit tests (jQuery 3, jQuery UI 1.12)"
@@ -363,12 +364,8 @@ module.exports = (grunt) ->
                 # jQuery 3        supports IE 9+ and latest Chrome/Edge/Firefox/Safari (-1)
                 # jQuery UI 1.12  supports IE 11 and latest Chrome/Edge/Firefox/Safari (-1)
                 browsers: [
-                  # Issue #825
-                  { browserName: "chrome", version: "dev", platform: "Windows 10", chromedriverVersion: "2.46.0" }
                   { browserName: "chrome", version: "latest", platform: "Windows 10" }
                   { browserName: "chrome", version: "latest-1", platform: "Windows 10" }
-                  # FF.dev is problematic: https://support.saucelabs.com/hc/en-us/articles/225253808-Firefox-Dev-Beta-Browser-Won-t-Start
-                  # { browserName: "firefox", version: "dev", platform: "Windows 10" }
                   { browserName: "firefox", version: "latest", platform: "Windows 10" }
                   { browserName: "firefox", version: "latest-1", platform: "Windows 10" }
                   { browserName: "firefox", version: "latest", platform: "Linux" }
@@ -376,9 +373,9 @@ module.exports = (grunt) ->
                   { browserName: "microsoftedge", version: "latest", platform: "Windows 10" }
                   { browserName: "microsoftedge", version: "latest-1", platform: "Windows 10" }
                   { browserName: "safari", version: "9", platform: "OS X 10.11" }
-                  { browserName: "safari", version: "10", platform: "OS X 10.12" }
-                  { browserName: "safari", version: "11", platform: "OS X 10.13" }
-                  # { browserName: "safari", version: "12", platform: "OS X 10.14" }
+                  { browserName: "safari", version: "10", platform: "macOS 10.12" }
+                  { browserName: "safari", version: "11", platform: "macOS 10.13" }
+                  { browserName: "safari", version: "12", platform: "macOS 10.14" }
                 ]
         ui_111:
             options:
@@ -402,15 +399,16 @@ module.exports = (grunt) ->
                   # { browserName: "internet explorer", version: "8", platform: "Windows 7" }
                   { browserName: "internet explorer", version: "9", platform: "Windows 7" }
                 ]
-        # ui_109:
-        #     options:
-        #         testname: "Fancytree qunit tests (jQuery 1.9, jQuery UI 1.9)"
-        #         urls: ["http://localhost:9999/test/unit/test-jQuery19-ui19.html"]
-        #         # jQuery 1.9     dropped supports IE 6..?
-        #         # jQuery UI 1.9  supports IE 6+ and ?
-        #         browsers: [
-        #           { browserName: "internet explorer", version: "8", platform: "Windows 7" }
-        #         ]
+        beta:  # This tests are allowed to fail in the travis matrix
+            options:
+                testname: "Fancytree qunit tests ('dev' browser versions)"
+                urls: ["http://localhost:9999/test/unit/test-core.html"]
+                browsers: [
+                  # Issue #825
+                  { browserName: "chrome", version: "dev", platform: "Windows 10" }  #, chromedriverVersion: "2.46.0" }
+                  # FF.dev is problematic: https://support.saucelabs.com/hc/en-us/articles/225253808-Firefox-Dev-Beta-Browser-Won-t-Start
+                  { browserName: "firefox", version: "dev", platform: "Windows 10" }
+                ]
 
     uglify:
         src_to_build:
@@ -508,15 +506,26 @@ module.exports = (grunt) ->
       "qunit:develop"
   ]
 
-  grunt.registerTask "sauce", ["connect:sauce", "saucelabs-qunit"]
+  grunt.registerTask "sauce", [
+      "connect:sauce",
+      "saucelabs-qunit:ui_112",
+      "saucelabs-qunit:ui_111",
+      "saucelabs-qunit:ui_110",
+  ]
+  grunt.registerTask "sauce-optional", [
+      "connect:sauce",
+      "saucelabs-qunit:beta",
+  ]
   grunt.registerTask "sauce-triage", ["connect:sauce", "saucelabs-qunit:triage"]
 
   if parseInt(process.env.TRAVIS_PULL_REQUEST, 10) > 0
       # saucelab keys do not work on forks
       # http://support.saucelabs.com/entries/25614798
       grunt.registerTask "travis", ["test"]
+      grunt.registerTask "travis-optional", []
   else
       grunt.registerTask "travis", ["test", "sauce"]
+      grunt.registerTask "travis-optional", ["sauce-optional"]
 
   grunt.registerTask "default", ["test"]
   grunt.registerTask "ci", ["test"]  # Called by 'npm test'

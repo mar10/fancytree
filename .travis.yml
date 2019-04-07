@@ -1,10 +1,21 @@
 language: node_js
+sudo: false
 node_js:
-  - "8"
+  # - "8"
+  - "10"
+
 before_script:
   - npm install -g grunt-cli
-script: grunt travis --verbose
-sudo: false
+
+matrix:
+  include:
+    - env: GRUNT_TASK=travis
+    - env: GRUNT_TASK=travis-optional
+  allow_failures:
+    - env: GRUNT_TASK=travis-optional
+
+script: grunt $GRUNT_TASK --verbose
+
 env:
   global:
     - secure: VmlzKmxE+V+QZpvDuj5W41u2HTu2uTvW0aUi2p+2yhCHd7J5TFdOoECwIhTa/4VDEpnZwjLJXPd2q9kEn3+G0HpEqRMtKVTP/sM8y0JKUkprSCWV/y+pVX+0B9jQBAhEcjtkLDEGI3xVI8n+WV0Fig4kWecSCcSSUN5Mlbq5glQ=
