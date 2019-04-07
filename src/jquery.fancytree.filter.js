@@ -36,7 +36,6 @@
 		escapeHtml = $.ui.fancytree.escapeHtml;
 
 	function _escapeRegex(str) {
-		/*jshint regexdash:true */
 		return (str + "").replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
 	}
 

@@ -72,7 +72,6 @@
 
 	function logEvent(event, data) {
 		var res,
-			/* jshint validthis: true */
 			self = this,
 			// logName = PREFIX + "event." + event.type,
 			opts = data.options.logger,
