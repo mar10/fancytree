@@ -33,7 +33,7 @@
 	 */
 	var FT = $.ui.fancytree,
 		_assert = FT.assert,
-		SCROLL_MODE = "wheel",  // 'wheel' | 'scroll'
+		SCROLL_MODE = "wheel", // 'wheel' | 'scroll'
 		EPS = 1.0;
 
 	/*
