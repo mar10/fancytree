@@ -239,7 +239,7 @@
       tree.setViewport(opts);
     });
 
-		$("input[name=search]").on("search", function(e){
+		$("input[name=search]").on("change", function(e){
 			var n,
 				tree = $.ui.fancytree.getTree(),
         match = $.trim($(this).val());
@@ -292,10 +292,10 @@
 
   <div>
     <label for="vpStart">Viewport start:</label>
-    <input id="vpStart" type="number" value="0" min="0">
+    <input id="vpStart" type="number" value="0" min="0" style="width: 6em;" >
 
     <label for="vpCount">, count:</label>
-    <input id="vpCount" type="number" value="15" min="1" readonly>
+    <input id="vpCount" type="number" value="15" min="1" style="width: 3em;" readonly >
   </div>
   <!-- <div>
     <label for="skinswitcher">Skin:</label>

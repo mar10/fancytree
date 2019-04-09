@@ -304,7 +304,7 @@
 					viewport = tree.viewport,
 					dy = orgEvent.deltaY; // * orgEvent.wheelDeltaY;
 
-				if (!dy) {
+				if (!dy || e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) {
 					return true;
 				}
 				if (dy < 0 && viewport.start === 0) {
@@ -597,6 +597,44 @@
 					.attr("role", "treegrid")
 					.attr("aria-readonly", true);
 			}
+		},
+		nodeKeydown: function(ctx) {
+			var nextNode = null,
+				nextIdx = null,
+				tree = ctx.tree,
+				node = ctx.node,
+				nodeList = tree.visibleNodeList,
+				// treeOpts = ctx.options,
+				viewport = tree.viewport,
+				event = ctx.originalEvent,
+				eventString = FT.eventToString(event);
+
+			tree.debug("nodeKeydown(" + eventString + ")");
+
+			switch (eventString) {
+				case "home":
+				case "meta+up":
+					nextIdx = 0;
+					break;
+				case "end":
+				case "meta+down":
+					nextIdx = nodeList.length - 1;
+					break;
+				case "pageup":
+					nextIdx = node._rowIdx - viewport.count;
+					break;
+				case "pagedown":
+					nextIdx = node._rowIdx + viewport.count;
+					break;
+			}
+			if (nextIdx != null) {
+				nextIdx = Math.min(Math.max(0, nextIdx), nodeList.length - 1);
+				nextNode = nodeList[nextIdx];
+				nextNode.makeVisible();
+				nextNode.setActive();
+				return false;
+			}
+			return this._superApply(arguments);
 		},
 		nodeRemoveChildMarkup: function(ctx) {
 			var node = ctx.node;

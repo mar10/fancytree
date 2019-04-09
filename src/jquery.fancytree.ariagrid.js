@@ -391,7 +391,8 @@
 				tree = ctx.tree,
 				node = ctx.node,
 				event = ctx.originalEvent,
-				$td = $(event.target).closest("td");
+				$target = $(event.target),
+				$td = $target.closest("td");
 
 			tree.debug(
 				"nodeClick: node: " +
@@ -409,8 +410,13 @@
 			if (tree.$activeTd) {
 				// If already in cell-mode, activate new cell
 				tree.activateCell($td);
-				if ($(event.target).is(":input")) {
+				if ($target.is(":input")) {
 					return;
+				} else if (
+					$target.is(".fancytree-checkbox") ||
+					$target.is(".fancytree-expander")
+				) {
+					return this._superApply(arguments);
 				}
 				return false;
 			}
@@ -527,7 +533,7 @@
 				$embeddedCheckbox = $activeTd.find(":checkbox:enabled");
 				inputType = "checkbox";
 			}
-			ctx.tree.debug(
+			tree.debug(
 				"nodeKeydown(" +
 					eventString +
 					"), activeTd: '" +

@@ -3048,7 +3048,7 @@
 				case KC.END:
 					this.visit(function(n) {
 						// last visible node
-						if (n.isVvisible()) {
+						if (n.isVisible()) {
 							res = n;
 						}
 					});
