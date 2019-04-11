@@ -394,9 +394,9 @@
 						$brTableBody = $(
 							"div." + fcn.bottomRight + " table tbody"
 						),
-						$prevLeftNode = $blTableBody.find(
-							"tr:eq(" + Math.max(idx + 1, 0) + ")"
-						),
+						$prevLeftNode = $blTableBody
+							.find("tr")
+							.eq(Math.max(idx + 1, 0)),
 						prevRightNode = $prevLeftNode.data(fcn.counterpart);
 
 					$trRight = $trLeft.clone(true);
@@ -662,7 +662,7 @@
 			// $bottomRightWrapper = $wrapper.find("div." + fcn.bottomRight)
 
 			$topLeftWrapper.find("table tr").each(function(idx) {
-				var $trRight = $topRightWrapper.find("tr:eq(" + idx + ")");
+				var $trRight = $topRightWrapper.find("tr").eq(idx);
 				self.ext.fixed._adjustRowHeight($(this), $trRight);
 			});
 
@@ -670,7 +670,7 @@
 				.find("table tbody")
 				.find("tr")
 				.each(function(idx) {
-					//			var $trRight = $bottomRightWrapper.find("tbody").find("tr:eq(" + idx + ")");
+					// var $trRight = $bottomRightWrapper.find("tbody").find("tr").eq(idx);
 					self.ext.fixed._adjustRowHeight($(this));
 				});
 

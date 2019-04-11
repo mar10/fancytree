@@ -36,7 +36,7 @@ TOOLS.initQUnit = function() {
 	  testResults.tests = tests;
 
 	  // Expand first section when all tests are run
-	  $("ol#qunit-tests > li:first > ol").show("slow");
+	  $("ol#qunit-tests > li").first().find("> ol").show("slow");
 
 	  /*jshint camelcase:false*/ // jscs: disable
 	  window.global_test_results = testResults; // used by saucelabs

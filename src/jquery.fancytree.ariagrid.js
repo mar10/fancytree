@@ -567,7 +567,9 @@
 						break;
 					} else {
 						// Row mode: switch to cell-mode
-						$td = $(node.tr).find(">td:first");
+						$td = $(node.tr)
+							.find(">td")
+							.first();
 						tree.activateCell($td);
 					}
 					return false; // no default handling
@@ -657,9 +659,9 @@
 						// ENTER in row-mode: Switch from row-mode to cell-mode
 						// TODO: it was also suggested to expand/collapse instead
 						//    https://github.com/w3c/aria-practices/issues/132#issuecomment-407634891
-						$td = $(node.tr).find(
-							">td:nth(" + this.nodeColumnIdx + ")"
-						);
+						$td = $(node.tr)
+							.find(">td")
+							.nth(this.nodeColumnIdx);
 						tree.activateCell($td);
 					}
 					return false; // no default handling

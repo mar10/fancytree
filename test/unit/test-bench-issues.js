@@ -17,7 +17,7 @@ QUnit.log(function(data) {
 
 QUnit.done(function( details ) {
 	// Expand last section when all tests are run
-	$("ol#qunit-tests > li:last > ol").show("slow");
+	$("ol#qunit-tests > li").last().find(">ol").show("slow");
 });
 
 
