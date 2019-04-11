@@ -91,16 +91,6 @@
 		return prev;
 	}
 
-	/* Render callback for 'wide' mode. */
-	// function _renderStatusNodeWide(event, data) {
-	// 	var node = data.node,
-	// 		nodeColumnIdx = data.options.table.nodeColumnIdx,
-	// 		$tdList = $(node.tr).find(">td");
-
-	// 	$tdList.eq(nodeColumnIdx).attr("colspan", data.tree.columnCount);
-	// 	$tdList.not(":eq(" + nodeColumnIdx + ")").remove();
-	// }
-
 	$.ui.fancytree.registerExtension({
 		name: "table",
 		version: "@VERSION",
@@ -160,9 +150,11 @@
 
 			// Prepare row templates:
 			// Determine column count from table header if any
-			tree.columnCount = $("thead >tr:last >th", $table).length;
+			tree.columnCount = $("thead >tr", $table)
+				.last()
+				.find(">th", $table).length;
 			// Read TR templates from tbody if any
-			$row = $tbody.children("tr:first");
+			$row = $tbody.children("tr").first();
 			if ($row.length) {
 				n = $row.children("td").length;
 				if (tree.columnCount && n !== tree.columnCount) {
@@ -198,7 +190,7 @@
 			tree.rowFragment.appendChild($row.get(0));
 
 			// // If tbody contains a second row, use this as status node template
-			// $row = $tbody.children("tr:eq(1)");
+			// $row = $tbody.children("tr").eq(1);
 			// if( $row.length === 0 ) {
 			// 	tree.statusRowFragment = tree.rowFragment;
 			// } else {

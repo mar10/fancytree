@@ -5647,7 +5647,7 @@
 					type = $container.data("type") || "html";
 					switch (type) {
 						case "html":
-							$ul = $container.find(">ul:first");
+							$ul = $container.find(">ul").first();
 							$ul.addClass(
 								"ui-fancytree-source fancytree-helper-hidden"
 							);
@@ -5936,7 +5936,7 @@
 				this.$source =
 					this.source || this.element.data("type") === "json"
 						? this.element
-						: this.element.find(">ul:first");
+						: this.element.find(">ul").first();
 				// Subclass Fancytree instance with all enabled extensions
 				var extension,
 					extName,
@@ -6757,8 +6757,8 @@
 					var allData,
 						lowerCaseAttr,
 						$li = $(this),
-						$liSpan = $li.find(">span:first", this),
-						$liA = $liSpan.length ? null : $li.find(">a:first"),
+						$liSpan = $li.find(">span", this).first(),
+						$liA = $liSpan.length ? null : $li.find(">a").first(),
 						d = { tooltip: null, data: {} };
 
 					if ($liSpan.length) {
@@ -6835,7 +6835,7 @@
 						$.extend(d.data, allData);
 					}
 					// Recursive reading of child nodes, if LI tag contains an UL tag
-					$ul = $li.find(">ul:first");
+					$ul = $li.find(">ul").first();
 					if ($ul.length) {
 						d.children = $.ui.fancytree.parseHtml($ul);
 					} else {

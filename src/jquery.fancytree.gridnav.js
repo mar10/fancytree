@@ -179,7 +179,10 @@
 					// Set focus to input sub input (if node was clicked, but not
 					// when TAB was pressed )
 					$outer = $(node.tr || node.span);
-					$outer.find(":input:enabled:first").focus();
+					$outer
+						.find(":input:enabled")
+						.first()
+						.focus();
 				}
 			}
 		},
