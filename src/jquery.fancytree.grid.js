@@ -225,7 +225,10 @@
 		// Calculate how many rows fit into current container height
 		var $table = this.$container,
 			wrapper = this.scrollWrapper,
-			trHeight = $table.find(">tbody>tr:first").height(),
+			trHeight = $table
+				.find(">tbody>tr")
+				.first()
+				.height(),
 			tableHeight = $table.height(),
 			headHeight = tableHeight - this.viewport.count * trHeight,
 			wrapperHeight = wrapper.offsetHeight,
@@ -481,9 +484,11 @@
 
 			// Prepare row templates:
 			// Determine column count from table header if any
-			columnCount = $("thead >tr:last >th", $table).length;
+			columnCount = $("thead >tr", $table)
+				.last()
+				.find(">th").length;
 			// Read TR templates from tbody if any
-			$row = $tbody.children("tr:first");
+			$row = $tbody.children("tr").first();
 			if ($row.length) {
 				n = $row.children("td").length;
 				if (columnCount && n !== columnCount) {
