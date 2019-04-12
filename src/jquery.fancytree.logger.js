@@ -114,7 +114,7 @@
 			!opts.traceHooks ||
 			(opts.traceHooks !== true && $.inArray(name, opts.traceHooks) < 0)
 		) {
-			return this_._superApply(this_, args);
+			return this_._superApply.call(this_, args);
 		}
 		if (
 			opts.timings === true ||
