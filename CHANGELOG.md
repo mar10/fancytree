@@ -6,7 +6,7 @@
   * [DEPRECATED] loaderror and lazyload options now throw an error
   * [Fixed] #918 SVG font awesome 5 glyphs remove badge counter when parent node is collapsed
   * [Fixed] missing tree.error() and broken node.error()
-
+  * Update to jQuery 3.4
 
 # 2.30.2 / 2019-01-13
   * Stop testing on IE 8 (no longer available on Saucelabs)
