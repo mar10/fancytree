@@ -611,6 +611,11 @@
 			for (var i = 0, l = children.length; i < l; i++) {
 				this.children.push(new FancytreeNode(this, children[i]));
 			}
+			this.tree._callHook(
+				"treeStructureChanged",
+				this.tree,
+				"setChildren"
+			);
 		},
 		/**
 		 * Append (or insert) a list of child nodes.
@@ -1201,19 +1206,18 @@
 			});
 			return res.join(separator);
 		},
-		/** Return the parent keys separated by options.keyPathSeparator, e.g. "id_1/id_17/id_32".
+		/** Return the parent keys separated by options.keyPathSeparator, e.g. "/id_1/id_17/id_32".
+		 *
+		 * (Unlike `node.getPath()`, this method prepends a "/" and inverts the first argument.)
+		 *
+		 * @see FancytreeNode#getPath
 		 * @param {boolean} [excludeSelf=false]
 		 * @returns {string}
 		 */
 		getKeyPath: function(excludeSelf) {
-			var path = [],
-				sep = this.tree.options.keyPathSeparator;
-			this.visitParents(function(n) {
-				if (n.parent) {
-					path.unshift(n.key);
-				}
-			}, !excludeSelf);
-			return sep + path.join(sep);
+			var sep = this.tree.options.keyPathSeparator;
+
+			return sep + this.getPath(!excludeSelf, "key", sep);
 		},
 		/** Return the last child of this node or null.
 		 * @returns {FancytreeNode | null}
@@ -1276,6 +1280,30 @@
 				dtn = dtn.parent;
 			}
 			return l;
+		},
+		/** Return a string representing the hierachical node path, e.g. "a/b/c".
+		 * @param {boolean} [includeSelf=true]
+		 * @param {string | function} [part="title"] node property name or callback
+		 * @param {string} [separator="/"]
+		 * @returns {string}
+		 * @since v2.31
+		 */
+		getPath: function(includeSelf, part, separator) {
+			includeSelf = includeSelf !== false;
+			part = part || "title";
+			separator = separator || "/";
+
+			var val,
+				path = [],
+				isFunc = $.isFunction(part);
+
+			this.visitParents(function(n) {
+				if (n.parent) {
+					val = isFunc ? part(n) : n[part];
+					path.unshift(val);
+				}
+			}, includeSelf);
+			return path.join(separator);
 		},
 		/** Return the predecessor node (under the same parent) or null.
 		 * @returns {FancytreeNode | null}
@@ -1503,13 +1531,39 @@
 		isVisible: function() {
 			var i,
 				l,
+				n,
+				hasFilter = this.tree.enableFilter,
 				parents = this.getParentList(false, false);
 
+			// TODO: check $(n.span).is(":visible")
+			// i.e. return false for nodes (but not parents) that are hidden
+			// by a filter
+			if (hasFilter && !this.match && !this.subMatchCount) {
+				this.debug(
+					"isVisible: HIDDEN (" +
+						hasFilter +
+						", " +
+						this.match +
+						", " +
+						this.match +
+						")"
+				);
+				return false;
+			}
+
 			for (i = 0, l = parents.length; i < l; i++) {
-				if (!parents[i].expanded) {
+				n = parents[i];
+
+				if (!n.expanded) {
+					this.debug("isVisible: HIDDEN (parent collapsed)");
 					return false;
 				}
+				// if (hasFilter && !n.match && !n.subMatchCount) {
+				// 	this.debug("isVisible: HIDDEN (" + hasFilter + ", " + this.match + ", " + this.match + ")");
+				// 	return false;
+				// }
 			}
+			this.debug("isVisible: VISIBLE");
 			return true;
 		},
 		/** Deprecated.
@@ -1622,6 +1676,7 @@
 				}
 			}
 			var pos,
+				tree = this.tree,
 				prevParent = this.parent,
 				targetParent =
 					mode === "child" ? targetNode : targetNode.parent;
@@ -1703,10 +1758,10 @@
 				targetParent.triggerModifyChild("add", this);
 			}
 			// Handle cross-tree moves
-			if (this.tree !== targetNode.tree) {
+			if (tree !== targetNode.tree) {
 				// Fix node.tree for all source nodes
 				//			_assert(false, "Cross-tree move is not yet implemented.");
-				this.warn("Cross-tree moveTo is experimantal!");
+				this.warn("Cross-tree moveTo is experimental!");
 				this.visit(function(n) {
 					// TODO: fix selection state and activation, ...
 					n.tree = targetNode.tree;
@@ -1717,6 +1772,7 @@
 			// if( !targetParent.expanded ){
 			//   prevParent.ul.removeChild(this.li);
 			// }
+			tree._callHook("treeStructureChanged", tree, "moveTo");
 
 			// Update HTML markup
 			if (!prevParent.isDescendantOf(targetParent)) {
@@ -1772,117 +1828,38 @@
 		 * @returns {$.Promise}
 		 */
 		navigate: function(where, activate) {
-			var i,
-				parents,
-				res,
-				_handled = true,
-				KC = $.ui.keyCode,
-				sib = null;
+			var node,
+				KC = $.ui.keyCode;
 
-			// Navigate to node
-			function _goto(n) {
-				if (n) {
-					// setFocus/setActive will scroll later (if autoScroll is specified)
-					try {
-						n.makeVisible({ scrollIntoView: false });
-					} catch (e) {} // #272
-					// Node may still be hidden by a filter
-					if (!$(n.span).is(":visible")) {
-						n.debug("Navigate: skipping hidden node");
-						n.navigate(where, activate);
-						return;
-					}
-					return activate === false ? n.setFocus() : n.setActive();
-				}
-			}
-
+			// Handle optional expand/collapse action for LEFT/RIGHT
 			switch (where) {
-				case KC.BACKSPACE:
-					if (this.parent && this.parent.parent) {
-						res = _goto(this.parent);
-					}
-					break;
-				case KC.HOME:
-					this.tree.visit(function(n) {
-						// goto first visible node
-						if ($(n.span).is(":visible")) {
-							res = _goto(n);
-							return false;
-						}
-					});
-					break;
-				case KC.END:
-					this.tree.visit(function(n) {
-						// goto last visible node
-						if ($(n.span).is(":visible")) {
-							res = n;
-						}
-					});
-					if (res) {
-						res = _goto(res);
-					}
-					break;
+				case "left":
 				case KC.LEFT:
 					if (this.expanded) {
-						this.setExpanded(false);
-						res = _goto(this);
-					} else if (this.parent && this.parent.parent) {
-						res = _goto(this.parent);
+						return this.setExpanded(false);
 					}
 					break;
+				case "right":
 				case KC.RIGHT:
 					if (!this.expanded && (this.children || this.lazy)) {
-						this.setExpanded();
-						res = _goto(this);
-					} else if (this.children && this.children.length) {
-						res = _goto(this.children[0]);
+						return this.setExpanded();
 					}
 					break;
-				case KC.UP:
-					sib = this.getPrevSibling();
-					// #359: skip hidden sibling nodes, preventing a _goto() recursion
-					while (sib && !$(sib.span).is(":visible")) {
-						sib = sib.getPrevSibling();
-					}
-					while (
-						sib &&
-						sib.expanded &&
-						sib.children &&
-						sib.children.length
-					) {
-						sib = sib.children[sib.children.length - 1];
-					}
-					if (!sib && this.parent && this.parent.parent) {
-						sib = this.parent;
-					}
-					res = _goto(sib);
-					break;
-				case KC.DOWN:
-					if (
-						this.expanded &&
-						this.children &&
-						this.children.length
-					) {
-						sib = this.children[0];
-					} else {
-						parents = this.getParentList(false, true);
-						for (i = parents.length - 1; i >= 0; i--) {
-							sib = parents[i].getNextSibling();
-							// #359: skip hidden sibling nodes, preventing a _goto() recursion
-							while (sib && !$(sib.span).is(":visible")) {
-								sib = sib.getNextSibling();
-							}
-							if (sib) {
-								break;
-							}
-						}
-					}
-					res = _goto(sib);
-					break;
-				default:
-					_handled = false;
 			}
-			return res || _getResolvedPromise();
+			// Otherwise activate or focus the related node
+			node = this.tree.findRelatedNode(this, where);
+			if (node) {
+				// setFocus/setActive will scroll later (if autoScroll is specified)
+				try {
+					node.makeVisible({ scrollIntoView: false });
+				} catch (e) {} // #272
+				if (activate === false) {
+					return node.setFocus();
+				}
+				return node.setActive();
+			}
+			this.warn("Could not find related node '" + where + "'.");
+			return _getResolvedPromise();
 		},
 		/**
 		 * Remove this node (not allowed for system root).
@@ -2086,7 +2063,7 @@
 				$scrollParent[0] === document ||
 				$scrollParent[0] === document.body
 			) {
-				// `document` may returned by $().scrollParent(), if nothing is found,
+				// `document` may be returned by $().scrollParent(), if nothing is found,
 				// but would not work: (see #894)
 				this.debug(
 					"scrollIntoView(): normalizing scrollParent to 'window':",
@@ -2113,7 +2090,7 @@
 
 			// this.debug("scrollIntoView(), scrollTop=" + scrollTop, opts.scrollOfs);
 			//		_assert($(this.span).is(":visible"), "scrollIntoView node is invisible"); // otherwise we cannot calc offsets
-			if (!$(this.span).is(":visible")) {
+			if (!this.isVisible()) {
 				// We cannot calc offsets for hidden elements
 				this.warn("scrollIntoView(): node is invisible.");
 				return _getResolvedPromise();
@@ -2160,7 +2137,7 @@
 				// outside the upper border
 				if (topNode) {
 					_assert(
-						topNode.isRootNode() || $(topNode.span).is(":visible"),
+						topNode.isRootNode() || topNode.isVisible(),
 						"topNode must be visible"
 					);
 					if (topNodeY < newScrollTop) {
@@ -2782,7 +2759,10 @@
 				isMissing = required && this.ext[name] == null,
 				badOrder = !isMissing && before != null && before !== isBefore;
 
-			_assert(thisName && thisName !== name, "invalid or same name");
+			_assert(
+				thisName && thisName !== name,
+				"invalid or same name '" + thisName + "' (require yourself?)"
+			);
 
 			if (isMissing || badOrder) {
 				if (!message) {
@@ -2933,6 +2913,7 @@
 			this._enableUpdate = flag;
 			if (flag) {
 				this.debug("enableUpdate(true): redraw "); //, this._dirtyRoots);
+				this._callHook("treeStructureChanged", this, "enableUpdate");
 				this.render();
 			} else {
 				// 	this._dirtyRoots = null;
@@ -2960,6 +2941,8 @@
 		 * @since 2.30
 		 */
 		expandAll: function(flag, opts) {
+			var prev = this.enableUpdate(false);
+
 			flag = flag !== false;
 			this.visit(function(node) {
 				if (
@@ -2969,6 +2952,7 @@
 					node.setExpanded(flag, opts);
 				}
 			});
+			this.enableUpdate(prev);
 		},
 		/**Find all nodes that matches condition.
 		 *
@@ -2999,77 +2983,117 @@
 		 * @param {FancytreeNode} [startNode] defaults to first node
 		 * @returns {FancytreeNode} matching node or null
 		 */
-		findNextNode: function(match, startNode, visibleOnly) {
+		findNextNode: function(match, startNode) {
+			//, visibleOnly) {
+			var res = null,
+				firstNode = this.getFirstChild();
+
 			match =
 				typeof match === "string"
 					? _makeNodeTitleStartMatcher(match)
 					: match;
-			startNode = startNode || this.getFirstChild();
+			startNode = startNode || firstNode;
 
-			var stopNode = null,
-				parentChildren = startNode.parent.children,
-				matchingNode = null,
-				walkVisible = function(parent, idx, fn) {
-					var i,
-						grandParent,
-						parentChildren = parent.children,
-						siblingCount = parentChildren.length,
-						node = parentChildren[idx];
-					// visit node itself
-					if (node && fn(node) === false) {
-						return false;
-					}
-					// visit descendants
-					if (node && node.children && node.expanded) {
-						if (walkVisible(node, 0, fn) === false) {
-							return false;
-						}
-					}
-					// visit subsequent siblings
-					for (i = idx + 1; i < siblingCount; i++) {
-						if (walkVisible(parent, i, fn) === false) {
-							return false;
-						}
-					}
-					// visit parent's subsequent siblings
-					grandParent = parent.parent;
-					if (grandParent) {
-						return walkVisible(
-							grandParent,
-							grandParent.children.indexOf(parent) + 1,
-							fn
-						);
-					}
-					// wrap-around: restart with first node
-					return walkVisible(parent, 0, fn);
-				};
-
-			walkVisible(
-				startNode.parent,
-				parentChildren.indexOf(startNode),
-				function(node) {
-					// Stop iteration if we see the start node a second time
-					if (node === stopNode) {
-						return false;
-					}
-					stopNode = stopNode || node;
-					// Ignore nodes hidden by a filter
-					if (!$(node.span).is(":visible")) {
-						node.debug("quicksearch: skipping hidden node");
-						return;
-					}
-					// Test if we found a match, but search for a second match if this
-					// was the currently active node
-					if (match(node)) {
-						// node.debug("quicksearch match " + node.title, startNode);
-						matchingNode = node;
-						if (matchingNode !== startNode) {
-							return false;
-						}
-					}
+			function _checkNode(n) {
+				// console.log("_check " + n)
+				if (match(n)) {
+					res = n;
 				}
-			);
-			return matchingNode;
+				if (res || n === startNode) {
+					return false;
+				}
+			}
+			this.visitRows(_checkNode, {
+				start: startNode,
+				includeSelf: false,
+			});
+			// Wrap around search
+			if (!res && startNode !== firstNode) {
+				this.visitRows(_checkNode, {
+					start: firstNode,
+					includeSelf: true,
+				});
+			}
+			return res;
+		},
+		/** Find a node relative to another node.
+		 *
+		 * @param {number|string} where The keyCode that would normally trigger this move,
+		 *		or a keyword ('down', 'first', 'last', 'left', 'parent', 'right', 'up').
+		 * @param {boolean} [includeHidden=false]
+		 * @returns {FancytreeNode}
+		 */
+		findRelatedNode: function(node, where, includeHidden) {
+			var res = null,
+				KC = $.ui.keyCode;
+
+			switch (where) {
+				case "parent":
+				case KC.BACKSPACE:
+					if (node.parent && node.parent.parent) {
+						res = node.parent;
+					}
+					break;
+				case "first":
+				case KC.HOME:
+					// First visible node
+					this.visit(function(n) {
+						if (n.isVvisible()) {
+							res = n;
+							return false;
+						}
+					});
+					break;
+				case "last":
+				case KC.END:
+					this.visit(function(n) {
+						// last visible node
+						if (n.isVisible()) {
+							res = n;
+						}
+					});
+					break;
+				case "left":
+				case KC.LEFT:
+					if (node.expanded) {
+						node.setExpanded(false);
+					} else if (node.parent && node.parent.parent) {
+						res = node.parent;
+					}
+					break;
+				case "right":
+				case KC.RIGHT:
+					if (!node.expanded && (node.children || node.lazy)) {
+						node.setExpanded();
+						res = node;
+					} else if (node.children && node.children.length) {
+						res = node.children[0];
+					}
+					break;
+				case "up":
+				case KC.UP:
+					this.visitRows(
+						function(n) {
+							res = n;
+							return false;
+						},
+						{ start: node, reverse: true, includeSelf: false }
+					);
+					break;
+				case "down":
+				case KC.DOWN:
+					this.visitRows(
+						function(n) {
+							res = n;
+							return false;
+						},
+						{ start: node, includeSelf: false }
+					);
+					break;
+				default:
+					this.tree.warn("Unknown relation '" + where + "'.");
+			}
+			return res;
 		},
 		// TODO: fromDict
 		/**
@@ -3603,14 +3627,19 @@
 		 * @param {object} [options]
 		 *     Defaults:
 		 *     {start: First top node, reverse: false, includeSelf: true, includeHidden: false}
-		 * @returns {boolean}
+		 * @returns {boolean} false if iteration was cancelled
 		 * @since 2.28
 		 */
 		visitRows: function(fn, opts) {
+			if (!this.rootNode.children) {
+				return false;
+			}
 			if (opts && opts.reverse) {
 				delete opts.reverse;
 				return this._visitRowsUp(fn, opts);
 			}
+			opts = opts || {};
+
 			var i,
 				nextIdx,
 				parent,
@@ -3619,6 +3648,7 @@
 				siblingOfs = 0,
 				skipFirstNode = opts.includeSelf === false,
 				includeHidden = !!opts.includeHidden,
+				checkFilter = !includeHidden && this.enableFilter,
 				node = opts.start || this.rootNode.children[0];
 
 			parent = node.parent;
@@ -3629,6 +3659,9 @@
 
 				for (i = nextIdx; i < siblings.length; i++) {
 					node = siblings[i];
+					if (checkFilter && !node.match && !node.subMatchCount) {
+						continue;
+					}
 					if (!skipFirstNode && fn(node) === false) {
 						return false;
 					}
@@ -3643,6 +3676,9 @@
 						// scoped variable may lead to confusing semantics:
 						/*jshint -W083 */
 						res = node.visit(function(n) {
+							if (checkFilter && !n.match && !n.subMatchCount) {
+								return "skip";
+							}
 							if (fn(n) === false) {
 								return false;
 							}
@@ -3679,6 +3715,9 @@
 				if (children[0] === node) {
 					// If this is already the first sibling, goto parent
 					node = parent;
+					if (!node.parent) {
+						break; // first node of the tree
+					}
 					children = parent.children;
 				} else {
 					// Otherwise, goto prev. sibling
@@ -3698,7 +3737,7 @@
 					}
 				}
 				// Skip invisible
-				if (!includeHidden && !$(node.span).is(":visible")) {
+				if (!includeHidden && !node.isVisible()) {
 					continue;
 				}
 				if (fn(node) === false) {
@@ -5147,6 +5186,11 @@
 						effect = opts.toggleEffect;
 
 					node.expanded = flag;
+					tree._callHook(
+						"treeStructureChanged",
+						ctx,
+						flag ? "expand" : "collapse"
+					);
 					// Create required markup, but make sure the top UL is hidden, so we
 					// can animate later
 					tree._callHook("nodeRender", ctx, false, false, true);
@@ -5455,6 +5499,11 @@
 						} else {
 							node.children.shift();
 						}
+						tree._callHook(
+							"treeStructureChanged",
+							ctx,
+							"clearStatusNode"
+						);
 					}
 				}
 				function _setStatusNode(data, type) {
@@ -5468,6 +5517,11 @@
 						tree._callHook("nodeRenderTitle", firstChild);
 					} else {
 						node._setChildren([data]);
+						tree._callHook(
+							"treeStructureChanged",
+							ctx,
+							"setStatusNode"
+						);
 						node.children[0].statusNodeType = type;
 						tree.render();
 					}
@@ -5571,6 +5625,7 @@
 				tree.$div.find(">ul.fancytree-container").empty();
 				// TODO: call destructors and remove reference loops
 				tree.rootNode.children = null;
+				tree._callHook("treeStructureChanged", ctx, "clear");
 			},
 			/** Widget was created (called only once, even it re-initialized).
 			 * @param {EventData} ctx
@@ -5699,6 +5754,11 @@
 				// Trigger fancytreeinit after nodes have been loaded
 				dfd = this.nodeLoadChildren(rootCtx, source)
 					.done(function() {
+						tree._callHook(
+							"treeStructureChanged",
+							ctx,
+							"loadChildren"
+						);
 						tree.render();
 						if (ctx.options.selectMode === 3) {
 							tree.rootNode.fixSelection3FromEndNodes();
@@ -5719,7 +5779,13 @@
 			 * @param {boolean} add
 			 * @param {FancytreeNode} node
 			 */
-			treeRegisterNode: function(ctx, add, node) {},
+			treeRegisterNode: function(ctx, add, node) {
+				ctx.tree._callHook(
+					"treeStructureChanged",
+					ctx,
+					add ? "addNode" : "removeNode"
+				);
+			},
 			/** Widget got focus.
 			 * @param {EventData} ctx
 			 * @param {boolean} [flag=true]
@@ -5830,6 +5896,10 @@
 					tree.render(true, false); // force, not-deep
 				}
 			},
+			/** A Node was added, removed, moved, or it's visibility changed.
+			 * @param {EventData} ctx
+			 */
+			treeStructureChanged: function(ctx, type) {},
 		}
 	);
 
@@ -6677,13 +6747,13 @@
 
 				if (et === "click" || et === "dblclick") {
 					s.push(MOUSE_BUTTONS[event.button] + et);
-				} else {
-					if (!IGNORE_KEYCODES[which]) {
-						s.push(
-							SPECIAL_KEYCODES[which] ||
-								String.fromCharCode(which).toLowerCase()
-						);
-					}
+				} else if (et === "wheel") {
+					s.push(et);
+				} else if (!IGNORE_KEYCODES[which]) {
+					s.push(
+						SPECIAL_KEYCODES[which] ||
+							String.fromCharCode(which).toLowerCase()
+					);
 				}
 				return s.join("+");
 			},

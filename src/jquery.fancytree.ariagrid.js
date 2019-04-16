@@ -101,11 +101,16 @@
 
 	/* Find adjacent cell for a given direction. Skip empty cells and consider merged cells */
 	function findNeighbourTd(tree, $target, keyCode) {
-		var $td = $target.closest("td"),
+		var nextNode,
+			node,
+			navMap = { "ctrl+home": "first", "ctrl+end": "last" },
+			$td = $target.closest("td"),
 			$tr = $td.parent(),
 			treeOpts = tree.options,
 			colIdx = getColIdx($tr, $td),
 			$tdNext = null;
+
+		keyCode = navMap[keyCode] || keyCode;
 
 		switch (keyCode) {
 			case "left":
@@ -116,30 +121,14 @@
 				break;
 			case "up":
 			case "down":
-				while (true) {
-					$tr = keyCode === "up" ? $tr.prev() : $tr.next();
-					if (!$tr.length) {
-						break;
-					}
-					// Skip hidden rows
-					if ($tr.is(":hidden")) {
-						continue;
-					}
-					// Find adjacent cell in the same column
-					$tdNext = findTdAtColIdx($tr, colIdx);
-					break;
-				}
-				break;
 			case "ctrl+home":
-				$tdNext = findTdAtColIdx($tr.siblings().first(), colIdx);
-				if ($tdNext.is(":hidden")) {
-					$tdNext = findNeighbourTd(tree, $tdNext.parent(), "down");
-				}
-				break;
 			case "ctrl+end":
-				$tdNext = findTdAtColIdx($tr.siblings().last(), colIdx);
-				if ($tdNext.is(":hidden")) {
-					$tdNext = findNeighbourTd(tree, $tdNext.parent(), "up");
+				node = $tr[0].ftnode;
+				nextNode = tree.findRelatedNode(node, keyCode);
+				if (nextNode) {
+					nextNode.makeVisible();
+					nextNode.setActive();
+					$tdNext = findTdAtColIdx($(nextNode.tr), colIdx);
 				}
 				break;
 			case "home":
@@ -205,7 +194,7 @@
 		anyNode.debug(
 			"activateCell(" +
 				($prevTd ? $prevTd.text() : "null") +
-				" -> " +
+				") -> " +
 				($td ? $td.text() : "OFF")
 		);
 
@@ -313,7 +302,11 @@
 				opts = treeOpts.ariagrid;
 
 			// ariagrid requires the table extension to be loaded before itself
-			this._requireExtension("table", true, true);
+			if (tree.ext.grid) {
+				this._requireExtension("grid", true, true);
+			} else {
+				this._requireExtension("table", true, true);
+			}
 			if (!treeOpts.aria) {
 				$.error("ext-ariagrid requires `aria: true`");
 			}
@@ -398,7 +391,8 @@
 				tree = ctx.tree,
 				node = ctx.node,
 				event = ctx.originalEvent,
-				$td = $(event.target).closest("td");
+				$target = $(event.target),
+				$td = $target.closest("td");
 
 			tree.debug(
 				"nodeClick: node: " +
@@ -416,8 +410,13 @@
 			if (tree.$activeTd) {
 				// If already in cell-mode, activate new cell
 				tree.activateCell($td);
-				if ($(event.target).is(":input")) {
+				if ($target.is(":input")) {
 					return;
+				} else if (
+					$target.is(".fancytree-checkbox") ||
+					$target.is(".fancytree-expander")
+				) {
+					return this._superApply(arguments);
 				}
 				return false;
 			}
@@ -534,7 +533,7 @@
 				$embeddedCheckbox = $activeTd.find(":checkbox:enabled");
 				inputType = "checkbox";
 			}
-			ctx.tree.debug(
+			tree.debug(
 				"nodeKeydown(" +
 					eventString +
 					"), activeTd: '" +

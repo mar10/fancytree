@@ -278,7 +278,9 @@ var FancytreeOptions = {};
  * @property {function} focusTree `data.tree` received keyboard focus
  * @property {function} <del>iconClass</del> @deprecated use tree option `icon` instead.
  * @property {function} init Widget was (re-)initialized.<br>
- *     The tree widget was initialized, source data was loaded, and visible nodes are rendered.<br>
+ *     The tree widget was initialized, source data was loaded, visible nodes are rendered,
+ *     selection propagation applied, and node activated.<br>
+ *     `data.status` is false on load error.<br>
  *     Note: if ext-persist is used, see also the `restore` event, which is fired later.
  * @property {function} keydown `data.node` received key. `event.which` contains the key. Return `false` to prevent default processing, i.e. navigation. Call `data.result = "preventNav";` to prevent navigation but still allow default handling inside embedded input controls.
  * @property {function} keypress (currently unused)
@@ -298,6 +300,7 @@ var FancytreeOptions = {};
  * @property {function} renderTitle Allow replacing the `&lt;span class='fancytree-title'>` markup (NOTE: this event is only available as callback, but not for bind())
  * @property {function} restore ext-persist has expanded, selected, and activated the previous state
  * @property {function} select `data.node` was (de)selected. Current status is `data.node.isSelected()`
- *
+ * @property {function} updateViewport ext-grid has redrawn the viewport.<br>
+ *     `data.scrollOnly`: true if only the `start` value has changed.
  */
 var FancytreeEvents = {};

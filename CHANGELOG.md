@@ -20,6 +20,20 @@
   * [Fixed] #929 Fix `.getTree()` for jQuery 3
   * [Fixed] #930 ext-dnd5: If drag does not start, no drag data should be stored
 
+# 'viewport' / Unreleased
+  * Render sub-parts of a tree
+  * Expand animations are no longer supported
+  * Rows are never hidden, but always removed: input must be persisted
+  * New hook `treeStructureChanged`
+  * New method `tree.findRelatedNode()`
+  * New method `node.getPath()`
+  * New event `updateViewport`
+  * TODO: New callback `hideNode` to read input values into node model
+  * TODO: Enable Aria by default
+  * TODO: Enable gridnav by default
+  * Optimized `expandAll()` performance
+  * Optimized `ext-filter` performance
+
 # 2.30.1 / 2018-11-13
   * [Changed] Apply and enforce 'prettier' codestyle
   * [Changed] #897 Set font for table extension

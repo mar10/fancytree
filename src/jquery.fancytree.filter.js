@@ -58,6 +58,7 @@
 			re,
 			reHighlight,
 			temp,
+			prevEnableUpdate,
 			count = 0,
 			treeOpts = this.options,
 			escapeTitles = treeOpts.escapeTitles,
@@ -124,6 +125,8 @@
 
 		this.enableFilter = true;
 		this.lastFilterArgs = arguments;
+
+		prevEnableUpdate = this.enableUpdate(false);
 
 		this.$div.addClass("fancytree-ext-filter");
 		if (hideMode) {
@@ -207,7 +210,9 @@
 			this.getRootNode().addNode(statusNode).match = true;
 		}
 		// Redraw whole tree
-		this.render();
+		this._callHook("treeStructureChanged", this, "applyFilter");
+		// this.render();
+		this.enableUpdate(prevEnableUpdate);
 		return count;
 	};
 
@@ -269,7 +274,8 @@
 		var $title,
 			statusNode = this.getRootNode()._findDirectChild(KeyNoData),
 			escapeTitles = this.options.escapeTitles,
-			enhanceTitle = this.options.enhanceTitle;
+			enhanceTitle = this.options.enhanceTitle,
+			prevEnableUpdate = this.enableUpdate(false);
 
 		if (statusNode) {
 			statusNode.remove();
@@ -311,7 +317,9 @@
 		this.$div.removeClass(
 			"fancytree-ext-filter fancytree-ext-filter-dimm fancytree-ext-filter-hide"
 		);
-		this.render();
+		this._callHook("treeStructureChanged", this, "clearFilter");
+		// this.render();
+		this.enableUpdate(prevEnableUpdate);
 	};
 
 	/**
@@ -358,28 +366,29 @@
 			mode: "dimm", // Grayout unmatched nodes (pass "hide" to remove unmatched node instead)
 		},
 		nodeLoadChildren: function(ctx, source) {
+			var tree = ctx.tree;
+
 			return this._superApply(arguments).done(function() {
 				if (
-					ctx.tree.enableFilter &&
-					ctx.tree.lastFilterArgs &&
+					tree.enableFilter &&
+					tree.lastFilterArgs &&
 					ctx.options.filter.autoApply
 				) {
-					ctx.tree._applyFilterImpl.apply(
-						ctx.tree,
-						ctx.tree.lastFilterArgs
-					);
+					tree._applyFilterImpl.apply(tree, tree.lastFilterArgs);
 				}
 			});
 		},
 		nodeSetExpanded: function(ctx, flag, callOpts) {
-			delete ctx.node._filterAutoExpanded;
+			var node = ctx.node;
+
+			delete node._filterAutoExpanded;
 			// Make sure counter badge is displayed again, when node is beeing collapsed
 			if (
 				!flag &&
 				ctx.options.filter.hideExpandedCounter &&
-				ctx.node.$subMatchBadge
+				node.$subMatchBadge
 			) {
-				ctx.node.$subMatchBadge.show();
+				node.$subMatchBadge.show();
 			}
 			return this._superApply(arguments);
 		},
@@ -426,7 +435,7 @@
 				node.$subMatchBadge.hide();
 			}
 			// node.debug("nodeRenderStatus", node.titleWithHighlight, node.title)
-			// #601: also chek for $title.length, because we don't need to render
+			// #601: also check for $title.length, because we don't need to render
 			// if node.span is null (i.e. not rendered)
 			if (node.span && (!node.isEditing || !node.isEditing.call(node))) {
 				if (node.titleWithHighlight) {

@@ -176,6 +176,28 @@
 		return this;
 	};
 
+	window.getUrlVars = function() {
+		var vars = {};
+
+		window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(
+			m,
+			key,
+			value
+		) {
+			vars[key] = value;
+		});
+		return vars;
+	};
+
+	window.getUrlParam = function(parameter, defaultvalue) {
+		var urlparameter = defaultvalue;
+
+		if (window.location.href.indexOf(parameter) > -1) {
+			urlparameter = window.getUrlVars()[parameter];
+		}
+		return urlparameter;
+	};
+
 	window.addSampleButton = function(options) {
 		var sourceCode,
 			opts = $.extend({}, SAMPLE_BUTTON_DEFAULTS, options),

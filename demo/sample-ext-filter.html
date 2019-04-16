@@ -122,7 +122,9 @@
 				}
 				tree.filterBranches(function(node){
 					return node.isActive();
-				});
+				}, {
+          mode: "hide",
+        });
 			}
 		});
 		addSampleButton({

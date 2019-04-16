@@ -36,10 +36,10 @@
 		PREFIX = "ft-logger: ",
 		logLine = window.console.log,
 		HOOK_NAMES = "nodeClick nodeCollapseSiblings".split(" "),
-		TREE_EVENT_NAMES = "beforeRestore blurTree create init focusTree restore".split(
+		TREE_EVENT_NAMES = "beforeRestore blurTree create init focusTree restore updateViewport".split(
 			" "
 		),
-		NODE_EVENT_NAMES = "activate beforeActivate beforeExpand beforeSelect blur click collapse createNode dblclick deactivate expand enhanceTitle focus keydown keypress lazyLoad loadChildren loadError modifyChild postProcess renderNode renderTitle select".split(
+		NODE_EVENT_NAMES = "activate activateCell beforeActivate beforeExpand beforeSelect blur click collapse createNode dblclick deactivate defaultGridAction expand enhanceTitle focus keydown keypress lazyLoad loadChildren loadError modifyChild postProcess renderNode renderTitle select".split(
 			" "
 		),
 		EVENT_NAMES = TREE_EVENT_NAMES.concat(NODE_EVENT_NAMES),
@@ -114,7 +114,7 @@
 			!opts.traceHooks ||
 			(opts.traceHooks !== true && $.inArray(name, opts.traceHooks) < 0)
 		) {
-			return this_._superApply(this_, args);
+			return this_._superApply.call(this_, args);
 		}
 		if (
 			opts.timings === true ||
@@ -288,8 +288,17 @@
 		treeLoad: function(ctx, source) {
 			return logHook("treeLoad", this, arguments);
 		},
-		treeSetFocus: function(ctx, flag) {
+		treeRegisterNode: function(ctx, add, node) {
+			return logHook("treeRegisterNode", this, arguments);
+		},
+		treeSetFocus: function(ctx, flag, callOpts) {
 			return logHook("treeSetFocus", this, arguments);
+		},
+		treeSetOption: function(ctx, key, value) {
+			return logHook("treeSetOption", this, arguments);
+		},
+		treeStructureChanged: function(ctx, type) {
+			return logHook("treeStructureChanged", this, arguments);
 		},
 	});
 

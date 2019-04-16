@@ -196,7 +196,7 @@
 <script type="text/javascript">
 	$(function(){
 		/* Handle custom checkbox clicks */
-		$("#treetable").delegate("input[name=like]", "click", function(e){
+		$("#treetable").on("click", "input[name=like]", function(e){
 			var node = $.ui.fancytree.getNode(e),
 			   $input = $(e.target);
 			e.stopPropagation();  // prevent fancytree activate for this row
