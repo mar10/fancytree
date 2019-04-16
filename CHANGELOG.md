@@ -1,11 +1,26 @@
 # 2.31.0-0 / Unreleased
-  * [Added] New tree option `.treeId`
+  * **ext-grid** (experimental)<br>
+    The new `ext-grid` extension is a variant of `ext-table` that introduces viewport support.
+    This allows to maintain *huge* data models while only rendering as many DOM elements as necessary.<br>
+    Main changes:
+    * A viewport is defined by the number of visible rows (`tree.viewport.count`) and the index of the first visible row (`.start`)
+    * When scrolling, rows are not hidden, but removed and replaced. (This implies that the contents of embedded input fields should be written into the model immediately.)
+    * New hook `treeStructureChanged`
+    * New method `tree.findRelatedNode()`
+    * New method `node.getPath()`
+    * New event `updateViewport`
+    * TODO: New event `unloadRow` to allow reading row input values into the node model, before it is removed from the DOM
+    * TODO: Enable Aria by default
+    * TODO: Enable gridnav by default
+  * Optimized performance of `expandAll()` and `ext-filter`
+  * [Added] New tree option `.treeId` to prevent generation of a new sequence if the tree is re-initialized on a page.
   * [Changed] `.getTree()` now also accepts the tree id string
   * Replace jshint/jscs with eslint
   * Now testing on Puppeteer/Chromium instead of PhantonJS
-  * [DEPRECATED] loaderror and lazyload options now throw an error
+  * [DEPRECATED] loaderror and lazyload options now throw an error instead of falling back to the correct loadError and lazyLoad
   * [Fixed] #918 SVG font awesome 5 glyphs remove badge counter when parent node is collapsed
   * [Fixed] missing tree.error() and broken node.error()
+  * [Fixed] a bug in ext-logger
   * Update to jQuery 3.4
 
 # 2.30.2 / 2019-01-13
@@ -19,20 +34,6 @@
   * [Fixed] #928 ext-dnd5: Fix `preventNonNodes` option
   * [Fixed] #929 Fix `.getTree()` for jQuery 3
   * [Fixed] #930 ext-dnd5: If drag does not start, no drag data should be stored
-
-# 'viewport' / Unreleased
-  * Render sub-parts of a tree
-  * Expand animations are no longer supported
-  * Rows are never hidden, but always removed: input must be persisted
-  * New hook `treeStructureChanged`
-  * New method `tree.findRelatedNode()`
-  * New method `node.getPath()`
-  * New event `updateViewport`
-  * TODO: New callback `hideNode` to read input values into node model
-  * TODO: Enable Aria by default
-  * TODO: Enable gridnav by default
-  * Optimized `expandAll()` performance
-  * Optimized `ext-filter` performance
 
 # 2.30.1 / 2018-11-13
   * [Changed] Apply and enforce 'prettier' codestyle
