@@ -81,19 +81,6 @@
 	};
 
 	/*
-	 * [ext-grid] Return true if viewport cannot be scrolled down any further.
-	 *
-	 * @alias Fancytree#isViewportBottom
-	 * @requires jquery.fancytree.grid.js
-	 */
-	$.ui.fancytree._FancytreeClass.prototype.isViewportBottom = function() {
-		return (
-			this.viewport.start + this.viewport.count >=
-			this.visibleNodeList.length
-		);
-	};
-
-	/*
 	 * [ext-grid] ...
 	 *
 	 * @alias Fancytree#_shiftViewport
@@ -116,6 +103,19 @@
 			default:
 				throw Error("Invalid  mode: " + mode);
 		}
+	};
+
+	/**
+	 * [ext-grid] Return true if viewport cannot be scrolled down any further.
+	 *
+	 * @alias Fancytree#isViewportBottom
+	 * @requires jquery.fancytree.grid.js
+	 */
+	$.ui.fancytree._FancytreeClass.prototype.isViewportBottom = function() {
+		return (
+			this.viewport.start + this.viewport.count >=
+			this.visibleNodeList.length
+		);
 	};
 
 	/**

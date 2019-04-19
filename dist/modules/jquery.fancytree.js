@@ -2586,6 +2586,7 @@
 	 * @property {string} statusClassPropName Property name of FancytreeNode that contains the element which will receive the status classes.
 	 *     Typically "span", but "tr" for table extension.
 	 * @property {object} types Map for shared type specific meta data, used with node.type attribute. @since 2.27
+	 * @property {object} viewport Start and height of `ext-grid` dimension. @since 2.31
 	 * @property {object} widget Base widget instance.
 	 */
 	function Fancytree(widget) {
