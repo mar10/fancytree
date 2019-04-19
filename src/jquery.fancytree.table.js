@@ -97,8 +97,8 @@
 		// Default options for this extension.
 		options: {
 			checkboxColumnIdx: null, // render the checkboxes into the this column index (default: nodeColumnIdx)
-			mergeStatusColumns: true, // display 'nodata', 'loading', 'error' centered in a single, merged TR
 			indentation: 16, // indent every node level by 16px
+			mergeStatusColumns: true, // display 'nodata', 'loading', 'error' centered in a single, merged TR
 			nodeColumnIdx: 0, // render node expander, icon, and title to this column (default: #0)
 		},
 		// Overide virtual methods for this extension.
@@ -409,7 +409,7 @@
 				if (opts.renderStatusColumns) {
 					// Let user code write column content
 					opts.renderStatusColumns.call(
-						ctx.tree,
+						tree,
 						{ type: "renderStatusColumns" },
 						ctx
 					);
@@ -424,11 +424,7 @@
 						.remove();
 				} // else: default rendering for status node: leave other cells empty
 			} else if (opts.renderColumns) {
-				opts.renderColumns.call(
-					ctx.tree,
-					{ type: "renderColumns" },
-					ctx
-				);
+				opts.renderColumns.call(tree, { type: "renderColumns" }, ctx);
 			}
 			return res;
 		},

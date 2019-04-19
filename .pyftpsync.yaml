@@ -6,10 +6,12 @@ default_task: deploy
 
 # Default settings shared by all tasks:
 common_config:
-    # verbose: 4
+    exclude: archive,build,node_modules,.*,_*
     progress: true
+    remote: ftp://wwwendt.de/tech/fancytree
     # Make --root default (can be overridden by --here):
     root: true
+    # verbose: 4
 
 # List of task definitions:
 tasks:
@@ -19,14 +21,10 @@ tasks:
 
     deploy:
         command: upload
-        remote: ftp://wwwendt.de/tech/fancytree
-        exclude: build,node_modules,.*,_*
         delete_unmatched: true
 
     deploy_force:
         command: upload
-        remote: ftp://wwwendt.de/tech/fancytree
-        exclude: build,node_modules,.*,_*
         delete_unmatched: true
         delete: true
         resolve: local
