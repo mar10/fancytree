@@ -1,0 +1,33 @@
+# Configuration for `pyftpsync run ...` command line tool.
+# See https://pyftpsync.readthedocs.io/ for details.
+
+# This task is used by `pyftpsync run` if no task is passed as argument:
+default_task: deploy
+
+# Default settings shared by all tasks:
+common_config:
+    # verbose: 4
+    progress: true
+    # Make --root default (can be overridden by --here):
+    root: true
+
+# List of task definitions:
+tasks:
+    # sync_all:
+    #     command: sync
+    #     remote: ftp://wwwendt.de/tech/fancytree
+
+    deploy:
+        command: upload
+        remote: ftp://wwwendt.de/tech/fancytree
+        exclude: build,node_modules,.*,_*
+        delete_unmatched: true
+
+    deploy_force:
+        command: upload
+        remote: ftp://wwwendt.de/tech/fancytree
+        exclude: build,node_modules,.*,_*
+        delete_unmatched: true
+        delete: true
+        resolve: local
+        force: true

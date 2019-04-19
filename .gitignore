@@ -14,4 +14,3 @@ sauce_connect.*
 .pyftpsync-meta.json
 .DS_Store
 test/ajax_101k.json
-.pyftpsync.yaml
