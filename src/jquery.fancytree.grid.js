@@ -687,7 +687,7 @@
 
 			// node.debug("nodeRender(): " + node + ", isRoot=" + isRootNode, "tr=" + node.tr, "hcp=" + ctx.hasCollapsedParents, "parent.tr=" + (node.parent && node.parent.tr));
 			if (!_recursive) {
-				node.debug("nodeRender(): start top node");
+				// node.debug("nodeRender(): start top node");
 				if (isRootNode && viewport) {
 					node.debug("nodeRender(): redrawViewport() instead");
 					return ctx.tree.redrawViewport();
@@ -805,15 +805,17 @@
 						{ type: "renderStatusColumns" },
 						ctx
 					);
-				} else if (opts.table.mergeStatusColumns && node.isTopLevel()) {
-					$(node.tr)
-						.find(">td")
-						.eq(0)
-						.prop("colspan", tree.columnCount)
-						.text(node.title)
-						.addClass("fancytree-status-merged")
-						.nextAll()
-						.remove();
+				} else if (opts.grid.mergeStatusColumns && node.isTopLevel()) {
+					node.warn("mergeStatusColumns is not yet implemented.");
+					// This approach would not work, since the roe may be re-used:
+					// $(node.tr)
+					// 	.find(">td")
+					// 	.eq(0)
+					// 	.prop("colspan", tree.columnCount)
+					// 	.text(node.title)
+					// 	.addClass("fancytree-status-merged")
+					// 	.nextAll()
+					// 	.remove();
 				} // else: default rendering for status node: leave other cells empty
 			} else if (opts.renderColumns) {
 				opts.renderColumns.call(tree, { type: "renderColumns" }, ctx);
@@ -924,7 +926,7 @@
 		treeStructureChanged: function(ctx, type) {
 			// debugger;
 			if (type !== "addNode" || ctx.tree.visibleNodeList) {
-				this.debug("treeStructureChanged(" + type + ")");
+				// this.debug("treeStructureChanged(" + type + ")");
 				this._renumberReset(); // Invalidate visible row cache
 			}
 		},

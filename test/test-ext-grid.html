@@ -237,6 +237,10 @@
     });
 
 		$("input[name=search]").on("search", function(e){
+      if (e.type === "change" && e.target.onsearch !== undefined ) {
+        // We fall back to handling the change event only if the search event is not supported.
+        return;
+      }
 			var n,
 				tree = $.ui.fancytree.getTree(),
         match = $.trim($(this).val());

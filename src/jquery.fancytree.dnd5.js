@@ -431,7 +431,11 @@
 				) {
 					// Default processing if any
 					this._super.apply(this, arguments);
-					data.node.span.draggable = true;
+					if (data.node.span) {
+						data.node.span.draggable = true;
+					} else {
+						data.node.warn("Cannot add `draggable`: not span tag");
+					}
 				});
 			}
 			this._superApply(arguments);

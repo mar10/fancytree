@@ -44,17 +44,12 @@
 				nodata: true,      // Display a 'no data' status node if result is empty
 				mode: "dimm"       // Grayout unmatched nodes (pass "hide" to remove unmatched node instead)
 			},
-			activate: function(event, data) {
+			// activate: function(event, data) {
 //				alert("activate " + data.node);
-			},
+			// },
 			lazyLoad: function(event, data) {
 				data.result = {url: "ajax-sub2.json"}
 			}
-		// }).on("keydown", function(e){
-		// 	var c = String.fromCharCode(e.which);
-		// 	if( c === "F" && e.ctrlKey ) {
-		// 		$("input[name=search]").focus();
-		// 	}
 		});
 		var tree = $("#tree").fancytree("getTree");
 

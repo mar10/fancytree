@@ -173,8 +173,10 @@
       // },
       init: function(event, data) {
         $("#treetable caption").text("Loaded " + data.tree.count() + " nodes.");
-        data.tree.getNodeByKey("10_2_1").setActive();
+        data.tree.getNodeByKey("1.1.88").setActive();
+        // data.tree.getNodeByKey("10_2_1").setActive();
         data.tree.adjustViewportSize();
+        // data.tree.addPagingNode();
       },
       lazyLoad: function(event, data) {
         data.result = {url: "ajax-sub2.json"}
@@ -239,7 +241,11 @@
       tree.setViewport(opts);
     });
 
-		$("input[name=search]").on("change", function(e){
+		$("input[name=search]").on("change search", function(e){
+      if (e.type === "change" && e.target.onsearch !== undefined ) {
+        // We fall back to handling the change event only if the search event is not supported.
+        return;
+      }
 			var n,
 				tree = $.ui.fancytree.getTree(),
         match = $.trim($(this).val());
@@ -285,7 +291,7 @@
     <p>
       <b>Status:</b> experimental.
       <b>Details:</b>
-      <a href="https://github.com/mar10/fancytree/wiki/ExtGrid"
+      <a href="https://github.com/mar10/fancytree/wiki/ExtTable"
         target="_blank" class="external">ext-grid</a>.
     </p>
   </div>
@@ -303,7 +309,7 @@
   </div> -->
   <div>
     <label for="filter">Filter:</label>
-    <input type="search" name="search" placeholder="Search text" autocomplete="off">
+    <input type="search" name="search" incremental placeholder="Search text" autocomplete="off">
     <span class="matches"></span>
 
 		<form id="optionsForm">
