@@ -35,22 +35,22 @@
 		FT = $.ui.fancytree,
 		PREFIX = "ft-logger: ",
 		logLine = window.console.log,
-		HOOK_NAMES = "nodeClick nodeCollapseSiblings".split(" "),
-		TREE_EVENT_NAMES = "beforeRestore blurTree create init focusTree restore updateViewport".split(
+		// HOOK_NAMES = "nodeClick nodeCollapseSiblings".split(" "),
+		TREE_EVENT_NAMES = "beforeRestore beforeUpdateViewport blurTree create init focusTree restore updateViewport".split(
 			" "
 		),
 		NODE_EVENT_NAMES = "activate activateCell beforeActivate beforeExpand beforeSelect blur click collapse createNode dblclick deactivate defaultGridAction expand enhanceTitle focus keydown keypress lazyLoad loadChildren loadError modifyChild postProcess renderNode renderTitle select".split(
 			" "
 		),
 		EVENT_NAMES = TREE_EVENT_NAMES.concat(NODE_EVENT_NAMES),
-		HOOK_NAME_MAP = {},
+		// HOOK_NAME_MAP = {},
 		EVENT_NAME_MAP = {};
 
 	/*
 	 */
-	for (i = 0; i < HOOK_NAMES.length; i++) {
-		HOOK_NAME_MAP[HOOK_NAMES[i]] = true;
-	}
+	// for (i = 0; i < HOOK_NAMES.length; i++) {
+	// 	HOOK_NAME_MAP[HOOK_NAMES[i]] = true;
+	// }
 	for (i = 0; i < EVENT_NAMES.length; i++) {
 		EVENT_NAME_MAP[EVENT_NAMES[i]] = true;
 	}

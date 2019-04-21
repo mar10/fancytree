@@ -206,7 +206,7 @@
 				alert("dislike " + $input.val());
 			}
 		});
-		$("#fixedRows").keyup(function(evt) {
+		$("#fixedRows").on("keyup", function(evt) {
 			var rows = parseInt($(this).val());
 			if (!isNaN(rows) && evt.keyCode === 13) {
 				var tree = $("#treetable").fancytree("getTree");
@@ -214,7 +214,7 @@
 				tree.reload();
 			}
 		});
-		$("#fixedCols").keyup(function(evt) {
+		$("#fixedCols").on("keyup", function(evt) {
 			var cols = parseInt($(this).val());
 			if (!isNaN(cols) && evt.keyCode === 13) {
 				var tree = $("#treetable").fancytree("getTree");

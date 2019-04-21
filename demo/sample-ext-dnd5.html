@@ -28,6 +28,11 @@
 	ul.fancytree-container {
 		max-height: 200px;
 		overflow-y: scroll;
+    width: 48%;
+    display: inline-block;
+	}
+	#tree ul.fancytree-container {
+    float: left;
 	}
 
 	span.fancytree-node.fancytree-drag-source {
@@ -59,6 +64,9 @@
 			// titlesTabbable: true,
 			source: {
 				url: "ajax-tree-fs.json"
+			},
+			init: function(event, data){
+				data.tree.getFirstChild().setTitle("C:\\");
 			},
 			dnd5: {
 				// autoExpandMS: 400,
@@ -142,7 +150,71 @@
 				data.result = {url: "ajax-sub2.json"}
 			}
 		});
-	});
+
+    $("#tree2").fancytree({
+			extensions: ["dnd5"],
+			source: {
+				url: "ajax-tree-fs.json"
+			},
+			init: function(event, data){
+				data.tree.getFirstChild().setTitle("D:\\");
+			},
+			dnd5: {
+				// --- Drag-support:
+				dragStart: function(node, data) {
+					return true;
+				},
+				dragDrag: function(node, data) {
+					data.dataTransfer.dropEffect = "move";
+				},
+				// dragEnd: function(node, data) {
+				// },
+				// --- Drop-support:
+				dragEnter: function(node, data) {
+					// node.debug("dragEnter", data);
+					data.dataTransfer.dropEffect = "move";
+					// data.dataTransfer.effectAllowed = "copy";
+					return true;
+				},
+				dragOver: function(node, data) {
+					data.dataTransfer.dropEffect = "move";
+					// data.dataTransfer.effectAllowed = "copy";
+				},
+				// dragLeave: function(node, data) {
+				// },
+				dragDrop: function(node, data) {
+					var transfer = data.dataTransfer;
+
+					node.debug("drop", data);
+
+					if( data.otherNode ) {
+						// Drop another Fancytree node from same frame
+						// (maybe from another tree however)
+						var sameTree = (data.otherNode.tree === data.tree);
+
+						data.otherNode.moveTo(node, data.hitMode);
+					} else if( data.otherNodeData ) {
+						// Drop Fancytree node from different frame or window, so we only have
+						// JSON representation available
+						node.addChild(data.otherNodeData, data.hitMode);
+					} else {
+						// Drop a non-node
+						node.addNode({
+							title: transfer.getData("text")
+						}, data.hitMode);
+					}
+					node.setExpanded();
+				}
+			},
+			// activate: function(event, data) {
+			// },
+			lazyLoad: function(event, data) {
+				data.result = {url: "ajax-sub2.json"}
+			}
+		});
+
+  });
+
 </script>
 </head>
 <body class="example">
@@ -159,7 +231,7 @@
 			<li>Requires IE 11 or later.</li>
 		</ul>
 		<p>
-			<b>Status:</b> experimental.
+			<b>Status:</b> production.
 			<b>Details:</b>
 			<a href="https://github.com/mar10/fancytree/wiki/ExtDnd5"
 				target="_blank" class="external">ext-dnd5</a>.
@@ -181,6 +253,8 @@
 	</p>
 	<!-- Add a <table> element where the tree should appear: -->
 	<div id="tree">
+	</div>
+	<div id="tree2">
 	</div>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->

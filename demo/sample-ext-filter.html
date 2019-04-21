@@ -56,7 +56,7 @@
 		/*
 		 * Event handlers for our little demo interface
 		 */
-		$("input[name=search]").keyup(function(e){
+		$("input[name=search]").on("keyup", function(e){
 			var n,
 				tree = $.ui.fancytree.getTree(),
 				args = "autoApply autoExpand fuzzy hideExpanders highlight leavesOnly nodata".split(" "),

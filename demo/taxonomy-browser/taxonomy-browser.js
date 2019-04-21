@@ -464,7 +464,7 @@
 		}); // don't trigger now, since we need the the taxonTree root nodes to be loaded first
 
 		$("input[name=query]")
-			.keyup(function(e) {
+			.on("keyup", function(e) {
 				var query = $.trim($(this).val()),
 					lastQuery = $(this).data("lastQuery");
 

@@ -379,10 +379,18 @@
 				})
 				.on("fancytreefocustree", function(event, data) {
 					// Enforce cell-mode when container gets focus
-					if (opts.cellFocus === "force" && !tree.activeTd) {
+					if (opts.cellFocus === "force" && !tree.$activeTd) {
 						var node = tree.getActiveNode() || tree.getFirstChild();
 						tree.debug("Enforce cell-mode on focusTree event");
 						node.setActive(true, { cell: 0 });
+					}
+				})
+				.on("fancytreebeforeupdateviewport", function(event, data) {
+					// When scrolling, the TR may be re-used by another node, so the
+					// active cell marker an
+					if (tree.viewport && tree.$activeTd) {
+						tree.info("Cell mode cancelled due to scroll event.");
+						tree.activateCell(null);
 					}
 				});
 		},

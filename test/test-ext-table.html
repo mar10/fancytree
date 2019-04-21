@@ -117,7 +117,7 @@ SOURCE = [
 		/*
 		 * Event handlers for our little demo interface
 		 */
-		$("input[name=search]").keyup(function(e){
+		$("input[name=search]").on("keyup", function(e){
 			var match = $(this).val();
 			if(e && e.which === $.ui.keyCode.ESCAPE || $.trim(match) === ""){
 				$("#btnResetSearch").click();

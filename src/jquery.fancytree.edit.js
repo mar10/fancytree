@@ -114,7 +114,7 @@
 			.change(function(event) {
 				$input.addClass("fancytree-edit-dirty");
 			})
-			.keydown(function(event) {
+			.on("keydown", function(event) {
 				switch (event.which) {
 					case $.ui.keyCode.ESCAPE:
 						node.editEnd(false, event);
@@ -323,8 +323,23 @@
 		currentNode: null,
 
 		treeInit: function(ctx) {
+			var tree = ctx.tree;
+
 			this._superApply(arguments);
-			this.$container.addClass("fancytree-ext-edit");
+
+			this.$container
+				.addClass("fancytree-ext-edit")
+				.on("fancytreebeforeupdateviewport", function(event, data) {
+					var editNode = tree.isEditing();
+					// When scrolling, the TR may be re-used by another node, so the
+					// active cell marker an
+					if (editNode) {
+						editNode.info(
+							"Edit mode cancelled due to scroll event."
+						);
+						editNode.editEnd(false, event);
+					}
+				});
 		},
 		nodeClick: function(ctx) {
 			var eventStr = $.ui.fancytree.eventToString(ctx.originalEvent),

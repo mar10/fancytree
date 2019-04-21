@@ -197,12 +197,17 @@
 		}
 		trCount = trList.length;
 
+		// The default implementation will call
+		//   - call redrawViewport()
+		//   - trigger a updateViewport event
+		var info = { reason: reason, scrollOnly: reason === "start" };
+
+		this._triggerTreeEvent("beforeUpdateViewport", null, info);
+
 		// Update visible node cache if needed
 		this.redrawViewport(true);
-		this._triggerTreeEvent("updateViewport", null, {
-			reason: reason,
-			scrollOnly: reason === "start",
-		});
+
+		this._triggerTreeEvent("updateViewport", null, info);
 		this.isVpUpdating = prevPhase;
 		return true;
 	};
