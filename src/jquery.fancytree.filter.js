@@ -95,6 +95,9 @@
 				var text = escapeTitles
 						? node.title
 						: extractHtmlText(node.title),
+					matchText = escapeTitles
+						? node.title + " " + node.data.searchable
+						: extractHtmlText(node.title + " " + node.data.searchable),
 					res = !!re.test(text);
 
 				if (res && opts.highlight) {
