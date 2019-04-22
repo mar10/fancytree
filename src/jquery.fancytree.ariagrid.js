@@ -385,11 +385,15 @@
 						node.setActive(true, { cell: 0 });
 					}
 				})
+				// .on("fancytreeupdateviewport", function(event, data) {
+				// 	tree.debug(event.type, data);
+				// })
 				.on("fancytreebeforeupdateviewport", function(event, data) {
 					// When scrolling, the TR may be re-used by another node, so the
 					// active cell marker an
+					// tree.debug(event.type, data);
 					if (tree.viewport && tree.$activeTd) {
-						tree.info("Cell mode cancelled due to scroll event.");
+						tree.info("Cancel cell-mode due to scroll event.");
 						tree.activateCell(null);
 					}
 				});

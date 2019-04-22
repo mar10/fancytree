@@ -127,63 +127,86 @@
 	 * @requires jquery.fancytree.grid.js
 	 */
 	$.ui.fancytree._FancytreeClass.prototype.setViewport = function(opts) {
+		if (typeof opts === "boolean") {
+			this.debug("setViewport( " + opts + ")");
+			return this.setViewport({ enabled: opts });
+		}
+
 		var i,
 			count,
 			start,
 			newRow,
-			reason = "",
-			redraw = false,
+			redrawReason = "",
 			vp = this.viewport,
+			diffVp = { start: 0, count: 0, enabled: null, force: null },
+			newVp = $.extend({}, vp),
 			trList = this.tbody.children,
 			trCount = trList.length;
 
 		// Sanitize viewport settings and check if we need to redraw
-		if (typeof opts === "boolean") {
-			this.debug("setViewport( " + opts + ")");
-			redraw = vp.enabled !== opts;
-			vp.enabled = opts;
-			if (redraw) {
-				reason += "enable";
-			}
-		} else {
-			this.debug("setViewport(" + opts.start + ", +" + opts.count + ")");
-			redraw = !vp.enabled || opts.force;
-			if (redraw) {
-				reason += "force";
-			}
-			vp.enabled = true;
-			start = opts.start == null ? vp.start : Math.max(0, +opts.start);
-			// Don't scroll down below bottom node
-			if (start > 0 && !opts.count && this.visibleNodeList) {
-				start = Math.min(start, this.visibleNodeList.length - vp.count);
-			}
-			count = opts.count == null ? vp.count : Math.max(1, +opts.count);
-			if (vp.start !== +start) {
-				vp.start = start;
-				redraw = true;
-				reason += "start";
-			}
-			if (vp.count !== +count) {
-				vp.count = count;
-				redraw = true;
-				reason += "count";
-			}
-			// if (vp.left !== +opts.left) {
-			// 	vp.left = opts.left;
-			// 	redraw = true;
-			// 	reason += "left";
-			// }
-			// if (vp.right !== +opts.right) {
-			// 	vp.right = opts.right;
-			// 	redraw = true;
-			// 	reason += "right";
-			// }
+		this.debug("setViewport(" + opts.start + ", +" + opts.count + ")");
+		if (opts.force) {
+			redrawReason += "force";
+			diffVp.force = true;
 		}
-		if (!redraw) {
+
+		opts.enabled = opts.enabled !== false; // default to true
+		if (vp.enabled !== opts.enabled) {
+			redrawReason += "enable";
+			newVp.enabled = diffVp.enabled = opts.enabled;
+		}
+
+		start = opts.start == null ? vp.start : Math.max(0, +opts.start);
+		// Don't scroll down below bottom node
+		if (start > 0 && !opts.count && this.visibleNodeList) {
+			start = Math.min(start, this.visibleNodeList.length - vp.count);
+		}
+		if (vp.start !== +start) {
+			redrawReason += "start";
+			newVp.start = start;
+			diffVp.start = start - vp.start;
+		}
+
+		count = opts.count == null ? vp.count : Math.max(1, +opts.count);
+		if (vp.count !== +count) {
+			redrawReason += "count";
+			newVp.count = count;
+			diffVp.count = count - vp.count;
+		}
+		// if (vp.left !== +opts.left) {
+		// 	diffVp.left = left - vp.left;
+		// 	newVp.left = opts.left;
+		// 	redrawReason += "left";
+		// }
+		// if (vp.right !== +opts.right) {
+		// 	diffVp.right = right - vp.right;
+		// 	newVp.right = opts.right;
+		// 	redrawReason += "right";
+		// }
+
+		if (!redrawReason) {
 			return false;
 		}
+		// Let user cancel or modify the update
+		var info = {
+			next: newVp,
+			diff: diffVp,
+			scrollOnly: redrawReason === "start",
+		};
+		if (
+			this._triggerTreeEvent("beforeUpdateViewport", null, info) === false
+		) {
+			return false;
+		}
+		info.prev = $.extend({}, vp);
+		delete info.next;
+		// vp.enabled = newVp.enabled;
+		vp.start = newVp.start;
+		vp.count = newVp.count;
+
 		// Make sure we have the correct count of TRs
 		var prevPhase = this.isVpUpdating;
+
 		if (trCount > count) {
 			for (i = 0; i < trCount - count; i++) {
 				delete this.tbody.lastChild.ftnode;
@@ -197,17 +220,11 @@
 		}
 		trCount = trList.length;
 
-		// The default implementation will call
-		//   - call redrawViewport()
-		//   - trigger a updateViewport event
-		var info = { reason: reason, scrollOnly: reason === "start" };
-
-		this._triggerTreeEvent("beforeUpdateViewport", null, info);
-
 		// Update visible node cache if needed
 		this.redrawViewport(true);
 
 		this._triggerTreeEvent("updateViewport", null, info);
+
 		this.isVpUpdating = prevPhase;
 		return true;
 	};
@@ -576,11 +593,17 @@
 			);
 
 			tree.visibleNodeList = null; // Set by _renumberVisibleNodes()
-			tree.viewport = {};
+			tree.viewport = {
+				enabled: true,
+				start: 0,
+				count: 10,
+				left: 0,
+				right: 0,
+			};
 			this.setViewport(
 				$.extend(
 					{
-						enabled: false,
+						// enabled: true,
 						autoSize: true,
 						start: 0,
 						count: 10,

@@ -2616,6 +2616,7 @@
 		this.systemFocusElement = null;
 		this.lastQuicksearchTerm = "";
 		this.lastQuicksearchTime = 0;
+		this.viewport = null; // ext-grid
 
 		this.statusClassPropName = "span";
 		this.ariaPropName = "li";

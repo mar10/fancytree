@@ -253,10 +253,15 @@ var FancytreeOptions = {};
  * });
  *
  * @property {function} activate `data.node` was activated
- * @property {function} beforeActivate `data.node` is about to be (de)activated. Current status is `data.node.isActive()`. Return `false` to prevent default processing
- * @property {function} beforeExpand `data.node` is about to be collapsed/expanded. Current status is `data.node.isExpanded()`. Return `false` to prevent default processing
- * @property {function} beforeRestore ext-persist is about to restore the previous state. Return `false` to prevent default processing
- * @property {function} beforeSelect `data.node` is about to be (de)selected. Current status is `data.node.isSelected()`. Return `false` to prevent default processing
+ * @property {function} beforeActivate `data.node` is about to be (de)activated. Current status is `data.node.isActive()`. Return `false` to prevent default processing.
+ * @property {function} beforeExpand `data.node` is about to be collapsed/expanded. Current status is `data.node.isExpanded()`. Return `false` to prevent default processing.
+ * @property {function} beforeRestore ext-persist is about to restore the previous state. Return `false` to prevent default processing.
+ * @property {function} beforeSelect `data.node` is about to be (de)selected. Current status is `data.node.isSelected()`. Return `false` to prevent default processing.
+ * @property {function} beforeUpdateViewport ext-grid is about to redraw the tree.viewport.<br>
+ *     `data.next`: viewport settings that will be applied.<br>
+ *     `data.diff`: changes to the current `tree.viewport`, e.g. start offset.<br>
+ *     `data.scrollOnly`: true if only the `start` value has changed.<br>
+ *     Modify `next` or return `false` to prevent default processing.
  * @property {function} blur `data.node` lost keyboard focus
  * @property {function} blurTree `data.tree` lost keyboard focus
  * @property {function} click `data.node` was clicked. `data.targetType` contains the region ("checkbox", "expander", "icon", "prefix", "title"). Return `false` to prevent default processing, i.e. activating, expanding, selecting, etc.
@@ -286,7 +291,7 @@ var FancytreeOptions = {};
  * @property {function} keypress (currently unused)
  * @property {function} lazyLoad `data.node` is a lazy node that is expanded for the first time. The new child data must be returned in the `data.result` property (see `source` option for available formats).
  * @property {function} loadChildren Node data was loaded, i.e. `node.nodeLoadChildren()` finished
- * @property {function} loadError A load error occurred. Return `false` to prevent default processing
+ * @property {function} loadError A load error occurred. Return `false` to prevent default processing.
  * @property {function} modifyChild A <i>child</i> of `data.node` was added, removed, or otherwise modified<br>
  *     `data.operation` contains 'add', 'remove', 'rename', 'move', 'sort', 'data'<br>
  *     `data.childNode` contains the new, deleted, or modified child node if applicable<br>
@@ -300,7 +305,9 @@ var FancytreeOptions = {};
  * @property {function} renderTitle Allow replacing the `&lt;span class='fancytree-title'>` markup (NOTE: this event is only available as callback, but not for bind())
  * @property {function} restore ext-persist has expanded, selected, and activated the previous state
  * @property {function} select `data.node` was (de)selected. Current status is `data.node.isSelected()`
- * @property {function} updateViewport ext-grid has redrawn the viewport.<br>
+ * @property {function} updateViewport ext-grid has redrawn the tree.viewport.<br>
+ *     `data.prev`: viewport settings that were active before this update.<br>
+ *     `data.diff`: changes to the current `tree.viewport`, e.g. start offset.<br>
  *     `data.scrollOnly`: true if only the `start` value has changed.
  */
 var FancytreeEvents = {};

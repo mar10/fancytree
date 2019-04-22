@@ -334,9 +334,7 @@
 					// When scrolling, the TR may be re-used by another node, so the
 					// active cell marker an
 					if (editNode) {
-						editNode.info(
-							"Edit mode cancelled due to scroll event."
-						);
+						editNode.info("Cancel edit due to scroll event.");
 						editNode.editEnd(false, event);
 					}
 				});
