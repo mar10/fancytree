@@ -87,36 +87,43 @@
 					 * data.dataTransfer.setData() and .setDragImage() is available
 					 * here.
 					 */
+           node.debug("T1: dragStart: effect="+data.dataTransfer.dropEffect+", allowed="+data.dataTransfer.effectAllowed, data);
 //					data.dataTransfer.setDragImage($("<div>hurz</div>").appendTo("body")[0], -10, -10);
+					data.dataTransfer.effectAllowed = "all";
 					return true;
 				},
 				dragDrag: function(node, data) {
-					data.dataTransfer.dropEffect = "move";
+          node.debug("T1: dragDrag: effect="+data.dataTransfer.dropEffect+", allowed="+data.dataTransfer.effectAllowed, data);
+					// data.dataTransfer.dropEffect = "move";
 				},
-				dragEnd: function(node, data) {
-				},
+				// dragEnd: function(node, data) {
+        //   node.debug("T1: dragEnd: effect="+data.dataTransfer.dropEffect+", allowed="+data.dataTransfer.effectAllowed, data);
+				// },
 
 				// --- Drop-support:
 
 				dragEnter: function(node, data) {
+          node.debug("T1: dragEnter: effect="+data.dataTransfer.dropEffect+", allowed="+data.dataTransfer.effectAllowed, data);
 					// node.debug("dragEnter", data);
-					data.dataTransfer.dropEffect = "move";
+					// data.dataTransfer.dropEffect = "move";
 					// data.dataTransfer.effectAllowed = "copy";
 					return true;
 				},
 				dragOver: function(node, data) {
-					data.dataTransfer.dropEffect = "move";
+          node.debug("T1: dragOver: effect="+data.dataTransfer.dropEffect+", allowed="+data.dataTransfer.effectAllowed, data);
+					// data.dataTransfer.dropEffect = "move";
 					// data.dataTransfer.effectAllowed = "copy";
 				},
-				dragLeave: function(node, data) {
-				},
+				// dragLeave: function(node, data) {
+        //   node.debug("T1: dragLeave: effect="+data.dataTransfer.dropEffect+", allowed="+data.dataTransfer.effectAllowed, data);
+				// },
 				dragDrop: function(node, data) {
 					/* This function MUST be defined to enable dropping of items on
 					 * the tree.
 					 */
 					var transfer = data.dataTransfer;
 
-					node.debug("drop", data);
+          node.debug("T1: dragDrop: effect="+data.dataTransfer.dropEffect+", allowed="+data.dataTransfer.effectAllowed, data);
 
 					// alert("Drop on " + node + ":\n"
 					// 	+ "source:" + JSON.stringify(data.otherNodeData) + "\n"
@@ -162,22 +169,26 @@
 			dnd5: {
 				// --- Drag-support:
 				dragStart: function(node, data) {
+					data.dataTransfer.effectAllowed = "all";
+					node.debug("T2: dragStart: effect="+data.dataTransfer.dropEffect+", allowed="+data.dataTransfer.effectAllowed, data);
 					return true;
 				},
 				dragDrag: function(node, data) {
-					data.dataTransfer.dropEffect = "move";
+					node.debug("T2: dragDrag: effect="+data.dataTransfer.dropEffect+", allowed="+data.dataTransfer.effectAllowed); //, data);
+					// data.dataTransfer.dropEffect = "move";
 				},
 				// dragEnd: function(node, data) {
 				// },
 				// --- Drop-support:
 				dragEnter: function(node, data) {
-					// node.debug("dragEnter", data);
-					data.dataTransfer.dropEffect = "move";
+					node.debug("T2: dragEnter: effect="+data.dataTransfer.dropEffect+", allowed="+data.dataTransfer.effectAllowed, data);
+					data.dataTransfer.dropEffect = "link";
 					// data.dataTransfer.effectAllowed = "copy";
 					return true;
 				},
 				dragOver: function(node, data) {
-					data.dataTransfer.dropEffect = "move";
+					// node.debug("T2: dragOver: effect="+data.dataTransfer.dropEffect+", allowed="+data.dataTransfer.effectAllowed, data);
+					// data.dataTransfer.dropEffect = "move";
 					// data.dataTransfer.effectAllowed = "copy";
 				},
 				// dragLeave: function(node, data) {
@@ -185,7 +196,7 @@
 				dragDrop: function(node, data) {
 					var transfer = data.dataTransfer;
 
-					node.debug("drop", data);
+					node.debug("T2: dragDrop: effect="+data.dataTransfer.dropEffect+", allowed="+data.effectAllowed, data);
 
 					if( data.otherNode ) {
 						// Drop another Fancytree node from same frame
