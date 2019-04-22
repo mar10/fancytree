@@ -1,4 +1,5 @@
 # 2.31.0-0 / Unreleased
+  * Added feature to filter not only by title, but also by additional text - placed in `searchable` field of the tree nodes.
   * **ext-grid** (experimental)<br>
     The new `ext-grid` extension is a variant of `ext-table` that introduces viewport support.
     This allows to maintain *huge* data models while only rendering as many DOM elements as necessary.<br>
