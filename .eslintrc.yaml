@@ -25,6 +25,7 @@ rules:
   no-alert: error
   no-caller: error
   guard-for-in: warn
+  linebreak-style: warn
   no-else-return: warn
   # no-empty-function: warn
   no-extend-native: error
