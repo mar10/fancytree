@@ -6,6 +6,7 @@ body.example {
 	margin: 15px;
 	font-family: sans-serif;
 	font-size: 1em;
+  color: #212529;
 }
 body.example h1 {
 	font-size: 1.2em;
@@ -16,11 +17,21 @@ body.example h2 {
 
 body.example .description,
 body.example .sample-links {
-/*	border: thin solid gray; */
-	background-color: #d0d0f0;
+  background-color: #f7f7f7;
+	/* background-color: #d0d0f0; */
 	padding: 5px;
 	margin: 5px 0;
 	font-size: small;
+}
+
+body.example fieldset {
+  border: 1px solid gray;
+  padding: 4px;
+  border-radius: 2px;
+}
+body.example fieldset legend {
+  padding-left: 6px;
+  padding-right: 6px;
 }
 
 p.version-info {
@@ -32,7 +43,7 @@ p.warning,
 p.info,
 div.info {
 	font-size: small;
-	background-color: #ffffa0;
+	background-color: #fff3cd;
 	background-image: url(../doc/iconInfo_32x32.png);
 	background-repeat: no-repeat;
 	padding: 5px;
@@ -45,10 +56,15 @@ div.info {
 }
 .sampleButtonContainer a
 {
-	color: navy;
-	text-decoration: none;
+	color: #212529;
+	text-decoration: undereline;
+	text-decoration-style: dotted;
 	padding: 1px 3px;
-	font-size: 50%;
+	font-size: 70%;
+}
+.sampleButtonContainer button
+{
+	margin-bottom: 3px;
 }
 p#sampleButtons h5
 {
@@ -58,26 +74,91 @@ p#sampleButtons h5
 	font-weight: bold;
 }
 
+.description a,
+.description a:hover,
+.description a:visited,
 p.sample-links a,
+p.sample-links a:hover,
 p.sample-links a:visited
 {
-	color: navy;
-	text-decoration: none;
-	margin-left: 15px;
-	padding: 1px 3px;
-	font-size: small;
+	color: #212529;
+  /* text-decoration: none; */
+  text-decoration-style: dotted;
+  /* font-weight: 600; */
 }
+.description a:hover,
 p.sample-links a:hover
 {
 	text-decoration: underline;
 }
+p.sample-links a,
+p.sample-links a:hover,
+p.sample-links a:visited
+{
+	margin-left: 15px;
+	padding: 1px 3px;
+	font-size: small;
+}
 
 pre{
-  background:#eee;
+  background:#f7f7f7;
   border:1px solid #999;
   padding:.5em;
   margin:.5em;
   font-size:.9em;
+}
+
+body.example button {
+    display: inline-block;
+    font-weight: 400;
+    color: #212529;
+    text-align: center;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-color: transparent;
+    border: 1px solid transparent;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: .25rem;
+	transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+	/* small: */
+	padding: .15rem .3rem;
+    font-size: .675rem;
+    line-height: 1.2;
+	border-radius: .2rem;
+	/* padding: .25rem .5rem;
+    font-size: .875rem;
+    line-height: 1.5;
+	border-radius: .2rem; */
+	/* .btn-primary */
+	/* color: #fff;
+	background-color: #007bff;
+	border-color: #007bff; */
+	/* .btn-secondary */
+    color: #fff;
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+body.example button:hover {
+    color: #212529;
+	text-decoration: none;
+	/* secondary */
+    color: #fff;
+    background-color: #5a6268;
+    border-color: #545b62;
+}
+
+body.example button:focus {
+    box-shadow: 0 0 0 0.2rem rgba(130,138,145,.5);
+}
+
+[type=button]:not(:disabled), [type=reset]:not(:disabled), [type=submit]:not(:disabled), button:not(:disabled) {
+    cursor: pointer;
 }
 
 ul.fancytree-container {
@@ -85,12 +166,12 @@ ul.fancytree-container {
 }
 
 iframe.embedded-plunkr {
-	border: 1px solid #999;
+	border: 1px solid #f7f7f7;
 	width: 100%;
 	height: 500px;
 }
 iframe.embedded-jsbin {
-	border: 1px solid #999;
+	border: 1px solid #f7f7f7;
 	width: 100%;
 	height: 500px;
 }
