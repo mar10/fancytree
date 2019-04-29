@@ -21,13 +21,18 @@
 $(function(){
 	$("#tree").fancytree({
 		types: {
-			"book": {"icon": "ft-ico-book", "iconTooltip": "This is a book"},
-			"computer": {"icon": "ft-ico-computer", "iconTooltip": "This is a computer."}
+			"book": {icon: "ft-ico-book", tooltip: "This is a book."},
+			"computer": {icon: "ft-ico-computer", tooltip: "This is a computer."},
+			"music": {icon: "ft-ico-computer", tooltip: "This is music."},
+			"phone": {icon: "ft-ico-phone", tooltip: "This is a phone."}
 		},
 		checkbox: true,
 		source: {url: "ajax-tree-products.json"},
+		tooltip: function(event, data){
+			return data.typeInfo.tooltip;
+		},
 		iconTooltip: function(event, data){
-			return data.typeInfo.iconTooltip + "!";
+			return data.typeInfo.tooltip;
 		}
 	});
 });
