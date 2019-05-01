@@ -28,28 +28,13 @@ span.fancytree-node.fancytree-clone span.fancytree-title:after {
 	padding-right: 13px;
 }
 
-
 span.fancytree-node.fancytree-active-clone {
   border-color: blue;
-  -moz-animation: flash 1s ease-out;
-  -moz-animation-iteration-count: 1;
-  -webkit-animation: flash 1s ease-out;
-  -webkit-animation-iteration-count: 1;
-  -ms-animation: flash 1s ease-out;
-  -ms-animation-iteration-count: 1;
+  animation: flash 1s ease-out;
+  animation-iteration-count: 1;
 }
 
-@-ms-keyframes flash {
-	0% { background-color:none;}
-	50% { background-color:#fbf8b2;}
-	100% {background-color:none;}
-}
-@-moz-keyframes flash {
-	0% { background-color:none;}
-	50% { background-color:#fbf8b2;}
-	100% {background-color:none;}
-}
-@-ms-keyframes flash {
+@keyframes flash {
 	0% { background-color:none;}
 	50% { background-color:#fbf8b2;}
 	100% {background-color:none;}
@@ -61,10 +46,15 @@ span.fancytree-node.fancytree-active-clone {
 <script type="text/javascript">
 
 var SOURCE = [
-			  {title: "Item 1", key: "node1"},
+			  {title: "Folder 1", folder: true, expanded: true, key: "node1",
+				  children: [
+					  {title: "Sub-item 1.1", key: "node1.1", refKey: "1"},
+					  {title: "Sub-item 1.2", key: "node1.2", refKey: "2"}
+				  ]
+			  },
 			  {title: "Folder 2", folder: true, expanded: true, key: "node2",
 				  children: [
-					  {title: "Sub-item 2.1, refKey=3", key: "node2.1", refKey: "3"},
+					  {title: "Sub-item 2.1", key: "node2.1", refKey: "1"},
 					  {title: "Sub-item 2.2", key: "node2.2", refKey: "2"}
 				  ]
 			  },
@@ -72,7 +62,7 @@ var SOURCE = [
 				  children: [
 					  {title: "Sub-item 2.1", key: "node3.1", selected: false,
 						  children: [
-									  {title: "Sub-item 3.1.1", key: "node3.1.1"},
+									  {title: "Sub-item 3.1.1", key: "node3.1.1", refKey: "3"},
 									  {title: "Sub-item 3.1.2", key: "node3.1.2", refKey: "2"}
 								  ]
 						  },
@@ -82,8 +72,7 @@ var SOURCE = [
 			  {title: "Folder 4", folder: true, expanded: true, key: "node4",
 				  children: [
 					  {title: "Sub-item 2.1", key: "node4.1", refKey: "1"},
-					  {title: "Sub-item 2.2", key: "node4.2", refKey: "1", selected: false},
-					  {title: "Sub-item 2.3 (unselectable)", key: "node4.3", selected: false, unselectable: true}
+					  {title: "Sub-item 2.2", key: "node4.2", refKey: "2",}
 				  ]
 			  },
 			  {title: "Item 3", key: "node5", lazy: true}

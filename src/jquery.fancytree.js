@@ -5752,6 +5752,7 @@
 					$.error("Not implemented");
 				}
 
+				tree._triggerTreeEvent("beforeInitLoad", null);
 				// Trigger fancytreeinit after nodes have been loaded
 				dfd = this.nodeLoadChildren(rootCtx, source)
 					.done(function() {
