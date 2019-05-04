@@ -221,7 +221,8 @@
 		trCount = trList.length;
 
 		// Update visible node cache if needed
-		this.redrawViewport(true);
+		var force = opts.force;
+		this.redrawViewport(force);
 
 		this._triggerTreeEvent("updateViewport", null, info);
 

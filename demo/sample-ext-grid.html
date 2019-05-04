@@ -232,10 +232,6 @@
       // tooltip: function(event, data){
       // 	return data.node.data.author;
       // },
-      beforeInitLoad: function(event, data) {
-        // We want to adust the viewports
-        // data.tree.adjustViewportSize();
-      },
       init: function(event, data) {
         $("#treetable caption").text("Loaded " + data.tree.count() + " nodes.");
         data.tree.getNodeByKey("1.1.88").setActive();
