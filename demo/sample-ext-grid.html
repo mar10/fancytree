@@ -157,7 +157,9 @@
 
 				window.sessionStorage.setItem( "cellFocus", value );
 				$.ui.fancytree.getTree( "#treegrid" ).setOption("ariagrid.cellFocus", value);
-			}).val( window.sessionStorage.getItem( "cellFocus" ) || "allow" );
+      }).val( window.sessionStorage.getItem( "cellFocus" ) || "allow" );
+
+      var modelCount = 0;
 
 			// --- Fancytree widget --------------------------------------------
 
@@ -233,7 +235,8 @@
       // 	return data.node.data.author;
       // },
       init: function(event, data) {
-        $("#treetable caption").text("Loaded " + data.tree.count() + " nodes.");
+        modelCount = data.tree.count();
+        $("#treetable caption").text("Loaded " + modelCount + " nodes.");
         data.tree.getNodeByKey("1.1.88").setActive();
         // data.tree.getNodeByKey("10_2_1").setActive();
         // Recalc the viewport's row count from the flexed size of the container:
@@ -274,6 +277,12 @@
         if (!tree.isVpUpdating ) {
           $("input#vpStart").val(tree.viewport.start);
           $("input#vpCount").val(tree.viewport.count);
+          $("span.statistics").text(
+            ", rows: " +
+            (tree.visibleNodeList ? tree.visibleNodeList.length : "-") +
+            "/" +
+            modelCount
+          );
         }
       },
     });
@@ -310,6 +319,10 @@
 
       // Pass a string to perform case insensitive matching
       n = tree.filterNodes(match, { mode: "hide" });
+      // This will adjust the start value in case the filtered row set
+      // is not inside the current viewport
+      // tree.setViewport();
+
       $("span.matches").text(n ? "(" + n + " matches)" : "");
     });
 
@@ -355,7 +368,9 @@
 
       <label for="vpCount">, count:</label>
       <input id="vpCount" type="number" value="15" min="1" style="width: 3em;" readonly >
+      <span class="statistics"></span>
 
+      <br>
       <label for="filter">Filter:</label>
       <input type="search" name="search" incremental placeholder="Search text" autocomplete="off">
       <span class="matches"></span>
