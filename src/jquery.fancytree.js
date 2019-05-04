@@ -993,6 +993,10 @@
 
 			this.visit(function(node) {
 				node._changeSelectStatusAttrs(flag);
+				if (node.radiogroup) {
+					// #931: don't (de)select this branch
+					return "skip";
+				}
 			});
 			this.fixSelection3FromEndNodes(callOpts);
 		},

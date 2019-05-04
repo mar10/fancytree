@@ -19,6 +19,7 @@
   * Now testing on Puppeteer/Chromium instead of PhantonJS
   * [DEPRECATED] loaderror and lazyload options now throw an error instead of falling back to the correct loadError and lazyLoad
   * [Fixed] #918 SVG font awesome 5 glyphs remove badge counter when parent node is collapsed
+  * [Fixed] #931 Selecting grandparent selects all nodes of radiogroup in SelectMode=3
   * [Fixed] missing tree.error() and broken node.error()
   * [Fixed] a bug in ext-logger
   * Update to jQuery 3.4
