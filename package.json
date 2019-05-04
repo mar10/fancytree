@@ -38,14 +38,14 @@
     "treegrid"
   ],
   "dependencies": {
-    "jquery": ">=1.9"
+    "jquery": "^3.4.1"
   },
   "devDependencies": {
     "eslint": "^5.15.0",
     "eslint-config-jquery": "^1.0.1",
     "eslint-config-prettier": "^3.6.0",
     "eslint-plugin-prettier": "^3.0.1",
-    "grunt": "^1.0.3",
+    "grunt": "^1.0.4",
     "grunt-contrib-clean": "^2.0.0",
     "grunt-contrib-compress": "^1.0.0",
     "grunt-contrib-concat": "^1.0.0",
@@ -60,12 +60,12 @@
     "grunt-docco": "^0.5.0",
     "grunt-eslint": "^21.0.0",
     "grunt-exec": "^3.0.0",
-    "grunt-jsdoc": "^2.3.0",
+    "grunt-jsdoc": "^2.3.1",
     "grunt-saucelabs": "^9.0.1",
     "grunt-text-replace": "^0.4.0",
     "grunt-yabs": "^1.1.4",
     "jsdoc": "~3.5.4",
-    "marked": "^0.6.1",
+    "marked": "^0.6.2",
     "prettier": "^1.16.4",
     "qunit": "^2.9.2"
   },
