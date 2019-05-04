@@ -61,7 +61,7 @@
     "grunt-eslint": "^21.0.0",
     "grunt-exec": "^3.0.0",
     "grunt-jsdoc": "^2.3.0",
-    "grunt-saucelabs": "mar10/grunt-saucelabs#update-sauce-tunnel",
+    "grunt-saucelabs": "^9.0.1",
     "grunt-text-replace": "^0.4.0",
     "grunt-yabs": "^1.1.4",
     "jsdoc": "~3.5.4",
