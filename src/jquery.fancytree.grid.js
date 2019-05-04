@@ -33,8 +33,8 @@
 	 */
 	var FT = $.ui.fancytree,
 		_assert = FT.assert,
-		SCROLL_MODE = "wheel", // 'wheel' | 'scroll'
-		EPS = 1.0;
+		SCROLL_MODE = "wheel"; // 'wheel' | 'scroll'
+	// EPS = 1.0;
 
 	/*
 	 * [ext-grid] ...
@@ -311,8 +311,8 @@
 	 * @requires jquery.fancytree.grid.js
 	 */
 	$.ui.fancytree._FancytreeClass.prototype._initViewportWrapper = function() {
-		var wrapper = this.scrollWrapper,
-			$wrapper = $(wrapper),
+		var // wrapper = this.scrollWrapper,
+			// $wrapper = $(wrapper),
 			tree = this;
 
 		// if (SCROLL_MODE === "scroll") {
