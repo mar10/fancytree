@@ -367,13 +367,13 @@ module.exports = (grunt) ->
                 # jQuery 3        supports IE 9+ and latest Chrome/Edge/Firefox/Safari (-1)
                 # jQuery UI 1.12  supports IE 11 and latest Chrome/Edge/Firefox/Safari (-1)
                 browsers: [
-                  { browserName: "chrome", version: "latest", platform: "Windows 10" }
+                  # { browserName: "chrome", version: "latest", platform: "Windows 10" }
                   # { browserName: "chrome", version: "latest-1", platform: "Windows 10" }
                   { browserName: "firefox", version: "latest", platform: "Windows 10" }
                   # { browserName: "firefox", version: "latest-1", platform: "Windows 10" }
-                  { browserName: "firefox", version: "latest", platform: "Linux" }
-                  { browserName: "internet explorer", version: "11", platform: "Windows 8.1" }
-                  { browserName: "microsoftedge", version: "latest", platform: "Windows 10" }
+                  # { browserName: "firefox", version: "latest", platform: "Linux" }
+                  # { browserName: "internet explorer", version: "11", platform: "Windows 8.1" }
+                  # { browserName: "microsoftedge", version: "latest", platform: "Windows 10" }
                   # { browserName: "microsoftedge", version: "latest-1", platform: "Windows 10" }
                   # Test suacelabs:
                   { browserName: "chrome", version: "latest", platform: "macOS 10.14" }
@@ -381,7 +381,7 @@ module.exports = (grunt) ->
 
                   # { browserName: "safari", version: "9", platform: "OS X 10.11" }
                   # { browserName: "safari", version: "10", platform: "macOS 10.12" }
-                  { browserName: "safari", version: "11", platform: "macOS 10.13" }
+                  # { browserName: "safari", version: "11", platform: "macOS 10.13" }
                   { browserName: "safari", version: "12", platform: "macOS 10.14" }
                 ]
         ui_111:
