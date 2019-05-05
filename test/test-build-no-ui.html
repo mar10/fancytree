@@ -93,7 +93,7 @@ var SOURCE2 = [
 			},
 			dnd5: {
 				preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
-				preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
+				preventRecursion: true, // Prevent dropping nodes on own descendants
 				autoExpandMS: 400,
 				dragStart: function(node, data) {
 					return true;
