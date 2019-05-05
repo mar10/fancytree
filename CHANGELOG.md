@@ -19,6 +19,7 @@
   * Optimized performance of `expandAll()` and `ext-filter`
   * [Added] New tree option `.treeId` to prevent generation of a new sequence if the tree is re-initialized on a page.
   * [Changed] `.getTree()` now also accepts the tree id string
+  * [Changed] #939: Keep a `partsel` flag that was explicitly set on a lazy node
   * Replace jshint/jscs with eslint
   * Now testing on Puppeteer/Chromium instead of PhantonJS
   * [DEPRECATED] loaderror and lazyload options now throw an error instead of falling back to the correct loadError and lazyLoad

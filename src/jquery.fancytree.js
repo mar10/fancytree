@@ -1069,6 +1069,15 @@
 					);
 					state = unselState == null ? !!node.selected : !!unselState;
 				}
+				// #939: Keep a `partsel` flag that was explicitly set on a lazy node
+				if (
+					node.partsel &&
+					!node.selected &&
+					node.lazy &&
+					node.children == null
+				) {
+					state = undefined;
+				}
 				node._changeSelectStatusAttrs(state);
 				return state;
 			}
@@ -5427,7 +5436,7 @@
 				node._lastSelectIntent = flag; // Confusing use of '!'
 
 				// Nothing to do?
-				/*jshint -W018 */ if (!!node.selected === flag) {
+				if (!!node.selected === flag) {
 					if (opts.selectMode === 3 && node.partsel && !flag) {
 						// If propagation prevented selecting this node last time, we still
 						// want to allow to apply setSelected(false) now
@@ -5435,7 +5444,6 @@
 						return flag;
 					}
 				}
-				/*jshint +W018 */
 
 				if (
 					!noEvents &&
