@@ -993,6 +993,10 @@
 
 			this.visit(function(node) {
 				node._changeSelectStatusAttrs(flag);
+				if (node.radiogroup) {
+					// #931: don't (de)select this branch
+					return "skip";
+				}
 			});
 			this.fixSelection3FromEndNodes(callOpts);
 		},
@@ -5752,7 +5756,9 @@
 					$.error("Not implemented");
 				}
 
-				tree._triggerTreeEvent("beforeInitLoad", null);
+				// TODO: might be useful? Let's wait for a use case...
+				// tree._triggerTreeEvent("beforeInitLoad", null);
+
 				// Trigger fancytreeinit after nodes have been loaded
 				dfd = this.nodeLoadChildren(rootCtx, source)
 					.done(function() {

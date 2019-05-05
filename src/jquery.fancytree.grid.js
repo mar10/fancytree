@@ -33,8 +33,8 @@
 	 */
 	var FT = $.ui.fancytree,
 		_assert = FT.assert,
-		SCROLL_MODE = "wheel", // 'wheel' | 'scroll'
-		EPS = 1.0;
+		SCROLL_MODE = "wheel"; // 'wheel' | 'scroll'
+	// EPS = 1.0;
 
 	/*
 	 * [ext-grid] ...
@@ -78,6 +78,36 @@
 	$.ui.fancytree._FancytreeClass.prototype._renumberReset = function() {
 		// this.debug("_renumberReset()");
 		this.visibleNodeList = null;
+	};
+
+	/*
+	 * [ext-grid] Adjust the start value if the content would be outside otherwise.
+	 *
+	 * @alias Fancytree#_fixStart
+	 * @requires jquery.fancytree.grid.js
+	 */
+	$.ui.fancytree._FancytreeClass.prototype._fixStart = function(
+		start,
+		apply
+	) {
+		var vp = this.viewport,
+			nodeList = this.visibleNodeList;
+
+		start = start == null ? vp.start : start;
+		// this.debug("_fixStart(" + start + ", " + !!apply + ")");
+		var orgStart = start;
+		// Don't scroll down below bottom node
+		if (nodeList) {
+			start = Math.min(start, this.visibleNodeList.length - vp.count);
+			start = Math.max(start, 0, start);
+			if (start !== orgStart) {
+				this.debug("Adjust start " + orgStart + " => " + start);
+				if (apply) {
+					vp.start = start;
+				}
+			}
+		}
+		return start;
 	};
 
 	/*
@@ -131,7 +161,7 @@
 			this.debug("setViewport( " + opts + ")");
 			return this.setViewport({ enabled: opts });
 		}
-
+		opts = opts || {};
 		var i,
 			count,
 			start,
@@ -157,10 +187,9 @@
 		}
 
 		start = opts.start == null ? vp.start : Math.max(0, +opts.start);
-		// Don't scroll down below bottom node
-		if (start > 0 && !opts.count && this.visibleNodeList) {
-			start = Math.min(start, this.visibleNodeList.length - vp.count);
-		}
+		// Adjust start value to assure the current content is inside vp
+		start = this._fixStart(start, false);
+
 		if (vp.start !== +start) {
 			redrawReason += "start";
 			newVp.start = start;
@@ -221,7 +250,8 @@
 		trCount = trList.length;
 
 		// Update visible node cache if needed
-		this.redrawViewport(true);
+		var force = opts.force;
+		this.redrawViewport(force);
 
 		this._triggerTreeEvent("updateViewport", null, info);
 
@@ -265,13 +295,13 @@
 		// );
 
 		this.setViewport({ count: newCount });
-		if (SCROLL_MODE === "scroll") {
-			// Add bottom margin to the table, to make sure the wrapper becomes
-			// scrollable
-			var mb = wrapperHeight - $table.height() - 2.0 * EPS;
-			this.debug("margin-bottom=" + mb);
-			$table.css("margin-bottom", mb);
-		}
+		// if (SCROLL_MODE === "scroll") {
+		// 	// Add bottom margin to the table, to make sure the wrapper becomes
+		// 	// scrollable
+		// 	var mb = wrapperHeight - $table.height() - 2.0 * EPS;
+		// 	this.debug("margin-bottom=" + mb);
+		// 	$table.css("margin-bottom", mb);
+		// }
 	};
 
 	/*
@@ -281,48 +311,48 @@
 	 * @requires jquery.fancytree.grid.js
 	 */
 	$.ui.fancytree._FancytreeClass.prototype._initViewportWrapper = function() {
-		var wrapper = this.scrollWrapper,
-			$wrapper = $(wrapper),
+		var // wrapper = this.scrollWrapper,
+			// $wrapper = $(wrapper),
 			tree = this;
 
-		if (SCROLL_MODE === "scroll") {
-			$wrapper.on("scroll", function(e) {
-				var viewport = tree.viewport,
-					curTop = wrapper.scrollTop,
-					homeTop = viewport.start === 0 ? 0 : EPS,
-					dy = viewport.start === 0 ? 1 : curTop - EPS; //homeTop;
+		// if (SCROLL_MODE === "scroll") {
+		// 	$wrapper.on("scroll", function(e) {
+		// 		var viewport = tree.viewport,
+		// 			curTop = wrapper.scrollTop,
+		// 			homeTop = viewport.start === 0 ? 0 : EPS,
+		// 			dy = viewport.start === 0 ? 1 : curTop - EPS; //homeTop;
 
-				tree.debug(
-					"Got 'scroll' event: scrollTop=" +
-						curTop +
-						", homeTop=" +
-						homeTop +
-						", start=" +
-						viewport.start +
-						", dy=" +
-						dy
-				);
-				if (tree.isVpUpdating) {
-					tree.debug("Ignoring scroll during VP update.");
-					return;
-				} else if (curTop === homeTop) {
-					tree.debug("Ignoring scroll to neutral " + homeTop + ".");
-					return;
-				}
-				tree._shiftViewport("vscroll", dy);
-				homeTop = viewport.start === 0 ? 0 : EPS;
-				setTimeout(function() {
-					tree.debug(
-						"scrollTop(" +
-							wrapper.scrollTop +
-							" -> " +
-							homeTop +
-							")..."
-					);
-					wrapper.scrollTop = homeTop;
-				}, 0);
-			});
-		}
+		// 		tree.debug(
+		// 			"Got 'scroll' event: scrollTop=" +
+		// 				curTop +
+		// 				", homeTop=" +
+		// 				homeTop +
+		// 				", start=" +
+		// 				viewport.start +
+		// 				", dy=" +
+		// 				dy
+		// 		);
+		// 		if (tree.isVpUpdating) {
+		// 			tree.debug("Ignoring scroll during VP update.");
+		// 			return;
+		// 		} else if (curTop === homeTop) {
+		// 			tree.debug("Ignoring scroll to neutral " + homeTop + ".");
+		// 			return;
+		// 		}
+		// 		tree._shiftViewport("vscroll", dy);
+		// 		homeTop = viewport.start === 0 ? 0 : EPS;
+		// 		setTimeout(function() {
+		// 			tree.debug(
+		// 				"scrollTop(" +
+		// 					wrapper.scrollTop +
+		// 					" -> " +
+		// 					homeTop +
+		// 					")..."
+		// 			);
+		// 			wrapper.scrollTop = homeTop;
+		// 		}, 0);
+		// 	});
+		// }
 		if (SCROLL_MODE === "wheel") {
 			this.$container.on("wheel", function(e) {
 				var orgEvent = e.originalEvent,
@@ -404,12 +434,14 @@
 		}
 		window.console.time("redrawViewport()");
 		this._renumberVisibleNodes(force);
+		// Adjust vp.start value to assure the current content is inside:
+		this._fixStart(null, true);
 
 		var i = 0,
 			vp = this.viewport,
 			visibleNodeList = this.visibleNodeList,
 			start = vp.start,
-			bottom = vp.start + vp.count,
+			bottom = start + vp.count,
 			tr,
 			_renderCount = 0,
 			trIdx = 0,

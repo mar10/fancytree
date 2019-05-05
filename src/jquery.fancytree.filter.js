@@ -239,16 +239,6 @@
 	};
 
 	/**
-	 * @deprecated
-	 */
-	$.ui.fancytree._FancytreeClass.prototype.applyFilter = function(filter) {
-		this.warn(
-			"Fancytree.applyFilter() is deprecated since 2.1.0 / 2014-05-29. Use .filterNodes() instead."
-		);
-		return this.filterNodes.apply(this, arguments);
-	};
-
-	/**
 	 * [ext-filter] Dimm or hide whole branches.
 	 *
 	 * @param {function | string} filter
