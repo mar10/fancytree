@@ -1,31 +1,35 @@
 # 2.31.0-0 / Unreleased
-  * **ext-grid** (experimental)<br>
-    The new `ext-grid` extension is a variant of `ext-table` that introduces viewport support.
-    This allows to maintain *huge* data models while only rendering as many DOM elements as necessary.<br>
+  * New extension **ext-grid** (experimental)<br>
+    This is a variant of `ext-table` that introduces viewport support, which
+    allows to maintain *huge* data models while only rendering as many DOM elements as necessary.<br>
     Main changes:
     - A viewport is defined by the number of visible rows (`tree.viewport.count`) and the index of the first visible row (`.start`)
     - When scrolling, rows are not hidden, but removed and replaced. (This implies that the contents of embedded input fields should be written into the model immediately.)
-    - New hook `treeStructureChanged`
-    - New method `tree.findRelatedNode()`
-    - New method `node.getPath()`
-    - New event `updateViewport`
-    - TODO: New event `unloadRow` to allow reading row input values into the node model, before it is removed from the DOM
-    - TODO: Enable Aria by default
-    - TODO: Enable gridnav by default
   * Refactored **ext-dnd5**<br>
-    Some changes were made to improve handling of `dropEffect`.
-    - dropped `dropEffect` callback option
-    -
-  * Optimized performance of `expandAll()` and `ext-filter`
-  * [Added] New tree option `.treeId` to prevent generation of a new sequence if the tree is re-initialized on a page.
+    Some changes were made, mainly to improve handling of the dropEffect
+    (note that ext-dnd5 was and still is experimental and in progress).
+    - Remove  `dnd5.dropEffect` callback option (set `data.dropEffect` instead)
+    - Remove  `dnd5.dragImage` callback option
+      (call  `data.dataTransfer.setDragImage()` and set `data.useDefaultImage = false`
+      instead)
+    - Rename `dnd5.preventRecursiveMoves` to `dnd5.preventRecursion`
+    - `dnd5.preventVoidMoves` now only aplies to 'move' operations only
+    - Add `dnd5.preventSameParent` option
+  * [Added] hook `treeStructureChanged`
+  * [Added] methods `tree.findRelatedNode()`, `node.findRelatedNode()`
+  * [Added] method `node.getPath()`
+  * [Added] event `updateViewport`
+  * [Added] tree option `.treeId` to prevent generation of a new sequence if the tree is re-initialized on a page.
   * [Changed] `.getTree()` now also accepts the tree id string
-  * Replace jshint/jscs with eslint
-  * Now testing on Puppeteer/Chromium instead of PhantonJS
   * [DEPRECATED] loaderror and lazyload options now throw an error instead of falling back to the correct loadError and lazyLoad
+  * [DEPRECATED] `tree.applyFilter` was removed
   * [Fixed] #918 SVG font awesome 5 glyphs remove badge counter when parent node is collapsed
   * [Fixed] #931 Selecting grandparent selects all nodes of radiogroup in selectMode=3
   * [Fixed] missing tree.error() and broken node.error()
   * [Fixed] a bug in ext-logger
+  * Optimized performance of `expandAll()` and `ext-filter`
+  * Replace jshint/jscs with eslint
+  * Now testing on Puppeteer/Chromium instead of PhantonJS
   * Use LF on Windows when checking out from git (added .gitattributes)
   * Update to jQuery 3.4
 
