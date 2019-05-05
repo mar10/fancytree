@@ -13,7 +13,7 @@
       (call  `data.dataTransfer.setDragImage()` and set `data.useDefaultImage = false`
       instead)
     - Rename `dnd5.preventRecursiveMoves` to `dnd5.preventRecursion`
-    - `dnd5.preventVoidMoves` now only aplies to 'move' operations only
+    - `dnd5.preventVoidMoves` now only aplies to 'move' operations, so we can *copy* before self
     - Add `dnd5.preventSameParent` option
   * [Added] hook `treeStructureChanged`
   * [Added] methods `tree.findRelatedNode()`, `node.findRelatedNode()`
