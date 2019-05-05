@@ -543,7 +543,8 @@
 				tree: tree,
 				node: node,
 				options: tree.options,
-				originalEvent: event,
+				originalEvent: event.originalEvent,
+				widget: tree.widget,
 				dataTransfer: dataTransfer,
 				useDefaultImage: true,
 				dropEffect: undefined,
@@ -708,8 +709,9 @@
 				tree: tree,
 				node: node,
 				options: tree.options,
+				originalEvent: event.originalEvent,
+				widget: tree.widget,
 				hitMode: DRAG_ENTER_RESPONSE,
-				originalEvent: event,
 				dataTransfer: dataTransfer,
 				otherNode: SOURCE_NODE || null,
 				otherNodeList: SOURCE_NODE_LIST || null,
@@ -941,6 +943,20 @@
 			return false;
 		}
 	}
+
+	/** [ext-dnd5] Return a Fancytree instance, from element, index, event, or jQueryObject.
+	 *
+	 * @returns {Array[Fancytree] | null} List of nodes or null if no drag operation
+	 * @example
+	 * $.ui.fancytree.getDragSourceNodeList();
+	 *
+	 * @alias Fancytree_Static#getDragSourceNodeList
+	 * @requires jquery.fancytree.dnd5.js
+	 * @since 2.31
+	 */
+	$.ui.fancytree.getDragSourceNodeList = function() {
+		return SOURCE_NODE_LIST;
+	};
 
 	/******************************************************************************
 	 *

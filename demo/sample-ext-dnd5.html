@@ -307,8 +307,11 @@ $(function() {
 
     // prevent opening as link, etc.
     event.preventDefault();
-    // Remove source node
-    $.ui.fancytree.getTree(nodeData.treeId).getNodeByKey(nodeData.key).remove();
+
+    // Remove source node (using information from dataTransfer)
+    // $.ui.fancytree.getTree(nodeData.treeId).getNodeByKey(nodeData.key).remove();
+    // Remove source node (assuming same window)
+    $.ui.fancytree.getDragSourceNodeList()[0].remove();
   });
 
 });
