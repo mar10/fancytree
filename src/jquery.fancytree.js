@@ -3043,7 +3043,7 @@
 				case KC.HOME:
 					// First visible node
 					this.visit(function(n) {
-						if (n.isVvisible()) {
+						if (n.isVisible()) {
 							res = n;
 							return false;
 						}
