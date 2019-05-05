@@ -55,7 +55,7 @@
 	}
 
 	/**
-	 * Invoke callback after `ms` miliseconds.
+	 * Invoke callback after `ms` milliseconds.
 	 * Any pending action of this type is cancelled before.
 	 */
 	function _delay(tag, ms, callback) {
