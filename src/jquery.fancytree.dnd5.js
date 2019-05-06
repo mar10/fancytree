@@ -946,7 +946,7 @@
 
 	/** [ext-dnd5] Return a Fancytree instance, from element, index, event, or jQueryObject.
 	 *
-	 * @returns {Array[FancytreeNode] | null} List of nodes or null if no drag operation
+	 * @returns {Array(FancytreeNode) | null} List of nodes or null if no drag operation
 	 * @example
 	 * $.ui.fancytree.getDragNodeList();
 	 *
@@ -960,7 +960,7 @@
 
 	/** [ext-dnd5] Return the FancytreeNode that is currently being dragged.
 	 *
-	 * If multiple nodes are dragged, only the firs is returned.
+	 * If multiple nodes are dragged, only the first is returned.
 	 *
 	 * @returns {FancytreeNode | null} dragged nodes or null if no drag operation
 	 * @example
