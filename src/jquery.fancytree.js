@@ -935,6 +935,16 @@
 			});
 			return res;
 		},
+		/** Find a node relative to self.
+		 *
+		 * @param {number|string} where The keyCode that would normally trigger this move,
+		 *		or a keyword ('down', 'first', 'last', 'left', 'parent', 'right', 'up').
+		 * @returns {FancytreeNode}
+		 * @since v2.31
+		 */
+		findRelatedNode: function(where, includeHidden) {
+			return this.tree.findRelatedNode(this, where, includeHidden);
+		},
 		/* Apply selection state (internal use only) */
 		_changeSelectStatusAttrs: function(state) {
 			var changed = false,
@@ -1860,7 +1870,7 @@
 					break;
 			}
 			// Otherwise activate or focus the related node
-			node = this.tree.findRelatedNode(this, where);
+			node = this.findRelatedNode(where);
 			if (node) {
 				// setFocus/setActive will scroll later (if autoScroll is specified)
 				try {
@@ -2582,6 +2592,7 @@
 	 * @property {string} statusClassPropName Property name of FancytreeNode that contains the element which will receive the status classes.
 	 *     Typically "span", but "tr" for table extension.
 	 * @property {object} types Map for shared type specific meta data, used with node.type attribute. @since 2.27
+	 * @property {object} viewport See ext-vieport. @since v2.31
 	 * @property {object} widget Base widget instance.
 	 */
 	function Fancytree(widget) {
@@ -3032,10 +3043,12 @@
 		},
 		/** Find a node relative to another node.
 		 *
+		 * @param {FancytreeNode} node
 		 * @param {number|string} where The keyCode that would normally trigger this move,
 		 *		or a keyword ('down', 'first', 'last', 'left', 'parent', 'right', 'up').
-		 * @param {boolean} [includeHidden=false]
-		 * @returns {FancytreeNode}
+		 * @param {boolean} [includeHidden=false] Not yet implemented
+		 * @returns {FancytreeNode|null}
+		 * @since v2.31
 		 */
 		findRelatedNode: function(node, where, includeHidden) {
 			var res = null,
@@ -3052,7 +3065,7 @@
 				case KC.HOME:
 					// First visible node
 					this.visit(function(n) {
-						if (n.isVvisible()) {
+						if (n.isVisible()) {
 							res = n;
 							return false;
 						}

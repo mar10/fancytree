@@ -33,13 +33,12 @@
 	} */
 
 	/* Prevent scrolling while DND */
-	ul.fancytree-container {
 /*
+	ul.fancytree-container {
 		height: 200px;
 		overflow: auto;
-*/
-/*		position: inherit;*/
 	}
+*/
 </style>
 
 <script type="text/javascript">
@@ -59,8 +58,9 @@
 				data.result = {url: "ajax-sub2.json"}
 			},
 			dnd5: {
-				preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
-				preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
+				preventVoidMoves: true, // Prevent moving nodes 'before self', etc.
+				preventRecursion: true, // Prevent dropping nodes on own descendants
+				preventSameParent: false, // Prevent dropping nodes under the same direct parent
 				autoExpandMS: 1000,
 				multiSource: true,  // drag all selected nodes (plus current node)
 				// focusOnClick: true,
