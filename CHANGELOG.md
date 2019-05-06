@@ -18,7 +18,7 @@
   * [Added] hook `treeStructureChanged`
   * [Added] methods `tree.findRelatedNode()`, `node.findRelatedNode()`
   * [Added] method `node.getPath()`
-  * [Added] method `$.ui.fancytree.getDragSourceNodeList()`
+  * [Added] methods `$.ui.fancytree.getDragNode()`, `$.ui.fancytree.getDragNodeList()`
   * [Added] event `updateViewport`
   * [Added] tree option `.treeId` to prevent generation of a new sequence if the tree is re-initialized on a page.
   * [Changed] `.getTree()` now also accepts the tree id string

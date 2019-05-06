@@ -946,16 +946,32 @@
 
 	/** [ext-dnd5] Return a Fancytree instance, from element, index, event, or jQueryObject.
 	 *
-	 * @returns {Array[Fancytree] | null} List of nodes or null if no drag operation
+	 * @returns {Array[FancytreeNode] | null} List of nodes or null if no drag operation
 	 * @example
-	 * $.ui.fancytree.getDragSourceNodeList();
+	 * $.ui.fancytree.getDragNodeList();
 	 *
-	 * @alias Fancytree_Static#getDragSourceNodeList
+	 * @alias Fancytree_Static#getDragNodeList
 	 * @requires jquery.fancytree.dnd5.js
 	 * @since 2.31
 	 */
-	$.ui.fancytree.getDragSourceNodeList = function() {
+	$.ui.fancytree.getDragNodeList = function() {
 		return SOURCE_NODE_LIST;
+	};
+
+	/** [ext-dnd5] Return the FancytreeNode that is currently being dragged.
+	 *
+	 * If multiple nodes are dragged, only the firs is returned.
+	 *
+	 * @returns {FancytreeNode | null} dragged nodes or null if no drag operation
+	 * @example
+	 * $.ui.fancytree.getDragNode();
+	 *
+	 * @alias Fancytree_Static#getDragNode
+	 * @requires jquery.fancytree.dnd5.js
+	 * @since 2.31
+	 */
+	$.ui.fancytree.getDragNode = function() {
+		return SOURCE_NODE;
 	};
 
 	/******************************************************************************

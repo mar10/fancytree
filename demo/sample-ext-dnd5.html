@@ -119,10 +119,11 @@ $(function() {
         ", dataTransfer: " + data.dataTransfer.dropEffect + "/" + data.dataTransfer.effectAllowed, data );
 
         // Set the allowed effects (i.e. override the 'effectAllowed' option)
-        // data.effectAllowed = "copyMove";
+        data.effectAllowed = "all";
 
         // Set a drop effect (i.e. override the 'dropEffectDefault' option)
         // data.dropEffect = "link";
+        data.dropEffect = "copy";
 
         // We could use a custom image here:
         // data.dataTransfer.setDragImage($("<div>TEST</div>").appendTo("body")[0], -10, -10);
@@ -226,24 +227,14 @@ $(function() {
         node.debug( "T2: dragStart: " + "data: " + data.dropEffect + "/" + data.effectAllowed +
           ", dataTransfer: " + data.dataTransfer.dropEffect + "/" + data.dataTransfer.effectAllowed, data );
 
-        // data.effectAllowed = "all";
-        return true;
+          data.effectAllowed = "all";
+          data.dropEffect = data.dropEffectSuggested;
+          return true;
       },
-      dragDrag: function(node, data) {
-        logLazy("dragDrag", null, 2000,
-          "T2: dragDrag: " + "data: " + data.dropEffect + "/" + data.effectAllowed +
-          ", dataTransfer: " + data.dataTransfer.dropEffect + "/" + data.dataTransfer.effectAllowed );
-
-          // data.dropEffect = "copy";
-      },
-      // dragEnd: function(node, data) {
-      // },
       // --- Drop-support:
       dragEnter: function(node, data) {
         node.debug( "T2: dragEnter: " + "data: " + data.dropEffect + "/" + data.effectAllowed +
           ", dataTransfer: " + data.dataTransfer.dropEffect + "/" + data.dataTransfer.effectAllowed, data );
-
-          // data.dropEffect = "copy";
         return true;
       },
       dragOver: function(node, data) {
@@ -251,13 +242,12 @@ $(function() {
           "T2: dragOver: " + "data: " + data.dropEffect + "/" + data.effectAllowed +
           ", dataTransfer: " + data.dataTransfer.dropEffect + "/" + data.dataTransfer.effectAllowed);
 
-          // data.dropEffect = "copy";
-        // data.dataTransfer.effectAllowed = "copy";
+          data.dropEffect = data.dropEffectSuggested;
       },
-      // dragLeave: function(node, data) {
-      // },
       dragDrop: function(node, data) {
-        var transfer = data.dataTransfer;
+        var newNode,
+          transfer = data.dataTransfer,
+          mode = data.dropEffect;
 
         node.debug( "T2: dragDrop: effect=" + "data: " + data.dropEffect + "/" + data.effectAllowed +
           ", dataTransfer: " + data.dataTransfer.dropEffect + "/" + data.dataTransfer.effectAllowed, data );
@@ -265,10 +255,18 @@ $(function() {
         if (data.otherNode) {
           // Drop another Fancytree node from same frame
           // (maybe from another tree however)
-          var sameTree =
-            data.otherNode.tree === data.tree;
+          var sameTree = data.otherNode.tree === data.tree;
 
-          data.otherNode.moveTo(node, data.hitMode);
+          if (mode === "move") {
+            data.otherNode.moveTo(node, data.hitMode);
+          } else {
+            newNode = data.otherNode.copyTo(node, data.hitMode);
+            if (mode === "link") {
+              newNode.setTitle(newNode.title + " (link)");
+            } else {
+              newNode.setTitle("Copy of " + newNode.title);
+            }
+          }
         } else if (data.otherNodeData) {
           // Drop Fancytree node from different frame or window, so we only have
           // JSON representation available
@@ -295,23 +293,31 @@ $(function() {
   /*
     Implement a trashcan
   */
-  $("span.trashcan").on("dragover", function(event){
+  $("span.trashcan").on("dragenter dragover", function(event){
     var dt = event.originalEvent.dataTransfer;
 
-    if ($.inArray("application/x-fancytree-node", dt.types) >= 0) {
+    // This would be the 'clean' way, but does not work on IE:
+//  if ( $.inArray("application/x-fancytree-node", dt.types) >= 0) {
+    // This works on IE, but only detects nodes from the same window:
+    if ( $.ui.fancytree.getDragNode() ) {
+      dt.dropEffect = "move";
       return false;  // only accept Fancytree nodes
     }
   }).on("drop", function(event){
-    var dt = event.originalEvent.dataTransfer,
-      nodeData = JSON.parse(dt.getData("application/x-fancytree-node"));
 
     // prevent opening as link, etc.
     event.preventDefault();
 
     // Remove source node (using information from dataTransfer)
-    // $.ui.fancytree.getTree(nodeData.treeId).getNodeByKey(nodeData.key).remove();
-    // Remove source node (assuming same window)
-    $.ui.fancytree.getDragSourceNodeList()[0].remove();
+
+    // IE only knows 'text' data type, so we cannot use this approach:
+//  var dt = event.originalEvent.dataTransfer,
+//    nodeData = JSON.parse(dt.getData("application/x-fancytree-node"));
+//    $.ui.fancytree.getTree(nodeData.treeId).getNodeByKey(nodeData.key).remove();
+
+    // Remove source node (assuming same window, and single select):
+    $.ui.fancytree.getDragNode().remove();
+    // $.ui.fancytree.getDragNodeList()[0].remove();
   });
 
 });
