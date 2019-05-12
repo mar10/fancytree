@@ -25,6 +25,9 @@
   * [DEPRECATED] loaderror and lazyload options now throw an error instead of falling back to the correct loadError and lazyLoad
   * [DEPRECATED] `tree.applyFilter` was removed
   * [Fixed] #918 SVG font awesome 5 glyphs remove badge counter when parent node is collapsed
+  * [Fixed] #921 ext-edit respectively focus handling: Internet Explorer scrolls briefly
+    to the top/left of the tree container element after editing a node title if the
+    tree container is partially outside the viewport
   * [Fixed] #931 Selecting grandparent selects all nodes of radiogroup in selectMode=3
   * [Fixed] missing tree.error() and broken node.error()
   * [Fixed] a bug in ext-logger
