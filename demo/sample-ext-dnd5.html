@@ -196,19 +196,20 @@ $(function() {
           // JSON representation available
           node.addChild(data.otherNodeData, data.hitMode);
         } else if (data.files.length) {
-          // Drop a file
-          var file = data.files[0];
-          node.addNode( { title: "'" + file.name + "' (" + file.size + " bytes)" }, data.hitMode );
-          // alert("Drop file '" + file.name + "', size: " + file.size);
-          // var url = "'https://example.com/upload",
-          //     formData = new FormData();
+          // Drop files
+          for(var i=0; i<data.files.length; i++) {
+            var file = data.files[i];
+            node.addNode( { title: "'" + file.name + "' (" + file.size + " bytes)" }, data.hitMode );
+            // var url = "'https://example.com/upload",
+            //     formData = new FormData();
 
-          // formData.append("file", transfer.files[0])
-          // fetch(url, {
-          //   method: "POST",
-          //   body: formData
-          // }).then(function() { /* Done. Inform the user */ })
-          // .catch(function() { /* Error. Inform the user */ });
+            // formData.append("file", transfer.files[0])
+            // fetch(url, {
+            //   method: "POST",
+            //   body: formData
+            // }).then(function() { /* Done. Inform the user */ })
+            // .catch(function() { /* Error. Inform the user */ });
+          }
         } else {
           // Drop a non-node
           node.addNode( { title: transfer.getData("text") }, data.hitMode );
@@ -289,18 +290,11 @@ $(function() {
           // JSON representation available
           node.addChild(data.otherNodeData, data.hitMode);
         } else if (data.files.length) {
-          // Drop a file
-          var file = data.files[0];
-          node.addNode( { title: "'" + file.name + "' (" + file.size + " bytes)" }, data.hitMode );
-          // alert("Drop file '" + file.name + "', size: " + file.size);
-          // var url = "'https://example.com/upload",
-          //     formData = new FormData();
-          // formData.append("file", transfer.files[0])
-          // fetch(url, {
-          //   method: "POST",
-          //   body: formData
-          // }).then(function() { /* Done. Inform the user */ })
-          // .catch(function() { /* Error. Inform the user */ });
+          // Drop files
+          for(var i=0; i<data.files.length; i++) {
+            var file = data.files[i];
+            node.addNode( { title: "'" + file.name + "' (" + file.size + " bytes)" }, data.hitMode );
+          }
 
         } else {
           // Drop a non-node
