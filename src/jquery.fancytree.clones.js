@@ -154,12 +154,18 @@
 	 */
 	function calcUniqueKey(node) {
 		var key,
+			h1,
 			path = $.map(node.getParentList(false, true), function(e) {
 				return e.refKey || e.key;
 			});
+
 		path = path.join("/");
-		key = "id_" + hashMurmur3(path, true);
-		// node.debug(path + " -> " + key);
+		// 32-bit has a high probability of collisions, so we pump up to 64-bit
+		// https://security.stackexchange.com/q/209882/207588
+
+		h1 = hashMurmur3(path, true);
+		key = "id_" + h1 + hashMurmur3(h1 + path, true);
+
 		return key;
 	}
 
@@ -406,12 +412,21 @@
 
 			if (add) {
 				if (keyMap[node.key] != null) {
-					$.error(
-						"clones.treeRegisterNode: node.key already exists: " +
-							node
-					);
+					var other = keyMap[node.key],
+						msg =
+							"clones.treeRegisterNode: duplicate key '" +
+							node.key +
+							"': /" +
+							node.getPath(true) +
+							" => " +
+							other.getPath(true);
+					// Sometimes this exception is not visible in the console,
+					// so we also write it:
+					tree.error(msg);
+					$.error(msg);
 				}
 				keyMap[key] = node;
+
 				if (refKey) {
 					refList = refMap[refKey];
 					if (refList) {

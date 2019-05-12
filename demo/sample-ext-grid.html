@@ -14,6 +14,7 @@
   <script src="../src/jquery-ui-dependencies/jquery.fancytree.ui-deps.js"></script>
   <script src="../src/jquery.fancytree.js"></script>
   <script src="../src/jquery.fancytree.ariagrid.js"></script>
+  <script src="../src/jquery.fancytree.clones.js"></script>
   <script src="../src/jquery.fancytree.dnd5.js"></script>
   <script src="../src/jquery.fancytree.edit.js"></script>
   <script src="../src/jquery.fancytree.filter.js"></script>
@@ -106,10 +107,8 @@
       /* Stretch embedded table */
       display: flex;
       flex-direction: column;
-      /* Support scrolling */
-      /* overflow-y: scroll;
-      box-sizing: border-box;
-      overflow-x: auto; */
+      min-height: 30px;
+      /*  */
       padding: 0;
       border: 1px solid gray;
       /* The div should not be stretched by the content rows, because we want to
@@ -176,7 +175,7 @@
 
 
     $("#treetable").fancytree({
-      extensions: ["dnd5", "edit", "filter", "grid", "ariagrid"],
+      extensions: ["clones", "dnd5", "edit", "filter", "grid", "ariagrid"],
       checkbox: true,
       quicksearch: true,
       autoScroll: true,
@@ -231,6 +230,21 @@
         url: sourceUrl,
         cache: true,
       },
+      // postProcess: function(event, data) {
+      //   // Triage: Force ext-clones to create new keys and see if we get dupes
+      //   function _walk(n) {
+      //     if( n ) {
+      //       n.refKey = n.key;
+      //       delete n.key;
+      //       if (n.children) {
+      //         for (var i=0; i < n.children.length; i++){
+      //           _walk(n.children[i]);
+      //         }
+      //       }
+      //     }
+      //   }
+      //   _walk({children: data.response});
+      // },
       // tooltip: function(event, data){
       // 	return data.node.data.author;
       // },

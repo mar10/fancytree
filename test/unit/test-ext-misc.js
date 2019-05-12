@@ -86,7 +86,7 @@ QUnit.test("sync load", function(assert) {
 		tree = tools.getTree();
 
 	assert.ok($.isPlainObject(tree.keyMap), "has keyMap");
-	assert.deepEqual(tree.refMap,  {"rk_1": ["20_1_1", "20_2_1"], "rk_2": ["id_11b7cb44"]}, "has refMap");
+	assert.deepEqual(tree.refMap,  {"rk_1": ["20_1_1", "20_2_1"], "rk_2": ["id_11b7cb44a03ea041"]}, "has refMap");
 
 	assert.equal(tools.getNode("10_1_1").refKey, undefined, "no default refKey");
 
@@ -109,7 +109,7 @@ QUnit.test("sync load", function(assert) {
 	nodeList = tree.getNodesByRef("rk_2");
 	assert.equal(nodeList.length, 1, "also single refKeys are stored in refMap");
 	node = tools.getNodeKeyArray(nodeList[0]);
-	assert.equal(node.key, "id_11b7cb44", "generate predictable unique default keys");
+	assert.equal(node.key, "id_11b7cb44a03ea041", "generate predictable unique default keys");
 
 	nodeList = tools.getNode("20_1_1").getCloneList();
 	assert.deepEqual(tools.getNodeKeyArray(nodeList), ["20_2_1"], "node.getCloneList() 1 detected");
