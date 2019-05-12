@@ -195,6 +195,21 @@ $(function() {
           // Drop Fancytree node from different frame or window, so we only have
           // JSON representation available
           node.addChild(data.otherNodeData, data.hitMode);
+        } else if (data.files.length) {
+          // Drop files
+          for(var i=0; i<data.files.length; i++) {
+            var file = data.files[i];
+            node.addNode( { title: "'" + file.name + "' (" + file.size + " bytes)" }, data.hitMode );
+            // var url = "'https://example.com/upload",
+            //     formData = new FormData();
+
+            // formData.append("file", transfer.files[0])
+            // fetch(url, {
+            //   method: "POST",
+            //   body: formData
+            // }).then(function() { /* Done. Inform the user */ })
+            // .catch(function() { /* Error. Inform the user */ });
+          }
         } else {
           // Drop a non-node
           node.addNode( { title: transfer.getData("text") }, data.hitMode );
@@ -249,6 +264,9 @@ $(function() {
           transfer = data.dataTransfer,
           mode = data.dropEffect;
 
+        // don't open links, files, ... even if an error occurs in this handler:
+        data.originalEvent.preventDefault();
+
         node.debug( "T2: dragDrop: effect=" + "data: " + data.dropEffect + "/" + data.effectAllowed +
           ", dataTransfer: " + data.dataTransfer.dropEffect + "/" + data.dataTransfer.effectAllowed, data );
 
@@ -271,6 +289,13 @@ $(function() {
           // Drop Fancytree node from different frame or window, so we only have
           // JSON representation available
           node.addChild(data.otherNodeData, data.hitMode);
+        } else if (data.files.length) {
+          // Drop files
+          for(var i=0; i<data.files.length; i++) {
+            var file = data.files[i];
+            node.addNode( { title: "'" + file.name + "' (" + file.size + " bytes)" }, data.hitMode );
+          }
+
         } else {
           // Drop a non-node
           node.addNode(

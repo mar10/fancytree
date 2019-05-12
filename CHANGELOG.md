@@ -6,15 +6,14 @@
     - A viewport is defined by the number of visible rows (`tree.viewport.count`) and the index of the first visible row (`.start`)
     - When scrolling, rows are not hidden, but removed and replaced. (This implies that the contents of embedded input fields should be written into the model immediately.)
   * Refactored **ext-dnd5**<br>
-    Some changes were made, mainly to improve handling of the dropEffect
+    Some **breaking changes** were made, mainly to improve handling of the dropEffect
     (note that ext-dnd5 was and still is experimental and in progress).
     - Remove  `dnd5.dropEffect` callback option (set `data.dropEffect` instead)
-    - Remove  `dnd5.dragImage` callback option
-      (call  `data.dataTransfer.setDragImage()` and set `data.useDefaultImage = false`
-      instead)
+    - Remove  `dnd5.dragImage` callback option (call  `data.dataTransfer.setDragImage()`
+    - and set `data.useDefaultImage = false` instead)
     - Rename `dnd5.preventRecursiveMoves` to `dnd5.preventRecursion`
     - `dnd5.preventVoidMoves` now only aplies to 'move' operations, so we can *copy* before self
-    - Add `dnd5.preventSameParent` option
+    - [Added] `dnd5.preventSameParent` option
   * [Added] hook `treeStructureChanged`
   * [Added] methods `tree.findRelatedNode()`, `node.findRelatedNode()`
   * [Added] method `node.getPath()`
@@ -27,6 +26,9 @@
   * [DEPRECATED] loaderror and lazyload options now throw an error instead of falling back to the correct loadError and lazyLoad
   * [DEPRECATED] `tree.applyFilter` was removed
   * [Fixed] #918 SVG font awesome 5 glyphs remove badge counter when parent node is collapsed
+  * [Fixed] #921 ext-edit respectively focus handling: Internet Explorer scrolls briefly
+    to the top/left of the tree container element after editing a node title if the
+    tree container is partially outside the viewport
   * [Fixed] #931 Selecting grandparent selects all nodes of radiogroup in selectMode=3
   * [Fixed] missing tree.error() and broken node.error()
   * [Fixed] a bug in ext-logger
