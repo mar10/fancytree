@@ -277,6 +277,7 @@
 			tree.options.dnd5.dropEffectDefault
 		);
 		data.isMove = data.dropEffect === "move";
+		data.files = dataTransfer.files || [];
 
 		if (REQUESTED_EFFECT_ALLOWED !== dataTransfer.effectAllowed) {
 			tree.warn(
@@ -550,6 +551,7 @@
 				dropEffect: undefined,
 				dropEffectSuggested: undefined,
 				effectAllowed: undefined, // set by dragstart
+				files: undefined, // only for drop events
 				isCancelled: undefined, // set by dragend
 				isMove: undefined,
 			};
@@ -720,6 +722,7 @@
 				dropEffect: undefined,
 				dropEffectSuggested: undefined,
 				effectAllowed: undefined, // set by dragstart
+				files: null, // list of File objects (may be [])
 				isCancelled: undefined, // set by drop event
 				isMove: undefined,
 			};
