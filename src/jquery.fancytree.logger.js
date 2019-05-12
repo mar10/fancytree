@@ -4,7 +4,7 @@
  * Miscellaneous debug extensions.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2019, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -35,22 +35,22 @@
 		FT = $.ui.fancytree,
 		PREFIX = "ft-logger: ",
 		logLine = window.console.log,
-		HOOK_NAMES = "nodeClick nodeCollapseSiblings".split(" "),
-		TREE_EVENT_NAMES = "beforeRestore blurTree create init focusTree restore".split(
+		// HOOK_NAMES = "nodeClick nodeCollapseSiblings".split(" "),
+		TREE_EVENT_NAMES = "beforeRestore beforeUpdateViewport blurTree create init focusTree restore updateViewport".split(
 			" "
 		),
-		NODE_EVENT_NAMES = "activate beforeActivate beforeExpand beforeSelect blur click collapse createNode dblclick deactivate expand enhanceTitle focus keydown keypress lazyLoad loadChildren loadError modifyChild postProcess renderNode renderTitle select".split(
+		NODE_EVENT_NAMES = "activate activateCell beforeActivate beforeExpand beforeSelect blur click collapse createNode dblclick deactivate defaultGridAction expand enhanceTitle focus keydown keypress lazyLoad loadChildren loadError modifyChild postProcess renderNode renderTitle select".split(
 			" "
 		),
 		EVENT_NAMES = TREE_EVENT_NAMES.concat(NODE_EVENT_NAMES),
-		HOOK_NAME_MAP = {},
+		// HOOK_NAME_MAP = {},
 		EVENT_NAME_MAP = {};
 
 	/*
-*/
-	for (i = 0; i < HOOK_NAMES.length; i++) {
-		HOOK_NAME_MAP[HOOK_NAMES[i]] = true;
-	}
+	 */
+	// for (i = 0; i < HOOK_NAMES.length; i++) {
+	// 	HOOK_NAME_MAP[HOOK_NAMES[i]] = true;
+	// }
 	for (i = 0; i < EVENT_NAMES.length; i++) {
 		EVENT_NAME_MAP[EVENT_NAMES[i]] = true;
 	}
@@ -63,7 +63,7 @@
 				/(opera|chrome|safari|firefox|msie)\/?\s*(\.?\d+(\.\d+)*)/i
 			);
 
-		if (m && (tem = ua.match(/version\/([\.\d]+)/i)) !== null) {
+		if (m && (tem = ua.match(/version\/([.\d]+)/i)) !== null) {
 			m[2] = tem[1];
 		}
 		m = m ? [m[1], m[2]] : [n, navigator.appVersion, "-?"];
@@ -72,7 +72,6 @@
 
 	function logEvent(event, data) {
 		var res,
-			/* jshint validthis: true */
 			self = this,
 			// logName = PREFIX + "event." + event.type,
 			opts = data.options.logger,
@@ -104,7 +103,7 @@
 		return res;
 	}
 
-	function logHook(name, self, args, extra) {
+	function logHook(name, this_, args, extra) {
 		var res,
 			ctx = args[0],
 			opts = ctx.options.logger,
@@ -115,7 +114,7 @@
 			!opts.traceHooks ||
 			(opts.traceHooks !== true && $.inArray(name, opts.traceHooks) < 0)
 		) {
-			return self._superApply.call(self, args);
+			return this_._superApply.call(this_, args);
 		}
 		if (
 			opts.timings === true ||
@@ -124,7 +123,7 @@
 			// if( name === "nodeRender" ) { logName += obj; }  // allow timing for recursive calls
 			// logName += " (" + obj + ")";
 			window.console.time(logName);
-			res = self._superApply.call(self, args);
+			res = this_._superApply.call(this_, args);
 			window.console.timeEnd(logName);
 		} else {
 			if (extra) {
@@ -134,7 +133,7 @@
 				// obj.info(logName, ctx);
 				logLine(logName, ctx);
 			}
-			res = self._superApply.call(self, args);
+			res = this_._superApply.call(this_, args);
 		}
 		return res;
 	}
@@ -164,7 +163,9 @@
 				this.options.extensions[this.options.extensions.length - 1] !==
 				"logger"
 			) {
-				throw "Fancytree 'logger' extension must be listed as last entry.";
+				throw Error(
+					"Fancytree 'logger' extension must be listed as last entry."
+				);
 			}
 			tree.warn(
 				"Fancytree logger extension is enabled (this may be slow).",
@@ -287,8 +288,17 @@
 		treeLoad: function(ctx, source) {
 			return logHook("treeLoad", this, arguments);
 		},
-		treeSetFocus: function(ctx, flag) {
+		treeRegisterNode: function(ctx, add, node) {
+			return logHook("treeRegisterNode", this, arguments);
+		},
+		treeSetFocus: function(ctx, flag, callOpts) {
 			return logHook("treeSetFocus", this, arguments);
+		},
+		treeSetOption: function(ctx, key, value) {
+			return logHook("treeSetOption", this, arguments);
+		},
+		treeStructureChanged: function(ctx, type) {
+			return logHook("treeStructureChanged", this, arguments);
 		},
 	});
 

@@ -4,7 +4,7 @@
  * Render tree as table (aka 'tree grid', 'table tree').
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2019, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -91,24 +91,14 @@
 		return prev;
 	}
 
-	/* Render callback for 'wide' mode. */
-	// function _renderStatusNodeWide(event, data) {
-	// 	var node = data.node,
-	// 		nodeColumnIdx = data.options.table.nodeColumnIdx,
-	// 		$tdList = $(node.tr).find(">td");
-
-	// 	$tdList.eq(nodeColumnIdx).attr("colspan", data.tree.columnCount);
-	// 	$tdList.not(":eq(" + nodeColumnIdx + ")").remove();
-	// }
-
 	$.ui.fancytree.registerExtension({
 		name: "table",
 		version: "@VERSION",
 		// Default options for this extension.
 		options: {
 			checkboxColumnIdx: null, // render the checkboxes into the this column index (default: nodeColumnIdx)
-			mergeStatusColumns: true, // display 'nodata', 'loading', 'error' centered in a single, merged TR
 			indentation: 16, // indent every node level by 16px
+			mergeStatusColumns: true, // display 'nodata', 'loading', 'error' centered in a single, merged TR
 			nodeColumnIdx: 0, // render node expander, icon, and title to this column (default: #0)
 		},
 		// Overide virtual methods for this extension.
@@ -125,15 +115,15 @@
 				$table = tree.widget.element;
 
 			if (tableOpts.customStatus != null) {
-				if (opts.renderStatusColumns != null) {
-					$.error(
-						"The 'customStatus' option is deprecated since v2.15.0. Use 'renderStatusColumns' only instead."
-					);
-				} else {
+				if (opts.renderStatusColumns == null) {
 					tree.warn(
 						"The 'customStatus' option is deprecated since v2.15.0. Use 'renderStatusColumns' instead."
 					);
 					opts.renderStatusColumns = tableOpts.customStatus;
+				} else {
+					$.error(
+						"The 'customStatus' option is deprecated since v2.15.0. Use 'renderStatusColumns' only instead."
+					);
 				}
 			}
 			if (opts.renderStatusColumns) {
@@ -160,9 +150,11 @@
 
 			// Prepare row templates:
 			// Determine column count from table header if any
-			tree.columnCount = $("thead >tr:last >th", $table).length;
+			tree.columnCount = $("thead >tr", $table)
+				.last()
+				.find(">th", $table).length;
 			// Read TR templates from tbody if any
-			$row = $tbody.children("tr:first");
+			$row = $tbody.children("tr").first();
 			if ($row.length) {
 				n = $row.children("td").length;
 				if (tree.columnCount && n !== tree.columnCount) {
@@ -198,7 +190,7 @@
 			tree.rowFragment.appendChild($row.get(0));
 
 			// // If tbody contains a second row, use this as status node template
-			// $row = $tbody.children("tr:eq(1)");
+			// $row = $tbody.children("tr").eq(1);
 			// if( $row.length === 0 ) {
 			// 	tree.statusRowFragment = tree.rowFragment;
 			// } else {
@@ -279,7 +271,15 @@
 				if (node.tr && force) {
 					this.nodeRemoveMarkup(ctx);
 				}
-				if (!node.tr) {
+				if (node.tr) {
+					if (force) {
+						// Set icon, link, and title (normally this is only required on initial render)
+						this.nodeRenderTitle(ctx); // triggers renderColumns()
+					} else {
+						// Update element classes according to node state
+						this.nodeRenderStatus(ctx);
+					}
+				} else {
 					if (ctx.hasCollapsedParents && !deep) {
 						// #166: we assume that the parent will be (recursively) rendered
 						// later anyway.
@@ -303,15 +303,15 @@
 						newRow.style.display = "none";
 						//					newRow.style.color = "red";
 					}
-					if (!prevNode.tr) {
+					if (prevNode.tr) {
+						insertSiblingAfter(prevNode.tr, newRow);
+					} else {
 						_assert(
 							!prevNode.parent,
 							"prev. row must have a tr, or be system root"
 						);
 						// tree.tbody.appendChild(newRow);
 						insertFirstChild(tree.tbody, newRow); // #675
-					} else {
-						insertSiblingAfter(prevNode.tr, newRow);
 					}
 					node.tr = newRow;
 					if (node.key && opts.generateIds) {
@@ -328,14 +328,6 @@
 					//				tree._triggerNodeEvent("createNode", ctx);
 					if (opts.createNode) {
 						opts.createNode.call(tree, { type: "createNode" }, ctx);
-					}
-				} else {
-					if (force) {
-						// Set icon, link, and title (normally this is only required on initial render)
-						this.nodeRenderTitle(ctx); // triggers renderColumns()
-					} else {
-						// Update element classes according to node state
-						this.nodeRenderStatus(ctx);
 					}
 				}
 			}
@@ -417,13 +409,13 @@
 				if (opts.renderStatusColumns) {
 					// Let user code write column content
 					opts.renderStatusColumns.call(
-						ctx.tree,
+						tree,
 						{ type: "renderStatusColumns" },
 						ctx
 					);
 				} else if (opts.table.mergeStatusColumns && node.isTopLevel()) {
-					var $tdList = $(node.tr).find(">td");
-					$tdList
+					$(node.tr)
+						.find(">td")
 						.eq(0)
 						.prop("colspan", tree.columnCount)
 						.text(node.title)
@@ -432,11 +424,7 @@
 						.remove();
 				} // else: default rendering for status node: leave other cells empty
 			} else if (opts.renderColumns) {
-				opts.renderColumns.call(
-					ctx.tree,
-					{ type: "renderColumns" },
-					ctx
-				);
+				opts.renderColumns.call(tree, { type: "renderColumns" }, ctx);
 			}
 			return res;
 		},
@@ -541,7 +529,9 @@
 		},
 		treeDestroy: function(ctx) {
 			this.$container.find("tbody").empty();
-			this.$source && this.$source.removeClass("fancytree-helper-hidden");
+			if (this.$source) {
+				this.$source.removeClass("fancytree-helper-hidden");
+			}
 			return this._superApply(arguments);
 		},
 		/*,

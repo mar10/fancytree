@@ -2,10 +2,6 @@
 Build scripts for Fancytree
 ###
 
-# jshint directives for the generated JS:
-
-###jshint node: true, unused: false ###
-
 "use strict"
 
 module.exports = (grunt) ->
@@ -51,16 +47,17 @@ module.exports = (grunt) ->
             src: [
                 "<%= meta.banner %>"
                 "src/jquery.fancytree.js"
-#                "build/jquery.fancytree.ariagrid.js"
+                # "src/jquery.fancytree.ariagrid.js"
                 "src/jquery.fancytree.childcounter.js"
                 "src/jquery.fancytree.clones.js"
-#                "src/jquery.fancytree.columnview.js"
+                # "src/jquery.fancytree.columnview.js"
                 "src/jquery.fancytree.dnd.js"
                 "src/jquery.fancytree.dnd5.js"
                 "src/jquery.fancytree.edit.js"
                 "src/jquery.fancytree.filter.js"
-#                "src/jquery.fancytree.fixed.js"
+                # "src/jquery.fancytree.fixed.js"
                 "src/jquery.fancytree.glyph.js"
+                # "src/jquery.fancytree.grid.js"
                 "src/jquery.fancytree.gridnav.js"
                 "src/jquery.fancytree.multi.js"
                 "src/jquery.fancytree.persist.js"
@@ -96,6 +93,7 @@ module.exports = (grunt) ->
                 "build/jquery.fancytree.filter.min.js"
                 # "build/jquery.fancytree.fixed.min.js"
                 "build/jquery.fancytree.glyph.min.js"
+                # "build/jquery.fancytree.grid.min.js"
                 "build/jquery.fancytree.gridnav.min.js"
                 "build/jquery.fancytree.multi.min.js"
                 "build/jquery.fancytree.persist.min.js"
@@ -134,7 +132,7 @@ module.exports = (grunt) ->
                 # Fancytree core and extensions, wrapped in UMD pattern
                 "lib/amd-intro-require-jquery.js"
                 "src/jquery.fancytree.js"
-                # "build/jquery.fancytree.ariagrid.js"
+                # "src/jquery.fancytree.ariagrid.js"
                 "src/jquery.fancytree.childcounter.js"
                 "src/jquery.fancytree.clones.js"
                 # "src/jquery.fancytree.columnview.js"
@@ -144,6 +142,7 @@ module.exports = (grunt) ->
                 "src/jquery.fancytree.filter.js"
                 # "src/jquery.fancytree.fixed.js"
                 "src/jquery.fancytree.glyph.js"
+                # "src/jquery.fancytree.grid.js"
                 "src/jquery.fancytree.gridnav.js"
                 "src/jquery.fancytree.multi.js"
                 "src/jquery.fancytree.persist.js"
@@ -165,6 +164,13 @@ module.exports = (grunt) ->
                 port: 8080
                 base: "./"
                 keepalive: false
+                # middleware: (connect) ->
+                #     return [
+                #         (req, res, next) ->
+                #             res.setHeader('Access-Control-Allow-Origin', '*')
+                #             res.setHeader('Access-Control-Allow-Methods', '*')
+                #             next()
+                #     ]
         sauce:
             options:
                 hostname: "localhost"
@@ -225,38 +231,40 @@ module.exports = (grunt) ->
                 output: "doc/annotated-src"
 
     eslint:
+        options:
+            maxWarnings: 100
+            # format: "stylish"
         # options:
         #   # See https://github.com/sindresorhus/grunt-eslint/issues/119
         #   quiet: true
         # We have to explicitly declare "src" property otherwise "newer"
         # task wouldn't work properly :/
-        dist:
-            src: "dist/jquery.js"
-        dev:
+        build:
             options:
-                fix: false
-                maxWarnings: 100
+                ignore: false
             src: [
-              "src/jquery.fancytree.js"
-              "src/jquery.fancytree.*.js"
-              "test/test-*.js"
-              "demo/sample.js"
+              "build/jquery.fancytree.js"
+              "build/jquery.fancytree-all.js"
+              "build/modules/*.js"
+              ]
+        dev:
+            src: [
+              "src/*.js"
+              "3rd-party/**/jquery.fancytree.*.js"
+              # "test/**/test-*.js"
+              "demo/**/*.js"
               ]
         fix:
             options:
                 fix: true
             src: [
-              "src/jquery.fancytree.js"
-              "src/jquery.fancytree.*.js"
-              "test/test-*.js"
-              "demo/sample.js"
+              "src/*.js"
+              "3rd-party/**/jquery.fancytree.*.js"
+              # "test/**/test-*.js"
+              "demo/**/*.js"
               ]
 
     exec:
-        # tabfix:
-        #     # Cleanup whitespace according to http://contribute.jquery.org/style-guide/js/
-        #     # (requires https://github.com/mar10/tabfix)
-        #     cmd: "tabfix -t -r -m*.js,*.css,*.html,*.json -inode_modules src demo test"
         upload:
             # FTP upload the demo files (requires https://github.com/mar10/pyftpsync)
             stdin: true  # Allow interactive console
@@ -273,22 +281,6 @@ module.exports = (grunt) ->
                 template: "bin/jsdoc3-moogle",
                 configure: "doc/jsdoc.conf.json"
                 verbose: true
-
-    jshint:
-        options:
-            # Linting according to http://contribute.jquery.org/style-guide/js/
-            jshintrc: ".jshintrc"
-        beforeConcat: [
-            # "Gruntfile.js"
-            "src/*.js"
-            "3rd-party/**/jquery.fancytree.*.js"
-            "test/unit/*.js"
-            "demo/**/*.js"
-            ]
-        afterConcat: [
-            "build/jquery.fancytree.js"
-            "build/jquery.fancytree-all.js"
-            ]
 
     less:
         development:
@@ -309,6 +301,8 @@ module.exports = (grunt) ->
             ]
 
     qunit:
+        options:
+            httpBase: "http://localhost:8080"
         build: [
             "test/unit/test-core-build.html"
         ]
@@ -365,6 +359,7 @@ module.exports = (grunt) ->
         #           # { browserName: "internet explorer", version: "9", platform: "Windows 7" }
         #           { browserName: "internet explorer", version: "8", platform: "Windows 7" }
         #         ]
+
         ui_112:
             options:
                 testname: "Fancytree qunit tests (jQuery 3, jQuery UI 1.12)"
@@ -372,22 +367,22 @@ module.exports = (grunt) ->
                 # jQuery 3        supports IE 9+ and latest Chrome/Edge/Firefox/Safari (-1)
                 # jQuery UI 1.12  supports IE 11 and latest Chrome/Edge/Firefox/Safari (-1)
                 browsers: [
-                  # Issue #825
-                  { browserName: "chrome", version: "dev", platform: "Windows 10" }
                   { browserName: "chrome", version: "latest", platform: "Windows 10" }
                   { browserName: "chrome", version: "latest-1", platform: "Windows 10" }
-                  # FF.dev is problematic: https://support.saucelabs.com/hc/en-us/articles/225253808-Firefox-Dev-Beta-Browser-Won-t-Start
-                  # { browserName: "firefox", version: "dev", platform: "Windows 10" }
                   { browserName: "firefox", version: "latest", platform: "Windows 10" }
                   { browserName: "firefox", version: "latest-1", platform: "Windows 10" }
                   { browserName: "firefox", version: "latest", platform: "Linux" }
                   { browserName: "internet explorer", version: "11", platform: "Windows 8.1" }
                   { browserName: "microsoftedge", version: "latest", platform: "Windows 10" }
                   { browserName: "microsoftedge", version: "latest-1", platform: "Windows 10" }
-                  { browserName: "safari", version: "9", platform: "OS X 10.11" }
-                  { browserName: "safari", version: "10", platform: "OS X 10.12" }
-                  { browserName: "safari", version: "11", platform: "OS X 10.13" }
-                  # { browserName: "safari", version: "12", platform: "OS X 10.14" }
+                  # Test suacelabs:
+                  # { browserName: "chrome", version: "latest", platform: "macOS 10.14" }
+                  # { browserName: "firefox", version: "latest", platform: "macOS 10.14" }
+
+                  # { browserName: "safari", version: "9", platform: "OS X 10.11" }
+                  # { browserName: "safari", version: "10", platform: "macOS 10.12" }
+                  # { browserName: "safari", version: "11", platform: "macOS 10.13" }
+                  # { browserName: "safari", version: "12", platform: "macOS 10.14" }
                 ]
         ui_111:
             options:
@@ -408,18 +403,19 @@ module.exports = (grunt) ->
                 # jQuery 1.10    dropped support for IE 6
                 # jQuery UI 1.10 supports IE 7+ and ?
                 browsers: [
-                  { browserName: "internet explorer", version: "8", platform: "Windows 7" }
+                  # { browserName: "internet explorer", version: "8", platform: "Windows 7" }
                   { browserName: "internet explorer", version: "9", platform: "Windows 7" }
                 ]
-        # ui_109:
-        #     options:
-        #         testname: "Fancytree qunit tests (jQuery 1.9, jQuery UI 1.9)"
-        #         urls: ["http://localhost:9999/test/unit/test-jQuery19-ui19.html"]
-        #         # jQuery 1.9     dropped supports IE 6..?
-        #         # jQuery UI 1.9  supports IE 6+ and ?
-        #         browsers: [
-        #           { browserName: "internet explorer", version: "8", platform: "Windows 7" }
-        #         ]
+        beta:  # This tests are allowed to fail in the travis matrix
+            options:
+                testname: "Fancytree qunit tests ('dev' browser versions)"
+                urls: ["http://localhost:9999/test/unit/test-core.html"]
+                browsers: [
+                  # Issue #825
+                  { browserName: "chrome", version: "dev", platform: "Windows 10" }  #, chromedriverVersion: "2.46.0" }
+                  # FF.dev is problematic: https://support.saucelabs.com/hc/en-us/articles/225253808-Firefox-Dev-Beta-Browser-Won-t-Start
+                  { browserName: "firefox", version: "dev", platform: "Windows 10" }
+                ]
 
     uglify:
         src_to_build:
@@ -469,11 +465,11 @@ module.exports = (grunt) ->
         less:
             files: "src/**/*.less"
             tasks: ["less:development"]
-        jshint:
+        eslint:
             options:
                 atBegin: true
             files: ["src/*.js", "test/unit/*.js", "demo/**/*.js"]
-            tasks: ["jshint:beforeConcat", "eslint:dev"]
+            tasks: ["eslint:dev"]
 
     yabs:
         release:
@@ -507,32 +503,46 @@ module.exports = (grunt) ->
 
   grunt.registerTask "server", ["connect:forever"]
   grunt.registerTask "dev", ["connect:dev", "watch"]
-  grunt.registerTask "prettier", ["eslint:fix"]
-  # grunt.registerTask "tabfix", ["exec:tabfix"]
+  # grunt.registerTask "prettier", ["eslint:fix"]
+  grunt.registerTask "format", ["eslint:fix"]
   grunt.registerTask "test", [
-      "jshint:beforeConcat",
       "eslint:dev",
       # "csslint",
       # "htmllint",
+      "connect:dev"  # start server
       "qunit:develop"
   ]
 
-  grunt.registerTask "sauce", ["connect:sauce", "saucelabs-qunit"]
+  grunt.registerTask "sauce", [
+      "connect:sauce",
+      "saucelabs-qunit:ui_112",
+      "saucelabs-qunit:ui_111",
+      "saucelabs-qunit:ui_110",
+  ]
+  grunt.registerTask "sauce-optional", [
+      "connect:sauce",
+      "saucelabs-qunit:beta",
+  ]
   grunt.registerTask "sauce-triage", ["connect:sauce", "saucelabs-qunit:triage"]
 
   if parseInt(process.env.TRAVIS_PULL_REQUEST, 10) > 0
       # saucelab keys do not work on forks
       # http://support.saucelabs.com/entries/25614798
       grunt.registerTask "travis", ["test"]
+      grunt.registerTask "travis-optional", []
   else
       grunt.registerTask "travis", ["test", "sauce"]
+      grunt.registerTask "travis-optional", ["sauce-optional"]
 
   grunt.registerTask "default", ["test"]
   grunt.registerTask "ci", ["test"]  # Called by 'npm test'
+  # Update package.json to latest versions (interactive)
+  grunt.registerTask "dev-update", ["devUpdate"]
 
   grunt.registerTask "build", [
       "less:development"
-      "prettier"
+      "format"
+      # `test` also starts the connect:dev server
       "test"
       "jsdoc:build"
       "docco:docs"
@@ -547,20 +557,19 @@ module.exports = (grunt) ->
       "uglify:all_deps"
       "clean:post_build"
       "replace:production"
-      "jshint:afterConcat"
+      "eslint:build"
       "copy:ui_deps"
-      # "uglify:build"
       "qunit:build"
       ]
 
   grunt.registerTask "make_dist", [
-      # "exec:tabfix"
+      # `build` also starts the connect:dev server
       "build"
       "clean:dist"
       "copy:dist"
       "clean:build"
       "replace:release"
-      # "jshint:dist"  # should rather use grunt-jsvalidate for minified output
+      # "eslint:dist"  # should rather use grunt-jsvalidate for minified output
       "qunit:dist"
       ]
 

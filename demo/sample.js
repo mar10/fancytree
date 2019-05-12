@@ -18,7 +18,8 @@
 		init: "lion"
 	});
  */
-/*globals alert, prettyPrint */
+/* globals prettyPrint */
+/* eslint-disable no-alert */
 
 (function($) {
 	var PLUGIN_NAME = "skinswitcher",
@@ -100,9 +101,8 @@
 				if (typeof value !== "undefined") {
 					opts[name] = value;
 					return this;
-				} else {
-					return opts[name];
 				}
+				return opts[name];
 			},
 			addChoices: function(choices) {
 				var $combo = $(this);
@@ -141,11 +141,10 @@
 			);
 		} else if (typeof method === "object" || !method) {
 			return methods.init.apply(this, arguments);
-		} else {
-			$.error(
-				"Method " + method + " does not exist on jQuery." + PLUGIN_NAME
-			);
 		}
+		$.error(
+			"Method " + method + " does not exist on jQuery." + PLUGIN_NAME
+		);
 	};
 })(jQuery);
 
@@ -156,15 +155,14 @@
  * By Felix Kling
  */
 (function($) {
-	var _gaq = _gaq || [],
-		SAMPLE_BUTTON_DEFAULTS = {
-			id: undefined,
-			label: "Sample",
-			newline: true,
-			code: function() {
-				alert("not implemented");
-			},
-		};
+	var SAMPLE_BUTTON_DEFAULTS = {
+		id: undefined,
+		label: "Sample",
+		newline: true,
+		code: function() {
+			alert("not implemented");
+		},
+	};
 
 	$.fn.clickToggle = function(func1, func2) {
 		var funcs = [func1, func2];
@@ -176,6 +174,28 @@
 			data.toggleclicked = (tc + 1) % 2;
 		});
 		return this;
+	};
+
+	window.getUrlVars = function() {
+		var vars = {};
+
+		window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(
+			m,
+			key,
+			value
+		) {
+			vars[key] = value;
+		});
+		return vars;
+	};
+
+	window.getUrlParam = function(parameter, defaultvalue) {
+		var urlparameter = defaultvalue;
+
+		if (window.location.href.indexOf(parameter) > -1) {
+			urlparameter = window.getUrlVars()[parameter];
+		}
+		return urlparameter;
 	};
 
 	window.addSampleButton = function(options) {
@@ -311,7 +331,7 @@
 	$(function() {
 		// Log to Google Analytics, when not running locally
 		if (document.URL.toLowerCase().indexOf("wwwendt.de/") >= 0) {
-			/* jshint ignore:start */
+			/* eslint-disable */
 			(function(i, s, o, g, r, a, m) {
 				i["GoogleAnalyticsObject"] = r;
 				(i[r] =
@@ -333,7 +353,7 @@
 			);
 			ga("create", "UA-316028-1", "auto");
 			ga("send", "pageview");
-			/* jshint ignore:end */
+			/* eslint-enable */
 		}
 
 		// Show some elements only, if (not) inside the Example Browser

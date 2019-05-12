@@ -4,7 +4,7 @@
  * Support faster lookup of nodes by key and shared ref-ids.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2019, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -66,7 +66,7 @@
 	 * @return {number} 32-bit positive integer hash
 	 */
 	function hashMurmur3(key, asString, seed) {
-		/*jshint bitwise:false */
+		/*eslint-disable no-bitwise */
 		var h1b,
 			k1,
 			remainder = key.length & 3,
@@ -106,11 +106,12 @@
 		k1 = 0;
 
 		switch (remainder) {
-			/*jshint -W086:true */
 			case 3:
 				k1 ^= (key.charCodeAt(i + 2) & 0xff) << 16;
+			// fall through
 			case 2:
 				k1 ^= (key.charCodeAt(i + 1) & 0xff) << 8;
+			// fall through
 			case 1:
 				k1 ^= key.charCodeAt(i) & 0xff;
 
@@ -145,11 +146,12 @@
 			return ("0000000" + (h1 >>> 0).toString(16)).substr(-8);
 		}
 		return h1 >>> 0;
+		/*eslint-enable no-bitwise */
 	}
 
 	/*
- * Return a unique key for node by calculating the hash of the parents refKey-list.
- */
+	 * Return a unique key for node by calculating the hash of the parents refKey-list.
+	 */
 	function calcUniqueKey(node) {
 		var key,
 			path = $.map(node.getParentList(false, true), function(e) {

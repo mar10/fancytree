@@ -3,7 +3,7 @@
  * Tree view control with support for lazy loading and much more.
  * https://github.com/mar10/fancytree/
  *
- * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2018, Martin Wendt (https://wwWendt.de)
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
@@ -31,7 +31,7 @@ function TestGlobalClass(widget) {
 }
 
 TestGlobalClass.prototype = {
-	/** Drive the car. 
+	/** Drive the car.
 	 * @param {number} speed Driving speed in km/h
 	 * @param {boolean} [leftSide=false] true if english
 	 * @returns {object} The new baz.
@@ -39,7 +39,7 @@ TestGlobalClass.prototype = {
 	drive: function(speed, leftSide){
 		return null;
 	},
-	/** Honk the horn. 
+	/** Honk the horn.
 	 * @param {number} duration duration in seconds
 	 */
 	honk: function(duration){
@@ -64,24 +64,24 @@ var localVar1,
 /**
  * Construct a new foobar object.
  *
- * @class 
+ * @class
  * @classdesc This class represents a foobar.
  */
 function TestClosureClass(widget) {
 	/** This is a member.
-	 * @type {object} 
+	 * @type {object}
 	 * @default null
 	 */
 	this.member = null;
 	/** This is another member.
-	 * @type {string} 
+	 * @type {string}
 	 * @default "untitled"
 	 */
 	this.member2 = "untitled";
 }
 
 TestClosureClass.prototype = /** @lends TestClosureClass# */ {
-	/** Drive the car. 
+	/** Drive the car.
 	 * @param {number} speed Driving speed in km/h
 	 * @param {boolean} [leftSide=false] true if english
 	 * @returns {object} The new baz.
@@ -89,7 +89,7 @@ TestClosureClass.prototype = /** @lends TestClosureClass# */ {
 	drive: function(speed, leftSide){
 		return null;
 	},
-	/** Honk the horn. 
+	/** Honk the horn.
 	 * @param {number} duration duration in seconds
 	 */
 	honk: function(duration){
@@ -105,7 +105,7 @@ TestClosureClass.prototype = /** @lends TestClosureClass# */ {
  * This contructor is not called directly. Use `$(selector).fancytre({})` instead.
  * @example
  * var tree = $(selector).fancytree();
- * @class moogle.myWidget 
+ * @class moogle.myWidget
  * @classdesc The plugin (derrived from [jQuery.Widget](http://api.jqueryui.com/jQuery.widget/)).<br>
  * <pre class="sunlight-highlight-javascript">// Access instance methods and members:
  * var tree = $(selector).fancytree("getTree");

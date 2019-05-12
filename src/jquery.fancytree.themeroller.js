@@ -6,7 +6,7 @@
  *
  * @see http://jqueryui.com/themeroller/
  *
- * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2019, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -61,9 +61,7 @@
 				$el.addClass("ui-widget ui-widget-content ui-corner-all");
 			}
 
-			$el.delegate(".fancytree-node", "mouseenter mouseleave", function(
-				event
-			) {
+			$el.on("mouseenter mouseleave", ".fancytree-node", function(event) {
 				var node = $.ui.fancytree.getNode(event.target),
 					flag = event.type === "mouseenter";
 

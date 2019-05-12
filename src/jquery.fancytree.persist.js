@@ -6,7 +6,7 @@
  *
  * @depends: js-cookie or jquery-cookie
  *
- * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2019, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -88,8 +88,8 @@
 	}
 
 	/* Recursively load lazy nodes
- * @param {string} mode 'load', 'expand', false
- */
+	 * @param {string} mode 'load', 'expand', false
+	 */
 	function _loadLazyNodes(tree, local, keyList, mode, dfd) {
 		var i,
 			key,

@@ -18,7 +18,7 @@ TEST_DATA = [
 		{key: "2", title: "item1 with key and tooltip", tooltip: "Look, a tool tip!" },
 		{key: "3", title: "<span>item2 with <b>html</b> inside a span tag</span>" },
 		{key: "4", title: "this nodes uses 'nolink', so no &lt;a> tag is generated", nolink: true},
-		{key: "5", title: "using href", href: "http://www.wwWendt.de/" },
+		{key: "5", title: "using href", href: "https://wwWendt.de/" },
 		{key: "6", title: "node with some extra classes (will be added to the generated markup)", extraClasses: "my-extra-class" },
 		{key: "10", title: "Folder 1", folder: true, children: [
 			{key: "10_1", title: "Sub-item 1.1", children: [
@@ -83,7 +83,7 @@ QUnit.test("Static members", function(assert) {
 
 QUnit.test("Create Fancytree", function(assert) {
 	tools.setup(assert);
-	assert.expect(14);
+	assert.expect(16);
 
 	var tree, widget,
 		insideConstructor = true;
@@ -112,11 +112,34 @@ QUnit.test("Create Fancytree", function(assert) {
 	assert.ok($.ui.fancytree.getTree(0) === tree, "getTree(0) exists");
 	assert.ok($.ui.fancytree.getTree("#tree") === tree, "getTree('#tree') exists");
 
+	assert.ok($.ui.fancytree.getTree("#ft-id-" + tree._id) === tree, "getTree('#ft-id-<ID>') exists");
+	assert.ok($.ui.fancytree.getTree(tree._id) === tree, "getTree('<ID>') exists");
+
 	assert.ok($.ui.fancytree.getTree(1) === null, "getTree(1) does not exist");
 	assert.ok($.ui.fancytree.getTree("#foobar") === null, "getTree(#foobar) does not exist");
 
 	assert.equal($("div#tree ul").length, 2, "collapsed children are NOT rendered");
 	assert.equal($("div#tree li").length, TESTDATA_VISIBLENODES, "collapsed nodes are NOT rendered");
+});
+
+
+QUnit.test("Create Fancytree - fixed id", function(assert) {
+	tools.setup(assert);
+	assert.expect(6);
+
+	$("#tree").fancytree({
+		source: TEST_DATA,
+		treeId: "foo",
+	});
+
+	var tree = $.ui.fancytree.getTree();
+	assert.equal(tree._id, "foo", "tree id is 'foo'");
+
+	assert.ok($.ui.fancytree.getTree(0) === tree, "getTree(0) exists");
+	assert.ok($.ui.fancytree.getTree("#tree") === tree, "getTree('#tree') exists");
+	assert.ok($.ui.fancytree.getTree("foo") === tree, "getTree('foo') exists");
+	assert.ok($.ui.fancytree.getTree("#ft-id-foo") === tree, "getTree('#ft-id-foo') exists");
+	assert.ok($.ui.fancytree.getTree("#foo") === null, "getTree('#foo') does not exist");
 });
 
 
@@ -136,7 +159,7 @@ QUnit.test("Create Fancytree - init", function(assert) {
 			assert.ok(insideConstructor, "running synchronously");
 			assert.ok(!!data, "event data is empty");
 			assert.equal(this.nodeName, "DIV", "`this` is div#tree");
-			assert.ok($(">ul:first", this).hasClass("fancytree-container"), "div#tree contains ul.fancytree-container");
+			assert.ok($(">ul", this).first().hasClass("fancytree-container"), "div#tree contains ul.fancytree-container");
 			widget = $(this).data("ui-fancytree") || $(this).data("fancytree");
 			assert.ok(!!widget, "widget is attached to div#tree");
 			tree = widget.tree;
@@ -159,7 +182,7 @@ QUnit.test("Create Fancytree - init", function(assert) {
 //			assert.equal($("li#ft_4 a.fancytree-title").html(), null, "`nolink` suppresses <a> tag");
 //			assert.equal($("li#ft_4 span.fancytree-title").length, 1, "`nolink` uses <span> tag");
 			assert.equal($("li#ft_4 span.fancytree-title").length, 1, "using <span> tag");
-//			assert.equal($("li#ft_5 a.fancytree-title").attr("href"), "http://www.wwWendt.de/", "href set");
+//			assert.equal($("li#ft_5 a.fancytree-title").attr("href"), "https://wwWendt.de/", "href set");
 			assert.ok($("li#ft_6 span.fancytree-node").hasClass("my-extra-class"), "custom class added");
 
 			done();

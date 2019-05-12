@@ -1,10 +1,9 @@
-/* *****************************************************************************
+/******************************************************************************
  * Virtual objects for jsdoc documentation
  */
 
 // Allow unused variables for demonstration
-/*jshint unused:false */
-/*eslint unused:false */
+/* eslint-disable no-unused-vars, one-var */
 
 /**
  * Context object passed to events and hook functions.
@@ -22,7 +21,6 @@
  * @property {any} response (only for postProcess event) Original ajax response
  */
 var EventData = {};
-
 
 /**
  * Data object passed to FancytreeNode() constructor.
@@ -106,7 +104,6 @@ var EventData = {};
  */
 var NodeData = {};
 
-
 /**
  * Data object similar to {@link NodeData}, but with additional options.
  * May be passed to {@link FancytreeNode#applyPatch}
@@ -121,7 +118,6 @@ var NodeData = {};
  */
 var NodePatch = {};
 
-
 /**
  * List of [key, {@link NodePatch}]  tuples.
  * May be passed to {@link Fancytree#applyPatch}.
@@ -131,7 +127,6 @@ var NodePatch = {};
  *
  */
 var TreePatch = {};
-
 
 /**
  * @name FancytreeOptions
@@ -160,7 +155,7 @@ var TreePatch = {};
  *     Recommended place to store shared data for column rendering.
  *     See also <a href="https://github.com/mar10/fancytree/wiki/ExtTable">table extension</a>.
  *     @since 2.27
- * @property {Integer} debugLevel 0..4 (null: use global setting $.ui.fancytree.debugInfo)
+ * @property {Integer} debugLevel 0..4 (null: use global setting $.ui.fancytree.debugLevel)
  * @property {function} defaultKey callback(node) is called for new nodes without a key. Must return a new unique key. (default null: generates default keys like that: "_" + counter)
  * @property {boolean} enableAspx Accept passing ajax data in a property named `d` (default: true).
  * @property {boolean} escapeTitles Make sure all HTML tags are escaped (default: false).
@@ -213,6 +208,13 @@ var TreePatch = {};
  *     Note: If a separate tooltip widget is used, it may be more efficient to use that widget
  *     API instead, instead of duplicating tree markup.
  *     (<a href="http://api.jqueryui.com/tooltip/#option-content">For example jQuery UI Tooltip</a>.)
+ * @property {string} treeId optional fixed tree id and namespace (default: null)<br>
+ *     By default, the `tree._id` is an integer, starting as `1` and automatically
+ *     incremented every time a new Fancytree is instantiated.<br>
+ *     The `tree._id` is used to define the hidden root node's id, persistence keys, form control ids,
+ *     and can be passed to `$.ui.fancytree.getTree()`.<br>
+ *     Also, `tree._ns` is calculated as `".fancytree-" + tree._id` and used for namespaced events.
+ *     @since 2.31
  * @property {object} types Made available as `tree.types`.<br>
  *     Shared data for nodes with the same `node.type` attribute.
  *     See also <a href="https://github.com/mar10/fancytree/wiki/TutorialNodeTypes">node types</a>.
@@ -229,8 +231,6 @@ var TreePatch = {};
  *     If defined, `unselectable: true` is implied.
  */
 var FancytreeOptions = {};
-
-
 
 /** Fancytree events
  * @name FancytreeEvents
@@ -253,10 +253,15 @@ var FancytreeOptions = {};
  * });
  *
  * @property {function} activate `data.node` was activated
- * @property {function} beforeActivate `data.node` is about to be (de)activated. Current status is `data.node.isActive()`. Return `false` to prevent default processing
- * @property {function} beforeExpand `data.node` is about to be collapsed/expanded. Current status is `data.node.isExpanded()`. Return `false` to prevent default processing
- * @property {function} beforeRestore ext-persist is about to restore the previous state. Return `false` to prevent default processing
- * @property {function} beforeSelect `data.node` is about to be (de)selected. Current status is `data.node.isSelected()`. Return `false` to prevent default processing
+ * @property {function} beforeActivate `data.node` is about to be (de)activated. Current status is `data.node.isActive()`. Return `false` to prevent default processing.
+ * @property {function} beforeExpand `data.node` is about to be collapsed/expanded. Current status is `data.node.isExpanded()`. Return `false` to prevent default processing.
+ * @property {function} beforeRestore ext-persist is about to restore the previous state. Return `false` to prevent default processing.
+ * @property {function} beforeSelect `data.node` is about to be (de)selected. Current status is `data.node.isSelected()`. Return `false` to prevent default processing.
+ * @property {function} beforeUpdateViewport ext-grid is about to redraw the tree.viewport.<br>
+ *     `data.next`: viewport settings that will be applied.<br>
+ *     `data.diff`: changes to the current `tree.viewport`, e.g. start offset.<br>
+ *     `data.scrollOnly`: true if only the `start` value has changed.<br>
+ *     Modify `next` or return `false` to prevent default processing.
  * @property {function} blur `data.node` lost keyboard focus
  * @property {function} blurTree `data.tree` lost keyboard focus
  * @property {function} click `data.node` was clicked. `data.targetType` contains the region ("checkbox", "expander", "icon", "prefix", "title"). Return `false` to prevent default processing, i.e. activating, expanding, selecting, etc.
@@ -278,13 +283,15 @@ var FancytreeOptions = {};
  * @property {function} focusTree `data.tree` received keyboard focus
  * @property {function} <del>iconClass</del> @deprecated use tree option `icon` instead.
  * @property {function} init Widget was (re-)initialized.<br>
- *     The tree widget was initialized, source data was loaded, and visible nodes are rendered.<br>
+ *     The tree widget was initialized, source data was loaded, visible nodes are rendered,
+ *     selection propagation applied, and node activated.<br>
+ *     `data.status` is false on load error.<br>
  *     Note: if ext-persist is used, see also the `restore` event, which is fired later.
  * @property {function} keydown `data.node` received key. `event.which` contains the key. Return `false` to prevent default processing, i.e. navigation. Call `data.result = "preventNav";` to prevent navigation but still allow default handling inside embedded input controls.
  * @property {function} keypress (currently unused)
  * @property {function} lazyLoad `data.node` is a lazy node that is expanded for the first time. The new child data must be returned in the `data.result` property (see `source` option for available formats).
  * @property {function} loadChildren Node data was loaded, i.e. `node.nodeLoadChildren()` finished
- * @property {function} loadError A load error occurred. Return `false` to prevent default processing
+ * @property {function} loadError A load error occurred. Return `false` to prevent default processing.
  * @property {function} modifyChild A <i>child</i> of `data.node` was added, removed, or otherwise modified<br>
  *     `data.operation` contains 'add', 'remove', 'rename', 'move', 'sort', 'data'<br>
  *     `data.childNode` contains the new, deleted, or modified child node if applicable<br>
@@ -298,6 +305,9 @@ var FancytreeOptions = {};
  * @property {function} renderTitle Allow replacing the `&lt;span class='fancytree-title'>` markup (NOTE: this event is only available as callback, but not for bind())
  * @property {function} restore ext-persist has expanded, selected, and activated the previous state
  * @property {function} select `data.node` was (de)selected. Current status is `data.node.isSelected()`
- *
+ * @property {function} updateViewport ext-grid has redrawn the tree.viewport.<br>
+ *     `data.prev`: viewport settings that were active before this update.<br>
+ *     `data.diff`: changes to the current `tree.viewport`, e.g. start offset.<br>
+ *     `data.scrollOnly`: true if only the `start` value has changed.
  */
 var FancytreeEvents = {};

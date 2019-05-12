@@ -1,7 +1,50 @@
-# 2.30.2-0 / Unreleased
+# 2.31.0-0 / Unreleased
+  * New extension **ext-grid** (experimental)<br>
+    This is a variant of `ext-table` that introduces viewport support, which
+    allows to maintain *huge* data models while only rendering as many DOM elements as necessary.<br>
+    Main changes:
+    - A viewport is defined by the number of visible rows (`tree.viewport.count`) and the index of the first visible row (`.start`)
+    - When scrolling, rows are not hidden, but removed and replaced. (This implies that the contents of embedded input fields should be written into the model immediately.)
+  * Refactored **ext-dnd5**<br>
+    Some **breaking changes** were made, mainly to improve handling of the dropEffect
+    (note that ext-dnd5 was and still is experimental and in progress).
+    - Remove  `dnd5.dropEffect` callback option (set `data.dropEffect` instead)
+    - Remove  `dnd5.dragImage` callback option (call  `data.dataTransfer.setDragImage()`
+    - and set `data.useDefaultImage = false` instead)
+    - Rename `dnd5.preventRecursiveMoves` to `dnd5.preventRecursion`
+    - `dnd5.preventVoidMoves` now only aplies to 'move' operations, so we can *copy* before self
+    - [Added] `dnd5.preventSameParent` option
+  * [Added] hook `treeStructureChanged`
+  * [Added] methods `tree.findRelatedNode()`, `node.findRelatedNode()`
+  * [Added] method `node.getPath()`
+  * [Added] methods `$.ui.fancytree.getDragNode()`, `$.ui.fancytree.getDragNodeList()`
+  * [Added] event `updateViewport`
+  * [Added] tree option `.treeId` to prevent generation of a new sequence if the tree is re-initialized on a page.
+  * [Changed] `.getTree()` now also accepts the tree id string
+  * [Changed] #939: Keep a `partsel` flag that was explicitly set on a lazy node
+  * [DEPRECATED] loaderror and lazyload options now throw an error instead of falling back to the correct loadError and lazyLoad
+  * [DEPRECATED] `tree.applyFilter` was removed
+  * [Fixed] #918 SVG font awesome 5 glyphs remove badge counter when parent node is collapsed
+  * [Fixed] #931 Selecting grandparent selects all nodes of radiogroup in selectMode=3
+  * [Fixed] missing tree.error() and broken node.error()
+  * [Fixed] a bug in ext-logger
+  * Optimized performance of `expandAll()` and `ext-filter`
+  * Replace jshint/jscs with eslint
+  * Now testing on Puppeteer/Chromium instead of PhantonJS
+  * Use LF on Windows when checking out from git (added .gitattributes)
+  * Update to jQuery 3.4
+
+# 2.30.2 / 2019-01-13
+  * Stop testing on IE 8 (no longer available on Saucelabs)
   * [Fixed] #910 ext-dnd5 throws error for draggable column headers
   * [Fixed] overrideMethod()'s calling context
   * [Fixed] #912 ext-dnd5 + ext-glyph awesome5 does not show the icons when dragging an item
+  * [Fixed] #919 ext-multi: JavaScript error (event is not defined) in nodeKeydown
+  * [Fixed] #922 scrollIntoView for plain trees that don't have a scrollbar
+  * [Fixed] #924 ext-edit: Fix caret position for mouse-click in input
+  * [Fixed] #928 ext-dnd5: Fix `preventNonNodes` option
+  * [Fixed] #929 Fix `.getTree()` for jQuery 3
+  * [Fixed] #930 ext-dnd5: If drag does not start, no drag data should be stored
 
 # 2.30.1 / 2018-11-13
   * [Changed] Apply and enforce 'prettier' codestyle
@@ -140,7 +183,7 @@
       See [the docs](https://github.com/mar10/fancytree/wiki/TutorialIntegration)
       for details.
     - All modules now return the
-      [$.ui.fancytree object](http://www.wwwendt.de/tech/fancytree/doc/jsdoc/Fancytree_Static.html).
+      [$.ui.fancytree object](https://wwWendt.de/tech/fancytree/doc/jsdoc/Fancytree_Static.html).
     - [Added] new static method `$.ui.fancytree.createTree(elem, opts)`
   * [Added] Source map files for `jquery.fancytree-all-deps.min.js`
   * [Added] New extension ext-fixed (work-in-progress, experimental)

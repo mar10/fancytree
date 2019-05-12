@@ -4,7 +4,7 @@
 	<meta http-equiv="content-type" content="text/html; charset=utf-8">
 	<title>Test CSS | Fancytree</title>
 
-	<script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+	<script src="//code.jquery.com/jquery-3.4.1.min.js"></script>
 
 	<link href="../build/skin-win8/ui.fancytree.css" class="skinswitcher" rel="stylesheet">
 	<script src="../build/jquery.fancytree-all-deps.min.js"></script>
@@ -93,7 +93,7 @@ var SOURCE2 = [
 			},
 			dnd5: {
 				preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
-				preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
+				preventRecursion: true, // Prevent dropping nodes on own descendants
 				autoExpandMS: 400,
 				dragStart: function(node, data) {
 					return true;

@@ -3,7 +3,7 @@
  * Tree view control with support for lazy loading and much more.
  * https://github.com/mar10/fancytree/
  *
- * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2019, Martin Wendt (https://wwWendt.de)
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
@@ -44,8 +44,8 @@
 		attr,
 		FT = null, // initialized below
 		TEST_IMG = new RegExp(/\.|\//), // strings are considered image urls if they contain '.' or '/'
-		REX_HTML = /[&<>"'\/]/g, // Escape those characters
-		REX_TOOLTIP = /[<>"'\/]/g, // Don't escape `&` in tooltips
+		REX_HTML = /[&<>"'/]/g, // Escape those characters
+		REX_TOOLTIP = /[<>"'/]/g, // Don't escape `&` in tooltips
 		RECURSIVE_REQUEST_ERROR = "$recursive_request",
 		ENTITY_MAP = {
 			"&": "&amp;",
@@ -265,28 +265,30 @@
 			target = {};
 		}
 		if (i === length) {
-			throw "need at least two args";
+			throw Error("need at least two args");
 		}
 		for (; i < length; i++) {
 			// Only deal with non-null/undefined values
 			if ((options = arguments[i]) != null) {
 				// Extend the base object
 				for (name in options) {
-					src = target[name];
-					copy = options[name];
-					// Prevent never-ending loop
-					if (target === copy) {
-						continue;
-					}
-					// Recurse if we're merging plain objects
-					// (NOTE: unlike $.extend, we don't merge arrays, but relace them)
-					if (copy && $.isPlainObject(copy)) {
-						clone = src && $.isPlainObject(src) ? src : {};
-						// Never move original objects, clone them
-						target[name] = _simpleDeepMerge(clone, copy);
-						// Don't bring in undefined values
-					} else if (copy !== undefined) {
-						target[name] = copy;
+					if (options.hasOwnProperty(name)) {
+						src = target[name];
+						copy = options[name];
+						// Prevent never-ending loop
+						if (target === copy) {
+							continue;
+						}
+						// Recurse if we're merging plain objects
+						// (NOTE: unlike $.extend, we don't merge arrays, but replace them)
+						if (copy && $.isPlainObject(copy)) {
+							clone = src && $.isPlainObject(src) ? src : {};
+							// Never move original objects, clone them
+							target[name] = _simpleDeepMerge(clone, copy);
+							// Don't bring in undefined values
+						} else if (copy !== undefined) {
+							target[name] = copy;
+						}
 					}
 				}
 			}
@@ -389,11 +391,10 @@
 			return $.Deferred(function() {
 				this.resolve();
 			}).promise();
-		} else {
-			return $.Deferred(function() {
-				this.resolveWith(context, argArray);
-			}).promise();
 		}
+		return $.Deferred(function() {
+			this.resolveWith(context, argArray);
+		}).promise();
 	}
 
 	function _getRejectedPromise(context, argArray) {
@@ -401,11 +402,10 @@
 			return $.Deferred(function() {
 				this.reject();
 			}).promise();
-		} else {
-			return $.Deferred(function() {
-				this.rejectWith(context, argArray);
-			}).promise();
 		}
+		return $.Deferred(function() {
+			this.rejectWith(context, argArray);
+		}).promise();
 	}
 
 	function _makeResolveFunc(deferred, context) {
@@ -611,6 +611,11 @@
 			for (var i = 0, l = children.length; i < l; i++) {
 				this.children.push(new FancytreeNode(this, children[i]));
 			}
+			this.tree._callHook(
+				"treeStructureChanged",
+				this.tree,
+				"setChildren"
+			);
 		},
 		/**
 		 * Append (or insert) a list of child nodes.
@@ -788,12 +793,14 @@
 				IGNORE_MAP = { children: true, expanded: true, parent: true }; // TODO: should be global
 
 			for (name in patch) {
-				v = patch[name];
-				if (!IGNORE_MAP[name] && !$.isFunction(v)) {
-					if (NODE_ATTR_MAP[name]) {
-						this[name] = v;
-					} else {
-						this.data[name] = v;
+				if (patch.hasOwnProperty(name)) {
+					v = patch[name];
+					if (!IGNORE_MAP[name] && !$.isFunction(v)) {
+						if (NODE_ATTR_MAP[name]) {
+							this[name] = v;
+						} else {
+							this.data[name] = v;
+						}
 					}
 				}
 			}
@@ -889,7 +896,7 @@
 		 * @param {*} msg string or object or array of such
 		 */
 		error: function(msg) {
-			if (this.options.debugLevel >= 1) {
+			if (this.tree.options.debugLevel >= 1) {
 				Array.prototype.unshift.call(arguments, this.toString());
 				consoleApply("error", arguments);
 			}
@@ -927,6 +934,16 @@
 				}
 			});
 			return res;
+		},
+		/** Find a node relative to self.
+		 *
+		 * @param {number|string} where The keyCode that would normally trigger this move,
+		 *		or a keyword ('down', 'first', 'last', 'left', 'parent', 'right', 'up').
+		 * @returns {FancytreeNode}
+		 * @since v2.31
+		 */
+		findRelatedNode: function(where, includeHidden) {
+			return this.tree.findRelatedNode(this, where, includeHidden);
 		},
 		/* Apply selection state (internal use only) */
 		_changeSelectStatusAttrs: function(state) {
@@ -986,6 +1003,10 @@
 
 			this.visit(function(node) {
 				node._changeSelectStatusAttrs(flag);
+				if (node.radiogroup) {
+					// #931: don't (de)select this branch
+					return "skip";
+				}
 			});
 			this.fixSelection3FromEndNodes(callOpts);
 		},
@@ -1041,11 +1062,12 @@
 							}
 						}
 					}
+					// eslint-disable-next-line no-nested-ternary
 					state = allSelected
 						? true
 						: someSelected
-							? undefined
-							: false;
+						? undefined
+						: false;
 				} else {
 					// This is an end-node: simply report the status
 					unselState = FT.evalOption(
@@ -1056,6 +1078,15 @@
 						undefined
 					);
 					state = unselState == null ? !!node.selected : !!unselState;
+				}
+				// #939: Keep a `partsel` flag that was explicitly set on a lazy node
+				if (
+					node.partsel &&
+					!node.selected &&
+					node.lazy &&
+					node.children == null
+				) {
+					state = undefined;
 				}
 				node._changeSelectStatusAttrs(state);
 				return state;
@@ -1105,6 +1136,7 @@
 						}
 					}
 				}
+				// eslint-disable-next-line no-nested-ternary
 				state = allSelected ? true : someSelected ? undefined : false;
 				node._changeSelectStatusAttrs(state);
 			});
@@ -1197,19 +1229,18 @@
 			});
 			return res.join(separator);
 		},
-		/** Return the parent keys separated by options.keyPathSeparator, e.g. "id_1/id_17/id_32".
+		/** Return the parent keys separated by options.keyPathSeparator, e.g. "/id_1/id_17/id_32".
+		 *
+		 * (Unlike `node.getPath()`, this method prepends a "/" and inverts the first argument.)
+		 *
+		 * @see FancytreeNode#getPath
 		 * @param {boolean} [excludeSelf=false]
 		 * @returns {string}
 		 */
 		getKeyPath: function(excludeSelf) {
-			var path = [],
-				sep = this.tree.options.keyPathSeparator;
-			this.visitParents(function(n) {
-				if (n.parent) {
-					path.unshift(n.key);
-				}
-			}, !excludeSelf);
-			return sep + path.join(sep);
+			var sep = this.tree.options.keyPathSeparator;
+
+			return sep + this.getPath(!excludeSelf, "key", sep);
 		},
 		/** Return the last child of this node or null.
 		 * @returns {FancytreeNode | null}
@@ -1272,6 +1303,30 @@
 				dtn = dtn.parent;
 			}
 			return l;
+		},
+		/** Return a string representing the hierachical node path, e.g. "a/b/c".
+		 * @param {boolean} [includeSelf=true]
+		 * @param {string | function} [part="title"] node property name or callback
+		 * @param {string} [separator="/"]
+		 * @returns {string}
+		 * @since v2.31
+		 */
+		getPath: function(includeSelf, part, separator) {
+			includeSelf = includeSelf !== false;
+			part = part || "title";
+			separator = separator || "/";
+
+			var val,
+				path = [],
+				isFunc = $.isFunction(part);
+
+			this.visitParents(function(n) {
+				if (n.parent) {
+					val = isFunc ? part(n) : n[part];
+					path.unshift(val);
+				}
+			}, includeSelf);
+			return path.join(separator);
 		},
 		/** Return the predecessor node (under the same parent) or null.
 		 * @returns {FancytreeNode | null}
@@ -1499,13 +1554,39 @@
 		isVisible: function() {
 			var i,
 				l,
+				n,
+				hasFilter = this.tree.enableFilter,
 				parents = this.getParentList(false, false);
 
+			// TODO: check $(n.span).is(":visible")
+			// i.e. return false for nodes (but not parents) that are hidden
+			// by a filter
+			if (hasFilter && !this.match && !this.subMatchCount) {
+				this.debug(
+					"isVisible: HIDDEN (" +
+						hasFilter +
+						", " +
+						this.match +
+						", " +
+						this.match +
+						")"
+				);
+				return false;
+			}
+
 			for (i = 0, l = parents.length; i < l; i++) {
-				if (!parents[i].expanded) {
+				n = parents[i];
+
+				if (!n.expanded) {
+					this.debug("isVisible: HIDDEN (parent collapsed)");
 					return false;
 				}
+				// if (hasFilter && !n.match && !n.subMatchCount) {
+				// 	this.debug("isVisible: HIDDEN (" + hasFilter + ", " + this.match + ", " + this.match + ")");
+				// 	return false;
+				// }
 			}
+			this.debug("isVisible: VISIBLE");
 			return true;
 		},
 		/** Deprecated.
@@ -1525,7 +1606,7 @@
 		load: function(forceReload) {
 			var res,
 				source,
-				that = this,
+				self = this,
 				wasExpanded = this.isExpanded();
 
 			_assert(this.isLazy(), "load() requires a lazy node");
@@ -1551,11 +1632,11 @@
 			if (wasExpanded) {
 				this.expanded = true;
 				res.always(function() {
-					that.render();
+					self.render();
 				});
 			} else {
 				res.always(function() {
-					that.renderStatus(); // fix expander icon to 'loaded'
+					self.renderStatus(); // fix expander icon to 'loaded'
 				});
 			}
 			return res;
@@ -1568,7 +1649,7 @@
 		 */
 		makeVisible: function(opts) {
 			var i,
-				that = this,
+				self = this,
 				deferreds = [],
 				dfd = new $.Deferred(),
 				parents = this.getParentList(false, false),
@@ -1578,15 +1659,15 @@
 
 			// Expand bottom-up, so only the top node is animated
 			for (i = len - 1; i >= 0; i--) {
-				// that.debug("pushexpand" + parents[i]);
+				// self.debug("pushexpand" + parents[i]);
 				deferreds.push(parents[i].setExpanded(true, opts));
 			}
 			$.when.apply($, deferreds).done(function() {
 				// All expands have finished
-				// that.debug("expand DONE", scroll);
+				// self.debug("expand DONE", scroll);
 				if (scroll) {
-					that.scrollIntoView(effects).done(function() {
-						// that.debug("scroll DONE");
+					self.scrollIntoView(effects).done(function() {
+						// self.debug("scroll DONE");
 						dfd.resolve();
 					});
 				} else {
@@ -1618,6 +1699,7 @@
 				}
 			}
 			var pos,
+				tree = this.tree,
 				prevParent = this.parent,
 				targetParent =
 					mode === "child" ? targetNode : targetNode.parent;
@@ -1699,10 +1781,10 @@
 				targetParent.triggerModifyChild("add", this);
 			}
 			// Handle cross-tree moves
-			if (this.tree !== targetNode.tree) {
+			if (tree !== targetNode.tree) {
 				// Fix node.tree for all source nodes
 				//			_assert(false, "Cross-tree move is not yet implemented.");
-				this.warn("Cross-tree moveTo is experimantal!");
+				this.warn("Cross-tree moveTo is experimental!");
 				this.visit(function(n) {
 					// TODO: fix selection state and activation, ...
 					n.tree = targetNode.tree;
@@ -1713,6 +1795,7 @@
 			// if( !targetParent.expanded ){
 			//   prevParent.ul.removeChild(this.li);
 			// }
+			tree._callHook("treeStructureChanged", tree, "moveTo");
 
 			// Update HTML markup
 			if (!prevParent.isDescendantOf(targetParent)) {
@@ -1768,117 +1851,38 @@
 		 * @returns {$.Promise}
 		 */
 		navigate: function(where, activate) {
-			var i,
-				parents,
-				res,
-				handled = true,
-				KC = $.ui.keyCode,
-				sib = null;
+			var node,
+				KC = $.ui.keyCode;
 
-			// Navigate to node
-			function _goto(n) {
-				if (n) {
-					// setFocus/setActive will scroll later (if autoScroll is specified)
-					try {
-						n.makeVisible({ scrollIntoView: false });
-					} catch (e) {} // #272
-					// Node may still be hidden by a filter
-					if (!$(n.span).is(":visible")) {
-						n.debug("Navigate: skipping hidden node");
-						n.navigate(where, activate);
-						return;
-					}
-					return activate === false ? n.setFocus() : n.setActive();
-				}
-			}
-
+			// Handle optional expand/collapse action for LEFT/RIGHT
 			switch (where) {
-				case KC.BACKSPACE:
-					if (this.parent && this.parent.parent) {
-						res = _goto(this.parent);
-					}
-					break;
-				case KC.HOME:
-					this.tree.visit(function(n) {
-						// goto first visible node
-						if ($(n.span).is(":visible")) {
-							res = _goto(n);
-							return false;
-						}
-					});
-					break;
-				case KC.END:
-					this.tree.visit(function(n) {
-						// goto last visible node
-						if ($(n.span).is(":visible")) {
-							res = n;
-						}
-					});
-					if (res) {
-						res = _goto(res);
-					}
-					break;
+				case "left":
 				case KC.LEFT:
 					if (this.expanded) {
-						this.setExpanded(false);
-						res = _goto(this);
-					} else if (this.parent && this.parent.parent) {
-						res = _goto(this.parent);
+						return this.setExpanded(false);
 					}
 					break;
+				case "right":
 				case KC.RIGHT:
 					if (!this.expanded && (this.children || this.lazy)) {
-						this.setExpanded();
-						res = _goto(this);
-					} else if (this.children && this.children.length) {
-						res = _goto(this.children[0]);
+						return this.setExpanded();
 					}
 					break;
-				case KC.UP:
-					sib = this.getPrevSibling();
-					// #359: skip hidden sibling nodes, preventing a _goto() recursion
-					while (sib && !$(sib.span).is(":visible")) {
-						sib = sib.getPrevSibling();
-					}
-					while (
-						sib &&
-						sib.expanded &&
-						sib.children &&
-						sib.children.length
-					) {
-						sib = sib.children[sib.children.length - 1];
-					}
-					if (!sib && this.parent && this.parent.parent) {
-						sib = this.parent;
-					}
-					res = _goto(sib);
-					break;
-				case KC.DOWN:
-					if (
-						this.expanded &&
-						this.children &&
-						this.children.length
-					) {
-						sib = this.children[0];
-					} else {
-						parents = this.getParentList(false, true);
-						for (i = parents.length - 1; i >= 0; i--) {
-							sib = parents[i].getNextSibling();
-							// #359: skip hidden sibling nodes, preventing a _goto() recursion
-							while (sib && !$(sib.span).is(":visible")) {
-								sib = sib.getNextSibling();
-							}
-							if (sib) {
-								break;
-							}
-						}
-					}
-					res = _goto(sib);
-					break;
-				default:
-					handled = false;
 			}
-			return res || _getResolvedPromise();
+			// Otherwise activate or focus the related node
+			node = this.findRelatedNode(where);
+			if (node) {
+				// setFocus/setActive will scroll later (if autoScroll is specified)
+				try {
+					node.makeVisible({ scrollIntoView: false });
+				} catch (e) {} // #272
+				if (activate === false) {
+					return node.setFocus();
+				}
+				return node.setActive();
+			}
+			this.warn("Could not find related node '" + where + "'.");
+			return _getResolvedPromise();
 		},
 		/**
 		 * Remove this node (not allowed for system root).
@@ -1954,7 +1958,7 @@
 			var res,
 				parent = this.parent,
 				pos = $.inArray(this, parent.children),
-				that = this;
+				self = this;
 
 			_assert(
 				this.isPagingNode(),
@@ -1964,7 +1968,7 @@
 			res = this.tree._callHook("nodeLoadChildren", this, source);
 			res.done(function(data) {
 				// New nodes are currently children of `this`.
-				var children = that.children;
+				var children = self.children;
 				// Prepend newly loaded child nodes to `this`
 				// Move new children after self
 				for (i = 0; i < children.length; i++) {
@@ -1976,14 +1980,14 @@
 				);
 
 				// Remove self
-				that.children = null;
-				that.remove();
+				self.children = null;
+				self.remove();
 				// Redraw new nodes
 				parent.render();
 				// TODO: set node.partload = false if this was tha last paging node?
 				// parent.addPagingNode(false);
 			}).fail(function() {
-				that.setExpanded();
+				self.setExpanded();
 			});
 			return res;
 			// $.error("Not implemented: replaceWith()");
@@ -2041,7 +2045,9 @@
 		 */
 		scrollIntoView: function(effects, options) {
 			if (options !== undefined && _isNode(options)) {
-				throw "scrollIntoView() with 'topNode' option is deprecated since 2014-05-08. Use 'options.topNode' instead.";
+				throw Error(
+					"scrollIntoView() with 'topNode' option is deprecated since 2014-05-08. Use 'options.topNode' instead."
+				);
 			}
 			// The scroll parent is typically the plain tree's <UL> container.
 			// For ext-table, we choose the nearest parent that has `position: relative`
@@ -2059,12 +2065,19 @@
 					},
 					options
 				),
-				$scrollParent = opts.scrollParent;
+				$scrollParent = opts.scrollParent,
+				$container = this.tree.$container,
+				overflowY = $container.css("overflow-y");
 
 			if (!$scrollParent) {
-				$scrollParent = this.tree.tbody
-					? this.tree.$container.scrollParent()
-					: this.tree.$container;
+				if (this.tree.tbody) {
+					$scrollParent = $container.scrollParent();
+				} else if (overflowY === "scroll" || overflowY === "auto") {
+					$scrollParent = $container;
+				} else {
+					// #922 plain tree in a non-fixed-sized UL scrolls inside its parent
+					$scrollParent = $container.scrollParent();
+				}
 			} else if (!$scrollParent.jquery) {
 				// Make sure we have a jQuery object
 				$scrollParent = $($scrollParent);
@@ -2073,7 +2086,7 @@
 				$scrollParent[0] === document ||
 				$scrollParent[0] === document.body
 			) {
-				// `document` may returned by $().scrollParent(), if nothing is found,
+				// `document` may be returned by $().scrollParent(), if nothing is found,
 				// but would not work: (see #894)
 				this.debug(
 					"scrollIntoView(): normalizing scrollParent to 'window':",
@@ -2081,13 +2094,13 @@
 				);
 				$scrollParent = $(window);
 			}
-
+			// eslint-disable-next-line one-var
 			var topNodeY,
 				nodeY,
 				horzScrollbarHeight,
 				containerOffsetTop,
 				dfd = new $.Deferred(),
-				that = this,
+				self = this,
 				nodeHeight = $(this.span).height(),
 				topOfs = opts.scrollOfs.top || 0,
 				bottomOfs = opts.scrollOfs.bottom || 0,
@@ -2100,7 +2113,7 @@
 
 			// this.debug("scrollIntoView(), scrollTop=" + scrollTop, opts.scrollOfs);
 			//		_assert($(this.span).is(":visible"), "scrollIntoView node is invisible"); // otherwise we cannot calc offsets
-			if (!$(this.span).is(":visible")) {
+			if (!this.isVisible()) {
 				// We cannot calc offsets for hidden elements
 				this.warn("scrollIntoView(): node is invisible.");
 				return _getResolvedPromise();
@@ -2117,11 +2130,9 @@
 					"scrollParent should be a simple element or `window`, not document or body."
 				);
 
-				(containerOffsetTop = $scrollParent.offset().top),
-					(nodeY =
-						$(this.span).offset().top -
-						containerOffsetTop +
-						scrollTop); // relative to scroll parent
+				containerOffsetTop = $scrollParent.offset().top;
+				nodeY =
+					$(this.span).offset().top - containerOffsetTop + scrollTop; // relative to scroll parent
 				topNodeY = topNode
 					? $(topNode.span).offset().top -
 					  containerOffsetTop +
@@ -2149,7 +2160,7 @@
 				// outside the upper border
 				if (topNode) {
 					_assert(
-						topNode.isRootNode() || $(topNode.span).is(":visible"),
+						topNode.isRootNode() || topNode.isVisible(),
 						"topNode must be visible"
 					);
 					if (topNodeY < newScrollTop) {
@@ -2159,11 +2170,13 @@
 				}
 			}
 
-			if (newScrollTop !== null) {
+			if (newScrollTop === null) {
+				dfd.resolveWith(this);
+			} else {
 				// this.debug("    scrollIntoView(), SET newScrollTop=" + newScrollTop);
 				if (opts.effects) {
 					opts.effects.complete = function() {
-						dfd.resolveWith(that);
+						dfd.resolveWith(self);
 					};
 					$animateTarget.stop(true).animate(
 						{
@@ -2175,8 +2188,6 @@
 					$animateTarget[0].scrollTop = newScrollTop;
 					dfd.resolveWith(this);
 				}
-			} else {
-				dfd.resolveWith(this);
 			}
 			return dfd.promise();
 		},
@@ -2254,6 +2265,8 @@
 				function(a, b) {
 					var x = a.title.toLowerCase(),
 						y = b.title.toLowerCase();
+
+					// eslint-disable-next-line no-nested-ternary
 					return x === y ? 0 : x > y ? 1 : -1;
 				};
 			cl.sort(cmp);
@@ -2579,6 +2592,7 @@
 	 * @property {string} statusClassPropName Property name of FancytreeNode that contains the element which will receive the status classes.
 	 *     Typically "span", but "tr" for table extension.
 	 * @property {object} types Map for shared type specific meta data, used with node.type attribute. @since 2.27
+	 * @property {object} viewport See ext-vieport. @since v2.31
 	 * @property {object} widget Base widget instance.
 	 */
 	function Fancytree(widget) {
@@ -2586,24 +2600,18 @@
 		this.$div = widget.element;
 		this.options = widget.options;
 		if (this.options) {
-			if (
-				$.isFunction(this.options.lazyload) &&
-				!$.isFunction(this.options.lazyLoad)
-			) {
-				this.options.lazyLoad = function() {
-					FT.warn(
-						"The 'lazyload' event is deprecated since 2014-02-25. Use 'lazyLoad' (with uppercase L) instead."
-					);
-					return widget.options.lazyload.apply(this, arguments);
-				};
+			if (this.options.lazyload !== undefined) {
+				$.error(
+					"The 'lazyload' event is deprecated since 2014-02-25. Use 'lazyLoad' (with uppercase L) instead."
+				);
 			}
-			if ($.isFunction(this.options.loaderror)) {
+			if (this.options.loaderror !== undefined) {
 				$.error(
 					"The 'loaderror' event was renamed since 2014-07-03. Use 'loadError' (with uppercase E) instead."
 				);
 			}
 			if (this.options.fx !== undefined) {
-				FT.warn(
+				$.error(
 					"The 'fx' option was replaced by 'toggleEffect' since 2014-11-30."
 				);
 			}
@@ -2619,7 +2627,7 @@
 		// allow to init tree.data.foo from <div data-foo=''>
 		this.data = _getElementDataAsDict(this.$div);
 		// TODO: use widget.uuid instead?
-		this._id = $.ui.fancytree._nextId++;
+		this._id = "" + (this.options.treeId || $.ui.fancytree._nextId++);
 		// TODO: use widget.eventNamespace instead?
 		this._ns = ".fancytree-" + this._id; // append for namespaced events
 		this.activeNode = null;
@@ -2632,6 +2640,7 @@
 		this.systemFocusElement = null;
 		this.lastQuicksearchTerm = "";
 		this.lastQuicksearchTime = 0;
+		this.viewport = null; // ext-grid
 
 		this.statusClassPropName = "span";
 		this.ariaPropName = "li";
@@ -2653,6 +2662,7 @@
 
 		// Create root markup
 		$ul = $("<ul>", {
+			id: "ft-id-" + this._id,
 			class: "ui-fancytree fancytree-container fancytree-plain",
 		}).appendTo(this.$div);
 		this.$container = $ul;
@@ -2774,7 +2784,10 @@
 				isMissing = required && this.ext[name] == null,
 				badOrder = !isMissing && before != null && before !== isBefore;
 
-			_assert(thisName && thisName !== name, "invalid or same name");
+			_assert(
+				thisName && thisName !== name,
+				"invalid or same name '" + thisName + "' (require yourself?)"
+			);
 
 			if (isMissing || badOrder) {
 				if (!message) {
@@ -2918,20 +2931,30 @@
 		 * @since 2.19
 		 */
 		enableUpdate: function(flag) {
-			flag = flag !== false; // Confusing use of '!'
-			/*jshint -W018 */ if (!!this._enableUpdate === !!flag) {
+			flag = flag !== false;
+			if (!!this._enableUpdate === !!flag) {
 				return flag;
 			}
-			/*jshint +W018 */
 			this._enableUpdate = flag;
 			if (flag) {
 				this.debug("enableUpdate(true): redraw "); //, this._dirtyRoots);
+				this._callHook("treeStructureChanged", this, "enableUpdate");
 				this.render();
 			} else {
 				// 	this._dirtyRoots = null;
 				this.debug("enableUpdate(false)...");
 			}
 			return !flag; // return previous value
+		},
+		/** Write error to browser console if debugLevel >= 1 (prepending tree info)
+		 *
+		 * @param {*} msg string or object or array of such
+		 */
+		error: function(msg) {
+			if (this.options.debugLevel >= 1) {
+				Array.prototype.unshift.call(arguments, this.toString());
+				consoleApply("error", arguments);
+			}
 		},
 		/** Expand (or collapse) all parent nodes.
 		 *
@@ -2943,6 +2966,8 @@
 		 * @since 2.30
 		 */
 		expandAll: function(flag, opts) {
+			var prev = this.enableUpdate(false);
+
 			flag = flag !== false;
 			this.visit(function(node) {
 				if (
@@ -2952,6 +2977,7 @@
 					node.setExpanded(flag, opts);
 				}
 			});
+			this.enableUpdate(prev);
 		},
 		/**Find all nodes that matches condition.
 		 *
@@ -2982,78 +3008,119 @@
 		 * @param {FancytreeNode} [startNode] defaults to first node
 		 * @returns {FancytreeNode} matching node or null
 		 */
-		findNextNode: function(match, startNode, visibleOnly) {
+		findNextNode: function(match, startNode) {
+			//, visibleOnly) {
+			var res = null,
+				firstNode = this.getFirstChild();
+
 			match =
 				typeof match === "string"
 					? _makeNodeTitleStartMatcher(match)
 					: match;
-			startNode = startNode || this.getFirstChild();
+			startNode = startNode || firstNode;
 
-			var stopNode = null,
-				parentChildren = startNode.parent.children,
-				matchingNode = null,
-				walkVisible = function(parent, idx, fn) {
-					var i,
-						grandParent,
-						parentChildren = parent.children,
-						siblingCount = parentChildren.length,
-						node = parentChildren[idx];
-					// visit node itself
-					if (node && fn(node) === false) {
-						return false;
-					}
-					// visit descendants
-					if (node && node.children && node.expanded) {
-						if (walkVisible(node, 0, fn) === false) {
-							return false;
-						}
-					}
-					// visit subsequent siblings
-					for (i = idx + 1; i < siblingCount; i++) {
-						if (walkVisible(parent, i, fn) === false) {
-							return false;
-						}
-					}
-					// visit parent's subsequent siblings
-					grandParent = parent.parent;
-					if (grandParent) {
-						return walkVisible(
-							grandParent,
-							grandParent.children.indexOf(parent) + 1,
-							fn
-						);
-					} else {
-						// wrap-around: restart with first node
-						return walkVisible(parent, 0, fn);
-					}
-				};
-
-			walkVisible(
-				startNode.parent,
-				parentChildren.indexOf(startNode),
-				function(node) {
-					// Stop iteration if we see the start node a second time
-					if (node === stopNode) {
-						return false;
-					}
-					stopNode = stopNode || node;
-					// Ignore nodes hidden by a filter
-					if (!$(node.span).is(":visible")) {
-						node.debug("quicksearch: skipping hidden node");
-						return;
-					}
-					// Test if we found a match, but search for a second match if this
-					// was the currently active node
-					if (match(node)) {
-						// node.debug("quicksearch match " + node.title, startNode);
-						matchingNode = node;
-						if (matchingNode !== startNode) {
-							return false;
-						}
-					}
+			function _checkNode(n) {
+				// console.log("_check " + n)
+				if (match(n)) {
+					res = n;
 				}
-			);
-			return matchingNode;
+				if (res || n === startNode) {
+					return false;
+				}
+			}
+			this.visitRows(_checkNode, {
+				start: startNode,
+				includeSelf: false,
+			});
+			// Wrap around search
+			if (!res && startNode !== firstNode) {
+				this.visitRows(_checkNode, {
+					start: firstNode,
+					includeSelf: true,
+				});
+			}
+			return res;
+		},
+		/** Find a node relative to another node.
+		 *
+		 * @param {FancytreeNode} node
+		 * @param {number|string} where The keyCode that would normally trigger this move,
+		 *		or a keyword ('down', 'first', 'last', 'left', 'parent', 'right', 'up').
+		 * @param {boolean} [includeHidden=false] Not yet implemented
+		 * @returns {FancytreeNode|null}
+		 * @since v2.31
+		 */
+		findRelatedNode: function(node, where, includeHidden) {
+			var res = null,
+				KC = $.ui.keyCode;
+
+			switch (where) {
+				case "parent":
+				case KC.BACKSPACE:
+					if (node.parent && node.parent.parent) {
+						res = node.parent;
+					}
+					break;
+				case "first":
+				case KC.HOME:
+					// First visible node
+					this.visit(function(n) {
+						if (n.isVisible()) {
+							res = n;
+							return false;
+						}
+					});
+					break;
+				case "last":
+				case KC.END:
+					this.visit(function(n) {
+						// last visible node
+						if (n.isVisible()) {
+							res = n;
+						}
+					});
+					break;
+				case "left":
+				case KC.LEFT:
+					if (node.expanded) {
+						node.setExpanded(false);
+					} else if (node.parent && node.parent.parent) {
+						res = node.parent;
+					}
+					break;
+				case "right":
+				case KC.RIGHT:
+					if (!node.expanded && (node.children || node.lazy)) {
+						node.setExpanded();
+						res = node;
+					} else if (node.children && node.children.length) {
+						res = node.children[0];
+					}
+					break;
+				case "up":
+				case KC.UP:
+					this.visitRows(
+						function(n) {
+							res = n;
+							return false;
+						},
+						{ start: node, reverse: true, includeSelf: false }
+					);
+					break;
+				case "down":
+				case KC.DOWN:
+					this.visitRows(
+						function(n) {
+							res = n;
+							return false;
+						},
+						{ start: node, includeSelf: false }
+					);
+					break;
+				default:
+					this.tree.warn("Unknown relation '" + where + "'.");
+			}
+			return res;
 		},
 		// TODO: fromDict
 		/**
@@ -3343,6 +3410,8 @@
 				i,
 				key,
 				node,
+				nodeKey,
+				remain,
 				remainMap,
 				tmpParent,
 				segList,
@@ -3439,25 +3508,27 @@
 			}
 			// remainMap contains parent nodes, each with a list of relative sub-paths.
 			// We start loading all of them now, and pass the the list to each loader.
-			for (var nodeKey in remainMap) {
-				var remain = remainMap[nodeKey];
-				// console.log("for(): remain=", remain, "remainMap=", remainMap);
-				// key = remain.segList.shift();
-				// node = __findChild(remain.parent, key);
-				// if (node == null) {  // #576
-				// 	// Issue #576, refactored for v2.27:
-				// 	// The root cause was, that sometimes the wrong parent was used here
-				// 	// to find the next segment.
-				// 	// Falling back to getNodeByKey() was a hack that no longer works if a custom
-				// 	// matcher is used, because we cannot assume that a single segment-key is unique
-				// 	// throughout the tree.
-				// 	self.error("loadKeyPath: error loading child by key '" + key + "' (parent: " + target.parent + ")", target);
-				// 	// 	node = self.getNodeByKey(key);
-				// 	continue;
-				// }
-				subDfd = new $.Deferred();
-				deferredList.push(subDfd);
-				__lazyload(subDfd, remain.parent, remain.pathSegList);
+			for (nodeKey in remainMap) {
+				if (remainMap.hasOwnProperty(nodeKey)) {
+					remain = remainMap[nodeKey];
+					// console.log("for(): remain=", remain, "remainMap=", remainMap);
+					// key = remain.segList.shift();
+					// node = __findChild(remain.parent, key);
+					// if (node == null) {  // #576
+					// 	// Issue #576, refactored for v2.27:
+					// 	// The root cause was, that sometimes the wrong parent was used here
+					// 	// to find the next segment.
+					// 	// Falling back to getNodeByKey() was a hack that no longer works if a custom
+					// 	// matcher is used, because we cannot assume that a single segment-key is unique
+					// 	// throughout the tree.
+					// 	self.error("loadKeyPath: error loading child by key '" + key + "' (parent: " + target.parent + ")", target);
+					// 	// 	node = self.getNodeByKey(key);
+					// 	continue;
+					// }
+					subDfd = new $.Deferred();
+					deferredList.push(subDfd);
+					__lazyload(subDfd, remain.parent, remain.pathSegList);
+				}
 			}
 			// Return a promise that is resolved, when ALL paths were loaded
 			return $.when.apply($, deferredList).promise();
@@ -3583,14 +3654,19 @@
 		 * @param {object} [options]
 		 *     Defaults:
 		 *     {start: First top node, reverse: false, includeSelf: true, includeHidden: false}
-		 * @returns {boolean}
+		 * @returns {boolean} false if iteration was cancelled
 		 * @since 2.28
 		 */
 		visitRows: function(fn, opts) {
+			if (!this.rootNode.children) {
+				return false;
+			}
 			if (opts && opts.reverse) {
 				delete opts.reverse;
 				return this._visitRowsUp(fn, opts);
 			}
+			opts = opts || {};
+
 			var i,
 				nextIdx,
 				parent,
@@ -3599,6 +3675,7 @@
 				siblingOfs = 0,
 				skipFirstNode = opts.includeSelf === false,
 				includeHidden = !!opts.includeHidden,
+				checkFilter = !includeHidden && this.enableFilter,
 				node = opts.start || this.rootNode.children[0];
 
 			parent = node.parent;
@@ -3609,6 +3686,9 @@
 
 				for (i = nextIdx; i < siblings.length; i++) {
 					node = siblings[i];
+					if (checkFilter && !node.match && !node.subMatchCount) {
+						continue;
+					}
 					if (!skipFirstNode && fn(node) === false) {
 						return false;
 					}
@@ -3623,6 +3703,9 @@
 						// scoped variable may lead to confusing semantics:
 						/*jshint -W083 */
 						res = node.visit(function(n) {
+							if (checkFilter && !n.match && !n.subMatchCount) {
+								return "skip";
+							}
 							if (fn(n) === false) {
 								return false;
 							}
@@ -3659,6 +3742,9 @@
 				if (children[0] === node) {
 					// If this is already the first sibling, goto parent
 					node = parent;
+					if (!node.parent) {
+						break; // first node of the tree
+					}
 					children = parent.children;
 				} else {
 					// Otherwise, goto prev. sibling
@@ -3666,6 +3752,8 @@
 					node = children[idx - 1];
 					// If the prev. sibling has children, follow down to last descendant
 					while (
+						// See: https://github.com/eslint/eslint/issues/11302
+						// eslint-disable-next-line no-unmodified-loop-condition
 						(includeHidden || node.expanded) &&
 						node.children &&
 						node.children.length
@@ -3676,7 +3764,7 @@
 					}
 				}
 				// Skip invisible
-				if (!includeHidden && !$(node.span).is(":visible")) {
+				if (!includeHidden && !node.isVisible()) {
 					continue;
 				}
 				if (fn(node) === false) {
@@ -3828,7 +3916,7 @@
 				// TODO: return promise?
 				var matchNode,
 					stamp,
-					res,
+					_res,
 					focusNode,
 					event = ctx.originalEvent,
 					node = ctx.node,
@@ -3919,7 +4007,7 @@
 					case "right":
 					case "up":
 					case "down":
-						res = node.navigate(event.which, activate);
+						_res = node.navigate(event.which, activate);
 						break;
 					default:
 						handled = false;
@@ -3950,6 +4038,7 @@
 				var ajax,
 					delay,
 					dfd,
+					res,
 					tree = ctx.tree,
 					node = ctx.node,
 					requestId = Date.now();
@@ -4101,10 +4190,7 @@
 					});
 				}
 				// #383: accept and convert ECMAScript 6 Promise
-				if (
-					$.isFunction(source.then) &&
-					$.isFunction(source["catch"])
-				) {
+				if ($.isFunction(source.then) && $.isFunction(source.catch)) {
 					dfd = source;
 					source = new $.Deferred();
 					dfd.then(
@@ -4179,7 +4265,7 @@
 				} else {
 					if (ctx.options.postProcess) {
 						// #792: Call postProcess for non-deferred source
-						var res = tree._triggerNodeEvent(
+						res = tree._triggerNodeEvent(
 							"postProcess",
 							ctx,
 							ctx.originalEvent,
@@ -4333,7 +4419,7 @@
 			 * @param {EventData} ctx
 			 */
 			nodeRemoveChildren: function(ctx) {
-				var subCtx,
+				var //subCtx,
 					tree = ctx.tree,
 					node = ctx.node,
 					children = node.children;
@@ -4353,7 +4439,7 @@
 				this.nodeRemoveChildMarkup(ctx);
 				// Unlink children to support GC
 				// TODO: also delete this.children (not possible using visit())
-				subCtx = $.extend({}, ctx);
+				// subCtx = $.extend({}, ctx);
 				node.triggerModifyChild("remove", null);
 				node.visit(function(n) {
 					n.parent = null;
@@ -4476,8 +4562,11 @@
 					}
 					// Create <li><span /> </li>
 					// node.debug("render...");
-					if (!node.li) {
-						//	            node.debug("render... really");
+					if (node.li) {
+						// this.nodeRenderTitle(ctx);
+						this.nodeRenderStatus(ctx);
+					} else {
+						// node.debug("render... really");
 						firstTime = true;
 						node.li = document.createElement("li");
 						node.li.ftnode = node;
@@ -4503,9 +4592,6 @@
 								ctx
 							);
 						}
-					} else {
-						// this.nodeRenderTitle(ctx);
-						this.nodeRenderStatus(ctx);
 					}
 					// Allow tweaking after node state was rendered
 					if (opts.renderNode) {
@@ -4562,14 +4648,14 @@
 						for (i = 0, l = children.length - 1; i < l; i++) {
 							childNode1 = children[i];
 							childNode2 = childLI.ftnode;
-							if (childNode1 !== childNode2) {
+							if (childNode1 === childNode2) {
+								childLI = childLI.nextSibling;
+							} else {
 								// node.debug("_fixOrder: mismatch at index " + i + ": " + childNode1 + " != " + childNode2);
 								node.ul.insertBefore(
 									childNode1.li,
 									childNode2.li
 								);
-							} else {
-								childLI = childLI.nextSibling;
 							}
 						}
 					}
@@ -4854,10 +4940,10 @@
 					cnList.push(cn.expanded);
 				}
 				if (aria) {
-					if (hasChildren !== false) {
-						$ariaElem.attr("aria-expanded", Boolean(node.expanded));
-					} else {
+					if (hasChildren === false) {
 						$ariaElem.removeAttr("aria-expanded");
+					} else {
+						$ariaElem.attr("aria-expanded", Boolean(node.expanded));
 					}
 				}
 				if (node.folder) {
@@ -5127,6 +5213,11 @@
 						effect = opts.toggleEffect;
 
 					node.expanded = flag;
+					tree._callHook(
+						"treeStructureChanged",
+						ctx,
+						flag ? "expand" : "collapse"
+					);
 					// Create required markup, but make sure the top UL is hidden, so we
 					// can animate later
 					tree._callHook("nodeRender", ctx, false, false, true);
@@ -5151,7 +5242,20 @@
 							// See #716, #717
 							$(node.li).addClass(cn.animating); // #717
 
-							if (!$.isFunction($(node.ul)[effect.effect])) {
+							if ($.isFunction($(node.ul)[effect.effect])) {
+								tree.debug(
+									"use jquery." + effect.effect + " method"
+								);
+								$(node.ul)[effect.effect]({
+									duration: effect.duration,
+									always: function() {
+										// node.debug("fancytree-animating end: " + node.li.className);
+										$(this).removeClass(cn.animating); // #716
+										$(node.li).removeClass(cn.animating); // #717
+										callback();
+									},
+								});
+							} else {
 								// The UI toggle() effect works with the ext-wide extension,
 								// while jQuery.animate() has problems when the title span
 								// has positon: absolute.
@@ -5180,22 +5284,7 @@
 										callback();
 									}
 								);
-							} else {
-								tree.debug(
-									"use jquery." + effect.effect + " method"
-								);
-
-								$(node.ul)[effect.effect]({
-									duration: effect.duration,
-									always: function() {
-										// node.debug("fancytree-animating end: " + node.li.className);
-										$(this).removeClass(cn.animating); // #716
-										$(node.li).removeClass(cn.animating); // #717
-										callback();
-									},
-								});
 							}
-
 							return;
 						}
 					}
@@ -5362,7 +5451,7 @@
 				node._lastSelectIntent = flag; // Confusing use of '!'
 
 				// Nothing to do?
-				/*jshint -W018 */ if (!!node.selected === flag) {
+				if (!!node.selected === flag) {
 					if (opts.selectMode === 3 && node.partsel && !flag) {
 						// If propagation prevented selecting this node last time, we still
 						// want to allow to apply setSelected(false) now
@@ -5370,7 +5459,6 @@
 						return flag;
 					}
 				}
-				/*jshint +W018 */
 
 				if (
 					!noEvents &&
@@ -5439,6 +5527,11 @@
 						} else {
 							node.children.shift();
 						}
+						tree._callHook(
+							"treeStructureChanged",
+							ctx,
+							"clearStatusNode"
+						);
 					}
 				}
 				function _setStatusNode(data, type) {
@@ -5452,6 +5545,11 @@
 						tree._callHook("nodeRenderTitle", firstChild);
 					} else {
 						node._setChildren([data]);
+						tree._callHook(
+							"treeStructureChanged",
+							ctx,
+							"setStatusNode"
+						);
 						node.children[0].statusNodeType = type;
 						tree.render();
 					}
@@ -5555,6 +5653,7 @@
 				tree.$div.find(">ul.fancytree-container").empty();
 				// TODO: call destructors and remove reference loops
 				tree.rootNode.children = null;
+				tree._callHook("treeStructureChanged", ctx, "clear");
 			},
 			/** Widget was created (called only once, even it re-initialized).
 			 * @param {EventData} ctx
@@ -5565,8 +5664,9 @@
 			 */
 			treeDestroy: function(ctx) {
 				this.$div.find(">ul.fancytree-container").remove();
-				this.$source &&
+				if (this.$source) {
 					this.$source.removeClass("fancytree-helper-hidden");
+				}
 			},
 			/** Widget was (re-)initialized.
 			 * @param {EventData} ctx
@@ -5630,7 +5730,7 @@
 					type = $container.data("type") || "html";
 					switch (type) {
 						case "html":
-							$ul = $container.find(">ul:first");
+							$ul = $container.find(">ul").first();
 							$ul.addClass(
 								"ui-fancytree-source fancytree-helper-hidden"
 							);
@@ -5679,9 +5779,17 @@
 					$.error("Not implemented");
 				}
 
+				// TODO: might be useful? Let's wait for a use case...
+				// tree._triggerTreeEvent("beforeInitLoad", null);
+
 				// Trigger fancytreeinit after nodes have been loaded
 				dfd = this.nodeLoadChildren(rootCtx, source)
 					.done(function() {
+						tree._callHook(
+							"treeStructureChanged",
+							ctx,
+							"loadChildren"
+						);
 						tree.render();
 						if (ctx.options.selectMode === 3) {
 							tree.rootNode.fixSelection3FromEndNodes();
@@ -5702,7 +5810,13 @@
 			 * @param {boolean} add
 			 * @param {FancytreeNode} node
 			 */
-			treeRegisterNode: function(ctx, add, node) {},
+			treeRegisterNode: function(ctx, add, node) {
+				ctx.tree._callHook(
+					"treeStructureChanged",
+					ctx,
+					add ? "addNode" : "removeNode"
+				);
+			},
 			/** Widget got focus.
 			 * @param {EventData} ctx
 			 * @param {boolean} [flag=true]
@@ -5729,7 +5843,9 @@
 						// #712: Use last mousedowned node ('click' event fires after focusin)
 						targetNode =
 							this._lastMousedownNode || this.getFirstChild();
-						targetNode && targetNode.setFocus();
+						if (targetNode) {
+							targetNode.setFocus();
+						}
 					}
 				}
 			},
@@ -5811,6 +5927,10 @@
 					tree.render(true, false); // force, not-deep
 				}
 			},
+			/** A Node was added, removed, moved, or it's visibility changed.
+			 * @param {EventData} ctx
+			 */
+			treeStructureChanged: function(ctx, type) {},
 		}
 	);
 
@@ -5851,7 +5971,7 @@
 				autoScroll: false,
 				checkbox: false,
 				clickFolderMode: 4,
-				debugLevel: null, // 0..4 (null: use global setting $.ui.fancytree.debugInfo)
+				debugLevel: null, // 0..4 (null: use global setting $.ui.fancytree.debugLevel)
 				disabled: false, // TODO: required anymore?
 				enableAspx: true,
 				escapeTitles: false,
@@ -5883,6 +6003,7 @@
 				tabindex: "0",
 				titlesTabbable: false,
 				tooltip: false,
+				treeId: null,
 				_classNames: {
 					node: "fancytree-node",
 					folder: "fancytree-folder",
@@ -5916,7 +6037,7 @@
 				this.$source =
 					this.source || this.element.data("type") === "json"
 						? this.element
-						: this.element.find(">ul:first");
+						: this.element.find(">ul").first();
 				// Subclass Fancytree instance with all enabled extensions
 				var extension,
 					extName,
@@ -5967,15 +6088,15 @@
 				//
 				if (opts.icons !== undefined) {
 					// 2015-11-16
-					if (opts.icon !== true) {
-						$.error(
-							"'icons' tree option is deprecated since v2.14.0: use 'icon' only instead"
-						);
-					} else {
+					if (opts.icon === true) {
 						this.tree.warn(
 							"'icons' tree option is deprecated since v2.14.0: use 'icon' instead"
 						);
 						opts.icon = opts.icons;
+					} else {
+						$.error(
+							"'icons' tree option is deprecated since v2.14.0: use 'icon' only instead"
+						);
 					}
 				}
 				if (opts.iconClass !== undefined) {
@@ -6046,7 +6167,7 @@
 			},
 			/* Add mouse and kyboard handlers to the container */
 			_bind: function() {
-				var that = this,
+				var self = this,
 					opts = this.options,
 					tree = this.tree,
 					ns = tree._ns;
@@ -6157,7 +6278,7 @@
 					})
 					.on("mousedown" + ns, function(event) {
 						var et = FT.getEventTarget(event);
-						// that.tree.debug("event(" + event.type + "): node: ", et.node);
+						// self.tree.debug("event(" + event.type + "): node: ", et.node);
 						// #712: Store the clicked node, so we can use it when we get a focusin event
 						//       ('click' event fires after focusin)
 						// tree.debug("event(" + event.type + "): node: ", et.node);
@@ -6176,15 +6297,15 @@
 						var ctx,
 							et = FT.getEventTarget(event),
 							node = et.node,
-							tree = that.tree,
+							tree = self.tree,
 							prevPhase = tree.phase;
 
-						// that.tree.debug("event(" + event.type + "): node: ", node);
+						// self.tree.debug("event(" + event.type + "): node: ", node);
 						if (!node) {
 							return true; // Allow bubbling of other events
 						}
 						ctx = tree._makeHookContext(node, event);
-						// that.tree.debug("event(" + event.type + "): node: ", node);
+						// self.tree.debug("event(" + event.type + "): node: ", node);
 						try {
 							tree.phase = "userEvent";
 							switch (event.type) {
@@ -6328,9 +6449,11 @@
 				return function() {
 					var args = arguments;
 					ctx = ctx || this;
+					// eslint-disable-next-line no-unused-expressions
 					invokeAsap && !timer && fn.apply(ctx, args);
 					clearTimeout(timer);
 					timer = setTimeout(function() {
+						// eslint-disable-next-line no-unused-expressions
 						invokeAsap || fn.apply(ctx, args);
 						timer = null;
 					}, timeout);
@@ -6340,16 +6463,17 @@
 			 * @param {string} msg
 			 */
 			debug: function(msg) {
-				/*jshint expr:true */
-				$.ui.fancytree.debugLevel >= 4 &&
+				if ($.ui.fancytree.debugLevel >= 4) {
 					consoleApply("log", arguments);
+				}
 			},
 			/** Write error message to console if debugLevel >= 1.
 			 * @param {string} msg
 			 */
 			error: function(msg) {
-				$.ui.fancytree.debugLevel >= 1 &&
+				if ($.ui.fancytree.debugLevel >= 1) {
 					consoleApply("error", arguments);
+				}
 			},
 			/** Convert &lt;, &gt;, &amp;, &quot;, &#39;, &#x2F; to the equivalent entities.
 			 *
@@ -6487,14 +6611,17 @@
 			 * @param {Element | jQueryObject | Event | integer | string} [el]
 			 * @returns {Fancytree} matching tree or null
 			 * @example
-			 * $.ui.fancytree.getTree();   // Get first Fancytree instance on page
+			 * $.ui.fancytree.getTree();  // Get first Fancytree instance on page
 			 * $.ui.fancytree.getTree(1);  // Get second Fancytree instance on page
-			 * $.ui.fancytree.getTree("#tree"); // Get tree for this matching element
+			 * $.ui.fancytree.getTree(event);  // Get tree for this mouse- or keyboard event
+			 * $.ui.fancytree.getTree("foo");  // Get tree for this `opts.treeId`
+			 * $.ui.fancytree.getTree("#tree");  // Get tree for this matching element
 			 *
 			 * @since 2.13
 			 */
 			getTree: function(el) {
-				var widget;
+				var widget,
+					orgEl = el;
 
 				if (el instanceof Fancytree) {
 					return el; // el already was a Fancytree
@@ -6505,8 +6632,12 @@
 				if (typeof el === "number") {
 					el = $(".fancytree-container").eq(el); // el was an integer: return nth instance
 				} else if (typeof el === "string") {
-					el = $(el).eq(0); // el was a selector: use first match
-				} else if (el.selector !== undefined) {
+					// `el` may be a treeId or a selector:
+					el = $("#ft-id-" + orgEl).eq(0);
+					if (!el.length) {
+						el = $(orgEl).eq(0); // el was a selector: use first match
+					}
+				} else if (el instanceof $) {
 					el = el.eq(0); // el was a jQuery object: use the first DOM element
 				} else if (el.originalEvent !== undefined) {
 					el = $(el.target); // el was an Event
@@ -6566,7 +6697,7 @@
 						res = nodeOpt;
 					}
 				} else {
-					res = nodeOpt != null ? nodeOpt : treeOpt;
+					res = nodeOpt == null ? treeOpt : nodeOpt;
 				}
 				if (res == null) {
 					res = defaultValue; // no option set at all: return default
@@ -6647,13 +6778,13 @@
 
 				if (et === "click" || et === "dblclick") {
 					s.push(MOUSE_BUTTONS[event.button] + et);
-				} else {
-					if (!IGNORE_KEYCODES[which]) {
-						s.push(
-							SPECIAL_KEYCODES[which] ||
-								String.fromCharCode(which).toLowerCase()
-						);
-					}
+				} else if (et === "wheel") {
+					s.push(et);
+				} else if (!IGNORE_KEYCODES[which]) {
+					s.push(
+						SPECIAL_KEYCODES[which] ||
+							String.fromCharCode(which).toLowerCase()
+					);
 				}
 				return s.join("+");
 			},
@@ -6661,9 +6792,9 @@
 			 * @param {string} msg
 			 */
 			info: function(msg) {
-				/*jshint expr:true */
-				$.ui.fancytree.debugLevel >= 3 &&
+				if ($.ui.fancytree.debugLevel >= 3) {
 					consoleApply("info", arguments);
+				}
 			},
 			/* @deprecated: use eventToString(event) instead.
 			 */
@@ -6712,8 +6843,6 @@
 			 * @returns {NodeData[]}
 			 */
 			parseHtml: function($ul) {
-				// TODO: understand this:
-				/*jshint validthis:true */
 				var classes,
 					className,
 					extraClasses,
@@ -6729,8 +6858,8 @@
 					var allData,
 						lowerCaseAttr,
 						$li = $(this),
-						$liSpan = $li.find(">span:first", this),
-						$liA = $liSpan.length ? null : $li.find(">a:first"),
+						$liSpan = $li.find(">span", this).first(),
+						$liA = $liSpan.length ? null : $li.find(">a").first(),
 						d = { tooltip: null, data: {} };
 
 					if ($liSpan.length) {
@@ -6790,8 +6919,7 @@
 							if (allData.hasOwnProperty(lowerCaseAttr)) {
 								allData[
 									NODE_ATTR_LOWERCASE_MAP[lowerCaseAttr]
-								] =
-									allData[lowerCaseAttr];
+								] = allData[lowerCaseAttr];
 								delete allData[lowerCaseAttr];
 							}
 						}
@@ -6808,7 +6936,7 @@
 						$.extend(d.data, allData);
 					}
 					// Recursive reading of child nodes, if LI tag contains an UL tag
-					$ul = $li.find(">ul:first");
+					$ul = $li.find(">ul").first();
 					if ($ul.length) {
 						d.children = $.ui.fancytree.parseHtml($ul);
 					} else {
@@ -6850,8 +6978,9 @@
 			 * @param {string} msg
 			 */
 			warn: function(msg) {
-				$.ui.fancytree.debugLevel >= 2 &&
+				if ($.ui.fancytree.debugLevel >= 2) {
 					consoleApply("warn", arguments);
+				}
 			},
 		}
 	);

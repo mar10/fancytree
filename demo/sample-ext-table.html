@@ -4,7 +4,7 @@
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 	<title>Fancytree - Example: Table</title>
 
-	<script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+	<script src="//code.jquery.com/jquery-3.4.1.min.js"></script>
 	<script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 
 <style type="text/css">
@@ -14,6 +14,10 @@
 		background-color: #f4f4f8;
 	}
 */
+	/* custom alignment (set by 'renderColumns'' event) */
+	table.fancytree-ext-table {
+	   width: 80%;
+	}
 	/* custom alignment (class is set by row template) */
 	td.alignCenter {
 	   text-align: center;
@@ -21,8 +25,8 @@
 	td.alignRight {
 	   text-align: right;
 	}
-
 </style>
+
 	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet">
 	<script src="../src/jquery.fancytree.js"></script>
 	<script src="../src/jquery.fancytree.table.js"></script>
@@ -49,16 +53,20 @@
 			source: {
 				url: "ajax-tree-products.json"
 			},
+			tooltip: function(event, data){
+				return data.node.data.author;
+			},
 			lazyLoad: function(event, data) {
 				data.result = {url: "ajax-sub2.json"}
 			},
 			renderColumns: function(event, data) {
 				var node = data.node,
 					$tdList = $(node.tr).find(">td");
+
 				// (index #0 is rendered by fancytree by adding the checkbox)
 				$tdList.eq(1).text(node.getIndexHier());
 				// (index #2 is rendered by fancytree)
-				$tdList.eq(3).text(node.key);
+				$tdList.eq(3).text(node.data.qty);
 				// Rendered by row template:
 //				$tdList.eq(4).html("<input type='checkbox' name='like' value='" + node.key + "'>");
 			}
@@ -108,7 +116,7 @@
 		<col width="30px"></col>
 		</colgroup>
 		<thead>
-			<tr> <th></th> <th>#</th> <th></th> <th>Key</th> <th>Like</th> </tr>
+			<tr> <th></th> <th>#</th> <th></th> <th>Qty</th> <th>Order</th> </tr>
 		</thead>
 		<!-- Optionally define a row that serves as template, when new nodes are created: -->
 		<tbody>

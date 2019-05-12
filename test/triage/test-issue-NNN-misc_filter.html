@@ -6,7 +6,7 @@
 
 	<!-- Include latest jQuery and Fancytree from CDN ... -->
 <!--
-	<script src="https://code.jquery.com/jquery-3.2.1.js"></script>
+	<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
 
 	<link href="https://cdn.jsdelivr.net/npm/jquery.fancytree/dist/skin-win8/ui.fancytree.min.css"
 		rel="stylesheet">
@@ -78,7 +78,7 @@ $(function(){
 	/*
 	 * Event handlers for our little demo interface
 	 */
-	$("input[name=search]").keyup(function(e){
+	$("input[name=search]").on("keyup", function(e){
 		var n,
 			tree = $.ui.fancytree.getTree(),
 			args = "autoApply autoExpand fuzzy hideExpanders highlight leavesOnly nodata".split(" "),

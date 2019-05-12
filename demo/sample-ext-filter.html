@@ -4,7 +4,7 @@
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 	<title>Fancytree - Example: Filter</title>
 
-	<script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+	<script src="//code.jquery.com/jquery-3.4.1.min.js"></script>
 	<script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 
 	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet">
@@ -44,24 +44,19 @@
 				nodata: true,      // Display a 'no data' status node if result is empty
 				mode: "dimm"       // Grayout unmatched nodes (pass "hide" to remove unmatched node instead)
 			},
-			activate: function(event, data) {
+			// activate: function(event, data) {
 //				alert("activate " + data.node);
-			},
+			// },
 			lazyLoad: function(event, data) {
 				data.result = {url: "ajax-sub2.json"}
 			}
-		// }).on("keydown", function(e){
-		// 	var c = String.fromCharCode(e.which);
-		// 	if( c === "F" && e.ctrlKey ) {
-		// 		$("input[name=search]").focus();
-		// 	}
 		});
 		var tree = $("#tree").fancytree("getTree");
 
 		/*
 		 * Event handlers for our little demo interface
 		 */
-		$("input[name=search]").keyup(function(e){
+		$("input[name=search]").on("keyup", function(e){
 			var n,
 				tree = $.ui.fancytree.getTree(),
 				args = "autoApply autoExpand fuzzy hideExpanders highlight leavesOnly nodata".split(" "),
@@ -122,7 +117,9 @@
 				}
 				tree.filterBranches(function(node){
 					return node.isActive();
-				});
+				}, {
+          mode: "hide",
+        });
 			}
 		});
 		addSampleButton({

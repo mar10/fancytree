@@ -1,6 +1,6 @@
-/*! jQuery Fancytree Plugin - 2.30.1 - 2018-11-13T18:58:18Z
+/*! jQuery Fancytree Plugin - 2.30.2 - 2019-01-13T08:17:01Z
   * https://github.com/mar10/fancytree
-  * Copyright (c) 2018 Martin Wendt; Licensed MIT
+  * Copyright (c) 2019 Martin Wendt; Licensed MIT
  */
 /*! jQuery UI - v1.12.1 - 2018-05-20
 * http://jqueryui.com
@@ -1361,12 +1361,12 @@ var uniqueId = $.fn.extend( {
  * Tree view control with support for lazy loading and much more.
  * https://github.com/mar10/fancytree/
  *
- * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2019, Martin Wendt (http://wwWendt.de)
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.30.1
- * @date 2018-11-13T18:58:18Z
+ * @version 2.30.2
+ * @date 2019-01-13T08:17:01Z
  */
 
 /** Core Fancytree module.
@@ -2500,18 +2500,18 @@ var uniqueId = $.fn.extend( {
 			}
 			this.renderTitle();
 			/*
-		var children = dict.children;
-		if(children === undefined){
+			var children = dict.children;
+			if(children === undefined){
+				this.data = $.extend(this.data, dict);
+				this.render();
+				return;
+			}
+			dict = $.extend({}, dict);
+			dict.children = undefined;
 			this.data = $.extend(this.data, dict);
-			this.render();
-			return;
-		}
-		dict = $.extend({}, dict);
-		dict.children = undefined;
-		this.data = $.extend(this.data, dict);
-		this.removeChildren();
-		this.addChild(children);
-*/
+			this.removeChildren();
+			this.addChild(children);
+			*/
 		},
 		/** Return the list of child nodes (undefined for unexpanded lazy nodes).
 		 * @returns {FancytreeNode[] | undefined}
@@ -2791,8 +2791,8 @@ var uniqueId = $.fn.extend( {
 			return !!this._isLoading;
 		},
 		/*
-	 * @deprecated since v2.4.0:  Use isRootNode() instead
-	 */
+		 * @deprecated since v2.4.0:  Use isRootNode() instead
+		 */
 		isRoot: function() {
 			return this.isRootNode();
 		},
@@ -3003,9 +3003,9 @@ var uniqueId = $.fn.extend( {
 				this.parent.children.splice(pos, 1);
 			}
 			// Remove from source DOM parent
-			//		if(this.parent.ul){
-			//			this.parent.ul.removeChild(this.li);
-			//		}
+			// if(this.parent.ul){
+			// 	this.parent.ul.removeChild(this.li);
+			// }
 
 			// Insert this node to target parent's child list
 			this.parent = targetParent;
@@ -3034,17 +3034,17 @@ var uniqueId = $.fn.extend( {
 				targetParent.children = [this];
 			}
 			// Parent has no <ul> tag yet:
-			//		if( !targetParent.ul ) {
-			//			// This is the parent's first child: create UL tag
-			//			// (Hidden, because it will be
-			//			targetParent.ul = document.createElement("ul");
-			//			targetParent.ul.style.display = "none";
-			//			targetParent.li.appendChild(targetParent.ul);
-			//		}
-			//		// Issue 319: Add to target DOM parent (only if node was already rendered(expanded))
-			//		if(this.li){
-			//			targetParent.ul.appendChild(this.li);
-			//		}^
+			// if( !targetParent.ul ) {
+			// 	// This is the parent's first child: create UL tag
+			// 	// (Hidden, because it will be
+			// 	targetParent.ul = document.createElement("ul");
+			// 	targetParent.ul.style.display = "none";
+			// 	targetParent.li.appendChild(targetParent.ul);
+			// }
+			// // Issue 319: Add to target DOM parent (only if node was already rendered(expanded))
+			// if(this.li){
+			// 	targetParent.ul.appendChild(this.li);
+			// }
 
 			// Let caller modify the nodes
 			if (map) {
@@ -3086,39 +3086,36 @@ var uniqueId = $.fn.extend( {
 			// TODO: fix active state
 
 			/*
-		var tree = this.tree;
-		var opts = tree.options;
-		var pers = tree.persistence;
+			var tree = this.tree;
+			var opts = tree.options;
+			var pers = tree.persistence;
 
-
-		// Always expand, if it's below minExpandLevel
-//		tree.logDebug ("%s._addChildNode(%o), l=%o", this, ftnode, ftnode.getLevel());
-		if ( opts.minExpandLevel >= ftnode.getLevel() ) {
-//			tree.logDebug ("Force expand for %o", ftnode);
-			this.bExpanded = true;
-		}
-
-		// In multi-hier mode, update the parents selection state
-		// DT issue #82: only if not initializing, because the children may not exist yet
-//		if( !ftnode.data.isStatusNode() && opts.selectMode==3 && !isInitializing )
-//			ftnode._fixSelectionState();
-
-		// In multi-hier mode, update the parents selection state
-		if( ftnode.bSelected && opts.selectMode==3 ) {
-			var p = this;
-			while( p ) {
-				if( !p.hasSubSel )
-					p._setSubSel(true);
-				p = p.parent;
+			// Always expand, if it's below minExpandLevel
+			// tree.logDebug ("%s._addChildNode(%o), l=%o", this, ftnode, ftnode.getLevel());
+			if ( opts.minExpandLevel >= ftnode.getLevel() ) {
+				// tree.logDebug ("Force expand for %o", ftnode);
+				this.bExpanded = true;
 			}
-		}
-		// render this node and the new child
-		if ( tree.bEnableUpdate )
-			this.render();
 
-		return ftnode;
+			// In multi-hier mode, update the parents selection state
+			// DT issue #82: only if not initializing, because the children may not exist yet
+			// if( !ftnode.data.isStatusNode() && opts.selectMode==3 && !isInitializing )
+			// 	ftnode._fixSelectionState();
 
-*/
+			// In multi-hier mode, update the parents selection state
+			if( ftnode.bSelected && opts.selectMode==3 ) {
+				var p = this;
+				while( p ) {
+					if( !p.hasSubSel )
+						p._setSubSel(true);
+					p = p.parent;
+				}
+			}
+			// render this node and the new child
+			if ( tree.bEnableUpdate )
+				this.render();
+			return ftnode;
+			*/
 		},
 		/** Set focus relative to this node and optionally activate.
 		 *
@@ -3391,7 +3388,7 @@ var uniqueId = $.fn.extend( {
 				default:
 					$.error("Invalid mode " + mode);
 			}
-			//        this.tree.debug("setTimeout(%s, %s): %s", mode, ms, this.tree.timer);
+			// this.tree.debug("setTimeout(%s, %s): %s", mode, ms, this.tree.timer);
 		},
 		/**
 		 *
@@ -3420,12 +3417,19 @@ var uniqueId = $.fn.extend( {
 					},
 					options
 				),
-				$scrollParent = opts.scrollParent;
+				$scrollParent = opts.scrollParent,
+				$container = this.tree.$container,
+				overflowY = $container.css("overflow-y");
 
 			if (!$scrollParent) {
-				$scrollParent = this.tree.tbody
-					? this.tree.$container.scrollParent()
-					: this.tree.$container;
+				if (this.tree.tbody) {
+					$scrollParent = $container.scrollParent();
+				} else if (overflowY === "scroll" || overflowY === "auto") {
+					$scrollParent = $container;
+				} else {
+					// #922 plain tree in a non-fixed-sized UL scrolls inside its parent
+					$scrollParent = $container.scrollParent();
+				}
 			} else if (!$scrollParent.jquery) {
 				// Make sure we have a jQuery object
 				$scrollParent = $($scrollParent);
@@ -3669,7 +3673,7 @@ var uniqueId = $.fn.extend( {
 						}
 					}
 				} else {
-					//                dict.children = null;
+					// dict.children = null;
 				}
 			}
 			return dict;
@@ -4042,11 +4046,11 @@ var uniqueId = $.fn.extend( {
 
 	Fancytree.prototype = /** @lends Fancytree# */ {
 		/* Return a context object that can be re-used for _callHook().
-	 * @param {Fancytree | FancytreeNode | EventData} obj
-	 * @param {Event} originalEvent
-	 * @param {Object} extra
-	 * @returns {EventData}
-	 */
+		 * @param {Fancytree | FancytreeNode | EventData} obj
+		 * @param {Event} originalEvent
+		 * @param {Object} extra
+		 * @returns {EventData}
+		 */
 		_makeHookContext: function(obj, originalEvent, extra) {
 			var ctx, tree;
 			if (obj.node !== undefined) {
@@ -4084,12 +4088,12 @@ var uniqueId = $.fn.extend( {
 			return ctx;
 		},
 		/* Trigger a hook function: funcName(ctx, [...]).
-	 *
-	 * @param {string} funcName
-	 * @param {Fancytree|FancytreeNode|EventData} contextObject
-	 * @param {any}  [_extraArgs] optional additional arguments
-	 * @returns {any}
-	 */
+		 *
+		 * @param {string} funcName
+		 * @param {Fancytree|FancytreeNode|EventData} contextObject
+		 * @param {any}  [_extraArgs] optional additional arguments
+		 * @returns {any}
+		 */
 		_callHook: function(funcName, contextObject, _extraArgs) {
 			var ctx = this._makeHookContext(contextObject),
 				fn = this[funcName],
@@ -4098,7 +4102,7 @@ var uniqueId = $.fn.extend( {
 				$.error("_callHook('" + funcName + "') is not a function");
 			}
 			args.unshift(ctx);
-			//		this.debug("_hook", funcName, ctx.node && ctx.node.toString() || ctx.tree.toString(), args);
+			// this.debug("_hook", funcName, ctx.node && ctx.node.toString() || ctx.tree.toString(), args);
 			return fn.apply(this, args);
 		},
 		_setExpiringValue: function(key, value, ms) {
@@ -4116,14 +4120,14 @@ var uniqueId = $.fn.extend( {
 			return null;
 		},
 		/* Check if current extensions dependencies are met and throw an error if not.
-	 *
-	 * This method may be called inside the `treeInit` hook for custom extensions.
-	 *
-	 * @param {string} extension name of the required extension
-	 * @param {boolean} [required=true] pass `false` if the extension is optional, but we want to check for order if it is present
-	 * @param {boolean} [before] `true` if `name` must be included before this, `false` otherwise (use `null` if order doesn't matter)
-	 * @param {string} [message] optional error message (defaults to a descriptve error message)
-	 */
+		 *
+		 * This method may be called inside the `treeInit` hook for custom extensions.
+		 *
+		 * @param {string} extension name of the required extension
+		 * @param {boolean} [required=true] pass `false` if the extension is optional, but we want to check for order if it is present
+		 * @param {boolean} [before] `true` if `name` must be included before this, `false` otherwise (use `null` if order doesn't matter)
+		 * @param {string} [message] optional error message (defaults to a descriptve error message)
+		 */
 		_requireExtension: function(name, required, before, message) {
 			if (before != null) {
 				before = !!before;
@@ -4231,13 +4235,13 @@ var uniqueId = $.fn.extend( {
 			return $.when.apply($, deferredList).promise();
 		},
 		/* TODO: implement in dnd extension
-	cancelDrag: function() {
-		var dd = $.ui.ddmanager.current;
-		if(dd){
-			dd.cancel();
-		}
-	},
-   */
+		cancelDrag: function() {
+				var dd = $.ui.ddmanager.current;
+				if(dd){
+					dd.cancel();
+				}
+			},
+		*/
 		/** Remove all nodes.
 		 * @since 2.14
 		 */
@@ -4591,16 +4595,16 @@ var uniqueId = $.fn.extend( {
 			}
 		},
 		/*
-	TODO: isInitializing: function() {
-		return ( this.phase=="init" || this.phase=="postInit" );
-	},
-	TODO: isReloading: function() {
-		return ( this.phase=="init" || this.phase=="postInit" ) && this.options.persist && this.persistence.cookiesFound;
-	},
-	TODO: isUserEvent: function() {
-		return ( this.phase=="userEvent" );
-	},
-*/
+		TODO: isInitializing: function() {
+			return ( this.phase=="init" || this.phase=="postInit" );
+		},
+		TODO: isReloading: function() {
+			return ( this.phase=="init" || this.phase=="postInit" ) && this.options.persist && this.persistence.cookiesFound;
+		},
+		TODO: isUserEvent: function() {
+			return ( this.phase=="userEvent" );
+		},
+		*/
 
 		/**
 		 * Make sure that a node with a given ID is loaded, by traversing - and
@@ -4697,8 +4701,8 @@ var uniqueId = $.fn.extend( {
 			return dfd.promise();
 		},
 		/*
-	 * Resolve a list of paths, relative to one parent node.
-	 */
+		 * Resolve a list of paths, relative to one parent node.
+		 */
 		_loadKeyPathImpl: function(dfd, opts, parent, pathSegList) {
 			var deferredList,
 				i,
@@ -4897,15 +4901,15 @@ var uniqueId = $.fn.extend( {
 			return includeRoot ? res : res.children;
 		},
 		/* Implicitly called for string conversions.
-	 * @returns {string}
-	 */
+		 * @returns {string}
+		 */
 		toString: function() {
 			return "Fancytree@" + this._id;
 			// return "<Fancytree(#" + this._id + ")>";
 		},
 		/* _trigger a widget event with additional node ctx.
-	 * @see EventData
-	 */
+		 * @see EventData
+		 */
 		_triggerNodeEvent: function(type, node, originalEvent, extra) {
 			//		this.debug("_trigger(" + type + "): '" + ctx.node.title + "'", ctx);
 			var ctx = this._makeHookContext(node, originalEvent, extra),
@@ -5005,7 +5009,7 @@ var uniqueId = $.fn.extend( {
 			return true;
 		},
 		/* Call fn(node) for all nodes in vertical order, bottom up.
-	 */
+		 */
 		_visitRowsUp: function(fn, opts) {
 			var children,
 				idx,
@@ -5078,7 +5082,7 @@ var uniqueId = $.fn.extend( {
 					targetType = ctx.targetType,
 					node = ctx.node;
 
-				//	    this.debug("ftnode.onClick(" + event.type + "): ftnode:" + this + ", button:" + event.button + ", which: " + event.which, ctx);
+				// this.debug("ftnode.onClick(" + event.type + "): ftnode:" + this + ", button:" + event.button + ", which: " + event.which, ctx);
 				// TODO: use switch
 				// TODO: make sure clicks on embedded <input> doesn't steal focus (see table sample)
 				if (targetType === "expander") {
@@ -5124,9 +5128,9 @@ var uniqueId = $.fn.extend( {
 					}
 					if (expand) {
 						if (!activate) {
-							//                    this._callHook("nodeSetFocus", ctx);
+							// this._callHook("nodeSetFocus", ctx);
 						}
-						//				this._callHook("nodeSetExpanded", ctx, true);
+						// this._callHook("nodeSetExpanded", ctx, true);
 						this._callHook("nodeToggleExpanded", ctx);
 					}
 				}
@@ -5201,7 +5205,15 @@ var uniqueId = $.fn.extend( {
 					// only detect plain ascii alpha-numerics. But we still need
 					// to ignore modifier-only, whitespace, cursor-keys, etc.
 					key = event.key || String.fromCharCode(which),
-					isAlnum = !MODIFIERS[which] && !SPECIAL_KEYCODES[which],
+					specialModifiers = !!(
+						event.altKey ||
+						event.ctrlKey ||
+						event.metaKey
+					),
+					isAlnum =
+						!MODIFIERS[which] &&
+						!SPECIAL_KEYCODES[which] &&
+						!specialModifiers,
 					$target = $(event.target),
 					handled = true,
 					activate = !(event.ctrlKey || !opts.autoActivate);
@@ -5768,14 +5780,14 @@ var uniqueId = $.fn.extend( {
 			 */
 			nodeRender: function(ctx, force, deep, collapsed, _recursive) {
 				/* This method must take care of all cases where the current data mode
-		 * (i.e. node hierarchy) does not match the current markup.
-		 *
-		 * - node was not yet rendered:
-		 *   create markup
-		 * - node was rendered: exit fast
-		 * - children have been added
-		 * - children have been removed
-		 */
+				 * (i.e. node hierarchy) does not match the current markup.
+				 *
+				 * - node was not yet rendered:
+				 *   create markup
+				 * - node was rendered: exit fast
+				 * - children have been added
+				 * - children have been removed
+				 */
 				var childLI,
 					childNode1,
 					childNode2,
@@ -5828,7 +5840,7 @@ var uniqueId = $.fn.extend( {
 						this.nodeRemoveMarkup(ctx);
 					}
 					// Create <li><span /> </li>
-					//			node.debug("render...");
+					// node.debug("render...");
 					if (!node.li) {
 						//	            node.debug("render... really");
 						firstTime = true;
@@ -5857,7 +5869,7 @@ var uniqueId = $.fn.extend( {
 							);
 						}
 					} else {
-						//				this.nodeRenderTitle(ctx);
+						// this.nodeRenderTitle(ctx);
 						this.nodeRenderStatus(ctx);
 					}
 					// Allow tweaking after node state was rendered
@@ -5929,7 +5941,7 @@ var uniqueId = $.fn.extend( {
 				} else {
 					// No children: remove markup if any
 					if (node.ul) {
-						//				alert("remove child markup for " + node);
+						// alert("remove child markup for " + node);
 						this.warn("remove child markup for " + node);
 						this.nodeRemoveChildMarkup(ctx);
 					}
@@ -6194,11 +6206,11 @@ var uniqueId = $.fn.extend( {
 				cnList.push(cn.node);
 				if (tree.activeNode === node) {
 					cnList.push(cn.active);
-					//			$(">span.fancytree-title", statusElem).attr("tabindex", "0");
-					//			tree.$container.removeAttr("tabindex");
+					// 		$(">span.fancytree-title", statusElem).attr("tabindex", "0");
+					// 		tree.$container.removeAttr("tabindex");
 					// }else{
-					//			$(">span.fancytree-title", statusElem).removeAttr("tabindex");
-					//			tree.$container.attr("tabindex", "0");
+					// 		$(">span.fancytree-title", statusElem).removeAttr("tabindex");
+					// 		tree.$container.attr("tabindex", "0");
 				}
 				if (tree.focusNode === node) {
 					cnList.push(cn.focused);
@@ -6274,7 +6286,7 @@ var uniqueId = $.fn.extend( {
 						(node.expanded ? "e" : "c") +
 						(node.folder ? "f" : "")
 				);
-				//        node.span.className = cnList.join(" ");
+				// node.span.className = cnList.join(" ");
 				statusElem.className = cnList.join(" ");
 
 				// TODO: we should not set this in the <span> tag also, if we set it here:
@@ -6578,19 +6590,19 @@ var uniqueId = $.fn.extend( {
 							});
 						});
 					/*
-			var source = tree._triggerNodeEvent("lazyLoad", node, ctx.originalEvent);
-			_assert(typeof source !== "boolean", "lazyLoad event must return source in data.result");
-			node.debug("nodeSetExpanded: load start...");
-			this._callHook("nodeLoadChildren", ctx, source).done(function(){
-				node.debug("nodeSetExpanded: load done");
-				if(dfd.notifyWith){ // requires jQuery 1.6+
-					dfd.notifyWith(node, ["loaded"]);
-				}
-				_afterLoad.call(tree);
-			}).fail(function(errMsg){
-				dfd.rejectWith(node, ["load failed (" + errMsg + ")"]);
-			});
-*/
+					var source = tree._triggerNodeEvent("lazyLoad", node, ctx.originalEvent);
+					_assert(typeof source !== "boolean", "lazyLoad event must return source in data.result");
+					node.debug("nodeSetExpanded: load start...");
+					this._callHook("nodeLoadChildren", ctx, source).done(function(){
+						node.debug("nodeSetExpanded: load done");
+						if(dfd.notifyWith){ // requires jQuery 1.6+
+							dfd.notifyWith(node, ["loaded"]);
+						}
+						_afterLoad.call(tree);
+					}).fail(function(errMsg){
+						dfd.rejectWith(node, ["load failed (" + errMsg + ")"]);
+					});
+					*/
 				} else {
 					_afterLoad(function() {
 						dfd.resolveWith(node);
@@ -6668,11 +6680,11 @@ var uniqueId = $.fn.extend( {
 						);
 						// "ftal_" + opts.idPrefix + node.key);
 					}
-					//			$(node.span).find(".fancytree-title").focus();
+					// $(node.span).find(".fancytree-title").focus();
 					this._triggerNodeEvent("focus", ctx);
-					//          if( opts.autoActivate ){
-					//              tree.nodeSetActive(ctx, true);
-					//          }
+					// if( opts.autoActivate ){
+					// 	tree.nodeSetActive(ctx, true);
+					// }
 					if (opts.autoScroll) {
 						node.scrollIntoView();
 					}
@@ -7193,9 +7205,9 @@ var uniqueId = $.fn.extend( {
 				ajax: {
 					type: "GET",
 					cache: false, // false: Append random '_' argument to the request url to prevent caching.
-					//          timeout: 0, // >0: Make sure we get an ajax error if server is unreachable
+					// timeout: 0, // >0: Make sure we get an ajax error if server is unreachable
 					dataType: "json", // Expect json format and pass json object to callbacks.
-				}, //
+				},
 				aria: true,
 				autoActivate: true,
 				autoCollapse: false,
@@ -7308,7 +7320,7 @@ var uniqueId = $.fn.extend( {
 							extName +
 							"'"
 					);
-					//			this.tree[extName] = extension;
+					// this.tree[extName] = extension;
 					this.tree.ext[extName] = {};
 					// Subclass Fancytree methods using proxies.
 					_subclassObject(this.tree, base, extension, extName);
@@ -7618,7 +7630,7 @@ var uniqueId = $.fn.extend( {
 		/** @lends Fancytree_Static# */
 		{
 			/** @type {string} */
-			version: "2.30.1", // Set to semver by 'grunt release'
+			version: "2.30.2", // Set to semver by 'grunt release'
 			/** @type {string} */
 			buildType: "production", // Set to 'production' by 'grunt build'
 			/** @type {int} */
@@ -7857,7 +7869,7 @@ var uniqueId = $.fn.extend( {
 					el = $(".fancytree-container").eq(el); // el was an integer: return nth instance
 				} else if (typeof el === "string") {
 					el = $(el).eq(0); // el was a selector: use first match
-				} else if (el.selector !== undefined) {
+				} else if (el instanceof $) {
 					el = el.eq(0); // el was a jQuery object: use the first DOM element
 				} else if (el.originalEvent !== undefined) {
 					el = $(el.target); // el was an Event
@@ -7950,32 +7962,32 @@ var uniqueId = $.fn.extend( {
 				}
 			},
 			/** Convert a keydown or mouse event to a canonical string like 'ctrl+a',
-	 * 'ctrl+shift+f2', 'shift+leftdblclick'.
-	 *
-	 * This is especially handy for switch-statements in event handlers.
-	 *
-	 * @param {event}
-	 * @returns {string}
-	 *
-	 * @example
+			 * 'ctrl+shift+f2', 'shift+leftdblclick'.
+			 *
+			 * This is especially handy for switch-statements in event handlers.
+			 *
+			 * @param {event}
+			 * @returns {string}
+			 *
+			 * @example
 
-	switch( $.ui.fancytree.eventToString(event) ) {
-		case "-":
-			tree.nodeSetExpanded(ctx, false);
-			break;
-		case "shift+return":
-			tree.nodeSetActive(ctx, true);
-			break;
-		case "down":
-			res = node.navigate(event.which, activate);
-			break;
-		default:
-			handled = false;
-	}
-	if( handled ){
-		event.preventDefault();
-	}
-	 */
+			switch( $.ui.fancytree.eventToString(event) ) {
+				case "-":
+					tree.nodeSetExpanded(ctx, false);
+					break;
+				case "shift+return":
+					tree.nodeSetActive(ctx, true);
+					break;
+				case "down":
+					res = node.navigate(event.which, activate);
+					break;
+				default:
+					handled = false;
+			}
+			if( handled ){
+				event.preventDefault();
+			}
+			*/
 			eventToString: function(event) {
 				// Poor-man's hotkeys. See here for a complete implementation:
 				//   https://github.com/jeresig/jquery.hotkeys
@@ -8017,7 +8029,7 @@ var uniqueId = $.fn.extend( {
 					consoleApply("info", arguments);
 			},
 			/* @deprecated: use eventToString(event) instead.
-	 */
+			 */
 			keyEventToString: function(event) {
 				this.warn(
 					"keyEventToString() is deprecated: use eventToString()"
@@ -8025,28 +8037,28 @@ var uniqueId = $.fn.extend( {
 				return this.eventToString(event);
 			},
 			/** Return a wrapped handler method, that provides `this._super`.
-	 *
-	 * @example
-		// Implement `opts.createNode` event to add the 'draggable' attribute
-		$.ui.fancytree.overrideMethod(ctx.options, "createNode", function(event, data) {
-			// Default processing if any
-			this._super.apply(this, arguments);
-			// Add 'draggable' attribute
-			data.node.span.draggable = true;
-		});
-	 *
-	 * @param {object} instance
-	 * @param {string} methodName
-	 * @param {function} handler
-	 * @param {object} [self] optional context
-	 */
-			overrideMethod: function(instance, methodName, handler, self) {
+			 *
+			 * @example
+				// Implement `opts.createNode` event to add the 'draggable' attribute
+				$.ui.fancytree.overrideMethod(ctx.options, "createNode", function(event, data) {
+					// Default processing if any
+					this._super.apply(this, arguments);
+					// Add 'draggable' attribute
+					data.node.span.draggable = true;
+				});
+			 *
+			 * @param {object} instance
+			 * @param {string} methodName
+			 * @param {function} handler
+			 * @param {object} [context] optional context
+			 */
+			overrideMethod: function(instance, methodName, handler, context) {
 				var prevSuper,
 					_super = instance[methodName] || $.noop;
 
-				self = self || this;
-
 				instance[methodName] = function() {
+					var self = context || this;
+
 					try {
 						prevSuper = self._super;
 						self._super = _super;
@@ -8166,7 +8178,7 @@ var uniqueId = $.fn.extend( {
 						d.children = d.lazy ? undefined : null;
 					}
 					children.push(d);
-					//            FT.debug("parse ", d, children);
+					// FT.debug("parse ", d, children);
 				});
 				return children;
 			},
@@ -8228,13 +8240,13 @@ var uniqueId = $.fn.extend( {
  * Add a child counter bubble to tree nodes.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2019, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.30.1
- * @date 2018-11-13T18:58:18Z
+ * @version 2.30.2
+ * @date 2019-01-13T08:17:01Z
  */
 
 // To keep the global namespace clean, we wrap everything in a closure.
@@ -8353,7 +8365,7 @@ var uniqueId = $.fn.extend( {
 		// Every extension must be registered by a unique name.
 		name: "childcounter",
 		// Version information should be compliant with [semver](http://semver.org)
-		version: "2.30.1",
+		version: "2.30.2",
 
 		// Extension specific options and their defaults.
 		// This options will be available as `tree.options.childcounter.hideExpanded`
@@ -8459,13 +8471,13 @@ var uniqueId = $.fn.extend( {
  * Support faster lookup of nodes by key and shared ref-ids.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2019, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.30.1
- * @date 2018-11-13T18:58:18Z
+ * @version 2.30.2
+ * @date 2019-01-13T08:17:01Z
  */
 
 (function(factory) {
@@ -8815,7 +8827,7 @@ var uniqueId = $.fn.extend( {
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "clones",
-		version: "2.30.1",
+		version: "2.30.2",
 		// Default options for this extension.
 		options: {
 			highlightActiveClones: true, // set 'fancytree-active-clone' on active clones and all peers
@@ -8963,13 +8975,13 @@ var uniqueId = $.fn.extend( {
  * Drag-and-drop support (native HTML5).
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2019, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.30.1
- * @date 2018-11-13T18:58:18Z
+ * @version 2.30.2
+ * @date 2019-01-13T08:17:01Z
  */
 
 /*
@@ -9040,10 +9052,10 @@ var uniqueId = $.fn.extend( {
 	}
 
 	/* Convert a dragEnter() or dragOver() response to a canonical form.
- * Return false or plain object
- * @param {string|object|boolean} r
- * @return {object|false}
- */
+	 * Return false or plain object
+	 * @param {string|object|boolean} r
+	 * @return {object|false}
+	 */
 	function normalizeDragEnterResponse(r) {
 		var res;
 
@@ -9137,7 +9149,7 @@ var uniqueId = $.fn.extend( {
 		}
 		// Bail out with previous response if we get an invalid dragover
 		if (!data.node) {
-			data.tree.warn("Ignore dragover for non-node"); //, event, data);
+			data.tree.warn("Ignored dragover for non-node"); //, event, data);
 			return LAST_HIT_MODE;
 		}
 
@@ -9156,8 +9168,7 @@ var uniqueId = $.fn.extend( {
 			$targetTitle = $target.find("span.fancytree-title");
 
 		if (DRAG_ENTER_RESPONSE === false) {
-			tree.info("Ignore dragover, since dragenter returned false"); //, event, data);
-			// $.error("assert failed: dragenter returned false");
+			tree.debug("Ignored dragover, since dragenter returned false.");
 			return false;
 		} else if (typeof DRAG_ENTER_RESPONSE === "string") {
 			$.error("assert failed: dragenter returned string");
@@ -9281,14 +9292,14 @@ var uniqueId = $.fn.extend( {
 	}
 
 	/* Guess dropEffect from modifier keys.
- * Safari:
- *     It seems that `dataTransfer.dropEffect` can only be set on dragStart, and will remain
- *     even if the cursor changes when [Alt] or [Ctrl] are pressed (?)
- * Using rules suggested here:
- *     https://ux.stackexchange.com/a/83769
- * @returns
- *     'copy', 'link', 'move', or 'none'
- */
+	 * Safari:
+	 *     It seems that `dataTransfer.dropEffect` can only be set on dragStart, and will remain
+	 *     even if the cursor changes when [Alt] or [Ctrl] are pressed (?)
+	 * Using rules suggested here:
+	 *     https://ux.stackexchange.com/a/83769
+	 * @returns
+	 *     'copy', 'link', 'move', or 'none'
+	 */
 	function getDropEffect(event, data) {
 		var dndOpts = data.options.dnd5,
 			res = dndOpts.dropEffectDefault;
@@ -9332,7 +9343,7 @@ var uniqueId = $.fn.extend( {
 
 	$.ui.fancytree.registerExtension({
 		name: "dnd5",
-		version: "2.30.1",
+		version: "2.30.2",
 		// Default options for this extension.
 		options: {
 			autoExpandMS: 1500, // Expand nodes after n milliseconds of hovering
@@ -9390,7 +9401,6 @@ var uniqueId = $.fn.extend( {
 				) {
 					// Default processing if any
 					this._super.apply(this, arguments);
-
 					data.node.span.draggable = true;
 				});
 			}
@@ -9440,7 +9450,7 @@ var uniqueId = $.fn.extend( {
 							options: tree.options,
 							originalEvent: event,
 							dataTransfer: dataTransfer,
-							//						dropEffect: undefined,  // set by dragend
+							// dropEffect: undefined,  // set by dragend
 							isCancelled: undefined, // set by dragend
 						},
 						dropEffect = getDropEffect(event, data),
@@ -9449,6 +9459,10 @@ var uniqueId = $.fn.extend( {
 					// console.log(event.type, "dropEffect: " + dropEffect);
 					switch (event.type) {
 						case "dragstart":
+							if (!node) {
+								tree.info("Ignored dragstart on a non-node.");
+								return false;
+							}
 							// Store current source node in different formats
 							SOURCE_NODE = node;
 
@@ -9558,7 +9572,12 @@ var uniqueId = $.fn.extend( {
 								}
 							}
 							// Let user modify above settings
-							return dndOpts.dragStart(node, data) !== false;
+							if (dndOpts.dragStart(node, data) !== false) {
+								return true;
+							}
+							// Clear dragged node to be safe
+							_clearGlobals();
+							return false;
 
 						case "drag":
 							// Called every few miliseconds
@@ -9569,7 +9588,7 @@ var uniqueId = $.fn.extend( {
 
 						case "dragend":
 							_clearGlobals();
-							//					data.dropEffect = dropEffect;
+							// data.dropEffect = dropEffect;
 							data.isCancelled = dropEffect === "none";
 							$dropMarker.hide();
 							// Take this badge off of me - I can't use it anymore:
@@ -9590,6 +9609,7 @@ var uniqueId = $.fn.extend( {
 					function(event) {
 						var json,
 							nodeData,
+							isSourceFtNode,
 							r,
 							res,
 							allowDrop = null,
@@ -9638,7 +9658,18 @@ var uniqueId = $.fn.extend( {
 										classDropAccept + " " + classDropReject
 									);
 
-								if (dndOpts.preventNonNodes && !nodeData) {
+								// Data is only readable in the dragstart and drop event,
+								// but we can check for the type:
+								isSourceFtNode =
+									$.inArray(
+										nodeMimeType,
+										dataTransfer.types
+									) >= 0;
+
+								if (
+									dndOpts.preventNonNodes &&
+									!isSourceFtNode
+								) {
 									node.debug("Reject dropping a non-node.");
 									DRAG_ENTER_RESPONSE = false;
 									break;
@@ -9749,7 +9780,7 @@ var uniqueId = $.fn.extend( {
 									break;
 								}
 								if (!$(node.span).hasClass(classDropOver)) {
-									node.debug("Ignore dragleave (multi)"); //, event.currentTarget);
+									node.debug("Ignore dragleave (multi).");
 									break;
 								}
 								$(node.span).removeClass(
@@ -9765,7 +9796,7 @@ var uniqueId = $.fn.extend( {
 								break;
 
 							case "drop":
-								// Data is only readable in the (dragenter and) drop event:
+								// Data is only readable in the (dragstart and) drop event:
 
 								if (
 									$.inArray(
@@ -9858,13 +9889,13 @@ var uniqueId = $.fn.extend( {
  * Make node titles editable.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2019, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.30.1
- * @date 2018-11-13T18:58:18Z
+ * @version 2.30.2
+ * @date 2019-01-13T08:17:01Z
  */
 
 (function(factory) {
@@ -9931,6 +9962,12 @@ var uniqueId = $.fn.extend( {
 
 		// Disable standard Fancytree mouse- and key handling
 		tree.widget._unbind();
+
+		local.lastDraggableAttrValue = node.span.draggable;
+		if (local.lastDraggableAttrValue) {
+			node.span.draggable = false;
+		}
+
 		// #116: ext-dnd prevents the blur event, so we have to catch outer clicks
 		$(document).on("mousedown.fancytree-edit", function(event) {
 			if (!$(event.target).hasClass("fancytree-edit-input")) {
@@ -10059,6 +10096,11 @@ var uniqueId = $.fn.extend( {
 		local.relatedNode = null;
 		// Re-enable mouse and keyboard handling
 		tree.widget._bind();
+
+		if (local.lastDraggableAttrValue) {
+			node.span.draggable = true;
+		}
+
 		// Set keyboard focus, even if setFocus() claims 'nothing to do'
 		$(tree.$container).focus();
 		eventData.input = null;
@@ -10145,7 +10187,7 @@ var uniqueId = $.fn.extend( {
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "edit",
-		version: "2.30.1",
+		version: "2.30.2",
 		// Default options for this extension.
 		options: {
 			adjustWidthOfs: 4, // null: don't adjust input size to content
@@ -10238,13 +10280,13 @@ var uniqueId = $.fn.extend( {
  * Remove or highlight tree nodes, based on a filter.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2019, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.30.1
- * @date 2018-11-13T18:58:18Z
+ * @version 2.30.2
+ * @date 2019-01-13T08:17:01Z
  */
 
 (function(factory) {
@@ -10578,7 +10620,7 @@ var uniqueId = $.fn.extend( {
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "filter",
-		version: "2.30.1",
+		version: "2.30.2",
 		// Default options for this extension.
 		options: {
 			autoApply: true, // Re-apply last filter if lazy data is loaded
@@ -10692,13 +10734,13 @@ var uniqueId = $.fn.extend( {
  * Use glyph-fonts, ligature-fonts, or SVG icons instead of icon sprites.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2019, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.30.1
- * @date 2018-11-13T18:58:18Z
+ * @version 2.30.2
+ * @date 2019-01-13T08:17:01Z
  */
 
 (function(factory) {
@@ -10786,7 +10828,7 @@ var uniqueId = $.fn.extend( {
 				radioSelected: "fas fa-circle",
 				radioUnknown: "far fa-dot-circle",
 				dragHelper: "fas fa-arrow-right",
-				dropMarker: "fas fa-long-arrow-right",
+				dropMarker: "fas fa-long-arrow-alt-right",
 				error: "fas fa-exclamation-triangle",
 				expanderClosed: "fas fa-caret-right",
 				expanderLazy: "fas fa-angle-right",
@@ -10878,7 +10920,7 @@ var uniqueId = $.fn.extend( {
 
 	$.ui.fancytree.registerExtension({
 		name: "glyph",
-		version: "2.30.1",
+		version: "2.30.2",
 		// Default options for this extension.
 		options: {
 			preset: null, // 'awesome3', 'awesome4', 'bootstrap3', 'material'
@@ -11026,13 +11068,13 @@ var uniqueId = $.fn.extend( {
  * Support keyboard navigation for trees with embedded input controls.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2019, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.30.1
- * @date 2018-11-13T18:58:18Z
+ * @version 2.30.2
+ * @date 2019-01-13T08:17:01Z
  */
 
 (function(factory) {
@@ -11149,7 +11191,7 @@ var uniqueId = $.fn.extend( {
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "gridnav",
-		version: "2.30.1",
+		version: "2.30.2",
 		// Default options for this extension.
 		options: {
 			autofocusInput: false, // Focus first embedded input if node gets activated
@@ -11248,13 +11290,13 @@ var uniqueId = $.fn.extend( {
  * Allow multiple selection of nodes  by mouse or keyboard.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2019, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.30.1
- * @date 2018-11-13T18:58:18Z
+ * @version 2.30.2
+ * @date 2019-01-13T08:17:01Z
  */
 
 (function(factory) {
@@ -11283,7 +11325,7 @@ var uniqueId = $.fn.extend( {
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "multi",
-		version: "2.30.1",
+		version: "2.30.2",
 		// Default options for this extension.
 		options: {
 			allowNoSelect: false, //
@@ -11348,7 +11390,8 @@ var uniqueId = $.fn.extend( {
 		nodeKeydown: function(ctx) {
 			var tree = ctx.tree,
 				node = ctx.node,
-				eventStr = $.ui.fancytree.eventToString(ctx.originalEvent);
+				event = ctx.originalEvent,
+				eventStr = $.ui.fancytree.eventToString(event);
 
 			switch (eventStr) {
 				case "up":
@@ -11379,13 +11422,13 @@ var uniqueId = $.fn.extend( {
  *
  * @depends: js-cookie or jquery-cookie
  *
- * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2019, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.30.1
- * @date 2018-11-13T18:58:18Z
+ * @version 2.30.2
+ * @date 2019-01-13T08:17:01Z
  */
 
 (function(factory) {
@@ -11585,7 +11628,7 @@ var uniqueId = $.fn.extend( {
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "persist",
-		version: "2.30.1",
+		version: "2.30.2",
 		// Default options for this extension.
 		options: {
 			cookieDelimiter: "~",
@@ -11873,13 +11916,13 @@ var uniqueId = $.fn.extend( {
  * Render tree as table (aka 'tree grid', 'table tree').
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2019, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.30.1
- * @date 2018-11-13T18:58:18Z
+ * @version 2.30.2
+ * @date 2019-01-13T08:17:01Z
  */
 
 (function(factory) {
@@ -11972,7 +12015,7 @@ var uniqueId = $.fn.extend( {
 
 	$.ui.fancytree.registerExtension({
 		name: "table",
-		version: "2.30.1",
+		version: "2.30.2",
 		// Default options for this extension.
 		options: {
 			checkboxColumnIdx: null, // render the checkboxes into the this column index (default: nodeColumnIdx)
@@ -12433,13 +12476,13 @@ var uniqueId = $.fn.extend( {
  *
  * @see http://jqueryui.com/themeroller/
  *
- * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2019, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.30.1
- * @date 2018-11-13T18:58:18Z
+ * @version 2.30.2
+ * @date 2019-01-13T08:17:01Z
  */
 
 (function(factory) {
@@ -12462,7 +12505,7 @@ var uniqueId = $.fn.extend( {
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "themeroller",
-		version: "2.30.1",
+		version: "2.30.2",
 		// Default options for this extension.
 		options: {
 			activeClass: "ui-state-active", // Class added to active node
@@ -12555,13 +12598,13 @@ var uniqueId = $.fn.extend( {
  * Support for 100% wide selection bars.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2019, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.30.1
- * @date 2018-11-13T18:58:18Z
+ * @version 2.30.2
+ * @date 2019-01-13T08:17:01Z
  */
 
 (function(factory) {
@@ -12691,7 +12734,7 @@ var uniqueId = $.fn.extend( {
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "wide",
-		version: "2.30.1",
+		version: "2.30.2",
 		// Default options for this extension.
 		options: {
 			iconWidth: null, // Adjust this if @fancy-icon-width != "16px"

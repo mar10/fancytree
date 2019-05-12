@@ -4,7 +4,7 @@
  * Make node titles editable.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2018, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2019, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -77,6 +77,12 @@
 
 		// Disable standard Fancytree mouse- and key handling
 		tree.widget._unbind();
+
+		local.lastDraggableAttrValue = node.span.draggable;
+		if (local.lastDraggableAttrValue) {
+			node.span.draggable = false;
+		}
+
 		// #116: ext-dnd prevents the blur event, so we have to catch outer clicks
 		$(document).on("mousedown.fancytree-edit", function(event) {
 			if (!$(event.target).hasClass("fancytree-edit-input")) {
@@ -108,7 +114,7 @@
 			.change(function(event) {
 				$input.addClass("fancytree-edit-dirty");
 			})
-			.keydown(function(event) {
+			.on("keydown", function(event) {
 				switch (event.which) {
 					case $.ui.keyCode.ESCAPE:
 						node.editEnd(false, event);
@@ -205,6 +211,13 @@
 		local.relatedNode = null;
 		// Re-enable mouse and keyboard handling
 		tree.widget._bind();
+
+		if (local.lastDraggableAttrValue) {
+			node.span.draggable = true;
+		}
+
+		// Set keyboard focus, even if setFocus() claims 'nothing to do'
+		$(tree.$container).focus();
 		eventData.input = null;
 		instOpts.close.call(node, { type: "close" }, eventData);
 		return true;
@@ -310,8 +323,21 @@
 		currentNode: null,
 
 		treeInit: function(ctx) {
+			var tree = ctx.tree;
+
 			this._superApply(arguments);
-			this.$container.addClass("fancytree-ext-edit");
+
+			this.$container
+				.addClass("fancytree-ext-edit")
+				.on("fancytreebeforeupdateviewport", function(event, data) {
+					var editNode = tree.isEditing();
+					// When scrolling, the TR may be re-used by another node, so the
+					// active cell marker an
+					if (editNode) {
+						editNode.info("Cancel edit due to scroll event.");
+						editNode.editEnd(false, event);
+					}
+				});
 		},
 		nodeClick: function(ctx) {
 			var eventStr = $.ui.fancytree.eventToString(ctx.originalEvent),
