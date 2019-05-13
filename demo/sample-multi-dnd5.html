@@ -67,24 +67,26 @@
 				// refreshPositions: true,
 				dragStart: function(node, data) {
 					// allow dragging `node`:
-					data.dataTransfer.dropEffect = "move";
+					data.effectAllowed = "all";
+					data.dropEffect = data.dropEffectSuggested;  //"link";
+ 					// data.dropEffect = "move";
 					return true;
 				},
 				// dragDrag: function(node, data) {
 				// 	data.node.info("dragDrag", data);
-				// 	data.dataTransfer.dropEffect = "copy";
+				// 	data.dropEffect = "copy";
 				// 	return true;
 				// },
 				dragEnter: function(node, data) {
 					data.node.info("dragEnter", data);
-					data.dataTransfer.dropEffect = "link";
+					// data.dropEffect = "link";
 					return true;
 				},
-				// dragOver: function(node, data) {
-				// 	data.node.info("dragOver", data);
-				// 	data.dataTransfer.dropEffect = "link";
-				// 	return true;
-				// },
+				dragOver: function(node, data) {
+					// data.node.info("dragOver", data);
+					data.dropEffect = data.dropEffectSuggested;  //"link";
+					return true;
+				},
 				dragEnd: function(node, data) {
 					data.node.info("dragEnd", data);
 				},
@@ -98,18 +100,22 @@
 					//
 					// We may access some meta data to decide what to do:
 					//   `data.hitMode` ("before", "after", or "over").
-					//   `data.dataTransfer.dropEffect`, `.effectAllowed`
+					//   `data.dropEffect`, `.effectAllowed`
 					//   `data.originalEvent.shiftKey`, ...
 					//
 					// Example:
 
-					var dataTransfer = data.dataTransfer,
-						sourceNodes = data.otherNodeList,
-						event = data.originalEvent,
-						copyMode = event.ctrlKey || event.altKey;
+					var sourceNodes = data.otherNodeList,
+						copyMode = data.dropEffect !== "move";
 
+          if( data.hitMode === "after" ){
+            // If node are inserted directly after tagrget node one-by-one,
+            // this would reverse them. So we compensate:
+            sourceNodes.reverse();
+          }
 					if( copyMode ) {
 						$.each(sourceNodes, function(i, o){
+              o.info("copy to " + node + ": " + data.hitMode);
 							o.copyTo(node, data.hitMode, function(n){
 								delete n.key;
 								n.selected = false;
@@ -118,12 +124,13 @@
 						});
 					} else {
 						$.each(sourceNodes, function(i, o){
+              o.info("move to " + node + ": " + data.hitMode);
 							o.moveTo(node, data.hitMode);
 						});
 					}
 					node.debug("drop", data);
 					node.setExpanded();
-				  }
+				}
 			}
 		});
 

@@ -166,6 +166,7 @@ $(function() {
           */
         var newNode,
           transfer = data.dataTransfer,
+          sourceNodes = data.otherNodeList,
           mode = data.dropEffect;
 
         node.debug( "T1: dragDrop: effect=" + "data: " + data.dropEffect + "/" + data.effectAllowed +
@@ -177,6 +178,11 @@ $(function() {
           + ", dropEffect:" + data.dropEffect
           + ", effectAllowed:" + data.effectAllowed);
 
+        if( data.hitMode === "after" ){
+          // If node are inserted directly after tagrget node one-by-one,
+          // this would reverse them. So we compensate:
+          sourceNodes.reverse();
+        }
         if (data.otherNode) {
           // Drop another Fancytree node from same frame (maybe a different tree however)
           var sameTree = (data.otherNode.tree === data.tree);
@@ -186,7 +192,7 @@ $(function() {
           } else {
             newNode = data.otherNode.copyTo(node, data.hitMode);
             if (mode === "link") {
-              newNode.setTitle(newNode.title + " (link)");
+              newNode.setTitle("Link to " + newNode.title);
             } else {
               newNode.setTitle("Copy of " + newNode.title);
             }
@@ -262,6 +268,7 @@ $(function() {
       dragDrop: function(node, data) {
         var newNode,
           transfer = data.dataTransfer,
+          sourceNodes = data.otherNodeList,
           mode = data.dropEffect;
 
         // don't open links, files, ... even if an error occurs in this handler:
@@ -270,6 +277,11 @@ $(function() {
         node.debug( "T2: dragDrop: effect=" + "data: " + data.dropEffect + "/" + data.effectAllowed +
           ", dataTransfer: " + data.dataTransfer.dropEffect + "/" + data.dataTransfer.effectAllowed, data );
 
+        if( data.hitMode === "after" ){
+          // If node are inserted directly after tagrget node one-by-one,
+          // this would reverse them. So we compensate:
+          sourceNodes.reverse();
+        }
         if (data.otherNode) {
           // Drop another Fancytree node from same frame
           // (maybe from another tree however)
@@ -280,7 +292,7 @@ $(function() {
           } else {
             newNode = data.otherNode.copyTo(node, data.hitMode);
             if (mode === "link") {
-              newNode.setTitle(newNode.title + " (link)");
+              newNode.setTitle("Link to " + newNode.title);
             } else {
               newNode.setTitle("Copy of " + newNode.title);
             }
