@@ -403,6 +403,17 @@ span.fancytree-checkbox {
 	}
 }
 
+.fancytree-select-hover .fancytree-container {
+	span.fancytree-checkbox {
+		visibility: hidden;
+	}
+	.fancytree-node.fancytree-selected span.fancytree-checkbox,
+	.fancytree-node.fancytree-active span.fancytree-checkbox,
+	.fancytree-node:hover span.fancytree-checkbox {
+		visibility: unset;
+	}
+}
+
 /*------------------------------------------------------------------------------
  * Node type icon
  * Note: IE6 doesn't correctly evaluate multiples class names,

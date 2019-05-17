@@ -11,7 +11,7 @@
  *
  * This section is automatically generated from the `skin-common.less` template.
  *
- * Copyright (c) 2008-2019, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2019, Martin Wendt (https://wwWendt.de)
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
@@ -286,6 +286,14 @@ span.fancytree-checkbox.fancytree-radio:hover {
 }
 .fancytree-unselectable.fancytree-selected span.fancytree-checkbox:hover {
   background-position: -32px -32px;
+}
+.fancytree-select-hover .fancytree-container span.fancytree-checkbox {
+  visibility: hidden;
+}
+.fancytree-select-hover .fancytree-container .fancytree-node.fancytree-selected span.fancytree-checkbox,
+.fancytree-select-hover .fancytree-container .fancytree-node.fancytree-active span.fancytree-checkbox,
+.fancytree-select-hover .fancytree-container .fancytree-node:hover span.fancytree-checkbox {
+  visibility: unset;
 }
 /*------------------------------------------------------------------------------
  * Node type icon
