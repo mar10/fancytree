@@ -5876,6 +5876,12 @@
 						callCreate = true;
 						callRender = true;
 						break;
+					case "checkboxAutoHide":
+						tree.$container.toggleClass(
+							"fancytree-checkbox-auto-hide",
+							!!value
+						);
+						break;
 					case "escapeTitles":
 					case "tooltip":
 						callRender = true;
