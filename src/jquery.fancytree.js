@@ -5690,6 +5690,9 @@
 					}
 				});
 
+				if (opts.checkboxAutoHide) {
+					tree.$container.addClass("fancytree-checkbox-auto-hide");
+				}
 				if (opts.rtl) {
 					tree.$container
 						.attr("DIR", "RTL")
@@ -5875,6 +5878,12 @@
 						// tree._callHook("treeCreate", tree);
 						callCreate = true;
 						callRender = true;
+						break;
+					case "checkboxAutoHide":
+						tree.$container.toggleClass(
+							"fancytree-checkbox-auto-hide",
+							!!value
+						);
 						break;
 					case "escapeTitles":
 					case "tooltip":
