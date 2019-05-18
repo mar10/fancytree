@@ -453,19 +453,23 @@ span.fancytree-checkbox {
 	}
 }
 
+// Auto-hide checkboxes unless selected or hovered
 .fancytree-container.fancytree-checkbox-auto-hide {
 	span.fancytree-checkbox {
 		visibility: hidden;
 	}
+  .fancytree-node:hover span.fancytree-checkbox,
+	tr:hover td span.fancytree-checkbox,
 	.fancytree-node.fancytree-selected span.fancytree-checkbox,
-	.fancytree-node:hover span.fancytree-checkbox {
+	tr.fancytree-selected td span.fancytree-checkbox {
 		visibility: unset;
 	}
-}
-.fancytree-container.fancytree-checkbox-auto-hide.fancytree-treefocus {
-	.fancytree-node.fancytree-active span.fancytree-checkbox {
-		visibility: unset;
-	}
+  &.fancytree-treefocus {
+    .fancytree-node.fancytree-active span.fancytree-checkbox,
+    tr.fancytree-active td span.fancytree-checkbox {
+      visibility: unset;
+    }
+  }
 }
 
 /*------------------------------------------------------------------------------

@@ -5690,6 +5690,9 @@
 					}
 				});
 
+				if (opts.checkboxAutoHide) {
+					tree.$container.addClass("fancytree-checkbox-auto-hide");
+				}
 				if (opts.rtl) {
 					tree.$container
 						.attr("DIR", "RTL")
