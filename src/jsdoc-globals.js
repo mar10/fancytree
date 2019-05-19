@@ -150,6 +150,10 @@ var TreePatch = {};
  *     "radio": display a radio button in front of the node. This does not modify the selection behavior.<br>
  *     function(event, data): callback returning true, false, or a string.<br>
  *     NOTE: changed with v2.23.
+ * @property {boolean} checkboxAutoHide Hide checkboxes unless selected or hovered.<br>
+ *     This mimics Windows File Explorer 'Use check boxes to select items' mode.<br>
+ *     (default: false, requires checkboxes enabled).
+ *     @since 2.31
  * @property {Integer} clickFolderMode Defines what happens, when the user click a folder node.<br>1:activate, 2:expand, 3:activate and expand, 4:activate/dblclick expands  (default: 4)
  * @property {object|array} columns Made available as `tree.columns`.<br>
  *     Recommended place to store shared data for column rendering.

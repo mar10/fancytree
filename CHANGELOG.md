@@ -19,6 +19,7 @@
   * [Added] method `node.getPath()`
   * [Added] methods `$.ui.fancytree.getDragNode()`, `$.ui.fancytree.getDragNodeList()`
   * [Added] event `updateViewport`
+  * [Added] tree option `.checkboxAutoHide` to hide checkboxes unless selected or hovered.
   * [Added] tree option `.treeId` to prevent generation of a new sequence if the tree is re-initialized on a page.
   * [Changed] `.getTree()` now also accepts the tree id string
   * [Changed] #939: Keep a `partsel` flag that was explicitly set on a lazy node

@@ -63,6 +63,9 @@ $(function(){
 	$("#cbCheckboxes").on("change", function(){
 		$.ui.fancytree.getTree( "#tree" ).setOption("checkbox", $(this).is(":checked"));
 	});
+	$("#cbCheckboxAutoHide").on("change", function(){
+		$.ui.fancytree.getTree( "#tree" ).setOption("checkboxAutoHide", $(this).is(":checked"));
+	});
 });
 </script>
 <!-- End_Exclude -->
@@ -98,6 +101,8 @@ $(function(){
 		</select>
 		<input id="cbCheckboxes" type="checkbox" checked>
 		<label for="cbCheckboxes">Show checkboxes</label>
+		<input id="cbCheckboxAutoHide" type="checkbox">
+		<label for="cbCheckboxAutoHide">Auto-hide checkboxes</label>
 	</div>
 
 	<div id="tree">
