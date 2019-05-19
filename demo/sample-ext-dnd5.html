@@ -140,6 +140,7 @@ $(function() {
       // dragEnd: function(node, data) {
       //   node.debug( "T1: dragEnd: " + "data: " + data.dropEffect + "/" + data.effectAllowed +
       //     ", dataTransfer: " + data.dataTransfer.dropEffect + "/" + data.dataTransfer.effectAllowed, data);
+      //     alert("T1: dragEnd")
       // },
 
       // --- Drop-support:
@@ -252,6 +253,11 @@ $(function() {
           data.dropEffect = data.dropEffectSuggested;
           return true;
       },
+      // dragEnd: function(node, data) {
+      //   node.warn( "T2: dragEnd: " + "data: " + data.dropEffect + "/" + data.effectAllowed +
+      //     ", dataTransfer: " + data.dataTransfer.dropEffect + "/" + data.dataTransfer.effectAllowed, data );
+      //     alert("T2: dragEnd")
+      // },
       // --- Drop-support:
       dragEnter: function(node, data) {
         node.debug( "T2: dragEnter: " + "data: " + data.dropEffect + "/" + data.effectAllowed +

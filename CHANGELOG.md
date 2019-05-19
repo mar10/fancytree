@@ -30,6 +30,8 @@
     to the top/left of the tree container element after editing a node title if the
     tree container is partially outside the viewport
   * [Fixed] #931 Selecting grandparent selects all nodes of radiogroup in selectMode=3
+  * [Fixed] #946 dnd5 - Counter badge shows up, although the drag was cancelled from dragStart callback
+  * [Fixed] #947 dnd5 - dragEnd is fired only when re-ordering nodes within the same parent
   * [Fixed] missing tree.error() and broken node.error()
   * [Fixed] a bug in ext-logger
   * Optimized performance of `expandAll()` and `ext-filter`

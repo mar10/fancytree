@@ -82,6 +82,14 @@
 			$sourceList.removeClass(classDragSource + " " + classDragRemove);
 		}
 		$sourceList = null;
+		if ($dropMarker) {
+			$dropMarker.hide();
+		}
+		// Take this badge off of me - I can't use it anymore:
+		if ($extraHelper) {
+			$extraHelper.remove();
+			$extraHelper = null;
+		}
 	}
 
 	/* Convert number to string and prepend +/-; return empty string for 0.*/
@@ -279,26 +287,26 @@
 		data.isMove = data.dropEffect === "move";
 		data.files = dataTransfer.files || [];
 
-		if (REQUESTED_EFFECT_ALLOWED !== dataTransfer.effectAllowed) {
-			tree.warn(
-				"prepareDropEffectCallback(" +
-					event.type +
-					"): dataTransfer.effectAllowed changed from " +
-					REQUESTED_EFFECT_ALLOWED +
-					" -> " +
-					dataTransfer.effectAllowed
-			);
-		}
-		if (REQUESTED_DROP_EFFECT !== dataTransfer.dropEffect) {
-			tree.warn(
-				"prepareDropEffectCallback(" +
-					event.type +
-					"): dataTransfer.dropEffect changed from requested " +
-					REQUESTED_DROP_EFFECT +
-					" to " +
-					dataTransfer.dropEffect
-			);
-		}
+		// if (REQUESTED_EFFECT_ALLOWED !== dataTransfer.effectAllowed) {
+		// 	tree.warn(
+		// 		"prepareDropEffectCallback(" +
+		// 			event.type +
+		// 			"): dataTransfer.effectAllowed changed from " +
+		// 			REQUESTED_EFFECT_ALLOWED +
+		// 			" -> " +
+		// 			dataTransfer.effectAllowed
+		// 	);
+		// }
+		// if (REQUESTED_DROP_EFFECT !== dataTransfer.dropEffect) {
+		// 	tree.warn(
+		// 		"prepareDropEffectCallback(" +
+		// 			event.type +
+		// 			"): dataTransfer.dropEffect changed from requested " +
+		// 			REQUESTED_DROP_EFFECT +
+		// 			" to " +
+		// 			dataTransfer.dropEffect
+		// 	);
+		// }
 	}
 
 	function applyDropEffectCallback(event, data, allowDrop) {
@@ -324,16 +332,16 @@
 			data.effectAllowed = "none";
 			data.dropEffect = "none";
 		}
-		if (REQUESTED_DROP_EFFECT !== data.dropEffect) {
-			tree.debug(
-				"applyDropEffectCallback(" +
-					event.type +
-					"): data.dropEffect changed from previous " +
-					REQUESTED_DROP_EFFECT +
-					" to " +
-					data.dropEffect
-			);
-		}
+		// if (REQUESTED_DROP_EFFECT !== data.dropEffect) {
+		// 	tree.debug(
+		// 		"applyDropEffectCallback(" +
+		// 			event.type +
+		// 			"): data.dropEffect changed from previous " +
+		// 			REQUESTED_DROP_EFFECT +
+		// 			" to " +
+		// 			data.dropEffect
+		// 	);
+		// }
 
 		data.isMove = data.dropEffect === "move";
 		// data.isMove = data.dropEffectSuggested === "move";
@@ -341,37 +349,37 @@
 		REQUESTED_EFFECT_ALLOWED = data.effectAllowed;
 		REQUESTED_DROP_EFFECT = data.dropEffect;
 
-		if (REQUESTED_DROP_EFFECT !== dataTransfer.dropEffect) {
-			data.tree.info(
-				"applyDropEffectCallback(" +
-					event.type +
-					"): dataTransfer.dropEffect changed from " +
-					REQUESTED_DROP_EFFECT +
-					" -> " +
-					dataTransfer.dropEffect
-			);
-		}
+		// if (REQUESTED_DROP_EFFECT !== dataTransfer.dropEffect) {
+		// 	data.tree.info(
+		// 		"applyDropEffectCallback(" +
+		// 			event.type +
+		// 			"): dataTransfer.dropEffect changed from " +
+		// 			REQUESTED_DROP_EFFECT +
+		// 			" -> " +
+		// 			dataTransfer.dropEffect
+		// 	);
+		// }
 		dataTransfer.effectAllowed = REQUESTED_EFFECT_ALLOWED;
 		dataTransfer.dropEffect = REQUESTED_DROP_EFFECT;
 
-		tree.debug(
-			"applyDropEffectCallback(" +
-				event.type +
-				"): set " +
-				dataTransfer.dropEffect +
-				"/" +
-				dataTransfer.effectAllowed
-		);
-		if (REQUESTED_DROP_EFFECT !== dataTransfer.dropEffect) {
-			data.tree.warn(
-				"applyDropEffectCallback(" +
-					event.type +
-					"): could not set dataTransfer.dropEffect to " +
-					REQUESTED_DROP_EFFECT +
-					": got " +
-					dataTransfer.dropEffect
-			);
-		}
+		// tree.debug(
+		// 	"applyDropEffectCallback(" +
+		// 		event.type +
+		// 		"): set " +
+		// 		dataTransfer.dropEffect +
+		// 		"/" +
+		// 		dataTransfer.effectAllowed
+		// );
+		// if (REQUESTED_DROP_EFFECT !== dataTransfer.dropEffect) {
+		// 	data.tree.warn(
+		// 		"applyDropEffectCallback(" +
+		// 			event.type +
+		// 			"): could not set dataTransfer.dropEffect to " +
+		// 			REQUESTED_DROP_EFFECT +
+		// 			": got " +
+		// 			dataTransfer.dropEffect
+		// 	);
+		// }
 		return REQUESTED_DROP_EFFECT;
 	}
 
@@ -556,7 +564,6 @@
 				isMove: undefined,
 			};
 
-		// console.log(event.type, "dropEffect: " + dropEffect);
 		switch (event.type) {
 			case "dragstart":
 				if (!node) {
@@ -678,14 +685,14 @@
 				break;
 
 			case "dragend":
+				// Called at the end of a d'n'd process (after drop)
+				// Note caveat: If drop removed the dragged source element,
+				// we may not get this event, since the target does not exist
+				// anymore
 				prepareDropEffectCallback(event, data);
+
 				_clearGlobals();
-				$dropMarker.hide();
-				// Take this badge off of me - I can't use it anymore:
-				if ($extraHelper) {
-					$extraHelper.remove();
-					$extraHelper = null;
-				}
+
 				data.isCancelled = !LAST_HIT_MODE;
 				dndOpts.dragEnd(node, data, !LAST_HIT_MODE);
 				// applyDropEffectCallback(event, data);
@@ -926,18 +933,38 @@
 						" " +
 						classDropReject
 				);
-				$dropMarker.hide();
 
 				// Let user implement the actual drop operation
 				data.hitMode = LAST_HIT_MODE;
 				prepareDropEffectCallback(event, data, !LAST_HIT_MODE);
 				data.isCancelled = !LAST_HIT_MODE;
+
+				var orgSourceElem = SOURCE_NODE && SOURCE_NODE.span,
+					orgSourceTree = SOURCE_NODE && SOURCE_NODE.tree;
+
 				dndOpts.dragDrop(node, data);
 				// applyDropEffectCallback(event, data);
 
-				// Prevent browser's default drop handling
+				// Prevent browser's default drop handling, i.e. open as link, ...
 				event.preventDefault();
+
+				if (orgSourceElem && !document.body.contains(orgSourceElem)) {
+					// The drop handler removed the original drag source from
+					// the DOM, so the dragend event will probaly not fire.
+					if (orgSourceTree === tree) {
+						tree.debug(
+							"Drop handler removed source element: generating dragEnd."
+						);
+						dndOpts.dragEnd(SOURCE_NODE, data);
+					} else {
+						tree.warn(
+							"Drop handler removed source element: dragend event may be lost."
+						);
+					}
+				}
+
 				_clearGlobals();
+
 				break;
 		}
 		// Dnd API madness: we must PREVENT default handling to enable dropping
