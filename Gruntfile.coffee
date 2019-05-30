@@ -171,12 +171,20 @@ module.exports = (grunt) ->
                 #             res.setHeader('Access-Control-Allow-Methods', '*')
                 #             next()
                 #     ]
-        sauce:
+        sauce:  # Used by sauce tasks, see https://wiki.saucelabs.com/display/DOCS/Grunt-Saucelabs+Set+Up%2C+Configuration%2C+and+Usage
             options:
-                hostname: "localhost"
+                # hostname: "localhost"
+                # hostname: "127.0.0.1"
+                # port: 8080
                 port: 9999
                 base: ""
                 keepalive: false
+        localhost_9999:  # Start web server for Sauce live testing w/ manuallly run bin/sc.exe
+            options:
+                # hostname: "localhost"
+                port: 9999
+                base: ""
+                keepalive: true
 
     copy:
         build:  # Copy development files to build folder
@@ -302,7 +310,7 @@ module.exports = (grunt) ->
 
     qunit:
         options:
-            httpBase: "http://localhost:8080"
+            httpBase: "http://127.0.0.1:8080"
         build: [
             "test/unit/test-core-build.html"
         ]
@@ -343,27 +351,35 @@ module.exports = (grunt) ->
         options:
             build: process.env.TRAVIS_JOB_ID
             throttled: 5
-            recordVideo: false
-            videoUploadOnPass: false
+            # recordVideo: false
+            # videoUploadOnPass: false
+            sauceConfig:
+              "video-upload-on-pass": false
+              "record-video": false
+            framework: "qunit"
 
-        # triage:
-        #     options:
-        #         testname: "Triage"
-        #         build: "triage"
-        #         urls: ["http://localhost:9999/test/unit/test-jQuery19-ui19.html"]
-        #         # urls: ["http://localhost:9999/test/unit/test-jQuery1x-mig-ui1x.html"]
-        #         # urls: ["http://localhost:9999/test/unit/test-core.html"]
-        #         browsers: [
-        #           # Issue #825
-        #           # { browserName: "chrome", version: "dev", platform: "Windows 10" }
-        #           # { browserName: "internet explorer", version: "9", platform: "Windows 7" }
-        #           { browserName: "internet explorer", version: "8", platform: "Windows 7" }
-        #         ]
+        triage:
+            options:
+                testname: "Triage"
+                build: "triage"
+                # urls: ["http://127.0.0.1:9999/test/unit/test-jQuery19-ui19.html"]
+                # urls: ["http://127.0.0.1:9999/test/unit/test-jQuery1x-mig-ui1x.html"]
+                urls: ["http://127.0.0.1:9999/test/unit/test-core.html"]
+                # tunneled: false  # Use bin/sc manually
+                browsers: [
+                  # Issue #825
+                  # { browserName: "chrome", version: "dev", platform: "Windows 10" }
+                  # { browserName: "internet explorer", version: "9", platform: "Windows 7" }
+                  # { browserName: "internet explorer", version: "8", platform: "Windows 7" }
+                  { browserName: "chrome", version: "latest", platform: "Windows 10" }
+                  { browserName: "microsoftedge", version: "latest", platform: "Windows 10" }
+                  { browserName: "safari", version: "12", platform: "macOS 10.14" }
+                ]
 
         ui_112:
             options:
                 testname: "Fancytree qunit tests (jQuery 3, jQuery UI 1.12)"
-                urls: ["http://localhost:9999/test/unit/test-core.html"]
+                urls: ["http://127.0.0.1:9999/test/unit/test-core.html"]
                 # jQuery 3        supports IE 9+ and latest Chrome/Edge/Firefox/Safari (-1)
                 # jQuery UI 1.12  supports IE 11 and latest Chrome/Edge/Firefox/Safari (-1)
                 browsers: [
@@ -375,19 +391,19 @@ module.exports = (grunt) ->
                   { browserName: "internet explorer", version: "11", platform: "Windows 8.1" }
                   { browserName: "microsoftedge", version: "latest", platform: "Windows 10" }
                   { browserName: "microsoftedge", version: "latest-1", platform: "Windows 10" }
-                  # Test suacelabs:
+                  # Test Saucelabs:
                   # { browserName: "chrome", version: "latest", platform: "macOS 10.14" }
                   # { browserName: "firefox", version: "latest", platform: "macOS 10.14" }
 
-                  # { browserName: "safari", version: "9", platform: "OS X 10.11" }
-                  # { browserName: "safari", version: "10", platform: "macOS 10.12" }
-                  # { browserName: "safari", version: "11", platform: "macOS 10.13" }
-                  # { browserName: "safari", version: "12", platform: "macOS 10.14" }
+                  { browserName: "safari", version: "9", platform: "OS X 10.11" }
+                  { browserName: "safari", version: "10", platform: "macOS 10.12" }
+                  { browserName: "safari", version: "11", platform: "macOS 10.13" }
+                  { browserName: "safari", version: "12", platform: "macOS 10.14" }
                 ]
         ui_111:
             options:
                 testname: "Fancytree qunit tests (jQuery 1.11, jQuery UI 1.11)"
-                urls: ["http://localhost:9999/test/unit/test-jQuery111-ui111.html"]
+                urls: ["http://127.0.0.1:9999/test/unit/test-jQuery111-ui111.html"]
                 # jQuery 1.11     supports IE + and latest Chrome/Edge/Firefox/Safari (-1)
                 # jQuery UI 1.11  supports IE 7+ and ?
                 browsers: [
@@ -399,7 +415,7 @@ module.exports = (grunt) ->
         ui_110:
             options:
                 testname: "Fancytree qunit tests (jQuery 1.10, jQuery UI 1.10)"
-                urls: ["http://localhost:9999/test/unit/test-jQuery110-ui110.html"]
+                urls: ["http://127.0.0.1:9999/test/unit/test-jQuery110-ui110.html"]
                 # jQuery 1.10    dropped support for IE 6
                 # jQuery UI 1.10 supports IE 7+ and ?
                 browsers: [
@@ -409,7 +425,7 @@ module.exports = (grunt) ->
         beta:  # This tests are allowed to fail in the travis matrix
             options:
                 testname: "Fancytree qunit tests ('dev' browser versions)"
-                urls: ["http://localhost:9999/test/unit/test-core.html"]
+                urls: ["http://127.0.0.1:9999/test/unit/test-core.html"]
                 browsers: [
                   # Issue #825
                   { browserName: "chrome", version: "dev", platform: "Windows 10" }  #, chromedriverVersion: "2.46.0" }

@@ -17,7 +17,6 @@ TOOLS.TOTAL_ELAP = 0;
  * QUnit setup
  */
 TOOLS.initQUnit = function() {
-
 	// See https://github.com/axemclion/grunt-saucelabs
 	QUnit.done(function (testResults) {
 	  var details, i, len,
@@ -35,12 +34,10 @@ TOOLS.initQUnit = function() {
 	  }
 	  testResults.tests = tests;
 
+	  window.global_test_results = testResults; // used by saucelabs
+
 	  // Expand first section when all tests are run
 	  $("ol#qunit-tests > li").first().find("> ol").show("slow");
-
-	  /*jshint camelcase:false*/ // jscs: disable
-	  window.global_test_results = testResults; // used by saucelabs
-	  /*jshint camelcase:true*/ // jscs: enable
 	});
 
 	// See https://github.com/axemclion/grunt-saucelabs
