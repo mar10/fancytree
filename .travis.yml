@@ -7,6 +7,10 @@ node_js:
 before_script:
   - npm install -g grunt-cli
 
+addons:
+  hosts:
+    - travis.dev
+
 matrix:
   include:
     - env: GRUNT_TASK=travis
