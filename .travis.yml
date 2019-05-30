@@ -10,6 +10,7 @@ before_script:
 addons:
   hosts:
     - travis.dev
+    - localhost
 
 matrix:
   include:
