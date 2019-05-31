@@ -4,13 +4,13 @@
  * Make node titles editable.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2019, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2019, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.30.2
- * @date 2019-01-13T08:17:01Z
+ * @version 2.31.0
+ * @date 2019-05-31T11:32:38Z
  */
 
 (function(factory) {
@@ -114,7 +114,7 @@
 			.change(function(event) {
 				$input.addClass("fancytree-edit-dirty");
 			})
-			.keydown(function(event) {
+			.on("keydown", function(event) {
 				switch (event.which) {
 					case $.ui.keyCode.ESCAPE:
 						node.editEnd(false, event);
@@ -302,7 +302,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "edit",
-		version: "2.30.2",
+		version: "2.31.0",
 		// Default options for this extension.
 		options: {
 			adjustWidthOfs: 4, // null: don't adjust input size to content
@@ -323,8 +323,21 @@
 		currentNode: null,
 
 		treeInit: function(ctx) {
+			var tree = ctx.tree;
+
 			this._superApply(arguments);
-			this.$container.addClass("fancytree-ext-edit");
+
+			this.$container
+				.addClass("fancytree-ext-edit")
+				.on("fancytreebeforeupdateviewport", function(event, data) {
+					var editNode = tree.isEditing();
+					// When scrolling, the TR may be re-used by another node, so the
+					// active cell marker an
+					if (editNode) {
+						editNode.info("Cancel edit due to scroll event.");
+						editNode.editEnd(false, event);
+					}
+				});
 		},
 		nodeClick: function(ctx) {
 			var eventStr = $.ui.fancytree.eventToString(ctx.originalEvent),

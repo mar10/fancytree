@@ -6,13 +6,13 @@
  *
  * @see http://api.jqueryui.com/menu/
  *
- * Copyright (c) 2008-2019, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2019, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.30.2
- * @date 2019-01-13T08:17:01Z
+ * @version 2.31.0
+ * @date 2019-05-31T11:32:38Z
  */
 
 (function(factory) {
@@ -32,7 +32,7 @@
 
 	$.ui.fancytree.registerExtension({
 		name: "menu",
-		version: "2.30.2",
+		version: "2.31.0",
 		// Default options for this extension.
 		options: {
 			enable: true,
@@ -66,21 +66,19 @@
 
 			//        tree.$container[0].oncontextmenu = function() {return false;};
 			// Replace the standard browser context menu with out own
-			tree.$container.delegate(
-				"span.fancytree-node",
-				"contextmenu",
-				function(event) {
-					var node = $.ui.fancytree.getNode(event),
-						ctx = {
-							node: node,
-							tree: node.tree,
-							originalEvent: event,
-							options: tree.options,
-						};
-					tree.ext.menu._openMenu(ctx);
-					return false;
-				}
-			);
+			tree.$container.on("contextmenu", "span.fancytree-node", function(
+				event
+			) {
+				var node = $.ui.fancytree.getNode(event),
+					ctx = {
+						node: node,
+						tree: node.tree,
+						originalEvent: event,
+						options: tree.options,
+					};
+				tree.ext.menu._openMenu(ctx);
+				return false;
+			});
 
 			// Use jquery.ui.menu
 			$(opts.menu.selector)

@@ -4,13 +4,13 @@
  * Use glyph-fonts, ligature-fonts, or SVG icons instead of icon sprites.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2019, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2019, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.30.2
- * @date 2019-01-13T08:17:01Z
+ * @version 2.31.0
+ * @date 2019-05-31T11:32:38Z
  */
 
 (function(factory) {
@@ -170,12 +170,13 @@
 		var map = opts.map,
 			icon = map[type],
 			$span = $(span),
+			$counter = $span.find(".fancytree-childcounter"),
 			setClass = baseClass + " " + (map._addClass || "");
 
 		if (typeof icon === "string") {
 			// #883: remove inner html that may be added by prev. mode
 			span.innerHTML = "";
-			$span.attr("class", setClass + " " + icon);
+			$span.attr("class", setClass + " " + icon).append($counter);
 		} else if (icon) {
 			if (icon.text) {
 				span.textContent = "" + icon.text;
@@ -184,13 +185,15 @@
 			} else {
 				span.innerHTML = "";
 			}
-			$span.attr("class", setClass + " " + (icon.addClass || ""));
+			$span
+				.attr("class", setClass + " " + (icon.addClass || ""))
+				.append($counter);
 		}
 	}
 
 	$.ui.fancytree.registerExtension({
 		name: "glyph",
-		version: "2.30.2",
+		version: "2.31.0",
 		// Default options for this extension.
 		options: {
 			preset: null, // 'awesome3', 'awesome4', 'bootstrap3', 'material'
@@ -265,11 +268,12 @@
 						icon
 					);
 				} else {
+					// eslint-disable-next-line no-nested-ternary
 					icon = node.selected
 						? "checkboxSelected"
 						: node.partsel
-							? "checkboxUnknown"
-							: "checkbox";
+						? "checkboxUnknown"
+						: "checkbox";
 					// span.className = "fancytree-checkbox " + map[icon];
 					setIcon(span, "fancytree-checkbox", opts, icon);
 				}

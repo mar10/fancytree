@@ -6,13 +6,13 @@
  *
  * @depends: js-cookie or jquery-cookie
  *
- * Copyright (c) 2008-2019, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2019, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.30.2
- * @date 2019-01-13T08:17:01Z
+ * @version 2.31.0
+ * @date 2019-05-31T11:32:38Z
  */
 
 (function(factory) {
@@ -88,8 +88,8 @@
 	}
 
 	/* Recursively load lazy nodes
- * @param {string} mode 'load', 'expand', false
- */
+	 * @param {string} mode 'load', 'expand', false
+	 */
 	function _loadLazyNodes(tree, local, keyList, mode, dfd) {
 		var i,
 			key,
@@ -212,7 +212,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "persist",
-		version: "2.30.2",
+		version: "2.31.0",
 		// Default options for this extension.
 		options: {
 			cookieDelimiter: "~",

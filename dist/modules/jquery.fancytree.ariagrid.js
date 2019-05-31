@@ -7,13 +7,13 @@
  *
  * @requires ext-table
  *
- * Copyright (c) 2008-2019, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2019, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.30.2
- * @date 2019-01-13T08:17:01Z
+ * @version 2.31.0
+ * @date 2019-05-31T11:32:38Z
  */
 
 (function(factory) {
@@ -101,11 +101,16 @@
 
 	/* Find adjacent cell for a given direction. Skip empty cells and consider merged cells */
 	function findNeighbourTd(tree, $target, keyCode) {
-		var $td = $target.closest("td"),
+		var nextNode,
+			node,
+			navMap = { "ctrl+home": "first", "ctrl+end": "last" },
+			$td = $target.closest("td"),
 			$tr = $td.parent(),
 			treeOpts = tree.options,
 			colIdx = getColIdx($tr, $td),
 			$tdNext = null;
+
+		keyCode = navMap[keyCode] || keyCode;
 
 		switch (keyCode) {
 			case "left":
@@ -116,30 +121,14 @@
 				break;
 			case "up":
 			case "down":
-				while (true) {
-					$tr = keyCode === "up" ? $tr.prev() : $tr.next();
-					if (!$tr.length) {
-						break;
-					}
-					// Skip hidden rows
-					if ($tr.is(":hidden")) {
-						continue;
-					}
-					// Find adjacent cell in the same column
-					$tdNext = findTdAtColIdx($tr, colIdx);
-					break;
-				}
-				break;
 			case "ctrl+home":
-				$tdNext = findTdAtColIdx($tr.siblings().first(), colIdx);
-				if ($tdNext.is(":hidden")) {
-					$tdNext = findNeighbourTd(tree, $tdNext.parent(), "down");
-				}
-				break;
 			case "ctrl+end":
-				$tdNext = findTdAtColIdx($tr.siblings().last(), colIdx);
-				if ($tdNext.is(":hidden")) {
-					$tdNext = findNeighbourTd(tree, $tdNext.parent(), "up");
+				node = $tr[0].ftnode;
+				nextNode = tree.findRelatedNode(node, keyCode);
+				if (nextNode) {
+					nextNode.makeVisible();
+					nextNode.setActive();
+					$tdNext = findTdAtColIdx($(nextNode.tr), colIdx);
 				}
 				break;
 			case "home":
@@ -168,9 +157,10 @@
 	function activateEmbeddedLink($td) {
 		// $td.find( "a" )[ 0 ].click();  // does not work (always)?
 		// $td.find( "a" ).click();
-		var event = document.createEvent("MouseEvent");
+		var event = document.createEvent("MouseEvent"),
+			a = $td.find("a")[0]; // document.getElementById('nameOfID');
+
 		event = new CustomEvent("click");
-		var a = $td.find("a")[0]; // document.getElementById('nameOfID');
 		a.dispatchEvent(event);
 	}
 
@@ -204,7 +194,7 @@
 		anyNode.debug(
 			"activateCell(" +
 				($prevTd ? $prevTd.text() : "null") +
-				" -> " +
+				") -> " +
 				($td ? $td.text() : "OFF")
 		);
 
@@ -296,7 +286,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "ariagrid",
-		version: "2.30.2",
+		version: "2.31.0",
 		// Default options for this extension.
 		options: {
 			// Internal behavior flags
@@ -312,7 +302,11 @@
 				opts = treeOpts.ariagrid;
 
 			// ariagrid requires the table extension to be loaded before itself
-			this._requireExtension("table", true, true);
+			if (tree.ext.grid) {
+				this._requireExtension("grid", true, true);
+			} else {
+				this._requireExtension("table", true, true);
+			}
 			if (!treeOpts.aria) {
 				$.error("ext-ariagrid requires `aria: true`");
 			}
@@ -385,10 +379,22 @@
 				})
 				.on("fancytreefocustree", function(event, data) {
 					// Enforce cell-mode when container gets focus
-					if (opts.cellFocus === "force" && !tree.activeTd) {
+					if (opts.cellFocus === "force" && !tree.$activeTd) {
 						var node = tree.getActiveNode() || tree.getFirstChild();
 						tree.debug("Enforce cell-mode on focusTree event");
 						node.setActive(true, { cell: 0 });
+					}
+				})
+				// .on("fancytreeupdateviewport", function(event, data) {
+				// 	tree.debug(event.type, data);
+				// })
+				.on("fancytreebeforeupdateviewport", function(event, data) {
+					// When scrolling, the TR may be re-used by another node, so the
+					// active cell marker an
+					// tree.debug(event.type, data);
+					if (tree.viewport && tree.$activeTd) {
+						tree.info("Cancel cell-mode due to scroll event.");
+						tree.activateCell(null);
 					}
 				});
 		},
@@ -397,7 +403,8 @@
 				tree = ctx.tree,
 				node = ctx.node,
 				event = ctx.originalEvent,
-				$td = $(event.target).closest("td");
+				$target = $(event.target),
+				$td = $target.closest("td");
 
 			tree.debug(
 				"nodeClick: node: " +
@@ -415,8 +422,13 @@
 			if (tree.$activeTd) {
 				// If already in cell-mode, activate new cell
 				tree.activateCell($td);
-				if ($(event.target).is(":input")) {
+				if ($target.is(":input")) {
 					return;
+				} else if (
+					$target.is(".fancytree-checkbox") ||
+					$target.is(".fancytree-expander")
+				) {
+					return this._superApply(arguments);
 				}
 				return false;
 			}
@@ -533,7 +545,7 @@
 				$embeddedCheckbox = $activeTd.find(":checkbox:enabled");
 				inputType = "checkbox";
 			}
-			ctx.tree.debug(
+			tree.debug(
 				"nodeKeydown(" +
 					eventString +
 					"), activeTd: '" +
@@ -567,7 +579,9 @@
 						break;
 					} else {
 						// Row mode: switch to cell-mode
-						$td = $(node.tr).find(">td:first");
+						$td = $(node.tr)
+							.find(">td")
+							.first();
 						tree.activateCell($td);
 					}
 					return false; // no default handling
@@ -657,9 +671,9 @@
 						// ENTER in row-mode: Switch from row-mode to cell-mode
 						// TODO: it was also suggested to expand/collapse instead
 						//    https://github.com/w3c/aria-practices/issues/132#issuecomment-407634891
-						$td = $(node.tr).find(
-							">td:nth(" + this.nodeColumnIdx + ")"
-						);
+						$td = $(node.tr)
+							.find(">td")
+							.nth(this.nodeColumnIdx);
 						tree.activateCell($td);
 					}
 					return false; // no default handling

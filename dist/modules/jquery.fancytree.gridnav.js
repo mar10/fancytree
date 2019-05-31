@@ -4,13 +4,13 @@
  * Support keyboard navigation for trees with embedded input controls.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2019, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2019, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.30.2
- * @date 2019-01-13T08:17:01Z
+ * @version 2.31.0
+ * @date 2019-05-31T11:32:38Z
  */
 
 (function(factory) {
@@ -127,7 +127,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "gridnav",
-		version: "2.30.2",
+		version: "2.31.0",
 		// Default options for this extension.
 		options: {
 			autofocusInput: false, // Focus first embedded input if node gets activated
@@ -179,7 +179,10 @@
 					// Set focus to input sub input (if node was clicked, but not
 					// when TAB was pressed )
 					$outer = $(node.tr || node.span);
-					$outer.find(":input:enabled:first").focus();
+					$outer
+						.find(":input:enabled")
+						.first()
+						.focus();
 				}
 			}
 		},

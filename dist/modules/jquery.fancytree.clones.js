@@ -4,13 +4,13 @@
  * Support faster lookup of nodes by key and shared ref-ids.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2019, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2019, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.30.2
- * @date 2019-01-13T08:17:01Z
+ * @version 2.31.0
+ * @date 2019-05-31T11:32:38Z
  */
 
 (function(factory) {
@@ -66,7 +66,7 @@
 	 * @return {number} 32-bit positive integer hash
 	 */
 	function hashMurmur3(key, asString, seed) {
-		/*jshint bitwise:false */
+		/*eslint-disable no-bitwise */
 		var h1b,
 			k1,
 			remainder = key.length & 3,
@@ -106,11 +106,12 @@
 		k1 = 0;
 
 		switch (remainder) {
-			/*jshint -W086:true */
 			case 3:
 				k1 ^= (key.charCodeAt(i + 2) & 0xff) << 16;
+			// fall through
 			case 2:
 				k1 ^= (key.charCodeAt(i + 1) & 0xff) << 8;
+			// fall through
 			case 1:
 				k1 ^= key.charCodeAt(i) & 0xff;
 
@@ -145,19 +146,26 @@
 			return ("0000000" + (h1 >>> 0).toString(16)).substr(-8);
 		}
 		return h1 >>> 0;
+		/*eslint-enable no-bitwise */
 	}
 
 	/*
- * Return a unique key for node by calculating the hash of the parents refKey-list.
- */
+	 * Return a unique key for node by calculating the hash of the parents refKey-list.
+	 */
 	function calcUniqueKey(node) {
 		var key,
+			h1,
 			path = $.map(node.getParentList(false, true), function(e) {
 				return e.refKey || e.key;
 			});
+
 		path = path.join("/");
-		key = "id_" + hashMurmur3(path, true);
-		// node.debug(path + " -> " + key);
+		// 32-bit has a high probability of collisions, so we pump up to 64-bit
+		// https://security.stackexchange.com/q/209882/207588
+
+		h1 = hashMurmur3(path, true);
+		key = "id_" + h1 + hashMurmur3(h1 + path, true);
+
 		return key;
 	}
 
@@ -360,7 +368,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "clones",
-		version: "2.30.2",
+		version: "2.31.0",
 		// Default options for this extension.
 		options: {
 			highlightActiveClones: true, // set 'fancytree-active-clone' on active clones and all peers
@@ -404,12 +412,21 @@
 
 			if (add) {
 				if (keyMap[node.key] != null) {
-					$.error(
-						"clones.treeRegisterNode: node.key already exists: " +
-							node
-					);
+					var other = keyMap[node.key],
+						msg =
+							"clones.treeRegisterNode: duplicate key '" +
+							node.key +
+							"': /" +
+							node.getPath(true) +
+							" => " +
+							other.getPath(true);
+					// Sometimes this exception is not visible in the console,
+					// so we also write it:
+					tree.error(msg);
+					$.error(msg);
 				}
 				keyMap[key] = node;
+
 				if (refKey) {
 					refList = refMap[refKey];
 					if (refList) {
