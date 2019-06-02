@@ -354,11 +354,13 @@ module.exports = (grunt) ->
             # recordVideo: false
             # videoUploadOnPass: false
             sauceConfig:
-              "video-upload-on-pass": false
-              "record-video": false
-              "iedriver-version": "3.141.59"
-              "selenium-version": "3.141.59"
-            # Needed for Edge/Windows (as of 2019-06-02)
+              videoUploadOnPass: false
+              recordVideo: true
+              # Needed for Edge/Windows (as of 2019-06-02)
+              iedriverVersion: "3.141.59"
+              seleniumVersion: "3.141.59"
+            iedriverVersion: "3.141.59"
+            seleniumVersion: "3.141.59"
             framework: "qunit"
 
         triage:
