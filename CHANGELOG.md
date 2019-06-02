@@ -1,4 +1,6 @@
-# 2.31.0-0 / Unreleased
+# 2.31.1-0 / Unreleased
+
+# 2.31.0 / 2019-05-30
   * New extension **ext-grid** (experimental)<br>
     This is a variant of `ext-table` that introduces viewport support, which
     allows to maintain *huge* data models while only rendering as many DOM elements as necessary.<br>

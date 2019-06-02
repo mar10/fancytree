@@ -356,6 +356,8 @@ module.exports = (grunt) ->
             sauceConfig:
               "video-upload-on-pass": false
               "record-video": false
+            seleniumVersion: "3.141.59"
+            iedriverVersion: "3.141.59"
             framework: "qunit"
 
         triage:
