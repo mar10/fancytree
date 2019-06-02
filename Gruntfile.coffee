@@ -356,8 +356,9 @@ module.exports = (grunt) ->
             sauceConfig:
               "video-upload-on-pass": false
               "record-video": false
-            seleniumVersion: "3.141.59"
-            iedriverVersion: "3.141.59"
+              "iedriver-version": "3.141.59"
+              "selenium-version": "3.141.59"
+            # Needed for Edge/Windows (as of 2019-06-02)
             framework: "qunit"
 
         triage:
@@ -397,10 +398,6 @@ module.exports = (grunt) ->
                   # { browserName: "chrome", version: "latest", platform: "macOS 10.14" }
                   # { browserName: "firefox", version: "latest", platform: "macOS 10.14" }
 
-                  { browserName: "safari", version: "9", platform: "OS X 10.11" }
-                  { browserName: "safari", version: "10", platform: "macOS 10.12" }
-                  { browserName: "safari", version: "11", platform: "macOS 10.13" }
-                  { browserName: "safari", version: "12", platform: "macOS 10.14" }
                 ]
         ui_111:
             options:
@@ -433,6 +430,11 @@ module.exports = (grunt) ->
                   { browserName: "chrome", version: "dev", platform: "Windows 10" }  #, chromedriverVersion: "2.46.0" }
                   # FF.dev is problematic: https://support.saucelabs.com/hc/en-us/articles/225253808-Firefox-Dev-Beta-Browser-Won-t-Start
                   { browserName: "firefox", version: "dev", platform: "Windows 10" }
+                  # 2019-06-02: known problem with Saucelabs using localhost on macOS:
+                  { browserName: "safari", version: "9", platform: "OS X 10.11" }
+                  { browserName: "safari", version: "10", platform: "macOS 10.12" }
+                  { browserName: "safari", version: "11", platform: "macOS 10.13" }
+                  { browserName: "safari", version: "12", platform: "macOS 10.14" }
                 ]
 
     uglify:
