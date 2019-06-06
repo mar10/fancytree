@@ -445,11 +445,17 @@ span.fancytree-checkbox {
 	span.fancytree-checkbox:hover {
 		.useSprite(0, 2);
 	}
+	span.fancytree-checkbox.fancytree-radio:hover {
+		.useSprite(0, 3);
+	}
 	&.fancytree-partsel span.fancytree-checkbox:hover {
 		.useSprite(4, 2);
 	}
 	&.fancytree-selected span.fancytree-checkbox:hover {
 		.useSprite(2, 2);
+	}
+	&.fancytree-selected span.fancytree-checkbox.fancytree-radio:hover {
+		.useSprite(2, 3);
 	}
 }
 
