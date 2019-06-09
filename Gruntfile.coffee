@@ -384,7 +384,8 @@ module.exports = (grunt) ->
         ui_112:
             options:
                 testname: "Fancytree qunit tests (jQuery 3, jQuery UI 1.12)"
-                urls: ["http://127.0.0.1:9999/test/unit/test-core.html"]
+                urls: ["http://wwwendt.de/tech/fancytree/test/unit/test-core.html"]
+                # urls: ["http://127.0.0.1:9999/test/unit/test-core.html"]
                 # jQuery 3        supports IE 9+ and latest Chrome/Edge/Firefox/Safari (-1)
                 # jQuery UI 1.12  supports IE 11 and latest Chrome/Edge/Firefox/Safari (-1)
                 browsers: [
@@ -404,7 +405,8 @@ module.exports = (grunt) ->
         ui_111:
             options:
                 testname: "Fancytree qunit tests (jQuery 1.11, jQuery UI 1.11)"
-                urls: ["http://127.0.0.1:9999/test/unit/test-jQuery111-ui111.html"]
+                urls: ["http://wwwendt.de/tech/fancytree/test/unit/test-jQuery111-ui111.html"]
+                # urls: ["http://127.0.0.1:9999/test/unit/test-jQuery111-ui111.html"]
                 # jQuery 1.11     supports IE + and latest Chrome/Edge/Firefox/Safari (-1)
                 # jQuery UI 1.11  supports IE 7+ and ?
                 browsers: [
@@ -416,7 +418,8 @@ module.exports = (grunt) ->
         ui_110:
             options:
                 testname: "Fancytree qunit tests (jQuery 1.10, jQuery UI 1.10)"
-                urls: ["http://127.0.0.1:9999/test/unit/test-jQuery110-ui110.html"]
+                urls: ["http://wwwendt.de/tech/fancytree/test/unit/test-jQuery110-ui110.html"]
+                # urls: ["http://127.0.0.1:9999/test/unit/test-jQuery110-ui110.html"]
                 # jQuery 1.10    dropped support for IE 6
                 # jQuery UI 1.10 supports IE 7+ and ?
                 browsers: [
@@ -426,7 +429,8 @@ module.exports = (grunt) ->
         beta:  # This tests are allowed to fail in the travis matrix
             options:
                 testname: "Fancytree qunit tests ('dev' browser versions)"
-                urls: ["http://127.0.0.1:9999/test/unit/test-core.html"]
+                urls: ["http://wwwendt.de/tech/fancytree/test/unit/test-core.html"]
+                # urls: ["http://127.0.0.1:9999/test/unit/test-core.html"]
                 browsers: [
                   # Issue #825
                   { browserName: "chrome", version: "dev", platform: "Windows 10" }  #, chromedriverVersion: "2.46.0" }
