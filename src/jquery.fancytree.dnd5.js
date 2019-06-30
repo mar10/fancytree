@@ -704,6 +704,7 @@
 	 */
 	function onDropEvent(event) {
 		var json,
+			allowAutoExpand,
 			nodeData,
 			isSourceFtNode,
 			r,
@@ -833,9 +834,11 @@
 
 				// The flag controls the preventDefault() below:
 				allowDrop = !!LAST_HIT_MODE;
+				allowAutoExpand =
+					LAST_HIT_MODE === "over" || LAST_HIT_MODE === false;
 
 				if (
-					LAST_HIT_MODE === "over" &&
+					allowAutoExpand &&
 					!node.expanded &&
 					node.hasChildren() !== false
 				) {

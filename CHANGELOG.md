@@ -1,5 +1,6 @@
 # 2.31.1-0 / Unreleased
   * [Fixed] #951 Hover issue in unselectable radio
+  * ext-dnd5: allow autoExpand even if dropping is prevented
 
 # 2.31.0 / 2019-05-30
   * New extension **ext-grid** (experimental)<br>
