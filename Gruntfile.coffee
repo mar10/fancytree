@@ -364,7 +364,8 @@ module.exports = (grunt) ->
             # See https://saucelabs.com/docs/additional-config
             tunnelArgs: [
               '-v',
-              '--logfile', 'saucelabs-tunnel.log'
+              '--logfile', 'saucelabs-tunnel.log',
+              '--tunnel-domains', 'localhost,travis.dev'
               # '--direct-domains', 'google.com'
               ]
 
