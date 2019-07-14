@@ -173,7 +173,7 @@ module.exports = (grunt) ->
                 #     ]
         sauce:  # Used by sauce tasks, see https://wiki.saucelabs.com/display/DOCS/Grunt-Saucelabs+Set+Up%2C+Configuration%2C+and+Usage
             options:
-                # hostname: "localhost"
+                hostname: "localhost"
                 # hostname: "127.0.0.1"
                 # port: 8080
                 port: 9999
@@ -351,10 +351,6 @@ module.exports = (grunt) ->
         options:
             build: process.env.TRAVIS_JOB_ID
             throttled: 5
-            # recordVideo: false
-            # videoUploadOnPass: false
-            # iedriverVersion: "3.141.59"
-            # seleniumVersion: "3.141.59"
             framework: "qunit"
             # Map of extra parameters to be passed to sauce labs. example:
             #   {'video-upload-on-pass': false, 'idle-timeout': 60}
@@ -369,7 +365,6 @@ module.exports = (grunt) ->
             tunnelArgs: [
               '-v',
               '--logfile', 'saucelabs-tunnel.log'
-              # '--debug',
               # '--direct-domains', 'google.com'
               ]
 
@@ -398,8 +393,8 @@ module.exports = (grunt) ->
             options:
                 testname: "Fancytree qunit tests (jQuery 3, jQuery UI 1.12)"
                 # urls: ["http://wwwendt.de/tech/fancytree/test/unit/test-core.html"]
-                urls: ["http://localhost:9999/test/unit/test-core.html"]
-                # urls: ["http://127.0.0.1:9999/test/unit/test-core.html"]
+                # urls: ["http://localhost:9999/test/unit/test-core.html"]
+                urls: ["http://127.0.0.1:9999/test/unit/test-core.html"]
                 # jQuery 3        supports IE 9+ and latest Chrome/Edge/Firefox/Safari (-1)
                 # jQuery UI 1.12  supports IE 11 and latest Chrome/Edge/Firefox/Safari (-1)
                 browsers: [
