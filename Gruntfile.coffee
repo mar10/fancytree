@@ -367,8 +367,10 @@ module.exports = (grunt) ->
             # Array of optional arguments to be passed to the Sauce Connect tunnel.
             # See https://saucelabs.com/docs/additional-config
             tunnelArgs: [
-              '--debug',
-              '--direct-domains', 'google.com'
+              '-v',
+              '--logfile', 'saucelabs-tunnel.log'
+              # '--debug',
+              # '--direct-domains', 'google.com'
               ]
 
 
