@@ -1,6 +1,7 @@
 # 2.31.1-0 / Unreleased
   * [Fixed] #951 Hover issue in unselectable radio
   * ext-dnd5: allow autoExpand even if dropping is prevented
+  * [Fixed] ext-filter: tree.rootNode.subMatchCount is now set correctly
   * [Fixed] #955 node.navigate($.ui.keyCode.DOWN, false) does not return promise
 
 # 2.31.0 / 2019-05-30

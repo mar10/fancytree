@@ -139,6 +139,7 @@
 			!!opts.hideExpanders
 		);
 		// Reset current filter
+		this.rootNode.subMatchCount = 0;
 		this.visit(function(node) {
 			delete node.match;
 			delete node.titleWithHighlight;
@@ -183,7 +184,7 @@
 						});
 						p._filterAutoExpanded = true;
 					}
-				});
+				}, true);
 			}
 		});
 		treeOpts.autoCollapse = prevAutoCollapse;
@@ -270,6 +271,10 @@
 		if (statusNode) {
 			statusNode.remove();
 		}
+		// we also counted root node's subMatchCount
+		delete this.rootNode.match;
+		delete this.rootNode.subMatchCount;
+
 		this.visit(function(node) {
 			if (node.match && node.span) {
 				// #491, #601
