@@ -1,4 +1,6 @@
-# 2.31.1-0 / Unreleased
+# 2.32.0-0 / Unreleased
+  * [Added] `tree.toDict(includeRoot, callback)` and `node.toDict(recursive, callback)`:
+    callback can now return `false` or `"skip"` to skip nodes.
   * [Fixed] #951 Hover issue in unselectable radio
   * ext-dnd5: allow autoExpand even if dropping is prevented
   * [Fixed] ext-filter: tree.rootNode.subMatchCount is now set correctly

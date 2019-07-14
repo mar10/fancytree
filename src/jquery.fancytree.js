@@ -2288,13 +2288,15 @@
 		 * The result is compatible with node.addChildren().
 		 *
 		 * @param {boolean} [recursive=false] include child nodes
-		 * @param {function} [callback] callback(dict, node) is called for every node, in order to allow modifications
+		 * @param {function} [callback] callback(dict, node) is called for every node, in order to allow modifications.
+		 *     Return `false` to ignore this node or "skip" to include this node without its children.
 		 * @returns {NodeData}
 		 */
 		toDict: function(recursive, callback) {
 			var i,
 				l,
 				node,
+				res,
 				dict = {},
 				self = this;
 
@@ -2310,7 +2312,13 @@
 				}
 			}
 			if (callback) {
-				callback(dict, self);
+				res = callback(dict, self);
+				if (res === false) {
+					return false; // Don't include this node nor its children
+				}
+				if (res === "skip") {
+					recursive = false; // Include this node, but not the children
+				}
 			}
 			if (recursive) {
 				if (this.hasChildren()) {
@@ -2318,11 +2326,12 @@
 					for (i = 0, l = this.children.length; i < l; i++) {
 						node = this.children[i];
 						if (!node.isStatusNode()) {
-							dict.children.push(node.toDict(true, callback));
+							res = node.toDict(true, callback);
+							if (res !== false) {
+								dict.children.push(res);
+							}
 						}
 					}
-				} else {
-					// dict.children = null;
 				}
 			}
 			return dict;
@@ -3599,7 +3608,8 @@
 		 * Return all nodes as nested list of {@link NodeData}.
 		 *
 		 * @param {boolean} [includeRoot=false] Returns the hidden system root node (and its children)
-		 * @param {function} [callback] callback(dict, node) is called for every node, in order to allow modifications
+		 * @param {function} [callback] callback(dict, node) is called for every node, in order to allow modifications.
+		 *     Return `false` to ignore this node or "skip" to include this node without its children.
 		 * @returns {Array | object}
 		 * @see FancytreeNode#toDict
 		 */
