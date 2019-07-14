@@ -35,7 +35,7 @@ TOOLS.initQUnit = function() {
 	  testResults.tests = tests;
 
 	  window.global_test_results = testResults; // used by saucelabs
-
+	  console.info("Set window.global_test_results =", window.global_test_results);
 	  // Expand first section when all tests are run
 	  $("ol#qunit-tests > li").first().find("> ol").show("slow");
 	});

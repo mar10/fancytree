@@ -353,15 +353,25 @@ module.exports = (grunt) ->
             throttled: 5
             # recordVideo: false
             # videoUploadOnPass: false
-            sauceConfig:
-              videoUploadOnPass: false
-              recordVideo: true
-              # Needed for Edge/Windows (as of 2019-06-02)
-              # iedriverVersion: "3.141.59"
-              # seleniumVersion: "3.141.59"
             # iedriverVersion: "3.141.59"
             # seleniumVersion: "3.141.59"
             framework: "qunit"
+            # Map of extra parameters to be passed to sauce labs. example:
+            #   {'video-upload-on-pass': false, 'idle-timeout': 60}
+            sauceConfig:
+              "video-upload-on-pass": false
+              recordVideo: true
+              # Needed for Edge/Windows (as of 2019-06-02) and Firefox(?)
+              iedriverVersion: "3.141.59"
+              seleniumVersion: "3.141.59"
+            # Array of optional arguments to be passed to the Sauce Connect tunnel.
+            # See https://saucelabs.com/docs/additional-config
+            tunnelArgs: [
+              '--debug',
+              '--direct-domains', 'google.com'
+              ]
+
+
 
         triage:
             options:
@@ -376,15 +386,17 @@ module.exports = (grunt) ->
                   # { browserName: "chrome", version: "dev", platform: "Windows 10" }
                   # { browserName: "internet explorer", version: "9", platform: "Windows 7" }
                   # { browserName: "internet explorer", version: "8", platform: "Windows 7" }
-                  { browserName: "chrome", version: "latest", platform: "Windows 10" }
-                  { browserName: "microsoftedge", version: "latest", platform: "Windows 10" }
-                  { browserName: "safari", version: "12", platform: "macOS 10.14" }
+                  # { browserName: "chrome", version: "latest", platform: "Windows 10" }
+                  # { browserName: "microsoftedge", version: "latest", platform: "Windows 10" }
+                  # { browserName: "safari", version: "12", platform: "macOS 10.14" }
+                  { browserName: "firefox", version: "latest", platform: "Windows 10" }
                 ]
 
         ui_112:
             options:
                 testname: "Fancytree qunit tests (jQuery 3, jQuery UI 1.12)"
-                urls: ["http://wwwendt.de/tech/fancytree/test/unit/test-core.html"]
+                # urls: ["http://wwwendt.de/tech/fancytree/test/unit/test-core.html"]
+                urls: ["http://localhost:9999/test/unit/test-core.html"]
                 # urls: ["http://127.0.0.1:9999/test/unit/test-core.html"]
                 # jQuery 3        supports IE 9+ and latest Chrome/Edge/Firefox/Safari (-1)
                 # jQuery UI 1.12  supports IE 11 and latest Chrome/Edge/Firefox/Safari (-1)
@@ -394,53 +406,56 @@ module.exports = (grunt) ->
                   { browserName: "firefox", version: "latest", platform: "Windows 10" }
                   { browserName: "firefox", version: "latest-1", platform: "Windows 10" }
                   { browserName: "firefox", version: "latest", platform: "Linux" }
-                  { browserName: "internet explorer", version: "11", platform: "Windows 8.1" }
                   { browserName: "microsoftedge", version: "latest", platform: "Windows 10" }
                   { browserName: "microsoftedge", version: "latest-1", platform: "Windows 10" }
+                  { browserName: "internet explorer", version: "11", platform: "Windows 8.1" }
+                  { browserName: "internet explorer", version: "10", platform: "Windows 8" }
+                  { browserName: "internet explorer", version: "9", platform: "Windows 7" }
                   # Test Saucelabs:
                   # { browserName: "chrome", version: "latest", platform: "macOS 10.14" }
                   # { browserName: "firefox", version: "latest", platform: "macOS 10.14" }
 
                 ]
-        ui_111:
-            options:
-                testname: "Fancytree qunit tests (jQuery 1.11, jQuery UI 1.11)"
-                urls: ["http://wwwendt.de/tech/fancytree/test/unit/test-jQuery111-ui111.html"]
-                # urls: ["http://127.0.0.1:9999/test/unit/test-jQuery111-ui111.html"]
-                # jQuery 1.11     supports IE + and latest Chrome/Edge/Firefox/Safari (-1)
-                # jQuery UI 1.11  supports IE 7+ and ?
-                browsers: [
-                  { browserName: "internet explorer", version: "10", platform: "Windows 8" }
-                  # Issue #842:
-                  # { browserName: "safari", version: "7", platform: "OS X 10.9" }
-                  { browserName: "safari", version: "8", platform: "OS X 10.10" }
-                ]
-        ui_110:
-            options:
-                testname: "Fancytree qunit tests (jQuery 1.10, jQuery UI 1.10)"
-                urls: ["http://wwwendt.de/tech/fancytree/test/unit/test-jQuery110-ui110.html"]
-                # urls: ["http://127.0.0.1:9999/test/unit/test-jQuery110-ui110.html"]
-                # jQuery 1.10    dropped support for IE 6
-                # jQuery UI 1.10 supports IE 7+ and ?
-                browsers: [
-                  # { browserName: "internet explorer", version: "8", platform: "Windows 7" }
-                  { browserName: "internet explorer", version: "9", platform: "Windows 7" }
-                ]
+        # ui_111:
+        #     options:
+        #         testname: "Fancytree qunit tests (jQuery 1.11, jQuery UI 1.11)"
+        #         # urls: ["http://wwwendt.de/tech/fancytree/test/unit/test-jQuery111-ui111.html"]
+        #         urls: ["http://127.0.0.1:9999/test/unit/test-jQuery111-ui111.html"]
+        #         # jQuery 1.11     supports IE + and latest Chrome/Edge/Firefox/Safari (-1)
+        #         # jQuery UI 1.11  supports IE 7+ and ?
+        #         browsers: [
+        #           { browserName: "internet explorer", version: "10", platform: "Windows 8" }
+        #           # Issue #842:
+        #           # { browserName: "safari", version: "7", platform: "OS X 10.9" }
+        #           { browserName: "safari", version: "8", platform: "OS X 10.10" }
+        #         ]
+        # ui_110:
+        #     options:
+        #         testname: "Fancytree qunit tests (jQuery 1.10, jQuery UI 1.10)"
+        #         # urls: ["http://wwwendt.de/tech/fancytree/test/unit/test-jQuery110-ui110.html"]
+        #         urls: ["http://127.0.0.1:9999/test/unit/test-jQuery110-ui110.html"]
+        #         # jQuery 1.10    dropped support for IE 6
+        #         # jQuery UI 1.10 supports IE 7+ and ?
+        #         browsers: [
+        #           # { browserName: "internet explorer", version: "8", platform: "Windows 7" }
+        #           { browserName: "internet explorer", version: "9", platform: "Windows 7" }
+        #         ]
         beta:  # This tests are allowed to fail in the travis matrix
             options:
                 testname: "Fancytree qunit tests ('dev' browser versions)"
-                urls: ["http://wwwendt.de/tech/fancytree/test/unit/test-core.html"]
-                # urls: ["http://127.0.0.1:9999/test/unit/test-core.html"]
+                # urls: ["http://wwwendt.de/tech/fancytree/test/unit/test-core.html"]
+                urls: ["http://127.0.0.1:9999/test/unit/test-core.html"]
                 browsers: [
                   # Issue #825
                   { browserName: "chrome", version: "dev", platform: "Windows 10" }  #, chromedriverVersion: "2.46.0" }
                   # FF.dev is problematic: https://support.saucelabs.com/hc/en-us/articles/225253808-Firefox-Dev-Beta-Browser-Won-t-Start
                   { browserName: "firefox", version: "dev", platform: "Windows 10" }
                   # 2019-06-02: known problem with Saucelabs using localhost on macOS:
-                  { browserName: "safari", version: "9", platform: "OS X 10.11" }
-                  { browserName: "safari", version: "10", platform: "macOS 10.12" }
-                  { browserName: "safari", version: "11", platform: "macOS 10.13" }
                   { browserName: "safari", version: "12", platform: "macOS 10.14" }
+                  { browserName: "safari", version: "11", platform: "macOS 10.13" }
+                  { browserName: "safari", version: "10", platform: "macOS 10.12" }
+                  { browserName: "safari", version: "9", platform: "OS X 10.11" }
+                  # { browserName: "safari", version: "8", platform: "OS X 10.10" }
                 ]
 
     uglify:

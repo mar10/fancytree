@@ -5,6 +5,7 @@
   * ext-dnd5: allow autoExpand even if dropping is prevented
   * [Fixed] ext-filter: tree.rootNode.subMatchCount is now set correctly
   * [Fixed] #955 node.navigate($.ui.keyCode.DOWN, false) does not return promise
+  * Stop testing with jQuery UI 1.10 and 1.11 (only jQuery UI 1.12 remains)
 
 # 2.31.0 / 2019-05-30
   * New extension **ext-grid** (experimental)<br>
