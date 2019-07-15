@@ -173,7 +173,7 @@ module.exports = (grunt) ->
                 #     ]
         sauce:  # Used by sauce tasks, see https://wiki.saucelabs.com/display/DOCS/Grunt-Saucelabs+Set+Up%2C+Configuration%2C+and+Usage
             options:
-                hostname: "localhost"
+                # hostname: "localhost"
                 # hostname: "127.0.0.1"
                 # port: 8080
                 port: 9999
@@ -310,7 +310,8 @@ module.exports = (grunt) ->
 
     qunit:
         options:
-            httpBase: "http://127.0.0.1:8080"
+            httpBase: "http://localhost:8080"
+            # httpBase: "http://127.0.0.1:8080"
         build: [
             "test/unit/test-core-build.html"
         ]
@@ -369,15 +370,15 @@ module.exports = (grunt) ->
               # '--direct-domains', 'google.com'
               ]
 
-
-
         triage:
             options:
                 testname: "Triage"
                 build: "triage"
+                # urls: ["http://wwwendt.de/tech/fancytree/test/unit/test-core.html"]
                 # urls: ["http://127.0.0.1:9999/test/unit/test-jQuery19-ui19.html"]
                 # urls: ["http://127.0.0.1:9999/test/unit/test-jQuery1x-mig-ui1x.html"]
-                urls: ["http://127.0.0.1:9999/test/unit/test-core.html"]
+                urls: ["http://localhost:9999/test/unit/test-core.html"]
+                # urls: ["http://127.0.0.1:9999/test/unit/test-core.html"]
                 # tunneled: false  # Use bin/sc manually
                 browsers: [
                   # Issue #825
@@ -394,8 +395,8 @@ module.exports = (grunt) ->
             options:
                 testname: "Fancytree qunit tests (jQuery 3, jQuery UI 1.12)"
                 # urls: ["http://wwwendt.de/tech/fancytree/test/unit/test-core.html"]
-                # urls: ["http://localhost:9999/test/unit/test-core.html"]
-                urls: ["http://127.0.0.1:9999/test/unit/test-core.html"]
+                urls: ["http://localhost:9999/test/unit/test-core.html"]
+                # urls: ["http://127.0.0.1:9999/test/unit/test-core.html"]
                 # jQuery 3        supports IE 9+ and latest Chrome/Edge/Firefox/Safari (-1)
                 # jQuery UI 1.12  supports IE 11 and latest Chrome/Edge/Firefox/Safari (-1)
                 browsers: [
@@ -442,7 +443,8 @@ module.exports = (grunt) ->
             options:
                 testname: "Fancytree qunit tests ('dev' browser versions)"
                 # urls: ["http://wwwendt.de/tech/fancytree/test/unit/test-core.html"]
-                urls: ["http://127.0.0.1:9999/test/unit/test-core.html"]
+                urls: ["http://localhost:9999/test/unit/test-core.html"]
+                # urls: ["http://127.0.0.1:9999/test/unit/test-core.html"]
                 browsers: [
                   # Issue #825
                   { browserName: "chrome", version: "dev", platform: "Windows 10" }  #, chromedriverVersion: "2.46.0" }
@@ -555,8 +557,8 @@ module.exports = (grunt) ->
   grunt.registerTask "sauce", [
       "connect:sauce",
       "saucelabs-qunit:ui_112",
-      "saucelabs-qunit:ui_111",
-      "saucelabs-qunit:ui_110",
+    #   "saucelabs-qunit:ui_111",
+    #   "saucelabs-qunit:ui_110",
   ]
   grunt.registerTask "sauce-optional", [
       "connect:sauce",
