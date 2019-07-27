@@ -3321,6 +3321,22 @@
 				consoleApply("info", arguments);
 			}
 		},
+		/** Return true if any node is currently beeing loaded, i.e. a Ajax request is pending.
+		 * @returns {boolean}
+		 * @since 2.32
+		 */
+		isLoading: function() {
+			var res = false;
+
+			this.rootNode.visit(function(n) {
+				// also visit rootNode
+				if (n._isLoading || n._requestId) {
+					res = true;
+					return false;
+				}
+			}, true);
+			return res;
+		},
 		/*
 		TODO: isInitializing: function() {
 			return ( this.phase=="init" || this.phase=="postInit" );

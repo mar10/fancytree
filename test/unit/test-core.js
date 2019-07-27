@@ -501,13 +501,10 @@ QUnit.test("FancytreeNode class methods", function(assert) {
 //  isActive: function() {
 //  isChildOf: function(otherNode) {
 //  isDescendantOf: function(otherNode) {
-//  isExpanded: function() {
-//  isFolder: function() {
 //  isFirstSibling: function() {
 //  isLastSibling: function() {
 //  isLazy: function() {
 //  isLoaded()
-//  isLoading: function() {
 //  isStatusNode()
 //  isUndefined()
 //  load()
@@ -1001,7 +998,7 @@ QUnit.module("lazy loading");
 
 QUnit.test("Using ajax options for `source`; .click() expands a lazy folder", function(assert) {
 	tools.setup(assert);
-	assert.expect(19);
+	assert.expect(23);
 
 	var done = assert.async(),
 		sequence = 1,
@@ -1014,6 +1011,9 @@ QUnit.test("Using ajax options for `source`; .click() expands a lazy folder", fu
 			assert.equal(sequence++, 3, "receive `init` callback");
 			assert.equal(data.tree.count(), TESTDATA_NODES, "lazy tree has 23 nodes");
 			assert.equal($("#tree li").length, TESTDATA_VISIBLENODES, "lazy tree has rendered 13 node elements");
+			assert.equal(data.tree.getRootNode().isLoading(), false, "rootNode.isLoading() return false in init");
+			assert.equal(data.tree.isLoading(), false, "tree.isLoading() return false in init");
+
 			// now expand a lazy folder
 			isClicked = true;
 			$("#tree #ft_30 span.fancytree-expander").click();
@@ -1030,12 +1030,14 @@ QUnit.test("Using ajax options for `source`; .click() expands a lazy folder", fu
 		postProcess: function(event, data){
 			if( !isClicked ) {
 				assert.equal(sequence++, 1, "receive `postProcess` callback for root");
-				assert.equal(data.node.isLoading(), true, "node.isLoading()");
+				assert.equal(data.node.isLoading(), true, "node.isLoading() return true in initial postProcess");
+				assert.equal(data.tree.isLoading(), true, "tree.isLoading() return true in initial postProcess");
 				assert.equal(data.node.children.length, 1, "Dummy status node exists");
 				assert.equal(data.node.children[0].statusNodeType, "loading", "node.statusNodeType === 'loading'");
 			} else {
 				assert.equal(sequence++, 6, "receive `postProcess` callback for node");
-				assert.equal(data.node.isLoading(), true, "node.isLoading()");
+				assert.equal(data.node.isLoading(), true, "node.isLoading() return true in node postProcess");
+				assert.equal(data.tree.isLoading(), true, "tree.isLoading() return true in node postProcess");
 			}
 		},
 		loadChildren: function(event, data){

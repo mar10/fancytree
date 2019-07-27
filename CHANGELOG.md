@@ -1,5 +1,6 @@
 # 2.32.0-0 / Unreleased
   * [Added] `node.hasClass(className)`
+  * [Added] `tree.isLoading()`
   * [Added] `tree.toDict(includeRoot, callback)` and `node.toDict(recursive, callback)`:
     callback can now return `false` or `"skip"` to skip nodes.
   * [Fixed] #951 Hover issue in unselectable radio
