@@ -999,7 +999,7 @@
 		fixSelection3AfterClick: function(callOpts) {
 			var flag = this.isSelected();
 
-			//		this.debug("fixSelection3AfterClick()");
+			// this.debug("fixSelection3AfterClick()");
 
 			this.visit(function(node) {
 				node._changeSelectStatusAttrs(flag);
@@ -1019,7 +1019,7 @@
 		fixSelection3FromEndNodes: function(callOpts) {
 			var opts = this.tree.options;
 
-			//		this.debug("fixSelection3FromEndNodes()");
+			// this.debug("fixSelection3FromEndNodes()");
 			_assert(opts.selectMode === 3, "expected selectMode 3");
 
 			// Visit all end nodes and adjust their parent's `selected` and `partsel`
@@ -1207,7 +1207,7 @@
 		 * @returns {int}
 		 */
 		getIndex: function() {
-			//		return this.parent.children.indexOf(this);
+			// return this.parent.children.indexOf(this);
 			return $.inArray(this, this.parent.children); // indexOf doesn't work in IE7
 		},
 		/** Return the hierarchical child index (1-based, e.g. '3.2.4').
@@ -1798,7 +1798,7 @@
 			// Handle cross-tree moves
 			if (tree !== targetNode.tree) {
 				// Fix node.tree for all source nodes
-				//			_assert(false, "Cross-tree move is not yet implemented.");
+				// 	_assert(false, "Cross-tree move is not yet implemented.");
 				this.warn("Cross-tree moveTo is experimental!");
 				this.visit(function(n) {
 					// TODO: fix selection state and activation, ...
@@ -2128,7 +2128,7 @@
 				newScrollTop = null;
 
 			// this.debug("scrollIntoView(), scrollTop=" + scrollTop, opts.scrollOfs);
-			//		_assert($(this.span).is(":visible"), "scrollIntoView node is invisible"); // otherwise we cannot calc offsets
+			// _assert($(this.span).is(":visible"), "scrollIntoView node is invisible"); // otherwise we cannot calc offsets
 			if (!this.isVisible()) {
 				// We cannot calc offsets for hidden elements
 				this.warn("scrollIntoView(): node is invisible.");
@@ -3659,7 +3659,7 @@
 		 * @see EventData
 		 */
 		_triggerNodeEvent: function(type, node, originalEvent, extra) {
-			//		this.debug("_trigger(" + type + "): '" + ctx.node.title + "'", ctx);
+			// this.debug("_trigger(" + type + "): '" + ctx.node.title + "'", ctx);
 			var ctx = this._makeHookContext(node, originalEvent, extra),
 				res = this.widget._trigger(type, originalEvent, ctx);
 			if (res !== false && ctx.result !== undefined) {
@@ -3669,7 +3669,7 @@
 		},
 		/* _trigger a widget event with additional tree data. */
 		_triggerTreeEvent: function(type, originalEvent, extra) {
-			//		this.debug("_trigger(" + type + ")", ctx);
+			// this.debug("_trigger(" + type + ")", ctx);
 			var ctx = this._makeHookContext(this, originalEvent, extra),
 				res = this.widget._trigger(type, originalEvent, ctx);
 
@@ -4717,7 +4717,7 @@
 						// #486: successorLi is set, if we re-rendered (i.e. discarded)
 						// existing markup, which  we want to insert at the same position.
 						// (null is equivalent to append)
-						//				parent.ul.appendChild(node.li);
+						// 		parent.ul.appendChild(node.li);
 						parent.ul.insertBefore(node.li, successorLi);
 					}
 				}
@@ -4950,7 +4950,7 @@
 					node = ctx.node,
 					tree = ctx.tree,
 					opts = ctx.options,
-					//			nodeContainer = node[tree.nodeContainerAttrName],
+					// 	nodeContainer = node[tree.nodeContainerAttrName],
 					hasChildren = node.hasChildren(),
 					isLastSib = node.isLastSibling(),
 					aria = opts.aria,
@@ -6108,7 +6108,7 @@
 						);
 					}
 					// Add extension options as tree.options.EXTENSION
-					//			_assert(!this.tree.options[extName], "Extension name must not exist as option name: " + extName);
+					// 	_assert(!this.tree.options[extName], "Extension name must not exist as option name: " + extName);
 
 					// console.info("extend " + extName, extension.options, this.tree.options[extName])
 					// issue #876: we want to replace custom array-options, not merge them
