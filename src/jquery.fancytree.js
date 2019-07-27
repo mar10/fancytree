@@ -47,6 +47,7 @@
 		REX_HTML = /[&<>"'/]/g, // Escape those characters
 		REX_TOOLTIP = /[<>"'/]/g, // Don't escape `&` in tooltips
 		RECURSIVE_REQUEST_ERROR = "$recursive_request",
+		CLIPBOARD = null,
 		ENTITY_MAP = {
 			"&": "&amp;",
 			"<": "&lt;",
@@ -771,6 +772,17 @@
 		 */
 		appendSibling: function(node) {
 			return this.addNode(node, "after");
+		},
+		/**
+		 * (experimental) Apply a modification (or navigation) operation.
+		 *
+		 * @param {string} cmd
+		 * @param {object} [opts]
+		 * @see Fancytree#applyCommand
+		 * @since 2.32
+		 */
+		applyCommand: function(cmd, opts) {
+			return this.tree.applyCommand(cmd, this, opts);
 		},
 		/**
 		 * Modify existing child nodes.
@@ -1859,9 +1871,14 @@
 		},
 		/** Set focus relative to this node and optionally activate.
 		 *
-		 * @param {number} where The keyCode that would normally trigger this move,
-		 *		e.g. `$.ui.keyCode.LEFT` would collapse the node if it
-		 *      is expanded or move to the parent oterwise.
+		 * 'left' collapses the node if it is expanded, or move to the parent
+		 * otherwise.
+		 * 'right' expands the node if it is collapsed, or move to the first
+		 * child otherwise.
+		 *
+		 * @param {string|number} where 'down', 'first', 'last', 'left', 'parent', 'right', or 'up'.
+		 *   (Alternatively the keyCode that would normally trigger this move,
+		 *   e.g. `$.ui.keyCode.LEFT` = 'left'.
 		 * @param {boolean} [activate=true]
 		 * @returns {$.Promise}
 		 */
@@ -2871,6 +2888,115 @@
 		addPagingNode: function(node, mode) {
 			return this.rootNode.addPagingNode(node, mode);
 		},
+		/**
+		 * (experimental) Apply a modification (or navigation) operation.
+		 *
+		 * Valid commands:
+		 *   - 'moveUp', 'moveDown'
+		 *   - 'indent', 'outdent'
+		 *   - 'remove'
+		 *   - 'edit', 'addChild', 'addSibling': (reqires ext-edit extension)
+		 *   - 'cut', 'copy', 'paste': (use an internal singleton 'clipboard')
+		 *   - 'down', 'first', 'last', 'left', 'parent', 'right', 'up': navigate
+		 *
+		 * @param {string} cmd
+		 * @param {FancytreeNode} [node=active_node]
+		 * @param {object} [opts]
+		 *
+		 * @since 2.32
+		 */
+		applyCommand: function(cmd, node, opts) {
+			var refNode,
+				clipboard = CLIPBOARD;
+
+			if (!opts) {
+				opts = { setActive: true };
+			}
+			node = node || this.getActiveNode();
+
+			switch (cmd) {
+				case "moveUp":
+					refNode = node.getPrevSibling();
+					if (refNode) {
+						node.moveTo(refNode, "before");
+						node.setActive();
+					}
+					break;
+				case "moveDown":
+					refNode = node.getNextSibling();
+					if (refNode) {
+						node.moveTo(refNode, "after");
+						node.setActive();
+					}
+					break;
+				case "indent":
+					refNode = node.getPrevSibling();
+					if (refNode) {
+						node.moveTo(refNode, "child");
+						refNode.setExpanded();
+						node.setActive();
+					}
+					break;
+				case "outdent":
+					if (!node.isTopLevel()) {
+						node.moveTo(node.getParent(), "after");
+						node.setActive();
+					}
+					break;
+				case "rename":
+					node.editStart();
+					break;
+				case "remove":
+					refNode =
+						node.getNextSibling() ||
+						node.getPrevSibling() ||
+						node.getParent();
+					node.remove();
+					if (refNode) {
+						refNode.setActive();
+					}
+					break;
+				case "addChild":
+					node.editCreateNode("child", "");
+					break;
+				case "addSibling":
+					node.editCreateNode("after", "");
+					break;
+				case "cut":
+					clipboard = { mode: cmd, data: node };
+					break;
+				case "copy":
+					clipboard = {
+						mode: cmd,
+						data: node.toDict(function(n) {
+							delete n.key;
+						}),
+					};
+					break;
+				case "clear":
+					clipboard = null;
+					break;
+				case "paste":
+					if (clipboard.mode === "cut") {
+						// refNode = node.getPrevSibling();
+						clipboard.data.moveTo(node, "child");
+						clipboard.data.setActive();
+					} else if (clipboard.mode === "copy") {
+						node.addChildren(clipboard.data).setActive();
+					}
+					break;
+				case "down":
+				case "first":
+				case "last":
+				case "left":
+				case "parent":
+				case "right":
+				case "up":
+					return node.navigate(cmd);
+				default:
+					$.error("Unhandled command: '" + cmd + "'");
+			}
+		},
 		/** (experimental) Modify existing data model.
 		 *
 		 * @param {Array} patchList array of [key, NodePatch] arrays
@@ -3069,8 +3195,9 @@
 		/** Find a node relative to another node.
 		 *
 		 * @param {FancytreeNode} node
-		 * @param {number|string} where The keyCode that would normally trigger this move,
-		 *		or a keyword ('down', 'first', 'last', 'left', 'parent', 'right', 'up').
+		 * @param {string|number} where 'down', 'first', 'last', 'left', 'parent', 'right', or 'up'.
+		 *   (Alternatively the keyCode that would normally trigger this move,
+		 *   e.g. `$.ui.keyCode.LEFT` = 'left'.
 		 * @param {boolean} [includeHidden=false] Not yet implemented
 		 * @returns {FancytreeNode|null}
 		 * @since v2.31
