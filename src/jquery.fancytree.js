@@ -1386,6 +1386,21 @@
 			}
 			return !!(this.children && this.children.length);
 		},
+		/**
+		 * Return true if node has `className` defined in .extraClasses.
+		 *
+		 * @param {string} className class name (separate multiple classes by space)
+		 * @returns {boolean}
+		 *
+		 * @since 2.32
+		 */
+		hasClass: function(className) {
+			return (
+				(" " + (this.extraClasses || "") + " ").indexOf(
+					" " + className + " "
+				) >= 0
+			);
+		},
 		/** Return true if node has keyboard focus.
 		 * @returns {boolean}
 		 */

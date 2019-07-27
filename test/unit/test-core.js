@@ -364,7 +364,7 @@ QUnit.module("API");
 
 QUnit.test("FancytreeNode class methods", function(assert) {
 	tools.setup(assert);
-	assert.expect(39);
+	assert.expect(48);
 
 	$("#tree").fancytree({
 		source: TEST_DATA
@@ -476,6 +476,24 @@ QUnit.test("FancytreeNode class methods", function(assert) {
 			["10", "10_1", "10_1_2"], "getParentList(false, true)");
 	assert.deepEqual(tools.getNodeKeyArray(node.getParentList(true, false)),
 			[ROOT_NODE_KEY, "10", "10_1"], "getParentList(true, false)");
+
+	// Class modifiers
+	assert.ok(!node.extraClasses, "No initial extraClasses");
+	node.addClass("test-class-1");
+	assert.equal(node.extraClasses, "test-class-1", "node.addClass()");
+	node.toggleClass("test-class-2");
+	assert.equal(node.extraClasses, "test-class-1 test-class-2", "node.toggleClass()");
+	node.addClass("test-class-2");
+	assert.equal(node.extraClasses, "test-class-1 test-class-2", "node.addClass() existing");
+	node.toggleClass("test-class-2");
+	assert.equal(node.extraClasses, "test-class-1", "node.toggleClass() existing");
+	node.toggleClass("test-class-2");
+	assert.equal(node.extraClasses, "test-class-1 test-class-2", "node.toggleClass() non-existing");
+	node.removeClass("test-class-2");
+	node.removeClass("test-class-3");
+	assert.equal(node.extraClasses, "test-class-1", "node.removeClass()");
+	assert.equal(node.hasClass("test-class-1"), true,  "node.hasClass() existing");
+	assert.equal(node.hasClass("test-class-2"), false,  "node.hasClass() non-existing");
 
 //  getPrevSibling: function() {
 //  hasChildren: function() {
