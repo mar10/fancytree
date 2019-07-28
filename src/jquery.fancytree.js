@@ -474,7 +474,7 @@
 	 *     For lazy nodes, null or undefined means 'not yet loaded'. Use an empty array
 	 *     to define a node that has no children.
 	 * @property {boolean} expanded Use isExpanded(), setExpanded() to access this property.
-	 * @property {string} extraClasses Additional CSS classes, added to the node's `&lt;span>`.<br>
+	 * @property {string} extraClasses Additional CSS classes, added to the node's `<span>`.<br>
 	 *     Note: use `node.add/remove/toggleClass()` to modify.
 	 * @property {boolean} folder Folder nodes have different default icons and click behavior.<br>
 	 *     Note: Also non-folders may have children.
@@ -1968,7 +1968,7 @@
 		render: function(force, deep) {
 			return this.tree._callHook("nodeRender", this, force, deep);
 		},
-		/** Create HTML markup for the node's outer &lt;span> (expander, checkbox, icon, and title).
+		/** Create HTML markup for the node's outer `<span>` (expander, checkbox, icon, and title).
 		 * Implies {@link FancytreeNode#renderStatus}.
 		 * @see Fancytree_Hooks#nodeRenderTitle
 		 */
@@ -2620,7 +2620,7 @@
 	 * @property {FancytreeNode} activeNode Currently active node or null.
 	 * @property {string} ariaPropName Property name of FancytreeNode that contains the element which will receive the aria attributes.
 	 *     Typically "li", but "tr" for table extension.
-	 * @property {jQueryObject} $container Outer &lt;ul> element (or &lt;table> element for ext-table).
+	 * @property {jQueryObject} $container Outer `<ul>` element (or `<table>` element for ext-table).
 	 * @property {jQueryObject} $div A jQuery object containing the element used to instantiate the tree widget (`widget.element`)
 	 * @property {object|array} columns Recommended place to store shared column meta data. @since 2.27
 	 * @property {object} data Metadata, i.e. properties that may be passed to `source` in addition to a children array.
@@ -4643,7 +4643,7 @@
 				this.nodeRemoveChildMarkup(ctx);
 			},
 			/**
-			 * Create `&lt;li>&lt;span>..&lt;/span> .. &lt;/li>` tags for this node.
+			 * Create `<li><span>..</span> .. </li>` tags for this node.
 			 *
 			 * This method takes care that all HTML markup is created that is required
 			 * to display this node in its current state.
@@ -4651,21 +4651,20 @@
 			 * Call this method to create new nodes, or after the strucuture
 			 * was changed (e.g. after moving this node or adding/removing children)
 			 * nodeRenderTitle() and nodeRenderStatus() are implied.
-			 *
-			 * &lt;code>
-			 * &lt;li id='KEY' ftnode=NODE>
-			 *     &lt;span class='fancytree-node fancytree-expanded fancytree-has-children fancytree-lastsib fancytree-exp-el fancytree-ico-e'>
-			 *         &lt;span class="fancytree-expander">&lt;/span>
-			 *         &lt;span class="fancytree-checkbox">&lt;/span> // only present in checkbox mode
-			 *         &lt;span class="fancytree-icon">&lt;/span>
-			 *         &lt;a href="#" class="fancytree-title"> Node 1 &lt;/a>
-			 *     &lt;/span>
-			 *     &lt;ul> // only present if node has children
-			 *         &lt;li id='KEY' ftnode=NODE> child1 ... &lt;/li>
-			 *         &lt;li id='KEY' ftnode=NODE> child2 ... &lt;/li>
-			 *     &lt;/ul>
-			 * &lt;/li>
-			 * &lt;/code>
+			 * ```js
+			 * <li id='KEY' ftnode=NODE>
+			 *     <span class='fancytree-node fancytree-expanded fancytree-has-children fancytree-lastsib fancytree-exp-el fancytree-ico-e'>
+			 *         <span class="fancytree-expander"></span>
+			 *         <span class="fancytree-checkbox"></span> // only present in checkbox mode
+			 *         <span class="fancytree-icon"></span>
+			 *         <a href="#" class="fancytree-title"> Node 1 </a>
+			 *     </span>
+			 *     <ul> // only present if node has children
+			 *         <li id='KEY' ftnode=NODE> child1 ... </li>
+			 *         <li id='KEY' ftnode=NODE> child2 ... </li>
+			 *     </ul>
+			 * </li>
+			 * ```
 			 *
 			 * @param {EventData} ctx
 			 * @param {boolean} [force=false] re-render, even if html markup was already created
@@ -4853,7 +4852,7 @@
 					}
 				}
 			},
-			/** Create HTML inside the node's outer &lt;span> (i.e. expander, checkbox,
+			/** Create HTML inside the node's outer `<span>` (i.e. expander, checkbox,
 			 * icon, and title).
 			 *
 			 * nodeRenderStatus() is implied.
@@ -6657,7 +6656,7 @@
 					consoleApply("error", arguments);
 				}
 			},
-			/** Convert &lt;, &gt;, &amp;, &quot;, &#39;, &#x2F; to the equivalent entities.
+			/** Convert `<`, `>`, `&`, `"`, `'`, and `/` to the equivalent entities.
 			 *
 			 * @param {string} s
 			 * @returns {string}

@@ -60,10 +60,10 @@ var EventData = {};
  *     false: Hide icon<br>
  *     Object: Dict of options, e.g. {text: 'check_box', addClass: ''}, useful for
  *     ligature fonts like Material.<br>
- *     String: A string value that contains a '/' or a '.' is used as `src` attribute for a &lt;img> tag.
+ *     String: A string value that contains a '/' or a '.' is used as `src` attribute for a `<img>` tag.
  *     (See also the global `imagePath` option.)<br>
  *     Any other string value is used to generate custom tags, e.g. for "ui-icon ui-icon-heart":<br>
- *     &lt;span class="fancytree-custom-icon ui-icon ui-icon-heart" />.<br>
+ *     `<span class="fancytree-custom-icon ui-icon ui-icon-heart" />`.<br>
  *     See also <a href="https://github.com/mar10/fancytree/wiki#dynamic-options">dynamic options</a>.<br>
  * @property {string} <del>iconclass</del> @deprecated use `icon` instead.
  * @property {string} iconTooltip Will be added as `title` attribute of the node's icon span,
@@ -193,7 +193,7 @@ var TreePatch = {};
  * @property {Integer} selectMode 1:single, 2:multi, 3:multi-hier (default: 2)
  * @property {any} source Used to Initialize the tree.
  * @property {object} strings Translation table<br>
- *     default: <code>{loading: "Loading...", loadError: "Load error!", moreData: "More...", noData: "No data."}</code>
+ *     default: `{loading: "Loading...", loadError: "Load error!", moreData: "More...", noData: "No data."}`
  * @property {boolean} <del>tabbable</del> @deprecated use `tabindex` instead
  * @property {string} tabindex Add tabindex attribute to container, so tree can be reached using TAB (default: "0")<br>
  *     "0": Tree control can be reached using TAB keys<br>
@@ -279,9 +279,9 @@ var FancytreeOptions = {};
  * @property {function} dblclick `data.node` was double-clicked. `data.targetType` contains the region ("checkbox", "expander", "icon", "prefix", "title"). Return `false` to prevent default processing, i.e. expanding, etc.
  * @property {function} deactivate `data.node` was deactivated
  * @property {function} defaultGridAction (used by ext-aria) The user hit enter on the active row or cell.<br>
- *     `data.activeTd` contains the currently active &lt;td> element or null<br>
+ *     `data.activeTd` contains the currently active `<td>` element or null<br>
  *     `data.colIdx` contains the 0-based column index or -1
- * @property {function} enhanceTitle Allow extending the `&lt;span class='fancytree-title'>` markup, for example by adding badges, ... (NOTE: this event is only available as callback, but not for bind())
+ * @property {function} enhanceTitle Allow extending the `<span class='fancytree-title'>` markup, for example by adding badges, ... (NOTE: this event is only available as callback, but not for bind())
  * @property {function} expand `data.node` was expanded
  * @property {function} focus `data.node` received keyboard focus
  * @property {function} focusTree `data.tree` received keyboard focus
@@ -306,7 +306,7 @@ var FancytreeOptions = {};
  * @property {function} renderColumns (used by table extension)
  * @property {function} renderStatusColumns (used by table extension)
  * @property {function} renderNode Allow tweaking after node state was rendered (NOTE: this event is only available as callback, but not for bind())
- * @property {function} renderTitle Allow replacing the `&lt;span class='fancytree-title'>` markup (NOTE: this event is only available as callback, but not for bind())
+ * @property {function} renderTitle Allow replacing the `<span class='fancytree-title'>` markup (NOTE: this event is only available as callback, but not for bind())
  * @property {function} restore ext-persist has expanded, selected, and activated the previous state
  * @property {function} select `data.node` was (de)selected. Current status is `data.node.isSelected()`
  * @property {function} updateViewport ext-grid has redrawn the tree.viewport.<br>
