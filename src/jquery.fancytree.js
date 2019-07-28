@@ -47,7 +47,7 @@
 		REX_HTML = /[&<>"'/]/g, // Escape those characters
 		REX_TOOLTIP = /[<>"'/]/g, // Don't escape `&` in tooltips
 		RECURSIVE_REQUEST_ERROR = "$recursive_request",
-		CLIPBOARD = null,
+		// CLIPBOARD = null,
 		ENTITY_MAP = {
 			"&": "&amp;",
 			"<": "&lt;",
@@ -2901,20 +2901,23 @@
 		 *
 		 * @param {string} cmd
 		 * @param {FancytreeNode} [node=active_node]
-		 * @param {object} [opts]
+		 * @param {object} [opts] Currently unused
 		 *
 		 * @since 2.32
 		 */
-		applyCommand: function(cmd, node, opts) {
-			var refNode,
-				clipboard = CLIPBOARD;
+		applyCommand: function(cmd, node, opts_) {
+			var // clipboard,
+				refNode;
+			// opts = $.extend(
+			// 	{ setActive: true, clipboard: CLIPBOARD },
+			// 	opts_
+			// );
 
-			if (!opts) {
-				opts = { setActive: true };
-			}
 			node = node || this.getActiveNode();
+			// clipboard = opts.clipboard;
 
 			switch (cmd) {
+				// Sorting and indentation:
 				case "moveUp":
 					refNode = node.getPrevSibling();
 					if (refNode) {
@@ -2943,48 +2946,49 @@
 						node.setActive();
 					}
 					break;
-				case "rename":
-					node.editStart();
-					break;
+				// Remove:
 				case "remove":
-					refNode =
-						node.getNextSibling() ||
-						node.getPrevSibling() ||
-						node.getParent();
+					refNode = node.getPrevSibling() || node.getParent();
 					node.remove();
 					if (refNode) {
 						refNode.setActive();
 					}
 					break;
+				// Add, edit (requires ext-edit):
 				case "addChild":
 					node.editCreateNode("child", "");
 					break;
 				case "addSibling":
 					node.editCreateNode("after", "");
 					break;
-				case "cut":
-					clipboard = { mode: cmd, data: node };
+				case "rename":
+					node.editStart();
 					break;
-				case "copy":
-					clipboard = {
-						mode: cmd,
-						data: node.toDict(function(n) {
-							delete n.key;
-						}),
-					};
-					break;
-				case "clear":
-					clipboard = null;
-					break;
-				case "paste":
-					if (clipboard.mode === "cut") {
-						// refNode = node.getPrevSibling();
-						clipboard.data.moveTo(node, "child");
-						clipboard.data.setActive();
-					} else if (clipboard.mode === "copy") {
-						node.addChildren(clipboard.data).setActive();
-					}
-					break;
+				// Simple clipboard simulation:
+				// case "cut":
+				// 	clipboard = { mode: cmd, data: node };
+				// 	break;
+				// case "copy":
+				// 	clipboard = {
+				// 		mode: cmd,
+				// 		data: node.toDict(function(n) {
+				// 			delete n.key;
+				// 		}),
+				// 	};
+				// 	break;
+				// case "clear":
+				// 	clipboard = null;
+				// 	break;
+				// case "paste":
+				// 	if (clipboard.mode === "cut") {
+				// 		// refNode = node.getPrevSibling();
+				// 		clipboard.data.moveTo(node, "child");
+				// 		clipboard.data.setActive();
+				// 	} else if (clipboard.mode === "copy") {
+				// 		node.addChildren(clipboard.data).setActive();
+				// 	}
+				// 	break;
+				// Navigation commands:
 				case "down":
 				case "first":
 				case "last":
