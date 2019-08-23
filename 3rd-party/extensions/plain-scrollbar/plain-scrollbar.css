@@ -1,0 +1,53 @@
+/* .plain-scrollbar
+ */
+
+ .plain-scrollbar {
+	box-sizing: border-box;
+	position: absolute;
+	background-color: transparent;
+	height: 100%;
+	width: 100%;
+	/*transition: all 0.5s ease;*/
+	transition: background 0.5s ease, border 0.5s ease;
+
+}
+
+.plain-scrollbar.scrollbar-horizontal,
+.plain-scrollbar.scrollbar-vertical {
+	overflow: hidden;
+}
+.plain-scrollbar.scrollbar-horizontal {
+	bottom: 0;
+	height: 16px;
+}
+.plain-scrollbar.scrollbar-vertical {
+	top: 0;
+	right: 0;
+	width: 16px;
+}
+.plain-scrollbar[data-visible="true"] {
+	background-color: rgba(251, 251, 251, 0.5);
+}
+
+.plain-scrollbar .slider {
+	box-sizing: inherit;
+	background-color: rgba(0, 0, 0, 0);
+	margin: 0;
+	min-height: 1px;
+	min-width: 1px;
+	/*transition: all 0.5s ease;*/
+	transition: background 0.5s ease, border 0.5s ease;
+}
+.plain-scrollbar.scrollbar-horizontal .slider {
+	vertical-align: middle;
+	top: 0px;
+	height: 16px;
+}
+.plain-scrollbar.scrollbar-vertical .slider {
+	left: 0px;
+	width: 16px;
+}
+.plain-scrollbar:hover .slider,
+.plain-scrollbar[data-visible="true"] .slider {
+	background-color: rgba(125, 125, 125, 0.9);
+}
