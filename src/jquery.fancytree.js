@@ -4651,7 +4651,7 @@
 			 * Call this method to create new nodes, or after the strucuture
 			 * was changed (e.g. after moving this node or adding/removing children)
 			 * nodeRenderTitle() and nodeRenderStatus() are implied.
-			 * ```js
+			 * ```html
 			 * <li id='KEY' ftnode=NODE>
 			 *     <span class='fancytree-node fancytree-expanded fancytree-has-children fancytree-lastsib fancytree-exp-el fancytree-ico-e'>
 			 *         <span class="fancytree-expander"></span>
@@ -5282,9 +5282,9 @@
 			 *
 			 * @param {EventData} ctx
 			 * @param {boolean} [flag=true]
-			 * @param {object} [opts] additional options. Defaults to {noAnimation: false, noEvents: false}
+			 * @param {object} [opts] additional options. Defaults to `{noAnimation: false, noEvents: false}`
 			 * @returns {$.Promise} The deferred will be resolved as soon as the (lazy)
-			 *     data was retrieved, rendered, and the expand animation finshed.
+			 *     data was retrieved, rendered, and the expand animation finished.
 			 */
 			nodeSetExpanded: function(ctx, flag, callOpts) {
 				callOpts = callOpts || {};
