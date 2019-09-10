@@ -1,4 +1,6 @@
-# 2.32.0-0 / Unreleased
+# 2.32.1-0 / Unreleased
+
+# 2.32.0 / 2019-09-10
   * [Added] `node.hasClass(className)`
   * [Added] `tree.applyCommand()` and `node.applyCommand()` (experimental!)
   * [Added] `tree.isLoading()`
