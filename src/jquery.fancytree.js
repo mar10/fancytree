@@ -1589,15 +1589,7 @@
 			// i.e. return false for nodes (but not parents) that are hidden
 			// by a filter
 			if (hasFilter && !this.match && !this.subMatchCount) {
-				this.debug(
-					"isVisible: HIDDEN (" +
-						hasFilter +
-						", " +
-						this.match +
-						", " +
-						this.match +
-						")"
-				);
+				// this.debug( "isVisible: HIDDEN (" + hasFilter + ", " + this.match + ", " + this.match + ")" );
 				return false;
 			}
 
@@ -1605,7 +1597,7 @@
 				n = parents[i];
 
 				if (!n.expanded) {
-					this.debug("isVisible: HIDDEN (parent collapsed)");
+					// this.debug("isVisible: HIDDEN (parent collapsed)");
 					return false;
 				}
 				// if (hasFilter && !n.match && !n.subMatchCount) {
@@ -1613,7 +1605,7 @@
 				// 	return false;
 				// }
 			}
-			this.debug("isVisible: VISIBLE");
+			// this.debug("isVisible: VISIBLE");
 			return true;
 		},
 		/** Deprecated.
@@ -5419,9 +5411,7 @@
 							$(node.li).addClass(cn.animating); // #717
 
 							if ($.isFunction($(node.ul)[effect.effect])) {
-								tree.debug(
-									"use jquery." + effect.effect + " method"
-								);
+								// tree.debug( "use jquery." + effect.effect + " method" );
 								$(node.ul)[effect.effect]({
 									duration: effect.duration,
 									always: function() {
