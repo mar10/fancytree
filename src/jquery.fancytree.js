@@ -3430,6 +3430,10 @@
 		},
 		/**
 		 * Return an array of selected nodes.
+		 *
+		 * Note: you cannot send this result via Ajax directly. Instead the
+		 * node object need to be converted to plain objects, for example
+		 * by using `$.map()` and `node.toDict()`.
 		 * @param {boolean} [stopOnParents=false] only return the topmost selected
 		 *     node (useful with selectMode 3)
 		 * @returns {FancytreeNode[]}

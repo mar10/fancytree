@@ -60,15 +60,11 @@
 		// ---------------------------------------------------------------------
 
 		$("#btnDeselectAll2").click(function(){
-			$("#tree2").fancytree("getTree").visit(function(node){
-				node.setSelected(false);
-			});
+			$("#tree2").fancytree("getTree").selectAll(false);
 			return false;
 		});
 		$("#btnSelectAll2").click(function(){
-			$("#tree2").fancytree("getTree").visit(function(node){
-				node.setSelected(true);
-			});
+			$("#tree2").fancytree("getTree").selectAll();
 			return false;
 		});
 
@@ -116,15 +112,19 @@
 		// ---------------------------------------------------------------------
 
 		$("#btnDeselectAll3").click(function(){
-			$("#tree3").fancytree("getTree").visit(function(node){
-				node.setSelected(false);
-			});
+			$("#tree3").fancytree("getTree").selectAll(false);
 			return false;
 		});
 		$("#btnSelectAll3").click(function(){
-			$("#tree3").fancytree("getTree").visit(function(node){
-				node.setSelected(true);
+			$("#tree3").fancytree("getTree").selectAll();
+			return false;
+		});
+		$("#btnGetSelected3").click(function(){
+			var selNodes = $("#tree3").fancytree("getTree").getSelectedNodes();
+			var selData = $.map(selNodes, function(n){
+				return n.toDict();
 			});
+			// alert(JSON.stringify(selData));
 			return false;
 		});
 		$("#tree3").fancytree({
@@ -244,7 +244,8 @@
 	</p>
 	<p>
 		<a href="#" id="btnSelectAll3">Select all</a> -
-		<a href="#" id="btnDeselectAll3">Deselect all</a>
+		<a href="#" id="btnDeselectAll3">Deselect all</a> -
+		<a href="#" id="btnGetSelected3">Get selected</a>
 	</p>
 	<div id="tree3"></div>
 	<div>Selected keys: <span id="echoSelection3">-</span></div>
