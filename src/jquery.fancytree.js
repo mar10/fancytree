@@ -5899,16 +5899,30 @@
 					type = $container.data("type") || "html";
 					switch (type) {
 						case "html":
-							$ul = $container.find(">ul").first();
-							$ul.addClass(
-								"ui-fancytree-source fancytree-helper-hidden"
-							);
-							source = $.ui.fancytree.parseHtml($ul);
-							// allow to init tree.data.foo from <ul data-foo=''>
-							this.data = $.extend(
-								this.data,
-								_getElementDataAsDict($ul)
-							);
+							// There should be an embedded `<ul>` with initial nodes,
+							// but another `<ul class='fancytree-container'>` is appended
+							// to the tree's <div> on startup anyway.
+							$ul = $container
+								.find(">ul")
+								.not(".fancytree-container")
+								.first();
+
+							if ($ul.length) {
+								$ul.addClass(
+									"ui-fancytree-source fancytree-helper-hidden"
+								);
+								source = $.ui.fancytree.parseHtml($ul);
+								// allow to init tree.data.foo from <ul data-foo=''>
+								this.data = $.extend(
+									this.data,
+									_getElementDataAsDict($ul)
+								);
+							} else {
+								FT.warn(
+									"No `source` option was passed and container does not contain `<ul>`: assuming `source: []`."
+								);
+								source = [];
+							}
 							break;
 						case "json":
 							source = $.parseJSON($container.text());

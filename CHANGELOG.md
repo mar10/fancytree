@@ -1,5 +1,6 @@
 # 2.32.1-0 / Unreleased
   * [Changed] jQuery is now a peerDependency (>=1.9), so users can install or re-use their own version.
+  * [Fixed] #964: handle case when `source` is not passed and no `<ul>` is embedded.
 
 # 2.32.0 / 2019-09-10
   * [Added] `node.hasClass(className)`
