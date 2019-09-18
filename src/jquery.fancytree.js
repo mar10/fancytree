@@ -5352,7 +5352,13 @@
 				dfd.done(function() {
 					var lastChild = node.getLastChild();
 
-					if (flag && opts.autoScroll && !noAnimation && lastChild) {
+					if (
+						flag &&
+						opts.autoScroll &&
+						!noAnimation &&
+						lastChild &&
+						tree._enableUpdate
+					) {
 						// Scroll down to last child, but keep current node visible
 						lastChild
 							.scrollIntoView(true, { topNode: node })
