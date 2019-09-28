@@ -220,6 +220,7 @@
 		var info = {
 			next: newVp,
 			diff: diffVp,
+			reason: redrawReason,
 			scrollOnly: redrawReason === "start",
 		};
 		if (
@@ -401,6 +402,7 @@
 		}
 		window.console.time("_renumberVisibleNodes()");
 		var i = 0,
+			prevLength = this.visibleNodeList ? this.visibleNodeList.length : 0,
 			visibleNodeList = (this.visibleNodeList = []);
 
 		// Reset previous data
@@ -418,6 +420,15 @@
 			visibleNodeList.push(node);
 		});
 		window.console.timeEnd("_renumberVisibleNodes()");
+		if (i !== prevLength) {
+			this._triggerTreeEvent("updateViewport", null, {
+				reason: "renumber",
+				diff: { start: 0, count: 0, enabled: null, force: null },
+				next: $.extend({}, this.viewport),
+				// visibleCount: prevLength,
+				// cur: i,
+			});
+		}
 	};
 
 	/**
