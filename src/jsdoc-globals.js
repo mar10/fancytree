@@ -264,6 +264,7 @@ var FancytreeOptions = {};
  * @property {function} beforeUpdateViewport ext-grid is about to redraw the tree.viewport.<br>
  *     `data.next`: viewport settings that will be applied.<br>
  *     `data.diff`: changes to the current `tree.viewport`, e.g. start offset.<br>
+ *     `data.reason`: a string describing the type of change.<br>
  *     `data.scrollOnly`: true if only the `start` value has changed.<br>
  *     Modify `next` or return `false` to prevent default processing.
  * @property {function} blur `data.node` lost keyboard focus
@@ -312,6 +313,7 @@ var FancytreeOptions = {};
  * @property {function} updateViewport ext-grid has redrawn the tree.viewport.<br>
  *     `data.prev`: viewport settings that were active before this update.<br>
  *     `data.diff`: changes to the current `tree.viewport`, e.g. start offset.<br>
+ *     `data.reason`: a string describing the type of change.<br>
  *     `data.scrollOnly`: true if only the `start` value has changed.
  */
 var FancytreeEvents = {};

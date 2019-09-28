@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.31.0
- * @date 2019-05-31T11:32:38Z
+ * @version 2.32.0
+ * @date 2019-09-10T07:42:12Z
  */
 
 /*
@@ -704,6 +704,7 @@
 	 */
 	function onDropEvent(event) {
 		var json,
+			allowAutoExpand,
 			nodeData,
 			isSourceFtNode,
 			r,
@@ -833,9 +834,11 @@
 
 				// The flag controls the preventDefault() below:
 				allowDrop = !!LAST_HIT_MODE;
+				allowAutoExpand =
+					LAST_HIT_MODE === "over" || LAST_HIT_MODE === false;
 
 				if (
-					LAST_HIT_MODE === "over" &&
+					allowAutoExpand &&
 					!node.expanded &&
 					node.hasChildren() !== false
 				) {
@@ -1010,7 +1013,7 @@
 
 	$.ui.fancytree.registerExtension({
 		name: "dnd5",
-		version: "2.31.0",
+		version: "2.32.0",
 		// Default options for this extension.
 		options: {
 			autoExpandMS: 1500, // Expand nodes after n milliseconds of hovering

@@ -1,4 +1,10 @@
-# 2.32.0-0 / Unreleased
+# 2.32.1-0 / Unreleased
+  * [Changed] jQuery is now a peerDependency (>=1.9), so users can install or re-use their own version.
+  * [Changed] ext-grid: `updateViewport` event is now also triggered for 'renumber' (i.e. expand, collapse)
+  * [Fixed] #963: tree.setExpanded() fails when autoScroll is enabled
+  * [Fixed] #964: handle case when `source` is not passed and no `<ul>` is embedded.
+
+# 2.32.0 / 2019-09-10
   * [Added] `node.hasClass(className)`
   * [Added] `tree.applyCommand()` and `node.applyCommand()` (experimental!)
   * [Added] `tree.isLoading()`

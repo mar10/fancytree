@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.31.0
- * @date 2019-05-31T11:32:38Z
+ * @version 2.32.0
+ * @date 2019-09-10T07:42:12Z
  */
 
 (function(factory) {
@@ -139,6 +139,7 @@
 			!!opts.hideExpanders
 		);
 		// Reset current filter
+		this.rootNode.subMatchCount = 0;
 		this.visit(function(node) {
 			delete node.match;
 			delete node.titleWithHighlight;
@@ -183,7 +184,7 @@
 						});
 						p._filterAutoExpanded = true;
 					}
-				});
+				}, true);
 			}
 		});
 		treeOpts.autoCollapse = prevAutoCollapse;
@@ -270,6 +271,10 @@
 		if (statusNode) {
 			statusNode.remove();
 		}
+		// we also counted root node's subMatchCount
+		delete this.rootNode.match;
+		delete this.rootNode.subMatchCount;
+
 		this.visit(function(node) {
 			if (node.match && node.span) {
 				// #491, #601
@@ -341,7 +346,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "filter",
-		version: "2.31.0",
+		version: "2.32.0",
 		// Default options for this extension.
 		options: {
 			autoApply: true, // Re-apply last filter if lazy data is loaded

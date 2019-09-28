@@ -1589,15 +1589,7 @@
 			// i.e. return false for nodes (but not parents) that are hidden
 			// by a filter
 			if (hasFilter && !this.match && !this.subMatchCount) {
-				this.debug(
-					"isVisible: HIDDEN (" +
-						hasFilter +
-						", " +
-						this.match +
-						", " +
-						this.match +
-						")"
-				);
+				// this.debug( "isVisible: HIDDEN (" + hasFilter + ", " + this.match + ", " + this.match + ")" );
 				return false;
 			}
 
@@ -1605,7 +1597,7 @@
 				n = parents[i];
 
 				if (!n.expanded) {
-					this.debug("isVisible: HIDDEN (parent collapsed)");
+					// this.debug("isVisible: HIDDEN (parent collapsed)");
 					return false;
 				}
 				// if (hasFilter && !n.match && !n.subMatchCount) {
@@ -1613,7 +1605,7 @@
 				// 	return false;
 				// }
 			}
-			this.debug("isVisible: VISIBLE");
+			// this.debug("isVisible: VISIBLE");
 			return true;
 		},
 		/** Deprecated.
@@ -3430,6 +3422,10 @@
 		},
 		/**
 		 * Return an array of selected nodes.
+		 *
+		 * Note: you cannot send this result via Ajax directly. Instead the
+		 * node object need to be converted to plain objects, for example
+		 * by using `$.map()` and `node.toDict()`.
 		 * @param {boolean} [stopOnParents=false] only return the topmost selected
 		 *     node (useful with selectMode 3)
 		 * @returns {FancytreeNode[]}
@@ -5356,7 +5352,13 @@
 				dfd.done(function() {
 					var lastChild = node.getLastChild();
 
-					if (flag && opts.autoScroll && !noAnimation && lastChild) {
+					if (
+						flag &&
+						opts.autoScroll &&
+						!noAnimation &&
+						lastChild &&
+						tree._enableUpdate
+					) {
 						// Scroll down to last child, but keep current node visible
 						lastChild
 							.scrollIntoView(true, { topNode: node })
@@ -5415,9 +5417,7 @@
 							$(node.li).addClass(cn.animating); // #717
 
 							if ($.isFunction($(node.ul)[effect.effect])) {
-								tree.debug(
-									"use jquery." + effect.effect + " method"
-								);
+								// tree.debug( "use jquery." + effect.effect + " method" );
 								$(node.ul)[effect.effect]({
 									duration: effect.duration,
 									always: function() {
@@ -5905,16 +5905,30 @@
 					type = $container.data("type") || "html";
 					switch (type) {
 						case "html":
-							$ul = $container.find(">ul").first();
-							$ul.addClass(
-								"ui-fancytree-source fancytree-helper-hidden"
-							);
-							source = $.ui.fancytree.parseHtml($ul);
-							// allow to init tree.data.foo from <ul data-foo=''>
-							this.data = $.extend(
-								this.data,
-								_getElementDataAsDict($ul)
-							);
+							// There should be an embedded `<ul>` with initial nodes,
+							// but another `<ul class='fancytree-container'>` is appended
+							// to the tree's <div> on startup anyway.
+							$ul = $container
+								.find(">ul")
+								.not(".fancytree-container")
+								.first();
+
+							if ($ul.length) {
+								$ul.addClass(
+									"ui-fancytree-source fancytree-helper-hidden"
+								);
+								source = $.ui.fancytree.parseHtml($ul);
+								// allow to init tree.data.foo from <ul data-foo=''>
+								this.data = $.extend(
+									this.data,
+									_getElementDataAsDict($ul)
+								);
+							} else {
+								FT.warn(
+									"No `source` option was passed and container does not contain `<ul>`: assuming `source: []`."
+								);
+								source = [];
+							}
 							break;
 						case "json":
 							source = $.parseJSON($container.text());
