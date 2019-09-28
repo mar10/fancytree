@@ -24,8 +24,8 @@
   <!-- Start_Exclude: This block is not part of the sample code -->
   <link href="../../../lib/prettify.css" rel="stylesheet">
   <script src="../../../lib/prettify.js"></script>
-  <link href="sample.css" rel="stylesheet">
-  <script src="sample.js"></script>
+  <link href="../../../demo/sample.css" rel="stylesheet">
+  <script src="../../../demo/sample.js"></script>
   <!-- End_Exclude -->
 
   <link href="./plain-scrollbar.css" rel="stylesheet" type="text/css">
@@ -150,15 +150,14 @@
     table.fancytree-ext-table td:nth-child(5) {
        text-align: center;
     }
-
+    /* PlainScrollbar-specific Styles */
     .plain-scrollbar[data-scrollable="false"] {
       visibility: hidden;
     }
+    /* End of PlainScrollbar-specific Styles */
   </style>
 
 <script type="text/javascript">
-  var verticalScrollbar = null;
-
   $(function(){
       // --- Demo GUI: ---------------------------------------------------
 
@@ -170,6 +169,19 @@
       }).val( window.sessionStorage.getItem( "cellFocus" ) || "allow" );
 
       var modelCount = 0;
+
+      // --- PlainScrollbar ----------------------------------------------
+      function _updateTreeScrollbars(tree) {
+        var vscrollbar = tree.verticalScrollbar;
+
+        if(vscrollbar){
+          vscrollbar.set({
+            start: tree.viewport.start,
+            total: tree.visibleNodeList.length,
+            visible: tree.viewport.count,
+          }, true);  // do not trigger `onSet`
+        }
+      }
 
       // --- Fancytree widget --------------------------------------------
 
@@ -259,37 +271,35 @@
       // 	return data.node.data.author;
       // },
       init: function(event, data) {
-        modelCount = data.tree.count();
+        var tree = data.tree;
+
+        tree.debug(event.type, data);
+
+        modelCount = tree.count();
         $("#treetable caption").text("Loaded " + modelCount + " nodes.");
-        data.tree.getNodeByKey("1.1.88").setActive();
+        tree.getNodeByKey("1.1.88").setActive();
         // data.tree.getNodeByKey("10_2_1").setActive();
+
         // Recalc the viewport's row count from the flexed size of the container:
-        data.tree.adjustViewportSize();
-        // data.tree.addPagingNode();
+        tree.adjustViewportSize();
 
-        var numberOfItems = {
-          start: data.tree.viewport.start,
-          total: data.tree.visibleNodeList.length,
-          visible: data.tree.viewport.count,
-        };
-
-        if (!verticalScrollbar) {
-          verticalScrollbar = new PlainScrollbar({
+        if( !tree.verticalScrollbar ) {
+          tree.verticalScrollbar = new PlainScrollbar({
             alwaysVisible: true,
             arrows: true,
-            numberOfItems: numberOfItems,
-            orientation: 'vertical',
+            // @@: Would be nice if we could omit this:
+            numberOfItems: {start: 0, total: 100, visible: 10},
+            orientation: "vertical",
             onSet: function(numberOfItems) {
-              console.log("verticalScrollbar:onUpdate", numberOfItems);
-              data.tree.setViewport({
+              tree.debug("verticalScrollbar:onSet", numberOfItems);
+              tree.setViewport({
                 start: Math.round(numberOfItems.start),
-                count: data.tree.viewport.count
+                // count: tree.viewport.count,
               });
             },
-            scrollbarElement: document.getElementById('verticalScrollbar'),
+            scrollbarElement: document.getElementById("verticalScrollbar"),
           });
-        } else {
-          verticalScrollbar.set(numberOfItems);
+          tree.redrawViewport();
         }
       },
       lazyLoad: function(event, data) {
@@ -317,7 +327,7 @@
           topNode = tree.visibleNodeList[tree.viewport.start],
           path = (topNode && !topNode.isTopLevel()) ? topNode.getPath(false) + "/..." : "";
 
-        tree.debug(event.type, data);
+        tree.debug(event.type, data, tree.isVpUpdating);
 
         // Display breadcrumb/parent-path in header
         tree.$container.find("thead th.parent-path").text(path);
@@ -332,16 +342,8 @@
             "/" +
             modelCount
           );
+          _updateTreeScrollbars(tree);
         }
-
-    if (verticalScrollbar) {
-      verticalScrollbar.set({
-        start: tree.viewport.start,
-        total: tree.visibleNodeList.length,
-        visible: tree.viewport.count,
-      }, true);
-    }
-
       },
     });
 
