@@ -36,7 +36,7 @@
 		PREFIX = "ft-logger: ",
 		logLine = window.console.log,
 		// HOOK_NAMES = "nodeClick nodeCollapseSiblings".split(" "),
-		TREE_EVENT_NAMES = "beforeRestore beforeUpdateViewport blurTree create init focusTree restore updateViewport".split(
+		TREE_EVENT_NAMES = "beforeRestore beforeUpdateViewport blurTree create init focusTree preInit restore updateViewport".split(
 			" "
 		),
 		NODE_EVENT_NAMES = "activate activateCell beforeActivate beforeExpand beforeSelect blur click collapse createNode dblclick deactivate defaultGridAction expand enhanceTitle focus keydown keypress lazyLoad loadChildren loadError modifyChild postProcess renderNode renderTitle select".split(

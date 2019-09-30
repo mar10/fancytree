@@ -291,6 +291,7 @@ var FancytreeOptions = {};
  *     The tree widget was initialized, source data was loaded, visible nodes are rendered,
  *     selection propagation applied, and node activated.<br>
  *     `data.status` is false on load error.<br>
+ *     Note: `preInit` is fired before nodes are loaded.<br>
  *     Note: if ext-persist is used, see also the `restore` event, which is fired later.
  * @property {function} keydown `data.node` received key. `event.which` contains the key. Return `false` to prevent default processing, i.e. navigation. Call `data.result = "preventNav";` to prevent navigation but still allow default handling inside embedded input controls.
  * @property {function} keypress (currently unused)
@@ -303,6 +304,8 @@ var FancytreeOptions = {};
  *     Note that this event is not necessarily fired for each single deleted or added node, when a hierarchy. was modified.<br>
  *     This event is only available as callback, but not for bind().
  * @property {function} postProcess Allows to modify the ajax response
+ * @property {function} preInit Widget markup was created, but no data loaded yet.<br>
+ *     @see init
  * @property {function} <del>removeNode</del> @deprecated use `modifyChild` with operation: 'remove' instead.
  * @property {function} renderColumns (used by table extension)
  * @property {function} renderStatusColumns (used by table extension)

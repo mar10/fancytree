@@ -224,6 +224,7 @@
 			scrollOnly: redrawReason === "start",
 		};
 		if (
+			!opts.noEvents &&
 			this._triggerTreeEvent("beforeUpdateViewport", null, info) === false
 		) {
 			return false;
@@ -254,7 +255,9 @@
 		var force = opts.force;
 		this.redrawViewport(force);
 
-		this._triggerTreeEvent("updateViewport", null, info);
+		if (!opts.noEvents) {
+			this._triggerTreeEvent("updateViewport", null, info);
+		}
 
 		this.isVpUpdating = prevPhase;
 		return true;
@@ -653,6 +656,7 @@
 						left: 0,
 						right: 0,
 						keepEmptyRows: true,
+						noEvents: true,
 					},
 					opts.viewport
 				)
