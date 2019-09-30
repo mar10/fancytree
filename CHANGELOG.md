@@ -1,4 +1,5 @@
-# 2.32.1-0 / Unreleased
+# 2.33.0-0 / Unreleased
+  * [Added] event `preInit` (fired before nodes are loaded).
   * [Changed] jQuery is now a peerDependency (>=1.9), so users can install or re-use their own version.
   * [Changed] ext-grid: `updateViewport` event is now also triggered for 'renumber' (i.e. expand, collapse)
   * [Fixed] #963: tree.setExpanded() fails when autoScroll is enabled
