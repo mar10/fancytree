@@ -197,7 +197,7 @@
     var sourceUrl = "https://cdn.jsdelivr.net/gh/mar10/assets@master/fancytree/ajax_101k.json";
 
     $("#treetable").fancytree({
-      extensions: ["clones", "dnd5", "edit", "filter", "grid", "ariagrid"],
+      extensions: ["clones", "dnd5", "edit", "filter", "grid", "ariagrid", "logger"],
       checkbox: true,
       quicksearch: true,
       autoScroll: true,
@@ -252,38 +252,9 @@
         url: sourceUrl,
         cache: true,
       },
-      // postProcess: function(event, data) {
-      //   // Triage: Force ext-clones to create new keys and see if we get dupes
-      //   function _walk(n) {
-      //     if( n ) {
-      //       n.refKey = n.key;
-      //       delete n.key;
-      //       if (n.children) {
-      //         for (var i=0; i < n.children.length; i++){
-      //           _walk(n.children[i]);
-      //         }
-      //       }
-      //     }
-      //   }
-      //   _walk({children: data.response});
-      // },
-      // tooltip: function(event, data){
-      // 	return data.node.data.author;
-      // },
-      init: function(event, data) {
-        var tree = data.tree;
+      preInit: function(event, data) {
+          var tree = data.tree;
 
-        tree.debug(event.type, data);
-
-        modelCount = tree.count();
-        $("#treetable caption").text("Loaded " + modelCount + " nodes.");
-        tree.getNodeByKey("1.1.88").setActive();
-        // data.tree.getNodeByKey("10_2_1").setActive();
-
-        // Recalc the viewport's row count from the flexed size of the container:
-        tree.adjustViewportSize();
-
-        if( !tree.verticalScrollbar ) {
           tree.verticalScrollbar = new PlainScrollbar({
             alwaysVisible: true,
             arrows: true,
@@ -299,8 +270,19 @@
             },
             scrollbarElement: document.getElementById("verticalScrollbar"),
           });
-          tree.redrawViewport();
-        }
+      },
+      init: function(event, data) {
+        var tree = data.tree;
+
+        tree.debug(event.type, data);
+
+        modelCount = tree.count();
+        $("#treetable caption").text("Loaded " + modelCount + " nodes.");
+        tree.getNodeByKey("1.1.88").setActive();
+        // data.tree.getNodeByKey("10_2_1").setActive();
+
+        // Recalc the viewport's row count from the flexed size of the container:
+        tree.adjustViewportSize();
       },
       lazyLoad: function(event, data) {
         data.result = {url: "ajax-sub2.json"}
