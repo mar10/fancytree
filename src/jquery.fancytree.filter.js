@@ -174,7 +174,9 @@
 				count++;
 				node.match = true;
 				node.visitParents(function(p) {
-					p.subMatchCount += 1;
+					if (p !== node) {
+						p.subMatchCount += 1;
+					}
 					// Expand match (unless this is no real match, but only a node in a matched branch)
 					if (opts.autoExpand && !matchedByBranch && !p.expanded) {
 						p.setExpanded(true, {

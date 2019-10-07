@@ -4,6 +4,7 @@
   * [Changed] ext-grid: `updateViewport` event is now also triggered for 'renumber' (i.e. expand, collapse)
   * [Fixed] #963: tree.setExpanded() fails when autoScroll is enabled
   * [Fixed] #964: handle case when `source` is not passed and no `<ul>` is embedded.
+  * [Fixed] ext-filter: sub-match counter is one too high.
 
 # 2.32.0 / 2019-09-10
   * [Added] `node.hasClass(className)`
