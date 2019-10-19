@@ -4,34 +4,37 @@
   <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
   <title>Fancytree - Example: Viewport</title>
 
-  <script src="../lib/jquery.js"></script>
+  <script src="../../lib/jquery.js"></script>
   <!--
     <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
   -->
-  <link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet">
+  <link href="../../src/skin-win8/ui.fancytree.css" rel="stylesheet">
 
-  <script src="../src/jquery-ui-dependencies/jquery.fancytree.ui-deps.js"></script>
-  <script src="../src/jquery.fancytree.js"></script>
-  <script src="../src/jquery.fancytree.ariagrid.js"></script>
-  <script src="../src/jquery.fancytree.clones.js"></script>
-  <script src="../src/jquery.fancytree.dnd5.js"></script>
-  <script src="../src/jquery.fancytree.edit.js"></script>
-  <script src="../src/jquery.fancytree.filter.js"></script>
-  <script src="../src/jquery.fancytree.grid.js"></script>
-  <script src="../src/jquery.fancytree.logger.js"></script>
+  <script src="../../src/jquery-ui-dependencies/jquery.fancytree.ui-deps.js"></script>
+  <script src="../../src/jquery.fancytree.js"></script>
+  <script src="../../src/jquery.fancytree.ariagrid.js"></script>
+  <script src="../../src/jquery.fancytree.clones.js"></script>
+  <script src="../../src/jquery.fancytree.dnd5.js"></script>
+  <script src="../../src/jquery.fancytree.edit.js"></script>
+  <script src="../../src/jquery.fancytree.filter.js"></script>
+  <script src="../../src/jquery.fancytree.grid.js"></script>
+  <script src="../../src/jquery.fancytree.logger.js"></script>
 
-<!-- Start_Exclude: This block is not part of the sample code -->
-<link href="../lib/prettify.css" rel="stylesheet">
-<script src="../lib/prettify.js"></script>
-<link href="sample.css" rel="stylesheet">
-<script src="sample.js"></script>
-<!-- End_Exclude -->
+  <!-- Start_Exclude: This block is not part of the sample code -->
+  <link href="../../lib/prettify.css" rel="stylesheet">
+  <script src="../../lib/prettify.js"></script>
+  <link href="../../demo/sample.css" rel="stylesheet">
+  <script src="../../demo/sample.js"></script>
+  <!-- End_Exclude -->
+
+  <link href="//cdn.jsdelivr.net/gh/ewya/PlainScrollbar/plain-scrollbar.css" rel="stylesheet" type="text/css">
+  <script src="//cdn.jsdelivr.net/gh/ewya/PlainScrollbar/plain-scrollbar.js" type="application/javascript"></script>
 
   <style type="text/css">
     *, *:before, *:after {
-    	-moz-box-sizing: border-box;
-	    -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      -webkit-box-sizing: border-box;
       box-sizing: border-box;
     }
     html, body.flexbox-body {
@@ -114,6 +117,9 @@
       /* The div should not be stretched by the content rows, because we want to
          adust the row count from div height instead: */
       overflow-y: hidden;
+
+      position: relative;
+      padding-right: 16px;
     }
 
     div.fancytree-grid-container > table.fancytree-ext-grid {
@@ -144,23 +150,40 @@
     table.fancytree-ext-table td:nth-child(5) {
        text-align: center;
     }
+    /* PlainScrollbar-specific Styles */
+    .plain-scrollbar[data-scrollable="false"] {
+      visibility: hidden;
+    }
+    /* End of PlainScrollbar-specific Styles */
   </style>
 
 <script type="text/javascript">
   $(function(){
+      // --- Demo GUI: ---------------------------------------------------
 
-			// --- Demo GUI: ---------------------------------------------------
+      $( "#optionsForm [name=cellFocus]" ).change( function( e ) {
+        var value = $( this ).find( ":selected" ).val();
 
-			$( "#optionsForm [name=cellFocus]" ).change( function( e ) {
-				var value = $( this ).find( ":selected" ).val();
-
-				window.sessionStorage.setItem( "cellFocus", value );
-				$.ui.fancytree.getTree( "#treegrid" ).setOption("ariagrid.cellFocus", value);
+        window.sessionStorage.setItem( "cellFocus", value );
+        $.ui.fancytree.getTree( "#treegrid" ).setOption("ariagrid.cellFocus", value);
       }).val( window.sessionStorage.getItem( "cellFocus" ) || "allow" );
 
       var modelCount = 0;
 
-			// --- Fancytree widget --------------------------------------------
+      // --- PlainScrollbar ----------------------------------------------
+      function _updateTreeScrollbars(tree) {
+        var vscrollbar = tree.verticalScrollbar;
+
+        if(vscrollbar){
+          vscrollbar.set({
+            start: tree.viewport.start,
+            total: tree.visibleNodeList.length,
+            visible: tree.viewport.count,
+          }, true);  // do not trigger `onSet`
+        }
+      }
+
+      // --- Fancytree widget --------------------------------------------
 
       // var sourceUrl = getUrlParam("source");
     // if( sourceUrl ){
@@ -173,9 +196,8 @@
     // var sourceUrl = "ajax10k_nodes.json";
     var sourceUrl = "https://cdn.jsdelivr.net/gh/mar10/assets@master/fancytree/ajax_101k.json";
 
-
     $("#treetable").fancytree({
-      extensions: ["clones", "dnd5", "edit", "filter", "grid", "ariagrid"],
+      extensions: ["clones", "dnd5", "edit", "filter", "grid", "ariagrid", "logger"],
       checkbox: true,
       quicksearch: true,
       autoScroll: true,
@@ -230,32 +252,37 @@
         url: sourceUrl,
         cache: true,
       },
-      // postProcess: function(event, data) {
-      //   // Triage: Force ext-clones to create new keys and see if we get dupes
-      //   function _walk(n) {
-      //     if( n ) {
-      //       n.refKey = n.key;
-      //       delete n.key;
-      //       if (n.children) {
-      //         for (var i=0; i < n.children.length; i++){
-      //           _walk(n.children[i]);
-      //         }
-      //       }
-      //     }
-      //   }
-      //   _walk({children: data.response});
-      // },
-      // tooltip: function(event, data){
-      // 	return data.node.data.author;
-      // },
+      preInit: function(event, data) {
+          var tree = data.tree;
+
+          tree.verticalScrollbar = new PlainScrollbar({
+            alwaysVisible: true,
+            arrows: true,
+            // @@: Would be nice if we could omit this:
+            numberOfItems: {start: 0, total: 100, visible: 10},
+            orientation: "vertical",
+            onSet: function(numberOfItems) {
+              tree.debug("verticalScrollbar:onSet", numberOfItems);
+              tree.setViewport({
+                start: Math.round(numberOfItems.start),
+                // count: tree.viewport.count,
+              });
+            },
+            scrollbarElement: document.getElementById("verticalScrollbar"),
+          });
+      },
       init: function(event, data) {
-        modelCount = data.tree.count();
+        var tree = data.tree;
+
+        tree.debug(event.type, data);
+
+        modelCount = tree.count();
         $("#treetable caption").text("Loaded " + modelCount + " nodes.");
-        data.tree.getNodeByKey("1.1.88").setActive();
+        tree.getNodeByKey("1.1.88").setActive();
         // data.tree.getNodeByKey("10_2_1").setActive();
+
         // Recalc the viewport's row count from the flexed size of the container:
-        data.tree.adjustViewportSize();
-        // data.tree.addPagingNode();
+        tree.adjustViewportSize();
       },
       lazyLoad: function(event, data) {
         data.result = {url: "ajax-sub2.json"}
@@ -282,7 +309,7 @@
           topNode = tree.visibleNodeList[tree.viewport.start],
           path = (topNode && !topNode.isTopLevel()) ? topNode.getPath(false) + "/..." : "";
 
-        tree.debug(event.type, data);
+        tree.debug(event.type, data, tree.isVpUpdating);
 
         // Display breadcrumb/parent-path in header
         tree.$container.find("thead th.parent-path").text(path);
@@ -297,6 +324,7 @@
             "/" +
             modelCount
           );
+          _updateTreeScrollbars(tree);
         }
       },
     });
@@ -322,13 +350,13 @@
       tree.setViewport(opts);
     });
 
-		$("input[name=search]").on("change search", function(e){
+    $("input[name=search]").on("change search", function(e){
       if (e.type === "change" && e.target.onsearch !== undefined ) {
         // We fall back to handling the change event only if the search event is not supported.
         return;
       }
-			var n,
-				tree = $.ui.fancytree.getTree(),
+      var n,
+        tree = $.ui.fancytree.getTree(),
         match = $.trim($(this).val());
 
       // Pass a string to perform case insensitive matching
@@ -357,25 +385,16 @@
 <body class="example flexbox-body">
   <div class="page-container flexbox-parent">
     <header class="description flexbox-item">
-      <h1>Example: Viewport Feature</h1>
+      <h1>Example: Viewport Feature with Scrollbar</h1>
       <p>
-        Restrict rendering of DOM elements to sub range.
+        This example uses the 3rd-party plugin
+        <a target="_blank" href="https://github.com/ewya/PlainScrollbar">PlainScrollbar</a>
+        to add scrollbar functionality to the
+        <a target="_top" href="index.html#sample-ext-grid.html">ext-grid viewport feature</a>.
       </p>
       <p>
-        This example loads a data model with
-        <a href="https://cdn.jsdelivr.net/gh/mar10/assets@master/fancytree/ajax_101k.json">about 100k nodes</a>
-        completely into the client browser, however only the rows visible in the
-        current viewport are rendered.
-      </p>
-      <p>
-        <b>NOTE:</b> See also an
-        <a target="_top" href="index.html#sample-3rd-grid-scrollbar.html"> example with scrollbar support</a>.
-      </p>
-      <p>
-        <b>Status:</b> experimental.
-        <b>Details:</b>
-        <a href="https://github.com/mar10/fancytree/wiki/ExtTable"
-          target="_blank" class="external">ext-grid</a>.
+        <b>Status:</b> 3rd-party example.
+        <b>Details:</b> <a target="_top" href="index.html#sample-ext-grid.html">ext-grid</a>.
       </p>
     </header>
 
@@ -426,6 +445,7 @@
           <tr> <th></th> <th>#</th> <th class="parent-path"></th> <th>RowIdx</th> <th>Order</th> </tr>
         </thead>
       </table>
+      <div id="verticalScrollbar" style="top:19px; height:calc(100% - 24px);"></div>
     </div>
 
     <!-- Start_Exclude: This block is not part of the sample code -->
