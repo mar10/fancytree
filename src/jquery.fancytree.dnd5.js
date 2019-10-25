@@ -830,6 +830,7 @@
 				// 		": dropEffect: " +
 				// 		dataTransfer.dropEffect
 				// );
+				prepareDropEffectCallback(event, data);
 				LAST_HIT_MODE = handleDragOver(event, data);
 
 				// The flag controls the preventDefault() below:
