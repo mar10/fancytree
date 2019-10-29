@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.32.0
- * @date 2019-09-10T07:42:12Z
+ * @version 2.33.0
+ * @date 2019-10-29T08:00:07Z
  */
 
 (function(factory) {
@@ -220,9 +220,11 @@
 		var info = {
 			next: newVp,
 			diff: diffVp,
+			reason: redrawReason,
 			scrollOnly: redrawReason === "start",
 		};
 		if (
+			!opts.noEvents &&
 			this._triggerTreeEvent("beforeUpdateViewport", null, info) === false
 		) {
 			return false;
@@ -253,7 +255,9 @@
 		var force = opts.force;
 		this.redrawViewport(force);
 
-		this._triggerTreeEvent("updateViewport", null, info);
+		if (!opts.noEvents) {
+			this._triggerTreeEvent("updateViewport", null, info);
+		}
 
 		this.isVpUpdating = prevPhase;
 		return true;
@@ -401,6 +405,7 @@
 		}
 		window.console.time("_renumberVisibleNodes()");
 		var i = 0,
+			prevLength = this.visibleNodeList ? this.visibleNodeList.length : 0,
 			visibleNodeList = (this.visibleNodeList = []);
 
 		// Reset previous data
@@ -418,6 +423,15 @@
 			visibleNodeList.push(node);
 		});
 		window.console.timeEnd("_renumberVisibleNodes()");
+		if (i !== prevLength) {
+			this._triggerTreeEvent("updateViewport", null, {
+				reason: "renumber",
+				diff: { start: 0, count: 0, enabled: null, force: null },
+				next: $.extend({}, this.viewport),
+				// visibleCount: prevLength,
+				// cur: i,
+			});
+		}
 	};
 
 	/**
@@ -491,7 +505,7 @@
 
 	$.ui.fancytree.registerExtension({
 		name: "grid",
-		version: "2.32.0",
+		version: "2.33.0",
 		// Default options for this extension.
 		options: {
 			checkboxColumnIdx: null, // render the checkboxes into the this column index (default: nodeColumnIdx)
@@ -642,6 +656,7 @@
 						left: 0,
 						right: 0,
 						keepEmptyRows: true,
+						noEvents: true,
 					},
 					opts.viewport
 				)

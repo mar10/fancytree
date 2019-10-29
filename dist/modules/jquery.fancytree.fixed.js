@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.32.0
- * @date 2019-09-10T07:42:12Z
+ * @version 2.33.0
+ * @date 2019-10-29T08:00:07Z
  */
 
 // Allow to use multiple var statements inside a function

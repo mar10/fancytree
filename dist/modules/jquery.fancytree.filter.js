@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.32.0
- * @date 2019-09-10T07:42:12Z
+ * @version 2.33.0
+ * @date 2019-10-29T08:00:07Z
  */
 
 (function(factory) {
@@ -174,7 +174,9 @@
 				count++;
 				node.match = true;
 				node.visitParents(function(p) {
-					p.subMatchCount += 1;
+					if (p !== node) {
+						p.subMatchCount += 1;
+					}
 					// Expand match (unless this is no real match, but only a node in a matched branch)
 					if (opts.autoExpand && !matchedByBranch && !p.expanded) {
 						p.setExpanded(true, {
@@ -346,7 +348,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "filter",
-		version: "2.32.0",
+		version: "2.33.0",
 		// Default options for this extension.
 		options: {
 			autoApply: true, // Re-apply last filter if lazy data is loaded

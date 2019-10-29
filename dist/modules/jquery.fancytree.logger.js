@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.32.0
- * @date 2019-09-10T07:42:12Z
+ * @version 2.33.0
+ * @date 2019-10-29T08:00:07Z
  */
 
 (function(factory) {
@@ -36,7 +36,7 @@
 		PREFIX = "ft-logger: ",
 		logLine = window.console.log,
 		// HOOK_NAMES = "nodeClick nodeCollapseSiblings".split(" "),
-		TREE_EVENT_NAMES = "beforeRestore beforeUpdateViewport blurTree create init focusTree restore updateViewport".split(
+		TREE_EVENT_NAMES = "beforeRestore beforeUpdateViewport blurTree create init focusTree preInit restore updateViewport".split(
 			" "
 		),
 		NODE_EVENT_NAMES = "activate activateCell beforeActivate beforeExpand beforeSelect blur click collapse createNode dblclick deactivate defaultGridAction expand enhanceTitle focus keydown keypress lazyLoad loadChildren loadError modifyChild postProcess renderNode renderTitle select".split(
@@ -143,7 +143,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "logger",
-		version: "2.32.0",
+		version: "2.33.0",
 		// Default options for this extension.
 		options: {
 			logTarget: null, // optional redirect logging to this <div> tag
