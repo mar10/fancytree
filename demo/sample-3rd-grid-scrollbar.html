@@ -170,19 +170,6 @@
 
       var modelCount = 0;
 
-      // --- PlainScrollbar ----------------------------------------------
-      function _updateTreeScrollbars(tree) {
-        var vscrollbar = tree.verticalScrollbar;
-
-        if(vscrollbar){
-          vscrollbar.set({
-            start: tree.viewport.start,
-            total: tree.visibleNodeList.length,
-            visible: tree.viewport.count,
-          }, true);  // do not trigger `onSet`
-        }
-      }
-
       // --- Fancytree widget --------------------------------------------
 
       // var sourceUrl = getUrlParam("source");
@@ -258,8 +245,6 @@
           tree.verticalScrollbar = new PlainScrollbar({
             alwaysVisible: true,
             arrows: true,
-            // @@: Would be nice if we could omit this:
-            numberOfItems: {start: 0, total: 100, visible: 10},
             orientation: "vertical",
             onSet: function(numberOfItems) {
               tree.debug("verticalScrollbar:onSet", numberOfItems);
@@ -324,8 +309,13 @@
             "/" +
             modelCount
           );
-          _updateTreeScrollbars(tree);
         }
+        // Handle PlainScrollbar events
+        tree.verticalScrollbar.set({
+          start: tree.viewport.start,
+          total: tree.visibleNodeList.length,
+          visible: tree.viewport.count,
+        }, true);  // do not trigger `onSet`
       },
     });
 
@@ -376,6 +366,9 @@
     });
     $("#redraw").on("click", function(e){
       $.ui.fancytree.getTree().redrawViewport(true);
+    });
+    $("#cbRbAlwaysVisible ").on("change", function(e){
+      $.ui.fancytree.getTree().verticalScrollbar.alwaysVisible($(this).is(":checked"));
     });
 
   });
@@ -428,6 +421,8 @@
         <button type="button" id="expandAll">Expand all</button>
         <button type="button" id="collapseAll">Collapse all</button>
         <button type="button" id="redraw">Redraw viewport</button>
+        <input id="cbRbAlwaysVisible" type="checkbox" checked="checked">
+        <label for="cbRbAlwaysVisible">Always show scrollbar</label>
       </div>
     </div>
 
