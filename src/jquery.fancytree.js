@@ -3437,21 +3437,21 @@
 		 * @returns {boolean}
 		 */
 		hasFocus: function() {
-			var ae = document.activeElement,
-				hasFocus = !!(
-					ae && $(ae).closest(".fancytree-container").length
-				);
+			// var ae = document.activeElement,
+			// 	hasFocus = !!(
+			// 		ae && $(ae).closest(".fancytree-container").length
+			// 	);
 
-			if (hasFocus !== !!this._hasFocus) {
-				this.warn(
-					"hasFocus(): fix inconsistent container state, now: " +
-						hasFocus
-				);
-				this._hasFocus = hasFocus;
-				this.$container.toggleClass("fancytree-treefocus", hasFocus);
-			}
-			return hasFocus;
-			// return !!this._hasFocus;
+			// if (hasFocus !== !!this._hasFocus) {
+			// 	this.warn(
+			// 		"hasFocus(): fix inconsistent container state, now: " +
+			// 			hasFocus
+			// 	);
+			// 	this._hasFocus = hasFocus;
+			// 	this.$container.toggleClass("fancytree-treefocus", hasFocus);
+			// }
+			// return hasFocus;
+			return !!this._hasFocus;
 		},
 		/** Write to browser console if debugLevel >= 3 (prepending tree name)
 		 * @param {*} msg string or object or array of such
