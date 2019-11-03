@@ -1,4 +1,5 @@
 # 2.33.1-0 / Unreleased
+  * tree.hasFocus() more reliable.
 
 # 2.33.0 / 2019-10-29
   * [Added] event `preInit` (fired before nodes are loaded).
