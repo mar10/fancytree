@@ -403,7 +403,7 @@
 			// this.debug("_renumberVisibleNodes() ignored.");
 			return false;
 		}
-		window.console.time("_renumberVisibleNodes()");
+		this.time("_renumberVisibleNodes()");
 		var i = 0,
 			prevLength = this.visibleNodeList ? this.visibleNodeList.length : 0,
 			visibleNodeList = (this.visibleNodeList = []);
@@ -422,7 +422,7 @@
 			node._rowIdx = i++;
 			visibleNodeList.push(node);
 		});
-		window.console.timeEnd("_renumberVisibleNodes()");
+		this.timeEnd("_renumberVisibleNodes()");
 		if (i !== prevLength) {
 			this._triggerTreeEvent("updateViewport", null, {
 				reason: "renumber",
@@ -446,7 +446,7 @@
 			// tree.debug("no render", tree._enableUpdate);
 			return;
 		}
-		window.console.time("redrawViewport()");
+		this.time("redrawViewport()");
 		this._renumberVisibleNodes(force);
 		// Adjust vp.start value to assure the current content is inside:
 		this._fixStart(null, true);
@@ -500,7 +500,7 @@
 			trIdx++;
 		}
 		this.isVpUpdating = prevPhase;
-		window.console.timeEnd("redrawViewport()");
+		this.timeEnd("redrawViewport()");
 	};
 
 	$.ui.fancytree.registerExtension({

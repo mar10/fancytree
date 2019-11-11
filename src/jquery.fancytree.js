@@ -3784,6 +3784,26 @@
 			return this.widget.option(optionName, value);
 		},
 		/**
+		 * Call console.time() when in debug mode (verbose >= 4).
+		 *
+		 * @param {string} label
+		 */
+		time: function(label) {
+			if (this.options.debugLevel >= 4) {
+				window.console.time(this + " - " + label);
+			}
+		},
+		/**
+		 * Call console.timeEnd() when in debug mode (verbose >= 4).
+		 *
+		 * @param {string} label
+		 */
+		timeEnd: function(label) {
+			if (this.options.debugLevel >= 4) {
+				window.console.timeEnd(this + " - " + label);
+			}
+		},
+		/**
 		 * Return all nodes as nested list of {@link NodeData}.
 		 *
 		 * @param {boolean} [includeRoot=false] Returns the hidden system root node (and its children)
