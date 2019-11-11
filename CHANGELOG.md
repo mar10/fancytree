@@ -1,5 +1,6 @@
 # 2.33.1-0 / Unreleased
   * TODO: tree.hasFocus() more reliable.
+  * [Fixed] #973 when use ext-grid in one tree, other tree not use ext-grid has error on click.
 
 # 2.33.0 / 2019-10-29
   * [Added] event `preInit` (fired before nodes are loaded).

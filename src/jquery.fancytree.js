@@ -2798,11 +2798,18 @@
 			delete this._tempCache[key];
 			return null;
 		},
+		/* Check if this tree has extension `name` enabled.
+		 *
+		 * @param {string} name name of the required extension
+		 */
+		_usesExtension: function(name) {
+			return $.inArray(name, this.options.extensions) >= 0;
+		},
 		/* Check if current extensions dependencies are met and throw an error if not.
 		 *
 		 * This method may be called inside the `treeInit` hook for custom extensions.
 		 *
-		 * @param {string} extension name of the required extension
+		 * @param {string} name name of the required extension
 		 * @param {boolean} [required=true] pass `false` if the extension is optional, but we want to check for order if it is present
 		 * @param {boolean} [before] `true` if `name` must be included before this, `false` otherwise (use `null` if order doesn't matter)
 		 * @param {string} [message] optional error message (defaults to a descriptve error message)

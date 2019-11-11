@@ -617,7 +617,7 @@
 						tree = node.tree,
 						topNode = options && options.topNode,
 						vp = tree.viewport,
-						start = vp.start;
+						start = vp ? vp.start : null;
 
 					if (!tree.viewport) {
 						return node._super.apply(this, arguments);
