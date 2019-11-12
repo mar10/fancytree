@@ -3,6 +3,7 @@
   * [Added] `tree.debugTime()`, `tree.debugTimeEnd()` for debugging.
   * [Fixed] #973 when use ext-grid in one tree, other tree not use ext-grid has error on click.
   * [Fixed] #974 ext-grid: too much output in production mode.
+  * [Fixed] #975 ext-grid: fix `tree.visitRows()` for empty tree.
 
 # 2.33.0 / 2019-10-29
   * [Added] event `preInit` (fired before nodes are loaded).

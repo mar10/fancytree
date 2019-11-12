@@ -3868,7 +3868,7 @@
 		 * @since 2.28
 		 */
 		visitRows: function(fn, opts) {
-			if (!this.rootNode.children) {
+			if (!this.rootNode.hasChildren()) {
 				return false;
 			}
 			if (opts && opts.reverse) {
