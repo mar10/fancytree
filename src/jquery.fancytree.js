@@ -3788,7 +3788,7 @@
 		 *
 		 * @param {string} label
 		 */
-		time: function(label) {
+		debugTime: function(label) {
 			if (this.options.debugLevel >= 4) {
 				window.console.time(this + " - " + label);
 			}
@@ -3798,7 +3798,7 @@
 		 *
 		 * @param {string} label
 		 */
-		timeEnd: function(label) {
+		debugTimeEnd: function(label) {
 			if (this.options.debugLevel >= 4) {
 				window.console.timeEnd(this + " - " + label);
 			}

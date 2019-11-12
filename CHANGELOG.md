@@ -1,8 +1,8 @@
 # 2.33.1-0 / Unreleased
   * TODO: tree.hasFocus() more reliable.
-  * [Added] `tree.time()`, `tree.timeEnd()` for debugging.
-  * [Fixed] #974 too much output in prodcution mode.
+  * [Added] `tree.debugTime()`, `tree.debugTimeEnd()` for debugging.
   * [Fixed] #973 when use ext-grid in one tree, other tree not use ext-grid has error on click.
+  * [Fixed] #974 ext-grid: too much output in production mode.
 
 # 2.33.0 / 2019-10-29
   * [Added] event `preInit` (fired before nodes are loaded).
@@ -10,7 +10,7 @@
   * [Changed] ext-grid: `updateViewport` event is now also triggered for 'renumber' (i.e. expand, collapse)
   * [Fixed] #963: tree.setExpanded() fails when autoScroll is enabled
   * [Fixed] #964: handle case when `source` is not passed and no `<ul>` is embedded.
-  * [Fixed] #966: Ext-dnd5: bug in function onDropEvent (case 'dragover')
+  * [Fixed] #966: ext-dnd5: bug in function onDropEvent (case 'dragover')
   * [Fixed] ext-filter: sub-match counter is one too high.
 
 # 2.32.0 / 2019-09-10
