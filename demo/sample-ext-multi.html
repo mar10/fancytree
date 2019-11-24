@@ -52,7 +52,7 @@ $(function(){
 		label: "Visit down",
 		newline: false,
 		code: function(){
-			var node = $("#tree").fancytree("getActiveNode");
+			var node = $.ui.fancytree.getTree("#tree").getActiveNode();
 			console.log(node)
 			node.tree.visitRows(function(n){
 				n.debug();

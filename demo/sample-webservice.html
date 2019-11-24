@@ -70,7 +70,7 @@ $(function(){
 	addSampleButton({
 		label: "Goto 'Homo Sapiens'",
 		code: function(){
-			var tree = $("#taxonTree").fancytree("getTree"),
+			var tree = $.ui.fancytree.getTree("#taxonTree"),
 				path = "/202423/914154/914156/158852/331030/914179/914181/179913/179916/179925/180089/943773/943778/943782/180090/943805/180091/180092";
 
 			tree.loadKeyPath(path, function(node, status){

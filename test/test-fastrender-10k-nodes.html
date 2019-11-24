@@ -17,7 +17,7 @@
 			function ExpandAll3() {
 				var start = Date.now();
 
-				$("#tree").fancytree("getRootNode").visit(function(node) {
+				$.ui.fancytree.getTree("#tree").getRootNode().visit(function(node) {
 					node.setExpanded(true);
 				});
 

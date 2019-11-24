@@ -450,7 +450,7 @@
 			},
 		});
 
-		taxonTree = $("#taxonTree").fancytree("getTree");
+		taxonTree = $.ui.fancytree.getTree("#taxonTree");
 		searchResultTree = $.ui.fancytree.getTree("#searchResultTree");
 
 		// Bind a callback that executes when document.location.hash changes.

@@ -1,3 +1,7 @@
+# BRANCH
+  * [DEPRECATED] jQuery UI widget methods: use `tree.METHOD()` instead.
+  * [Fixed] `$.ui.fancytree.getTree()` for Element arg.
+
 # 2.34.0-0 / Unreleased
   * TODO: tree.hasFocus() more reliable.
   * [Added] `tree.debugTime()`, `tree.debugTimeEnd()` for debugging.

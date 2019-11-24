@@ -60,11 +60,11 @@
 		// ---------------------------------------------------------------------
 
 		$("#btnDeselectAll2").click(function(){
-			$("#tree2").fancytree("getTree").selectAll(false);
+			$.ui.fancytree.getTree("#tree2").selectAll(false);
 			return false;
 		});
 		$("#btnSelectAll2").click(function(){
-			$("#tree2").fancytree("getTree").selectAll();
+			$.ui.fancytree.getTree("#tree2").selectAll();
 			return false;
 		});
 
@@ -112,15 +112,15 @@
 		// ---------------------------------------------------------------------
 
 		$("#btnDeselectAll3").click(function(){
-			$("#tree3").fancytree("getTree").selectAll(false);
+			$.ui.fancytree.getTree("#tree3").selectAll(false);
 			return false;
 		});
 		$("#btnSelectAll3").click(function(){
-			$("#tree3").fancytree("getTree").selectAll();
+			$.ui.fancytree.getTree("#tree3").selectAll();
 			return false;
 		});
 		$("#btnGetSelected3").click(function(){
-			var selNodes = $("#tree3").fancytree("getTree").getSelectedNodes();
+			var selNodes = $.ui.fancytree.getTree("#tree3").getSelectedNodes();
 			var selData = $.map(selNodes, function(n){
 				return n.toDict();
 			});

@@ -56,7 +56,7 @@
 	// New member functions can be added to the `Fancytree` class.
 	// This function will be available for every tree instance:
 	//
-	//     var tree = $("#tree").fancytree("getTree");
+	//     var tree = $.ui.fancytree.getTree("#tree");
 	//     tree.countSelected(false);
 
 	$.ui.fancytree._FancytreeClass.prototype.countSelected = function(topOnly) {

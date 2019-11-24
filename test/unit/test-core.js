@@ -105,6 +105,7 @@ QUnit.test("Create Fancytree", function(assert) {
 	assert.ok(!!widget.tree, "widget.tree is defined");
 //    equal(widget.tree._id, 1, "tree id is 1");
 
+	// Deprecated:
 	assert.ok($("#tree").fancytree("getTree") === tree, "$().fancytree('getTree')");
 	assert.ok($("#tree").fancytree("getActiveNode") === null, "$().fancytree('getActiveNode')");
 
@@ -370,7 +371,7 @@ QUnit.test("FancytreeNode class methods", function(assert) {
 		source: TEST_DATA
 	});
 	var res, ROOT_NODE_KEY, nodeAdded,
-		tree = $("#tree").fancytree("getTree"),
+		tree = $.ui.fancytree.getTree("#tree"),
 		root = tree.rootNode,
 		node = tools.getNode("10_1_2");
 
@@ -547,7 +548,7 @@ QUnit.test("Fancytree class methods", function(assert) {
 		source: TEST_DATA
 	});
 	var c, node,
-		tree = $("#tree").fancytree("getTree");
+		tree = $.ui.fancytree.getTree("#tree");
 
   // Properties
 //    tree.widget = widget;
@@ -649,7 +650,7 @@ QUnit.test("trigger async expand", function(assert) {
 		source: TEST_DATA
 	});
 //    var node = $("#tree").fancytree("getActiveNode");
-	var tree = $("#tree").fancytree("getTree"),
+	var tree = $.ui.fancytree.getTree("#tree"),
 		node = tree.getNodeByKey("10");
 
 	node.setExpanded().done(function(){

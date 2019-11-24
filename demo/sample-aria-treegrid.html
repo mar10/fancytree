@@ -60,7 +60,7 @@
 			label: "Activate cell 4/3",
 			newline: false,
 			code: function () {
-				var node = $("#treegrid").fancytree("getNodeByKey", "_4");
+				var node = $.ui.fancytree.getTree("#treegrid").getNodeByKey("_4");
 				node.setActive(true, {cell: 3});
 			}
 		});

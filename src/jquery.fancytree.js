@@ -3068,7 +3068,7 @@
 		},
 		/** Destroy this widget, restore previous markup and cleanup resources.
 		 *
-		 * @since 2.33
+		 * @since 2.34
 		 */
 		destroy: function() {
 			this.widget.destroy();
@@ -6194,16 +6194,16 @@
 	 * @example
 	 * // DEPRECATED: Access jQuery UI widget methods and members:
 	 * var tree = $("#tree").fancytree("getTree", "#myTree");
-	 * var node = $("#tree").fancytree("getActiveNode", "1234");
+	 * var node = $.ui.fancytree.getTree("#tree").getActiveNode();
 	 *
 	 * // RECOMMENDED: Use the Fancytree object API
 	 * var tree = $.ui.fancytree.getTree("#myTree");
-	 * var node = tree.getActiveNode("1234");
+	 * var node = tree.getActiveNode();
 	 *
 	 * // or you may already have stored the tree instance upon creation:
 	 * import {createTree, version} from 'jquery.fancytree'
 	 * const tree = createTree('#tree', { ... });
-	 * var node = tree.getActiveNode("1234");
+	 * var node = tree.getActiveNode();
 	 *
 	 * @see {Fancytree_Static#getTree}
 	 * @deprecated Use methods of the {Fancytree} instance instead
@@ -6289,6 +6289,17 @@
 				// events
 				lazyLoad: null,
 				postProcess: null,
+			},
+			_deprecationWarning: function(name) {
+				var tree = this.tree;
+
+				if (tree && tree.options.debugLevel >= 3) {
+					tree.warn(
+						"$().fancytree('" +
+							name +
+							"') is deprecated (see https://wwwendt.de/tech/fancytree/doc/jsdoc/Fancytree_Widget.html"
+					);
+				}
 			},
 			/* Set up the widget, Called on first $().fancytree() */
 			_create: function() {
@@ -6407,11 +6418,11 @@
 			},
 
 			/** Use the destroy method to clean up any modifications your widget has made to the DOM */
-			destroy: function() {
+			_destroy: function() {
 				this._unbind();
 				this.tree._callHook("treeDestroy", this.tree);
 				// In jQuery UI 1.8, you must invoke the destroy method from the base widget
-				$.Widget.prototype.destroy.call(this);
+				// $.Widget.prototype.destroy.call(this);
 				// TODO: delete tree and nodes to make garbage collect easier?
 				// TODO: In jQuery UI 1.9 and above, you would define _destroy instead of destroy and not call the base method
 			},
@@ -6607,6 +6618,7 @@
 			 * @deprecated Use methods of the Fancytree instance instead (<a href="Fancytree_Widget.html">example above</a>).
 			 */
 			getActiveNode: function() {
+				this._deprecationWarning("getActiveNode");
 				return this.tree.activeNode;
 			},
 			/** Return the matching node or null.
@@ -6615,6 +6627,7 @@
 			 * @deprecated Use methods of the Fancytree instance instead (<a href="Fancytree_Widget.html">example above</a>).
 			 */
 			getNodeByKey: function(key) {
+				this._deprecationWarning("getNodeByKey");
 				return this.tree.getNodeByKey(key);
 			},
 			/** Return the invisible system root node.
@@ -6622,6 +6635,7 @@
 			 * @deprecated Use methods of the Fancytree instance instead (<a href="Fancytree_Widget.html">example above</a>).
 			 */
 			getRootNode: function() {
+				this._deprecationWarning("getRootNode");
 				return this.tree.rootNode;
 			},
 			/** Return the current tree instance.
@@ -6629,6 +6643,7 @@
 			 * @deprecated Use `$.ui.fancytree.getTree()` instead (<a href="Fancytree_Widget.html">example above</a>).
 			 */
 			getTree: function() {
+				this._deprecationWarning("getTree");
 				return this.tree;
 			},
 		}
@@ -6704,10 +6719,8 @@
 			 * @since 2.25
 			 */
 			createTree: function(el, opts) {
-				var tree = $(el)
-					.fancytree(opts)
-					.fancytree("getTree");
-				return tree;
+				var $tree = $(el).fancytree(opts);
+				return FT.getTree($tree);
 			},
 			/** Return a function that executes *fn* at most every *timeout* ms.
 			 * @param {integer} timeout
@@ -6912,11 +6925,17 @@
 					if (!el.length) {
 						el = $(orgEl).eq(0); // el was a selector: use first match
 					}
+				} else if (
+					el instanceof Element ||
+					el instanceof HTMLDocument
+				) {
+					el = $(el);
 				} else if (el instanceof $) {
-					el = el.eq(0); // el was a jQuery object: use the first DOM element
+					el = el.eq(0); // el was a jQuery object: use the first
 				} else if (el.originalEvent !== undefined) {
 					el = $(el.target); // el was an Event
 				}
+				// el is a jQuery object wit one element here
 				el = el.closest(":ui-fancytree");
 				widget = el.data("ui-fancytree") || el.data("fancytree"); // the latter is required by jQuery <= 1.8
 				return widget ? widget.tree : null;

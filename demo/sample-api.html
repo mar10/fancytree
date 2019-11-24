@@ -60,7 +60,7 @@ $(function(){
 		label: "Disable",
 		id: "btnDisable",
 		code: function(){
-			var tree = $("#tree").fancytree("getTree"),
+			var tree = $.ui.fancytree.getTree("#tree"),
 				wasEnabled = !tree.options.disabled;
 
 			tree.enable(!wasEnabled);
@@ -71,20 +71,20 @@ $(function(){
 		label: "Expand all",
 		newline: false,
 		code: function(){
-			$("#tree").fancytree("getTree").expandAll();
+			$.ui.fancytree.getTree("#tree").expandAll();
 		}
 	});
 	addSampleButton({
 		label: "Collapse all",
 		newline: false,
 		code: function(){
-			$("#tree").fancytree("getTree").expandAll(false);
+			$.ui.fancytree.getTree("#tree").expandAll(false);
 		}
 	});
 	addSampleButton({
 		label: "Toggle expand",
 		code: function(){
-			$("#tree").fancytree("getTree").visit(function(node){
+			$.ui.fancytree.getTree("#tree").visit(function(node){
 				node.toggleExpanded();
 			});
 		}
@@ -93,7 +93,7 @@ $(function(){
 		label: "tree.getActiveNode()",
 		newline: false,
 		code: function(){
-			var node = $("#tree").fancytree("getActiveNode");
+			var node = $.ui.fancytree.getTree("#tree").getActiveNode();
 			if( node ){
 				alert("Currently active: " + node.title);
 			}else{
@@ -105,7 +105,7 @@ $(function(){
 		label: "tree.toDict()",
 		code: function(){
 			// Convert the whole tree into an dictionary
-			var tree = $("#tree").fancytree("getTree");
+			var tree = $.ui.fancytree.getTree("#tree");
 			var d = tree.toDict(true);
 			alert(JSON.stringify(d));
 		}
@@ -113,15 +113,15 @@ $(function(){
 	addSampleButton({
 		label: "activateKey('id4.3.2')",
 		code: function(){
-			$("#tree").fancytree("getTree").activateKey("id4.3.2");
+			$.ui.fancytree.getTree("#tree").activateKey("id4.3.2");
 			// also possible:
-//	              $("#tree").fancytree("getTree").getNodeByKey("id4.3.2").setActive();
+//	              $.ui.fancytree.getTree("#tree").getNodeByKey("id4.3.2").setActive();
 		}
 	});
 	addSampleButton({
 		label: "setTitle()",
 		code: function(){
-			var node = $("#tree").fancytree("getActiveNode");
+			var node = $.ui.fancytree.getTree("#tree").getActiveNode();
 			if( !node ) return;
 			node.setTitle(node.title + ", " + new Date());
 			// this is a shortcut for
@@ -132,14 +132,14 @@ $(function(){
 		label: "Sort tree",
 		newline: false,
 		code: function(){
-			var node = $("#tree").fancytree("getRootNode");
+			var node = $.ui.fancytree.getTree("#tree").getRootNode();
 			node.sortChildren(null, true);
 		}
 	});
 	addSampleButton({
 		label: "Sort active banch",
 		code: function(){
-			var node = $("#tree").fancytree("getActiveNode");
+			var node = $.ui.fancytree.getTree("#tree").getActiveNode();
 			// Custom compare function (optional) that sorts case insensitive
 			var cmp = function(a, b) {
 				a = a.title.toLowerCase();
@@ -157,7 +157,7 @@ $(function(){
 		code: function(){
 			// Sample: add an hierarchic branch using code.
 			// This is how we would add tree nodes programatically
-			var rootNode = $("#tree").fancytree("getRootNode");
+			var rootNode = $.ui.fancytree.getTree("#tree").getRootNode();
 			var childNode = rootNode.addChildren({
 				title: "Programatically addded nodes",
 				tooltip: "This folder and all child nodes were added programmatically.",
@@ -174,7 +174,7 @@ $(function(){
 		label: "Apppend a sibling node",
 		newline: false,
 		code: function(){
-			var tree = $("#tree").fancytree("getTree"),
+			var tree = $.ui.fancytree.getTree("#tree"),
 				node = tree.getActiveNode(),
 				newData = {title: "New Node"},
 				newSibling = node.appendSibling(newData);
@@ -204,13 +204,13 @@ $(function(){
 					]
 				}
 			];
-			$("#tree").fancytree("getRootNode").addChildren(obj);
+			$.ui.fancytree.getTree("#tree").getRootNode().addChildren(obj);
 		}
 	});
 	addSampleButton({
 		label: "node.fromDict()",
 		code: function(){
-			var node = $("#tree").fancytree("getActiveNode");
+			var node = $.ui.fancytree.getTree("#tree").getActiveNode();
 			if( !node ) return;
 			// Set node data and - optionally - replace children
 			node.fromDict({
@@ -226,7 +226,7 @@ $(function(){
 		code: function(){
 			// Convert active node (and descendants) to a dictionary and store
 			// in
-			var node = $("#tree").fancytree("getActiveNode");
+			var node = $.ui.fancytree.getTree("#tree").getActiveNode();
 			var d = node.toDict(true, function(dict){
 				// Remove keys, so they will be re-generated when this dict is
 				// passed to addChildren()
@@ -240,7 +240,7 @@ $(function(){
 	addSampleButton({
 		label: "node.fromDict(Clipboard)",
 		code: function(){
-			var node = $("#tree").fancytree("getActiveNode");
+			var node = $.ui.fancytree.getTree("#tree").getActiveNode();
 			if( !node ) return;
 			// Set node data and - optionally - replace children
 			node.fromDict(CLIPBOARD);
@@ -250,7 +250,7 @@ $(function(){
 		label: "Remove selected nodes (but keep children)",
 		newline: true,
 		code: function(){
-			var tree = $("#tree").fancytree("getTree"),
+			var tree = $.ui.fancytree.getTree("#tree"),
 				selNodes = tree.getSelectedNodes();
 
 			selNodes.forEach(function(node) {

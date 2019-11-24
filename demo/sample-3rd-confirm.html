@@ -53,7 +53,7 @@ $(function() {
 				});
 			},
 			onAction: function(btnName){
-				var tree = $("#tree").fancytree("getTree"),
+				var tree = $.ui.fancytree.getTree("#tree"),
 					selNodes = tree.getSelectedNodes();
 				if( btnName === "ok" ) {
 					alert("Selected: " + selNodes.length + " nodes.");

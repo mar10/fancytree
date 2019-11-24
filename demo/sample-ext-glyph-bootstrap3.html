@@ -138,12 +138,12 @@
 <script>
 $(function(){
 	$("#btnExpandAll").click(function(){
-		$("#tree").fancytree("getTree").visit(function(node){
+		$.ui.fancytree.getTree("#tree").visit(function(node){
 			node.setExpanded(true);
 		});
 	});
 	$("#btnCollapseAll").click(function(){
-		$("#tree").fancytree("getTree").visit(function(node){
+		$.ui.fancytree.getTree("#tree").visit(function(node){
 			node.setExpanded(false);
 		});
 	});

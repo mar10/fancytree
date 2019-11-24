@@ -44,7 +44,7 @@ QUnit.test("issue310: Loading animation never ends using lazy read on empty fold
 			done();
 		}
 	});
-	var node = $("#tree").fancytree("getTree").getNodeByKey("1");
+	var node = $.ui.fancytree.getTree("#tree").getNodeByKey("1");
 	 $("span.fancytree-expander", node.span).click();
 });
 

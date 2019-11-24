@@ -40,7 +40,7 @@ function _resetEmptyTree(options){
 		fx: false
 	}, options);
 	$tree.fancytree(opts);
-	return $tree.fancytree("getTree");
+	return $.ui.fancytree.getTree($tree);
 }
 
 

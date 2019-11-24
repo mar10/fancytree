@@ -112,13 +112,15 @@
 		$("td#tags").on("click", "button.close", function(e){
 			// Bind live handler that deselects the node when user clicks 'x' of a tag
 			var key = $(e.target).parent().data("key"),
-				node = $(":ui-fancytree").fancytree("getNodeByKey", key);
+				node = $.ui.fancytree.getTree().getNodeByKey(key);
+
 			node.setSelected(false);
 			return false; // do not bubble and trigger span click
 		}).on("click", "span.selTag", function(e){
 			// Bind live handler that activates the node, when tag is clicked
 			var key = $(e.target).data("key"),
-				node = $(":ui-fancytree").fancytree("getNodeByKey", key);
+				node = $.ui.fancytree.getTree().getNodeByKey(key);
+
 			node.setActive();
 		});
 	});

@@ -144,7 +144,7 @@
 								.val(node.data.foo);
 
 							// Static markup (more efficiently defined as html row template):
-							// $tdList.eq(3).html("<input type='input' value='" + "" + "'>");
+							// $tdList.eq(3).html("<input type='input' value='"  "" + "'>");
 							// ...
 						},
 						modifyChild: function(event, data) {
@@ -156,7 +156,7 @@
 						// context menu:
 						var refNode,
 							moveMode,
-							tree = $(this).fancytree("getTree"),
+							tree = $.ui.fancytree.getTree(this),
 							node = tree.getActiveNode();
 
 						switch (data.cmd) {
@@ -356,11 +356,12 @@
 				</li>
 				<li>
 					Extended keyboard shortcuts:<br />
-					<kbd>Ctrl+C</kbd>, <kbd>Ctrl+X</kbd>, <kbd>Ctrl+P</kbd> for
+					<kbd>Ctrl+C</kbd>, <kbd>Ctrl+X</kbd>, <kbd>Ctrl+V</kbd> for
 					copy/paste,<br />
 					<kbd>Ctrl+UP</kbd>, <kbd>Ctrl+DOWN</kbd>,
 					<kbd>Ctrl+LEFT</kbd>, <kbd>Ctrl+RIGHT</kbd>
-					to move nodes around and change indentation.
+          to move nodes around and change indentation.<br>
+          (On macOS, add <kbd>Shift</kbd> to the keystrokes.)
 				</li>
 				<li>
 					3rd-party

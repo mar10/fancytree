@@ -44,7 +44,7 @@ $(function(){
 		label: "(De)Select active node",
 		newline: false,
 		code: function(){
-			var node = $("#tree").fancytree("getActiveNode");
+			var node = $.ui.fancytree.getTree("#tree").getActiveNode();
 			node.setSelected( !node.isSelected() );
 		}
 	});
@@ -52,7 +52,7 @@ $(function(){
 		label: "Remove active node",
 		newline: false,
 		code: function(){
-			var node = $("#tree").fancytree("getActiveNode");
+			var node = $.ui.fancytree.getTree("#tree").getActiveNode();
 			node.remove();
 		}
 	});

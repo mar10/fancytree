@@ -152,7 +152,7 @@
 	/**
 	 * [ext-persist] Remove persistence data of the given type(s).
 	 * Called like
-	 *     $("#tree").fancytree("getTree").clearCookies("active expanded focus selected");
+	 *     $.ui.fancytree.getTree("#tree").clearCookies("active expanded focus selected");
 	 *
 	 * @alias Fancytree#clearPersistData
 	 * @requires jquery.fancytree.persist.js
@@ -189,7 +189,7 @@
 	 * [ext-persist] Return persistence information from cookies
 	 *
 	 * Called like
-	 *     $("#tree").fancytree("getTree").getPersistData();
+	 *     $.ui.fancytree.getTree("#tree").getPersistData();
 	 *
 	 * @alias Fancytree#getPersistData
 	 * @requires jquery.fancytree.persist.js

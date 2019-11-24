@@ -21,10 +21,6 @@
 	<script src="../demo/sample.js"></script>
 	<!-- End_Exclude -->
 
-<style type="text/css">
-ul.fancytree-container{
-	/*height: 150px;*/
-}
 </style>
 
 
@@ -85,7 +81,7 @@ $(function(){
 		label: "Remove",
 		newline: false,
 		code: function(){
-			var tree = $("#tree").fancytree("getTree"),
+			var tree = $.ui.fancytree.getTree("#tree"),
 				node = tree.getActiveNode();
 			// node = tree.getNodeByKey("node1");
 			node.remove();
@@ -96,7 +92,7 @@ $(function(){
 		newline: false,
 		code: function(){
 			var node,
-				tree = $("#tree").fancytree("getTree");
+				tree = $.ui.fancytree.getTree("#tree");
 			tree.getActiveNode().addChildren({title: "new node" + new Date()});
 		}
 	});

@@ -50,7 +50,7 @@ function makeTree() {
 			}
 		});
 
-	return $tree.fancytree("getTree");
+	return $.ui.fancytree.getTree($tree);
 }
 
 

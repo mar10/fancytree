@@ -37,7 +37,7 @@ function _resetEmptyTree(options){
 		toggleEffect: false
 	}, options);
 	$tree.fancytree(opts);
-	return $tree.fancytree("getTree");
+	return $.ui.fancytree.getTree($tree);
 }
 
 
@@ -255,7 +255,7 @@ function _renderTable(assert, options) {
 		}
 	});
 
-	tree = $tree.fancytree("getTree");
+	tree = $.ui.fancytree.getTree($tree);
 	node = tree.getNodeByKey("root");
 	timer = new tools.AsyncTimer(assert, totalCount + " nodes", totalCount);
 	// timer = new tools.AsyncTimer(assert, totalCount + " nodes flat and expand", totalCount);

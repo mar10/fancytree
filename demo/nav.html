@@ -129,7 +129,7 @@ $(function(){
 		}
 	});
 	// On page load, activate node if node.data.href matches the url#href
-	var tree = $(":ui-fancytree").fancytree("getTree"),
+	var tree = $.ui.fancytree.getTree(),
 		frameHash = window.parent && window.parent.location.hash;
 
 	if( frameHash ) {

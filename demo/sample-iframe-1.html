@@ -17,10 +17,10 @@
 	$(function(){
 		$("#btnExpand").click(function(){
 			var $tree = parent.$("#tree");
-			var rootNode = parent.$("#tree").fancytree("getRootNode");
+			var rootNode = parent.$.ui.fancytree.getTree("#tree").getRootNode();
 			$.ui.fancytree.debug("rootNode: %o", rootNode);
 			$.ui.fancytree.debug("rootNode: %o", rootNode.visit);
-			parent.$("#tree").fancytree("getRootNode").visit(function(node){
+			parent.$.ui.fancytree.getTree("#tree").getRootNode().visit(function(node){
 				node.toggleExpanded();
 				});
 		});

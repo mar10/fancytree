@@ -158,8 +158,8 @@ $(function(){
 	addSampleButton({
 		label: "Generate <input> elements",
 		code: function(){
-			$("#tree").fancytree("getTree").generateInput();
-			$("#tree2").fancytree("getTree").generateInput();
+			$.ui.fancytree.getTree("#tree").generateInput();
+			$.ui.fancytree.getTree("#tree2").generateInput();
 		}
 	});
 */

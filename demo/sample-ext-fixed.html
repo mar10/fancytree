@@ -209,7 +209,7 @@
 		$("#fixedRows").on("keyup", function(evt) {
 			var rows = parseInt($(this).val());
 			if (!isNaN(rows) && evt.keyCode === 13) {
-				var tree = $("#treetable").fancytree("getTree");
+				var tree = $.ui.fancytree.getTree("#treetable");
 				tree.options.fixed.fixRows = rows;
 				tree.reload();
 			}
@@ -217,7 +217,7 @@
 		$("#fixedCols").on("keyup", function(evt) {
 			var cols = parseInt($(this).val());
 			if (!isNaN(cols) && evt.keyCode === 13) {
-				var tree = $("#treetable").fancytree("getTree");
+				var tree = $.ui.fancytree.getTree("#treetable");
 				tree.options.fixed.fixCols = cols;
 				tree.reload();
 			}
@@ -228,7 +228,7 @@
 			code: function(){
 //				var tree = $.ui.fancytree.getTree();
 				var $tree = $("#treetable");
-				var tree = $tree.fancytree("getTree");
+				var tree = $.ui.fancytree.getTree($tree);
 
 				window.console.time("expand all");
 				tree.enableUpdate(false);
@@ -244,7 +244,7 @@
 			newline: false,
 			code: function(){
 				window.console.time("collapse all");
-				$("#treetable").fancytree("getTree").visit(function(n){
+				$.ui.fancytree.getTree("#treetable").visit(function(n){
 					n.setExpanded(false);
 				});
 				window.console.timeEnd("collapse all");

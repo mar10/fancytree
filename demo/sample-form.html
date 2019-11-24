@@ -55,8 +55,8 @@
 		});
 		$("form").submit(function() {
 			// Render hidden <input> elements for active and selected nodes
-			$("#tree").fancytree("getTree").generateFormElements();
-			$("#tree2").fancytree("getTree").generateFormElements();
+			$.ui.fancytree.getTree("#tree").generateFormElements();
+			$.ui.fancytree.getTree("#tree2").generateFormElements();
 
 			alert("POST data:\n" + jQuery.param($(this).serializeArray()));
 			// return false to prevent submission of this sample
@@ -72,8 +72,8 @@ $(function(){
 	addSampleButton({
 		label: "Generate <input> elements",
 		code: function(){
-			$("#tree").fancytree("getTree").generateInput();
-			$("#tree2").fancytree("getTree").generateInput();
+			$.ui.fancytree.getTree("#tree").generateInput();
+			$.ui.fancytree.getTree("#tree2").generateInput();
 		}
 	});
 */

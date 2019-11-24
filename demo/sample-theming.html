@@ -64,7 +64,7 @@ span.fancytree-node.custom1 > span.fancytree-icon {
 		addSampleButton({
 			label: "Set icons",
 			code: function(){
-				var tree = $("#tree").fancytree("getTree"),
+				var tree = $.ui.fancytree.getTree("#tree"),
 					node = tree.getNodeByKey("node_4.1");
 				node.extraClasses = "custom1";
 				node.renderTitle();

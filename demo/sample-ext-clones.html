@@ -120,7 +120,7 @@ $(function(){
 		label: "find clones",
 		newline: false,
 		code: function(){
-			var tree = $("#tree").fancytree("getTree"),
+			var tree = $.ui.fancytree.getTree("#tree"),
 				node3 = tree.getNodeByKey("node3");
 			alert("refKey '2' = " + tree.getNodesByRef("2"));
 			alert("refKey '2' below 'node3'' = " + tree.getNodesByRef("2", node3));
@@ -130,7 +130,7 @@ $(function(){
 		label: "remove",
 		newline: false,
 		code: function(){
-			var tree = $("#tree").fancytree("getTree"),
+			var tree = $.ui.fancytree.getTree("#tree"),
 				node = tree.getActiveNode();
 			node.remove();
 		}

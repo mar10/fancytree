@@ -156,7 +156,7 @@ TOOLS.getNode = function(key){
 
 /** Get first node with matching title. */
 TOOLS.getNodeByTitle = function(title){
-	var tree = $("#tree").fancytree("getTree");
+	var tree = $.ui.fancytree.getTree("#tree");
 
 	return tree.findFirst(function(n){ return n.title === title; });
 };
@@ -164,7 +164,7 @@ TOOLS.getNodeByTitle = function(title){
 
 /** Get current Fancytree. */
 TOOLS.getTree = function(){
-	return $(FIXTURE_SELECTOR).fancytree("getTree");
+	return $.ui.fancytree.getTree(FIXTURE_SELECTOR);
 };
 
 

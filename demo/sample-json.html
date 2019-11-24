@@ -54,13 +54,13 @@
 			addSampleButton({
 				label: "Products",
 				code: function(){
-					$("#tree").fancytree("getTree").reload({url: "ajax-tree-products.json"});
+					$.ui.fancytree.getTree("#tree").reload({url: "ajax-tree-products.json"});
 				}
 			});
 			addSampleButton({
 				label: "Files",
 				code: function(){
-					$("#tree").fancytree("getTree").reload({url: "ajax-tree-fs.json"});
+					$.ui.fancytree.getTree("#tree").reload({url: "ajax-tree-fs.json"});
 				}
 			});
 		});

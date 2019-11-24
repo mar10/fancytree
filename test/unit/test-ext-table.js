@@ -34,7 +34,7 @@ $.ui.fancytree.debugLevel = 1;
 
 /** Get FancytreeNode from current tree. */
 function _getNode(key){
-	return $("#tree").fancytree("getTree").getNodeByKey(key);
+	return $.ui.fancytree.getTree("#tree").getNodeByKey(key);
 }
 
 
@@ -78,7 +78,7 @@ QUnit.test("render deep node", function(assert) {
 	});
 
 	var node,
-		tree = $("#tree").fancytree("getTree");
+		tree = $.ui.fancytree.getTree("#tree");
 
 	node = _getNode("2_2_2");
 	assert.ok(node);
