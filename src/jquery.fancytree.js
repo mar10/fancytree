@@ -3066,6 +3066,13 @@
 				consoleApply("log", arguments);
 			}
 		},
+		/** Destroy this widget, restore previous markup and cleanup resources.
+		 *
+		 * @since 2.33
+		 */
+		destroy: function() {
+			this.widget.destroy();
+		},
 		/** Enable (or disable) the tree control.
 		 *
 		 * @param {boolean} [flag=true] pass false to disable

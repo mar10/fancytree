@@ -1,6 +1,7 @@
-# 2.33.1-0 / Unreleased
+# 2.34.0-0 / Unreleased
   * TODO: tree.hasFocus() more reliable.
   * [Added] `tree.debugTime()`, `tree.debugTimeEnd()` for debugging.
+  * [Added] `tree.destroy()` as shortcut for `tree.widget.destroy()`.
   * [Fixed] #973 when use ext-grid in one tree, other tree not use ext-grid has error on click.
   * [Fixed] #974 ext-grid: too much output in production mode.
   * [Fixed] #975 ext-grid: fix `tree.visitRows()` for empty tree.
