@@ -4004,7 +4004,8 @@
 	/**
 	 * These additional methods of the {@link Fancytree} class are 'hook functions'
 	 * that can be used and overloaded by extensions.
-	 * (See <a href="https://github.com/mar10/fancytree/wiki/TutorialExtensions">writing extensions</a>.)
+	 *
+	 * @see [writing extensions](https://github.com/mar10/fancytree/wiki/TutorialExtensions)
 	 * @mixin Fancytree_Hooks
 	 */
 	$.extend(
@@ -4695,6 +4696,7 @@
 			 * Call this method to create new nodes, or after the strucuture
 			 * was changed (e.g. after moving this node or adding/removing children)
 			 * nodeRenderTitle() and nodeRenderStatus() are implied.
+			 *
 			 * ```html
 			 * <li id='KEY' ftnode=NODE>
 			 *     <span class='fancytree-node fancytree-expanded fancytree-has-children fancytree-lastsib fancytree-exp-el fancytree-ico-e'>
@@ -6183,14 +6185,28 @@
 	 */
 
 	/**
-	 * The plugin (derrived from <a href=" http://api.jqueryui.com/jQuery.widget/">jQuery.Widget</a>).<br>
-	 * This constructor is not called directly. Use `$(selector).fancytree({})`
-	 * to initialize the plugin instead.<br>
-	 * <pre class="sh_javascript sunlight-highlight-javascript">// Access widget methods and members:
-	 * var tree = $("#tree").fancytree("getTree");
-	 * var node = $("#tree").fancytree("getActiveNode", "1234");
-	 * </pre>
+	 * The plugin (derrived from [jQuery.Widget](http://api.jqueryui.com/jQuery.widget/)).
 	 *
+	 * **Note:**
+	 * These methods implement the standard jQuery UI widget API.
+	 * It is recommended to use methods of the {Fancytree} instance instead
+	 *
+	 * @example
+	 * // DEPRECATED: Access jQuery UI widget methods and members:
+	 * var tree = $("#tree").fancytree("getTree", "#myTree");
+	 * var node = $("#tree").fancytree("getActiveNode", "1234");
+	 *
+	 * // RECOMMENDED: Use the Fancytree object API
+	 * var tree = $.ui.fancytree.getTree("#myTree");
+	 * var node = tree.getActiveNode("1234");
+	 *
+	 * // or you may already have stored the tree instance upon creation:
+	 * import {createTree, version} from 'jquery.fancytree'
+	 * const tree = createTree('#tree', { ... });
+	 * var node = tree.getActiveNode("1234");
+	 *
+	 * @see {Fancytree_Static#getTree}
+	 * @deprecated Use methods of the {Fancytree} instance instead
 	 * @mixin Fancytree_Widget
 	 */
 
@@ -6588,6 +6604,7 @@
 			},
 			/** Return the active node or null.
 			 * @returns {FancytreeNode}
+			 * @deprecated Use methods of the Fancytree instance instead (<a href="Fancytree_Widget.html">example above</a>).
 			 */
 			getActiveNode: function() {
 				return this.tree.activeNode;
@@ -6595,18 +6612,21 @@
 			/** Return the matching node or null.
 			 * @param {string} key
 			 * @returns {FancytreeNode}
+			 * @deprecated Use methods of the Fancytree instance instead (<a href="Fancytree_Widget.html">example above</a>).
 			 */
 			getNodeByKey: function(key) {
 				return this.tree.getNodeByKey(key);
 			},
 			/** Return the invisible system root node.
 			 * @returns {FancytreeNode}
+			 * @deprecated Use methods of the Fancytree instance instead (<a href="Fancytree_Widget.html">example above</a>).
 			 */
 			getRootNode: function() {
 				return this.tree.rootNode;
 			},
 			/** Return the current tree instance.
 			 * @returns {Fancytree}
+			 * @deprecated Use `$.ui.fancytree.getTree()` instead (<a href="Fancytree_Widget.html">example above</a>).
 			 */
 			getTree: function() {
 				return this.tree;
@@ -6618,12 +6638,14 @@
 	FT = $.ui.fancytree;
 
 	/**
-	 * Static members in the `$.ui.fancytree` namespace.<br>
-	 * <br>
-	 * <pre class="sh_javascript sunlight-highlight-javascript">// Access static members:
+	 * Static members in the `$.ui.fancytree` namespace.
+	 * This properties and methods can be accessed without instantiating a concrete
+	 * Fancytree instance.
+	 *
+	 * @example
+	 * // Access static members:
 	 * var node = $.ui.fancytree.getNode(element);
 	 * alert($.ui.fancytree.version);
-	 * </pre>
 	 *
 	 * @mixin Fancytree_Static
 	 */
@@ -6631,11 +6653,14 @@
 		$.ui.fancytree,
 		/** @lends Fancytree_Static# */
 		{
-			/** @type {string} */
+			/** Version number `"MAJOR.MINOR.PATCH"`
+			 * @type {string} */
 			version: "@VERSION", // Set to semver by 'grunt release'
-			/** @type {string} */
+			/** @type {string}
+			 * @description `"production" for release builds` */
 			buildType: "development", // Set to 'production' by 'grunt build'
-			/** @type {int} */
+			/** @type {int}
+			 * @description 0: silent .. 5: verbose (default: 3 for release builds). */
 			debugLevel: 4, // Set to 3 by 'grunt build'
 			// Used by $.ui.fancytree.debug() and as default for tree.options.debugLevel
 
@@ -6644,9 +6669,15 @@
 			_extensions: {},
 			// focusTree: null,
 
-			/** Expose class object as $.ui.fancytree._FancytreeClass */
+			/** Expose class object as `$.ui.fancytree._FancytreeClass`.
+			 * Useful to extend `$.ui.fancytree._FancytreeClass.prototype`.
+			 * @type {Fancytree}
+			 */
 			_FancytreeClass: Fancytree,
-			/** Expose class object as $.ui.fancytree._FancytreeNodeClass */
+			/** Expose class object as $.ui.fancytree._FancytreeNodeClass
+			 * Useful to extend `$.ui.fancytree._FancytreeNodeClass.prototype`.
+			 * @type {FancytreeNode}
+			 */
 			_FancytreeNodeClass: FancytreeNode,
 			/* Feature checks to provide backwards compatibility */
 			jquerySupports: {
@@ -6893,11 +6924,11 @@
 			/** Return an option value that has a default, but may be overridden by a
 			 * callback or a node instance attribute.
 			 *
-			 * Evaluation sequence:<br>
+			 * Evaluation sequence:
 			 *
-			 * If tree.options.<optionName> is a callback that returns something, use that.<br>
-			 * Else if node.<optionName> is defined, use that.<br>
-			 * Else if tree.options.<optionName> is a value, use that.<br>
+			 * If `tree.options.<optionName>` is a callback that returns something, use that.
+			 * Else if `node.<optionName>` is defined, use that.
+			 * Else if `tree.options.<optionName>` is a value, use that.
 			 * Else use `defaultValue`.
 			 *
 			 * @param {string} optionName name of the option property (on node and tree)
