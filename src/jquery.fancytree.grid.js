@@ -281,15 +281,16 @@
 		// Calculate how many rows fit into current container height
 		var $table = this.$container,
 			wrapper = this.scrollWrapper,
-			trHeight = $table
-				.find(">tbody>tr")
-				.first()
-				.height(),
+			trHeight =
+				$table
+					.find(">tbody>tr")
+					.first()
+					.height() || 0,
 			tableHeight = $table.height(),
 			headHeight = tableHeight - this.viewport.count * trHeight,
 			wrapperHeight = wrapper.offsetHeight,
 			free = wrapperHeight - headHeight,
-			newCount = Math.floor(free / trHeight);
+			newCount = Math.floor(free / trHeight) || 0;
 
 		// console.info(
 		// 	"set container height",
@@ -797,7 +798,7 @@
 						// node.warn("nodeRender(): ignoring hidden");
 						return;
 					}
-					node.warn("nodeRender(): creating new TR!");
+					node.debug("nodeRender(): creating new TR.");
 					node.tr = tree.tbody.rows[node._rowIdx - start];
 				}
 				// _assert(

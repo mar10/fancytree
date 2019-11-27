@@ -1,14 +1,14 @@
-# BRANCH
-  * [DEPRECATED] jQuery UI widget methods: use `tree.METHOD()` instead.
-  * [Fixed] `$.ui.fancytree.getTree()` for Element arg.
-
 # 2.34.0-0 / Unreleased
   * TODO: tree.hasFocus() more reliable.
+  * [DEPRECATED] jQuery UI widget methods:
+    Use `tree.METHOD()` instead of `$().fancytree("METHOD")`.
   * [Added] `tree.debugTime()`, `tree.debugTimeEnd()` for debugging.
-  * [Added] `tree.destroy()` as shortcut for `tree.widget.destroy()`.
+  * [Added] `tree.destroy()` as alternative for `tree.widget.destroy()`.
+  * [Fixed] `$.ui.fancytree.getTree()` for Element arg.
   * [Fixed] #973 when use ext-grid in one tree, other tree not use ext-grid has error on click.
   * [Fixed] #974 ext-grid: too much output in production mode.
   * [Fixed] #975 ext-grid: fix `tree.visitRows()` for empty tree.
+  * [Fixed] #978 addChildren throws error when ext-grid is hidden.
 
 # 2.33.0 / 2019-10-29
   * [Added] event `preInit` (fired before nodes are loaded).
