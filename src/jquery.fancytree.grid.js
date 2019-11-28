@@ -290,7 +290,7 @@
 			headHeight = tableHeight - this.viewport.count * trHeight,
 			wrapperHeight = wrapper.offsetHeight,
 			free = wrapperHeight - headHeight,
-			newCount = Math.floor(free / trHeight) || 0;
+			newCount = trHeight ? Math.floor(free / trHeight) : 0;
 
 		// console.info(
 		// 	"set container height",
