@@ -8,7 +8,7 @@
   * [Fixed] #973 when use ext-grid in one tree, other tree not use ext-grid has error on click.
   * [Fixed] #974 ext-grid: too much output in production mode.
   * [Fixed] #975 ext-grid: fix `tree.visitRows()` for empty tree.
-  * [Fixed] #978 addChildren throws error when ext-grid is hidden.
+  * [Fixed] #978 ext-grid: addChildren() throws error when grid is hidden.
 
 # 2.33.0 / 2019-10-29
   * [Added] event `preInit` (fired before nodes are loaded).
@@ -20,7 +20,7 @@
   * [Fixed] ext-filter: sub-match counter is one too high.
 
 # 2.32.0 / 2019-09-10
-  * [Added] `node.hasClass(className)`
+  * [Added] `node.hasClass()`
   * [Added] `tree.applyCommand()` and `node.applyCommand()` (experimental!)
   * [Added] `tree.isLoading()`
   * [Added] `tree.toDict(includeRoot, callback)` and `node.toDict(recursive, callback)`:
