@@ -1,4 +1,6 @@
-# 2.34.0-0 / Unreleased
+# 2.34.1-0 / Unreleased
+
+# 2.34.0 / 2019-12-26
   * [DEPRECATED] jQuery UI widget methods:
     Use `tree.METHOD()` instead of `$().fancytree("METHOD")`.
   * [Added] `tree.debugTime()`, `tree.debugTimeEnd()` for debugging.
