@@ -1,5 +1,4 @@
 # 2.34.0-0 / Unreleased
-  * TODO: tree.hasFocus() more reliable.
   * [DEPRECATED] jQuery UI widget methods:
     Use `tree.METHOD()` instead of `$().fancytree("METHOD")`.
   * [Added] `tree.debugTime()`, `tree.debugTimeEnd()` for debugging.
