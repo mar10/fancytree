@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.33.0
- * @date 2019-10-29T08:00:07Z
+ * @version 2.34.0
+ * @date 2019-12-26T14:16:19Z
  */
 
 (function(factory) {
@@ -281,15 +281,16 @@
 		// Calculate how many rows fit into current container height
 		var $table = this.$container,
 			wrapper = this.scrollWrapper,
-			trHeight = $table
-				.find(">tbody>tr")
-				.first()
-				.height(),
+			trHeight =
+				$table
+					.find(">tbody>tr")
+					.first()
+					.height() || 0,
 			tableHeight = $table.height(),
 			headHeight = tableHeight - this.viewport.count * trHeight,
 			wrapperHeight = wrapper.offsetHeight,
 			free = wrapperHeight - headHeight,
-			newCount = Math.floor(free / trHeight);
+			newCount = trHeight ? Math.floor(free / trHeight) : 0;
 
 		// console.info(
 		// 	"set container height",
@@ -403,7 +404,7 @@
 			// this.debug("_renumberVisibleNodes() ignored.");
 			return false;
 		}
-		window.console.time("_renumberVisibleNodes()");
+		this.debugTime("_renumberVisibleNodes()");
 		var i = 0,
 			prevLength = this.visibleNodeList ? this.visibleNodeList.length : 0,
 			visibleNodeList = (this.visibleNodeList = []);
@@ -422,7 +423,7 @@
 			node._rowIdx = i++;
 			visibleNodeList.push(node);
 		});
-		window.console.timeEnd("_renumberVisibleNodes()");
+		this.debugTimeEnd("_renumberVisibleNodes()");
 		if (i !== prevLength) {
 			this._triggerTreeEvent("updateViewport", null, {
 				reason: "renumber",
@@ -446,7 +447,7 @@
 			// tree.debug("no render", tree._enableUpdate);
 			return;
 		}
-		window.console.time("redrawViewport()");
+		this.debugTime("redrawViewport()");
 		this._renumberVisibleNodes(force);
 		// Adjust vp.start value to assure the current content is inside:
 		this._fixStart(null, true);
@@ -500,12 +501,12 @@
 			trIdx++;
 		}
 		this.isVpUpdating = prevPhase;
-		window.console.timeEnd("redrawViewport()");
+		this.debugTimeEnd("redrawViewport()");
 	};
 
 	$.ui.fancytree.registerExtension({
 		name: "grid",
-		version: "2.33.0",
+		version: "2.34.0",
 		// Default options for this extension.
 		options: {
 			checkboxColumnIdx: null, // render the checkboxes into the this column index (default: nodeColumnIdx)
@@ -617,7 +618,7 @@
 						tree = node.tree,
 						topNode = options && options.topNode,
 						vp = tree.viewport,
-						start = vp.start;
+						start = vp ? vp.start : null;
 
 					if (!tree.viewport) {
 						return node._super.apply(this, arguments);
@@ -797,7 +798,7 @@
 						// node.warn("nodeRender(): ignoring hidden");
 						return;
 					}
-					node.warn("nodeRender(): creating new TR!");
+					node.debug("nodeRender(): creating new TR.");
 					node.tr = tree.tbody.rows[node._rowIdx - start];
 				}
 				// _assert(

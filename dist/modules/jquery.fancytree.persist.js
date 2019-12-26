@@ -11,8 +11,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.33.0
- * @date 2019-10-29T08:00:07Z
+ * @version 2.34.0
+ * @date 2019-12-26T14:16:19Z
  */
 
 (function(factory) {
@@ -152,7 +152,7 @@
 	/**
 	 * [ext-persist] Remove persistence data of the given type(s).
 	 * Called like
-	 *     $("#tree").fancytree("getTree").clearCookies("active expanded focus selected");
+	 *     $.ui.fancytree.getTree("#tree").clearCookies("active expanded focus selected");
 	 *
 	 * @alias Fancytree#clearPersistData
 	 * @requires jquery.fancytree.persist.js
@@ -189,7 +189,7 @@
 	 * [ext-persist] Return persistence information from cookies
 	 *
 	 * Called like
-	 *     $("#tree").fancytree("getTree").getPersistData();
+	 *     $.ui.fancytree.getTree("#tree").getPersistData();
 	 *
 	 * @alias Fancytree#getPersistData
 	 * @requires jquery.fancytree.persist.js
@@ -212,7 +212,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "persist",
-		version: "2.33.0",
+		version: "2.34.0",
 		// Default options for this extension.
 		options: {
 			cookieDelimiter: "~",

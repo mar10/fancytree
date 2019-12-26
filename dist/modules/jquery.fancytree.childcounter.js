@@ -19,8 +19,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.33.0
- * @date 2019-10-29T08:00:07Z
+ * @version 2.34.0
+ * @date 2019-12-26T14:16:19Z
  */
 
 // To keep the global namespace clean, we wrap everything in a closure.
@@ -56,7 +56,7 @@
 	// New member functions can be added to the `Fancytree` class.
 	// This function will be available for every tree instance:
 	//
-	//     var tree = $("#tree").fancytree("getTree");
+	//     var tree = $.ui.fancytree.getTree("#tree");
 	//     tree.countSelected(false);
 
 	$.ui.fancytree._FancytreeClass.prototype.countSelected = function(topOnly) {
@@ -139,7 +139,7 @@
 		// Every extension must be registered by a unique name.
 		name: "childcounter",
 		// Version information should be compliant with [semver](http://semver.org)
-		version: "2.33.0",
+		version: "2.34.0",
 
 		// Extension specific options and their defaults.
 		// This options will be available as `tree.options.childcounter.hideExpanded`

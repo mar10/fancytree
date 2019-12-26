@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.33.0
- * @date 2019-10-29T08:00:07Z
+ * @version 2.34.0
+ * @date 2019-12-26T14:16:19Z
  */
 
 (function(factory) {
@@ -143,7 +143,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "logger",
-		version: "2.33.0",
+		version: "2.34.0",
 		// Default options for this extension.
 		options: {
 			logTarget: null, // optional redirect logging to this <div> tag
