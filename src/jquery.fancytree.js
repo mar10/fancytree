@@ -4255,12 +4255,15 @@
 			nodeLoadChildren: function(ctx, source) {
 				var ajax,
 					delay,
-					dfd,
-					res,
+					ajaxDfd = null,
+					resultDfd,
+					isAsync = true,
 					tree = ctx.tree,
 					node = ctx.node,
+					tag = "nodeLoadChildren",
 					requestId = Date.now();
 
+				// `source` is a callback: use the returned result instead:
 				if ($.isFunction(source)) {
 					source = source.call(tree, { type: "source" }, ctx);
 					_assert(
@@ -4268,23 +4271,15 @@
 						"source callback must not return another function"
 					);
 				}
-				if (source.url) {
-					if (node._requestId) {
-						node.warn(
-							"Recursive load request #" +
-								requestId +
-								" while #" +
-								node._requestId +
-								" is pending."
-						);
-						// } else {
-						// 	node.debug("Send load request #" + requestId);
-					}
+				// `source` is already a promise:
+				if ($.isFunction(source.then)) {
+					// _assert($.isFunction(source.always), "Expected jQuery?");
+					ajaxDfd = source;
+				} else if (source.url) {
 					// `source` is an Ajax options object
 					ajax = $.extend({}, ctx.options.ajax, source);
-					node._requestId = requestId;
 					if (ajax.debugDelay) {
-						// simulate a slow server
+						// Simulate a slow server
 						delay = ajax.debugDelay;
 						delete ajax.debugDelay; // remove debug option
 						if ($.isArray(delay)) {
@@ -4298,30 +4293,74 @@
 								Math.round(delay) +
 								" ms ..."
 						);
-						dfd = $.Deferred(function(dfd) {
+						ajaxDfd = $.Deferred(function(ajaxDfd) {
 							setTimeout(function() {
 								$.ajax(ajax)
 									.done(function() {
-										dfd.resolveWith(this, arguments);
+										ajaxDfd.resolveWith(this, arguments);
 									})
 									.fail(function() {
-										dfd.rejectWith(this, arguments);
+										ajaxDfd.rejectWith(this, arguments);
 									});
 							}, delay);
 						});
 					} else {
-						dfd = $.ajax(ajax);
+						ajaxDfd = $.ajax(ajax);
 					}
+				} else if ($.isPlainObject(source) || $.isArray(source)) {
+					// `source` is already a constant dict or list, but we convert
+					// to a thenable for unified processing.
+					// 2020-01-03: refactored.
+					// `ajaxDfd = $.when(source)` would do the trick, but the returned
+					// promise will resolve async, which broke some tests and
+					// would probably also break current implementations out there.
+					// So we mock-up a thenable that resolves synchronously:
+					ajaxDfd = {
+						then: function(resolve, reject) {
+							resolve(source, null, null);
+						},
+					};
+					isAsync = false;
+				} else {
+					$.error("Invalid source type: " + source);
+				}
 
-					// Defer the deferred: we want to be able to reject, even if ajax
-					// resolved ok.
-					source = new $.Deferred();
-					dfd.done(function(data, textStatus, jqXHR) {
+				// Check for overlapping requests
+				if (node._requestId) {
+					node.warn(
+						"Recursive load request #" +
+							requestId +
+							" while #" +
+							node._requestId +
+							" is pending."
+					);
+					node._requestId = requestId;
+					// 	node.debug("Send load request #" + requestId);
+				}
+
+				if (isAsync) {
+					tree.debugTime(tag);
+					tree.nodeSetStatus(ctx, "loading");
+				}
+
+				// The async Ajax request has now started...
+				// Defer the deferred:
+				// we want to be able to reject invalid responses, even if
+				// the raw HTTP Ajax XHR resolved as Ok.
+				// We use the ajaxDfd.then() syntax here, which is compatible with
+				// jQuery and ECMA6.
+				// However resultDfd is a jQuery deferred, which is currently the
+				// expected result type of nodeLoadChildren()
+				resultDfd = new $.Deferred();
+				ajaxDfd.then(
+					function(data, textStatus, jqXHR) {
+						// ajaxDfd was resolved, but we reject or resolve resultDfd
+						// depending on the response data
 						var errorObj, res;
 
 						if (
-							(this.dataType === "json" ||
-								this.dataType === "jsonp") &&
+							(source.dataType === "json" ||
+								source.dataType === "jsonp") &&
 							typeof data === "string"
 						) {
 							$.error(
@@ -4332,21 +4371,22 @@
 							// The expected request time stamp is later than `requestId`
 							// (which was kept as as closure variable to this handler function)
 							// node.warn("Ignored load response for obsolete request #" + requestId + " (expected #" + node._requestId + ")");
-							source.rejectWith(this, [RECURSIVE_REQUEST_ERROR]);
+							resultDfd.rejectWith(this, [
+								RECURSIVE_REQUEST_ERROR,
+							]);
 							return;
 							// } else {
 							// 	node.debug("Response returned for load request #" + requestId);
 						}
-						// postProcess is similar to the standard ajax dataFilter hook,
-						// but it is also called for JSONP
+						// Allow to adjust the received response data in the `postProcess` event.
 						if (ctx.options.postProcess) {
+							// The handler may either
+							//   - modify `ctx.response` in-place (and leave `ctx.result` undefined)
+							//     => res = undefined
+							//   - return a replacement in `ctx.result`
+							//     => res = <new data>
+							//   If res contains an `error` property, an error status is displayed
 							try {
-								// The handler may either
-								//   - modify `ctx.response` in-place (and leave `ctx.result` undefined)
-								//     => res = undefined
-								//   - return a replacement in `ctx.result`
-								//     => res = <new data>
-								// If res contains an `error` property, an error status is displayed
 								res = tree._triggerNodeEvent(
 									"postProcess",
 									ctx,
@@ -4354,7 +4394,7 @@
 									{
 										response: data,
 										error: null,
-										dataType: this.dataType,
+										dataType: source.dataType,
 									}
 								);
 							} catch (e) {
@@ -4365,6 +4405,8 @@
 								};
 							}
 							if (res.error) {
+								// Either postProcess failed with an exception, or the returned
+								// result object has an 'error' property attached:
 								errorObj = $.isPlainObject(res.error)
 									? res.error
 									: { message: res.error };
@@ -4373,7 +4415,7 @@
 									null,
 									errorObj
 								);
-								source.rejectWith(this, [errorObj]);
+								resultDfd.rejectWith(this, [errorObj]);
 								return;
 							}
 							if (
@@ -4391,175 +4433,150 @@
 							ctx.options.enableAspx
 						) {
 							// Process ASPX WebMethod JSON object inside "d" property
+							// (only if no postProcess event was defined)
+							node.warn(
+								"enableAspx is deprecated. Use postProcess instead."
+							);
 							data =
 								typeof data.d === "string"
 									? $.parseJSON(data.d)
 									: data.d;
 						}
-						source.resolveWith(this, [data]);
-					}).fail(function(jqXHR, textStatus, errorThrown) {
+						resultDfd.resolveWith(this, [data]);
+					},
+					function(jqXHR, textStatus, errorThrown) {
+						// ajaxDfd was rejected, so we reject resultDfd as well
 						var errorObj = tree._makeHookContext(node, null, {
 							error: jqXHR,
 							args: Array.prototype.slice.call(arguments),
 							message: errorThrown,
 							details: jqXHR.status + ": " + errorThrown,
 						});
-						source.rejectWith(this, [errorObj]);
-					});
-				}
-				// #383: accept and convert ECMAScript 6 Promise
-				if ($.isFunction(source.then) && $.isFunction(source.catch)) {
-					dfd = source;
-					source = new $.Deferred();
-					dfd.then(
-						function(value) {
-							source.resolve(value);
-						},
-						function(reason) {
-							source.reject(reason);
-						}
-					);
-				}
-				if ($.isFunction(source.promise)) {
-					// `source` is a deferred, i.e. ajax request
-					// _assert(!node.isLoading(), "recursive load");
-					tree.nodeSetStatus(ctx, "loading");
+						resultDfd.rejectWith(this, [errorObj]);
+					}
+				);
 
-					source
-						.done(function(children) {
-							tree.nodeSetStatus(ctx, "ok");
-							node._requestId = null;
-						})
-						.fail(function(error) {
-							var ctxErr;
+				// The async Ajax request has now started.
+				// resultDfd will be resolved/rejected after the response arrived,
+				// was postProcessed, and checked.
+				// Now we implement the UI update and add the data to the tree.
+				// We also return the promise to the caller.
+				resultDfd
+					.done(function(data) {
+						tree.nodeSetStatus(ctx, "ok");
+						var children, metaData, noDataRes;
 
-							if (error === RECURSIVE_REQUEST_ERROR) {
-								node.warn(
-									"Ignored response for obsolete load request #" +
-										requestId +
-										" (expected #" +
-										node._requestId +
-										")"
-								);
-								return;
-							} else if (
-								error.node &&
-								error.error &&
-								error.message
-							) {
-								// error is already a context object
-								ctxErr = error;
-							} else {
-								ctxErr = tree._makeHookContext(node, null, {
-									error: error, // it can be jqXHR or any custom error
-									args: Array.prototype.slice.call(arguments),
-									message: error
-										? error.message || error.toString()
-										: "",
-								});
-								if (ctxErr.message === "[object Object]") {
-									ctxErr.message = "";
+						if ($.isPlainObject(data)) {
+							// We got {foo: 'abc', children: [...]}
+							// Copy extra properties to tree.data.foo
+							_assert(
+								node.isRootNode(),
+								"source may only be an object for root nodes (expecting an array of child objects otherwise)"
+							);
+							_assert(
+								$.isArray(data.children),
+								"if an object is passed as source, it must contain a 'children' array (all other properties are added to 'tree.data')"
+							);
+							metaData = data;
+							children = data.children;
+							delete metaData.children;
+							// Copy some attributes to tree.data
+							$.each(TREE_ATTRS, function(i, attr) {
+								if (metaData[attr] !== undefined) {
+									tree[attr] = metaData[attr];
+									delete metaData[attr];
 								}
-							}
-							node.warn(
-								"Load children failed (" + ctxErr.message + ")",
-								ctxErr
-							);
-							if (
-								tree._triggerNodeEvent(
-									"loadError",
-									ctxErr,
-									null
-								) !== false
-							) {
-								tree.nodeSetStatus(
-									ctx,
-									"error",
-									ctxErr.message,
-									ctxErr.details
+							});
+							// Copy all other attributes to tree.data.NAME
+							$.extend(tree.data, metaData);
+						} else {
+							children = data;
+						}
+						_assert(
+							$.isArray(children),
+							"expected array of children"
+						);
+						node._setChildren(children);
+
+						if (tree.options.nodata && children.length === 0) {
+							if ($.isFunction(tree.options.nodata)) {
+								noDataRes = tree.options.nodata.call(
+									tree,
+									{ type: "nodata" },
+									ctx
 								);
+							} else if (
+								tree.options.nodata === true &&
+								node.isRootNode()
+							) {
+								noDataRes = tree.options.strings.nodata;
+							} else if (
+								typeof tree.options.nodata === "string" &&
+								node.isRootNode()
+							) {
+								noDataRes = tree.options.nodata;
 							}
-						});
-				} else {
-					if (ctx.options.postProcess) {
-						// #792: Call postProcess for non-deferred source
-						res = tree._triggerNodeEvent(
-							"postProcess",
-							ctx,
-							ctx.originalEvent,
-							{
-								response: source,
-								error: null,
-								dataType: typeof source,
+							if (noDataRes) {
+								node.setStatus("nodata", noDataRes);
 							}
-						);
-
-						if (
-							$.isArray(res) ||
-							($.isPlainObject(res) && $.isArray(res.children))
-						) {
-							// Use `ctx.result` if valid
-							// (otherwise use existing data, which may have been modified in-place)
-							source = res;
 						}
-					}
-				}
-				// $.when(source) resolves also for non-deferreds
-				return $.when(source).done(function(children) {
-					var metaData, noDataRes;
+						// trigger fancytreeloadchildren
+						tree._triggerNodeEvent("loadChildren", node);
+					})
+					.fail(function(error) {
+						var ctxErr;
 
-					if ($.isPlainObject(children)) {
-						// We got {foo: 'abc', children: [...]}
-						// Copy extra properties to tree.data.foo
-						_assert(
-							node.isRootNode(),
-							"source may only be an object for root nodes (expecting an array of child objects otherwise)"
-						);
-						_assert(
-							$.isArray(children.children),
-							"if an object is passed as source, it must contain a 'children' array (all other properties are added to 'tree.data')"
-						);
-						metaData = children;
-						children = children.children;
-						delete metaData.children;
-						// Copy some attributes to tree.data
-						$.each(TREE_ATTRS, function(i, attr) {
-							if (metaData[attr] !== undefined) {
-								tree[attr] = metaData[attr];
-								delete metaData[attr];
-							}
-						});
-						// Copy all other attributes to tree.data.NAME
-						$.extend(tree.data, metaData);
-					}
-					_assert($.isArray(children), "expected array of children");
-					node._setChildren(children);
-
-					if (tree.options.nodata && children.length === 0) {
-						if ($.isFunction(tree.options.nodata)) {
-							noDataRes = tree.options.nodata.call(
-								tree,
-								{ type: "nodata" },
-								ctx
+						if (error === RECURSIVE_REQUEST_ERROR) {
+							node.warn(
+								"Ignored response for obsolete load request #" +
+									requestId +
+									" (expected #" +
+									node._requestId +
+									")"
 							);
-						} else if (
-							tree.options.nodata === true &&
-							node.isRootNode()
-						) {
-							noDataRes = tree.options.strings.nodata;
-						} else if (
-							typeof tree.options.nodata === "string" &&
-							node.isRootNode()
-						) {
-							noDataRes = tree.options.nodata;
+							return;
+						} else if (error.node && error.error && error.message) {
+							// error is already a context object
+							ctxErr = error;
+						} else {
+							ctxErr = tree._makeHookContext(node, null, {
+								error: error, // it can be jqXHR or any custom error
+								args: Array.prototype.slice.call(arguments),
+								message: error
+									? error.message || error.toString()
+									: "",
+							});
+							if (ctxErr.message === "[object Object]") {
+								ctxErr.message = "";
+							}
 						}
-						if (noDataRes) {
-							node.setStatus("nodata", noDataRes);
+						node.warn(
+							"Load children failed (" + ctxErr.message + ")",
+							ctxErr
+						);
+						if (
+							tree._triggerNodeEvent(
+								"loadError",
+								ctxErr,
+								null
+							) !== false
+						) {
+							tree.nodeSetStatus(
+								ctx,
+								"error",
+								ctxErr.message,
+								ctxErr.details
+							);
 						}
-					}
-					// trigger fancytreeloadchildren
-					tree._triggerNodeEvent("loadChildren", node);
-				});
+					})
+					.always(function() {
+						node._requestId = null;
+						if (isAsync) {
+							tree.debugTimeEnd(tag);
+						}
+					});
+
+				return resultDfd.promise();
 			},
 			/** [Not Implemented]  */
 			nodeLoadKeyPath: function(ctx, keyPathList) {

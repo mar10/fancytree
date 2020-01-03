@@ -161,7 +161,8 @@ var TreePatch = {};
  *     @since 2.27
  * @property {Integer} debugLevel 0..4 (null: use global setting $.ui.fancytree.debugLevel)
  * @property {function} defaultKey callback(node) is called for new nodes without a key. Must return a new unique key. (default null: generates default keys like that: "_" + counter)
- * @property {boolean} enableAspx Accept passing ajax data in a property named `d` (default: true).
+ * @property {boolean} <del>enableAspx</del> Accept passing ajax data in a property named `d` (default: true).
+ *     @deprecated Call `data.result = data.response.d` in the `postProcess`event instead
  * @property {boolean} escapeTitles Make sure all HTML tags are escaped (default: false).
  * @property {string[]} extensions List of active extensions (default: [])
  * @property {boolean} focusOnSelect Set focus when node is checked by a mouse click (default: false)

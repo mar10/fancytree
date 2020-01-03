@@ -1,4 +1,6 @@
 # 2.34.1-0 / Unreleased
+  * [DEPRECATED] `enableAspx` option. Use the `postProcess` event instead
+  * [Fixed] #983
 
 # 2.34.0 / 2019-12-26
   * [DEPRECATED] jQuery UI widget methods:
