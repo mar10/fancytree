@@ -157,7 +157,7 @@ QUnit.test("Create Fancytree - init", function(assert) {
 		generateIds: true, // for testing
 		create: function(event, data){
 			assert.equal(event.type, "fancytreecreate", "receive `create` callback");
-			assert.ok(insideConstructor, "running synchronously");
+			assert.ok(insideConstructor, "running synchronously (create)");
 			assert.ok(!!data, "event data is empty");
 			assert.equal(this.nodeName, "DIV", "`this` is div#tree");
 			assert.ok($(">ul", this).first().hasClass("fancytree-container"), "div#tree contains ul.fancytree-container");
@@ -170,7 +170,7 @@ QUnit.test("Create Fancytree - init", function(assert) {
 		init: function(event, data){
 			assert.equal(event.type, "fancytreeinit", "receive `init` callback");
 			assert.equal(data.status, true, "`init` status is true");
-			assert.ok(insideConstructor, "running synchronously");
+			assert.ok(insideConstructor, "running synchronously (init)");
 			assert.ok(!!data.tree.rootNode, "`data.tree` is the tree object");
 			assert.equal(data.options.source.length, TESTDATA_TOPNODES, "data.options.contains widget options");
 //            equal($("div#tree").hasClass("ui-widget"), true, "div#tree has ui-widget class");
