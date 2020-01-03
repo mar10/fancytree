@@ -1,4 +1,5 @@
 # 2.34.1-0 / Unreleased
+  * [Fixed] #984 ext-edit: Exception when cancelling addSibling or addChildren
 
 # 2.34.0 / 2019-12-26
   * [DEPRECATED] jQuery UI widget methods:
