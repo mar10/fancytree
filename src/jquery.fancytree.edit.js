@@ -212,7 +212,7 @@
 		// Re-enable mouse and keyboard handling
 		tree.widget._bind();
 
-		if (local.lastDraggableAttrValue) {
+		if (node && local.lastDraggableAttrValue) {
 			node.span.draggable = true;
 		}
 
