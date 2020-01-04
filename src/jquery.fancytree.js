@@ -4434,9 +4434,12 @@
 						) {
 							// Process ASPX WebMethod JSON object inside "d" property
 							// (only if no postProcess event was defined)
-							node.warn(
-								"enableAspx is deprecated. Use postProcess instead."
-							);
+							if (ctx.options.enableAspx === 42) {
+								tree.warn(
+									"The default for enableAspx will change to `false` in the fututure. " +
+										"Pass `enableAspx: true` or implement postProcess to silence this warning."
+								);
+							}
 							data =
 								typeof data.d === "string"
 									? $.parseJSON(data.d)
@@ -6250,7 +6253,7 @@
 				clickFolderMode: 4,
 				debugLevel: null, // 0..4 (null: use global setting $.ui.fancytree.debugLevel)
 				disabled: false, // TODO: required anymore?
-				enableAspx: true,
+				enableAspx: 42, // TODO: this is truethy, but distinguishable from true: default will change to false in the future
 				escapeTitles: false,
 				extensions: [],
 				// fx: { height: "toggle", duration: 200 },

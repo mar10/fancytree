@@ -1,5 +1,7 @@
 # 2.34.1-0 / Unreleased
-  * [DEPRECATED] `enableAspx` option. Use the `postProcess` event instead
+  * [Changed] The `enableAspx` option will default to 'false' in the future.
+    For now, a warning is emitted, to explicitly set it or use the `postProcess`
+    event instead.
   * [Fixed] #983 lazyLoad with promise not calling postProcess
   * [Fixed] #984 ext-edit: Exception when cancelling addSibling or addChildren
 
