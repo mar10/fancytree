@@ -2137,9 +2137,9 @@
 
 			// this.debug("scrollIntoView(), scrollTop=" + scrollTop, opts.scrollOfs);
 			// _assert($(this.span).is(":visible"), "scrollIntoView node is invisible"); // otherwise we cannot calc offsets
-			if (!this.isVisible()) {
+			if (this.isRootNode() || !this.isVisible()) {
 				// We cannot calc offsets for hidden elements
-				this.warn("scrollIntoView(): node is invisible.");
+				this.info("scrollIntoView(): node is invisible.");
 				return _getResolvedPromise();
 			}
 			if (isParentWindow) {
