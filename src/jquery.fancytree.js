@@ -4511,7 +4511,7 @@
 								tree.options.nodata === true &&
 								node.isRootNode()
 							) {
-								noDataRes = tree.options.strings.nodata;
+								noDataRes = tree.options.strings.noData;
 							} else if (
 								typeof tree.options.nodata === "string" &&
 								node.isRootNode()
