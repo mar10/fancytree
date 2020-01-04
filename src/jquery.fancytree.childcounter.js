@@ -101,7 +101,7 @@
 		} else {
 			$badge.remove();
 		}
-		if (extOpts.deep && !node.isTopLevel() && !node.isRoot()) {
+		if (extOpts.deep && !node.isTopLevel() && !node.isRootNode()) {
 			node.parent.updateCounters();
 		}
 	};

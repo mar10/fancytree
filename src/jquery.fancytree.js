@@ -1612,10 +1612,9 @@
 		 * @deprecated since 2014-02-16: use load() instead.
 		 */
 		lazyLoad: function(discard) {
-			this.warn(
+			$.error(
 				"FancytreeNode.lazyLoad() is deprecated since 2014-02-16. Use .load() instead."
 			);
-			return this.load(discard);
 		},
 		/**
 		 * Load all children of a lazy node if neccessary. The <i>expanded</i> state is maintained.

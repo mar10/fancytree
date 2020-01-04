@@ -227,7 +227,7 @@
 
 			res = this._super(ctx);
 
-			if (node.isRoot()) {
+			if (node.isRootNode()) {
 				return res;
 			}
 			span = $span.children("span.fancytree-expander").get(0);
