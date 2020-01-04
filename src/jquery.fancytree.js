@@ -2251,7 +2251,7 @@
 			return this.tree._callHook("nodeSetSelected", this, flag, opts);
 		},
 		/**Mark a lazy node as 'error', 'loading', 'nodata', or 'ok'.
-		 * @param {string} status 'error'|'empty'|'ok'
+		 * @param {string} status 'error'|'loading'|'nodata'|'ok'
 		 * @param {string} [message]
 		 * @param {string} [details]
 		 */
