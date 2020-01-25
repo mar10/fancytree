@@ -2,6 +2,8 @@
   * [Changed] The `enableAspx` option will default to 'false' in the future.
     For now, a warning is emitted, to explicitly set it or use the `postProcess`
     event instead.
+  * [Added] #988 New option `dnd5.preventLazyParents` prevents dropping items on
+    unloaded lazy nodes (defaults to true)
   * [Fixed] #983 lazyLoad with promise not calling postProcess
   * [Fixed] #984 ext-edit: Exception when cancelling addSibling or addChildren
 

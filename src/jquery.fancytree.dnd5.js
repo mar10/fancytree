@@ -795,6 +795,10 @@
 					node.debug("Reject dropping below own ancestor.");
 					DRAG_ENTER_RESPONSE = false;
 					break;
+				} else if (dndOpts.preventLazyParents && !node.isLoaded()) {
+					node.warn("Drop over unloaded target node prevented.");
+					DRAG_ENTER_RESPONSE = false;
+					break;
 				}
 				$dropMarker.show();
 
@@ -1025,6 +1029,7 @@
 			// dropEffect: "auto", // 'copy'|'link'|'move'|'auto'(calculate from `effectAllowed`+modifier keys) or callback(node, data) that returns such string.
 			dropEffectDefault: "move", // Default dropEffect ('copy', 'link', or 'move') when no modifier is pressed (overide in dragDrag, dragOver).
 			preventForeignNodes: false, // Prevent dropping nodes from different Fancytrees
+			preventLazyParents: true, // Prevent dropping items on unloaded lazy Fancytree nodes
 			preventNonNodes: false, // Prevent dropping items other than Fancytree nodes
 			preventRecursion: true, // Prevent dropping nodes on own descendants
 			preventSameParent: false, // Prevent dropping nodes under same direct parent
