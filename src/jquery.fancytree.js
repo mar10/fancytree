@@ -47,7 +47,7 @@
 		REX_HTML = /[&<>"'/]/g, // Escape those characters
 		REX_TOOLTIP = /[<>"'/]/g, // Don't escape `&` in tooltips
 		RECURSIVE_REQUEST_ERROR = "$recursive_request",
-		// CLIPBOARD = null,
+		INVALID_REQUEST_TARGET_ERROR = "$request_target_invalid",
 		ENTITY_MAP = {
 			"&": "&amp;",
 			"<": "&lt;",
@@ -4259,6 +4259,7 @@
 					isAsync = true,
 					tree = ctx.tree,
 					node = ctx.node,
+					nodePrevParent = node.parent,
 					tag = "nodeLoadChildren",
 					requestId = Date.now();
 
@@ -4377,6 +4378,12 @@
 							// } else {
 							// 	node.debug("Response returned for load request #" + requestId);
 						}
+						if (node.parent === null && nodePrevParent !== null) {
+							resultDfd.rejectWith(this, [
+								INVALID_REQUEST_TARGET_ERROR,
+							]);
+							return;
+						}
 						// Allow to adjust the received response data in the `postProcess` event.
 						if (ctx.options.postProcess) {
 							// The handler may either
@@ -4462,7 +4469,7 @@
 				// resultDfd will be resolved/rejected after the response arrived,
 				// was postProcessed, and checked.
 				// Now we implement the UI update and add the data to the tree.
-				// We also return the promise to the caller.
+				// We also return this promise to the caller.
 				resultDfd
 					.done(function(data) {
 						tree.nodeSetStatus(ctx, "ok");
@@ -4535,6 +4542,11 @@
 									" (expected #" +
 									node._requestId +
 									")"
+							);
+							return;
+						} else if (error === INVALID_REQUEST_TARGET_ERROR) {
+							node.warn(
+								"Lazy parent node was removed while loading: discarding response."
 							);
 							return;
 						} else if (error.node && error.error && error.message) {

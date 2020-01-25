@@ -6,6 +6,8 @@
     unloaded lazy nodes (defaults to true)
   * [Fixed] #983 lazyLoad with promise not calling postProcess
   * [Fixed] #984 ext-edit: Exception when cancelling addSibling or addChildren
+  * [Fixed] #987 Lazy load puts "! Load error" for content oustide tree div
+    if content parent folder is removed before loads ends
 
 # 2.34.0 / 2019-12-26
   * [DEPRECATED] jQuery UI widget methods:
