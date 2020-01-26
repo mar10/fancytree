@@ -566,14 +566,18 @@ module.exports = (grunt) ->
   ]
   grunt.registerTask "sauce-triage", ["connect:sauce", "saucelabs-qunit:triage"]
 
-  if parseInt(process.env.TRAVIS_PULL_REQUEST, 10) > 0
-      # saucelab keys do not work on forks
-      # http://support.saucelabs.com/entries/25614798
-      grunt.registerTask "travis", ["test"]
-      grunt.registerTask "travis-optional", []
-  else
-      grunt.registerTask "travis", ["test", "sauce"]
-      grunt.registerTask "travis-optional", ["sauce-optional"]
+  # 2020-01-26 Saucelabs tests don't work.
+  # Disable them in travis for now:
+  grunt.registerTask "travis", ["test"]
+  grunt.registerTask "travis-optional", []
+  # if parseInt(process.env.TRAVIS_PULL_REQUEST, 10) > 0
+  #     # saucelab keys do not work on forks
+  #     # http://support.saucelabs.com/entries/25614798
+  #     grunt.registerTask "travis", ["test"]
+  #     grunt.registerTask "travis-optional", []
+  # else
+  #     grunt.registerTask "travis", ["test", "sauce"]
+  #     grunt.registerTask "travis-optional", ["sauce-optional"]
 
   grunt.registerTask "default", ["test"]
   grunt.registerTask "ci", ["test"]  # Called by 'npm test'

@@ -1,7 +1,6 @@
 language: node_js
 sudo: false
 node_js:
-  # - "8"
   - "10"
 
 before_script:
@@ -15,9 +14,9 @@ addons:
 matrix:
   include:
     - env: GRUNT_TASK=travis
-    - env: GRUNT_TASK=travis-optional
-  allow_failures:
-    - env: GRUNT_TASK=travis-optional
+  #   - env: GRUNT_TASK=travis-optional
+  # allow_failures:
+  #   - env: GRUNT_TASK=travis-optional
 
 script: grunt $GRUNT_TASK --verbose
 
