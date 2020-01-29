@@ -2344,7 +2344,7 @@
 				}
 			}
 			if (recursive) {
-				if (this.hasChildren()) {
+				if ($.isArray(this.children)) {
 					dict.children = [];
 					for (i = 0, l = this.children.length; i < l; i++) {
 						node = this.children[i];
