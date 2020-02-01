@@ -52,7 +52,7 @@
 				clipboardNode.remove();
 			} else {
 				// Copy mode: prevent duplicate keys:
-				var cb = clipboardNode.toDict(true, function(dict){
+				var cb = clipboardNode.toDict(true, function(dict, node){
 					dict.title = "Copy of " + dict.title;
 					delete dict.key; // Remove key, so a new one will be created
 				});

@@ -848,7 +848,7 @@
 		 *
 		 * @param {FancytreeNode} node source node
 		 * @param {string} [mode=child] 'before' | 'after' | 'child'
-		 * @param {Function} [map] callback function(NodeData) that could modify the new node
+		 * @param {Function} [map] callback function(NodeData, FancytreeNode) that could modify the new node
 		 * @returns {FancytreeNode} new
 		 */
 		copyTo: function(node, mode, map) {
@@ -2312,7 +2312,7 @@
 		 *
 		 * @param {boolean} [recursive=false] include child nodes
 		 * @param {function} [callback] callback(dict, node) is called for every node, in order to allow modifications.
-		 *     Return `false` to ignore this node or "skip" to include this node without its children.
+		 *     Return `false` to ignore this node or `"skip"` to include this node without its children.
 		 * @returns {NodeData}
 		 */
 		toDict: function(recursive, callback) {
@@ -2969,8 +2969,8 @@
 				// case "copy":
 				// 	clipboard = {
 				// 		mode: cmd,
-				// 		data: node.toDict(function(n) {
-				// 			delete n.key;
+				// 		data: node.toDict(function(d, n) {
+				// 			delete d.key;
 				// 		}),
 				// 	};
 				// 	break;

@@ -176,8 +176,8 @@
 							case "copy":
 								CLIPBOARD = {
 									mode: data.cmd,
-									data: node.toDict(function(n) {
-										delete n.key;
+									data: node.toDict(true, function(dict, node) {
+										delete dict.key;
 									}),
 								};
 								break;

@@ -227,7 +227,7 @@ $(function(){
 			// Convert active node (and descendants) to a dictionary and store
 			// in
 			var node = $.ui.fancytree.getTree("#tree").getActiveNode();
-			var d = node.toDict(true, function(dict){
+			var d = node.toDict(true, function(dict, node){
 				// Remove keys, so they will be re-generated when this dict is
 				// passed to addChildren()
 				delete dict.key;
