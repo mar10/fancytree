@@ -807,6 +807,7 @@
 				r = dndOpts.dragEnter(node, data);
 
 				res = normalizeDragEnterResponse(r);
+				// alert("res:" + JSON.stringify(res))
 				DRAG_ENTER_RESPONSE = res;
 
 				allowDrop = res && (res.over || res.before || res.after);
