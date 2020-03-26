@@ -9,6 +9,7 @@
   * [Fixed] #987 Lazy load puts "Load error" for content outside tree div
     if parent folder is removed before loads ends
   * [Fixed] #989 `node.toDict()` keeps empty `children` array
+  * [Fixed] #998 dnd5 triggering multiple loads of lazy nodes on hover
 
 # 2.34.0 / 2019-12-26
   * [DEPRECATED] jQuery UI widget methods:

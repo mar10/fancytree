@@ -853,6 +853,7 @@
 					} else if (
 						dndOpts.autoExpandMS &&
 						Date.now() - DRAG_OVER_STAMP > dndOpts.autoExpandMS &&
+						!node.isLoading() &&
 						(!dndOpts.dragExpand ||
 							dndOpts.dragExpand(node, data) !== false)
 					) {
