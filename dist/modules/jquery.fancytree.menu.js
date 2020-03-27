@@ -6,13 +6,13 @@
  *
  * @see http://api.jqueryui.com/menu/
  *
- * Copyright (c) 2008-2019, Martin Wendt (https://wwWendt.de)
+ * Copyright (c) 2008-2020, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.34.0
- * @date 2019-12-26T14:16:19Z
+ * @version 2.35.0
+ * @date 2020-03-27T22:41:58Z
  */
 
 (function(factory) {
@@ -32,7 +32,7 @@
 
 	$.ui.fancytree.registerExtension({
 		name: "menu",
-		version: "2.34.0",
+		version: "2.35.0",
 		// Default options for this extension.
 		options: {
 			enable: true,

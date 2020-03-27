@@ -4,13 +4,13 @@
  * Drag-and-drop support (native HTML5).
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2019, Martin Wendt (https://wwWendt.de)
+ * Copyright (c) 2008-2020, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.34.0
- * @date 2019-12-26T14:16:19Z
+ * @version 2.35.0
+ * @date 2020-03-27T22:41:58Z
  */
 
 /*
@@ -795,6 +795,10 @@
 					node.debug("Reject dropping below own ancestor.");
 					DRAG_ENTER_RESPONSE = false;
 					break;
+				} else if (dndOpts.preventLazyParents && !node.isLoaded()) {
+					node.warn("Drop over unloaded target node prevented.");
+					DRAG_ENTER_RESPONSE = false;
+					break;
 				}
 				$dropMarker.show();
 
@@ -803,6 +807,7 @@
 				r = dndOpts.dragEnter(node, data);
 
 				res = normalizeDragEnterResponse(r);
+				// alert("res:" + JSON.stringify(res))
 				DRAG_ENTER_RESPONSE = res;
 
 				allowDrop = res && (res.over || res.before || res.after);
@@ -848,6 +853,7 @@
 					} else if (
 						dndOpts.autoExpandMS &&
 						Date.now() - DRAG_OVER_STAMP > dndOpts.autoExpandMS &&
+						!node.isLoading() &&
 						(!dndOpts.dragExpand ||
 							dndOpts.dragExpand(node, data) !== false)
 					) {
@@ -1014,7 +1020,7 @@
 
 	$.ui.fancytree.registerExtension({
 		name: "dnd5",
-		version: "2.34.0",
+		version: "2.35.0",
 		// Default options for this extension.
 		options: {
 			autoExpandMS: 1500, // Expand nodes after n milliseconds of hovering
@@ -1025,6 +1031,7 @@
 			// dropEffect: "auto", // 'copy'|'link'|'move'|'auto'(calculate from `effectAllowed`+modifier keys) or callback(node, data) that returns such string.
 			dropEffectDefault: "move", // Default dropEffect ('copy', 'link', or 'move') when no modifier is pressed (overide in dragDrag, dragOver).
 			preventForeignNodes: false, // Prevent dropping nodes from different Fancytrees
+			preventLazyParents: true, // Prevent dropping items on unloaded lazy Fancytree nodes
 			preventNonNodes: false, // Prevent dropping items other than Fancytree nodes
 			preventRecursion: true, // Prevent dropping nodes on own descendants
 			preventSameParent: false, // Prevent dropping nodes under same direct parent
