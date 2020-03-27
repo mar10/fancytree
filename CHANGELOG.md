@@ -1,4 +1,6 @@
-# 2.34.1-0 / Unreleased
+# 2.35.1-0 / Unreleased
+
+# 2.35.0 / 2020-03-27
   * [Changed] The `enableAspx` option will default to 'false' in the future.
     For now, a warning is emitted, to explicitly set it or use the `postProcess`
     event instead.
