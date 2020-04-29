@@ -1,4 +1,5 @@
 # 2.35.1-0 / Unreleased
+  * [Fixed] #1001 Invalid urls in skin-xp CSS
 
 # 2.35.0 / 2020-03-27
   * [Changed] The `enableAspx` option will default to 'false' in the future.
