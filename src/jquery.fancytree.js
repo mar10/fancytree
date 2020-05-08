@@ -535,7 +535,7 @@
 		if (this.key == null) {
 			// test for null OR undefined
 			if (this.tree.options.defaultKey) {
-				this.key = this.tree.options.defaultKey(this);
+				this.key = "" + this.tree.options.defaultKey(this);
 				_assert(this.key, "defaultKey() must return a unique key");
 			} else {
 				this.key = "_" + FT._nextNodeKey++;
@@ -3419,6 +3419,7 @@
 			// Not found in the DOM, but still may be in an unrendered part of tree
 			searchRoot = searchRoot || this.rootNode;
 			match = null;
+			key = "" + key; // Convert to string (#1005)
 			searchRoot.visit(function(node) {
 				if (node.key === key) {
 					match = node;

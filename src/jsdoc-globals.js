@@ -166,7 +166,8 @@ var TreePatch = {};
  * @property {boolean} escapeTitles Make sure all HTML tags are escaped (default: false).
  * @property {string[]} extensions List of active extensions (default: [])
  * @property {boolean} focusOnSelect Set focus when node is checked by a mouse click (default: false)
- * @property {boolean} generateIds Add `id="..."` to node markup (default: false).
+ * @property {boolean} generateIds Add `id="..."` to node markup (default: false).<br>
+ *     The id is constructed from `options.idPrefix` + `node.key`, e.g. `id="ft_1234"`.
  * @property {boolean|function} icon Display node icons (default: true)<br>
  *     true: use default icons, depending on `node.folder` and `node.expanded`<br>
  *     false: hide icons<br>
