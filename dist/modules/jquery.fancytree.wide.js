@@ -9,7 +9,7 @@
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
  * @version 2.35.1-0
- * @date 2020-06-04T18:52:46Z
+ * @date 2020-06-04T19:12:39Z
  */
 
 (function(factory) {

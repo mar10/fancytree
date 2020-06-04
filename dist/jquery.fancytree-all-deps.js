@@ -1,4 +1,4 @@
-/*! jQuery Fancytree Plugin - 2.35.1-0 - 2020-06-04T18:52:46Z
+/*! jQuery Fancytree Plugin - 2.35.1-0 - 2020-06-04T19:12:39Z
   * https://github.com/mar10/fancytree
   * Copyright (c) 2020 Martin Wendt; Licensed MIT
  */
@@ -1366,7 +1366,7 @@ var uniqueId = $.fn.extend( {
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
  * @version 2.35.1-0
- * @date 2020-06-04T18:52:46Z
+ * @date 2020-06-04T19:12:39Z
  */
 
 /** Core Fancytree module.
@@ -8696,7 +8696,7 @@ var uniqueId = $.fn.extend( {
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
  * @version 2.35.1-0
- * @date 2020-06-04T18:52:46Z
+ * @date 2020-06-04T19:12:39Z
  */
 
 // To keep the global namespace clean, we wrap everything in a closure.
@@ -8927,7 +8927,7 @@ var uniqueId = $.fn.extend( {
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
  * @version 2.35.1-0
- * @date 2020-06-04T18:52:46Z
+ * @date 2020-06-04T19:12:39Z
  */
 
 (function(factory) {
@@ -9448,7 +9448,7 @@ var uniqueId = $.fn.extend( {
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
  * @version 2.35.1-0
- * @date 2020-06-04T18:52:46Z
+ * @date 2020-06-04T19:12:39Z
  */
 
 /*
@@ -10593,7 +10593,7 @@ var uniqueId = $.fn.extend( {
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
  * @version 2.35.1-0
- * @date 2020-06-04T18:52:46Z
+ * @date 2020-06-04T19:12:39Z
  */
 
 (function(factory) {
@@ -10997,7 +10997,7 @@ var uniqueId = $.fn.extend( {
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
  * @version 2.35.1-0
- * @date 2020-06-04T18:52:46Z
+ * @date 2020-06-04T19:12:39Z
  */
 
 (function(factory) {
@@ -11456,7 +11456,7 @@ var uniqueId = $.fn.extend( {
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
  * @version 2.35.1-0
- * @date 2020-06-04T18:52:46Z
+ * @date 2020-06-04T19:12:39Z
  */
 
 (function(factory) {
@@ -11794,7 +11794,7 @@ var uniqueId = $.fn.extend( {
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
  * @version 2.35.1-0
- * @date 2020-06-04T18:52:46Z
+ * @date 2020-06-04T19:12:39Z
  */
 
 (function(factory) {
@@ -12019,7 +12019,7 @@ var uniqueId = $.fn.extend( {
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
  * @version 2.35.1-0
- * @date 2020-06-04T18:52:46Z
+ * @date 2020-06-04T19:12:39Z
  */
 
 (function(factory) {
@@ -12151,7 +12151,7 @@ var uniqueId = $.fn.extend( {
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
  * @version 2.35.1-0
- * @date 2020-06-04T18:52:46Z
+ * @date 2020-06-04T19:12:39Z
  */
 
 (function(factory) {
@@ -12645,7 +12645,7 @@ var uniqueId = $.fn.extend( {
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
  * @version 2.35.1-0
- * @date 2020-06-04T18:52:46Z
+ * @date 2020-06-04T19:12:39Z
  */
 
 (function(factory) {
@@ -13195,7 +13195,7 @@ var uniqueId = $.fn.extend( {
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
  * @version 2.35.1-0
- * @date 2020-06-04T18:52:46Z
+ * @date 2020-06-04T19:12:39Z
  */
 
 (function(factory) {
@@ -13315,7 +13315,7 @@ var uniqueId = $.fn.extend( {
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
  * @version 2.35.1-0
- * @date 2020-06-04T18:52:46Z
+ * @date 2020-06-04T19:12:39Z
  */
 
 (function(factory) {

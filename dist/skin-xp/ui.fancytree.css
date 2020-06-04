@@ -14,7 +14,7 @@
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
  * @version 2.35.1-0
- * @date 2020-06-04T18:52:46Z
+ * @date 2020-06-04T19:12:39Z
 ******************************************************************************/
 /*------------------------------------------------------------------------------
  * Helpers
@@ -704,19 +704,19 @@ ul.fancytree-ext-wide span.fancytree-node span.fancytree-title {
  * Tree container
  */
 ul.fancytree-container li {
-  background-image: url("../skin-xp/vline.gif");
+  background-image: url("../vline.gif");
   background-position: 0 0;
 }
 ul.fancytree-container.fancytree-rtl li {
   background-position: right 0;
-  background-image: url("../skin-xp/vline-rtl.gif");
+  background-image: url("../vline-rtl.gif");
 }
 ul.fancytree-container.fancytree-rtl .fancytree-exp-n span.fancytree-expander {
-  background-image: url("../skin-xp/icons-rtl.gif");
+  background-image: url("../icons-rtl.gif");
   background-position: 0px -64px;
 }
 ul.fancytree-container.fancytree-rtl .fancytree-exp-nl span.fancytree-expander {
-  background-image: url("../skin-xp/icons-rtl.gif");
+  background-image: url("../icons-rtl.gif");
   background-position: -16px -64px;
 }
 ul.fancytree-container li.fancytree-lastsib {
