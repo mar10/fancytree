@@ -704,7 +704,7 @@ ul.fancytree-ext-wide span.fancytree-node span.fancytree-title {
  * Tree container
  */
 ul.fancytree-container li {
-  background-image: url("../skin-xp/vline.gif");
+  background-image: url("../vline.gif");
   background-position: 0 0;
 }
 ul.fancytree-container.fancytree-rtl li {

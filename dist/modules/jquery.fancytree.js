@@ -7,8 +7,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.35.0
- * @date 2020-03-27T22:41:58Z
+ * @version 2.35.1-0
+ * @date 2020-06-04T19:12:39Z
  */
 
 /** Core Fancytree module.
@@ -535,7 +535,7 @@
 		if (this.key == null) {
 			// test for null OR undefined
 			if (this.tree.options.defaultKey) {
-				this.key = this.tree.options.defaultKey(this);
+				this.key = "" + this.tree.options.defaultKey(this);
 				_assert(this.key, "defaultKey() must return a unique key");
 			} else {
 				this.key = "_" + FT._nextNodeKey++;
@@ -3419,6 +3419,7 @@
 			// Not found in the DOM, but still may be in an unrendered part of tree
 			searchRoot = searchRoot || this.rootNode;
 			match = null;
+			key = "" + key; // Convert to string (#1005)
 			searchRoot.visit(function(node) {
 				if (node.key === key) {
 					match = node;
@@ -6701,7 +6702,7 @@
 		{
 			/** Version number `"MAJOR.MINOR.PATCH"`
 			 * @type {string} */
-			version: "2.35.0", // Set to semver by 'grunt release'
+			version: "2.35.1-0", // Set to semver by 'grunt release'
 			/** @type {string}
 			 * @description `"production" for release builds` */
 			buildType: "production", // Set to 'production' by 'grunt build'
