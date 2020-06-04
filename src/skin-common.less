@@ -27,6 +27,13 @@
 @fancy-node-border-radius: 0px;
 @fancy-node-outline-width: 1px;
 
+// Custom filenames for images
+@fancy-loading-image-filename: "loading.gif";
+@fancy-icons-image-filename: "icons.gif";
+@fancy-icons-rtl-image-filename: "icons-rtl.gif";
+@fancy-vline-image-filename: "vline.gif";
+@fancy-vline-rtl-image-filename: "vline-rtl.gif";
+
 // @fancy-line-ofs-top: (@fancy-line-height - @fancy-icon-height) / 2;
 
 // webpack uses /dist/skin-common.less as root path
@@ -39,8 +46,8 @@
 
 // Use 'url(...)' to link to the throbber image, or
 // use data-uri(...)' to inline the data in css instead:
-// @fancy-loading-url: url("@{fancy-image-prefix}loading.gif");
-@fancy-loading-url: data-uri("@{fancy-image-prefix}loading.gif");
+// @fancy-loading-url: url("@{fancy-image-prefix}@{fancy-loading-image-filename}");
+@fancy-loading-url: data-uri("@{fancy-image-prefix}@{fancy-loading-image-filename}");
 
 // Set to `true` to use `data-uri(...)` instead of a `url(...)` link:
 @fancy-inline-sprites: false;
@@ -218,7 +225,7 @@ ul.fancytree-container {
 ul.fancytree-connectors.fancytree-container {
 	li {
 		// Use 'data-uri(...)' to embed the image into CSS instead of linking to 'loading.gif':
-		background-image: data-uri("@{fancy-image-prefix}vline.gif");
+    background-image: data-uri("@{fancy-image-prefix}@{fancy-vline-image-filename}");
 		background-position: 0 0;
 	}
 }
@@ -255,7 +262,7 @@ span.fancytree-drag-helper-img,
 	vertical-align: top;
 	background-repeat: no-repeat;
 	// background-position: left;
-	.setBgImageUrl("icons.gif");
+  .setBgImageUrl("@{fancy-icons-image-filename}");
 	.setBgPos(0, 0);
 }
 span.fancytree-icon,
@@ -314,7 +321,7 @@ span.fancytree-expander {
 .fancytree-connectors {
 	.fancytree-exp-n span.fancytree-expander,
 	.fancytree-exp-nl span.fancytree-expander {
-		.setBgImageUrl("icons.gif");
+		.setBgImageUrl("@{fancy-icons-image-filename}");
 		margin-top: 0;
 	}
 	.fancytree-exp-n span.fancytree-expander,       // End-node, not last sibling
@@ -697,7 +704,7 @@ span.fancytree-drop-reject {
 	span.fancytree-expander,
 	span.fancytree-icon,
 	span.fancytree-drag-helper-img {
-		.setBgImageUrl("icons-rtl.gif");
+		.setBgImageUrl("@{fancy-icons-rtl-image-filename}");
 	}
 	.fancytree-exp-n span.fancytree-expander,
 	.fancytree-exp-nl span.fancytree-expander {
@@ -705,7 +712,7 @@ span.fancytree-drop-reject {
 	}
 	&.fancytree-connectors .fancytree-exp-n span.fancytree-expander,
 	&.fancytree-connectors .fancytree-exp-nl span.fancytree-expander {
-		.setBgImageUrl("icons-rtl.gif");
+		.setBgImageUrl("@{fancy-icons-rtl-image-filename}");
 	}
 }
 ul.fancytree-container.fancytree-rtl {
@@ -714,7 +721,7 @@ ul.fancytree-container.fancytree-rtl {
 	}
 	&.fancytree-connectors li {
 		background-position: right 0;
-		background-image: url("@{fancy-image-prefix}vline-rtl.gif");
+		background-image: url("@{fancy-image-prefix}@{fancy-vline-rtl-image-filename}");
 	}
 	// Suppress lines for last child node
 	li.fancytree-lastsib,
@@ -724,7 +731,7 @@ ul.fancytree-container.fancytree-rtl {
 	}
 }
 #fancytree-drop-marker.fancytree-rtl {
-	.setBgImageUrl("icons-rtl.gif");
+	.setBgImageUrl("@{fancy-icons-rtl-image-filename}");
 }
 
 /*------------------------------------------------------------------------------
