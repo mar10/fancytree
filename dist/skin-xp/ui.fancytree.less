@@ -43,20 +43,20 @@ ul.fancytree-container {
 	li {
 		// background-image: url("vline.gif");
 		// Use 'data-uri(...)' to embed the image into CSS instead of linking to 'loading.gif':
-		background-image: data-uri("@{fancy-image-prefix}vline.gif");
+		background-image: url("@{fancy-image-prefix}vline.gif");
 		background-position: 0 0;
 	}
 	&.fancytree-rtl {
 		li {
 			background-position: right 0;
-			background-image: url("vline-rtl.gif");
+			background-image: url("@{fancy-image-prefix}vline-rtl.gif");
 		}
 		.fancytree-exp-n span.fancytree-expander {
-			background-image: url("icons-rtl.gif");
+			background-image: url("@{fancy-image-prefix}icons-rtl.gif");
 			.useSprite(0, 4);
 		}
 		.fancytree-exp-nl span.fancytree-expander {
-			background-image: url("icons-rtl.gif");
+			background-image: url("@{fancy-image-prefix}icons-rtl.gif");
 			.useSprite(1, 4);
 		}
 	}
