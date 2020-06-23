@@ -502,13 +502,18 @@
 					break;
 			}
 
+			var dropMarkerRect;
+			if(!dndOpts.dropMarkerRoot.getBoundingClientRect)
+				dropMarkerRect = dndOpts.dropMarkerRoot.host.getBoundingClientRect();
+			else
+				dropMarkerRect = dndOpts.dropMarkerRoot.getBoundingClientRect();
 			pos = {
-				my: "left" + offsetString(markerOffsetX) + " center",
+				my: "left" + offsetString(markerOffsetX + dropMarkerRect.x) + " center",
 				at: "left " + markerAt,
 				of: $targetTitle,
 			};
 			if (options.rtl) {
-				pos.my = "right" + offsetString(-markerOffsetX) + " center";
+				pos.my = "right" + offsetString(-markerOffsetX + dropMarkerRect.x) + " center";
 				pos.at = "right " + markerAt;
 				// console.log("rtl", pos);
 			}
@@ -1050,6 +1055,7 @@
 			dragExpand: $.noop, // Callback(targetNode, data), return false to prevent autoExpand
 			dragDrop: $.noop, // Callback(targetNode, data)
 			dragLeave: $.noop, // Callback(targetNode, data)
+			dropMarkerRoot: document.body, // Root Container used for drop marker (could be a shadow root)
 		},
 
 		treeInit: function(ctx) {
@@ -1109,7 +1115,7 @@
 						// Drop marker should not steal dragenter/dragover events:
 						"pointer-events": "none",
 					})
-					.prependTo("body");
+					.prependTo(dndOpts.dropMarkerRoot);
 				if (glyph) {
 					FT.setSpanIcon(
 						$dropMarker[0],
