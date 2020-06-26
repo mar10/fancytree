@@ -502,18 +502,13 @@
 					break;
 			}
 
-			var dropMarkerRect;
-			if(!dndOpts.dropMarkerRoot.getBoundingClientRect)
-				dropMarkerRect = dndOpts.dropMarkerRoot.host.getBoundingClientRect();
-			else
-				dropMarkerRect = dndOpts.dropMarkerRoot.getBoundingClientRect();
 			pos = {
-				my: "left" + offsetString(markerOffsetX + dropMarkerRect.x) + " center",
+				my: "left" + offsetString(markerOffsetX) + " center",
 				at: "left " + markerAt,
 				of: $targetTitle,
 			};
 			if (options.rtl) {
-				pos.my = "right" + offsetString(-markerOffsetX + dropMarkerRect.x) + " center";
+				pos.my = "right" + offsetString(-markerOffsetX) + " center";
 				pos.at = "right " + markerAt;
 				// console.log("rtl", pos);
 			}
@@ -1029,6 +1024,7 @@
 		// Default options for this extension.
 		options: {
 			autoExpandMS: 1500, // Expand nodes after n milliseconds of hovering
+			dropMarkerParent: document.body, // Root Container used for drop marker (could be a shadow root)
 			dropMarkerInsertOffsetX: -16, // Additional offset for drop-marker with hitMode = "before"/"after"
 			dropMarkerOffsetX: -24, // Absolute position offset for .fancytree-drop-marker relatively to ..fancytree-title (icon/img near a node accepting drop)
 			multiSource: false, // true: Drag multiple (i.e. selected) nodes. Also a callback() is allowed
@@ -1055,7 +1051,6 @@
 			dragExpand: $.noop, // Callback(targetNode, data), return false to prevent autoExpand
 			dragDrop: $.noop, // Callback(targetNode, data)
 			dragLeave: $.noop, // Callback(targetNode, data)
-			dropMarkerRoot: document.body, // Root Container used for drop marker (could be a shadow root)
 		},
 
 		treeInit: function(ctx) {
@@ -1115,7 +1110,7 @@
 						// Drop marker should not steal dragenter/dragover events:
 						"pointer-events": "none",
 					})
-					.prependTo(dndOpts.dropMarkerRoot);
+					.prependTo(dndOpts.dropMarkerParent);
 				if (glyph) {
 					FT.setSpanIcon(
 						$dropMarker[0],
