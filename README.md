@@ -59,6 +59,15 @@ const tree = createTree('#tree', {
 See [module loader support](https://github.com/mar10/fancytree/wiki#use-a-module-loader) and
 [API docs](https://wwWendt.de/tech/fancytree/doc/jsdoc/Fancytree_Static.html#createTree).
 
+### Description of different files
+
+| File                             | Description                                                  |
+|----------------------------------|--------------------------------------------------------------|
+| jquery.fancytree-all-deps.js.    | fancytree including all addons and dependencies              |
+| jquery.fancytree-all-deps.min.js | fancytree including all addons and dependencies (minimized)  |
+| jquery.fancytree-all.js          | fancytree including all addons                               |
+| jquery.fancytree-all.min.js      | fancytree including all addons (minimized)                   |
+| jquery.fancytree.min.js          | only fancytree, addons needed to be loaded extra (minimized) |
 
 ### Credits
 
