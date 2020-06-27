@@ -1024,6 +1024,7 @@
 		// Default options for this extension.
 		options: {
 			autoExpandMS: 1500, // Expand nodes after n milliseconds of hovering
+			dropMarkerParent: document.body, // Root Container used for drop marker (could be a shadow root)
 			dropMarkerInsertOffsetX: -16, // Additional offset for drop-marker with hitMode = "before"/"after"
 			dropMarkerOffsetX: -24, // Absolute position offset for .fancytree-drop-marker relatively to ..fancytree-title (icon/img near a node accepting drop)
 			multiSource: false, // true: Drag multiple (i.e. selected) nodes. Also a callback() is allowed
@@ -1109,7 +1110,7 @@
 						// Drop marker should not steal dragenter/dragover events:
 						"pointer-events": "none",
 					})
-					.prependTo("body");
+					.prependTo(dndOpts.dropMarkerParent);
 				if (glyph) {
 					FT.setSpanIcon(
 						$dropMarker[0],
