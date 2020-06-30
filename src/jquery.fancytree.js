@@ -523,7 +523,7 @@
 		for (name in obj) {
 			if (
 				!NODE_ATTR_MAP[name] &&
-				!$.isFunction(obj[name]) &&
+				(this.tree.options.copyFunctionsToData || !$.isFunction(obj[name])) &&
 				!NONE_NODE_DATA_MAP[name]
 			) {
 				// node.data.NAME = obj.NAME
@@ -6268,6 +6268,7 @@
 				enableAspx: 42, // TODO: this is truethy, but distinguishable from true: default will change to false in the future
 				escapeTitles: false,
 				extensions: [],
+				copyFunctionsToData: false,
 				// fx: { height: "toggle", duration: 200 },
 				// toggleEffect: { effect: "drop", options: {direction: "left"}, duration: 200 },
 				// toggleEffect: { effect: "slide", options: {direction: "up"}, duration: 200 },
