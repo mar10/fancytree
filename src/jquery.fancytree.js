@@ -523,7 +523,8 @@
 		for (name in obj) {
 			if (
 				!NODE_ATTR_MAP[name] &&
-				(this.tree.options.copyFunctionsToData || !$.isFunction(obj[name])) &&
+				(this.tree.options.copyFunctionsToData ||
+					!$.isFunction(obj[name])) &&
 				!NONE_NODE_DATA_MAP[name]
 			) {
 				// node.data.NAME = obj.NAME
