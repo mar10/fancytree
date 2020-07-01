@@ -542,6 +542,8 @@ module.exports = (grunt) ->
 
   # Register tasks
 
+  grunt.util.linefeed = '\n'
+
   grunt.registerTask "server", ["connect:forever"]
   grunt.registerTask "dev", ["connect:dev", "watch"]
   # grunt.registerTask "prettier", ["eslint:fix"]
