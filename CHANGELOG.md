@@ -1,5 +1,6 @@
 # 2.35.1-0 / Unreleased
   * [Fixed] #1001 Invalid urls in skin-xp CSS
+  * [Fixed] ext-dnd5: dropEffectCallback=none was not reset in some cases
   * [Changed] #1005 Cast key to string in getNodeByKey()
   * [Added] #1012 `dnd5.dropMarkerParent` allows usage in Webcomponents (i.e. shadow DOM)
 

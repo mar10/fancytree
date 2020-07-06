@@ -346,8 +346,12 @@
 		data.isMove = data.dropEffect === "move";
 		// data.isMove = data.dropEffectSuggested === "move";
 
-		REQUESTED_EFFECT_ALLOWED = data.effectAllowed;
-		REQUESTED_DROP_EFFECT = data.dropEffect;
+		// `effectAllowed` must only be defined in dragstart event, so we
+		// store it in a global variable for reference
+		if (event.type === "dragstart") {
+			REQUESTED_EFFECT_ALLOWED = data.effectAllowed;
+			REQUESTED_DROP_EFFECT = data.dropEffect;
+		}
 
 		// if (REQUESTED_DROP_EFFECT !== dataTransfer.dropEffect) {
 		// 	data.tree.info(
