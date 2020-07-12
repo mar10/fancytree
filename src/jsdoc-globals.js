@@ -155,11 +155,11 @@ var TreePatch = {};
  *     (default: false, requires checkboxes enabled).
  *     @since 2.31
  * @property {Integer} clickFolderMode Defines what happens, when the user click a folder node.<br>1:activate, 2:expand, 3:activate and expand, 4:activate/dblclick expands  (default: 4)
- * @property {boolean} copyFunctionsToData Copy also functions to the node's data property (default: false)
  * @property {object|array} columns Made available as `tree.columns`.<br>
  *     Recommended place to store shared data for column rendering.
  *     See also <a href="https://github.com/mar10/fancytree/wiki/ExtTable">table extension</a>.
  *     @since 2.27
+ * @property {boolean} copyFunctionsToData Copy also functions to the node's data property (default: false)
  * @property {Integer} debugLevel 0..4 (null: use global setting $.ui.fancytree.debugLevel)
  * @property {function} defaultKey callback(node) is called for new nodes without a key. Must return a new unique key. (default null: generates default keys like that: "_" + counter)
  * @property {boolean} <del>enableAspx</del> Accept passing ajax data in a property named `d` (default: true).
