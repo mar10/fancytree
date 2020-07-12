@@ -3,6 +3,7 @@
   * [Fixed] ext-dnd5: dropEffectCallback=none was not reset in some cases
   * [Changed] #1005 Cast key to string in getNodeByKey()
   * [Added] #1012 `dnd5.dropMarkerParent` allows usage in Webcomponents (i.e. shadow DOM)
+  * [Added] #1017 `copyFunctionsToData` allows also copying functions to the data property of the node  
 
 # 2.35.0 / 2020-03-27
   * [Changed] The `enableAspx` option will default to 'false' in the future.
