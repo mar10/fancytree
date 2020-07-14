@@ -4,6 +4,7 @@
   * [Fixed] #1001 Invalid urls in skin-xp CSS
   * [Fixed] ext-dnd5: dropEffectCallback=none was not reset in some cases
   * [Changed] #1005 Cast key to string in getNodeByKey()
+  * [Changed] #1013 ext-dnd5: log warning when jQuery is too old
   * [Added] #1012 `dnd5.dropMarkerParent` allows usage in Webcomponents (i.e. shadow DOM)
   * [Added] #1017 `copyFunctionsToData` allows also copying functions to the data property of the node
   * [Fixed] #1018 ContextMenu extension always focuses the first node in the tree

@@ -432,6 +432,9 @@
 		// Calculate hitMode from relative cursor position.
 		nodeOfs = $target.offset();
 		relPosY = (event.pageY - nodeOfs.top) / $target.height();
+		if (event.pageY === undefined) {
+			tree.warn("event.pageY is undefined: see issue #1013.");
+		}
 
 		if (DRAG_ENTER_RESPONSE.after && relPosY > 0.75) {
 			hitMode = "after";
