@@ -18,7 +18,7 @@
 			if (node) {
 				$.contextMenu("destroy", "." + selector);
 
-				node.setFocus(true);
+				// node.setFocus(true);
 				node.setActive(true);
 
 				$.contextMenu({
