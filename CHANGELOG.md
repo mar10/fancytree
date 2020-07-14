@@ -1,4 +1,6 @@
 # 2.35.1-0 / Unreleased
+  * [Fixed] #921 ext-edit / focus handling: Internet Explorer scrolls briefly
+    to the top/left after editing if the tree container is partially outside the viewport
   * [Fixed] #1001 Invalid urls in skin-xp CSS
   * [Fixed] ext-dnd5: dropEffectCallback=none was not reset in some cases
   * [Changed] #1005 Cast key to string in getNodeByKey()

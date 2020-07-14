@@ -217,7 +217,7 @@
 		}
 
 		// Set keyboard focus, even if setFocus() claims 'nothing to do'
-		$(tree.$container).focus();
+		$(tree.$container).focus({ preventScroll: true });
 		eventData.input = null;
 		instOpts.close.call(node, { type: "close" }, eventData);
 		return true;
