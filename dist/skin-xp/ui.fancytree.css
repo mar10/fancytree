@@ -13,8 +13,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.35.0
- * @date 2020-03-27T22:41:58Z
+ * @version 2.36.0
+ * @date 2020-07-15T20:15:15Z
 ******************************************************************************/
 /*------------------------------------------------------------------------------
  * Helpers
@@ -709,14 +709,14 @@ ul.fancytree-container li {
 }
 ul.fancytree-container.fancytree-rtl li {
   background-position: right 0;
-  background-image: url("../vline-rtl.gif");
+  background-image: url("../skin-xp/vline-rtl.gif");
 }
 ul.fancytree-container.fancytree-rtl .fancytree-exp-n span.fancytree-expander {
-  background-image: url("../icons-rtl.gif");
+  background-image: url("../skin-xp/icons-rtl.gif");
   background-position: 0px -64px;
 }
 ul.fancytree-container.fancytree-rtl .fancytree-exp-nl span.fancytree-expander {
-  background-image: url("../icons-rtl.gif");
+  background-image: url("../skin-xp/icons-rtl.gif");
   background-position: -16px -64px;
 }
 ul.fancytree-container li.fancytree-lastsib {

@@ -1,4 +1,4 @@
-/*! jQuery Fancytree Plugin - 2.35.0 - 2020-03-27T22:41:58Z
+/*! jQuery Fancytree Plugin - 2.36.0 - 2020-07-15T20:15:15Z
   * https://github.com/mar10/fancytree
   * Copyright (c) 2020 Martin Wendt; Licensed MIT
  */
@@ -1365,8 +1365,8 @@ var uniqueId = $.fn.extend( {
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.35.0
- * @date 2020-03-27T22:41:58Z
+ * @version 2.36.0
+ * @date 2020-07-15T20:15:15Z
  */
 
 /** Core Fancytree module.
@@ -1881,7 +1881,8 @@ var uniqueId = $.fn.extend( {
 		for (name in obj) {
 			if (
 				!NODE_ATTR_MAP[name] &&
-				!$.isFunction(obj[name]) &&
+				(this.tree.options.copyFunctionsToData ||
+					!$.isFunction(obj[name])) &&
 				!NONE_NODE_DATA_MAP[name]
 			) {
 				// node.data.NAME = obj.NAME
@@ -1893,7 +1894,7 @@ var uniqueId = $.fn.extend( {
 		if (this.key == null) {
 			// test for null OR undefined
 			if (this.tree.options.defaultKey) {
-				this.key = this.tree.options.defaultKey(this);
+				this.key = "" + this.tree.options.defaultKey(this);
 				_assert(this.key, "defaultKey() must return a unique key");
 			} else {
 				this.key = "_" + FT._nextNodeKey++;
@@ -4777,6 +4778,7 @@ var uniqueId = $.fn.extend( {
 			// Not found in the DOM, but still may be in an unrendered part of tree
 			searchRoot = searchRoot || this.rootNode;
 			match = null;
+			key = "" + key; // Convert to string (#1005)
 			searchRoot.visit(function(node) {
 				if (node.key === key) {
 					match = node;
@@ -7620,20 +7622,16 @@ var uniqueId = $.fn.extend( {
 				autoScroll: false,
 				checkbox: false,
 				clickFolderMode: 4,
+				copyFunctionsToData: false,
 				debugLevel: null, // 0..4 (null: use global setting $.ui.fancytree.debugLevel)
 				disabled: false, // TODO: required anymore?
 				enableAspx: 42, // TODO: this is truethy, but distinguishable from true: default will change to false in the future
 				escapeTitles: false,
 				extensions: [],
-				// fx: { height: "toggle", duration: 200 },
-				// toggleEffect: { effect: "drop", options: {direction: "left"}, duration: 200 },
-				// toggleEffect: { effect: "slide", options: {direction: "up"}, duration: 200 },
-				//toggleEffect: { effect: "blind", options: {direction: "vertical", scale: "box"}, duration: 200 },
-				toggleEffect: { effect: "slideToggle", duration: 200 }, //< "toggle" or "slideToggle" to use jQuery instead of jQueryUI for toggleEffect animation
+				focusOnSelect: false,
 				generateIds: false,
 				icon: true,
 				idPrefix: "ft_",
-				focusOnSelect: false,
 				keyboard: true,
 				keyPathSeparator: "/",
 				minExpandLevel: 1,
@@ -7651,29 +7649,29 @@ var uniqueId = $.fn.extend( {
 				},
 				tabindex: "0",
 				titlesTabbable: false,
+				toggleEffect: { effect: "slideToggle", duration: 200 }, //< "toggle" or "slideToggle" to use jQuery instead of jQueryUI for toggleEffect animation
 				tooltip: false,
 				treeId: null,
 				_classNames: {
-					node: "fancytree-node",
-					folder: "fancytree-folder",
+					active: "fancytree-active",
 					animating: "fancytree-animating",
 					combinedExpanderPrefix: "fancytree-exp-",
 					combinedIconPrefix: "fancytree-ico-",
-					hasChildren: "fancytree-has-children",
-					active: "fancytree-active",
-					selected: "fancytree-selected",
+					error: "fancytree-error",
 					expanded: "fancytree-expanded",
-					lazy: "fancytree-lazy",
 					focused: "fancytree-focused",
+					folder: "fancytree-folder",
+					hasChildren: "fancytree-has-children",
+					lastsib: "fancytree-lastsib",
+					lazy: "fancytree-lazy",
+					loading: "fancytree-loading",
+					node: "fancytree-node",
 					partload: "fancytree-partload",
 					partsel: "fancytree-partsel",
 					radio: "fancytree-radio",
-					// radiogroup: "fancytree-radiogroup",
-					unselectable: "fancytree-unselectable",
-					lastsib: "fancytree-lastsib",
-					loading: "fancytree-loading",
-					error: "fancytree-error",
+					selected: "fancytree-selected",
 					statusNodePrefix: "fancytree-statusnode-",
+					unselectable: "fancytree-unselectable",
 				},
 				// events
 				lazyLoad: null,
@@ -8059,7 +8057,7 @@ var uniqueId = $.fn.extend( {
 		{
 			/** Version number `"MAJOR.MINOR.PATCH"`
 			 * @type {string} */
-			version: "2.35.0", // Set to semver by 'grunt release'
+			version: "2.36.0", // Set to semver by 'grunt release'
 			/** @type {string}
 			 * @description `"production" for release builds` */
 			buildType: "production", // Set to 'production' by 'grunt build'
@@ -8694,8 +8692,8 @@ var uniqueId = $.fn.extend( {
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.35.0
- * @date 2020-03-27T22:41:58Z
+ * @version 2.36.0
+ * @date 2020-07-15T20:15:15Z
  */
 
 // To keep the global namespace clean, we wrap everything in a closure.
@@ -8814,7 +8812,7 @@ var uniqueId = $.fn.extend( {
 		// Every extension must be registered by a unique name.
 		name: "childcounter",
 		// Version information should be compliant with [semver](http://semver.org)
-		version: "2.35.0",
+		version: "2.36.0",
 
 		// Extension specific options and their defaults.
 		// This options will be available as `tree.options.childcounter.hideExpanded`
@@ -8925,8 +8923,8 @@ var uniqueId = $.fn.extend( {
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.35.0
- * @date 2020-03-27T22:41:58Z
+ * @version 2.36.0
+ * @date 2020-07-15T20:15:15Z
  */
 
 (function(factory) {
@@ -9284,7 +9282,7 @@ var uniqueId = $.fn.extend( {
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "clones",
-		version: "2.35.0",
+		version: "2.36.0",
 		// Default options for this extension.
 		options: {
 			highlightActiveClones: true, // set 'fancytree-active-clone' on active clones and all peers
@@ -9446,8 +9444,8 @@ var uniqueId = $.fn.extend( {
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.35.0
- * @date 2020-03-27T22:41:58Z
+ * @version 2.36.0
+ * @date 2020-07-15T20:15:15Z
  */
 
 /*
@@ -9783,8 +9781,12 @@ var uniqueId = $.fn.extend( {
 		data.isMove = data.dropEffect === "move";
 		// data.isMove = data.dropEffectSuggested === "move";
 
-		REQUESTED_EFFECT_ALLOWED = data.effectAllowed;
-		REQUESTED_DROP_EFFECT = data.dropEffect;
+		// `effectAllowed` must only be defined in dragstart event, so we
+		// store it in a global variable for reference
+		if (event.type === "dragstart") {
+			REQUESTED_EFFECT_ALLOWED = data.effectAllowed;
+			REQUESTED_DROP_EFFECT = data.dropEffect;
+		}
 
 		// if (REQUESTED_DROP_EFFECT !== dataTransfer.dropEffect) {
 		// 	data.tree.info(
@@ -9865,6 +9867,9 @@ var uniqueId = $.fn.extend( {
 		// Calculate hitMode from relative cursor position.
 		nodeOfs = $target.offset();
 		relPosY = (event.pageY - nodeOfs.top) / $target.height();
+		if (event.pageY === undefined) {
+			tree.warn("event.pageY is undefined: see issue #1013.");
+		}
 
 		if (DRAG_ENTER_RESPONSE.after && relPosY > 0.75) {
 			hitMode = "after";
@@ -10457,12 +10462,13 @@ var uniqueId = $.fn.extend( {
 
 	$.ui.fancytree.registerExtension({
 		name: "dnd5",
-		version: "2.35.0",
+		version: "2.36.0",
 		// Default options for this extension.
 		options: {
 			autoExpandMS: 1500, // Expand nodes after n milliseconds of hovering
 			dropMarkerInsertOffsetX: -16, // Additional offset for drop-marker with hitMode = "before"/"after"
 			dropMarkerOffsetX: -24, // Absolute position offset for .fancytree-drop-marker relatively to ..fancytree-title (icon/img near a node accepting drop)
+			dropMarkerParent: document.body, // Root Container used for drop marker (could be a shadow root)
 			multiSource: false, // true: Drag multiple (i.e. selected) nodes. Also a callback() is allowed
 			effectAllowed: "all", // Restrict the possible cursor shapes and modifier operations (can also be set in the dragStart event)
 			// dropEffect: "auto", // 'copy'|'link'|'move'|'auto'(calculate from `effectAllowed`+modifier keys) or callback(node, data) that returns such string.
@@ -10546,7 +10552,7 @@ var uniqueId = $.fn.extend( {
 						// Drop marker should not steal dragenter/dragover events:
 						"pointer-events": "none",
 					})
-					.prependTo("body");
+					.prependTo(dndOpts.dropMarkerParent);
 				if (glyph) {
 					FT.setSpanIcon(
 						$dropMarker[0],
@@ -10591,8 +10597,8 @@ var uniqueId = $.fn.extend( {
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.35.0
- * @date 2020-03-27T22:41:58Z
+ * @version 2.36.0
+ * @date 2020-07-15T20:15:15Z
  */
 
 (function(factory) {
@@ -10799,7 +10805,7 @@ var uniqueId = $.fn.extend( {
 		}
 
 		// Set keyboard focus, even if setFocus() claims 'nothing to do'
-		$(tree.$container).focus();
+		$(tree.$container).focus({ preventScroll: true });
 		eventData.input = null;
 		instOpts.close.call(node, { type: "close" }, eventData);
 		return true;
@@ -10884,7 +10890,7 @@ var uniqueId = $.fn.extend( {
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "edit",
-		version: "2.35.0",
+		version: "2.36.0",
 		// Default options for this extension.
 		options: {
 			adjustWidthOfs: 4, // null: don't adjust input size to content
@@ -10995,8 +11001,8 @@ var uniqueId = $.fn.extend( {
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.35.0
- * @date 2020-03-27T22:41:58Z
+ * @version 2.36.0
+ * @date 2020-07-15T20:15:15Z
  */
 
 (function(factory) {
@@ -11334,7 +11340,7 @@ var uniqueId = $.fn.extend( {
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "filter",
-		version: "2.35.0",
+		version: "2.36.0",
 		// Default options for this extension.
 		options: {
 			autoApply: true, // Re-apply last filter if lazy data is loaded
@@ -11454,8 +11460,8 @@ var uniqueId = $.fn.extend( {
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.35.0
- * @date 2020-03-27T22:41:58Z
+ * @version 2.36.0
+ * @date 2020-07-15T20:15:15Z
  */
 
 (function(factory) {
@@ -11638,7 +11644,7 @@ var uniqueId = $.fn.extend( {
 
 	$.ui.fancytree.registerExtension({
 		name: "glyph",
-		version: "2.35.0",
+		version: "2.36.0",
 		// Default options for this extension.
 		options: {
 			preset: null, // 'awesome3', 'awesome4', 'bootstrap3', 'material'
@@ -11792,8 +11798,8 @@ var uniqueId = $.fn.extend( {
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.35.0
- * @date 2020-03-27T22:41:58Z
+ * @version 2.36.0
+ * @date 2020-07-15T20:15:15Z
  */
 
 (function(factory) {
@@ -11910,7 +11916,7 @@ var uniqueId = $.fn.extend( {
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "gridnav",
-		version: "2.35.0",
+		version: "2.36.0",
 		// Default options for this extension.
 		options: {
 			autofocusInput: false, // Focus first embedded input if node gets activated
@@ -12017,8 +12023,8 @@ var uniqueId = $.fn.extend( {
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.35.0
- * @date 2020-03-27T22:41:58Z
+ * @version 2.36.0
+ * @date 2020-07-15T20:15:15Z
  */
 
 (function(factory) {
@@ -12047,7 +12053,7 @@ var uniqueId = $.fn.extend( {
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "multi",
-		version: "2.35.0",
+		version: "2.36.0",
 		// Default options for this extension.
 		options: {
 			allowNoSelect: false, //
@@ -12149,8 +12155,8 @@ var uniqueId = $.fn.extend( {
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.35.0
- * @date 2020-03-27T22:41:58Z
+ * @version 2.36.0
+ * @date 2020-07-15T20:15:15Z
  */
 
 (function(factory) {
@@ -12350,7 +12356,7 @@ var uniqueId = $.fn.extend( {
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "persist",
-		version: "2.35.0",
+		version: "2.36.0",
 		// Default options for this extension.
 		options: {
 			cookieDelimiter: "~",
@@ -12643,8 +12649,8 @@ var uniqueId = $.fn.extend( {
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.35.0
- * @date 2020-03-27T22:41:58Z
+ * @version 2.36.0
+ * @date 2020-07-15T20:15:15Z
  */
 
 (function(factory) {
@@ -12727,7 +12733,7 @@ var uniqueId = $.fn.extend( {
 
 	$.ui.fancytree.registerExtension({
 		name: "table",
-		version: "2.35.0",
+		version: "2.36.0",
 		// Default options for this extension.
 		options: {
 			checkboxColumnIdx: null, // render the checkboxes into the this column index (default: nodeColumnIdx)
@@ -13193,8 +13199,8 @@ var uniqueId = $.fn.extend( {
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.35.0
- * @date 2020-03-27T22:41:58Z
+ * @version 2.36.0
+ * @date 2020-07-15T20:15:15Z
  */
 
 (function(factory) {
@@ -13217,7 +13223,7 @@ var uniqueId = $.fn.extend( {
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "themeroller",
-		version: "2.35.0",
+		version: "2.36.0",
 		// Default options for this extension.
 		options: {
 			activeClass: "ui-state-active", // Class added to active node
@@ -13313,8 +13319,8 @@ var uniqueId = $.fn.extend( {
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.35.0
- * @date 2020-03-27T22:41:58Z
+ * @version 2.36.0
+ * @date 2020-07-15T20:15:15Z
  */
 
 (function(factory) {
@@ -13444,7 +13450,7 @@ var uniqueId = $.fn.extend( {
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "wide",
-		version: "2.35.0",
+		version: "2.36.0",
 		// Default options for this extension.
 		options: {
 			iconWidth: null, // Adjust this if @fancy-icon-width != "16px"

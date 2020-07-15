@@ -7,8 +7,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.35.0
- * @date 2020-03-27T22:41:58Z
+ * @version 2.36.0
+ * @date 2020-07-15T20:15:15Z
  */
 
 /** Core Fancytree module.
@@ -523,7 +523,8 @@
 		for (name in obj) {
 			if (
 				!NODE_ATTR_MAP[name] &&
-				!$.isFunction(obj[name]) &&
+				(this.tree.options.copyFunctionsToData ||
+					!$.isFunction(obj[name])) &&
 				!NONE_NODE_DATA_MAP[name]
 			) {
 				// node.data.NAME = obj.NAME
@@ -535,7 +536,7 @@
 		if (this.key == null) {
 			// test for null OR undefined
 			if (this.tree.options.defaultKey) {
-				this.key = this.tree.options.defaultKey(this);
+				this.key = "" + this.tree.options.defaultKey(this);
 				_assert(this.key, "defaultKey() must return a unique key");
 			} else {
 				this.key = "_" + FT._nextNodeKey++;
@@ -3419,6 +3420,7 @@
 			// Not found in the DOM, but still may be in an unrendered part of tree
 			searchRoot = searchRoot || this.rootNode;
 			match = null;
+			key = "" + key; // Convert to string (#1005)
 			searchRoot.visit(function(node) {
 				if (node.key === key) {
 					match = node;
@@ -6262,20 +6264,16 @@
 				autoScroll: false,
 				checkbox: false,
 				clickFolderMode: 4,
+				copyFunctionsToData: false,
 				debugLevel: null, // 0..4 (null: use global setting $.ui.fancytree.debugLevel)
 				disabled: false, // TODO: required anymore?
 				enableAspx: 42, // TODO: this is truethy, but distinguishable from true: default will change to false in the future
 				escapeTitles: false,
 				extensions: [],
-				// fx: { height: "toggle", duration: 200 },
-				// toggleEffect: { effect: "drop", options: {direction: "left"}, duration: 200 },
-				// toggleEffect: { effect: "slide", options: {direction: "up"}, duration: 200 },
-				//toggleEffect: { effect: "blind", options: {direction: "vertical", scale: "box"}, duration: 200 },
-				toggleEffect: { effect: "slideToggle", duration: 200 }, //< "toggle" or "slideToggle" to use jQuery instead of jQueryUI for toggleEffect animation
+				focusOnSelect: false,
 				generateIds: false,
 				icon: true,
 				idPrefix: "ft_",
-				focusOnSelect: false,
 				keyboard: true,
 				keyPathSeparator: "/",
 				minExpandLevel: 1,
@@ -6293,29 +6291,29 @@
 				},
 				tabindex: "0",
 				titlesTabbable: false,
+				toggleEffect: { effect: "slideToggle", duration: 200 }, //< "toggle" or "slideToggle" to use jQuery instead of jQueryUI for toggleEffect animation
 				tooltip: false,
 				treeId: null,
 				_classNames: {
-					node: "fancytree-node",
-					folder: "fancytree-folder",
+					active: "fancytree-active",
 					animating: "fancytree-animating",
 					combinedExpanderPrefix: "fancytree-exp-",
 					combinedIconPrefix: "fancytree-ico-",
-					hasChildren: "fancytree-has-children",
-					active: "fancytree-active",
-					selected: "fancytree-selected",
+					error: "fancytree-error",
 					expanded: "fancytree-expanded",
-					lazy: "fancytree-lazy",
 					focused: "fancytree-focused",
+					folder: "fancytree-folder",
+					hasChildren: "fancytree-has-children",
+					lastsib: "fancytree-lastsib",
+					lazy: "fancytree-lazy",
+					loading: "fancytree-loading",
+					node: "fancytree-node",
 					partload: "fancytree-partload",
 					partsel: "fancytree-partsel",
 					radio: "fancytree-radio",
-					// radiogroup: "fancytree-radiogroup",
-					unselectable: "fancytree-unselectable",
-					lastsib: "fancytree-lastsib",
-					loading: "fancytree-loading",
-					error: "fancytree-error",
+					selected: "fancytree-selected",
 					statusNodePrefix: "fancytree-statusnode-",
+					unselectable: "fancytree-unselectable",
 				},
 				// events
 				lazyLoad: null,
@@ -6701,7 +6699,7 @@
 		{
 			/** Version number `"MAJOR.MINOR.PATCH"`
 			 * @type {string} */
-			version: "2.35.0", // Set to semver by 'grunt release'
+			version: "2.36.0", // Set to semver by 'grunt release'
 			/** @type {string}
 			 * @description `"production" for release builds` */
 			buildType: "production", // Set to 'production' by 'grunt build'
