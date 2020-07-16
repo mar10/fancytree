@@ -4405,6 +4405,9 @@
 										dataType: source.dataType,
 									}
 								);
+								if (res.error) {
+									tree.warn("postProcess returned error:", res);
+								}
 							} catch (e) {
 								res = {
 									error: e,
