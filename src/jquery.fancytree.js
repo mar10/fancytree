@@ -4406,7 +4406,10 @@
 									}
 								);
 								if (res.error) {
-									tree.warn("postProcess returned error:", res);
+									tree.warn(
+										"postProcess returned error:",
+										res
+									);
 								}
 							} catch (e) {
 								res = {
