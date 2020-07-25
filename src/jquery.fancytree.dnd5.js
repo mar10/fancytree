@@ -1033,7 +1033,8 @@
 			autoExpandMS: 1500, // Expand nodes after n milliseconds of hovering
 			dropMarkerInsertOffsetX: -16, // Additional offset for drop-marker with hitMode = "before"/"after"
 			dropMarkerOffsetX: -24, // Absolute position offset for .fancytree-drop-marker relatively to ..fancytree-title (icon/img near a node accepting drop)
-			dropMarkerParent: document.body, // Root Container used for drop marker (could be a shadow root)
+			// #1021 `document.body` is not available yet
+			dropMarkerParent: "body", // Root Container used for drop marker (could be a shadow root)
 			multiSource: false, // true: Drag multiple (i.e. selected) nodes. Also a callback() is allowed
 			effectAllowed: "all", // Restrict the possible cursor shapes and modifier operations (can also be set in the dragStart event)
 			// dropEffect: "auto", // 'copy'|'link'|'move'|'auto'(calculate from `effectAllowed`+modifier keys) or callback(node, data) that returns such string.

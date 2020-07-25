@@ -1,4 +1,7 @@
-# 2.36.1 / Unreleased
+# 2.36.2 / Unreleased
+
+# 2.36.1 / 2020-07-25
+  * [Fixed] #1021 ext-dnd5 Regression in drop marker
 
 # 2.36.0 / 2020-07-15
   * [Changed] #1005 Cast key to string in getNodeByKey()
