@@ -35,37 +35,48 @@
 	 * Private functions and variables
 	 */
 	var cookieStore = null,
-		localStorageStore = window.localStorage
-			? {
-					get: function(key) {
-						return window.localStorage.getItem(key);
-					},
-					set: function(key, value) {
-						window.localStorage.setItem(key, value);
-					},
-					remove: function(key) {
-						window.localStorage.removeItem(key);
-					},
-			  }
-			: null,
-		sessionStorageStore = window.sessionStorage
-			? {
-					get: function(key) {
-						return window.sessionStorage.getItem(key);
-					},
-					set: function(key, value) {
-						window.sessionStorage.setItem(key, value);
-					},
-					remove: function(key) {
-						window.sessionStorage.removeItem(key);
-					},
-			  }
-			: null,
+		localStorageStore = null,
+		sessionStorageStore = null,
 		_assert = $.ui.fancytree.assert,
 		ACTIVE = "active",
 		EXPANDED = "expanded",
 		FOCUS = "focus",
 		SELECTED = "selected";
+
+	// Accessing window.xxxStorage may raise security exceptions (see #1022)
+	try {
+		_assert(window.localStorage && window.localStorage.getItem);
+		localStorageStore = {
+			get: function(key) {
+				return window.localStorage.getItem(key);
+			},
+			set: function(key, value) {
+				window.localStorage.setItem(key, value);
+			},
+			remove: function(key) {
+				window.localStorage.removeItem(key);
+			},
+		};
+	} catch (e) {
+		$.ui.fancytree.warn("Could not access window.localStorage", e);
+	}
+
+	try {
+		_assert(window.sessionStorage && window.sessionStorage.getItem);
+		sessionStorageStore = {
+			get: function(key) {
+				return window.sessionStorage.getItem(key);
+			},
+			set: function(key, value) {
+				window.sessionStorage.setItem(key, value);
+			},
+			remove: function(key) {
+				window.sessionStorage.removeItem(key);
+			},
+		};
+	} catch (e) {
+		$.ui.fancytree.warn("Could not access window.sessionStorage", e);
+	}
 
 	if (typeof Cookies === "function") {
 		// Assume https://github.com/js-cookie/js-cookie

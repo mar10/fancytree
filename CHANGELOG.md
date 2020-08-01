@@ -1,7 +1,8 @@
 # 2.36.2 / Unreleased
+  * [Fixed] #1022 ext-persist: Handle 'Access is denied for this document'
 
 # 2.36.1 / 2020-07-25
-  * [Fixed] #1021 ext-dnd5 Regression in drop marker
+  * [Fixed] #1021 ext-dnd5 Regression (#1012) in drop marker
 
 # 2.36.0 / 2020-07-15
   * [Changed] #1005 Cast key to string in getNodeByKey()
