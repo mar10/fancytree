@@ -1,6 +1,7 @@
 # 2.36.2 / Unreleased
   * [Fixed] #1022 ext-persist: Handle 'Access is denied for this document'
-
+  * [Fixed] #1028 Uncaught TypeError: apply is not a function (regression of #1019)
+ 
 # 2.36.1 / 2020-07-25
   * [Fixed] #1021 ext-dnd5 Regression (#1012) in drop marker
 
