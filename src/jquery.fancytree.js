@@ -5390,6 +5390,13 @@
 
 				// node.debug("nodeSetExpanded(" + flag + ")");
 
+				if ($(node.li).hasClass(opts._classNames.animating)) {
+					node.warn(
+						"setExpanded(" + flag + ") while animating: ignored."
+					);
+					return _getRejectedPromise(node, ["recursion"]);
+				}
+
 				if ((node.expanded && flag) || (!node.expanded && !flag)) {
 					// Nothing to do
 					// node.debug("nodeSetExpanded(" + flag + "): nothing to do");
