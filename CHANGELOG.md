@@ -1,4 +1,8 @@
 # 2.36.2 / Unreleased
+  * [Changed] #1025 ext-dnd5: changed behavior when `dndOpts.multiSource` is
+    true. Now dragging an unselected node will only drag that single node (while
+    keeping the other nodes selected). You have to drag one of the *selected*
+    nodes in order to drag the whole group.
   * [Fixed] #1022 ext-persist: Handle 'Access is denied for this document'
   * [Fixed] #1028 Uncaught TypeError: apply is not a function (regression of #1019)
   * [Fixed] #1029 Fast expand/collapse of folder leads to inconsistent state

@@ -584,9 +584,10 @@
 				if (dndOpts.multiSource === false) {
 					SOURCE_NODE_LIST = [node];
 				} else if (dndOpts.multiSource === true) {
-					SOURCE_NODE_LIST = tree.getSelectedNodes();
-					if (!node.isSelected()) {
-						SOURCE_NODE_LIST.unshift(node);
+					if (node.isSelected()) {
+						SOURCE_NODE_LIST = tree.getSelectedNodes();
+					} else {
+						SOURCE_NODE_LIST = [node];
 					}
 				} else {
 					SOURCE_NODE_LIST = dndOpts.multiSource(node, data);
