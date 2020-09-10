@@ -535,6 +535,16 @@ ul.fancytree-container ul {
   padding: 0.3em 0 0 1em;
   margin: 0;
 }
+.fancytree-expander,
+.fancytree-checkbox,
+.fancytree-icon {
+  min-width: 10pt;
+  text-align: center;
+}
+svg.fancytree-checkbox,
+svg.fancytree-icon {
+  padding-left: 3px;
+}
 /*******************************************************************************
  * Node titles
  */
