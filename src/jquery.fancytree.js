@@ -6517,7 +6517,7 @@
 								// #789: IE 11 may send focusin before mousdown(?)
 								node = tree._getExpiringValue("mouseDownNode");
 								if (node) {
-									tree.debug(
+									node.debug(
 										"Reconstruct mouse target for focusin from recent event."
 									);
 								}
@@ -6591,7 +6591,7 @@
 					})
 					.on("mousedown" + ns, function(event) {
 						var et = FT.getEventTarget(event);
-						// self.tree.debug("event(" + event.type + "): node: ", et.node);
+						// self.tree.debug("event(" + event.type + "): node: ", et.node, et);
 						// #712: Store the clicked node, so we can use it when we get a focusin event
 						//       ('click' event fires after focusin)
 						// tree.debug("event(" + event.type + "): node: ", et.node);
@@ -6613,7 +6613,7 @@
 							tree = self.tree,
 							prevPhase = tree.phase;
 
-						// self.tree.debug("event(" + event.type + "): node: ", node);
+						// self.tree.debug("event(" + event.type + "): node: ", node, et);
 						if (!node) {
 							return true; // Allow bubbling of other events
 						}

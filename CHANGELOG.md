@@ -4,6 +4,8 @@
     * Improved padding and alignment for skin-awesome icons
     * Allow to pass a callback() as `glyph.map<TYPE>` option
     * Update Fontwesome demos to v5.0.13
+    * #1033 When tree has no focus and SVG is used, the first click on expander
+      or checkbox is ignored
   * [Changed] #1025 ext-dnd5: changed behavior when `dndOpts.multiSource` is
     true. Now dragging an unselected node will only drag that single node (while
     keeping the other nodes selected). You have to drag one of the *selected*

@@ -177,7 +177,7 @@
 		if ($.isFunction(icon)) {
 			icon = icon.call(this, node, span, type);
 		}
-		// node.debug( "setIcon(" + baseClass + ", " + type + "): " + "oldIcon" + " -> " + icon );
+		// node.debug("setIcon(" + baseClass + ", " + type + "): " + "oldIcon" + " -> " + icon);
 		// #871: propsed this, but I am not sure how robust this is, e.g.
 		// the prefix (fas, far) class changes are not considered?
 		// if (span.tagName === "svg" && opts.preset === "awesome5") {
@@ -217,6 +217,7 @@
 		options: {
 			preset: null, // 'awesome3', 'awesome4', 'bootstrap3', 'material'
 			map: {},
+			fixFirstSvgClick: true,
 		},
 
 		treeInit: function(ctx) {
@@ -233,7 +234,55 @@
 				tree.warn("ext-glyph: missing `preset` option.");
 			}
 			this._superApply(arguments);
+
 			tree.$container.addClass("fancytree-ext-glyph");
+
+			// #1033: Fancytree does not get a 'click' event, if the container
+			// did not have the focus yet and the user clicked an SVG element
+			// (expander, checkbox, icon)
+			if (opts.fixFirstSvgClick) {
+				tree.$container.on("mousedown", function(event) {
+					var newSvg,
+						newEvent,
+						et = FT.getEventTarget(event),
+						node = et.node,
+						nodeName = event.target.nodeName;
+
+					node.info(" click event (issue #1033)", event, et);
+					if (
+						!tree.hasFocus() &&
+						(nodeName === "svg" || nodeName === "path") &&
+						(et.type === "checkbox" || et.type === "expander")
+					) {
+						newSvg = node.span.querySelector(
+							".fancytree-" + et.type
+						);
+						newEvent = new Event("click", {
+							bubbles: true,
+							cancelable: true,
+							composed: true,
+						});
+						setTimeout(function() {
+							node.info(
+								"Trigger click event... (issue #1033)",
+								newEvent,
+								newSvg
+							);
+							// tree._callHook("nodeClick", ctx);
+							// newSvg.dispatchEvent(newEvent);
+							if (
+								tree._triggerNodeEvent(
+									"click",
+									ctx,
+									newEvent
+								) !== false
+							) {
+								tree._callHook("nodeClick", ctx);
+							}
+						}, 1000);
+					}
+				});
+			}
 		},
 		nodeRenderStatus: function(ctx) {
 			var checkbox,
