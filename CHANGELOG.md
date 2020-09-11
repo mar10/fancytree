@@ -1,4 +1,6 @@
-# 2.37.0 / Unreleased
+# 2.37.1-0 / Unreleased
+
+# 2.37.0 / 2020-09-11
   * [Changed] #871, #1032 ext-glyph:
     * Support for SVG tags as used by fontawesome 5 with `all.js` library
     * Improved padding and alignment for skin-awesome icons
