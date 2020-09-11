@@ -54,6 +54,19 @@ ul.fancytree-container ul
 	margin: 0;
 }
 
+
+// The standard CSS assumes span.icon, but Fontawesome may use SVG or SPAN
+.fancytree-expander,
+.fancytree-checkbox,
+.fancytree-icon {
+  min-width: @fancy-icon-width;
+  text-align: center;
+}
+svg.fancytree-checkbox,  // span... is already defined in skin-common-less
+svg.fancytree-icon {
+  padding-left: @fancy-icon-spacing;
+}
+
 /*******************************************************************************
  * Node titles
  */
@@ -68,9 +81,9 @@ span.fancytree-focused span.fancytree-title {
 span.fancytree-active span.fancytree-title {
 	background-color: #D4D4D4; // gray
 }
-span.fancytree-selected span.fancytree-title {
-	// font-style: italic;
-}
+// span.fancytree-selected span.fancytree-title {
+// 	font-style: italic;
+// }
 // .fancytree-treefocus span.fancytree-selected span.fancytree-title,
 .fancytree-treefocus span.fancytree-active span.fancytree-title {
 	color: white;

@@ -12,8 +12,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.36.1
- * @date 2020-07-25T09:03:47Z
+ * @version 2.37.0
+ * @date 2020-09-11T18:58:08Z
  */
 
 (function(factory) {
@@ -286,7 +286,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "ariagrid",
-		version: "2.36.1",
+		version: "2.37.0",
 		// Default options for this extension.
 		options: {
 			// Internal behavior flags

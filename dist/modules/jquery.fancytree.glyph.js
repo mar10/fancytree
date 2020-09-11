@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.36.1
- * @date 2020-07-25T09:03:47Z
+ * @version 2.37.0
+ * @date 2020-09-11T18:58:08Z
  */
 
 (function(factory) {
@@ -166,13 +166,32 @@
 			},
 		};
 
-	function setIcon(span, baseClass, opts, type) {
+	function setIcon(node, span, baseClass, opts, type) {
 		var map = opts.map,
 			icon = map[type],
 			$span = $(span),
 			$counter = $span.find(".fancytree-childcounter"),
 			setClass = baseClass + " " + (map._addClass || "");
 
+		// #871 Allow a callback
+		if ($.isFunction(icon)) {
+			icon = icon.call(this, node, span, type);
+		}
+		// node.debug( "setIcon(" + baseClass + ", " + type + "): " + "oldIcon" + " -> " + icon );
+		// #871: propsed this, but I am not sure how robust this is, e.g.
+		// the prefix (fas, far) class changes are not considered?
+		// if (span.tagName === "svg" && opts.preset === "awesome5") {
+		// 	// fa5 script converts <i> to <svg> so call a specific handler.
+		// 	var oldIcon = "fa-" + $span.data("icon");
+		// 	// node.debug( "setIcon(" + baseClass + ", " + type + "): " + oldIcon + " -> " + icon );
+		// 	if (typeof oldIcon === "string") {
+		// 		$span.removeClass(oldIcon);
+		// 	}
+		// 	if (typeof icon === "string") {
+		// 		$span.addClass(icon);
+		// 	}
+		// 	return;
+		// }
 		if (typeof icon === "string") {
 			// #883: remove inner html that may be added by prev. mode
 			span.innerHTML = "";
@@ -193,7 +212,7 @@
 
 	$.ui.fancytree.registerExtension({
 		name: "glyph",
-		version: "2.36.1",
+		version: "2.37.0",
 		// Default options for this extension.
 		options: {
 			preset: null, // 'awesome3', 'awesome4', 'bootstrap3', 'material'
@@ -230,7 +249,7 @@
 			if (node.isRootNode()) {
 				return res;
 			}
-			span = $span.children("span.fancytree-expander").get(0);
+			span = $span.children(".fancytree-expander").get(0);
 			if (span) {
 				// if( node.isLoading() ){
 				// icon = "loading";
@@ -244,15 +263,15 @@
 					icon = "noExpander";
 				}
 				// span.className = "fancytree-expander " + map[icon];
-				setIcon(span, "fancytree-expander", opts, icon);
+				setIcon(node, span, "fancytree-expander", opts, icon);
 			}
 
 			if (node.tr) {
 				span = $("td", node.tr)
-					.find("span.fancytree-checkbox")
+					.find(".fancytree-checkbox")
 					.get(0);
 			} else {
-				span = $span.children("span.fancytree-checkbox").get(0);
+				span = $span.children(".fancytree-checkbox").get(0);
 			}
 			if (span) {
 				checkbox = FT.evalOption("checkbox", node, node, opts, false);
@@ -262,6 +281,7 @@
 				) {
 					icon = node.selected ? "radioSelected" : "radio";
 					setIcon(
+						node,
 						span,
 						"fancytree-checkbox fancytree-radio",
 						opts,
@@ -275,13 +295,13 @@
 						? "checkboxUnknown"
 						: "checkbox";
 					// span.className = "fancytree-checkbox " + map[icon];
-					setIcon(span, "fancytree-checkbox", opts, icon);
+					setIcon(node, span, "fancytree-checkbox", opts, icon);
 				}
 			}
 
 			// Standard icon (note that this does not match .fancytree-custom-icon,
 			// that might be set by opts.icon callbacks)
-			span = $span.children("span.fancytree-icon").get(0);
+			span = $span.children(".fancytree-icon").get(0);
 			if (span) {
 				if (node.statusNodeType) {
 					icon = node.statusNodeType; // loading, error
@@ -293,7 +313,7 @@
 				} else {
 					icon = node.expanded ? "docOpen" : "doc";
 				}
-				setIcon(span, "fancytree-icon", opts, icon);
+				setIcon(node, span, "fancytree-icon", opts, icon);
 			}
 			return res;
 		},
@@ -311,9 +331,9 @@
 				status === "nodata"
 			) {
 				if (node.parent) {
-					span = $("span.fancytree-expander", node.span).get(0);
+					span = $(".fancytree-expander", node.span).get(0);
 					if (span) {
-						setIcon(span, "fancytree-expander", opts, status);
+						setIcon(node, span, "fancytree-expander", opts, status);
 					}
 				} else {
 					//
@@ -321,10 +341,10 @@
 						".fancytree-statusnode-" + status,
 						node[this.nodeContainerAttrName]
 					)
-						.find("span.fancytree-icon")
+						.find(".fancytree-icon")
 						.get(0);
 					if (span) {
-						setIcon(span, "fancytree-icon", opts, status);
+						setIcon(node, span, "fancytree-icon", opts, status);
 					}
 				}
 			}

@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.36.1
- * @date 2020-07-25T09:03:47Z
+ * @version 2.37.0
+ * @date 2020-09-11T18:58:08Z
  */
 
 (function(factory) {
@@ -217,7 +217,7 @@
 		}
 
 		// Set keyboard focus, even if setFocus() claims 'nothing to do'
-		$(tree.$container).focus({ preventScroll: true });
+		tree.$container.get(0).focus({ preventScroll: true });
 		eventData.input = null;
 		instOpts.close.call(node, { type: "close" }, eventData);
 		return true;
@@ -302,7 +302,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "edit",
-		version: "2.36.1",
+		version: "2.37.0",
 		// Default options for this extension.
 		options: {
 			adjustWidthOfs: 4, // null: don't adjust input size to content

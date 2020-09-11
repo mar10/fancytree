@@ -13,8 +13,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.36.1
- * @date 2020-07-25T09:03:47Z
+ * @version 2.37.0
+ * @date 2020-09-11T18:58:08Z
 ******************************************************************************/
 /*------------------------------------------------------------------------------
  * Helpers
@@ -534,6 +534,16 @@ ul.fancytree-ext-wide span.fancytree-node span.fancytree-title {
 ul.fancytree-container ul {
   padding: 0.3em 0 0 1em;
   margin: 0;
+}
+.fancytree-expander,
+.fancytree-checkbox,
+.fancytree-icon {
+  min-width: 10pt;
+  text-align: center;
+}
+svg.fancytree-checkbox,
+svg.fancytree-icon {
+  padding-left: 3px;
 }
 /*******************************************************************************
  * Node titles

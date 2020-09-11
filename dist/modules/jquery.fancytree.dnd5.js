@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.36.1
- * @date 2020-07-25T09:03:47Z
+ * @version 2.37.0
+ * @date 2020-09-11T18:58:08Z
  */
 
 /*
@@ -584,9 +584,10 @@
 				if (dndOpts.multiSource === false) {
 					SOURCE_NODE_LIST = [node];
 				} else if (dndOpts.multiSource === true) {
-					SOURCE_NODE_LIST = tree.getSelectedNodes();
-					if (!node.isSelected()) {
-						SOURCE_NODE_LIST.unshift(node);
+					if (node.isSelected()) {
+						SOURCE_NODE_LIST = tree.getSelectedNodes();
+					} else {
+						SOURCE_NODE_LIST = [node];
 					}
 				} else {
 					SOURCE_NODE_LIST = dndOpts.multiSource(node, data);
@@ -1027,7 +1028,7 @@
 
 	$.ui.fancytree.registerExtension({
 		name: "dnd5",
-		version: "2.36.1",
+		version: "2.37.0",
 		// Default options for this extension.
 		options: {
 			autoExpandMS: 1500, // Expand nodes after n milliseconds of hovering

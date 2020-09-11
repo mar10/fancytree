@@ -7,8 +7,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.36.1
- * @date 2020-07-25T09:03:47Z
+ * @version 2.37.0
+ * @date 2020-09-11T18:58:08Z
  */
 
 /** Core Fancytree module.
@@ -5390,6 +5390,13 @@
 
 				// node.debug("nodeSetExpanded(" + flag + ")");
 
+				if ($(node.li).hasClass(opts._classNames.animating)) {
+					node.warn(
+						"setExpanded(" + flag + ") while animating: ignored."
+					);
+					return _getRejectedPromise(node, ["recursion"]);
+				}
+
 				if ((node.expanded && flag) || (!node.expanded && !flag)) {
 					// Nothing to do
 					// node.debug("nodeSetExpanded(" + flag + "): nothing to do");
@@ -6705,7 +6712,7 @@
 		{
 			/** Version number `"MAJOR.MINOR.PATCH"`
 			 * @type {string} */
-			version: "2.36.1", // Set to semver by 'grunt release'
+			version: "2.37.0", // Set to semver by 'grunt release'
 			/** @type {string}
 			 * @description `"production" for release builds` */
 			buildType: "production", // Set to 'production' by 'grunt build'
