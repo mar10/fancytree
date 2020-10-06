@@ -172,8 +172,16 @@
 		// TODO: see qunit.js extractStacktrace()
 		if (!cond) {
 			msg = msg ? ": " + msg : "";
+			msg = "Fancytree assertion failed" + msg;
+
 			// consoleApply("assert", [!!cond, msg]);
-			$.error("Fancytree assertion failed" + msg);
+
+			// #1041: Raised exceptions may not be visible in the browser
+			// console if inside promise chains, so we also print directly:
+			$.ui.fancytree.error(msg);
+
+			// Throw exception:
+			$.error(msg);
 		}
 	}
 

@@ -209,7 +209,7 @@ var TreePatch = {};
  *     thus enabling a tooltip (default: false).<br>
  *     false: No automatic tooltip (but still honor `node.tooltip` attribute)<br>
  *     true:  Use `node.title` as tooltip<br>
- *     function:  A `callback(event, data)<br>
+ *     function:  A `callback(event, data)`<br>
  *     Note: If a node has the `node.tooltip` attribute set, this will take precedence.<br>
  *     See also <a href="https://github.com/mar10/fancytree/wiki#dynamic-options">dynamic options</a>.<br>
  *     Note: If a separate tooltip widget is used, it may be more efficient to use that widget

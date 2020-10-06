@@ -31,12 +31,7 @@
 	/******************************************************************************
 	 * Private functions and variables
 	 */
-	function _assert(cond, msg) {
-		msg = msg || "";
-		if (!cond) {
-			$.error("Assertion failed " + msg);
-		}
-	}
+	var _assert = $.ui.fancytree.assert;
 
 	function insertFirstChild(referenceNode, newNode) {
 		referenceNode.insertBefore(newNode, referenceNode.firstChild);
