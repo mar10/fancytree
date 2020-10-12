@@ -3909,6 +3909,13 @@
 				// visit siblings
 				siblings = parent.children;
 				nextIdx = siblings.indexOf(node) + siblingOfs;
+				_assert(
+					nextIdx >= 0,
+					"Could not find " +
+						node +
+						" in parent's children: " +
+						parent
+				);
 
 				for (i = nextIdx; i < siblings.length; i++) {
 					node = siblings[i];
