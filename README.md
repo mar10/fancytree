@@ -4,6 +4,7 @@
 [![npm](https://img.shields.io/npm/dm/jquery.fancytree.svg)](https://www.npmjs.com/package/jquery.fancytree)
 [![jsDelivr](https://data.jsdelivr.com/v1/package/npm/jquery.fancytree/badge)](https://www.jsdelivr.com/package/npm/jquery.fancytree)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
+[![Released with: grunt-yabs](https://img.shields.io/badge/released%20with-grunt--yabs-yellowgreen)](https://github.com/mar10/grunt-yabs)
 [![StackOverflow: fancytree](https://img.shields.io/badge/StackOverflow-fancytree-blue.svg)](https://stackoverflow.com/questions/tagged/fancytree)
 
 <!--
