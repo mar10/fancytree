@@ -377,21 +377,21 @@
 
 		nodeRender: function(ctx, force, deep, collapsed, _recursive) {
 			var res = this._superApply(arguments),
-				node = ctx.node,
-				isRootNode = !node.parent;
+				isRootNode = !ctx.node.parent;
 
-			if (!isRootNode) {
-				var $trLeft = $(node.tr),
+			if (!isRootNode && this.$fixedWrapper) {
+				var node = ctx.node,
+					$trLeft = $(node.tr),
 					fcn = this.options.fixed.classNames,
 					$trRight = $trLeft.data(fcn.counterpart);
 
 				if (!$trRight && $trLeft.length) {
 					var idx = $trLeft.index(),
 						fixedColCount = this.options.fixed.fixCols,
-						$blTableBody = $(
+						$blTableBody = this.$fixedWrapper.find(
 							"div." + fcn.bottomLeft + " table tbody"
 						),
-						$brTableBody = $(
+						$brTableBody = this.$fixedWrapper.find(
 							"div." + fcn.bottomRight + " table tbody"
 						),
 						$prevLeftNode = $blTableBody
