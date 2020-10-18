@@ -54,7 +54,7 @@ table#tabletree td{
 
 <script>
 	// Beacon the results to Browserscope.
-	// See: http://www.browserscope.org/user/tests/howto
+	// See: https://www.browserscope.org/user/tests/howto
 	/*global QUnit */
 	var _bTestResults = {},
 		_testKey = "ahBzfnVhLXByb2ZpbGVyLWhychELEgRUZXN0GICAkNDcrYwJDA";
@@ -93,7 +93,7 @@ table#tabletree td{
 			var newScript = document.createElement( "script" ),
 				firstScript = document.getElementsByTagName( "script" )[ 0 ];
 
-			newScript.src = "http://www.browserscope.org/user/beacon/" + _testKey + "?callback=showResults";
+			newScript.src = "https://www.browserscope.org/user/beacon/" + _testKey + "?callback=showResults";
 			// Set this to prevent throtteling
 			// newScript.src += "&sandboxid=f87fe779e9a4375";
 			// // newScript.src += "?test_results_var=YOUR-VAR-NAME2;
@@ -106,7 +106,7 @@ table#tabletree td{
 	function showResults() {
 		var script = document.createElement( "script" );
 
-		script.src = "http://www.browserscope.org/user/tests/table/" + _testKey + "?o=js";
+		script.src = "https://www.browserscope.org/user/tests/table/" + _testKey + "?o=js";
 
 		// window.console.log( "showResults", arguments );
 		document.body.appendChild( script );
