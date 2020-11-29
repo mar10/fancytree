@@ -258,6 +258,25 @@
 	};
 
 	/**
+	 * [ext-filter] Re-apply current filter.
+	 *
+	 * @returns {integer} count
+	 * @alias Fancytree#updateFilter
+	 * @requires jquery.fancytree.filter.js
+	 */
+	$.ui.fancytree._FancytreeClass.prototype.updateFilter = function() {
+		if (
+			this.enableFilter &&
+			this.lastFilterArgs &&
+			this.options.filter.autoApply
+		) {
+			this._applyFilterImpl.apply(this, this.lastFilterArgs);
+		} else {
+			this.warn("updateFilter(): no filter active.");
+		}
+	};
+
+	/**
 	 * [ext-filter] Reset the filter.
 	 *
 	 * @alias Fancytree#clearFilter

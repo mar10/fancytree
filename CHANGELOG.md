@@ -1,5 +1,6 @@
 # 2.37.1-0 / Unreleased
   * [Added] #1041 Make assertions more debuggable
+  * [Added] #1054 ext-filter tree.updateFilter()
 
 # 2.37.0 / 2020-09-11
   * [Changed] #871, #1032 ext-glyph:
