@@ -263,6 +263,7 @@
 	 * @returns {integer} count
 	 * @alias Fancytree#updateFilter
 	 * @requires jquery.fancytree.filter.js
+	 * @since 2.38
 	 */
 	$.ui.fancytree._FancytreeClass.prototype.updateFilter = function() {
 		if (
