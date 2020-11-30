@@ -608,7 +608,7 @@
 				// data store list of items representing dragged data can be
 				// enumerated, but the data itself is unavailable and no new
 				// data can be added.
-				var nodeData = node.toDict();
+				var nodeData = node.toDict(true, dndOpts.sourceCopyHook);
 				nodeData.treeId = node.tree._id;
 				json = JSON.stringify(nodeData);
 				try {
@@ -1050,6 +1050,7 @@
 			scrollSensitivity: 20, // Active top/bottom margin in pixel
 			scrollSpeed: 5, // Pixel per event
 			setTextTypeJson: false, // Allow dragging of nodes to different IE windows
+			sourceCopyHook: null, // Optional callback passed to `toDict` on dragStart @since 2.38
 			// Events (drag support)
 			dragStart: null, // Callback(sourceNode, data), return true, to enable dnd drag
 			dragDrag: $.noop, // Callback(sourceNode, data)
