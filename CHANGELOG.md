@@ -3,6 +3,7 @@
   * [Added] #1053 ext-dnd5 new option `dnd5.sourceCopyHook` (optional callback
     passed to `toDict` on dragStart)
   * [Added] #1054 ext-filter tree.updateFilter()
+  * [Fixed] #1045 re-init exception (grid-ext)
 
 # 2.37.0 / 2020-09-11
   * [Changed] #871, #1032 ext-glyph:

@@ -993,6 +993,7 @@
 		},
 		treeDestroy: function(ctx) {
 			this.$container.find("tbody").empty();
+			this.$container.off("wheel");
 			if (this.$source) {
 				this.$source.removeClass("fancytree-helper-hidden");
 			}
