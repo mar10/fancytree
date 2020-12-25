@@ -51,22 +51,24 @@
 
 	/**
 	 * @description Marks the matching charecters of `text` either by `mark` or
-	 * by exotic*Chars based on the * `regexMatchArray` which is
-	 * an array of matching groups.
+	 * by exotic*Chars (if `escapeTitles` is `true`) based on `regexMatchArray`
+	 * which is an array of matching groups.
 	 * @param {string} text
 	 * @param {RegExpMatchArray} regexMatchArray
 	 */
 	function _markFuzzyMatchedChars(text, regexMatchArray, escapeTitles) {
-		// It is extremely infuriating that we can not use `let` or `const` or arroe functions
+		// It is extremely infuriating that we can not use `let` or `const` or arrow functions.
 		// Damn you IE!!!
 		var matchingIndices = [];
 		// get the indices of matched characters (Iterate through `RegExpMatchArray`)
 		for (
 			var _matchingArrIdx = 1;
-			_matchingArrIdx <= regexMatchArray.length - 1;
+			_matchingArrIdx < regexMatchArray.length;
 			_matchingArrIdx++
 		) {
 			var _mIdx =
+				// get matching char index by cumulatively adding
+				// the matched group length
 				regexMatchArray[_matchingArrIdx].length +
 				(_matchingArrIdx === 1 ? 0 : 1) +
 				(matchingIndices[matchingIndices.length - 1] || 0);
@@ -74,12 +76,13 @@
 		}
 		// Map each `text` char to its position and store in `textPoses`.
 		var textPoses = text.split("");
-		// Wrap the matching indices chars with `mark`.
 		if (escapeTitles) {
+			// If escaping the title, then wrap the matchng char within exotic chars
 			matchingIndices.forEach(function(v) {
 				textPoses[v] = exoticStartChar + textPoses[v] + exoticEndChar;
 			});
 		} else {
+			// Otherwise, Wrap the matching chars within `mark`.
 			matchingIndices.forEach(function(v) {
 				textPoses[v] = "<mark>" + textPoses[v] + "</mark>";
 			});
