@@ -33,8 +33,9 @@
 	 */
 
 	var KeyNoData = "__not_found__",
-		escapeHtml = $.ui.fancytree.escapeHtml;
-
+		escapeHtml = $.ui.fancytree.escapeHtml,
+		exoticStartChar = "\uFFF7",
+		exoticEndChar = "\uFFF8";
 	function _escapeRegex(str) {
 		return (str + "").replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
 	}
@@ -48,6 +49,44 @@
 		return s;
 	}
 
+	/**
+	 * @description Marks the matching charecters of `text` either by `mark` or
+	 * by exotic*Chars based on the * `regexMatchArray` which is
+	 * an array of matching groups.
+	 * @param {string} text
+	 * @param {RegExpMatchArray} regexMatchArray
+	 */
+	function _markFuzzyMatchedChars(text, regexMatchArray, escapeTitles) {
+		// It is extremely infuriating that we can not use `let` or `const` or arroe functions
+		// Damn you IE!!!
+		var matchingIndices = [];
+		// get the indices of matched characters (Iterate through `RegExpMatchArray`)
+		for (
+			var _matchingArrIdx = 1;
+			_matchingArrIdx <= regexMatchArray.length - 1;
+			_matchingArrIdx++
+		) {
+			var _mIdx =
+				regexMatchArray[_matchingArrIdx].length +
+				(_matchingArrIdx === 1 ? 0 : 1) +
+				(matchingIndices[matchingIndices.length - 1] || 0);
+			matchingIndices.push(_mIdx);
+		}
+		// Map each `text` char to its position and store in `textPoses`.
+		var textPoses = text.split("");
+		// Wrap the matching indices chars with `mark`.
+		if (escapeTitles) {
+			matchingIndices.forEach(function(v) {
+				textPoses[v] = exoticStartChar + textPoses[v] + exoticEndChar;
+			});
+		} else {
+			matchingIndices.forEach(function(v) {
+				textPoses[v] = "<mark>" + textPoses[v] + "</mark>";
+			});
+		}
+		// Join back the modified `textPoses` to create final highlight markup.
+		return textPoses.join("");
+	}
 	$.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(
 		filter,
 		branchMode,
@@ -87,12 +126,14 @@
 					// escape each character after splitting
 					.map(_escapeRegex)
 					.reduce(function(a, b) {
-						return a + "[^" + b + "]*" + b;
+						// create capture groups for parts that comes before
+						// the character
+						return a + "([^" + b + "]*)" + b;
 					}, "");
 			} else {
 				match = _escapeRegex(filter); // make sure a '.' is treated literally
 			}
-			re = new RegExp(".*" + match + ".*", "i");
+			re = new RegExp(match, "i");
 			reHighlight = new RegExp(_escapeRegex(filter), "gi");
 			filter = function(node) {
 				if (!node.title) {
@@ -101,31 +142,52 @@
 				var text = escapeTitles
 						? node.title
 						: extractHtmlText(node.title),
-					res = !!re.test(text);
-
+					// `.match` instead of `.test` to get the capture groups
+					res = text.match(re);
 				if (res && opts.highlight) {
 					if (escapeTitles) {
-						// #740: we must not apply the marks to escaped entity names, e.g. `&quot;`
-						// Use some exotic characters to mark matches:
-						temp = text.replace(reHighlight, function(s) {
-							return "\uFFF7" + s + "\uFFF8";
-						});
+						if (opts.fuzzy) {
+							temp = _markFuzzyMatchedChars(
+								text,
+								res,
+								escapeTitles
+							);
+						} else {
+							// #740: we must not apply the marks to escaped entity names, e.g. `&quot;`
+							// Use some exotic characters to mark matches:
+							temp = text.replace(reHighlight, function(s) {
+								return exoticStartChar + s + exoticEndChar;
+							});
+						}
 						// now we can escape the title...
 						node.titleWithHighlight = escapeHtml(temp)
 							// ... and finally insert the desired `<mark>` tags
-							.replace(/\uFFF7/g, "<mark>")
-							.replace(/\uFFF8/g, "</mark>");
+							.replace(
+								new RegExp(_escapeRegex(exoticStartChar), "g"),
+								"<mark>"
+							)
+							.replace(
+								new RegExp(_escapeRegex(exoticEndChar), "g"),
+								"</mark>"
+							);
 					} else {
-						node.titleWithHighlight = text.replace(
-							reHighlight,
-							function(s) {
-								return "<mark>" + s + "</mark>";
-							}
-						);
+						if (opts.fuzzy) {
+							node.titleWithHighlight = _markFuzzyMatchedChars(
+								text,
+								res
+							);
+						} else {
+							node.titleWithHighlight = text.replace(
+								reHighlight,
+								function(s) {
+									return "<mark>" + s + "</mark>";
+								}
+							);
+						}
 					}
 					// node.debug("filter", escapeTitles, text, node.titleWithHighlight);
 				}
-				return res;
+				return !!res;
 			};
 		}
 
