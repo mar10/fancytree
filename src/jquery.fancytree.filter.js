@@ -80,9 +80,15 @@
 				// See https://codereview.stackexchange.com/questions/23899/faster-javascript-fuzzy-string-matching-function/23905#23905
 				// and http://www.quora.com/How-is-the-fuzzy-search-algorithm-in-Sublime-Text-designed
 				// and http://www.dustindiaz.com/autocomplete-fuzzy-matching
-				match = filter.split("").reduce(function(a, b) {
-					return a + "[^" + b + "]*" + b;
-				});
+				match = filter
+					.split("")
+					// Escaping the `filter` will not work because,
+					// it gets further split into individual characters. So,
+					// escape each character after splitting
+					.map(_escapeRegex)
+					.reduce(function(a, b) {
+						return a + "[^" + b + "]*" + b;
+					}, "");
 			} else {
 				match = _escapeRegex(filter); // make sure a '.' is treated literally
 			}
