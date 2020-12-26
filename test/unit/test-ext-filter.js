@@ -42,6 +42,20 @@ function countHighlightedChars(filter, tree) {
 	return count;
 }
 
+function getHighlightedCharsInUppercase(filter, tree) {
+	tree.filterNodes(filter);
+	var nodes = [];
+	tree.getRootNode().visit(function (n) {
+		if (n.isMatched()) {
+			nodes.push(n);
+		}
+	});
+	const str = nodes.reduce(function (str, n) {
+		 return str += $(n.span).find('.fancytree-title mark').text()
+	}, '');
+	return str.toUpperCase();
+}
+
 /*******************************************************************************
  * test data
  */
@@ -214,7 +228,7 @@ QUnit.test("Default options, fuzzy=true", function(assert) {
 	];
 	var done = assert.async();
 
-	assert.expect(12);
+	assert.expect(15);
 	tools.setup(assert);
 
 	$("#tree").fancytree({
@@ -232,15 +246,19 @@ QUnit.test("Default options, fuzzy=true", function(assert) {
 			assert.equal(tree.filterNodes(")"), 4, "')' Highlighted 1 char");
 			assert.equal(tree.filterNodes("[.?*+^$[\\]\\\\(){}|-]"), 1, "'[.?*+^$[\\]\\\\(){}|-]' Fuzzy Matched 1 node");
 			assert.equal(tree.filterNodes("Sub-m2"), 10, "'Sub-m2' Fuzzy matched 10 nodes");
-			assert.equal(tree.filterNodes("Sub-m2"), 10, "'Sub-m2' Fuzzy matched 10 nodes");
 			assert.equal(tree.filterNodes("Sub-item 1."), 8, "'Sub-m2' Fuzzy matched 8 nodes");
 			// test how many chars are highlighted
 			assert.equal(countHighlightedChars("(", tree), 4, "'(' Fuzzy Matched 4 chars");
 			assert.equal(countHighlightedChars(")", tree), 4, "')' Fuzzy Matched 4 chars");
 			assert.equal(countHighlightedChars("[.?*+^$[\\]\\\\(){}|-]", tree), "[.?*+^$[\\]\\\\(){}|-]".length, "'[.?*+^$[\\]\\\\(){}|-]' Fuzzy Matched " + "[.?*+^$[\\]\\\\(){}|-]".length + " chars");
 			assert.equal(countHighlightedChars("Sub-m2", tree), 10 * "Sub-m2".length, "'Sub-m2' Fuzzy matched " + 10 * "Sub-m2".length + " chars");
-			assert.equal(countHighlightedChars("Sub-m2", tree), 10 * "Sub-m2".length, "'Sub-m2' Fuzzy matched " + 10 * "Sub-m2".length + " chars");
-			assert.equal(countHighlightedChars("Sub-item 1.", tree), 8 * "Sub-item 1.".length, "'Sub-m2' Fuzzy matched " + 6 * "Sub-item 1.".length + " nodes");
+			assert.equal(countHighlightedChars("Sub-item 1.", tree), 8 * "Sub-item 1.".length, "'Sub-m2' Fuzzy matched " + 6 * "Sub-item 1.".length + " chars");
+			// Test if the higlighted chars are same as the filter
+			assert.equal(getHighlightedCharsInUppercase("(", tree), "(".repeat(4), "'(' Fuzzy Matched 4 chars");
+			assert.equal(getHighlightedCharsInUppercase(")", tree), ")".repeat(4), "')' Fuzzy Matched 4 chars");
+			assert.equal(getHighlightedCharsInUppercase("[.?*+^$[\\]\\\\(){}|-]", tree), "[.?*+^$[\\]\\\\(){}|-]", "'[.?*+^$[\\]\\\\(){}|-]' Fuzzy Matched " + "[.?*+^$[\\]\\\\(){}|-]".length + " chars");
+			assert.equal(getHighlightedCharsInUppercase("Sub-m2", tree), "Sub-m2".toUpperCase().repeat(10), "'Sub-m2' Fuzzy matched " + 10 * "Sub-m2".length + " chars");
+			assert.equal(getHighlightedCharsInUppercase("Sub-item 1.", tree), "Sub-item 1.".toUpperCase().repeat(8), "'Sub-m2' Fuzzy matched " + 6 * "Sub-item 1." + " chars");
 
 			done();
 		}
@@ -280,7 +298,7 @@ QUnit.test("Default Options, escapeTitle=true, fuzzy=true", function(assert) {
 	];
 	var done = assert.async();
 
-	assert.expect(16);
+	assert.expect(21);
 	tools.setup(assert);
 
 	$("#tree").fancytree({
@@ -299,7 +317,6 @@ QUnit.test("Default Options, escapeTitle=true, fuzzy=true", function(assert) {
 			assert.equal(tree.filterNodes(")"), 4, "')' Highlighted 1 char");
 			assert.equal(tree.filterNodes("[.?*+^$[\\]\\\\(){}|-]"), 1, "'[.?*+^$[\\]\\\\(){}|-]' Fuzzy Matched 1 node");
 			assert.equal(tree.filterNodes("Sub-m2"), 10, "'Sub-m2' Fuzzy matched 10 nodes");
-			assert.equal(tree.filterNodes("Sub-m2"), 10, "'Sub-m2' Fuzzy matched 10 nodes");
 			assert.equal(tree.filterNodes("Sub-item 1."), 8, "'Sub-m2' Fuzzy matched 8 nodes");
 			assert.equal(tree.filterNodes("Esed"), 5, "'Esed' Fuzzy matched 5 nodes");
 			assert.equal(tree.filterNodes(">Esed"), 3, "'Esed' Fuzzy matched 3 nodes");
@@ -309,11 +326,18 @@ QUnit.test("Default Options, escapeTitle=true, fuzzy=true", function(assert) {
 			assert.equal(countHighlightedChars(")", tree), 4, "')' Fuzzy Matched 4 chars");
 			assert.equal(countHighlightedChars("[.?*+^$[\\]\\\\(){}|-]", tree), "[.?*+^$[\\]\\\\(){}|-]".length, "'[.?*+^$[\\]\\\\(){}|-]' Fuzzy Matched " + "[.?*+^$[\\]\\\\(){}|-]".length + " chars");
 			assert.equal(countHighlightedChars("Sub-m2", tree), 10 * "Sub-m2".length, "'Sub-m2' Fuzzy matched " + 10 * "Sub-m2".length + " chars");
-			assert.equal(countHighlightedChars("Sub-m2", tree), 10 * "Sub-m2".length, "'Sub-m2' Fuzzy matched " + 10 * "Sub-m2".length + " chars");
 			assert.equal(countHighlightedChars("Sub-item 1.", tree), 8 * "Sub-item 1.".length, "'Sub-item 1.' Fuzzy matched " + 8 * "Sub-item 1.".length + " chars");
 			assert.equal(countHighlightedChars("Esed", tree), 5 * "Esed".length, "'Esed' Fuzzy matched " + 5 * "Esed".length + " chars");
 			assert.equal(countHighlightedChars(">Esed", tree), 3 * ">Esed".length, "'Esed' Fuzzy matched " + 3 * ">Esed".length + " chars");
 
+			// Test if the matched chars are the same as filter
+			assert.equal(getHighlightedCharsInUppercase("(", tree),"(".repeat(4), "'(' Fuzzy Matched 4 chars");
+			assert.equal(getHighlightedCharsInUppercase(")", tree),")".repeat(4), "')' Fuzzy Matched 4 chars");
+			assert.equal(getHighlightedCharsInUppercase("[.?*+^$[\\]\\\\(){}|-]", tree), "[.?*+^$[\\]\\\\(){}|-]".repeat(1), "'[.?*+^$[\\]\\\\(){}|-]' Fuzzy Matched " + "[.?*+^$[\\]\\\\(){}|-]".repeat(1) + " chars");
+			assert.equal(getHighlightedCharsInUppercase("Sub-m2", tree), "Sub-m2".toUpperCase().repeat(10), "'Sub-m2' Fuzzy matched " + "Sub-m2".repeat(10) + " chars");
+			assert.equal(getHighlightedCharsInUppercase("Sub-item 1.", tree), "Sub-item 1.".toUpperCase().repeat(8), "'Sub-item 1.' Fuzzy matched " + "Sub-item 1.".repeat(8) + " chars");
+			assert.equal(getHighlightedCharsInUppercase("Esed", tree), "Esed".toUpperCase().repeat(5), "'Esed' Fuzzy matched " + "Esed".repeat(5) + " chars");
+			assert.equal(getHighlightedCharsInUppercase(">Esed", tree), ">Esed".toUpperCase().repeat(3), "'Esed' Fuzzy matched " + ">Esed".repeat(3) + " chars");
 			done();
 		}
 	});
