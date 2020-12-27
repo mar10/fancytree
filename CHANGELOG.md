@@ -1,8 +1,10 @@
 # 2.38.0-0 / Unreleased
   * [Added] #1041 Make assertions more debuggable
+  * [Added] #1051 ext-filter Fuzzy matched title segment is not highlighted
   * [Added] #1053 ext-dnd5 new option `dnd5.sourceCopyHook` (optional callback
     passed to `toDict` on dragStart)
   * [Added] #1054 ext-filter tree.updateFilter()
+  * [Fixed] #700 ext-filter Doing fuzzy filtering doesn't escape regex characters like the non fuzzy case
   * [Fixed] #1045 re-init exception (grid-ext)
 
 # 2.37.0 / 2020-09-11
