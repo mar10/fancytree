@@ -140,8 +140,13 @@
 			}
 			re = new RegExp(match, "i");
 			reHighlight = new RegExp(_escapeRegex(filter), "gi");
-			reExoticStartChar = new RegExp(_escapeRegex(exoticStartChar), "g");
-			reExoticEndChar = new RegExp(_escapeRegex(exoticEndChar), "g");
+			if (escapeTitles) {
+				reExoticStartChar = new RegExp(
+					_escapeRegex(exoticStartChar),
+					"g"
+				);
+				reExoticEndChar = new RegExp(_escapeRegex(exoticEndChar), "g");
+			}
 			filter = function(node) {
 				if (!node.title) {
 					return false;
