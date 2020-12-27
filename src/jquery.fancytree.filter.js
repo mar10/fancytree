@@ -99,6 +99,8 @@
 			statusNode,
 			re,
 			reHighlight,
+			reExoticStartChar,
+			reExoticEndChar,
 			temp,
 			prevEnableUpdate,
 			count = 0,
@@ -138,6 +140,8 @@
 			}
 			re = new RegExp(match, "i");
 			reHighlight = new RegExp(_escapeRegex(filter), "gi");
+			reExoticStartChar = new RegExp(_escapeRegex(exoticStartChar), "g");
+			reExoticEndChar = new RegExp(_escapeRegex(exoticEndChar), "g");
 			filter = function(node) {
 				if (!node.title) {
 					return false;
@@ -165,14 +169,8 @@
 						// now we can escape the title...
 						node.titleWithHighlight = escapeHtml(temp)
 							// ... and finally insert the desired `<mark>` tags
-							.replace(
-								new RegExp(_escapeRegex(exoticStartChar), "g"),
-								"<mark>"
-							)
-							.replace(
-								new RegExp(_escapeRegex(exoticEndChar), "g"),
-								"</mark>"
-							);
+							.replace(reExoticStartChar, "<mark>")
+							.replace(reExoticEndChar, "</mark>");
 					} else {
 						if (opts.fuzzy) {
 							node.titleWithHighlight = _markFuzzyMatchedChars(
