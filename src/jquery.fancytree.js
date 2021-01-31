@@ -5317,7 +5317,17 @@
 				if (isActive === flag) {
 					// Nothing to do
 					return _getResolvedPromise(node);
-				} else if (
+				}
+				// #1042: don't scroll between mousedown/-up when clicking an embedded link
+				if (
+					scroll &&
+					ctx.originalEvent &&
+					$(ctx.originalEvent.target).is("a,:checkbox")
+				) {
+					node.info("Not scrolling while clicking an embedded link.");
+					scroll = false;
+				}
+				if (
 					flag &&
 					!noEvents &&
 					this._triggerNodeEvent(
