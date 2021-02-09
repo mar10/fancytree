@@ -37,7 +37,6 @@
     "tree",
     "treegrid"
   ],
-  "dependencies": {},
   "devDependencies": {
     "coffeescript": "^2.5.1",
     "eslint": "^7.8.1",
