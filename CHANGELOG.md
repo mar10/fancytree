@@ -5,6 +5,7 @@
     passed to `toDict` on dragStart)
   * [Added] #1054 ext-filter tree.updateFilter()
   * [Fixed] #700 ext-filter Doing fuzzy filtering doesn't escape regex characters like the non fuzzy case
+  * [Fixed] #1042 Don't scroll while clicking an embedded link
   * [Fixed] #1045 re-init exception (grid-ext)
 
 # 2.37.0 / 2020-09-11
