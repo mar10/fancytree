@@ -3,12 +3,12 @@
  * Tree view control with support for lazy loading and much more.
  * https://github.com/mar10/fancytree/
  *
- * Copyright (c) 2008-2020, Martin Wendt (https://wwWendt.de)
+ * Copyright (c) 2008-2021, Martin Wendt (https://wwWendt.de)
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.37.0
- * @date 2020-09-11T18:58:08Z
+ * @version 2.38.0
+ * @date 2021-02-09T20:03:49Z
  */
 
 /** Core Fancytree module.
@@ -172,8 +172,16 @@
 		// TODO: see qunit.js extractStacktrace()
 		if (!cond) {
 			msg = msg ? ": " + msg : "";
+			msg = "Fancytree assertion failed" + msg;
+
 			// consoleApply("assert", [!!cond, msg]);
-			$.error("Fancytree assertion failed" + msg);
+
+			// #1041: Raised exceptions may not be visible in the browser
+			// console if inside promise chains, so we also print directly:
+			$.ui.fancytree.error(msg);
+
+			// Throw exception:
+			$.error(msg);
 		}
 	}
 
@@ -3901,6 +3909,13 @@
 				// visit siblings
 				siblings = parent.children;
 				nextIdx = siblings.indexOf(node) + siblingOfs;
+				_assert(
+					nextIdx >= 0,
+					"Could not find " +
+						node +
+						" in parent's children: " +
+						parent
+				);
 
 				for (i = nextIdx; i < siblings.length; i++) {
 					node = siblings[i];
@@ -5302,7 +5317,17 @@
 				if (isActive === flag) {
 					// Nothing to do
 					return _getResolvedPromise(node);
-				} else if (
+				}
+				// #1042: don't scroll between mousedown/-up when clicking an embedded link
+				if (
+					scroll &&
+					ctx.originalEvent &&
+					$(ctx.originalEvent.target).is("a,:checkbox")
+				) {
+					node.info("Not scrolling while clicking an embedded link.");
+					scroll = false;
+				}
+				if (
 					flag &&
 					!noEvents &&
 					this._triggerNodeEvent(
@@ -6712,7 +6737,7 @@
 		{
 			/** Version number `"MAJOR.MINOR.PATCH"`
 			 * @type {string} */
-			version: "2.37.0", // Set to semver by 'grunt release'
+			version: "2.38.0", // Set to semver by 'grunt release'
 			/** @type {string}
 			 * @description `"production" for release builds` */
 			buildType: "production", // Set to 'production' by 'grunt build'
@@ -7341,13 +7366,13 @@
  * Add a child counter bubble to tree nodes.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2020, Martin Wendt (https://wwWendt.de)
+ * Copyright (c) 2008-2021, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.37.0
- * @date 2020-09-11T18:58:08Z
+ * @version 2.38.0
+ * @date 2021-02-09T20:03:49Z
  */
 
 // To keep the global namespace clean, we wrap everything in a closure.
@@ -7466,7 +7491,7 @@
 		// Every extension must be registered by a unique name.
 		name: "childcounter",
 		// Version information should be compliant with [semver](http://semver.org)
-		version: "2.37.0",
+		version: "2.38.0",
 
 		// Extension specific options and their defaults.
 		// This options will be available as `tree.options.childcounter.hideExpanded`
@@ -7571,13 +7596,13 @@
  * Support faster lookup of nodes by key and shared ref-ids.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2020, Martin Wendt (https://wwWendt.de)
+ * Copyright (c) 2008-2021, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.37.0
- * @date 2020-09-11T18:58:08Z
+ * @version 2.38.0
+ * @date 2021-02-09T20:03:49Z
  */
 
 (function(factory) {
@@ -7598,13 +7623,8 @@
 	/*******************************************************************************
 	 * Private functions and variables
 	 */
-	function _assert(cond, msg) {
-		// TODO: see qunit.js extractStacktrace()
-		if (!cond) {
-			msg = msg ? ": " + msg : "";
-			$.error("Assertion failed" + msg);
-		}
-	}
+
+	var _assert = $.ui.fancytree.assert;
 
 	/* Return first occurrence of member from array. */
 	function _removeArrayMember(arr, elem) {
@@ -7935,7 +7955,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "clones",
-		version: "2.37.0",
+		version: "2.38.0",
 		// Default options for this extension.
 		options: {
 			highlightActiveClones: true, // set 'fancytree-active-clone' on active clones and all peers
@@ -8091,13 +8111,13 @@
  * Drag-and-drop support (jQuery UI draggable/droppable).
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2020, Martin Wendt (https://wwWendt.de)
+ * Copyright (c) 2008-2021, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.37.0
- * @date 2020-09-11T18:58:08Z
+ * @version 2.38.0
+ * @date 2021-02-09T20:03:49Z
  */
 
 (function(factory) {
@@ -8446,7 +8466,7 @@
 
 	$.ui.fancytree.registerExtension({
 		name: "dnd",
-		version: "2.37.0",
+		version: "2.38.0",
 		// Default options for this extension.
 		options: {
 			// Make tree nodes accept draggables
@@ -8891,13 +8911,13 @@
  * Drag-and-drop support (native HTML5).
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2020, Martin Wendt (https://wwWendt.de)
+ * Copyright (c) 2008-2021, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.37.0
- * @date 2020-09-11T18:58:08Z
+ * @version 2.38.0
+ * @date 2021-02-09T20:03:49Z
  */
 
 /*
@@ -9495,7 +9515,7 @@
 				// data store list of items representing dragged data can be
 				// enumerated, but the data itself is unavailable and no new
 				// data can be added.
-				var nodeData = node.toDict();
+				var nodeData = node.toDict(true, dndOpts.sourceCopyHook);
 				nodeData.treeId = node.tree._id;
 				json = JSON.stringify(nodeData);
 				try {
@@ -9915,7 +9935,7 @@
 
 	$.ui.fancytree.registerExtension({
 		name: "dnd5",
-		version: "2.37.0",
+		version: "2.38.0",
 		// Default options for this extension.
 		options: {
 			autoExpandMS: 1500, // Expand nodes after n milliseconds of hovering
@@ -9937,6 +9957,7 @@
 			scrollSensitivity: 20, // Active top/bottom margin in pixel
 			scrollSpeed: 5, // Pixel per event
 			setTextTypeJson: false, // Allow dragging of nodes to different IE windows
+			sourceCopyHook: null, // Optional callback passed to `toDict` on dragStart @since 2.38
 			// Events (drag support)
 			dragStart: null, // Callback(sourceNode, data), return true, to enable dnd drag
 			dragDrag: $.noop, // Callback(sourceNode, data)
@@ -10045,13 +10066,13 @@
  * Make node titles editable.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2020, Martin Wendt (https://wwWendt.de)
+ * Copyright (c) 2008-2021, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.37.0
- * @date 2020-09-11T18:58:08Z
+ * @version 2.38.0
+ * @date 2021-02-09T20:03:49Z
  */
 
 (function(factory) {
@@ -10343,7 +10364,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "edit",
-		version: "2.37.0",
+		version: "2.38.0",
 		// Default options for this extension.
 		options: {
 			adjustWidthOfs: 4, // null: don't adjust input size to content
@@ -10448,13 +10469,13 @@
  * Remove or highlight tree nodes, based on a filter.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2020, Martin Wendt (https://wwWendt.de)
+ * Copyright (c) 2008-2021, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.37.0
- * @date 2020-09-11T18:58:08Z
+ * @version 2.38.0
+ * @date 2021-02-09T20:03:49Z
  */
 
 (function(factory) {
@@ -10477,8 +10498,9 @@
 	 */
 
 	var KeyNoData = "__not_found__",
-		escapeHtml = $.ui.fancytree.escapeHtml;
-
+		escapeHtml = $.ui.fancytree.escapeHtml,
+		exoticStartChar = "\uFFF7",
+		exoticEndChar = "\uFFF8";
 	function _escapeRegex(str) {
 		return (str + "").replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
 	}
@@ -10492,6 +10514,47 @@
 		return s;
 	}
 
+	/**
+	 * @description Marks the matching charecters of `text` either by `mark` or
+	 * by exotic*Chars (if `escapeTitles` is `true`) based on `regexMatchArray`
+	 * which is an array of matching groups.
+	 * @param {string} text
+	 * @param {RegExpMatchArray} regexMatchArray
+	 */
+	function _markFuzzyMatchedChars(text, regexMatchArray, escapeTitles) {
+		// It is extremely infuriating that we can not use `let` or `const` or arrow functions.
+		// Damn you IE!!!
+		var matchingIndices = [];
+		// get the indices of matched characters (Iterate through `RegExpMatchArray`)
+		for (
+			var _matchingArrIdx = 1;
+			_matchingArrIdx < regexMatchArray.length;
+			_matchingArrIdx++
+		) {
+			var _mIdx =
+				// get matching char index by cumulatively adding
+				// the matched group length
+				regexMatchArray[_matchingArrIdx].length +
+				(_matchingArrIdx === 1 ? 0 : 1) +
+				(matchingIndices[matchingIndices.length - 1] || 0);
+			matchingIndices.push(_mIdx);
+		}
+		// Map each `text` char to its position and store in `textPoses`.
+		var textPoses = text.split("");
+		if (escapeTitles) {
+			// If escaping the title, then wrap the matchng char within exotic chars
+			matchingIndices.forEach(function(v) {
+				textPoses[v] = exoticStartChar + textPoses[v] + exoticEndChar;
+			});
+		} else {
+			// Otherwise, Wrap the matching chars within `mark`.
+			matchingIndices.forEach(function(v) {
+				textPoses[v] = "<mark>" + textPoses[v] + "</mark>";
+			});
+		}
+		// Join back the modified `textPoses` to create final highlight markup.
+		return textPoses.join("");
+	}
 	$.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(
 		filter,
 		branchMode,
@@ -10501,6 +10564,8 @@
 			statusNode,
 			re,
 			reHighlight,
+			reExoticStartChar,
+			reExoticEndChar,
 			temp,
 			prevEnableUpdate,
 			count = 0,
@@ -10524,14 +10589,29 @@
 				// See https://codereview.stackexchange.com/questions/23899/faster-javascript-fuzzy-string-matching-function/23905#23905
 				// and http://www.quora.com/How-is-the-fuzzy-search-algorithm-in-Sublime-Text-designed
 				// and http://www.dustindiaz.com/autocomplete-fuzzy-matching
-				match = filter.split("").reduce(function(a, b) {
-					return a + "[^" + b + "]*" + b;
-				});
+				match = filter
+					.split("")
+					// Escaping the `filter` will not work because,
+					// it gets further split into individual characters. So,
+					// escape each character after splitting
+					.map(_escapeRegex)
+					.reduce(function(a, b) {
+						// create capture groups for parts that comes before
+						// the character
+						return a + "([^" + b + "]*)" + b;
+					}, "");
 			} else {
 				match = _escapeRegex(filter); // make sure a '.' is treated literally
 			}
-			re = new RegExp(".*" + match + ".*", "i");
+			re = new RegExp(match, "i");
 			reHighlight = new RegExp(_escapeRegex(filter), "gi");
+			if (escapeTitles) {
+				reExoticStartChar = new RegExp(
+					_escapeRegex(exoticStartChar),
+					"g"
+				);
+				reExoticEndChar = new RegExp(_escapeRegex(exoticEndChar), "g");
+			}
 			filter = function(node) {
 				if (!node.title) {
 					return false;
@@ -10539,31 +10619,46 @@
 				var text = escapeTitles
 						? node.title
 						: extractHtmlText(node.title),
-					res = !!re.test(text);
-
+					// `.match` instead of `.test` to get the capture groups
+					res = text.match(re);
 				if (res && opts.highlight) {
 					if (escapeTitles) {
-						// #740: we must not apply the marks to escaped entity names, e.g. `&quot;`
-						// Use some exotic characters to mark matches:
-						temp = text.replace(reHighlight, function(s) {
-							return "\uFFF7" + s + "\uFFF8";
-						});
+						if (opts.fuzzy) {
+							temp = _markFuzzyMatchedChars(
+								text,
+								res,
+								escapeTitles
+							);
+						} else {
+							// #740: we must not apply the marks to escaped entity names, e.g. `&quot;`
+							// Use some exotic characters to mark matches:
+							temp = text.replace(reHighlight, function(s) {
+								return exoticStartChar + s + exoticEndChar;
+							});
+						}
 						// now we can escape the title...
 						node.titleWithHighlight = escapeHtml(temp)
 							// ... and finally insert the desired `<mark>` tags
-							.replace(/\uFFF7/g, "<mark>")
-							.replace(/\uFFF8/g, "</mark>");
+							.replace(reExoticStartChar, "<mark>")
+							.replace(reExoticEndChar, "</mark>");
 					} else {
-						node.titleWithHighlight = text.replace(
-							reHighlight,
-							function(s) {
-								return "<mark>" + s + "</mark>";
-							}
-						);
+						if (opts.fuzzy) {
+							node.titleWithHighlight = _markFuzzyMatchedChars(
+								text,
+								res
+							);
+						} else {
+							node.titleWithHighlight = text.replace(
+								reHighlight,
+								function(s) {
+									return "<mark>" + s + "</mark>";
+								}
+							);
+						}
 					}
 					// node.debug("filter", escapeTitles, text, node.titleWithHighlight);
 				}
-				return res;
+				return !!res;
 			};
 		}
 
@@ -10702,6 +10797,26 @@
 	};
 
 	/**
+	 * [ext-filter] Re-apply current filter.
+	 *
+	 * @returns {integer} count
+	 * @alias Fancytree#updateFilter
+	 * @requires jquery.fancytree.filter.js
+	 * @since 2.38
+	 */
+	$.ui.fancytree._FancytreeClass.prototype.updateFilter = function() {
+		if (
+			this.enableFilter &&
+			this.lastFilterArgs &&
+			this.options.filter.autoApply
+		) {
+			this._applyFilterImpl.apply(this, this.lastFilterArgs);
+		} else {
+			this.warn("updateFilter(): no filter active.");
+		}
+	};
+
+	/**
 	 * [ext-filter] Reset the filter.
 	 *
 	 * @alias Fancytree#clearFilter
@@ -10792,7 +10907,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "filter",
-		version: "2.37.0",
+		version: "2.38.0",
 		// Default options for this extension.
 		options: {
 			autoApply: true, // Re-apply last filter if lazy data is loaded
@@ -10906,13 +11021,13 @@
  * Use glyph-fonts, ligature-fonts, or SVG icons instead of icon sprites.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2020, Martin Wendt (https://wwWendt.de)
+ * Copyright (c) 2008-2021, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.37.0
- * @date 2020-09-11T18:58:08Z
+ * @version 2.38.0
+ * @date 2021-02-09T20:03:49Z
  */
 
 (function(factory) {
@@ -11114,7 +11229,7 @@
 
 	$.ui.fancytree.registerExtension({
 		name: "glyph",
-		version: "2.37.0",
+		version: "2.38.0",
 		// Default options for this extension.
 		options: {
 			preset: null, // 'awesome3', 'awesome4', 'bootstrap3', 'material'
@@ -11263,13 +11378,13 @@
  * Support keyboard navigation for trees with embedded input controls.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2020, Martin Wendt (https://wwWendt.de)
+ * Copyright (c) 2008-2021, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.37.0
- * @date 2020-09-11T18:58:08Z
+ * @version 2.38.0
+ * @date 2021-02-09T20:03:49Z
  */
 
 (function(factory) {
@@ -11386,7 +11501,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "gridnav",
-		version: "2.37.0",
+		version: "2.38.0",
 		// Default options for this extension.
 		options: {
 			autofocusInput: false, // Focus first embedded input if node gets activated
@@ -11487,13 +11602,13 @@
  * Allow multiple selection of nodes  by mouse or keyboard.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2020, Martin Wendt (https://wwWendt.de)
+ * Copyright (c) 2008-2021, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.37.0
- * @date 2020-09-11T18:58:08Z
+ * @version 2.38.0
+ * @date 2021-02-09T20:03:49Z
  */
 
 (function(factory) {
@@ -11522,7 +11637,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "multi",
-		version: "2.37.0",
+		version: "2.38.0",
 		// Default options for this extension.
 		options: {
 			allowNoSelect: false, //
@@ -11618,13 +11733,13 @@
  *
  * @depends: js-cookie or jquery-cookie
  *
- * Copyright (c) 2008-2020, Martin Wendt (https://wwWendt.de)
+ * Copyright (c) 2008-2021, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.37.0
- * @date 2020-09-11T18:58:08Z
+ * @version 2.38.0
+ * @date 2021-02-09T20:03:49Z
  */
 
 (function(factory) {
@@ -11835,7 +11950,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "persist",
-		version: "2.37.0",
+		version: "2.38.0",
 		// Default options for this extension.
 		options: {
 			cookieDelimiter: "~",
@@ -12122,13 +12237,13 @@
  * Render tree as table (aka 'tree grid', 'table tree').
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2020, Martin Wendt (https://wwWendt.de)
+ * Copyright (c) 2008-2021, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.37.0
- * @date 2020-09-11T18:58:08Z
+ * @version 2.38.0
+ * @date 2021-02-09T20:03:49Z
  */
 
 (function(factory) {
@@ -12149,12 +12264,7 @@
 	/******************************************************************************
 	 * Private functions and variables
 	 */
-	function _assert(cond, msg) {
-		msg = msg || "";
-		if (!cond) {
-			$.error("Assertion failed " + msg);
-		}
-	}
+	var _assert = $.ui.fancytree.assert;
 
 	function insertFirstChild(referenceNode, newNode) {
 		referenceNode.insertBefore(newNode, referenceNode.firstChild);
@@ -12211,7 +12321,7 @@
 
 	$.ui.fancytree.registerExtension({
 		name: "table",
-		version: "2.37.0",
+		version: "2.38.0",
 		// Default options for this extension.
 		options: {
 			checkboxColumnIdx: null, // render the checkboxes into the this column index (default: nodeColumnIdx)
@@ -12671,13 +12781,13 @@
  *
  * @see http://jqueryui.com/themeroller/
  *
- * Copyright (c) 2008-2020, Martin Wendt (https://wwWendt.de)
+ * Copyright (c) 2008-2021, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.37.0
- * @date 2020-09-11T18:58:08Z
+ * @version 2.38.0
+ * @date 2021-02-09T20:03:49Z
  */
 
 (function(factory) {
@@ -12700,7 +12810,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "themeroller",
-		version: "2.37.0",
+		version: "2.38.0",
 		// Default options for this extension.
 		options: {
 			activeClass: "ui-state-active", // Class added to active node
@@ -12790,13 +12900,13 @@
  * Support for 100% wide selection bars.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2020, Martin Wendt (https://wwWendt.de)
+ * Copyright (c) 2008-2021, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.37.0
- * @date 2020-09-11T18:58:08Z
+ * @version 2.38.0
+ * @date 2021-02-09T20:03:49Z
  */
 
 (function(factory) {
@@ -12926,7 +13036,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "wide",
-		version: "2.37.0",
+		version: "2.38.0",
 		// Default options for this extension.
 		options: {
 			iconWidth: null, // Adjust this if @fancy-icon-width != "16px"

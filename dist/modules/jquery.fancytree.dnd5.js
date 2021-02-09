@@ -4,13 +4,13 @@
  * Drag-and-drop support (native HTML5).
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2020, Martin Wendt (https://wwWendt.de)
+ * Copyright (c) 2008-2021, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.37.0
- * @date 2020-09-11T18:58:08Z
+ * @version 2.38.0
+ * @date 2021-02-09T20:03:49Z
  */
 
 /*
@@ -608,7 +608,7 @@
 				// data store list of items representing dragged data can be
 				// enumerated, but the data itself is unavailable and no new
 				// data can be added.
-				var nodeData = node.toDict();
+				var nodeData = node.toDict(true, dndOpts.sourceCopyHook);
 				nodeData.treeId = node.tree._id;
 				json = JSON.stringify(nodeData);
 				try {
@@ -1028,7 +1028,7 @@
 
 	$.ui.fancytree.registerExtension({
 		name: "dnd5",
-		version: "2.37.0",
+		version: "2.38.0",
 		// Default options for this extension.
 		options: {
 			autoExpandMS: 1500, // Expand nodes after n milliseconds of hovering
@@ -1050,6 +1050,7 @@
 			scrollSensitivity: 20, // Active top/bottom margin in pixel
 			scrollSpeed: 5, // Pixel per event
 			setTextTypeJson: false, // Allow dragging of nodes to different IE windows
+			sourceCopyHook: null, // Optional callback passed to `toDict` on dragStart @since 2.38
 			// Events (drag support)
 			dragStart: null, // Callback(sourceNode, data), return true, to enable dnd drag
 			dragDrag: $.noop, // Callback(sourceNode, data)

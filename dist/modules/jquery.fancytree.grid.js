@@ -4,13 +4,13 @@
  * Render tree as table (aka 'tree grid', 'table tree').
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2020, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2008-2021, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.37.0
- * @date 2020-09-11T18:58:08Z
+ * @version 2.38.0
+ * @date 2021-02-09T20:03:49Z
  */
 
 (function(factory) {
@@ -506,7 +506,7 @@
 
 	$.ui.fancytree.registerExtension({
 		name: "grid",
-		version: "2.37.0",
+		version: "2.38.0",
 		// Default options for this extension.
 		options: {
 			checkboxColumnIdx: null, // render the checkboxes into the this column index (default: nodeColumnIdx)
@@ -993,6 +993,7 @@
 		},
 		treeDestroy: function(ctx) {
 			this.$container.find("tbody").empty();
+			this.$container.off("wheel");
 			if (this.$source) {
 				this.$source.removeClass("fancytree-helper-hidden");
 			}

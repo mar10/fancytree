@@ -3,12 +3,12 @@
  * Tree view control with support for lazy loading and much more.
  * https://github.com/mar10/fancytree/
  *
- * Copyright (c) 2008-2020, Martin Wendt (https://wwWendt.de)
+ * Copyright (c) 2008-2021, Martin Wendt (https://wwWendt.de)
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.37.0
- * @date 2020-09-11T18:58:08Z
+ * @version 2.38.0
+ * @date 2021-02-09T20:03:49Z
  */
 
 /** Core Fancytree module.
@@ -172,8 +172,16 @@
 		// TODO: see qunit.js extractStacktrace()
 		if (!cond) {
 			msg = msg ? ": " + msg : "";
+			msg = "Fancytree assertion failed" + msg;
+
 			// consoleApply("assert", [!!cond, msg]);
-			$.error("Fancytree assertion failed" + msg);
+
+			// #1041: Raised exceptions may not be visible in the browser
+			// console if inside promise chains, so we also print directly:
+			$.ui.fancytree.error(msg);
+
+			// Throw exception:
+			$.error(msg);
 		}
 	}
 
@@ -3901,6 +3909,13 @@
 				// visit siblings
 				siblings = parent.children;
 				nextIdx = siblings.indexOf(node) + siblingOfs;
+				_assert(
+					nextIdx >= 0,
+					"Could not find " +
+						node +
+						" in parent's children: " +
+						parent
+				);
 
 				for (i = nextIdx; i < siblings.length; i++) {
 					node = siblings[i];
@@ -5302,7 +5317,17 @@
 				if (isActive === flag) {
 					// Nothing to do
 					return _getResolvedPromise(node);
-				} else if (
+				}
+				// #1042: don't scroll between mousedown/-up when clicking an embedded link
+				if (
+					scroll &&
+					ctx.originalEvent &&
+					$(ctx.originalEvent.target).is("a,:checkbox")
+				) {
+					node.info("Not scrolling while clicking an embedded link.");
+					scroll = false;
+				}
+				if (
 					flag &&
 					!noEvents &&
 					this._triggerNodeEvent(
@@ -6712,7 +6737,7 @@
 		{
 			/** Version number `"MAJOR.MINOR.PATCH"`
 			 * @type {string} */
-			version: "2.37.0", // Set to semver by 'grunt release'
+			version: "2.38.0", // Set to semver by 'grunt release'
 			/** @type {string}
 			 * @description `"production" for release builds` */
 			buildType: "production", // Set to 'production' by 'grunt build'
