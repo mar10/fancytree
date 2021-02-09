@@ -1,4 +1,5 @@
 # 2.38.0-0 / Unreleased
+# 2.38.0 / 2021-02-09
   * [Added] #1041 Make assertions more debuggable
   * [Added] #1051 ext-filter Fuzzy matched title segment is not highlighted
   * [Added] #1053 ext-dnd5 new option `dnd5.sourceCopyHook` (optional callback
