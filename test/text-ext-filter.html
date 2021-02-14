@@ -27,6 +27,12 @@
 				color: black;
 				font-weight: unset !important;
 			}
+			.highlight-class {
+				font-weight: bold;
+			}
+			.color-red {
+				color: red;
+			}
 		</style>
 
 		<script type="text/javascript">
@@ -78,6 +84,7 @@
 							opts[o] = $('#' + o).is(':checked');
 						});
 						opts.mode = $('#hideMode').is(':checked') ? 'hide' : 'dimm';
+						opts.highlightClasses = $('#highlightClasses').val();
 
 						if ((e && e.which === $.ui.keyCode.ESCAPE) || $.trim(match) === '') {
 							$('button#btnResetSearch').click();
@@ -146,6 +153,10 @@
 			<input name="search" placeholder="Filter..." autocomplete="off" />
 			<button id="btnResetSearch">&times;</button>
 			<span id="matches"></span>
+		</p>
+		<p>
+			<label>Highlight Classes:</label>
+			<input name="highlightClasses" id="highlightClasses"  placeholder="Filter..." autocomplete="off" />
 		</p>
 
 		<fieldset id="options">

@@ -1,5 +1,15 @@
 jQuery(document).ready(function(){
 
+	jQuery(`
+	<style>
+	.filter-highlight {
+		font-weight: bold;
+	}
+	.color-red {
+		color: red;
+	}
+	</style>`).prependTo('html')
+
 /*globals TEST_TOOLS, QUnit */
 
 var TEST_DATA, TESTDATA_NODES, TESTDATA_TOPNODES, TESTDATA_VISIBLENODES,
@@ -28,21 +38,7 @@ function countMatched(root) {
 	return count;
 }
 
-function countHighlightedChars(filter, tree) {
-	var nodesCount = tree.filterNodes(filter);
-	var nodes = [];
-	tree.getRootNode().visit(function (n) {
-		if (n.isMatched()) {
-			nodes.push(n);
-		}
-	});
-	const count = nodes.reduce(function (count, n) {
-		 return count += $(n.span).find('.fancytree-title mark').length
-	}, 0);
-	return count;
-}
-
-function getHighlightedCharsInUppercase(filter, tree) {
+function countHighlightedChars(filter, tree, customHighlightClass) {
 	tree.filterNodes(filter);
 	var nodes = [];
 	tree.getRootNode().visit(function (n) {
@@ -50,10 +46,30 @@ function getHighlightedCharsInUppercase(filter, tree) {
 			nodes.push(n);
 		}
 	});
+	const highlightSelector = __getHighlightSelector(customHighlightClass);
+	const count = nodes.reduce(function (count, n) {
+		 return count += $(n.span).find('.fancytree-title ' + highlightSelector).length
+	}, 0);
+	return count;
+}
+
+function getHighlightedCharsInUppercase(filter, tree, customHighlightClass = '') {
+	tree.filterNodes(filter);
+	var nodes = [];
+	tree.getRootNode().visit(function (n) {
+		if (n.isMatched()) {
+			nodes.push(n);
+		}
+	});
+	const highlightSelector = __getHighlightSelector(customHighlightClass);
 	const str = nodes.reduce(function (str, n) {
-		 return str += $(n.span).find('.fancytree-title mark').text()
+		return str += $(n.span).find('.fancytree-title ' + highlightSelector).text()
 	}, '');
 	return str.toUpperCase();
+}
+
+function __getHighlightSelector(customHighlightClass) {
+	return customHighlightClass ? 'span.' + customHighlightClass.split(' ').map(c => c.trim()).join('.') : 'mark';
 }
 
 /*******************************************************************************
@@ -338,6 +354,97 @@ QUnit.test("Default Options, escapeTitle=true, fuzzy=true", function(assert) {
 			assert.equal(getHighlightedCharsInUppercase("Sub-item 1.", tree), "Sub-item 1.".toUpperCase().repeat(8), "'Sub-item 1.' Fuzzy matched " + "Sub-item 1.".repeat(8) + " chars");
 			assert.equal(getHighlightedCharsInUppercase("Esed", tree), "Esed".toUpperCase().repeat(5), "'Esed' Fuzzy matched " + "Esed".repeat(5) + " chars");
 			assert.equal(getHighlightedCharsInUppercase(">Esed", tree), ">Esed".toUpperCase().repeat(3), "'Esed' Fuzzy matched " + ">Esed".repeat(3) + " chars");
+			done();
+		}
+	});
+});
+
+QUnit.test("Default Options, escapeTitle=true, fuzzy=true, customHighlightClass", function (assert) {
+	// Creating a separate source so that other test cases won't get affected.
+	var SOURCE = [
+		{ title: "simple node (no explicit id, so a default key is generated)" },
+		{ title: "<script>Escaped One?</script>" },
+		{ title: "<script>Escaped Two?</script>" },
+		{ title: "<script>Escaped Three?</script>" },
+		{ key: "4", title: "this nodes title has [.?*+^$[\\]\\\\(){}|-]" },
+		{ key: "6", title: "node with some extra classes (will be added to the generated markup)" },
+		{
+			key: "10", title: "Folder 1", folder: true, children: [
+				{
+					key: "10_1", title: "Sub-item 1.1", children: [
+						{ key: "10_1_1", title: "Sub-item 1.1.1" },
+						{ key: "10_1_2", title: "Sub-item 1.1.2" }
+					]
+				},
+				{
+					key: "10_2", title: "Sub-item 1.2", children: [
+						{ key: "10_2_1", title: "Sub-item 1.2.1" },
+						{ key: "10_2_2", title: "Sub-item 1.2.2" }
+					]
+				}
+			]
+		},
+		{
+			key: "20", title: "Simple node with active children (expand)", expanded: true, children: [
+				{
+					key: "20_1", title: "Sub-item 2.1", children: [
+						{ key: "20_1_1", title: "Sub-item 2.1.1" },
+						{ key: "20_1_2", title: "Sub-item 2.1.2" }
+					]
+				},
+				{
+					key: "20_2", title: "Sub-item 2.2", children: [
+						{ key: "20_2_1", title: "Sub-item 2.2.1" },
+						{ key: "20_2_2", title: "Sub-item 2.2.2" }
+					]
+				}
+			]
+		},
+		{ key: "30", title: "Lazy folder", folder: true, lazy: true }
+	];
+	var done = assert.async();
+
+	assert.expect(21);
+	tools.setup(assert);
+	const filter = {
+		fuzzy: true,
+		autoExpand: true,
+		highlightClasses: "filter-highlight color-red"
+	}
+	$("#tree").fancytree({
+		extensions: ["filter"],
+		escapeTitles: true,
+		filter: filter,
+		source: SOURCE,
+		generateIds: true, // for testing
+		init: function (event, data) {
+			var tree = data.tree;
+
+			assert.equal(tree.filterNodes("("), 4, "'(' Highlighted 1 char");
+			assert.equal(tree.filterNodes(")"), 4, "')' Highlighted 1 char");
+			assert.equal(tree.filterNodes("[.?*+^$[\\]\\\\(){}|-]"), 1, "'[.?*+^$[\\]\\\\(){}|-]' Fuzzy Matched 1 node");
+			assert.equal(tree.filterNodes("Sub-m2"), 10, "'Sub-m2' Fuzzy matched 10 nodes");
+			assert.equal(tree.filterNodes("Sub-item 1."), 8, "'Sub-m2' Fuzzy matched 8 nodes");
+			assert.equal(tree.filterNodes("Esed"), 5, "'Esed' Fuzzy matched 5 nodes");
+			assert.equal(tree.filterNodes(">Esed"), 3, "'Esed' Fuzzy matched 3 nodes");
+
+			// test how many chars are highlighted
+			assert.equal(countHighlightedChars("(", tree, filter.highlightClasses), 4, "'(' Fuzzy Matched 4 chars");
+			assert.equal(countHighlightedChars(")", tree, filter.highlightClasses), 4, "')' Fuzzy Matched 4 chars");
+			assert.equal(countHighlightedChars("[.?*+^$[\\]\\\\(){}|-]", tree, filter.highlightClasses), "[.?*+^$[\\]\\\\(){}|-]".length, "'[.?*+^$[\\]\\\\(){}|-]' Fuzzy Matched " + "[.?*+^$[\\]\\\\(){}|-]".length + " chars");
+			assert.equal(countHighlightedChars("Sub-m2", tree, filter.highlightClasses), 10 * "Sub-m2".length, "'Sub-m2' Fuzzy matched " + 10 * "Sub-m2".length + " chars");
+			assert.equal(countHighlightedChars("Sub-item 1.", tree, filter.highlightClasses), 8 * "Sub-item 1.".length, "'Sub-item 1.' Fuzzy matched " + 8 * "Sub-item 1.".length + " chars");
+			assert.equal(countHighlightedChars("Esed", tree, filter.highlightClasses), 5 * "Esed".length, "'Esed' Fuzzy matched " + 5 * "Esed".length + " chars");
+			assert.equal(countHighlightedChars(">Esed", tree, filter.highlightClasses), 3 * ">Esed".length, "'Esed' Fuzzy matched " + 3 * ">Esed".length + " chars");
+
+			// Test if the matched chars are the same as filter
+			assert.equal(getHighlightedCharsInUppercase("(", tree, filter.highlightClasses), "(".repeat(4), "'(' Fuzzy Matched 4 chars");
+			assert.equal(getHighlightedCharsInUppercase(")", tree, filter.highlightClasses), ")".repeat(4), "')' Fuzzy Matched 4 chars");
+			assert.equal(getHighlightedCharsInUppercase("[.?*+^$[\\]\\\\(){}|-]", tree, filter.highlightClasses), "[.?*+^$[\\]\\\\(){}|-]".repeat(1), "'[.?*+^$[\\]\\\\(){}|-]' Fuzzy Matched " + "[.?*+^$[\\]\\\\(){}|-]".repeat(1) + " chars");
+			assert.equal(getHighlightedCharsInUppercase("Sub-m2", tree, filter.highlightClasses), "Sub-m2".toUpperCase().repeat(10), "'Sub-m2' Fuzzy matched " + "Sub-m2".repeat(10) + " chars");
+			assert.equal(getHighlightedCharsInUppercase("Sub-item 1.", tree, filter.highlightClasses), "Sub-item 1.".toUpperCase().repeat(8), "'Sub-item 1.' Fuzzy matched " + "Sub-item 1.".repeat(8) + " chars");
+			assert.equal(getHighlightedCharsInUppercase("Esed", tree, filter.highlightClasses), "Esed".toUpperCase().repeat(5), "'Esed' Fuzzy matched " + "Esed".repeat(5) + " chars");
+			assert.equal(getHighlightedCharsInUppercase(">Esed", tree, filter.highlightClasses), ">Esed".toUpperCase().repeat(3), "'Esed' Fuzzy matched " + ">Esed".repeat(3) + " chars");
 			done();
 		}
 	});
