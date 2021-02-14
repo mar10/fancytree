@@ -118,7 +118,11 @@
 			prevAutoCollapse = treeOpts.autoCollapse,
 			opts = $.extend({}, treeOpts.filter, _opts),
 			hideMode = opts.mode === "hide",
-			leavesOnly = !!opts.leavesOnly && !branchMode;
+			leavesOnly = !!opts.leavesOnly && !branchMode,
+			marker,
+			highlightClasses,
+			markStart,
+			markEnd;
 
 		// Default to 'match title substring (not case sensitive)'
 		if (typeof filter === "string") {
@@ -157,12 +161,12 @@
 				reExoticEndChar = new RegExp(_escapeRegex(exoticEndChar), "g");
 			}
 			if (opts.highlight) {
-				var marker = opts.highlightClasses ? "span" : "mark",
-					highlightClasses = opts.highlightClasses
-						? ' class="' + opts.highlightClasses + '"'
-						: "",
-					markStart = "<" + marker + highlightClasses + ">",
-					markEnd = "</" + marker + ">";
+				marker = opts.highlightClasses ? "span" : "mark";
+				highlightClasses = opts.highlightClasses
+					? ' class="' + opts.highlightClasses + '"'
+					: "";
+				markStart = "<" + marker + highlightClasses + ">";
+				markEnd = "</" + marker + ">";
 			}
 			filter = function(node) {
 				if (!node.title) {
