@@ -50,13 +50,22 @@
 	}
 
 	/**
-	 * @description Marks the matching charecters of `text` either by `mark` or
-	 * by exotic*Chars (if `escapeTitles` is `true`) based on `regexMatchArray`
+	 * @description Marks the matching charecters of `text` either by `markStart` and `markEnd`
+	 * or by exotic*Chars (if `escapeTitles` is `true`) based on `regexMatchArray`
 	 * which is an array of matching groups.
 	 * @param {string} text
 	 * @param {RegExpMatchArray} regexMatchArray
+	 * @param {boolean} escapeTitles
+	 * @param {string} markStart
+	 * @param {string} markEnd
 	 */
-	function _markFuzzyMatchedChars(text, regexMatchArray, escapeTitles) {
+	function _markFuzzyMatchedChars(
+		text,
+		regexMatchArray,
+		escapeTitles,
+		markStart,
+		markEnd
+	) {
 		// It is extremely infuriating that we can not use `let` or `const` or arrow functions.
 		// Damn you IE!!!
 		var matchingIndices = [];
@@ -84,7 +93,7 @@
 		} else {
 			// Otherwise, Wrap the matching chars within `mark`.
 			matchingIndices.forEach(function(v) {
-				textPoses[v] = "<mark>" + textPoses[v] + "</mark>";
+				textPoses[v] = markStart + textPoses[v] + markEnd;
 			});
 		}
 		// Join back the modified `textPoses` to create final highlight markup.
@@ -147,6 +156,14 @@
 				);
 				reExoticEndChar = new RegExp(_escapeRegex(exoticEndChar), "g");
 			}
+			if (opts.highlight) {
+				var marker = opts.highlightClasses ? "span" : "mark",
+					highlightClasses = opts.highlightClasses
+						? ' class="' + opts.highlightClasses + '"'
+						: "",
+					markStart = "<" + marker + highlightClasses + ">",
+					markEnd = "</" + marker + ">";
+			}
 			filter = function(node) {
 				if (!node.title) {
 					return false;
@@ -162,7 +179,9 @@
 							temp = _markFuzzyMatchedChars(
 								text,
 								res,
-								escapeTitles
+								escapeTitles,
+								markStart,
+								markEnd
 							);
 						} else {
 							// #740: we must not apply the marks to escaped entity names, e.g. `&quot;`
@@ -173,20 +192,23 @@
 						}
 						// now we can escape the title...
 						node.titleWithHighlight = escapeHtml(temp)
-							// ... and finally insert the desired `<mark>` tags
-							.replace(reExoticStartChar, "<mark>")
-							.replace(reExoticEndChar, "</mark>");
+							// ... and finally insert the desired `mark` tags
+							.replace(reExoticStartChar, markStart)
+							.replace(reExoticEndChar, markEnd);
 					} else {
 						if (opts.fuzzy) {
 							node.titleWithHighlight = _markFuzzyMatchedChars(
 								text,
-								res
+								res,
+								false,
+								markStart,
+								markEnd
 							);
 						} else {
 							node.titleWithHighlight = text.replace(
 								reHighlight,
 								function(s) {
-									return "<mark>" + s + "</mark>";
+									return markStart + s + markEnd;
 								}
 							);
 						}
