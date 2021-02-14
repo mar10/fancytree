@@ -108,6 +108,10 @@
 					})
 					.focus();
 
+					$('#highlightClasses').on('change', function() {
+						$('input[name=search]').trigger('keyup');
+					});
+
 				$('fieldset input:checkbox').change(function(e) {
 					var id = $(this).attr('id'),
 						flag = $(this).is(':checked');
