@@ -1,4 +1,11 @@
 # 2.38.0-0 / Unreleased
+  * [Added] ext-filter: New option `filter.highlightClasses` to provide custom highlight classes for matched characters by
+  specifiying space separated class names as its value.  
+  This is how it works:  
+    - The matched characters are wrapped in `<span>` with `filter.highlightClasses` as its `class` attribute's value.
+    - If `filter.highlightClasses` is not specified, it behaves the old way (wrapped in `<mark>`).
+    - This option is considered only if `filter.highlight` option is enabled.
+
 # 2.38.0 / 2021-02-09
   * [Added] #1041 Make assertions more debuggable
   * [Added] #1051 ext-filter Fuzzy matched title segment is not highlighted
