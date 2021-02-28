@@ -185,6 +185,10 @@
 		}
 	}
 
+	function _hasProp(object, property) {
+		return Object.prototype.hasOwnProperty.call(object, property);
+	}
+
 	_assert($.ui, "Fancytree requires jQuery UI (http://jqueryui.com)");
 
 	function consoleApply(method, args) {
@@ -281,7 +285,7 @@
 			if ((options = arguments[i]) != null) {
 				// Extend the base object
 				for (name in options) {
-					if (options.hasOwnProperty(name)) {
+					if (_hasProp(options, name)) {
 						src = target[name];
 						copy = options[name];
 						// Prevent never-ending loop
@@ -814,7 +818,7 @@
 				IGNORE_MAP = { children: true, expanded: true, parent: true }; // TODO: should be global
 
 			for (name in patch) {
-				if (patch.hasOwnProperty(name)) {
+				if (_hasProp(patch, name)) {
 					v = patch[name];
 					if (!IGNORE_MAP[name] && !$.isFunction(v)) {
 						if (NODE_ATTR_MAP[name]) {
@@ -826,7 +830,7 @@
 				}
 			}
 			// Remove and/or create children
-			if (patch.hasOwnProperty("children")) {
+			if (_hasProp(patch, "children")) {
 				this.removeChildren();
 				if (patch.children) {
 					// only if not null and not empty list
@@ -840,7 +844,7 @@
 				this.renderStatus();
 			}
 			// Expand collapse (final step, since this may be async)
-			if (patch.hasOwnProperty("expanded")) {
+			if (_hasProp(patch, "expanded")) {
 				promise = this.setExpanded(patch.expanded);
 			} else {
 				promise = _getResolvedPromise(this);
@@ -3714,7 +3718,7 @@
 			// remainMap contains parent nodes, each with a list of relative sub-paths.
 			// We start loading all of them now, and pass the the list to each loader.
 			for (nodeKey in remainMap) {
-				if (remainMap.hasOwnProperty(nodeKey)) {
+				if (_hasProp(remainMap, nodeKey)) {
 					remain = remainMap[nodeKey];
 					// console.log("for(): remain=", remain, "remainMap=", remainMap);
 					// key = remain.segList.shift();
@@ -4458,7 +4462,7 @@
 							}
 						} else if (
 							data &&
-							data.hasOwnProperty("d") &&
+							_hasProp(data, "d") &&
 							ctx.options.enableAspx
 						) {
 							// Process ASPX WebMethod JSON object inside "d" property
@@ -7277,7 +7281,7 @@
 					if (allData && !$.isEmptyObject(allData)) {
 						// #507: convert data-hidecheckbox (lower case) to hideCheckbox
 						for (lowerCaseAttr in NODE_ATTR_LOWERCASE_MAP) {
-							if (allData.hasOwnProperty(lowerCaseAttr)) {
+							if (_hasProp(allData, lowerCaseAttr)) {
 								allData[
 									NODE_ATTR_LOWERCASE_MAP[lowerCaseAttr]
 								] = allData[lowerCaseAttr];
