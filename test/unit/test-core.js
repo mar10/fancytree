@@ -390,9 +390,12 @@ QUnit.test("FancytreeNode class methods", function(assert) {
 //  addChildren: function(children){
 
 	// addNode
+	var prevDebugLevel = $.ui.fancytree.debugLevel;
+	$.ui.fancytree.debugLevel = 0;  // silence error message
 	assert.throws(function(){
 		root.addNode({"title": "my title"}, "undefined mode");
 	}, "Fancytree assertion failed: Invalid mode: undefined mode");
+	$.ui.fancytree.debugLevel = prevDebugLevel;
 
 	nodeAdded = root.addNode({"title": "my title 1", "key": "add-node-1"});
 	assert.equal(root.children.slice(-1)[0].key, "add-node-1", "Node added at the last position");
