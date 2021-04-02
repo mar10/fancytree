@@ -267,7 +267,7 @@
 
 		if (count === 0 && opts.nodata && hideMode) {
 			statusNode = opts.nodata;
-			if ($.isFunction(statusNode)) {
+			if (typeof statusNode === "function") {
 				statusNode = statusNode();
 			}
 			if (statusNode === true) {

@@ -189,6 +189,10 @@
 		return Object.prototype.hasOwnProperty.call(object, property);
 	}
 
+	function _isFunction(obj) {
+		return typeof obj === "function";
+	}
+
 	var _isArray = Array.isArray;
 
 	_assert($.ui, "Fancytree requires jQuery UI (http://jqueryui.com)");
@@ -276,7 +280,7 @@
 			length = arguments.length;
 
 		// Handle case when target is a string or something (possible in deep copy)
-		if (typeof target !== "object" && !$.isFunction(target)) {
+		if (typeof target !== "object" && !_isFunction(target)) {
 			target = {};
 		}
 		if (i === length) {
@@ -538,7 +542,7 @@
 			if (
 				!NODE_ATTR_MAP[name] &&
 				(this.tree.options.copyFunctionsToData ||
-					!$.isFunction(obj[name])) &&
+					!_isFunction(obj[name])) &&
 				!NONE_NODE_DATA_MAP[name]
 			) {
 				// node.data.NAME = obj.NAME
@@ -822,7 +826,7 @@
 			for (name in patch) {
 				if (_hasProp(patch, name)) {
 					v = patch[name];
-					if (!IGNORE_MAP[name] && !$.isFunction(v)) {
+					if (!IGNORE_MAP[name] && !_isFunction(v)) {
 						if (NODE_ATTR_MAP[name]) {
 							this[name] = v;
 						} else {
@@ -935,7 +939,7 @@
 		 * @returns {FancytreeNode[]} array of nodes (may be empty)
 		 */
 		findAll: function(match) {
-			match = $.isFunction(match) ? match : _makeNodeTitleMatcher(match);
+			match = _isFunction(match) ? match : _makeNodeTitleMatcher(match);
 			var res = [];
 			this.visit(function(n) {
 				if (match(n)) {
@@ -952,7 +956,7 @@
 		 * @see FancytreeNode#findAll
 		 */
 		findFirst: function(match) {
-			match = $.isFunction(match) ? match : _makeNodeTitleMatcher(match);
+			match = _isFunction(match) ? match : _makeNodeTitleMatcher(match);
 			var res = null;
 			this.visit(function(n) {
 				if (match(n)) {
@@ -1187,7 +1191,7 @@
 					// node.data += dict.data
 					$.extend(this.data, dict.data);
 				} else if (
-					!$.isFunction(dict[name]) &&
+					!_isFunction(dict[name]) &&
 					!NONE_NODE_DATA_MAP[name]
 				) {
 					// node.data.NAME = dict.NAME
@@ -1345,7 +1349,7 @@
 
 			var val,
 				path = [],
-				isFunc = $.isFunction(part);
+				isFunc = _isFunction(part);
 
 			this.visitParents(function(n) {
 				if (n.parent) {
@@ -2791,7 +2795,7 @@
 			var ctx = this._makeHookContext(contextObject),
 				fn = this[funcName],
 				args = Array.prototype.slice.call(arguments, 2);
-			if (!$.isFunction(fn)) {
+			if (!_isFunction(fn)) {
 				$.error("_callHook('" + funcName + "') is not a function");
 			}
 			args.unshift(ctx);
@@ -4287,16 +4291,16 @@
 					requestId = Date.now();
 
 				// `source` is a callback: use the returned result instead:
-				if ($.isFunction(source)) {
+				if (_isFunction(source)) {
 					source = source.call(tree, { type: "source" }, ctx);
 					_assert(
-						!$.isFunction(source),
+						!_isFunction(source),
 						"source callback must not return another function"
 					);
 				}
 				// `source` is already a promise:
-				if ($.isFunction(source.then)) {
-					// _assert($.isFunction(source.always), "Expected jQuery?");
+				if (_isFunction(source.then)) {
+					// _assert(_isFunction(source.always), "Expected jQuery?");
 					ajaxDfd = source;
 				} else if (source.url) {
 					// `source` is an Ajax options object
@@ -4536,7 +4540,7 @@
 						node._setChildren(children);
 
 						if (tree.options.nodata && children.length === 0) {
-							if ($.isFunction(tree.options.nodata)) {
+							if (_isFunction(tree.options.nodata)) {
 								noDataRes = tree.options.nodata.call(
 									tree,
 									{ type: "nodata" },
@@ -5542,7 +5546,7 @@
 							// See #716, #717
 							$(node.li).addClass(cn.animating); // #717
 
-							if ($.isFunction($(node.ul)[effect.effect])) {
+							if (_isFunction($(node.ul)[effect.effect])) {
 								// tree.debug( "use jquery." + effect.effect + " method" );
 								$(node.ul)[effect.effect]({
 									duration: effect.duration,
@@ -7050,7 +7054,7 @@
 					treeOpt = treeOptions[optionName],
 					nodeOpt = nodeObject[optionName];
 
-				if ($.isFunction(treeOpt)) {
+				if (_isFunction(treeOpt)) {
 					ctx = {
 						node: node,
 						tree: tree,

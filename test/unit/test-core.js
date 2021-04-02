@@ -71,7 +71,7 @@ QUnit.test("Static members", function(assert) {
 	tools.setup(assert);
 	assert.expect(5);
 
-	assert.ok($.isFunction($.ui.fancytree.debug), "ui.fancytree.debug function is defined");
+	assert.ok(tools.isFunction($.ui.fancytree.debug), "ui.fancytree.debug function is defined");
 	assert.equal($(":ui-fancytree").length, 0, "no tree instance exists");
 	// equal($.ui.fancytree._nextId, 1, "next tree instance counter is 1");
 

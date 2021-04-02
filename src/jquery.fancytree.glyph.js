@@ -174,7 +174,7 @@
 			setClass = baseClass + " " + (map._addClass || "");
 
 		// #871 Allow a callback
-		if ($.isFunction(icon)) {
+		if (typeof icon === "function") {
 			icon = icon.call(this, node, span, type);
 		}
 		// node.debug( "setIcon(" + baseClass + ", " + type + "): " + "oldIcon" + " -> " + icon );

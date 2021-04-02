@@ -127,11 +127,11 @@ QUnit.test("Default options (mode='dimm')", function(assert) {
 			var tree = data.tree;
 
 			// Class methods:
-			assert.ok($.isFunction(tree.isFilterActive), "Has tree.isFilterActive()");
-			assert.ok($.isFunction(tree.clearFilter), "Has tree.clearFilter()");
-			assert.ok($.isFunction(tree.filterNodes), "Has tree.filterNodes()");
-			assert.ok($.isFunction(tree.filterBranches), "Has tree.filterBranches()");
-			assert.ok($.isFunction(tree.rootNode.isMatched), "Has node.isMatched()");
+			assert.ok(tools.isFunction(tree.isFilterActive), "Has tree.isFilterActive()");
+			assert.ok(tools.isFunction(tree.clearFilter), "Has tree.clearFilter()");
+			assert.ok(tools.isFunction(tree.filterNodes), "Has tree.filterNodes()");
+			assert.ok(tools.isFunction(tree.filterBranches), "Has tree.filterBranches()");
+			assert.ok(tools.isFunction(tree.rootNode.isMatched), "Has node.isMatched()");
 			// Default options:
 			assert.equal(data.options.filter.autoApply, true, "opts.autoApply ===  true");
 			assert.equal(data.options.filter.counter, true, "opts.counter ===  true");
