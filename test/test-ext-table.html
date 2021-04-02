@@ -119,7 +119,7 @@ SOURCE = [
 		 */
 		$("input[name=search]").on("keyup", function(e){
 			var match = $(this).val();
-			if(e && e.which === $.ui.keyCode.ESCAPE || $.trim(match) === ""){
+			if(e && e.which === $.ui.keyCode.ESCAPE || tools.trim(match) === ""){
 				$("#btnResetSearch").trigger("click");
 				return;
 			}

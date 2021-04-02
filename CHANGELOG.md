@@ -1,4 +1,8 @@
 # 2.38.1-0 / Unreleased
+  * Replace deprecated jQuery functions: `$.isArray()`, `$.isFunction()`,
+    `$.trim()`, `$().click()`
+  * Update to jQuery 3.6
+
 # 2.38.0 / 2021-02-09
   * [Added] #1041 Make assertions more debuggable
   * [Added] #1051 ext-filter Fuzzy matched title segment is not highlighted

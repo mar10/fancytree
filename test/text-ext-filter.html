@@ -79,7 +79,7 @@
 						});
 						opts.mode = $('#hideMode').is(':checked') ? 'hide' : 'dimm';
 
-						if ((e && e.which === $.ui.keyCode.ESCAPE) || $.trim(match) === '') {
+						if ((e && e.which === $.ui.keyCode.ESCAPE) || tools.trim(match) === '') {
 							$('button#btnResetSearch').trigger("click");
 							return;
 						}

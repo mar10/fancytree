@@ -34,6 +34,7 @@
 
 	var isMac = /Mac/.test(navigator.platform),
 		escapeHtml = $.ui.fancytree.escapeHtml,
+		trim = $.ui.fancytree.trim,
 		unescapeHtml = $.ui.fancytree.unescapeHtml;
 
 	/**
@@ -152,7 +153,7 @@
 			$input = $title.find("input.fancytree-edit-input");
 
 		if (instOpts.trim) {
-			$input.val($.trim($input.val()));
+			$input.val(trim($input.val()));
 		}
 		newVal = $input.val();
 

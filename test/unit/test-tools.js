@@ -153,6 +153,11 @@
 		return typeof obj === "function";
 	};
 
+	/** Replacement for deprecated `$.trim`. */
+	TOOLS.trim = function(text) {
+		return text == null ? "" : text.trim();
+	};
+
 	/** Helper to reset environment for asynchronous Fancytree tests. */
 	TOOLS.setup = function(assert) {
 		if (!assert) {

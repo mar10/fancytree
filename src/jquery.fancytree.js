@@ -189,10 +189,17 @@
 		return Object.prototype.hasOwnProperty.call(object, property);
 	}
 
+	/* Replacement for the deprecated `jQuery.isFunction()`. */
 	function _isFunction(obj) {
 		return typeof obj === "function";
 	}
 
+	/* Replacement for the deprecated `jQuery.trim()`. */
+	function _trim(text) {
+		return text == null ? "" : text.trim();
+	}
+
+	/* Replacement for the deprecated `jQuery.isArray()`. */
 	var _isArray = Array.isArray;
 
 	_assert($.ui, "Fancytree requires jQuery UI (http://jqueryui.com)");
@@ -236,7 +243,7 @@
 		var i,
 			v,
 			t,
-			verParts = $.map($.trim(dottedVersion).split("."), function(e) {
+			verParts = $.map(_trim(dottedVersion).split("."), function(e) {
 				return parseInt(e, 10);
 			}),
 			testParts = $.map(
@@ -2421,7 +2428,7 @@
 					}
 				}
 			}
-			this.extraClasses = $.trim(curClasses);
+			this.extraClasses = _trim(curClasses);
 			// this.info("-> toggleClass('" + value + "', " + flag + "): '" + this.extraClasses + "'");
 			return wasAdded;
 		},
@@ -7249,7 +7256,7 @@
 							d.title = d.title.substring(0, iPos);
 						}
 					}
-					d.title = $.trim(d.title);
+					d.title = _trim(d.title);
 
 					// Make sure all fields exist
 					for (i = 0, l = CLASS_ATTRS.length; i < l; i++) {
@@ -7332,6 +7339,11 @@
 				);
 				$.ui.fancytree._extensions[definition.name] = definition;
 			},
+			/** Replacement for the deprecated `jQuery.trim()`.
+			 *
+			 * @param {string} text
+			 */
+			trim: _trim,
 			/** Inverse of escapeHtml().
 			 *
 			 * @param {string} s
