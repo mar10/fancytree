@@ -21,7 +21,7 @@
 	$.ui.fancytree.debugLevel = 3; // silence debug output
 
 	function logEvent(event, data, msg){
-//        var args = $.isArray(args) ? args.join(", ") :
+//        var args = Array.isArray(args) ? args.join(", ") :
 		msg = msg ? ": " + msg : "";
 		$.ui.fancytree.info("Event('" + event.type + "', node=" + data.node + ")" + msg);
 	}

@@ -115,7 +115,7 @@
 				before: !!r.before,
 				after: !!r.after,
 			};
-		} else if ($.isArray(r)) {
+		} else if (Array.isArray(r)) {
 			res = {
 				over: $.inArray("over", r) >= 0,
 				before: $.inArray("before", r) >= 0,

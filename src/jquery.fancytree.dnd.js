@@ -620,7 +620,7 @@
 					if (!r) {
 						// convert null, undefined, false to false
 						res = false;
-					} else if ($.isArray(r)) {
+					} else if (Array.isArray(r)) {
 						// TODO: also accept passing an object of this format directly
 						res = {
 							over: $.inArray("over", r) >= 0,

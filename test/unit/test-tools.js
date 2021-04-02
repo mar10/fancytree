@@ -180,7 +180,7 @@ TOOLS.getNodeTitle = function(key){
 
 /** Convert array of nodes to array to array of node keys. */
 TOOLS.getNodeKeyArray = function(nodeArray){
-	if(!$.isArray(nodeArray)){
+	if(!Array.isArray(nodeArray)){
 		return nodeArray;
 	}
 	return $.map(nodeArray, function(n){ return n.key; });
@@ -228,7 +228,7 @@ TOOLS.addGenericNodes = function(node, options, callback) {
 /** Fake an Ajax request, return a $.Promise. */
 TOOLS.fakeAjaxLoad = function(node, count, delay){
 	delay = delay || 0;
-	if($.isArray(delay)){ // random delay range [min..max]
+	if(Array.isArray(delay)){ // random delay range [min..max]
 		delay = Math.round(delay[0] + Math.random() * (delay[1] - delay[0]));
 	}
 	var dfd = new $.Deferred();

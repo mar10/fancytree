@@ -189,6 +189,8 @@
 		return Object.prototype.hasOwnProperty.call(object, property);
 	}
 
+	var _isArray = Array.isArray;
+
 	_assert($.ui, "Fancytree requires jQuery UI (http://jqueryui.com)");
 
 	function consoleApply(method, args) {
@@ -2357,7 +2359,7 @@
 				}
 			}
 			if (recursive) {
-				if ($.isArray(this.children)) {
+				if (_isArray(this.children)) {
 					dict.children = [];
 					for (i = 0, l = this.children.length; i < l; i++) {
 						node = this.children[i];
@@ -3587,7 +3589,7 @@
 				};
 			}
 			// Convert array of path strings to array of segment arrays
-			if (!$.isArray(keyPathList)) {
+			if (!_isArray(keyPathList)) {
 				keyPathList = [keyPathList];
 			}
 			for (i = 0; i < keyPathList.length; i++) {
@@ -4303,7 +4305,7 @@
 						// Simulate a slow server
 						delay = ajax.debugDelay;
 						delete ajax.debugDelay; // remove debug option
-						if ($.isArray(delay)) {
+						if (_isArray(delay)) {
 							// random delay range [min..max]
 							delay =
 								delay[0] +
@@ -4328,7 +4330,7 @@
 					} else {
 						ajaxDfd = $.ajax(ajax);
 					}
-				} else if ($.isPlainObject(source) || $.isArray(source)) {
+				} else if ($.isPlainObject(source) || _isArray(source)) {
 					// `source` is already a constant dict or list, but we convert
 					// to a thenable for unified processing.
 					// 2020-01-03: refactored.
@@ -4452,9 +4454,8 @@
 								return;
 							}
 							if (
-								$.isArray(res) ||
-								($.isPlainObject(res) &&
-									$.isArray(res.children))
+								_isArray(res) ||
+								($.isPlainObject(res) && _isArray(res.children))
 							) {
 								// Use `ctx.result` if valid
 								// (otherwise use existing data, which may have been modified in-place)
@@ -4510,7 +4511,7 @@
 								"source may only be an object for root nodes (expecting an array of child objects otherwise)"
 							);
 							_assert(
-								$.isArray(data.children),
+								_isArray(data.children),
 								"if an object is passed as source, it must contain a 'children' array (all other properties are added to 'tree.data')"
 							);
 							metaData = data;
@@ -4529,7 +4530,7 @@
 							children = data;
 						}
 						_assert(
-							$.isArray(children),
+							_isArray(children),
 							"expected array of children"
 						);
 						node._setChildren(children);
@@ -6068,7 +6069,7 @@
 							if ($.isPlainObject(source)) {
 								// We got {foo: 'abc', children: [...]}
 								_assert(
-									$.isArray(source.children),
+									_isArray(source.children),
 									"if an object is passed as source, it must contain a 'children' array (all other properties are added to 'tree.data')"
 								);
 								metaData = source;
