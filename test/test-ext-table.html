@@ -120,7 +120,7 @@ SOURCE = [
 		$("input[name=search]").on("keyup", function(e){
 			var match = $(this).val();
 			if(e && e.which === $.ui.keyCode.ESCAPE || $.trim(match) === ""){
-				$("#btnResetSearch").click();
+				$("#btnResetSearch").trigger("click");
 				return;
 			}
 			// Pass text as filter string (will be matched as substring in the node title)

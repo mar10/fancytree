@@ -469,11 +469,11 @@
 					lastQuery = $(this).data("lastQuery");
 
 				if ((e && e.which === $.ui.keyCode.ESCAPE) || query === "") {
-					$("#btnResetSearch").click();
+					$("#btnResetSearch").trigger("click");
 					return;
 				}
 				if (e && e.which === $.ui.keyCode.ENTER && query.length >= 2) {
-					$("#btnSearch").click();
+					$("#btnSearch").trigger("click");
 					return;
 				}
 				if (query === lastQuery || query.length < 2) {
@@ -482,7 +482,7 @@
 				}
 				$(this).data("lastQuery", query);
 				_delay("search", 1, function() {
-					$("#btnSearch").click();
+					$("#btnSearch").trigger("click");
 				});
 				$("#btnResetSearch").attr("disabled", query.length === 0);
 				$("#btnSearch").attr("disabled", query.length < 2);

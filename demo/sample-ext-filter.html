@@ -74,7 +74,7 @@
 			opts.mode = $("#hideMode").is(":checked") ? "hide" : "dimm";
 
 			if(e && e.which === $.ui.keyCode.ESCAPE || $.trim(match) === ""){
-				$("button#btnResetSearch").click();
+				$("button#btnResetSearch").trigger("click");
 				return;
 			}
 			if($("#regex").is(":checked")) {

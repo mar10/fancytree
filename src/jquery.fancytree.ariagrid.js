@@ -155,8 +155,8 @@
 
 	/* .*/
 	function activateEmbeddedLink($td) {
-		// $td.find( "a" )[ 0 ].click();  // does not work (always)?
-		// $td.find( "a" ).click();
+		// $td.find( "a" )[ 0 ].trigger("click");  // does not work (always)?
+		// $td.find( "a" ).trigger("click");
 		var event = document.createEvent("MouseEvent"),
 			a = $td.find("a")[0]; // document.getElementById('nameOfID');
 

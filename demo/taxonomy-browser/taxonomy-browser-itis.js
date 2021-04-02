@@ -358,11 +358,11 @@
 				var query = $.trim($(this).val());
 
 				if ((e && e.which === $.ui.keyCode.ESCAPE) || query === "") {
-					$("#btnResetSearch").click();
+					$("#btnResetSearch").trigger("click");
 					return;
 				}
 				if (e && e.which === $.ui.keyCode.ENTER && query.length >= 2) {
-					$("#btnSearch").click();
+					$("#btnSearch").trigger("click");
 					return;
 				}
 				$("#btnResetSearch").attr("disabled", query.length === 0);

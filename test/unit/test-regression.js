@@ -45,7 +45,7 @@ QUnit.test("issue310: Loading animation never ends using lazy read on empty fold
 		}
 	});
 	var node = $.ui.fancytree.getTree("#tree").getNodeByKey("1");
-	 $("span.fancytree-expander", node.span).click();
+	 $("span.fancytree-expander", node.span).trigger("click");
 });
 
 QUnit.test("issue010: hideCheckbox", function(assert) {
