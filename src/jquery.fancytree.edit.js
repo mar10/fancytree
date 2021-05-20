@@ -13,7 +13,7 @@
  * @date @DATE
  */
 
-(function(factory) {
+(function (factory) {
 	if (typeof define === "function" && define.amd) {
 		// AMD. Register as an anonymous module.
 		define(["jquery", "./jquery.fancytree"], factory);
@@ -25,7 +25,7 @@
 		// Browser globals
 		factory(jQuery);
 	}
-})(function($) {
+})(function ($) {
 	"use strict";
 
 	/*******************************************************************************
@@ -43,7 +43,7 @@
 	 * @alias FancytreeNode#editStart
 	 * @requires Fancytree
 	 */
-	$.ui.fancytree._FancytreeNodeClass.prototype.editStart = function() {
+	$.ui.fancytree._FancytreeNodeClass.prototype.editStart = function () {
 		var $input,
 			node = this,
 			tree = this.tree,
@@ -85,7 +85,7 @@
 		}
 
 		// #116: ext-dnd prevents the blur event, so we have to catch outer clicks
-		$(document).on("mousedown.fancytree-edit", function(event) {
+		$(document).on("mousedown.fancytree-edit", function (event) {
 			if (!$(event.target).hasClass("fancytree-edit-input")) {
 				node.editEnd(true, event);
 			}
@@ -112,10 +112,10 @@
 		// Focus <input> and bind keyboard handler
 		$input
 			.focus()
-			.change(function(event) {
+			.change(function (event) {
 				$input.addClass("fancytree-edit-dirty");
 			})
-			.on("keydown", function(event) {
+			.on("keydown", function (event) {
 				switch (event.which) {
 					case $.ui.keyCode.ESCAPE:
 						node.editEnd(false, event);
@@ -126,7 +126,7 @@
 				}
 				event.stopPropagation();
 			})
-			.blur(function(event) {
+			.blur(function (event) {
 				return node.editEnd(true, event);
 			});
 
@@ -139,7 +139,7 @@
 	 * @alias FancytreeNode#editEnd
 	 * @requires jquery.fancytree.edit.js
 	 */
-	$.ui.fancytree._FancytreeNodeClass.prototype.editEnd = function(
+	$.ui.fancytree._FancytreeNodeClass.prototype.editEnd = function (
 		applyChanges,
 		_event
 	) {
@@ -233,7 +233,7 @@
 	 * @requires jquery.fancytree.edit.js
 	 * @since 2.4
 	 */
-	$.ui.fancytree._FancytreeNodeClass.prototype.editCreateNode = function(
+	$.ui.fancytree._FancytreeNodeClass.prototype.editCreateNode = function (
 		mode,
 		init
 	) {
@@ -255,7 +255,7 @@
 			!this.isExpanded() &&
 			this.hasChildren() !== false
 		) {
-			this.setExpanded().done(function() {
+			this.setExpanded().done(function () {
 				self.editCreateNode(mode, init);
 			});
 			return;
@@ -268,7 +268,7 @@
 			.removeClass("fancytree-hide")
 			.addClass("fancytree-match");
 
-		newNode.makeVisible(/*{noAnimation: true}*/).done(function() {
+		newNode.makeVisible(/*{noAnimation: true}*/).done(function () {
 			$(newNode[tree.statusClassPropName]).addClass("fancytree-edit-new");
 			self.tree.ext.edit.relatedNode = self;
 			newNode.editStart();
@@ -282,7 +282,7 @@
 	 * @alias Fancytree#isEditing
 	 * @requires jquery.fancytree.edit.js
 	 */
-	$.ui.fancytree._FancytreeClass.prototype.isEditing = function() {
+	$.ui.fancytree._FancytreeClass.prototype.isEditing = function () {
 		return this.ext.edit ? this.ext.edit.currentNode : null;
 	};
 
@@ -292,7 +292,7 @@
 	 * @alias FancytreeNode#isEditing
 	 * @requires jquery.fancytree.edit.js
 	 */
-	$.ui.fancytree._FancytreeNodeClass.prototype.isEditing = function() {
+	$.ui.fancytree._FancytreeNodeClass.prototype.isEditing = function () {
 		return this.tree.ext.edit
 			? this.tree.ext.edit.currentNode === this
 			: false;
@@ -323,14 +323,14 @@
 		// Local attributes
 		currentNode: null,
 
-		treeInit: function(ctx) {
+		treeInit: function (ctx) {
 			var tree = ctx.tree;
 
 			this._superApply(arguments);
 
 			this.$container
 				.addClass("fancytree-ext-edit")
-				.on("fancytreebeforeupdateviewport", function(event, data) {
+				.on("fancytreebeforeupdateviewport", function (event, data) {
 					var editNode = tree.isEditing();
 					// When scrolling, the TR may be re-used by another node, so the
 					// active cell marker an
@@ -340,7 +340,7 @@
 					}
 				});
 		},
-		nodeClick: function(ctx) {
+		nodeClick: function (ctx) {
 			var eventStr = $.ui.fancytree.eventToString(ctx.originalEvent),
 				triggerStart = ctx.options.edit.triggerStart;
 
@@ -369,14 +369,14 @@
 			}
 			return this._superApply(arguments);
 		},
-		nodeDblclick: function(ctx) {
+		nodeDblclick: function (ctx) {
 			if ($.inArray("dblclick", ctx.options.edit.triggerStart) >= 0) {
 				ctx.node.editStart();
 				return false;
 			}
 			return this._superApply(arguments);
 		},
-		nodeKeydown: function(ctx) {
+		nodeKeydown: function (ctx) {
 			switch (ctx.originalEvent.which) {
 				case 113: // [F2]
 					if ($.inArray("f2", ctx.options.edit.triggerStart) >= 0) {

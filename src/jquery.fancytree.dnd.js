@@ -13,7 +13,7 @@
  * @date @DATE
  */
 
-(function(factory) {
+(function (factory) {
 	if (typeof define === "function" && define.amd) {
 		// AMD. Register as an anonymous module.
 		define([
@@ -30,7 +30,7 @@
 		// Browser globals
 		factory(jQuery);
 	}
-})(function($) {
+})(function ($) {
 	"use strict";
 
 	/******************************************************************************
@@ -60,7 +60,7 @@
 		// Register proxy-functions for draggable.start/drag/stop
 
 		$.ui.plugin.add("draggable", "connectToFancytree", {
-			start: function(event, ui) {
+			start: function (event, ui) {
 				// 'draggable' was renamed to 'ui-draggable' since jQueryUI 1.10
 				var draggable =
 						$(this).data("ui-draggable") ||
@@ -83,7 +83,7 @@
 					);
 				}
 			},
-			drag: function(event, ui) {
+			drag: function (event, ui) {
 				var ctx,
 					isHelper,
 					logObject,
@@ -173,7 +173,7 @@
 				}
 				// else go ahead with standard event handling
 			},
-			stop: function(event, ui) {
+			stop: function (event, ui) {
 				var logObject,
 					// 'draggable' was renamed to 'ui-draggable' since jQueryUI 1.10:
 					draggable =
@@ -254,7 +254,7 @@
 						// Delegate draggable.start, drag, and stop events to our handler
 						connectToFancytree: true,
 						// Let source tree create the helper element
-						helper: function(event) {
+						helper: function (event) {
 							var $helper,
 								$nodeTag,
 								opts,
@@ -309,7 +309,7 @@
 							// to the parent specified as `appendTo` option
 							return $helper;
 						},
-						start: function(event, ui) {
+						start: function (event, ui) {
 							var sourceNode = ui.helper.data("ftSourceNode");
 							return !!sourceNode; // Abort dragging if no node could be found
 						},
@@ -385,12 +385,12 @@
 			dragLeave: null, // Callback(targetNode, data)
 		},
 
-		treeInit: function(ctx) {
+		treeInit: function (ctx) {
 			var tree = ctx.tree;
 			this._superApply(arguments);
 			// issue #270: draggable eats mousedown events
 			if (tree.options.dnd.dragStart) {
-				tree.$container.on("mousedown", function(event) {
+				tree.$container.on("mousedown", function (event) {
 					//				if( !tree.hasFocus() && ctx.options.dnd.focusOnClick ) {
 					if (ctx.options.dnd.focusOnClick) {
 						// #270
@@ -404,11 +404,9 @@
 							// $(event.target).trigger("focus");
 							// $(event.target).closest(":tabbable").trigger("focus");
 						}
-						setTimeout(function() {
+						setTimeout(function () {
 							// #300
-							$(event.target)
-								.closest(":tabbable")
-								.focus();
+							$(event.target).closest(":tabbable").focus();
 						}, 10);
 					}
 				});
@@ -416,7 +414,7 @@
 			_initDragAndDrop(tree);
 		},
 		/* Display drop marker according to hitMode ('after', 'before', 'over'). */
-		_setDndStatus: function(
+		_setDndStatus: function (
 			sourceNode,
 			targetNode,
 			helper,
@@ -522,7 +520,7 @@
 		 *     _onDragEvent("leave", targetNode, sourceNode, event, ui, draggable);
 		 *     _onDragEvent("stop", sourceNode, null, event, ui, draggable);
 		 */
-		_onDragEvent: function(
+		_onDragEvent: function (
 			eventName,
 			node,
 			otherNode,
@@ -574,9 +572,10 @@
 						if (dnd.smartRevert) {
 							// #567, #593: fix revert position
 							// rect = node.li.getBoundingClientRect();
-							rect = node[
-								ctx.tree.nodeContainerAttrName
-							].getBoundingClientRect();
+							rect =
+								node[
+									ctx.tree.nodeContainerAttrName
+								].getBoundingClientRect();
 							parentRect = $(
 								draggable.options.appendTo
 							)[0].getBoundingClientRect();
@@ -593,7 +592,7 @@
 						// Register global handlers to allow cancel
 						$(document).on(
 							"keydown.fancytree-dnd,mousedown.fancytree-dnd",
-							function(event) {
+							function (event) {
 								// node.tree.debug("dnd global event", event.type, event.which);
 								if (
 									event.type === "keydown" &&
@@ -787,7 +786,7 @@
 			return res;
 		},
 
-		_cancelDrag: function() {
+		_cancelDrag: function () {
 			var dd = $.ui.ddmanager.current;
 			if (dd) {
 				dd.cancel();

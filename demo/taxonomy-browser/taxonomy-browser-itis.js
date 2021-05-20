@@ -13,7 +13,7 @@
 /* global Handlebars */
 /* eslint-disable no-console */
 
-(function($, window, document) {
+(function ($, window, document) {
 	"use strict";
 
 	/*******************************************************************************
@@ -37,7 +37,7 @@
 
 	// Load and compile handlebar templates
 
-	$.get("details.tmpl", function(data) {
+	$.get("details.tmpl", function (data) {
 		tmplDetails = Handlebars.compile(data);
 	});
 
@@ -72,7 +72,7 @@
 			return;
 		}
 		// console.log("Start timer '" + tag + "'");
-		timerMap[tag] = setTimeout(function() {
+		timerMap[tag] = setTimeout(function () {
 			// console.log("Execute timer '" + tag + "'");
 			callback.call(self);
 		}, +ms);
@@ -118,11 +118,9 @@
 
 		_callItis("getFullRecordFromTSN", {
 			tsn: tsn,
-		}).done(function(result) {
+		}).done(function (result) {
 			console.log("updateTsnDetails", result);
-			$("#tsnDetails")
-				.html(tmplDetails(result))
-				.removeClass("busy");
+			$("#tsnDetails").html(tmplDetails(result)).removeClass("busy");
 
 			updateControls();
 		});
@@ -135,13 +133,13 @@
 		var $ol = $("ol.breadcrumb").addClass("busy");
 		_callItis("getFullHierarchyFromTSN", {
 			tsn: tsn,
-		}).done(function(result) {
+		}).done(function (result) {
 			console.log("updateBreadcrumb", result);
 			// Convert to simpler format
 			var list = [];
 			// Display as <OL> list (for Bootstrap breadcrumbs)
 			$ol.empty().removeClass("busy");
-			$.each(result.hierarchyList, function(i, o) {
+			$.each(result.hierarchyList, function (i, o) {
 				if (o.parentTsn === tsn) {
 					return;
 				} // skip direct children
@@ -169,20 +167,20 @@
 			});
 			if (loadTreeNodes) {
 				console.log("updateBreadcrumb - loadKeyPath", list);
-				taxonTree.loadKeyPath("/" + list.join("/"), function(
-					node,
-					status
-				) {
-					// console.log("... updateBreadcrumb - loadKeyPath", status, node);
-					switch (status) {
-						case "loaded":
-							node.makeVisible();
-							break;
-						case "ok":
-							node.setActive();
-							break;
+				taxonTree.loadKeyPath(
+					"/" + list.join("/"),
+					function (node, status) {
+						// console.log("... updateBreadcrumb - loadKeyPath", status, node);
+						switch (status) {
+							case "loaded":
+								node.makeVisible();
+								break;
+							case "ok":
+								node.setActive();
+								break;
+						}
 					}
-				});
+				);
 			}
 		});
 	}
@@ -210,7 +208,7 @@
 				// jsonpCallback: "itis_data",
 				// dataType: "jsonp"
 			})
-			.done(function(result) {
+			.done(function (result) {
 				// console.log("search returned", result);
 				// result.anyMatchList
 				updateControls();
@@ -221,7 +219,7 @@
 	 * Pageload Handler
 	 */
 
-	$(function() {
+	$(function () {
 		$("#taxonTree").fancytree({
 			extensions: ["filter", "glyph", "wide"],
 			filter: {
@@ -243,11 +241,11 @@
 				jsonpCallback: "itis_data",
 				dataType: "jsonp",
 			},
-			init: function(event, data) {
+			init: function (event, data) {
 				updateControls();
 				$(window).trigger("hashchange"); // trigger on initial page load
 			},
-			lazyLoad: function(event, data) {
+			lazyLoad: function (event, data) {
 				data.result = {
 					url: ITIS_URL + "getHierarchyDownFromTSN",
 					data: {
@@ -259,11 +257,11 @@
 					dataType: "jsonp",
 				};
 			},
-			postProcess: function(event, data) {
+			postProcess: function (event, data) {
 				var response = data.response;
 
 				data.node.info(response);
-				data.result = $.map(response.hierarchyList, function(o) {
+				data.result = $.map(response.hierarchyList, function (o) {
 					return (
 						o && {
 							title: o.taxonName,
@@ -274,10 +272,10 @@
 					);
 				});
 			},
-			activate: function(event, data) {
+			activate: function (event, data) {
 				$("#tsnDetails").addClass("busy"); //text("...");
 				updateControls();
-				_delay("showDetails", 1000, function() {
+				_delay("showDetails", 1000, function () {
 					updateTsnDetails(data.node.key);
 					updateBreadcrumb(data.node.key);
 				});
@@ -292,11 +290,11 @@
 			table: {
 				nodeColumnIdx: 1,
 			},
-			postProcess: function(event, data) {
+			postProcess: function (event, data) {
 				var response = data.response;
 
 				data.node.info("pp", response);
-				data.result = $.map(response.anyMatchList, function(o) {
+				data.result = $.map(response.anyMatchList, function (o) {
 					if (!o) {
 						return;
 					}
@@ -308,7 +306,7 @@
 					};
 					res.commonNames = $.map(
 						o.commonNameList.commonNames,
-						function(x) {
+						function (x) {
 							return x && x.commonName
 								? { name: x.commonName, language: x.language }
 								: undefined;
@@ -318,11 +316,11 @@
 				});
 				// console.log("pp2", data.result)
 			},
-			renderColumns: function(event, data) {
+			renderColumns: function (event, data) {
 				var node = data.node,
 					$tdList = $(node.tr).find(">td"),
 					cnList = node.data.commonNames
-						? $.map(node.data.commonNames, function(o) {
+						? $.map(node.data.commonNames, function (o) {
 								return o.name;
 						  })
 						: [];
@@ -332,8 +330,8 @@
 				$tdList.eq(3).text(node.data.matchType);
 				$tdList.eq(4).text(node.data.author);
 			},
-			activate: function(event, data) {
-				_delay("activateNode", 1000, function() {
+			activate: function (event, data) {
+				_delay("activateNode", 1000, function () {
 					updateTsnDetails(data.node.key);
 					updateBreadcrumb(data.node.key);
 				});
@@ -345,7 +343,7 @@
 
 		// Bind a callback that executes when document.location.hash changes.
 		// (This code uses bbq: https://github.com/cowboy/jquery-bbq)
-		$(window).on("hashchange", function(e) {
+		$(window).on("hashchange", function (e) {
 			var tsn = $.bbq.getState("tsn");
 			console.log("bbq tsn", tsn);
 			if (tsn) {
@@ -354,7 +352,7 @@
 		}); // don't trigger now, since we need the the taxonTree root nodes to be loaded first
 
 		$("input[name=query]")
-			.on("keyup", function(e) {
+			.on("keyup", function (e) {
 				var query = $.trim($(this).val());
 
 				if ((e && e.which === $.ui.keyCode.ESCAPE) || query === "") {
@@ -370,7 +368,7 @@
 			})
 			.focus();
 
-		$("#btnResetSearch").click(function(e) {
+		$("#btnResetSearch").click(function (e) {
 			$("#searchResultPane").collapse("hide");
 			$("input[name=query]").val("");
 			searchResultTree.clear();
@@ -380,19 +378,19 @@
 		});
 
 		$("#btnSearch")
-			.click(function(event) {
+			.click(function (event) {
 				$("#searchResultPane").collapse("show");
 				search($("input[name=query]").val());
 			})
 			.attr("disabled", true);
 
-		$("#btnPin").click(function(event) {
-			taxonTree.filterBranches(function(n) {
+		$("#btnPin").click(function (event) {
+			taxonTree.filterBranches(function (n) {
 				return n.isActive();
 			});
 			updateControls();
 		});
-		$("#btnUnpin").click(function(event) {
+		$("#btnUnpin").click(function (event) {
 			taxonTree.clearFilter();
 			updateControls();
 		});

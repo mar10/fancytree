@@ -21,7 +21,7 @@
 /* globals prettyPrint */
 /* eslint-disable no-alert */
 
-(function($) {
+(function ($) {
 	var PLUGIN_NAME = "skinswitcher",
 		defaultOptions = {
 			/**RegEx that returns prefix, tag, and suffix of the CSS href.*/
@@ -34,7 +34,7 @@
 			change: $.noop,
 		},
 		methods = {
-			init: function(options) {
+			init: function (options) {
 				var i,
 					opts = $.extend({}, defaultOptions, options),
 					hrefs = [],
@@ -48,10 +48,10 @@
 				this.data("options", opts);
 				// Find the <link> tag that is used to includes our skin CSS.
 				// Add a class for later access.
-				$.each(opts.choices, function() {
+				$.each(opts.choices, function () {
 					hrefs.push(this.href.toLowerCase());
 				});
-				$("head link").each(function() {
+				$("head link").each(function () {
 					for (i = 0; i < hrefs.length; i++) {
 						if (this.href.toLowerCase().indexOf(hrefs[i]) >= 0) {
 							$link = $(this);
@@ -69,13 +69,13 @@
 					);
 				}
 				//
-				return this.each(function() {
+				return this.each(function () {
 					// Add options to dropdown list
 					var $combo = $(this);
 					$combo
 						.empty()
 						.skinswitcher("addChoices", opts.choices)
-						.change(function(event) {
+						.change(function (event) {
 							var choice = $(":selected", this).data("choice");
 							$("link." + PLUGIN_NAME).attr(
 								"href",
@@ -89,14 +89,14 @@
 					} else if (initialChoice) {
 						// select combobox value to match current <link> tag
 						// decouple this call to prevent IE6 exception
-						setTimeout(function() {
+						setTimeout(function () {
 							$combo.val(initialChoice.value);
 							opts.change(initialChoice);
 						}, 100);
 					}
 				});
 			},
-			option: function(name, value) {
+			option: function (name, value) {
 				var opts = this.data("options");
 				if (typeof value !== "undefined") {
 					opts[name] = value;
@@ -104,12 +104,12 @@
 				}
 				return opts[name];
 			},
-			addChoices: function(choices) {
+			addChoices: function (choices) {
 				var $combo = $(this);
 				if ($.isPlainObject(choices)) {
 					choices = [choices];
 				}
-				$.each(choices, function(i, choice) {
+				$.each(choices, function (i, choice) {
 					var $opt = $("<option>", {
 						text: choice.name,
 						value: choice.value,
@@ -118,21 +118,17 @@
 				});
 				return this;
 			},
-			change: function(value) {
-				$(this)
-					.val(value)
-					.change();
+			change: function (value) {
+				$(this).val(value).change();
 				return this;
 			},
-			reset: function() {
-				$(this)
-					.val("")
-					.change();
+			reset: function () {
+				$(this).val("").change();
 				return this;
 			},
 		};
 
-	$.fn[PLUGIN_NAME] = function(method) {
+	$.fn[PLUGIN_NAME] = function (method) {
 		// Method calling logic
 		if (methods[method]) {
 			return methods[method].apply(
@@ -154,20 +150,20 @@
  * Taken from http://stackoverflow.com/a/4911660/19166
  * By Felix Kling
  */
-(function($) {
+(function ($) {
 	var SAMPLE_BUTTON_DEFAULTS = {
 		id: undefined,
 		label: "Sample",
 		newline: true,
-		code: function() {
+		code: function () {
 			alert("not implemented");
 		},
 	};
 
-	$.fn.clickToggle = function(func1, func2) {
+	$.fn.clickToggle = function (func1, func2) {
 		var funcs = [func1, func2];
 		this.data("toggleclicked", 0);
-		this.click(function() {
+		this.click(function () {
 			var data = $(this).data(),
 				tc = data.toggleclicked;
 			$.proxy(funcs[tc], this)();
@@ -176,20 +172,19 @@
 		return this;
 	};
 
-	window.getUrlVars = function() {
+	window.getUrlVars = function () {
 		var vars = {};
 
-		window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(
-			m,
-			key,
-			value
-		) {
-			vars[key] = value;
-		});
+		window.location.href.replace(
+			/[?&]+([^=&]+)=([^&]*)/gi,
+			function (m, key, value) {
+				vars[key] = value;
+			}
+		);
 		return vars;
 	};
 
-	window.getUrlParam = function(parameter, defaultvalue) {
+	window.getUrlParam = function (parameter, defaultvalue) {
 		var urlparameter = defaultvalue;
 
 		if (window.location.href.indexOf(parameter) > -1) {
@@ -198,7 +193,7 @@
 		return urlparameter;
 	};
 
-	window.addSampleButton = function(options) {
+	window.addSampleButton = function (options) {
 		var sourceCode,
 			opts = $.extend({}, SAMPLE_BUTTON_DEFAULTS, options),
 			$buttonBar = $("#sampleButtons"),
@@ -211,7 +206,7 @@
 			title: opts.tooltip,
 			text: opts.label,
 		})
-			.click(function(e) {
+			.click(function (e) {
 				e.preventDefault();
 				opts.code();
 			})
@@ -223,7 +218,7 @@
 			class: "showCode",
 		})
 			.appendTo($container)
-			.click(function(e) {
+			.click(function (e) {
 				try {
 					prettyPrint();
 				} catch (e2) {
@@ -275,13 +270,13 @@
 			$source = $("#sourceCode");
 
 		$("#codeExample").clickToggle(
-			function() {
+			function () {
 				$source.show("fast");
 				if (!this.old) {
 					this.old = $(this).html();
 					$.get(
 						this.href,
-						function(code) {
+						function (code) {
 							// Remove <!-- Start_Exclude [...] End_Exclude --> blocks:
 							code = code.replace(
 								/<!-- Start_Exclude(.|\n|\r)*?End_Exclude -->/gi,
@@ -302,7 +297,7 @@
 				}
 				$(this).html("Hide source code");
 			},
-			function() {
+			function () {
 				$(this).html(this.old);
 				$source.hide("fast");
 			}
@@ -328,7 +323,7 @@
 		}
 	}
 
-	$(function() {
+	$(function () {
 		// Log to Google Analytics, when not running locally
 		if (document.URL.toLowerCase().indexOf("wwwendt.de/") >= 0) {
 			/* eslint-disable */
@@ -404,7 +399,7 @@
 						href: "skin-lion/ui.fancytree.css",
 					},
 				],
-				change: function(choice) {
+				change: function (choice) {
 					// console.log("choice: " + choice.value)
 					$("#connectorsSwitch").toggle(choice.value !== "xp");
 				},
@@ -415,7 +410,7 @@
 				)
 			);
 
-		$("input[name=cbConnectors]").on("change", function(e) {
+		$("input[name=cbConnectors]").on("change", function (e) {
 			$(".fancytree-container").toggleClass(
 				"fancytree-connectors",
 				$(this).is(":checked")

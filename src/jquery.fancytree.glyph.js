@@ -13,7 +13,7 @@
  * @date @DATE
  */
 
-(function(factory) {
+(function (factory) {
 	if (typeof define === "function" && define.amd) {
 		// AMD. Register as an anonymous module.
 		define(["jquery", "./jquery.fancytree"], factory);
@@ -25,7 +25,7 @@
 		// Browser globals
 		factory(jQuery);
 	}
-})(function($) {
+})(function ($) {
 	"use strict";
 
 	/******************************************************************************
@@ -219,7 +219,7 @@
 			map: {},
 		},
 
-		treeInit: function(ctx) {
+		treeInit: function (ctx) {
 			var tree = ctx.tree,
 				opts = ctx.options.glyph;
 
@@ -235,7 +235,7 @@
 			this._superApply(arguments);
 			tree.$container.addClass("fancytree-ext-glyph");
 		},
-		nodeRenderStatus: function(ctx) {
+		nodeRenderStatus: function (ctx) {
 			var checkbox,
 				icon,
 				res,
@@ -267,9 +267,7 @@
 			}
 
 			if (node.tr) {
-				span = $("td", node.tr)
-					.find(".fancytree-checkbox")
-					.get(0);
+				span = $("td", node.tr).find(".fancytree-checkbox").get(0);
 			} else {
 				span = $span.children(".fancytree-checkbox").get(0);
 			}
@@ -317,7 +315,7 @@
 			}
 			return res;
 		},
-		nodeSetStatus: function(ctx, status, message, details) {
+		nodeSetStatus: function (ctx, status, message, details) {
 			var res,
 				span,
 				opts = ctx.options.glyph,

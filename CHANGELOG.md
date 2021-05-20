@@ -2,6 +2,7 @@
   * Replace deprecated jQuery functions: `$.isArray()`, `$.isFunction()`,
     `$.trim()`, `$().click()`
   * Update to jQuery 3.6
+  * Update formatter to [Prettier 2.0](https://prettier.io/blog/2020/03/21/2.0.0.html)
 
 # 2.38.0 / 2021-02-09
   * [Added] #1041 Make assertions more debuggable

@@ -13,7 +13,7 @@
  * @date @DATE
  */
 
-(function(factory) {
+(function (factory) {
 	if (typeof define === "function" && define.amd) {
 		// AMD. Register as an anonymous module.
 		define(["jquery", "./jquery.fancytree"], factory);
@@ -25,7 +25,7 @@
 		// Browser globals
 		factory(jQuery);
 	}
-})(function($) {
+})(function ($) {
 	"use strict";
 
 	/******************************************************************************
@@ -46,7 +46,7 @@
 
 	/* Show/hide all rows that are structural descendants of `parent`. */
 	function setChildRowVisibility(parent, flag) {
-		parent.visit(function(node) {
+		parent.visit(function (node) {
 			var tr = node.tr;
 			// currentFlag = node.hide ? false : flag; // fix for ext-filter
 			if (tr) {
@@ -99,7 +99,7 @@
 		// Overide virtual methods for this extension.
 		// `this`       : is this extension object
 		// `this._super`: the virtual function that was overriden (member of prev. extension or Fancytree)
-		treeInit: function(ctx) {
+		treeInit: function (ctx) {
 			var i,
 				n,
 				$row,
@@ -220,17 +220,17 @@
 					.attr("aria-readonly", true);
 			}
 		},
-		nodeRemoveChildMarkup: function(ctx) {
+		nodeRemoveChildMarkup: function (ctx) {
 			var node = ctx.node;
 			//		node.debug("nodeRemoveChildMarkup()");
-			node.visit(function(n) {
+			node.visit(function (n) {
 				if (n.tr) {
 					$(n.tr).remove();
 					n.tr = null;
 				}
 			});
 		},
-		nodeRemoveMarkup: function(ctx) {
+		nodeRemoveMarkup: function (ctx) {
 			var node = ctx.node;
 			//		node.debug("nodeRemoveMarkup()");
 			if (node.tr) {
@@ -240,7 +240,7 @@
 			this.nodeRemoveChildMarkup(ctx);
 		},
 		/* Override standard render. */
-		nodeRender: function(ctx, force, deep, collapsed, _recursive) {
+		nodeRender: function (ctx, force, deep, collapsed, _recursive) {
 			var children,
 				firstTr,
 				i,
@@ -348,7 +348,7 @@
 				prevTr = node.tr || null;
 				firstTr = tree.tbody.firstChild;
 				// Iterate over all descendants
-				node.visit(function(n) {
+				node.visit(function (n) {
 					if (n.tr) {
 						if (
 							!n.parent.expanded &&
@@ -372,7 +372,7 @@
 			// 	this.nodeRenderStatus(ctx);
 			// }
 		},
-		nodeRenderTitle: function(ctx, title) {
+		nodeRenderTitle: function (ctx, title) {
 			var $cb,
 				res,
 				tree = ctx.tree,
@@ -423,7 +423,7 @@
 			}
 			return res;
 		},
-		nodeRenderStatus: function(ctx) {
+		nodeRenderStatus: function (ctx) {
 			var indent,
 				node = ctx.node,
 				opts = ctx.options;
@@ -440,7 +440,7 @@
 			}
 		},
 		/* Expand node, return Deferred.promise. */
-		nodeSetExpanded: function(ctx, flag, callOpts) {
+		nodeSetExpanded: function (ctx, flag, callOpts) {
 			// flag defaults to true
 			flag = flag !== false;
 
@@ -470,7 +470,7 @@
 						ctx.node
 							.getLastChild()
 							.scrollIntoView(true, { topNode: ctx.node })
-							.always(function() {
+							.always(function () {
 								if (!callOpts.noEvents) {
 									ctx.tree._triggerNodeEvent(
 										flag ? "expand" : "collapse",
@@ -500,15 +500,15 @@
 			}
 			// Call base-expand with disabled events and animation
 			this._super(ctx, flag, subOpts)
-				.done(function() {
+				.done(function () {
 					_afterExpand(true);
 				})
-				.fail(function() {
+				.fail(function () {
 					_afterExpand(false);
 				});
 			return dfd.promise();
 		},
-		nodeSetStatus: function(ctx, status, message, details) {
+		nodeSetStatus: function (ctx, status, message, details) {
 			if (status === "ok") {
 				var node = ctx.node,
 					firstChild = node.children ? node.children[0] : null;
@@ -518,11 +518,11 @@
 			}
 			return this._superApply(arguments);
 		},
-		treeClear: function(ctx) {
+		treeClear: function (ctx) {
 			this.nodeRemoveChildMarkup(this._makeHookContext(this.rootNode));
 			return this._superApply(arguments);
 		},
-		treeDestroy: function(ctx) {
+		treeDestroy: function (ctx) {
 			this.$container.find("tbody").empty();
 			if (this.$source) {
 				this.$source.removeClass("fancytree-helper-hidden");

@@ -37,14 +37,14 @@ function copyNode(node, deep) {
  * Class TreeModel
  * Simple tree data structure
  */
-var TreeModel = function() {
+var TreeModel = function () {
 	this.children = [];
 	this.keyMap = {};
 };
-TreeModel.prototype.find = function(key) {
+TreeModel.prototype.find = function (key) {
 	return this.keyMap[key];
 };
-TreeModel.prototype.append = function(node, obj) {
+TreeModel.prototype.append = function (node, obj) {
 	// Calling append(obj) -> append(root, obj)
 	if (obj === undefined) {
 		obj = node;
@@ -60,7 +60,7 @@ TreeModel.prototype.append = function(node, obj) {
 	obj.parent = node;
 	return obj;
 };
-TreeModel.prototype.remove = function(key) {
+TreeModel.prototype.remove = function (key) {
 	var node = this.keyMap[key],
 		parent = node.parent,
 		idx = parent.children.indexOf(node);
@@ -81,7 +81,7 @@ _tree.append(n, { title: "node 2.1", key: "2.1" });
 /**
  * Ajax server
  */
-http.createServer(function(request, response) {
+http.createServer(function (request, response) {
 	var i,
 		args = url.parse(request.url, true),
 		query = args.query,

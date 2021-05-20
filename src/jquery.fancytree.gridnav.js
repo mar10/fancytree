@@ -13,7 +13,7 @@
  * @date @DATE
  */
 
-(function(factory) {
+(function (factory) {
 	if (typeof define === "function" && define.amd) {
 		// AMD. Register as an anonymous module.
 		define([
@@ -29,7 +29,7 @@
 		// Browser globals
 		factory(jQuery);
 	}
-})(function($) {
+})(function ($) {
 	"use strict";
 
 	/*******************************************************************************
@@ -56,7 +56,7 @@
 			td = $td.get(0),
 			idx = 0;
 
-		$tr.children().each(function() {
+		$tr.children().each(function () {
 			if (this === td) {
 				return false;
 			}
@@ -72,7 +72,7 @@
 			res = null,
 			idx = 0;
 
-		$tr.children().each(function() {
+		$tr.children().each(function () {
 			if (idx >= colIdx) {
 				res = $(this);
 				return false;
@@ -134,7 +134,7 @@
 			handleCursorKeys: true, // Allow UP/DOWN in inputs to move to prev/next node
 		},
 
-		treeInit: function(ctx) {
+		treeInit: function (ctx) {
 			// gridnav requires the table extension to be loaded before itself
 			this._requireExtension("table", true, true);
 			this._superApply(arguments);
@@ -142,7 +142,7 @@
 			this.$container.addClass("fancytree-ext-gridnav");
 
 			// Activate node if embedded input gets focus (due to a click)
-			this.$container.on("focusin", function(event) {
+			this.$container.on("focusin", function (event) {
 				var ctx2,
 					node = $.ui.fancytree.getNode(event.target);
 
@@ -153,7 +153,7 @@
 				}
 			});
 		},
-		nodeSetActive: function(ctx, flag, callOpts) {
+		nodeSetActive: function (ctx, flag, callOpts) {
 			var $outer,
 				opts = ctx.options.gridnav,
 				node = ctx.node,
@@ -167,9 +167,7 @@
 			if (flag) {
 				if (ctx.options.titlesTabbable) {
 					if (!triggeredByInput) {
-						$(node.span)
-							.find("span.fancytree-title")
-							.focus();
+						$(node.span).find("span.fancytree-title").focus();
 						node.setFocus();
 					}
 					// If one node is tabbable, the container no longer needs to be
@@ -179,14 +177,11 @@
 					// Set focus to input sub input (if node was clicked, but not
 					// when TAB was pressed )
 					$outer = $(node.tr || node.span);
-					$outer
-						.find(":input:enabled")
-						.first()
-						.focus();
+					$outer.find(":input:enabled").first().focus();
 				}
 			}
 		},
-		nodeKeydown: function(ctx) {
+		nodeKeydown: function (ctx) {
 			var inputType,
 				handleKeys,
 				$td,

@@ -15,7 +15,7 @@
 
 // Allow to use multiple var statements inside a function
 
-(function(factory) {
+(function (factory) {
 	if (typeof define === "function" && define.amd) {
 		// AMD. Register as an anonymous module.
 		define([
@@ -31,7 +31,7 @@
 		// Browser globals
 		factory(jQuery);
 	}
-})(function($) {
+})(function ($) {
 	"use strict";
 
 	/******************************************************************************
@@ -65,7 +65,7 @@
 		// Overide virtual methods for this extension.
 		// `this`	   : is this extension object
 		// `this._super`: the virtual function that was overriden (member of prev. extension or Fancytree)
-		treeInit: function(ctx) {
+		treeInit: function (ctx) {
 			this._requireExtension("table", true, true);
 			// 'fixed' requires the table extension to be loaded before itself
 
@@ -121,18 +121,12 @@
 				$head.remove();
 			}
 
-			$topLeftTable.find("tr").each(function(idx) {
-				$(this)
-					.find("th")
-					.slice(fixedColCount)
-					.remove();
+			$topLeftTable.find("tr").each(function (idx) {
+				$(this).find("th").slice(fixedColCount).remove();
 			});
 
-			$topRightTable.find("tr").each(function(idx) {
-				$(this)
-					.find("th")
-					.slice(0, fixedColCount)
-					.remove();
+			$topRightTable.find("tr").each(function (idx) {
+				$(this).find("th").slice(0, fixedColCount).remove();
 			});
 
 			this.$fixedWrapper = $tableWrapper;
@@ -144,14 +138,14 @@
 				$bottomRightWrapper.append($bottomRightTable)
 			);
 
-			$bottomRightTable.on("keydown", function(evt) {
+			$bottomRightTable.on("keydown", function (evt) {
 				var node = tree.focusNode,
 					ctx = tree._makeHookContext(node || tree, evt),
 					res = tree._callHook("nodeKeydown", ctx);
 				return res;
 			});
 
-			$bottomRightTable.on("click dblclick", "tr", function(evt) {
+			$bottomRightTable.on("click dblclick", "tr", function (evt) {
 				var $trLeft = $(this),
 					$trRight = $trLeft.data(fcn.counterpart),
 					node = $.ui.fancytree.getNode($trRight),
@@ -200,7 +194,7 @@
 						" table tr, ." +
 						fcn.bottomLeft +
 						" table tr",
-					function(evt) {
+					function (evt) {
 						var $tr = $(this),
 							$trOther = $tr.data(fcn.counterpart);
 						$tr.addClass(fcn.hover);
@@ -214,7 +208,7 @@
 						" table tr, ." +
 						fcn.bottomLeft +
 						" table tr",
-					function(evt) {
+					function (evt) {
 						var $tr = $(this),
 							$trOther = $tr.data(fcn.counterpart);
 						$tr.removeClass(fcn.hover);
@@ -222,22 +216,25 @@
 					}
 				);
 
-			$bottomLeftWrapper.on("mousewheel DOMMouseScroll", function(event) {
-				var $this = $(this),
-					newScroll = $this.scrollTop(),
-					scrollUp =
-						event.originalEvent.wheelDelta > 0 ||
-						event.originalEvent.detail < 0;
+			$bottomLeftWrapper.on(
+				"mousewheel DOMMouseScroll",
+				function (event) {
+					var $this = $(this),
+						newScroll = $this.scrollTop(),
+						scrollUp =
+							event.originalEvent.wheelDelta > 0 ||
+							event.originalEvent.detail < 0;
 
-				newScroll += scrollUp
-					? -options.scrollSpeed
-					: options.scrollSpeed;
-				$this.scrollTop(newScroll);
-				$bottomRightWrapper.scrollTop(newScroll);
-				event.preventDefault();
-			});
+					newScroll += scrollUp
+						? -options.scrollSpeed
+						: options.scrollSpeed;
+					$this.scrollTop(newScroll);
+					$bottomRightWrapper.scrollTop(newScroll);
+					event.preventDefault();
+				}
+			);
 
-			$bottomRightWrapper.scroll(function() {
+			$bottomRightWrapper.scroll(function () {
 				var $this = $(this),
 					scrollLeft = $this.scrollLeft(),
 					scrollTop = $this.scrollTop();
@@ -256,12 +253,12 @@
 			$.ui.fancytree.overrideMethod(
 				$.ui.fancytree._FancytreeNodeClass.prototype,
 				"scrollIntoView",
-				function(effects, options) {
+				function (effects, options) {
 					var $prevContainer = tree.$container;
 					tree.$container = $bottomRightWrapper;
 					return this._super
 						.apply(this, arguments)
-						.always(function() {
+						.always(function () {
 							tree.$container = $prevContainer;
 						});
 				}
@@ -269,11 +266,11 @@
 			return res;
 		},
 
-		treeLoad: function(ctx) {
+		treeLoad: function (ctx) {
 			var self = this,
 				res = this._superApply(arguments);
 
-			res.done(function() {
+			res.done(function () {
 				self.ext.fixed._adjustLayout.call(self);
 				if (self.options.fixed.resizable) {
 					self.ext.fixed._makeTableResizable();
@@ -282,7 +279,7 @@
 			return res;
 		},
 
-		_makeTableResizable: function() {
+		_makeTableResizable: function () {
 			var $wrapper = this.$fixedWrapper,
 				fcn = this.options.fixed.classNames,
 				$topLeftWrapper = $wrapper.find("div." + fcn.topLeft),
@@ -293,14 +290,14 @@
 			function _makeResizable($table) {
 				$table.resizable({
 					handles: "e",
-					resize: function(evt, ui) {
+					resize: function (evt, ui) {
 						var width = Math.max($table.width(), ui.size.width);
 						$bottomLeftWrapper.css("width", width);
 						$topLeftWrapper.css("width", width);
 						$bottomRightWrapper.css("left", width);
 						$topRightWrapper.css("left", width);
 					},
-					stop: function() {
+					stop: function () {
 						$table.css("width", "100%");
 					},
 				});
@@ -314,11 +311,11 @@
 		//	nodeFixOrder: function(ctx) {
 		//	},
 
-		nodeLoadChildren: function(ctx, source) {
+		nodeLoadChildren: function (ctx, source) {
 			return this._superApply(arguments);
 		},
 
-		nodeRemoveChildMarkup: function(ctx) {
+		nodeRemoveChildMarkup: function (ctx) {
 			var node = ctx.node;
 
 			function _removeChild(elem) {
@@ -340,7 +337,7 @@
 			return this._superApply(arguments);
 		},
 
-		nodeRemoveMarkup: function(ctx) {
+		nodeRemoveMarkup: function (ctx) {
 			var node = ctx.node;
 
 			if (node.trRight) {
@@ -349,7 +346,7 @@
 			return this._superApply(arguments);
 		},
 
-		nodeSetActive: function(ctx, flag, callOpts) {
+		nodeSetActive: function (ctx, flag, callOpts) {
 			var node = ctx.node,
 				cn = this.options._classNames;
 
@@ -361,11 +358,11 @@
 			return this._superApply(arguments);
 		},
 
-		nodeKeydown: function(ctx) {
+		nodeKeydown: function (ctx) {
 			return this._superApply(arguments);
 		},
 
-		nodeSetFocus: function(ctx, flag) {
+		nodeSetFocus: function (ctx, flag) {
 			var node = ctx.node,
 				cn = this.options._classNames;
 
@@ -375,7 +372,7 @@
 			return this._superApply(arguments);
 		},
 
-		nodeRender: function(ctx, force, deep, collapsed, _recursive) {
+		nodeRender: function (ctx, force, deep, collapsed, _recursive) {
 			var res = this._superApply(arguments),
 				node = ctx.node,
 				isRootNode = !node.parent;
@@ -411,14 +408,8 @@
 					trRight.ftnode = node;
 					node.trRight = trRight;
 
-					$trLeft
-						.find("td")
-						.slice(fixedColCount)
-						.remove();
-					$trRight
-						.find("td")
-						.slice(0, fixedColCount)
-						.remove();
+					$trLeft.find("td").slice(fixedColCount).remove();
+					$trRight.find("td").slice(0, fixedColCount).remove();
 					$trLeft.data(fcn.counterpart, $trRight);
 					$trRight.data(fcn.counterpart, $trLeft);
 				}
@@ -427,11 +418,11 @@
 			return res;
 		},
 
-		nodeRenderTitle: function(ctx, title) {
+		nodeRenderTitle: function (ctx, title) {
 			return this._superApply(arguments);
 		},
 
-		nodeRenderStatus: function(ctx) {
+		nodeRenderStatus: function (ctx) {
 			var res = this._superApply(arguments),
 				node = ctx.node;
 
@@ -451,7 +442,7 @@
 			return res;
 		},
 
-		nodeSetExpanded: function(ctx, flag, callOpts) {
+		nodeSetExpanded: function (ctx, flag, callOpts) {
 			var res,
 				self = this,
 				node = ctx.node,
@@ -468,8 +459,8 @@
 			$rightTr.toggleClass(cn.expanded, !!flag);
 			if (flag && !node.isExpanded()) {
 				res = this._superApply(arguments);
-				res.done(function() {
-					node.visit(function(child) {
+				res.done(function () {
+					node.visit(function (child) {
 						var $trLeft = $(child.tr),
 							$trRight = $trLeft.data(fcn.counterpart);
 
@@ -483,7 +474,7 @@
 					self.ext.fixed._adjustWrapperLayout();
 				});
 			} else if (!flag && node.isExpanded()) {
-				node.visit(function(child) {
+				node.visit(function (child) {
 					var $trLeft = $(child.tr),
 						$trRight = $trLeft.data(fcn.counterpart);
 					if ($trRight) {
@@ -502,49 +493,43 @@
 			return res;
 		},
 
-		nodeSetStatus: function(ctx, status, message, details) {
+		nodeSetStatus: function (ctx, status, message, details) {
 			return this._superApply(arguments);
 		},
 
-		treeClear: function(ctx) {
+		treeClear: function (ctx) {
 			var tree = ctx.tree,
 				$table = tree.widget.element,
 				$wrapper = this.$fixedWrapper,
 				fcn = this.options.fixed.classNames;
 
-			$table
-				.find("tr, td, th, thead")
-				.removeClass(fcn.hidden)
-				.css({
-					"min-width": "auto",
-					height: "auto",
-				});
+			$table.find("tr, td, th, thead").removeClass(fcn.hidden).css({
+				"min-width": "auto",
+				height: "auto",
+			});
 			$wrapper.empty().append($table);
 			return this._superApply(arguments);
 		},
 
-		treeRegisterNode: function(ctx, add, node) {
+		treeRegisterNode: function (ctx, add, node) {
 			return this._superApply(arguments);
 		},
 
-		treeDestroy: function(ctx) {
+		treeDestroy: function (ctx) {
 			var tree = ctx.tree,
 				$table = tree.widget.element,
 				$wrapper = this.$fixedWrapper,
 				fcn = this.options.fixed.classNames;
 
-			$table
-				.find("tr, td, th, thead")
-				.removeClass(fcn.hidden)
-				.css({
-					"min-width": "auto",
-					height: "auto",
-				});
+			$table.find("tr, td, th, thead").removeClass(fcn.hidden).css({
+				"min-width": "auto",
+				height: "auto",
+			});
 			$wrapper.empty().append($table);
 			return this._superApply(arguments);
 		},
 
-		_adjustColWidths: function() {
+		_adjustColWidths: function () {
 			if (this.options.fixed.adjustColWidths) {
 				this.options.fixed.adjustColWidths.call(this);
 				return;
@@ -561,7 +546,7 @@
 				var $trTop = $topWrapper.find("thead tr").first(),
 					$trBottom = $bottomWrapper.find("tbody tr").first();
 
-				$trTop.find("th").each(function(idx) {
+				$trTop.find("th").each(function (idx) {
 					var $thTop = $(this),
 						$tdBottom = $trBottom.find("td").eq(idx),
 						thTopWidth = $thTop.width(),
@@ -588,7 +573,7 @@
 			_adjust($trWrapper, $brWrapper);
 		},
 
-		_adjustRowHeight: function($tr1, $tr2) {
+		_adjustRowHeight: function ($tr1, $tr2) {
 			var fcn = this.options.fixed.classNames;
 			if (!$tr2) {
 				$tr2 = $tr1.data(fcn.counterpart);
@@ -602,7 +587,7 @@
 			$tr2.css("height", newHeight + 1);
 		},
 
-		_adjustWrapperLayout: function() {
+		_adjustWrapperLayout: function () {
 			var $wrapper = this.$fixedWrapper,
 				fcn = this.options.fixed.classNames,
 				$topLeftWrapper = $wrapper.find("div." + fcn.topLeft),
@@ -652,7 +637,7 @@
 			});
 		},
 
-		_adjustLayout: function() {
+		_adjustLayout: function () {
 			var self = this,
 				$wrapper = this.$fixedWrapper,
 				fcn = this.options.fixed.classNames,
@@ -661,7 +646,7 @@
 				$bottomLeftWrapper = $wrapper.find("div." + fcn.bottomLeft);
 			// $bottomRightWrapper = $wrapper.find("div." + fcn.bottomRight)
 
-			$topLeftWrapper.find("table tr").each(function(idx) {
+			$topLeftWrapper.find("table tr").each(function (idx) {
 				var $trRight = $topRightWrapper.find("tr").eq(idx);
 				self.ext.fixed._adjustRowHeight($(this), $trRight);
 			});
@@ -669,7 +654,7 @@
 			$bottomLeftWrapper
 				.find("table tbody")
 				.find("tr")
-				.each(function(idx) {
+				.each(function (idx) {
 					// var $trRight = $bottomRightWrapper.find("tbody").find("tr").eq(idx);
 					self.ext.fixed._adjustRowHeight($(this));
 				});
