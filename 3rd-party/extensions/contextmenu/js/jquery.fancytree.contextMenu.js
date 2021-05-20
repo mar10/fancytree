@@ -49,7 +49,10 @@
 									actions(node, action, options);
 								} else if ($.isPlainObject(actions)) {
 									if (
-										actions.hasOwnProperty(action) &&
+										Object.prototype.hasOwnProperty.call(
+											actions,
+											action
+										) &&
 										$.isFunction(actions[action])
 									) {
 										actions[action](node, options);
