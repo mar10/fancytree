@@ -30,22 +30,22 @@
 })(function($) {
 	"use strict";
 
-	// prevent duplicate loading
+	// Prevent duplicate loading.
 	if ($.ui && $.ui.fancytree) {
 		$.ui.fancytree.warn("Fancytree: ignored duplicate include");
 		return;
 	}
 
-	/******************************************************************************
+	/***************************************************************************
 	 * Private functions and variables
 	 */
 
 	var i,
 		attr,
-		FT = null, // initialized below
-		TEST_IMG = new RegExp(/\.|\//), // strings are considered image urls if they contain '.' or '/'
-		REX_HTML = /[&<>"'/]/g, // Escape those characters
-		REX_TOOLTIP = /[<>"'/]/g, // Don't escape `&` in tooltips
+		FT = null, // Initialized below
+		TEST_IMG = new RegExp(/\.|\//), // Strings are considered image URLs if they contain `.` or `/`.
+		REX_HTML = /[&<>"'/]/g, // Escape those characters.
+		REX_TOOLTIP = /[<>"'/]/g, // Don't escape `&` in tooltips.
 		RECURSIVE_REQUEST_ERROR = "$recursive_request",
 		INVALID_REQUEST_TARGET_ERROR = "$request_target_invalid",
 		ENTITY_MAP = {
@@ -62,7 +62,7 @@
 			9: "tab",
 			10: "return",
 			13: "return",
-			// 16: null, 17: null, 18: null,  // ignore shift, ctrl, alt
+			// 16: null, 17: null, 18: null,  // Ignore shift, ctrl, alt.
 			19: "pause",
 			20: "capslock",
 			27: "esc",
@@ -79,7 +79,7 @@
 			46: "del",
 			59: ";",
 			61: "=",
-			// 91: null, 93: null,  // ignore left and right meta
+			// 91: null, 93: null,  // Ignore left and right meta.
 			96: "0",
 			97: "1",
 			98: "2",
@@ -130,21 +130,23 @@
 			93: "meta",
 		},
 		MOUSE_BUTTONS = { 0: "", 1: "left", 2: "middle", 3: "right" },
-		// Boolean attributes that can be set with equivalent class names in the LI tags
-		// Note: v2.23: checkbox and hideCheckbox are *not* in this list
+		// Boolean attributes that can be set with equivalent class names in the
+		// LI tags.
+		// Note: v2.23: checkbox and hideCheckbox are *not* in this list.
 		CLASS_ATTRS = "active expanded focus folder lazy radiogroup selected unselectable unselectableIgnore".split(
 			" "
 		),
 		CLASS_ATTR_MAP = {},
-		// Top-level Fancytree attributes, that can be set by dict
+		// Top-level Fancytree attributes that can be set by dict
 		TREE_ATTRS = "columns types".split(" "),
 		// TREE_ATTR_MAP = {},
-		// Top-level FancytreeNode attributes, that can be set by dict
+		// Top-level FancytreeNode attributes that can be set by dict
 		NODE_ATTRS = "checkbox expanded extraClasses folder icon iconTooltip key lazy partsel radiogroup refKey selected statusNodeType title tooltip type unselectable unselectableIgnore unselectableStatus".split(
 			" "
 		),
 		NODE_ATTR_MAP = {},
-		// Mapping of lowercase -> real name (because HTML5 data-... attribute only supports lowercase)
+		// Mapping of lowercase -> real name (because HTML5 data-... attribute
+		// only supports lowercase)
 		NODE_ATTR_LOWERCASE_MAP = {},
 		// Attribute names that should NOT be added to node.data
 		NONE_NODE_DATA_MAP = {
@@ -169,7 +171,7 @@
 	// }
 
 	function _assert(cond, msg) {
-		// TODO: see qunit.js extractStacktrace()
+		// TODO: See qunit.js extractStacktrace().
 		if (!cond) {
 			msg = msg ? ": " + msg : "";
 			msg = "Fancytree assertion failed" + msg;
@@ -223,19 +225,21 @@
 		}
 	}
 
-	/* support: IE8 Polyfil for Date.now() */
+	/* Support: IE 8 polyfill for Date.now() */
 	if (!Date.now) {
 		Date.now = function now() {
 			return new Date().getTime();
 		};
 	}
 
-	/*Return true if x is a FancytreeNode.*/
+	/* Return true if x is a FancytreeNode. */
 	function _isNode(x) {
 		return !!(x.tree && x.statusNodeType !== undefined);
 	}
 
-	/** Return true if dotted version string is equal or higher than requested version.
+	/**
+	 * Return true if dotted version string is equal or higher than requested
+	 * version.
 	 *
 	 * See http://jsfiddle.net/mar10/FjSAN/
 	 */
@@ -266,10 +270,11 @@
 	/**
 	 * Deep-merge a list of objects (but replace array-type options).
 	 *
-	 * jQuery's $.extend(true, ...) method does a deep merge, that also merges Arrays.
-	 * This variant is used to merge extension defaults with user options, and should
-	 * merge objects, but override arrays (for example the `triggerStart: [...]` option
-	 * of ext-edit). Also `null` values are copied over and not skipped.
+	 * jQuery's $.extend(true, ...) method does a deep merge that also merges
+	 * Arrays. This variant is used to merge extension defaults with user
+	 * options and should merge objects, but override arrays (e.g. the
+	 * `triggerStart: [...]` option of ext-edit). Also, `null` values are copied
+	 *  over and not skipped.
 	 *
 	 * See issue #876
 	 *
@@ -286,59 +291,62 @@
 			i = 1,
 			length = arguments.length;
 
-		// Handle case when target is a string or something (possible in deep copy)
+		// Handle case when target is a string or something (possible in deep
+		// copy):
 		if (typeof target !== "object" && !_isFunction(target)) {
 			target = {};
 		}
 		if (i === length) {
-			throw Error("need at least two args");
+			throw Error("Need at least two arguments");
 		}
 		for (; i < length; i++) {
-			// Only deal with non-null/undefined values
+			// Only deal with non-null/undefined values.
 			if ((options = arguments[i]) != null) {
-				// Extend the base object
+				// Extend the base object.
 				for (name in options) {
 					if (_hasProp(options, name)) {
 						src = target[name];
 						copy = options[name];
-						// Prevent never-ending loop
+						// Prevent never-ending loop:
 						if (target === copy) {
 							continue;
 						}
 						// Recurse if we're merging plain objects
-						// (NOTE: unlike $.extend, we don't merge arrays, but replace them)
+						// (NOTE: unlike $.extend, we don't merge arrays, but
+						// replace them).
 						if (copy && $.isPlainObject(copy)) {
+							// Never move original objects; clone them.
 							clone = src && $.isPlainObject(src) ? src : {};
-							// Never move original objects, clone them
 							target[name] = _simpleDeepMerge(clone, copy);
-							// Don't bring in undefined values
 						} else if (copy !== undefined) {
+							// Don't bring in undefined values.
 							target[name] = copy;
 						}
 					}
 				}
 			}
 		}
-		// Return the modified object
+		// Return the modified object.
 		return target;
 	}
 
-	/** Return a wrapper that calls sub.methodName() and exposes
-	 *  this             : tree
-	 *  this._local      : tree.ext.EXTNAME
-	 *  this._super      : base.methodName.call()
-	 *  this._superApply : base.methodName.apply()
+	/**
+	 * Return a wrapper that calls sub.methodName() and exposes
+	 * this             : tree
+	 * this._local      : tree.ext.EXTNAME
+	 * this._super      : base.methodName.call()
+	 * this._superApply : base.methodName.apply()
 	 */
 	function _makeVirtualFunction(methodName, tree, base, extension, extName) {
 		// $.ui.fancytree.debug("_makeVirtualFunction", methodName, tree, base, extension, extName);
-		// if(rexTestSuper && !rexTestSuper.test(func)){
+		// if (rexTestSuper && !rexTestSuper.test(func)){
 		//     // extension.methodName() doesn't call _super(), so no wrapper required
 		//     return func;
 		// }
-		// Use an immediate function as closure
+		// Use an immediate function as closure:
 		var proxy = (function() {
 			var prevFunc = tree[methodName], // org. tree method or prev. proxy
-				baseFunc = extension[methodName], //
+				baseFunc = extension[methodName],
 				_local = tree.ext[extName],
 				_super = function() {
 					return prevFunc.apply(tree, arguments);
@@ -347,7 +355,7 @@
 					return prevFunc.apply(tree, args);
 				};
 
-			// Return the wrapper function
+			// Return the wrapper function:
 			return function() {
 				var prevLocal = tree._local,
 					prevSuper = tree._super,
@@ -369,14 +377,14 @@
 	}
 
 	/**
-	 * Subclass `base` by creating proxy functions
+	 * Subclass `base` by creating proxy functions.
 	 */
 	function _subclassObject(tree, base, extension, extName) {
 		// $.ui.fancytree.debug("_subclassObject", tree, base, extension, extName);
 		for (var attrName in extension) {
 			if (typeof extension[attrName] === "function") {
 				if (typeof tree[attrName] === "function") {
-					// override existing method
+					// Override existing method:
 					tree[attrName] = _makeVirtualFunction(
 						attrName,
 						tree,
@@ -385,7 +393,7 @@
 						extName
 					);
 				} else if (attrName.charAt(0) === "_") {
-					// Create private methods in tree.ext.EXTENSION namespace
+					// Create private methods in tree.ext.EXTENSION namespace:
 					tree.ext[extName][attrName] = _makeVirtualFunction(
 						attrName,
 						tree,
@@ -404,7 +412,7 @@
 					);
 				}
 			} else {
-				// Create member variables in tree.ext.EXTENSION namespace
+				// Create member variables in tree.ext.EXTENSION namespace:
 				if (attrName !== "options") {
 					tree.ext[extName][attrName] = extension[attrName];
 				}
@@ -445,8 +453,8 @@
 		var d = $.extend({}, $el.data()),
 			json = d.json;
 
-		delete d.fancytree; // added to container by widget factory (old jQuery UI)
-		delete d.uiFancytree; // added to container by widget factory
+		delete d.fancytree; // Added to container by widget factory (old jQuery UI).
+		delete d.uiFancytree; // Added to container by widget factory
 
 		if (json) {
 			delete d.json;
@@ -462,7 +470,7 @@
 		});
 	}
 
-	// TODO: use currying
+	// TODO: use currying.
 	function _makeNodeTitleMatcher(s) {
 		s = s.toLowerCase();
 		return function(node) {
@@ -477,7 +485,7 @@
 		};
 	}
 
-	/******************************************************************************
+	/***************************************************************************
 	 * FancytreeNode
 	 */
 
@@ -502,7 +510,7 @@
 	 * @property {string} extraClasses Additional CSS classes, added to the node's `<span>`.<br>
 	 *     Note: use `node.add/remove/toggleClass()` to modify.
 	 * @property {boolean} folder Folder nodes have different default icons and click behavior.<br>
-	 *     Note: Also non-folders may have children.
+	 *     Note: non-folders may also have children.
 	 * @property {string} statusNodeType null for standard nodes. Otherwise type of special system node: 'error', 'loading', 'nodata', or 'paging'.
 	 * @property {boolean} lazy True if this node is loaded on demand, i.e. on first expansion.
 	 * @property {boolean} selected Use isSelected(), setSelected() to access this property.
@@ -517,18 +525,18 @@
 		this.tree = parent.tree;
 		this.ul = null;
 		this.li = null; // <li id='key' ftnode=this> tag
-		this.statusNodeType = null; // if this is a temp. node to display the status of its parent
-		this._isLoading = false; // if this node itself is loading
-		this._error = null; // {message: '...'} if a load error occurred
+		this.statusNodeType = null; // If this is a temporary node to display the status of its parent
+		this._isLoading = false; // If this node itself is loading
+		this._error = null; // { message: '...' } if a load error occurred
 		this.data = {};
 
-		// TODO: merge this code with node.toDict()
-		// copy attributes from obj object
+		// TODO: Merge this code with node.toDict().
+		// Copy attributes from obj object.
 		for (i = 0, l = NODE_ATTRS.length; i < l; i++) {
 			name = NODE_ATTRS[i];
 			this[name] = obj[name];
 		}
-		// unselectableIgnore and unselectableStatus imply unselectable
+		// unselectableIgnore and unselectableStatus imply unselectable.
 		if (
 			this.unselectableIgnore != null ||
 			this.unselectableStatus != null
@@ -544,7 +552,7 @@
 		if (obj.data) {
 			$.extend(this.data, obj.data);
 		}
-		// Copy all other attributes to this.data.NAME
+		// Copy all other attributes to this.data.NAME:
 		for (name in obj) {
 			if (
 				!NODE_ATTR_MAP[name] &&
@@ -559,7 +567,7 @@
 
 		// Fix missing key
 		if (this.key == null) {
-			// test for null OR undefined
+			// Test for null OR undefined.
 			if (this.tree.options.defaultKey) {
 				this.key = "" + this.tree.options.defaultKey(this);
 				_assert(this.key, "defaultKey() must return a unique key");
@@ -567,10 +575,10 @@
 				this.key = "_" + FT._nextNodeKey++;
 			}
 		} else {
-			this.key = "" + this.key; // Convert to string (#217)
+			this.key = "" + this.key; // Convert to string (#217).
 		}
 
-		// Fix tree.activeNode
+		// Fix tree.activeNode:
 		// TODO: not elegant: we use obj.active as marker to set tree.activeNode
 		// when loading from a dictionary.
 		if (obj.active) {
@@ -592,14 +600,14 @@
 			if (cl.length) {
 				this._setChildren(cl);
 			} else {
-				// if an empty array was passed for a lazy node, keep it, in order to mark it 'loaded'
+				// If an empty array was passed for a lazy node, keep it, in order to mark it 'loaded'.
 				this.children = this.lazy ? [] : null;
 			}
 		} else {
 			this.children = null;
 		}
-		// Add to key/ref map (except for root node)
-		//	if( parent ) {
+		// Add to key/ref map (except for root node):
+		//	if (parent) {
 		this.tree._callHook("treeRegisterNode", this.tree, true, this);
 		//	}
 	}
@@ -680,7 +688,7 @@
 				insertBefore = this._findDirectChild(insertBefore);
 				pos = $.inArray(insertBefore, this.children);
 				_assert(pos >= 0, "insertBefore must be an existing child");
-				// insert nodeList after children[pos]
+				// Insert nodeList after children[pos]
 				this.children.splice.apply(
 					this.children,
 					[pos, 0].concat(nodeList)
@@ -688,22 +696,22 @@
 			}
 			if (origFirstChild && !insertBefore) {
 				// #708: Fast path -- don't render every child of root, just the new ones!
-				// #723, #729: but only if it's appended to an existing child list
+				// #723, #729: But only if it's appended to an existing child list
 				for (i = 0, l = nodeList.length; i < l; i++) {
-					nodeList[i].render(); // New nodes were never rendered before
+					nodeList[i].render(); // New nodes were never rendered before.
 				}
-				// Adjust classes where status may have changed
+				// Adjust classes where status may have changed.
 				// Has a first child
 				if (origFirstChild !== this.getFirstChild()) {
-					// Different first child -- recompute classes
+					// Different first child -- recompute classes.
 					origFirstChild.renderStatus();
 				}
 				if (origLastChild !== this.getLastChild()) {
-					// Different last child -- recompute classes
+					// Different last child -- recompute classes.
 					origLastChild.renderStatus();
 				}
 			} else if (!this.parent || this.parent.ul || this.tr) {
-				// render if the parent was rendered (or this is a root node)
+				// Render if the parent was rendered (or this is a root node).
 				this.render();
 			}
 			if (this.tree.options.selectMode === 3) {
@@ -747,7 +755,7 @@
 				case "before":
 					return this.getParent().addChildren(node, this);
 				case "firstChild":
-					// Insert before the first child if any
+					// Insert before the first child, if any.
 					var insertBefore = this.children ? this.children[0] : null;
 					return this.addChildren(node, insertBefore);
 				case "child":
@@ -756,7 +764,8 @@
 			}
 			_assert(false, "Invalid mode: " + mode);
 		},
-		/**Add child status nodes that indicate 'More...', etc.
+		/**
+		 * Add child status nodes that indicate 'More...', etc.
 		 *
 		 * This also maintains the node's `partload` property.
 		 * @param {boolean|object} node optional node definition. Pass `false` to remove all paging nodes.
@@ -791,7 +800,7 @@
 		/**
 		 * Append new node after this.
 		 *
-		 * This a convenience function that calls addNode(node, 'after')
+		 * This a convenience function that calls addNode(node, 'after').
 		 *
 		 * @param {NodeData} node node definition
 		 * @returns {FancytreeNode} new node
@@ -818,17 +827,17 @@
 		 * @see FancytreeNode#addChildren
 		 */
 		applyPatch: function(patch) {
-			// patch [key, null] means 'remove'
+			// patch [key, null] means 'remove':
 			if (patch === null) {
 				this.remove();
 				return _getResolvedPromise(this);
 			}
-			// TODO: make sure that root node is not collapsed or modified
-			// copy (most) attributes to node.ATTR or node.data.ATTR
+			// TODO: make sure that root node is not collapsed or modified.
+			// Copy (most) attributes to node.ATTR or node.data.ATTR.
 			var name,
 				promise,
 				v,
-				IGNORE_MAP = { children: true, expanded: true, parent: true }; // TODO: should be global
+				IGNORE_MAP = { children: true, expanded: true, parent: true }; // TODO: should be global.
 
 			for (name in patch) {
 				if (_hasProp(patch, name)) {
@@ -842,11 +851,11 @@
 					}
 				}
 			}
-			// Remove and/or create children
+			// Remove and/or create children:
 			if (_hasProp(patch, "children")) {
 				this.removeChildren();
 				if (patch.children) {
-					// only if not null and not empty list
+					// Only if not null and not empty list
 					// TODO: addChildren instead?
 					this._setChildren(patch.children);
 				}
@@ -864,13 +873,15 @@
 			}
 			return promise;
 		},
-		/** Collapse all sibling nodes.
+		/**
+		 * Collapse all sibling nodes.
 		 * @returns {$.Promise}
 		 */
 		collapseSiblings: function() {
 			return this.tree._callHook("nodeCollapseSiblings", this);
 		},
-		/** Copy this node as sibling or child of `node`.
+		/**
+		 * Copy this node as sibling or child of `node`.
 		 *
 		 * @param {FancytreeNode} node source node
 		 * @param {string} [mode=child] 'before' | 'after' | 'child'
@@ -880,7 +891,8 @@
 		copyTo: function(node, mode, map) {
 			return node.addNode(this.toDict(true, map), mode);
 		},
-		/** Count direct and indirect children.
+		/**
+		 * Count direct and indirect children.
 		 *
 		 * @param {boolean} [deep=true] pass 'false' to only count direct children
 		 * @returns {int} number of child nodes
@@ -902,7 +914,8 @@
 			return n;
 		},
 		// TODO: deactivate()
-		/** Write to browser console if debugLevel >= 4 (prepending node info)
+		/**
+		 * Write to browser console if debugLevel >= 4 (prepending node info)
 		 *
 		 * @param {*} msg string or object or array of such
 		 */
@@ -912,7 +925,8 @@
 				consoleApply("log", arguments);
 			}
 		},
-		/** Deprecated.
+		/**
+		 * Deprecated.
 		 * @deprecated since 2014-02-16. Use resetLazy() instead.
 		 */
 		discard: function() {
@@ -921,7 +935,8 @@
 			);
 			return this.resetLazy();
 		},
-		/** Remove DOM elements for all descendents. May be called on .collapse event
+		/**
+		 * Remove DOM elements for all descendents. May be called on .collapse event
 		 * to keep the DOM small.
 		 * @param {boolean} [includeSelf=false]
 		 */
@@ -929,7 +944,8 @@
 			var fn = includeSelf ? "nodeRemoveMarkup" : "nodeRemoveChildMarkup";
 			this.tree._callHook(fn, this);
 		},
-		/** Write error to browser console if debugLevel >= 1 (prepending tree info)
+		/**
+		 * Write error to browser console if debugLevel >= 1 (prepending tree info)
 		 *
 		 * @param {*} msg string or object or array of such
 		 */
@@ -939,7 +955,8 @@
 				consoleApply("error", arguments);
 			}
 		},
-		/**Find all nodes that match condition (excluding self).
+		/**
+		 * Find all nodes that match condition (excluding self).
 		 *
 		 * @param {string | function(node)} match title string to search for, or a
 		 *     callback function that returns `true` if a node is matched.
@@ -955,7 +972,8 @@
 			});
 			return res;
 		},
-		/**Find first node that matches condition (excluding self).
+		/**
+		 * Find first node that matches condition (excluding self).
 		 *
 		 * @param {string | function(node)} match title string to search for, or a
 		 *     callback function that returns `true` if a node is matched.
@@ -973,7 +991,8 @@
 			});
 			return res;
 		},
-		/** Find a node relative to self.
+		/**
+		 * Find a node relative to self.
 		 *
 		 * @param {number|string} where The keyCode that would normally trigger this move,
 		 *		or a keyword ('down', 'first', 'last', 'left', 'parent', 'right', 'up').
