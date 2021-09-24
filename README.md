@@ -1,6 +1,6 @@
 # ![logo](doc/logo.png?raw=true) Fancytree
 [![GitHub version](https://badge.fury.io/gh/mar10%2Ffancytree.svg)](https://github.com/mar10/fancytree/releases/latest)
-[![Build Status](https://travis-ci.org/mar10/fancytree.svg?branch=master)](https://travis-ci.org/mar10/fancytree)
+[![Build Status](https://travis-ci.com/mar10/fancytree.svg?branch=master)](https://travis-ci.com/mar10/fancytree)
 [![npm](https://img.shields.io/npm/dm/jquery.fancytree.svg)](https://www.npmjs.com/package/jquery.fancytree)
 [![jsDelivr](https://data.jsdelivr.com/v1/package/npm/jquery.fancytree/badge)](https://www.jsdelivr.com/package/npm/jquery.fancytree)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
