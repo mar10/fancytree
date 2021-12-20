@@ -1386,6 +1386,15 @@
 			}
 			return null;
 		},
+		/** Return the value of node property.
+		 * @param {Array} [property] array of object keys used to access the node property
+		 * @returns {*}
+		 */
+		getProperty: function (property) {
+			return property.reduce(function (obj, prop) {
+				return obj[prop];
+			}, this);
+		},
 		/**
 		 * Return an array of selected descendant nodes.
 		 * @param {boolean} [stopOnParents=false] only return the topmost selected
@@ -2269,6 +2278,21 @@
 		 */
 		setFocus: function (flag) {
 			return this.tree._callHook("nodeSetFocus", this, flag);
+		},
+		/**Set value of node property
+		 * @param {Array} [property] array of object keys used to access the node property
+		 * @param {string} [value] value to set the node property to
+		 */
+		setProperty: function (property, value) {
+			var node = this;
+			if (property.length > 1) {
+				node = property.slice(0, -1).reduce(function (obj, prop) {
+					return obj[prop];
+				}, node);
+			}
+			node[property.slice(-1)[0]] = value;
+			this.render();
+			this.triggerModify("rename");
 		},
 		/**Select this node, i.e. check the checkbox.
 		 * @param {boolean} [flag=true] pass false to deselect

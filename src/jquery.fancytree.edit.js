@@ -1,7 +1,7 @@
 /*!
  * jquery.fancytree.edit.js
  *
- * Make node titles editable.
+ * Make node properties editable.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
  * Copyright (c) 2008-2021, Martin Wendt (https://wwWendt.de)
@@ -38,7 +38,7 @@
 		unescapeHtml = $.ui.fancytree.unescapeHtml;
 
 	/**
-	 * [ext-edit] Start inline editing of current node title.
+	 * [ext-edit] Start inline editing of current node property.
 	 *
 	 * @alias FancytreeNode#editStart
 	 * @requires Fancytree
@@ -49,7 +49,8 @@
 			tree = this.tree,
 			local = tree.ext.edit,
 			instOpts = tree.options.edit,
-			$title = $(".fancytree-title", node.span),
+			propertyContext = node.tr ? node.tr : node.span,
+			$property = $(instOpts.spanClass, propertyContext),
 			eventData = {
 				node: node,
 				tree: tree,
@@ -57,12 +58,12 @@
 				isNew: $(node[tree.statusClassPropName]).hasClass(
 					"fancytree-edit-new"
 				),
-				orgTitle: node.title,
+				originalProperty: node.getProperty(instOpts.property),
 				input: null,
 				dirty: false,
 			};
 
-		// beforeEdit may want to modify the title before editing
+		// beforeEdit may want to modify the property before editing
 		if (
 			instOpts.beforeEdit.call(
 				node,
@@ -96,18 +97,18 @@
 			class: "fancytree-edit-input",
 			type: "text",
 			value: tree.options.escapeTitles
-				? eventData.orgTitle
-				: unescapeHtml(eventData.orgTitle),
+				? eventData.originalProperty
+				: unescapeHtml(eventData.originalProperty),
 		});
 		local.eventData.input = $input;
 		if (instOpts.adjustWidthOfs != null) {
-			$input.width($title.width() + instOpts.adjustWidthOfs);
+			$input.width($property.width() + instOpts.adjustWidthOfs);
 		}
 		if (instOpts.inputCss != null) {
 			$input.css(instOpts.inputCss);
 		}
 
-		$title.html($input);
+		$property.html($input);
 
 		// Focus <input> and bind keyboard handler
 		$input
@@ -149,15 +150,16 @@
 			local = tree.ext.edit,
 			eventData = local.eventData,
 			instOpts = tree.options.edit,
-			$title = $(".fancytree-title", node.span),
-			$input = $title.find("input.fancytree-edit-input");
+			propertyContext = node.tr ? node.tr : node.span,
+			$property = $(instOpts.spanClass, propertyContext),
+			$input = $property.find("input.fancytree-edit-input");
 
 		if (instOpts.trim) {
 			$input.val(trim($input.val()));
 		}
 		newVal = $input.val();
 
-		eventData.dirty = newVal !== node.title;
+		eventData.dirty = newVal !== node.getProperty(instOpts.property);
 		eventData.originalEvent = _event;
 
 		// Find out, if saving is required
@@ -193,7 +195,8 @@
 
 		if (eventData.save) {
 			// # 171: escape user input (not required if global escaping is on)
-			node.setTitle(
+			node.setProperty(
+				instOpts.property,
 				tree.options.escapeTitles ? newVal : escapeHtml(newVal)
 			);
 			node.setFocus();
@@ -309,6 +312,8 @@
 			adjustWidthOfs: 4, // null: don't adjust input size to content
 			allowEmpty: false, // Prevent empty input
 			inputCss: { minWidth: "3em" },
+			property: ["title"], // node object [keys] to access property to update
+			spanClass: ".fancytree-title", // class of the editable span
 			// triggerCancel: ["esc", "tab", "click"],
 			triggerStart: ["f2", "mac+enter", "shift+click"],
 			trim: true, // Trim whitespace before save
@@ -357,11 +362,13 @@
 				eventStr === "click" &&
 				$.inArray("clickActive", triggerStart) >= 0
 			) {
-				// Only when click was inside title text (not aynwhere else in the row)
+				// Only when click was inside property text (not aynwhere else in the row)
 				if (
 					ctx.node.isActive() &&
 					!ctx.node.isEditing() &&
-					$(ctx.originalEvent.target).hasClass("fancytree-title")
+					$(ctx.originalEvent.target).hasClass(
+						ctx.options.edit.spanClass
+					)
 				) {
 					ctx.node.editStart();
 					return false;
