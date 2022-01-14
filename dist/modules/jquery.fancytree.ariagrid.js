@@ -12,11 +12,11 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.0
- * @date 2021-02-09T20:03:49Z
+ * @version 2.38.1
+ * @date 2022-01-14T18:41:36Z
  */
 
-(function(factory) {
+(function (factory) {
 	if (typeof define === "function" && define.amd) {
 		// AMD. Register as an anonymous module.
 		define([
@@ -32,7 +32,7 @@
 		// Browser globals
 		factory(jQuery);
 	}
-})(function($) {
+})(function ($) {
 	"use strict";
 
 	/*******************************************************************************
@@ -72,7 +72,7 @@
 			td = $td.get(0),
 			idx = 0;
 
-		$tr.children().each(function() {
+		$tr.children().each(function () {
 			if (this === td) {
 				return false;
 			}
@@ -88,7 +88,7 @@
 			res = null,
 			idx = 0;
 
-		$tr.children().each(function() {
+		$tr.children().each(function () {
 			if (idx >= colIdx) {
 				res = $(this);
 				return false;
@@ -155,8 +155,8 @@
 
 	/* .*/
 	function activateEmbeddedLink($td) {
-		// $td.find( "a" )[ 0 ].click();  // does not work (always)?
-		// $td.find( "a" ).click();
+		// $td.find( "a" )[ 0 ].trigger("click");  // does not work (always)?
+		// $td.find( "a" ).trigger("click");
 		var event = document.createEvent("MouseEvent"),
 			a = $td.find("a")[0]; // document.getElementById('nameOfID');
 
@@ -176,7 +176,7 @@
 	 * @requires jquery.fancytree.ariagrid.js
 	 * @since 2.23
 	 */
-	$.ui.fancytree._FancytreeClass.prototype.activateCell = function(
+	$.ui.fancytree._FancytreeClass.prototype.activateCell = function (
 		$td,
 		orgEvent
 	) {
@@ -286,7 +286,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "ariagrid",
-		version: "2.38.0",
+		version: "2.38.1",
 		// Default options for this extension.
 		options: {
 			// Internal behavior flags
@@ -296,7 +296,7 @@
 			label: "Tree Grid", // Added as `aria-label` attribute
 		},
 
-		treeInit: function(ctx) {
+		treeInit: function (ctx) {
 			var tree = ctx.tree,
 				treeOpts = ctx.options,
 				opts = treeOpts.ariagrid;
@@ -337,7 +337,7 @@
 			}
 
 			this.$container
-				.on("focusin", function(event) {
+				.on("focusin", function (event) {
 					// Activate node if embedded input gets focus (due to a click)
 					var node = FT.getNode(event.target),
 						$td = $(event.target).closest("td");
@@ -358,7 +358,7 @@
 						tree.activateCell($td);
 					}
 				})
-				.on("fancytreeinit", function(event, data) {
+				.on("fancytreeinit", function (event, data) {
 					if (
 						opts.cellFocus === "start" ||
 						opts.cellFocus === "force"
@@ -377,7 +377,7 @@
 						);
 					}
 				})
-				.on("fancytreefocustree", function(event, data) {
+				.on("fancytreefocustree", function (event, data) {
 					// Enforce cell-mode when container gets focus
 					if (opts.cellFocus === "force" && !tree.$activeTd) {
 						var node = tree.getActiveNode() || tree.getFirstChild();
@@ -388,7 +388,7 @@
 				// .on("fancytreeupdateviewport", function(event, data) {
 				// 	tree.debug(event.type, data);
 				// })
-				.on("fancytreebeforeupdateviewport", function(event, data) {
+				.on("fancytreebeforeupdateviewport", function (event, data) {
 					// When scrolling, the TR may be re-used by another node, so the
 					// active cell marker an
 					// tree.debug(event.type, data);
@@ -398,7 +398,7 @@
 					}
 				});
 		},
-		nodeClick: function(ctx) {
+		nodeClick: function (ctx) {
 			var targetType = ctx.targetType,
 				tree = ctx.tree,
 				node = ctx.node,
@@ -434,7 +434,7 @@
 			}
 			return this._superApply(arguments);
 		},
-		nodeDblclick: function(ctx) {
+		nodeDblclick: function (ctx) {
 			var tree = ctx.tree,
 				treeOpts = ctx.options,
 				opts = treeOpts.ariagrid,
@@ -453,7 +453,7 @@
 			}
 			return this._superApply(arguments);
 		},
-		nodeRenderStatus: function(ctx) {
+		nodeRenderStatus: function (ctx) {
 			// Set classes for current status
 			var res,
 				node = ctx.node,
@@ -489,7 +489,7 @@
 			}
 			return res;
 		},
-		nodeSetActive: function(ctx, flag, callOpts) {
+		nodeSetActive: function (ctx, flag, callOpts) {
 			var $td,
 				node = ctx.node,
 				tree = ctx.tree,
@@ -511,7 +511,7 @@
 			// tree.debug( "nodeSetActive: activeNode " + this.activeNode );
 			return this._superApply(arguments);
 		},
-		nodeKeydown: function(ctx) {
+		nodeKeydown: function (ctx) {
 			var handleKeys,
 				inputType,
 				res,
@@ -579,9 +579,7 @@
 						break;
 					} else {
 						// Row mode: switch to cell-mode
-						$td = $(node.tr)
-							.find(">td")
-							.first();
+						$td = $(node.tr).find(">td").first();
 						tree.activateCell($td);
 					}
 					return false; // no default handling
@@ -671,9 +669,7 @@
 						// ENTER in row-mode: Switch from row-mode to cell-mode
 						// TODO: it was also suggested to expand/collapse instead
 						//    https://github.com/w3c/aria-practices/issues/132#issuecomment-407634891
-						$td = $(node.tr)
-							.find(">td")
-							.nth(this.nodeColumnIdx);
+						$td = $(node.tr).find(">td").nth(this.nodeColumnIdx);
 						tree.activateCell($td);
 					}
 					return false; // no default handling
@@ -697,7 +693,7 @@
 			}
 			return this._superApply(arguments);
 		},
-		treeSetOption: function(ctx, key, value) {
+		treeSetOption: function (ctx, key, value) {
 			var tree = ctx.tree,
 				opts = tree.options.ariagrid;
 

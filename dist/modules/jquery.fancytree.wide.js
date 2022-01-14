@@ -8,11 +8,11 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.0
- * @date 2021-02-09T20:03:49Z
+ * @version 2.38.1
+ * @date 2022-01-14T18:41:36Z
  */
 
-(function(factory) {
+(function (factory) {
 	if (typeof define === "function" && define.amd) {
 		// AMD. Register as an anonymous module.
 		define(["jquery", "./jquery.fancytree"], factory);
@@ -24,7 +24,7 @@
 		// Browser globals
 		factory(jQuery);
 	}
-})(function($) {
+})(function ($) {
 	"use strict";
 
 	var reNumUnit = /^([+-]?(?:\d+|\d*\.\d+))([a-z]*|%)$/; // split "1.5em" to ["1.5", "em"]
@@ -94,11 +94,11 @@
 		// This breaks the left:0 and padding-left:nn settings of the title
 		rules.push(
 			"#" +
-			containerId +
-			" div.ui-effects-wrapper ul li span.fancytree-title, " +
-			"#" +
-			containerId +
-			" li.fancytree-animating span.fancytree-title " + // #716
+				containerId +
+				" div.ui-effects-wrapper ul li span.fancytree-title, " +
+				"#" +
+				containerId +
+				" li.fancytree-animating span.fancytree-title " + // #716
 				"{ padding-left: " +
 				labelOfs +
 				measureUnit +
@@ -139,7 +139,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "wide",
-		version: "2.38.0",
+		version: "2.38.1",
 		// Default options for this extension.
 		options: {
 			iconWidth: null, // Adjust this if @fancy-icon-width != "16px"
@@ -148,7 +148,7 @@
 			levelOfs: null, // Adjust this if ul padding != "16px"
 		},
 
-		treeCreate: function(ctx) {
+		treeCreate: function (ctx) {
 			this._superApply(arguments);
 			this.$container.addClass("fancytree-ext-wide");
 
@@ -214,12 +214,12 @@
 			);
 			defineHeadStyleElement(containerId, cssText);
 		},
-		treeDestroy: function(ctx) {
+		treeDestroy: function (ctx) {
 			// Remove generated css rules
 			defineHeadStyleElement(this.$container.attr("id"), null);
 			return this._superApply(arguments);
 		},
-		nodeRenderStatus: function(ctx) {
+		nodeRenderStatus: function (ctx) {
 			var containerId,
 				cssText,
 				res,

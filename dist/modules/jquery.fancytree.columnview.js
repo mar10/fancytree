@@ -9,11 +9,11 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.0
- * @date 2021-02-09T20:03:49Z
+ * @version 2.38.1
+ * @date 2022-01-14T18:41:36Z
  */
 
-(function(factory) {
+(function (factory) {
 	if (typeof define === "function" && define.amd) {
 		// AMD. Register as an anonymous module.
 		define(["jquery", "./jquery.fancytree"], factory);
@@ -25,7 +25,7 @@
 		// Browser globals
 		factory(jQuery);
 	}
-})(function($) {
+})(function ($) {
 	"use strict";
 
 	/*******************************************************************************
@@ -39,14 +39,14 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "columnview",
-		version: "2.38.0",
+		version: "2.38.1",
 		// Default options for this extension.
 		options: {},
 		// Overide virtual methods for this extension.
 		// `this`       : is this extension object
 		// `this._base` : the Fancytree instance
 		// `this._super`: the virtual function that was overriden (member of prev. extension or Fancytree)
-		treeInit: function(ctx) {
+		treeInit: function (ctx) {
 			var $tdFirst,
 				$ul,
 				tree = ctx.tree,
@@ -87,7 +87,7 @@
 
 			$table
 				// Make sure that only active path is expanded when a node is activated:
-				.on("fancytreeactivate", function(event, data) {
+				.on("fancytreeactivate", function (event, data) {
 					var node = data.node,
 						tree = data.tree,
 						level = node.getLevel();
@@ -95,10 +95,7 @@
 					tree._callHook("nodeCollapseSiblings", node);
 					// Clear right neighbours
 					if (!node.expanded) {
-						tree.$tdList
-							.eq(level)
-							.nextAll()
-							.empty();
+						tree.$tdList.eq(level).nextAll().empty();
 					}
 					// Expand nodes on activate, so we populate the right neighbor cell
 					if (!node.expanded && (node.children || node.lazy)) {
@@ -106,7 +103,7 @@
 					}
 				})
 				// Adjust keyboard behaviour:
-				.on("fancytreekeydown", function(event, data) {
+				.on("fancytreekeydown", function (event, data) {
 					var next = null,
 						handled = true,
 						node = data.node || data.tree.getFirstChild();
@@ -130,7 +127,7 @@
 								return;
 							}
 							// Prefer an expanded child if any
-							next.visitSiblings(function(n) {
+							next.visitSiblings(function (n) {
 								if (n.expanded) {
 									next = n;
 									return false;
@@ -149,7 +146,7 @@
 					return !handled;
 				});
 		},
-		nodeSetExpanded: function(ctx, flag, callOpts) {
+		nodeSetExpanded: function (ctx, flag, callOpts) {
 			var $wait,
 				node = ctx.node,
 				tree = ctx.tree,
@@ -159,26 +156,18 @@
 				$wait = $(
 					"<span class='fancytree-icon fancytree-icon-loading'>"
 				);
-				tree.$tdList
-					.eq(level)
-					.empty()
-					.append($wait);
+				tree.$tdList.eq(level).empty().append($wait);
 			}
 			return this._superApply(arguments);
 		},
-		nodeRemoveChildren: function(ctx) {
+		nodeRemoveChildren: function (ctx) {
 			// #899: node's children removed: remove child marker...
-			$(ctx.node.span)
-				.find("span.fancytree-cv-right")
-				.remove();
+			$(ctx.node.span).find("span.fancytree-cv-right").remove();
 			// ...and clear right columns
-			ctx.tree.$tdList
-				.eq(ctx.node.getLevel())
-				.nextAll()
-				.empty();
+			ctx.tree.$tdList.eq(ctx.node.getLevel()).nextAll().empty();
 			return this._superApply(arguments);
 		},
-		nodeRender: function(ctx, force, deep, collapsed, _recursive) {
+		nodeRender: function (ctx, force, deep, collapsed, _recursive) {
 			// Render standard nested <ul> - <li> hierarchy
 			this._super(ctx, force, deep, collapsed, _recursive);
 			// Remove expander and add a trailing triangle instead

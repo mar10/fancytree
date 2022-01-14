@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.0
- * @date 2021-02-09T20:03:49Z
+ * @version 2.38.1
+ * @date 2022-01-14T18:41:36Z
  */
 
 /*
@@ -26,7 +26,7 @@
 
  */
 
-(function(factory) {
+(function (factory) {
 	if (typeof define === "function" && define.amd) {
 		// AMD. Register as an anonymous module.
 		define(["jquery", "./jquery.fancytree"], factory);
@@ -38,7 +38,7 @@
 		// Browser globals
 		factory(jQuery);
 	}
-})(function($) {
+})(function ($) {
 	"use strict";
 
 	/******************************************************************************
@@ -115,7 +115,7 @@
 				before: !!r.before,
 				after: !!r.after,
 			};
-		} else if ($.isArray(r)) {
+		} else if (Array.isArray(r)) {
 			res = {
 				over: $.inArray("over", r) >= 0,
 				before: $.inArray("before", r) >= 0,
@@ -594,7 +594,7 @@
 				}
 				// Cache as array of jQuery objects for faster access:
 				$sourceList = $(
-					$.map(SOURCE_NODE_LIST, function(n) {
+					$.map(SOURCE_NODE_LIST, function (n) {
 						return n.span;
 					})
 				);
@@ -1002,7 +1002,7 @@
 	 * @requires jquery.fancytree.dnd5.js
 	 * @since 2.31
 	 */
-	$.ui.fancytree.getDragNodeList = function() {
+	$.ui.fancytree.getDragNodeList = function () {
 		return SOURCE_NODE_LIST || [];
 	};
 
@@ -1018,7 +1018,7 @@
 	 * @requires jquery.fancytree.dnd5.js
 	 * @since 2.31
 	 */
-	$.ui.fancytree.getDragNode = function() {
+	$.ui.fancytree.getDragNode = function () {
 		return SOURCE_NODE;
 	};
 
@@ -1028,7 +1028,7 @@
 
 	$.ui.fancytree.registerExtension({
 		name: "dnd5",
-		version: "2.38.0",
+		version: "2.38.1",
 		// Default options for this extension.
 		options: {
 			autoExpandMS: 1500, // Expand nodes after n milliseconds of hovering
@@ -1063,7 +1063,7 @@
 			dragLeave: $.noop, // Callback(targetNode, data)
 		},
 
-		treeInit: function(ctx) {
+		treeInit: function (ctx) {
 			var $temp,
 				tree = ctx.tree,
 				opts = ctx.options,
@@ -1087,18 +1087,21 @@
 			// Implement `opts.createNode` event to add the 'draggable' attribute
 			// #680: this must happen before calling super.treeInit()
 			if (dndOpts.dragStart) {
-				FT.overrideMethod(ctx.options, "createNode", function(
-					event,
-					data
-				) {
-					// Default processing if any
-					this._super.apply(this, arguments);
-					if (data.node.span) {
-						data.node.span.draggable = true;
-					} else {
-						data.node.warn("Cannot add `draggable`: no span tag");
+				FT.overrideMethod(
+					ctx.options,
+					"createNode",
+					function (event, data) {
+						// Default processing if any
+						this._super.apply(this, arguments);
+						if (data.node.span) {
+							data.node.span.draggable = true;
+						} else {
+							data.node.warn(
+								"Cannot add `draggable`: no span tag"
+							);
+						}
 					}
-				});
+				);
 			}
 			this._superApply(arguments);
 

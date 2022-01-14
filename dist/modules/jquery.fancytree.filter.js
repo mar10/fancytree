@@ -9,11 +9,11 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.0
- * @date 2021-02-09T20:03:49Z
+ * @version 2.38.1
+ * @date 2022-01-14T18:41:36Z
  */
 
-(function(factory) {
+(function (factory) {
 	if (typeof define === "function" && define.amd) {
 		// AMD. Register as an anonymous module.
 		define(["jquery", "./jquery.fancytree"], factory);
@@ -25,7 +25,7 @@
 		// Browser globals
 		factory(jQuery);
 	}
-})(function($) {
+})(function ($) {
 	"use strict";
 
 	/*******************************************************************************
@@ -42,9 +42,7 @@
 
 	function extractHtmlText(s) {
 		if (s.indexOf(">") >= 0) {
-			return $("<div/>")
-				.html(s)
-				.text();
+			return $("<div/>").html(s).text();
 		}
 		return s;
 	}
@@ -78,19 +76,19 @@
 		var textPoses = text.split("");
 		if (escapeTitles) {
 			// If escaping the title, then wrap the matchng char within exotic chars
-			matchingIndices.forEach(function(v) {
+			matchingIndices.forEach(function (v) {
 				textPoses[v] = exoticStartChar + textPoses[v] + exoticEndChar;
 			});
 		} else {
 			// Otherwise, Wrap the matching chars within `mark`.
-			matchingIndices.forEach(function(v) {
+			matchingIndices.forEach(function (v) {
 				textPoses[v] = "<mark>" + textPoses[v] + "</mark>";
 			});
 		}
 		// Join back the modified `textPoses` to create final highlight markup.
 		return textPoses.join("");
 	}
-	$.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function(
+	$.ui.fancytree._FancytreeClass.prototype._applyFilterImpl = function (
 		filter,
 		branchMode,
 		_opts
@@ -130,7 +128,7 @@
 					// it gets further split into individual characters. So,
 					// escape each character after splitting
 					.map(_escapeRegex)
-					.reduce(function(a, b) {
+					.reduce(function (a, b) {
 						// create capture groups for parts that comes before
 						// the character
 						return a + "([^" + b + "]*)" + b;
@@ -147,7 +145,7 @@
 				);
 				reExoticEndChar = new RegExp(_escapeRegex(exoticEndChar), "g");
 			}
-			filter = function(node) {
+			filter = function (node) {
 				if (!node.title) {
 					return false;
 				}
@@ -167,7 +165,7 @@
 						} else {
 							// #740: we must not apply the marks to escaped entity names, e.g. `&quot;`
 							// Use some exotic characters to mark matches:
-							temp = text.replace(reHighlight, function(s) {
+							temp = text.replace(reHighlight, function (s) {
 								return exoticStartChar + s + exoticEndChar;
 							});
 						}
@@ -185,7 +183,7 @@
 						} else {
 							node.titleWithHighlight = text.replace(
 								reHighlight,
-								function(s) {
+								function (s) {
 									return "<mark>" + s + "</mark>";
 								}
 							);
@@ -214,7 +212,7 @@
 		);
 		// Reset current filter
 		this.rootNode.subMatchCount = 0;
-		this.visit(function(node) {
+		this.visit(function (node) {
 			delete node.match;
 			delete node.titleWithHighlight;
 			node.subMatchCount = 0;
@@ -227,7 +225,7 @@
 		// Adjust node.hide, .match, and .subMatchCount properties
 		treeOpts.autoCollapse = false; // #528
 
-		this.visit(function(node) {
+		this.visit(function (node) {
 			if (leavesOnly && node.children != null) {
 				return;
 			}
@@ -235,7 +233,7 @@
 				matchedByBranch = false;
 
 			if (res === "skip") {
-				node.visit(function(c) {
+				node.visit(function (c) {
 					c.match = false;
 				}, true);
 				return "skip";
@@ -247,7 +245,7 @@
 			if (res) {
 				count++;
 				node.match = true;
-				node.visitParents(function(p) {
+				node.visitParents(function (p) {
 					if (p !== node) {
 						p.subMatchCount += 1;
 					}
@@ -267,7 +265,7 @@
 
 		if (count === 0 && opts.nodata && hideMode) {
 			statusNode = opts.nodata;
-			if ($.isFunction(statusNode)) {
+			if (typeof statusNode === "function") {
 				statusNode = statusNode();
 			}
 			if (statusNode === true) {
@@ -302,7 +300,7 @@
 	 * @alias Fancytree#filterNodes
 	 * @requires jquery.fancytree.filter.js
 	 */
-	$.ui.fancytree._FancytreeClass.prototype.filterNodes = function(
+	$.ui.fancytree._FancytreeClass.prototype.filterNodes = function (
 		filter,
 		opts
 	) {
@@ -324,7 +322,7 @@
 	 * @alias Fancytree#filterBranches
 	 * @requires jquery.fancytree.filter.js
 	 */
-	$.ui.fancytree._FancytreeClass.prototype.filterBranches = function(
+	$.ui.fancytree._FancytreeClass.prototype.filterBranches = function (
 		filter,
 		opts
 	) {
@@ -339,7 +337,7 @@
 	 * @requires jquery.fancytree.filter.js
 	 * @since 2.38
 	 */
-	$.ui.fancytree._FancytreeClass.prototype.updateFilter = function() {
+	$.ui.fancytree._FancytreeClass.prototype.updateFilter = function () {
 		if (
 			this.enableFilter &&
 			this.lastFilterArgs &&
@@ -357,7 +355,7 @@
 	 * @alias Fancytree#clearFilter
 	 * @requires jquery.fancytree.filter.js
 	 */
-	$.ui.fancytree._FancytreeClass.prototype.clearFilter = function() {
+	$.ui.fancytree._FancytreeClass.prototype.clearFilter = function () {
 		var $title,
 			statusNode = this.getRootNode()._findDirectChild(KeyNoData),
 			escapeTitles = this.options.escapeTitles,
@@ -371,7 +369,7 @@
 		delete this.rootNode.match;
 		delete this.rootNode.subMatchCount;
 
-		this.visit(function(node) {
+		this.visit(function (node) {
 			if (node.match && node.span) {
 				// #491, #601
 				$title = $(node.span).find(">span.fancytree-title");
@@ -421,7 +419,7 @@
 	 * @requires jquery.fancytree.filter.js
 	 * @since 2.13
 	 */
-	$.ui.fancytree._FancytreeClass.prototype.isFilterActive = function() {
+	$.ui.fancytree._FancytreeClass.prototype.isFilterActive = function () {
 		return !!this.enableFilter;
 	};
 
@@ -433,7 +431,7 @@
 	 * @requires jquery.fancytree.filter.js
 	 * @since 2.13
 	 */
-	$.ui.fancytree._FancytreeNodeClass.prototype.isMatched = function() {
+	$.ui.fancytree._FancytreeNodeClass.prototype.isMatched = function () {
 		return !(this.tree.enableFilter && !this.match);
 	};
 
@@ -442,7 +440,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "filter",
-		version: "2.38.0",
+		version: "2.38.1",
 		// Default options for this extension.
 		options: {
 			autoApply: true, // Re-apply last filter if lazy data is loaded
@@ -456,10 +454,10 @@
 			nodata: true, // Display a 'no data' status node if result is empty
 			mode: "dimm", // Grayout unmatched nodes (pass "hide" to remove unmatched node instead)
 		},
-		nodeLoadChildren: function(ctx, source) {
+		nodeLoadChildren: function (ctx, source) {
 			var tree = ctx.tree;
 
-			return this._superApply(arguments).done(function() {
+			return this._superApply(arguments).done(function () {
 				if (
 					tree.enableFilter &&
 					tree.lastFilterArgs &&
@@ -469,7 +467,7 @@
 				}
 			});
 		},
-		nodeSetExpanded: function(ctx, flag, callOpts) {
+		nodeSetExpanded: function (ctx, flag, callOpts) {
 			var node = ctx.node;
 
 			delete node._filterAutoExpanded;
@@ -483,7 +481,7 @@
 			}
 			return this._superApply(arguments);
 		},
-		nodeRenderStatus: function(ctx) {
+		nodeRenderStatus: function (ctx) {
 			// Set classes for current status
 			var res,
 				node = ctx.node,

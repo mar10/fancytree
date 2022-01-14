@@ -9,11 +9,11 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.0
- * @date 2021-02-09T20:03:49Z
+ * @version 2.38.1
+ * @date 2022-01-14T18:41:36Z
  */
 
-(function(factory) {
+(function (factory) {
 	if (typeof define === "function" && define.amd) {
 		// AMD. Register as an anonymous module.
 		define(["jquery", "./jquery.fancytree"], factory);
@@ -25,7 +25,7 @@
 		// Browser globals
 		factory(jQuery);
 	}
-})(function($) {
+})(function ($) {
 	"use strict";
 
 	/******************************************************************************
@@ -36,12 +36,14 @@
 		PREFIX = "ft-logger: ",
 		logLine = window.console.log,
 		// HOOK_NAMES = "nodeClick nodeCollapseSiblings".split(" "),
-		TREE_EVENT_NAMES = "beforeRestore beforeUpdateViewport blurTree create init focusTree preInit restore updateViewport".split(
-			" "
-		),
-		NODE_EVENT_NAMES = "activate activateCell beforeActivate beforeExpand beforeSelect blur click collapse createNode dblclick deactivate defaultGridAction expand enhanceTitle focus keydown keypress lazyLoad loadChildren loadError modifyChild postProcess renderNode renderTitle select".split(
-			" "
-		),
+		TREE_EVENT_NAMES =
+			"beforeRestore beforeUpdateViewport blurTree create init focusTree preInit restore updateViewport".split(
+				" "
+			),
+		NODE_EVENT_NAMES =
+			"activate activateCell beforeActivate beforeExpand beforeSelect blur click collapse createNode dblclick deactivate defaultGridAction expand enhanceTitle focus keydown keypress lazyLoad loadChildren loadError modifyChild postProcess renderNode renderTitle select".split(
+				" "
+			),
 		EVENT_NAMES = TREE_EVENT_NAMES.concat(NODE_EVENT_NAMES),
 		// HOOK_NAME_MAP = {},
 		EVENT_NAME_MAP = {};
@@ -143,7 +145,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "logger",
-		version: "2.38.0",
+		version: "2.38.1",
 		// Default options for this extension.
 		options: {
 			logTarget: null, // optional redirect logging to this <div> tag
@@ -155,7 +157,7 @@
 		// Overide virtual methods for this extension.
 		// `this`       : is this Fancytree object
 		// `this._super`: the virtual function that was overridden (member of prev. extension or Fancytree)
-		treeCreate: function(ctx) {
+		treeCreate: function (ctx) {
 			var tree = ctx.tree,
 				opts = ctx.options;
 
@@ -196,7 +198,7 @@
 					data
 				);
 			}
-			$.each(EVENT_NAMES, function(i, name) {
+			$.each(EVENT_NAMES, function (i, name) {
 				if (typeof opts[name] === "function") {
 					// tree.info(PREFIX + "override '" + name + "' event");
 					$.ui.fancytree.overrideMethod(
@@ -212,7 +214,7 @@
 
 			return logHook("treeCreate", this, arguments);
 		},
-		nodeClick: function(ctx) {
+		nodeClick: function (ctx) {
 			return logHook(
 				"nodeClick",
 				this,
@@ -220,13 +222,13 @@
 				FT.eventToString(ctx.originalEvent)
 			);
 		},
-		nodeCollapseSiblings: function(ctx) {
+		nodeCollapseSiblings: function (ctx) {
 			return logHook("nodeCollapseSiblings", this, arguments);
 		},
-		nodeDblclick: function(ctx) {
+		nodeDblclick: function (ctx) {
 			return logHook("nodeDblclick", this, arguments);
 		},
-		nodeKeydown: function(ctx) {
+		nodeKeydown: function (ctx) {
 			return logHook(
 				"nodeKeydown",
 				this,
@@ -234,70 +236,70 @@
 				FT.eventToString(ctx.originalEvent)
 			);
 		},
-		nodeLoadChildren: function(ctx, source) {
+		nodeLoadChildren: function (ctx, source) {
 			return logHook("nodeLoadChildren", this, arguments);
 		},
-		nodeRemoveChildMarkup: function(ctx) {
+		nodeRemoveChildMarkup: function (ctx) {
 			return logHook("nodeRemoveChildMarkup", this, arguments);
 		},
-		nodeRemoveMarkup: function(ctx) {
+		nodeRemoveMarkup: function (ctx) {
 			return logHook("nodeRemoveMarkup", this, arguments);
 		},
-		nodeRender: function(ctx, force, deep, collapsed, _recursive) {
+		nodeRender: function (ctx, force, deep, collapsed, _recursive) {
 			return logHook("nodeRender", this, arguments);
 		},
-		nodeRenderStatus: function(ctx) {
+		nodeRenderStatus: function (ctx) {
 			return logHook("nodeRenderStatus", this, arguments);
 		},
-		nodeRenderTitle: function(ctx, title) {
+		nodeRenderTitle: function (ctx, title) {
 			return logHook("nodeRenderTitle", this, arguments);
 		},
-		nodeSetActive: function(ctx, flag, callOpts) {
+		nodeSetActive: function (ctx, flag, callOpts) {
 			return logHook("nodeSetActive", this, arguments);
 		},
-		nodeSetExpanded: function(ctx, flag, callOpts) {
+		nodeSetExpanded: function (ctx, flag, callOpts) {
 			return logHook("nodeSetExpanded", this, arguments);
 		},
-		nodeSetFocus: function(ctx) {
+		nodeSetFocus: function (ctx) {
 			return logHook("nodeSetFocus", this, arguments);
 		},
-		nodeSetSelected: function(ctx, flag, callOpts) {
+		nodeSetSelected: function (ctx, flag, callOpts) {
 			return logHook("nodeSetSelected", this, arguments);
 		},
-		nodeSetStatus: function(ctx, status, message, details) {
+		nodeSetStatus: function (ctx, status, message, details) {
 			return logHook("nodeSetStatus", this, arguments);
 		},
-		nodeToggleExpanded: function(ctx) {
+		nodeToggleExpanded: function (ctx) {
 			return logHook("nodeToggleExpanded", this, arguments);
 		},
-		nodeToggleSelected: function(ctx) {
+		nodeToggleSelected: function (ctx) {
 			return logHook("nodeToggleSelected", this, arguments);
 		},
-		treeClear: function(ctx) {
+		treeClear: function (ctx) {
 			return logHook("treeClear", this, arguments);
 		},
 		// treeCreate: function(ctx) {
 		// 	return logHook("treeCreate", this, arguments);
 		// },
-		treeDestroy: function(ctx) {
+		treeDestroy: function (ctx) {
 			return logHook("treeDestroy", this, arguments);
 		},
-		treeInit: function(ctx) {
+		treeInit: function (ctx) {
 			return logHook("treeInit", this, arguments);
 		},
-		treeLoad: function(ctx, source) {
+		treeLoad: function (ctx, source) {
 			return logHook("treeLoad", this, arguments);
 		},
-		treeRegisterNode: function(ctx, add, node) {
+		treeRegisterNode: function (ctx, add, node) {
 			return logHook("treeRegisterNode", this, arguments);
 		},
-		treeSetFocus: function(ctx, flag, callOpts) {
+		treeSetFocus: function (ctx, flag, callOpts) {
 			return logHook("treeSetFocus", this, arguments);
 		},
-		treeSetOption: function(ctx, key, value) {
+		treeSetOption: function (ctx, key, value) {
 			return logHook("treeSetOption", this, arguments);
 		},
-		treeStructureChanged: function(ctx, type) {
+		treeStructureChanged: function (ctx, type) {
 			return logHook("treeStructureChanged", this, arguments);
 		},
 	});

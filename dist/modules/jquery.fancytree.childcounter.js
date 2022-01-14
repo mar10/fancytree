@@ -19,8 +19,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.0
- * @date 2021-02-09T20:03:49Z
+ * @version 2.38.1
+ * @date 2022-01-14T18:41:36Z
  */
 
 // To keep the global namespace clean, we wrap everything in a closure.
@@ -28,7 +28,7 @@
 // Fancytree core module, and makes sure that we can use the `require()`
 // syntax with package loaders.
 
-(function(factory) {
+(function (factory) {
 	if (typeof define === "function" && define.amd) {
 		// AMD. Register as an anonymous module.
 		define(["jquery", "./jquery.fancytree"], factory);
@@ -40,7 +40,7 @@
 		// Browser globals
 		factory(jQuery);
 	}
-})(function($) {
+})(function ($) {
 	// Consider to use [strict mode](http://ejohn.org/blog/ecmascript-5-strict-mode-json-and-more/)
 	"use strict";
 
@@ -59,7 +59,9 @@
 	//     var tree = $.ui.fancytree.getTree("#tree");
 	//     tree.countSelected(false);
 
-	$.ui.fancytree._FancytreeClass.prototype.countSelected = function(topOnly) {
+	$.ui.fancytree._FancytreeClass.prototype.countSelected = function (
+		topOnly
+	) {
 		var tree = this,
 			treeOptions = tree.options;
 
@@ -78,7 +80,7 @@
 	 * @alias FancytreeNode#updateCounters
 	 * @requires jquery.fancytree.childcounters.js
 	 */
-	$.ui.fancytree._FancytreeNodeClass.prototype.updateCounters = function() {
+	$.ui.fancytree._FancytreeNodeClass.prototype.updateCounters = function () {
 		var node = this,
 			$badge = $("span.fancytree-childcounter", node.span),
 			extOpts = node.tree.options.childcounter,
@@ -111,7 +113,7 @@
 	//
 	//     $("#tree").fancytree("widgetMethod1", "abc");
 
-	$.ui.fancytree.prototype.widgetMethod1 = function(arg1) {
+	$.ui.fancytree.prototype.widgetMethod1 = function (arg1) {
 		var tree = this.tree;
 		return arg1;
 	};
@@ -139,7 +141,7 @@
 		// Every extension must be registered by a unique name.
 		name: "childcounter",
 		// Version information should be compliant with [semver](http://semver.org)
-		version: "2.38.0",
+		version: "2.38.1",
 
 		// Extension specific options and their defaults.
 		// This options will be available as `tree.options.childcounter.hideExpanded`
@@ -159,7 +161,7 @@
 		// Local functions are prefixed with an underscore '_'.
 		// Callable as `this._local._appendCounter()`.
 
-		_appendCounter: function(bar) {
+		_appendCounter: function (bar) {
 			var tree = this;
 		},
 
@@ -177,7 +179,7 @@
 		/* Init */
 		// `treeInit` is triggered when a tree is initalized. We can set up classes or
 		// bind event handlers here...
-		treeInit: function(ctx) {
+		treeInit: function (ctx) {
 			var tree = this, // same as ctx.tree,
 				opts = ctx.options,
 				extOpts = ctx.options.childcounter;
@@ -192,12 +194,12 @@
 		// Destroy this tree instance (we only call the default implementation, so
 		// this method could as well be omitted).
 
-		treeDestroy: function(ctx) {
+		treeDestroy: function (ctx) {
 			this._superApply(arguments);
 		},
 
 		// Overload the `renderTitle` hook, to append a counter badge
-		nodeRenderTitle: function(ctx, title) {
+		nodeRenderTitle: function (ctx, title) {
 			var node = ctx.node,
 				extOpts = ctx.options.childcounter,
 				count =
@@ -222,12 +224,12 @@
 			}
 		},
 		// Overload the `setExpanded` hook, so the counters are updated
-		nodeSetExpanded: function(ctx, flag, callOpts) {
+		nodeSetExpanded: function (ctx, flag, callOpts) {
 			var tree = ctx.tree,
 				node = ctx.node;
 			// Let the base implementation expand/collapse the node, then redraw the title
 			// after the animation has finished
-			return this._superApply(arguments).always(function() {
+			return this._superApply(arguments).always(function () {
 				tree.nodeRenderTitle(ctx);
 			});
 		},
