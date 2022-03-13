@@ -92,7 +92,7 @@
 		cookieStore = {
 			get: $.cookie,
 			set: function (key, value) {
-				$.cookie.set(key, value, this.options.persist.cookie);
+				$.cookie(key, value, this.options.persist.cookie);
 			},
 			remove: $.removeCookie,
 		};
