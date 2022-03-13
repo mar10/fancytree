@@ -1,6 +1,6 @@
 # 2.38.2-0 / Unreleased
 
-# 2.38.1-0 / 2022-01-14
+# 2.38.1 / 2022-01-14
   * Replace deprecated jQuery functions: `$.isArray()`, `$.isFunction()`,
     `$.trim()`, `$().click()`
   * Update to jQuery 3.6.0 and jQuery UI 1.13.0
