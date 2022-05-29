@@ -24,6 +24,12 @@ filtering, checkboxes, drag'n'drop, and lazy loading.
 See the [change log](https://github.com/mar10/fancytree/blob/master/CHANGELOG.md)
 for details.
 
+> **NOTE:**<br>
+Fancytree is considered feature-complete. The code is still maintained and 
+bugfixes will be commited. However do not expect new major features.<br>
+Have a look at the [Wunderbaum](https://github.com/mar10/wunderbaum) incubator 
+for a potential successor.
+
 
 ### Get Started
 
