@@ -457,9 +457,12 @@
 
 			callOpts = callOpts || {};
 
-			function _afterExpand(ok) {
-				setChildRowVisibility(ctx.node, flag);
+			function _afterExpand(ok, args) {
+				// ctx.tree.info("ok:" + ok, args);
 				if (ok) {
+					// #1108 minExpandLevel: 2 together with table extension does not work
+					// don't call when 'ok' is false:
+					setChildRowVisibility(ctx.node, flag);
 					if (
 						flag &&
 						ctx.options.autoScroll &&
@@ -501,10 +504,10 @@
 			// Call base-expand with disabled events and animation
 			this._super(ctx, flag, subOpts)
 				.done(function () {
-					_afterExpand(true);
+					_afterExpand(true, arguments);
 				})
 				.fail(function () {
-					_afterExpand(false);
+					_afterExpand(false, arguments);
 				});
 			return dfd.promise();
 		},
