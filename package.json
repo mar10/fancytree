@@ -51,7 +51,7 @@
     "grunt-contrib-copy": "^1.0.0",
     "grunt-contrib-cssmin": "^4.0.0",
     "grunt-contrib-less": "^3.0.0",
-    "grunt-contrib-qunit": "^4.0.0",
+    "grunt-contrib-qunit": "^6.0.0",
     "grunt-contrib-uglify": "^5.0.0",
     "grunt-contrib-watch": "^1.1.0",
     "grunt-docco": "^0.5.0",
@@ -63,7 +63,8 @@
     "jsdoc": "^3.6.7",
     "marked": "^4.0.10",
     "prettier": "^2.3.0",
-    "qunit": "^2.11.2"
+    "puppeteer": "^13.5.2",
+    "qunit": "^2.18.1"
   },
   "peerDependencies": {
     "jquery": ">=1.9"

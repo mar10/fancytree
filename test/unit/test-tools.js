@@ -1,4 +1,4 @@
-(function($, window, document, undefined) {
+(function ($, window, document, undefined) {
 	/*globals QUnit */
 
 	var TOOLS = {},
@@ -11,12 +11,55 @@
 	TOOLS.EVENT_SEQUENCE = "<deprecated: use assert.EVENT_SEQUENCE instead>";
 	TOOLS.TOTAL_ELAP = 0;
 
+	function _destroyFixture() {
+		if ($(FIXTURE_SELECTOR).is(":ui-fancytree")) {
+			console.info(`setup: destroy '${FIXTURE_SELECTOR}'`)
+			$(FIXTURE_SELECTOR).fancytree("destroy");
+		} else {
+			// console.log(`setup: destroy '${FIXTURE_SELECTOR}': nothing to do`)
+		}
+	}
 	/*******************************************************************************
 	 * QUnit setup
 	 */
-	TOOLS.initQUnit = function() {
+	QUnit.log(function (details) {
+		// Puppeteer or whoever registers `QUnit.on("testEnd")` which tries to 
+		// Convert the assertions to JSON.
+		// If an assertions references a HTMLElement, this may lead to exceptions like
+		// TypeError: Converting circular structure to JSON
+		//       --> starting at object with constructor 'Window'  
+		//       --- property 'window' closes the circle
+		// so we fix that value in the distinct assertions:
+		try {
+			var _dummy = JSON.stringify(details.expected);
+		} catch (error) {
+			console.warn(`QUnit.log convert details.expected value to string: ${details.expected}`)
+			details.expected = "" + details.expected; 
+		}
+		try {
+			var _dummy = JSON.stringify(details.actual);
+		} catch (error) {
+			console.warn(`QUnit.log convert details.actual value to string: ${details.actual}`)
+			details.actual = "" + details.actual; 
+		}
+		if (details.result) {
+			// console.log(`OK   : ${details.module}.${details.message} ${details.actual}`)
+		} else {
+			console.error(`ERROR : ${details.module}.${details.message}`)
+		}
+	});
+	QUnit.on("testStart", function (details) {
+		console.log(`test-tools: on.testStart: ${details.module}.${details.name}...`)
+		_destroyFixture();
+	});
+	QUnit.on("testEnd", function (details) {
+		console.info(`test-tools: on.testEnd: ${details.status}: ${details.module}.${details.name}`)
+		_destroyFixture();
+	});
+
+	TOOLS.initQUnit = function () {
 		// See https://github.com/axemclion/grunt-saucelabs
-		QUnit.done(function(testResults) {
+		QUnit.done(function (testResults) {
 			var details,
 				i,
 				len,
@@ -44,14 +87,17 @@
 		});
 
 		// See https://github.com/axemclion/grunt-saucelabs
-		QUnit.testStart(function(testDetails) {
-			QUnit.log(function(details) {
-				if (!details.result) {
-					details.name = testDetails.name;
-					log.push(details);
-				}
-			});
-		});
+		// QUnit.testStart(function(testDetails) {
+		// 	console.info("testStart: " + testDetails.name)
+		// 	_destroyFixture();
+		// 	// QUnit.log(function(details) {
+		// 	// 	if (!details.result) {
+		// 	// 		details.name = testDetails.name;
+		// 	// 		log.push(details);
+		// 	// 	}
+		// 	// });
+		// });
+
 
 		// // Log something if test fails
 		// QUnit.testDone( function( details ) {
@@ -80,29 +126,29 @@
 		$.ui.fancytree.debugLevel = 1;
 	};
 
-	TOOLS.createInfoSection = function() {
+	TOOLS.createInfoSection = function () {
 		// Create the first informational section
 		QUnit.module("Configuration and Summary");
 
-		QUnit.test("Version info", function(assert) {
-			TOOLS.setup(assert);
+		QUnit.test("Version info", function (assert) {
+			// TOOLS.setup(assert);
 			assert.expect(5);
 
 			assert.ok(
 				true,
 				"Fancytree v" +
-					$.ui.fancytree.version +
-					", buildType='" +
-					$.ui.fancytree.buildType +
-					"'"
+				$.ui.fancytree.version +
+				", buildType='" +
+				$.ui.fancytree.buildType +
+				"'"
 			);
 			assert.ok(
 				true,
 				"jQuery UI " +
-					jQuery.ui.version +
-					" (uiBackCompat=" +
-					$.uiBackCompat +
-					")"
+				jQuery.ui.version +
+				" (uiBackCompat=" +
+				$.uiBackCompat +
+				")"
 			);
 			assert.ok(true, "jQuery " + jQuery.fn.jquery);
 			assert.ok(true, "Browser: " + TOOLS.getBrowserInfo());
@@ -125,7 +171,7 @@
 	//}
 
 	/** Helper to reset environment for asynchronous Fancytree tests. */
-	TOOLS.appendEvent = function(assert, msg) {
+	TOOLS.appendEvent = function (assert, msg) {
 		if (!assert || !assert.deepEqual) {
 			$.error("assert must be passed");
 		}
@@ -138,7 +184,7 @@
 		assert.EVENT_SEQUENCE.push(msg);
 	};
 
-	TOOLS.clearEvents = function(assert) {
+	TOOLS.clearEvents = function (assert) {
 		if (!assert || !assert.deepEqual) {
 			$.error("assert must be passed");
 		}
@@ -149,17 +195,17 @@
 	};
 
 	/** Replacement for deprecated `$.isFunction`. */
-	TOOLS.isFunction = function(obj) {
+	TOOLS.isFunction = function (obj) {
 		return typeof obj === "function";
 	};
 
 	/** Replacement for deprecated `$.trim`. */
-	TOOLS.trim = function(text) {
+	TOOLS.trim = function (text) {
 		return text == null ? "" : text.trim();
 	};
 
 	/** Helper to reset environment for asynchronous Fancytree tests. */
-	TOOLS.setup = function(assert) {
+	TOOLS.setup = function (assert) {
 		if (!assert) {
 			$.error("Need assert arg");
 		}
@@ -167,13 +213,11 @@
 			$.error("Duplicate setup()");
 		}
 		assert.EVENT_SEQUENCE = [];
-		if ($(FIXTURE_SELECTOR).is(":ui-fancytree")) {
-			$(FIXTURE_SELECTOR).fancytree("destroy");
-		}
+		_destroyFixture();
 	};
 
 	/** Return an info string of current browser. */
-	TOOLS.getBrowserInfo = function() {
+	TOOLS.getBrowserInfo = function () {
 		var n = navigator.appName,
 			ua = navigator.userAgent,
 			tem,
@@ -189,26 +233,26 @@
 	};
 
 	/** Get FancytreeNode from current tree. */
-	TOOLS.getNode = function(key) {
+	TOOLS.getNode = function (key) {
 		return TOOLS.getTree().getNodeByKey(key);
 	};
 
 	/** Get first node with matching title. */
-	TOOLS.getNodeByTitle = function(title) {
+	TOOLS.getNodeByTitle = function (title) {
 		var tree = $.ui.fancytree.getTree("#tree");
 
-		return tree.findFirst(function(n) {
+		return tree.findFirst(function (n) {
 			return n.title === title;
 		});
 	};
 
 	/** Get current Fancytree. */
-	TOOLS.getTree = function() {
+	TOOLS.getTree = function () {
 		return $.ui.fancytree.getTree(FIXTURE_SELECTOR);
 	};
 
 	/** Get node title as rendered in the DOM. */
-	TOOLS.getNodeTitle = function(key) {
+	TOOLS.getNodeTitle = function (key) {
 		var node = TOOLS.getNode(key);
 		if (!node) {
 			return undefined;
@@ -219,18 +263,18 @@
 	};
 
 	/** Convert array of nodes to array to array of node keys. */
-	TOOLS.getNodeKeyArray = function(nodeArray) {
+	TOOLS.getNodeKeyArray = function (nodeArray) {
 		if (!Array.isArray(nodeArray)) {
 			return nodeArray;
 		}
-		return $.map(nodeArray, function(n) {
+		return $.map(nodeArray, function (n) {
 			return n.key;
 		});
 	};
 
 	/** Generate a large hierarchy of nodes
 	 */
-	TOOLS.addGenericNodes = function(node, options, callback) {
+	TOOLS.addGenericNodes = function (node, options, callback) {
 		var d,
 			f,
 			i,
@@ -281,7 +325,7 @@
 	};
 
 	/** Fake an Ajax request, return a $.Promise. */
-	TOOLS.fakeAjaxLoad = function(node, count, delay) {
+	TOOLS.fakeAjaxLoad = function (node, count, delay) {
 		delay = delay || 0;
 		if (Array.isArray(delay)) {
 			// random delay range [min..max]
@@ -290,7 +334,7 @@
 			);
 		}
 		var dfd = new $.Deferred();
-		setTimeout(function() {
+		setTimeout(function () {
 			var i,
 				children = [];
 			for (i = 0; i < count; i++) {
@@ -307,7 +351,7 @@
 	};
 
 	/** Format a number as string with thousands-separator. */
-	TOOLS.formatNumber = function(num) {
+	TOOLS.formatNumber = function (num) {
 		var parts = num
 			.toFixed(0)
 			.toString()
@@ -316,8 +360,8 @@
 		return parts.join(".");
 	};
 
-	TOOLS.makeBenchWrapper = function(assert, testName, count, callback) {
-		return function() {
+	TOOLS.makeBenchWrapper = function (assert, testName, count, callback) {
+		return function () {
 			var elap,
 				start = Date.now();
 
@@ -328,11 +372,11 @@
 				assert.ok(
 					true,
 					testName +
-						" took " +
-						elap +
-						" milliseconds, " +
-						TOOLS.formatNumber((1000 * count) / elap) +
-						" items/sec"
+					" took " +
+					elap +
+					" milliseconds, " +
+					TOOLS.formatNumber((1000 * count) / elap) +
+					" items/sec"
 				);
 			} else {
 				assert.ok(true, testName + " took " + elap + " milliseconds");
@@ -344,7 +388,7 @@
 	/* Execute callback immediately and log timing as test result.
 	 * This function should be called inside a QUnit.test() function.
 	 */
-	TOOLS.benchmark = function(assert, testName, count, callback) {
+	TOOLS.benchmark = function (assert, testName, count, callback) {
 		TOOLS.makeBenchWrapper(assert, testName, count, callback).call();
 	};
 
@@ -362,7 +406,7 @@
  *
  * This function should be called inside a QUnit.test() function.
  */
-	TOOLS.benchmarkWithReflowAsync = function(
+	TOOLS.benchmarkWithReflowAsync = function (
 		assert,
 		tree,
 		testName,
@@ -387,7 +431,7 @@
 
 		// Yield to interpreter -- Hopefully this will cause the browser to redraw,
 		// so we can capture the timings:
-		setTimeout(function() {
+		setTimeout(function () {
 			elap3 = Date.now() - start; // execution time incl. reflow & redraw
 			msg =
 				testName +
@@ -427,10 +471,10 @@
 	}
 	TOOLS.AsyncTimer = AsyncTimer;
 	AsyncTimer.prototype = {
-		toString: function() {
+		toString: function () {
 			return this.name;
 		},
-		start: function() {
+		start: function () {
 			/*jshint expr:true */
 			window.console &&
 				window.console.time &&
@@ -440,7 +484,7 @@
 			this.stamp = Date.now();
 			this.lastStamp = this.stamp;
 		},
-		stop: function() {
+		stop: function () {
 			/*jshint expr:true */
 			window.console &&
 				window.console.timeEnd &&
@@ -450,11 +494,11 @@
 				this.assert.ok(
 					true,
 					this.name +
-						" took " +
-						elap +
-						" milliseconds, " +
-						TOOLS.formatNumber((1000.0 * this.count) / elap) +
-						" items/sec"
+					" took " +
+					elap +
+					" milliseconds, " +
+					TOOLS.formatNumber((1000.0 * this.count) / elap) +
+					" items/sec"
 				);
 			} else {
 				this.assert.ok(
@@ -466,19 +510,19 @@
 			// Continue QUnit
 			// this.done();
 		},
-		subtime: function(info) {
+		subtime: function (info) {
 			var now = Date.now(),
 				elap = now - this.lastStamp;
 			this.lastStamp = now;
 			this.assert.ok(
 				true,
 				"... " +
-					this.name +
-					" until '" +
-					info +
-					"' took " +
-					elap +
-					" milliseconds"
+				this.name +
+				" until '" +
+				info +
+				"' took " +
+				elap +
+				" milliseconds"
 			);
 		},
 	};
