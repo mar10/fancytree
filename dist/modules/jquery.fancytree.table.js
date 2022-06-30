@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.1
- * @date 2022-01-14T18:41:36Z
+ * @version 2.38.2
+ * @date 2022-06-30T18:24:06Z
  */
 
 (function (factory) {
@@ -88,7 +88,7 @@
 
 	$.ui.fancytree.registerExtension({
 		name: "table",
-		version: "2.38.1",
+		version: "2.38.2",
 		// Default options for this extension.
 		options: {
 			checkboxColumnIdx: null, // render the checkboxes into the this column index (default: nodeColumnIdx)
@@ -457,9 +457,12 @@
 
 			callOpts = callOpts || {};
 
-			function _afterExpand(ok) {
-				setChildRowVisibility(ctx.node, flag);
+			function _afterExpand(ok, args) {
+				// ctx.tree.info("ok:" + ok, args);
 				if (ok) {
+					// #1108 minExpandLevel: 2 together with table extension does not work
+					// don't call when 'ok' is false:
+					setChildRowVisibility(ctx.node, flag);
 					if (
 						flag &&
 						ctx.options.autoScroll &&
@@ -501,10 +504,10 @@
 			// Call base-expand with disabled events and animation
 			this._super(ctx, flag, subOpts)
 				.done(function () {
-					_afterExpand(true);
+					_afterExpand(true, arguments);
 				})
 				.fail(function () {
-					_afterExpand(false);
+					_afterExpand(false, arguments);
 				});
 			return dfd.promise();
 		},

@@ -8,8 +8,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.1
- * @date 2022-01-14T18:41:36Z
+ * @version 2.38.2
+ * @date 2022-06-30T18:24:06Z
  */
 
 (function (factory) {
@@ -139,7 +139,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "wide",
-		version: "2.38.1",
+		version: "2.38.2",
 		// Default options for this extension.
 		options: {
 			iconWidth: null, // Adjust this if @fancy-icon-width != "16px"
