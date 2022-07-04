@@ -35,8 +35,8 @@ for a potential successor.
 
   * [Try the live demo](https://wwWendt.de/tech/fancytree/demo).
   * [Read the documentation](https://github.com/mar10/fancytree/wiki).
-  * [Check the Q&A forum](https://groups.google.com/forum/#!forum/fancytree) or
-    [Stackoverflow](http://stackoverflow.com/questions/tagged/fancytree) if you have questions.
+  * [Check the Q&A forum](https://github.com/mar10/fancytree/discussions) or
+    [Stackoverflow](https://stackoverflow.com/questions/tagged/fancytree) if you have questions.
   * Play with [jsFiddle](http://jsfiddle.net/mar10/KcxRd/),
     [CodePen](https://codepen.io/mar10/pen/WMWrbq),
     or [Plunker](http://plnkr.co/edit/8sdy3r?p=preview).
