@@ -11,11 +11,11 @@
 
 	$.ui = $.ui || {};
 
-	var version = $.ui.version = "1.13.0";
+	var version = $.ui.version = "1.13.2";
 
 
 	/*!
-	 * jQuery UI Widget 1.13.0
+	 * jQuery UI Widget 1.13.2
 	 * http://jqueryui.com
 	 *
 	 * Copyright jQuery Foundation and other contributors
@@ -79,7 +79,7 @@
 		constructor = $[ namespace ][ name ] = function( options, element ) {
 
 			// Allow instantiation without "new" keyword
-			if ( !this._createWidget ) {
+			if ( !this || !this._createWidget ) {
 				return new constructor( options, element );
 			}
 
@@ -501,6 +501,8 @@
 			}, options );
 
 			function bindRemoveEvent() {
+				var nodesToBind = [];
+
 				options.element.each( function( _, element ) {
 					var isTracked = $.map( that.classesElementLookup, function( elements ) {
 						return elements;
@@ -510,10 +512,12 @@
 						} );
 
 					if ( !isTracked ) {
-						that._on( $( element ), {
-							remove: "_untrackClassesElement"
-						} );
+						nodesToBind.push( element );
 					}
+				} );
+
+				that._on( $( nodesToBind ), {
+					remove: "_untrackClassesElement"
 				} );
 			}
 
@@ -753,7 +757,7 @@
 
 
 	/*!
-	 * jQuery UI Position 1.13.0
+	 * jQuery UI Position 1.13.2
 	 * http://jqueryui.com
 	 *
 	 * Copyright jQuery Foundation and other contributors
@@ -1250,7 +1254,7 @@
 
 
 	/*!
-	 * jQuery UI Support for jQuery core 1.8.x and newer 1.13.0
+	 * jQuery UI Support for jQuery core 1.8.x and newer 1.13.2
 	 * http://jqueryui.com
 	 *
 	 * Copyright jQuery Foundation and other contributors
@@ -1325,7 +1329,7 @@
 
 	;
 	/*!
-	 * jQuery UI Keycode 1.13.0
+	 * jQuery UI Keycode 1.13.2
 	 * http://jqueryui.com
 	 *
 	 * Copyright jQuery Foundation and other contributors
@@ -1360,7 +1364,7 @@
 
 
 	/*!
-	 * jQuery UI Scroll Parent 1.13.0
+	 * jQuery UI Scroll Parent 1.13.2
 	 * http://jqueryui.com
 	 *
 	 * Copyright jQuery Foundation and other contributors
@@ -1390,11 +1394,11 @@
 		return position === "fixed" || !scrollParent.length ?
 			$( this[ 0 ].ownerDocument || document ) :
 			scrollParent;
-	};
+	}; 
 
 
 	/*!
-	 * jQuery UI Unique ID 1.13.0
+	 * jQuery UI Unique ID 1.13.2
 	 * http://jqueryui.com
 	 *
 	 * Copyright jQuery Foundation and other contributors

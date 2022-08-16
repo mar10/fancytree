@@ -1,4 +1,4 @@
-/*! jQuery UI - v1.13.0 - 2021-11-09
+/*! jQuery UI - v1.13.2 - 2022-08-16
 * http://jqueryui.com
 * Includes: widget.js, position.js, jquery-patch.js, keycode.js, scroll-parent.js, unique-id.js
 * Copyright jQuery Foundation and other contributors; Licensed MIT */
@@ -20,11 +20,11 @@
 
 $.ui = $.ui || {};
 
-var version = $.ui.version = "1.13.0";
+var version = $.ui.version = "1.13.2";
 
 
 /*!
- * jQuery UI Widget 1.13.0
+ * jQuery UI Widget 1.13.2
  * http://jqueryui.com
  *
  * Copyright jQuery Foundation and other contributors
@@ -88,7 +88,7 @@ $.widget = function( name, base, prototype ) {
 	constructor = $[ namespace ][ name ] = function( options, element ) {
 
 		// Allow instantiation without "new" keyword
-		if ( !this._createWidget ) {
+		if ( !this || !this._createWidget ) {
 			return new constructor( options, element );
 		}
 
@@ -510,6 +510,8 @@ $.Widget.prototype = {
 		}, options );
 
 		function bindRemoveEvent() {
+			var nodesToBind = [];
+
 			options.element.each( function( _, element ) {
 				var isTracked = $.map( that.classesElementLookup, function( elements ) {
 					return elements;
@@ -519,10 +521,12 @@ $.Widget.prototype = {
 					} );
 
 				if ( !isTracked ) {
-					that._on( $( element ), {
-						remove: "_untrackClassesElement"
-					} );
+					nodesToBind.push( element );
 				}
+			} );
+
+			that._on( $( nodesToBind ), {
+				remove: "_untrackClassesElement"
 			} );
 		}
 
@@ -762,7 +766,7 @@ var widget = $.widget;
 
 
 /*!
- * jQuery UI Position 1.13.0
+ * jQuery UI Position 1.13.2
  * http://jqueryui.com
  *
  * Copyright jQuery Foundation and other contributors
@@ -1259,7 +1263,7 @@ var position = $.ui.position;
 
 
 /*!
- * jQuery UI Support for jQuery core 1.8.x and newer 1.13.0
+ * jQuery UI Support for jQuery core 1.8.x and newer 1.13.2
  * http://jqueryui.com
  *
  * Copyright jQuery Foundation and other contributors
@@ -1334,7 +1338,7 @@ if ( !$.fn.even || !$.fn.odd ) {
 
 ;
 /*!
- * jQuery UI Keycode 1.13.0
+ * jQuery UI Keycode 1.13.2
  * http://jqueryui.com
  *
  * Copyright jQuery Foundation and other contributors
@@ -1369,7 +1373,7 @@ var keycode = $.ui.keyCode = {
 
 
 /*!
- * jQuery UI Scroll Parent 1.13.0
+ * jQuery UI Scroll Parent 1.13.2
  * http://jqueryui.com
  *
  * Copyright jQuery Foundation and other contributors
@@ -1403,7 +1407,7 @@ var scrollParent = $.fn.scrollParent = function( includeHidden ) {
 
 
 /*!
- * jQuery UI Unique ID 1.13.0
+ * jQuery UI Unique ID 1.13.2
  * http://jqueryui.com
  *
  * Copyright jQuery Foundation and other contributors
