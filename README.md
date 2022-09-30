@@ -24,13 +24,19 @@ filtering, checkboxes, drag'n'drop, and lazy loading.
 See the [change log](https://github.com/mar10/fancytree/blob/master/CHANGELOG.md)
 for details.
 
+> **NOTE:**<br>
+Fancytree is considered feature-complete. The code is still maintained and 
+bugfixes will be commited. However do not expect new major features.<br>
+Have a look at the [Wunderbaum](https://github.com/mar10/wunderbaum) incubator 
+for a potential successor.
+
 
 ### Get Started
 
   * [Try the live demo](https://wwWendt.de/tech/fancytree/demo).
   * [Read the documentation](https://github.com/mar10/fancytree/wiki).
-  * [Check the Q&A forum](https://groups.google.com/forum/#!forum/fancytree) or
-    [Stackoverflow](http://stackoverflow.com/questions/tagged/fancytree) if you have questions.
+  * [Check the Q&A forum](https://github.com/mar10/fancytree/discussions) or
+    [Stackoverflow](https://stackoverflow.com/questions/tagged/fancytree) if you have questions.
   * Play with [jsFiddle](http://jsfiddle.net/mar10/KcxRd/),
     [CodePen](https://codepen.io/mar10/pen/WMWrbq),
     or [Plunker](http://plnkr.co/edit/8sdy3r?p=preview).

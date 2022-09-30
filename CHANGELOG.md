@@ -1,5 +1,9 @@
-# 2.38.2-0 / Unreleased
+# 2.38.3-0 / Unreleased
+  * #1113 Update jQuery UI to 1.13.2
+
+# 2.38.2-0 / 2022-06-30
   * [Fixed] #1097 Removed incorrect set-function for jQuery cookie
+  * [Fixed] #1108 minExpandLevel: 2 together with table extension does not work
 
 # 2.38.1 / 2022-01-14
   * Replace deprecated jQuery functions: `$.isArray()`, `$.isFunction()`,

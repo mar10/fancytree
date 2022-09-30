@@ -7,8 +7,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.1
- * @date 2022-01-14T18:41:36Z
+ * @version 2.38.2
+ * @date 2022-06-30T18:24:06Z
  */
 
 /** Core Fancytree module.
@@ -6280,11 +6280,11 @@
 	 *
 	 * @example
 	 * // DEPRECATED: Access jQuery UI widget methods and members:
-	 * var tree = $("#tree").fancytree("getTree", "#myTree");
-	 * var node = $.ui.fancytree.getTree("#tree").getActiveNode();
+	 * var tree = $("#tree").fancytree("getTree");
+	 * var node = $("#tree").fancytree("getActiveNode");
 	 *
 	 * // RECOMMENDED: Use the Fancytree object API
-	 * var tree = $.ui.fancytree.getTree("#myTree");
+	 * var tree = $.ui.fancytree.getTree("#tree");
 	 * var node = tree.getActiveNode();
 	 *
 	 * // or you may already have stored the tree instance upon creation:
@@ -6755,7 +6755,7 @@
 		{
 			/** Version number `"MAJOR.MINOR.PATCH"`
 			 * @type {string} */
-			version: "2.38.1", // Set to semver by 'grunt release'
+			version: "2.38.2", // Set to semver by 'grunt release'
 			/** @type {string}
 			 * @description `"production" for release builds` */
 			buildType: "production", // Set to 'production' by 'grunt build'
