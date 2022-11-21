@@ -39,7 +39,8 @@ for a potential successor.
     [Stackoverflow](https://stackoverflow.com/questions/tagged/fancytree) if you have questions.
   * Play with [jsFiddle](http://jsfiddle.net/mar10/KcxRd/),
     [CodePen](https://codepen.io/mar10/pen/WMWrbq),
-    or [Plunker](http://plnkr.co/edit/8sdy3r?p=preview).
+    [Plunker](http://plnkr.co/edit/8sdy3r?p=preview),
+    or [Observable notebook](https://observablehq.com/@kevinah95/jquery-fancytree).
   * [Contribute](https://github.com/mar10/fancytree/wiki/HowtoContribute)
 
 
