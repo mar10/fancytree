@@ -14,13 +14,13 @@
  * Add a child counter bubble to tree nodes.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2021, Martin Wendt (https://wwWendt.de)
+ * Copyright (c) 2008-2023, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.2
- * @date 2022-06-30T18:24:06Z
+ * @version 2.38.3
+ * @date 2023-02-01T20:52:50Z
  */
 
 // To keep the global namespace clean, we wrap everything in a closure.
@@ -141,7 +141,7 @@
 		// Every extension must be registered by a unique name.
 		name: "childcounter",
 		// Version information should be compliant with [semver](http://semver.org)
-		version: "2.38.2",
+		version: "2.38.3",
 
 		// Extension specific options and their defaults.
 		// This options will be available as `tree.options.childcounter.hideExpanded`

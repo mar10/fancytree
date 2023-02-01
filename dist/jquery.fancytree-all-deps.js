@@ -1,6 +1,6 @@
-/*! jQuery Fancytree Plugin - 2.38.2 - 2022-06-30T18:24:06Z
+/*! jQuery Fancytree Plugin - 2.38.3 - 2023-02-01T20:52:50Z
   * https://github.com/mar10/fancytree
-  * Copyright (c) 2022 Martin Wendt; Licensed MIT
+  * Copyright (c) 2023 Martin Wendt; Licensed MIT
  */
 /*! jQuery UI - v1.13.0 - 2021-11-09
 * http://jqueryui.com
@@ -15,11 +15,11 @@
 
 	$.ui = $.ui || {};
 
-	var version = $.ui.version = "1.13.0";
+	var version = $.ui.version = "1.13.2";
 
 
 	/*!
-	 * jQuery UI Widget 1.13.0
+	 * jQuery UI Widget 1.13.2
 	 * http://jqueryui.com
 	 *
 	 * Copyright jQuery Foundation and other contributors
@@ -83,7 +83,7 @@
 		constructor = $[ namespace ][ name ] = function( options, element ) {
 
 			// Allow instantiation without "new" keyword
-			if ( !this._createWidget ) {
+			if ( !this || !this._createWidget ) {
 				return new constructor( options, element );
 			}
 
@@ -505,6 +505,8 @@
 			}, options );
 
 			function bindRemoveEvent() {
+				var nodesToBind = [];
+
 				options.element.each( function( _, element ) {
 					var isTracked = $.map( that.classesElementLookup, function( elements ) {
 						return elements;
@@ -514,10 +516,12 @@
 						} );
 
 					if ( !isTracked ) {
-						that._on( $( element ), {
-							remove: "_untrackClassesElement"
-						} );
+						nodesToBind.push( element );
 					}
+				} );
+
+				that._on( $( nodesToBind ), {
+					remove: "_untrackClassesElement"
 				} );
 			}
 
@@ -757,7 +761,7 @@
 
 
 	/*!
-	 * jQuery UI Position 1.13.0
+	 * jQuery UI Position 1.13.2
 	 * http://jqueryui.com
 	 *
 	 * Copyright jQuery Foundation and other contributors
@@ -1254,7 +1258,7 @@
 
 
 	/*!
-	 * jQuery UI Support for jQuery core 1.8.x and newer 1.13.0
+	 * jQuery UI Support for jQuery core 1.8.x and newer 1.13.2
 	 * http://jqueryui.com
 	 *
 	 * Copyright jQuery Foundation and other contributors
@@ -1329,7 +1333,7 @@
 
 	;
 	/*!
-	 * jQuery UI Keycode 1.13.0
+	 * jQuery UI Keycode 1.13.2
 	 * http://jqueryui.com
 	 *
 	 * Copyright jQuery Foundation and other contributors
@@ -1364,7 +1368,7 @@
 
 
 	/*!
-	 * jQuery UI Scroll Parent 1.13.0
+	 * jQuery UI Scroll Parent 1.13.2
 	 * http://jqueryui.com
 	 *
 	 * Copyright jQuery Foundation and other contributors
@@ -1394,11 +1398,11 @@
 		return position === "fixed" || !scrollParent.length ?
 			$( this[ 0 ].ownerDocument || document ) :
 			scrollParent;
-	};
+	}; 
 
 
 	/*!
-	 * jQuery UI Unique ID 1.13.0
+	 * jQuery UI Unique ID 1.13.2
 	 * http://jqueryui.com
 	 *
 	 * Copyright jQuery Foundation and other contributors
@@ -1460,12 +1464,12 @@
  * Tree view control with support for lazy loading and much more.
  * https://github.com/mar10/fancytree/
  *
- * Copyright (c) 2008-2021, Martin Wendt (https://wwWendt.de)
+ * Copyright (c) 2008-2023, Martin Wendt (https://wwWendt.de)
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.2
- * @date 2022-06-30T18:24:06Z
+ * @version 2.38.3
+ * @date 2023-02-01T20:52:50Z
  */
 
 /** Core Fancytree module.
@@ -8212,7 +8216,7 @@
 		{
 			/** Version number `"MAJOR.MINOR.PATCH"`
 			 * @type {string} */
-			version: "2.38.2", // Set to semver by 'grunt release'
+			version: "2.38.3", // Set to semver by 'grunt release'
 			/** @type {string}
 			 * @description `"production" for release builds` */
 			buildType: "production", // Set to 'production' by 'grunt build'
@@ -8847,13 +8851,13 @@
  * Add a child counter bubble to tree nodes.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2021, Martin Wendt (https://wwWendt.de)
+ * Copyright (c) 2008-2023, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.2
- * @date 2022-06-30T18:24:06Z
+ * @version 2.38.3
+ * @date 2023-02-01T20:52:50Z
  */
 
 // To keep the global namespace clean, we wrap everything in a closure.
@@ -8974,7 +8978,7 @@
 		// Every extension must be registered by a unique name.
 		name: "childcounter",
 		// Version information should be compliant with [semver](http://semver.org)
-		version: "2.38.2",
+		version: "2.38.3",
 
 		// Extension specific options and their defaults.
 		// This options will be available as `tree.options.childcounter.hideExpanded`
@@ -9080,13 +9084,13 @@
  * Support faster lookup of nodes by key and shared ref-ids.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2021, Martin Wendt (https://wwWendt.de)
+ * Copyright (c) 2008-2023, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.2
- * @date 2022-06-30T18:24:06Z
+ * @version 2.38.3
+ * @date 2023-02-01T20:52:50Z
  */
 
 (function (factory) {
@@ -9439,7 +9443,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "clones",
-		version: "2.38.2",
+		version: "2.38.3",
 		// Default options for this extension.
 		options: {
 			highlightActiveClones: true, // set 'fancytree-active-clone' on active clones and all peers
@@ -9596,13 +9600,13 @@
  * Drag-and-drop support (native HTML5).
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2021, Martin Wendt (https://wwWendt.de)
+ * Copyright (c) 2008-2023, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.2
- * @date 2022-06-30T18:24:06Z
+ * @version 2.38.3
+ * @date 2023-02-01T20:52:50Z
  */
 
 /*
@@ -10620,7 +10624,7 @@
 
 	$.ui.fancytree.registerExtension({
 		name: "dnd5",
-		version: "2.38.2",
+		version: "2.38.3",
 		// Default options for this extension.
 		options: {
 			autoExpandMS: 1500, // Expand nodes after n milliseconds of hovering
@@ -10755,13 +10759,13 @@
  * Make node titles editable.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2021, Martin Wendt (https://wwWendt.de)
+ * Copyright (c) 2008-2023, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.2
- * @date 2022-06-30T18:24:06Z
+ * @version 2.38.3
+ * @date 2023-02-01T20:52:50Z
  */
 
 (function (factory) {
@@ -11054,7 +11058,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "edit",
-		version: "2.38.2",
+		version: "2.38.3",
 		// Default options for this extension.
 		options: {
 			adjustWidthOfs: 4, // null: don't adjust input size to content
@@ -11160,13 +11164,13 @@
  * Remove or highlight tree nodes, based on a filter.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2021, Martin Wendt (https://wwWendt.de)
+ * Copyright (c) 2008-2023, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.2
- * @date 2022-06-30T18:24:06Z
+ * @version 2.38.3
+ * @date 2023-02-01T20:52:50Z
  */
 
 (function (factory) {
@@ -11596,7 +11600,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "filter",
-		version: "2.38.2",
+		version: "2.38.3",
 		// Default options for this extension.
 		options: {
 			autoApply: true, // Re-apply last filter if lazy data is loaded
@@ -11711,13 +11715,13 @@
  * Use glyph-fonts, ligature-fonts, or SVG icons instead of icon sprites.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2021, Martin Wendt (https://wwWendt.de)
+ * Copyright (c) 2008-2023, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.2
- * @date 2022-06-30T18:24:06Z
+ * @version 2.38.3
+ * @date 2023-02-01T20:52:50Z
  */
 
 (function (factory) {
@@ -11919,7 +11923,7 @@
 
 	$.ui.fancytree.registerExtension({
 		name: "glyph",
-		version: "2.38.2",
+		version: "2.38.3",
 		// Default options for this extension.
 		options: {
 			preset: null, // 'awesome3', 'awesome4', 'bootstrap3', 'material'
@@ -12067,13 +12071,13 @@
  * Support keyboard navigation for trees with embedded input controls.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2021, Martin Wendt (https://wwWendt.de)
+ * Copyright (c) 2008-2023, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.2
- * @date 2022-06-30T18:24:06Z
+ * @version 2.38.3
+ * @date 2023-02-01T20:52:50Z
  */
 
 (function (factory) {
@@ -12190,7 +12194,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "gridnav",
-		version: "2.38.2",
+		version: "2.38.3",
 		// Default options for this extension.
 		options: {
 			autofocusInput: false, // Focus first embedded input if node gets activated
@@ -12287,13 +12291,13 @@
  * Allow multiple selection of nodes  by mouse or keyboard.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2021, Martin Wendt (https://wwWendt.de)
+ * Copyright (c) 2008-2023, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.2
- * @date 2022-06-30T18:24:06Z
+ * @version 2.38.3
+ * @date 2023-02-01T20:52:50Z
  */
 
 (function (factory) {
@@ -12322,7 +12326,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "multi",
-		version: "2.38.2",
+		version: "2.38.3",
 		// Default options for this extension.
 		options: {
 			allowNoSelect: false, //
@@ -12419,13 +12423,13 @@
  *
  * @depends: js-cookie or jquery-cookie
  *
- * Copyright (c) 2008-2021, Martin Wendt (https://wwWendt.de)
+ * Copyright (c) 2008-2023, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.2
- * @date 2022-06-30T18:24:06Z
+ * @version 2.38.3
+ * @date 2023-02-01T20:52:50Z
  */
 
 (function (factory) {
@@ -12636,7 +12640,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "persist",
-		version: "2.38.2",
+		version: "2.38.3",
 		// Default options for this extension.
 		options: {
 			cookieDelimiter: "~",
@@ -12922,13 +12926,13 @@
  * Render tree as table (aka 'tree grid', 'table tree').
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2021, Martin Wendt (https://wwWendt.de)
+ * Copyright (c) 2008-2023, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.2
- * @date 2022-06-30T18:24:06Z
+ * @version 2.38.3
+ * @date 2023-02-01T20:52:50Z
  */
 
 (function (factory) {
@@ -13006,7 +13010,7 @@
 
 	$.ui.fancytree.registerExtension({
 		name: "table",
-		version: "2.38.2",
+		version: "2.38.3",
 		// Default options for this extension.
 		options: {
 			checkboxColumnIdx: null, // render the checkboxes into the this column index (default: nodeColumnIdx)
@@ -13470,13 +13474,13 @@
  *
  * @see http://jqueryui.com/themeroller/
  *
- * Copyright (c) 2008-2021, Martin Wendt (https://wwWendt.de)
+ * Copyright (c) 2008-2023, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.2
- * @date 2022-06-30T18:24:06Z
+ * @version 2.38.3
+ * @date 2023-02-01T20:52:50Z
  */
 
 (function (factory) {
@@ -13499,7 +13503,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "themeroller",
-		version: "2.38.2",
+		version: "2.38.3",
 		// Default options for this extension.
 		options: {
 			activeClass: "ui-state-active", // Class added to active node
@@ -13594,13 +13598,13 @@
  * Support for 100% wide selection bars.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2008-2021, Martin Wendt (https://wwWendt.de)
+ * Copyright (c) 2008-2023, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.2
- * @date 2022-06-30T18:24:06Z
+ * @version 2.38.3
+ * @date 2023-02-01T20:52:50Z
  */
 
 (function (factory) {
@@ -13730,7 +13734,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "wide",
-		version: "2.38.2",
+		version: "2.38.3",
 		// Default options for this extension.
 		options: {
 			iconWidth: null, // Adjust this if @fancy-icon-width != "16px"

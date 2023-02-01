@@ -6,13 +6,13 @@
  *
  * @depends: js-cookie or jquery-cookie
  *
- * Copyright (c) 2008-2021, Martin Wendt (https://wwWendt.de)
+ * Copyright (c) 2008-2023, Martin Wendt (https://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.2
- * @date 2022-06-30T18:24:06Z
+ * @version 2.38.3
+ * @date 2023-02-01T20:52:50Z
  */
 
 (function (factory) {
@@ -223,7 +223,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "persist",
-		version: "2.38.2",
+		version: "2.38.3",
 		// Default options for this extension.
 		options: {
 			cookieDelimiter: "~",

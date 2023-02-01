@@ -3,12 +3,12 @@
  * Tree view control with support for lazy loading and much more.
  * https://github.com/mar10/fancytree/
  *
- * Copyright (c) 2008-2021, Martin Wendt (https://wwWendt.de)
+ * Copyright (c) 2008-2023, Martin Wendt (https://wwWendt.de)
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.2
- * @date 2022-06-30T18:24:06Z
+ * @version 2.38.3
+ * @date 2023-02-01T20:52:50Z
  */
 
 /** Core Fancytree module.
@@ -6755,7 +6755,7 @@
 		{
 			/** Version number `"MAJOR.MINOR.PATCH"`
 			 * @type {string} */
-			version: "2.38.2", // Set to semver by 'grunt release'
+			version: "2.38.3", // Set to semver by 'grunt release'
 			/** @type {string}
 			 * @description `"production" for release builds` */
 			buildType: "production", // Set to 'production' by 'grunt build'
