@@ -183,7 +183,8 @@
 			// Display as <OL> list (for Bootstrap breadcrumbs)
 			$ol.empty().removeClass("busy");
 			$.each(nodeList, function (i, o) {
-				var name = o.vernacularName || o.canonicalName || o.scientificName;
+				var name =
+					o.vernacularName || o.canonicalName || o.scientificName;
 				keyList.push(o.key);
 				if ("" + o.key === "" + key) {
 					$ol.append(
@@ -312,7 +313,10 @@
 				data.result = $.map(response.results, function (o) {
 					return (
 						o && {
-							title: o.vernacularName || o.canonicalName || o.scientificName,
+							title:
+								o.vernacularName ||
+								o.canonicalName ||
+								o.scientificName,
 							key: o.key,
 							nubKey: o.nubKey,
 							folder: true,
@@ -402,8 +406,8 @@
 					$tdList = $(node.tr).find(">td"),
 					cnList = node.data.vernacularNames
 						? $.map(node.data.vernacularNames, function (o) {
-							return o.vernacularName;
-						})
+								return o.vernacularName;
+						  })
 						: [];
 
 				i = 0;
