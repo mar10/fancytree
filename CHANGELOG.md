@@ -1,4 +1,5 @@
 # 2.38.4-0 / Unreleased
+  * [Changed] #1143 Improve the appearance of vertical connectors of skin XP
 
 # 2.38.3 / 2023-02-01
   * #1113 Update jQuery UI to 1.13.2
