@@ -130,7 +130,15 @@
 					}
 				} else {
 					tree.debug("_loadLazyNodes: " + node + " already loaded.");
-					node.setExpanded(true, expandOpts);
+					try {
+						node.setExpanded(true, expandOpts);
+					} catch (e) {
+						// #1157
+						tree.warn(
+							"ext-persist: setExpanded failed for " + node,
+							e
+						);
+					}
 				}
 			} else {
 				missingKeyList.push(key);

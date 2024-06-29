@@ -70,7 +70,7 @@
 			// use the lowest descendant of the preceeding sibling
 			i = $.inArray(node, siblings);
 			prev = siblings[i - 1];
-			_assert(prev.tr);
+			_assert(prev.tr, "prev.tr missing: " + prev);
 			// descend to lowest child (with a <tr> tag)
 			while (prev.children && prev.children.length) {
 				last = prev.children[prev.children.length - 1];
@@ -303,7 +303,8 @@
 					} else {
 						_assert(
 							!prevNode.parent,
-							"prev. row must have a tr, or be system root"
+							"prev. row must have a tr, or be system root: " +
+								prevNode
 						);
 						// tree.tbody.appendChild(newRow);
 						insertFirstChild(tree.tbody, newRow); // #675
