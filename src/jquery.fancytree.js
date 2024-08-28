@@ -180,7 +180,9 @@
 
 			// #1041: Raised exceptions may not be visible in the browser
 			// console if inside promise chains, so we also print directly:
-			$.ui.fancytree.error(msg);
+			if ( $.hasOwnProperty('ui') && $.ui.hasOwnProperty('fancytree') ) {
+				$.ui.fancytree.error(msg);
+			}
 
 			// Throw exception:
 			$.error(msg);
