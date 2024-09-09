@@ -420,7 +420,9 @@
 						if (node) {
 							// node.debug("persist: set focus", cookie);
 							if (tree.options.titlesTabbable) {
-								$(node.span).find(".fancytree-title").trigger("focus");
+								$(node.span)
+									.find(".fancytree-title")
+									.trigger("focus");
 							} else {
 								$(tree.$container).trigger("focus");
 							}

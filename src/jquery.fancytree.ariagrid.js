@@ -193,9 +193,9 @@
 
 		anyNode.debug(
 			"activateCell(" +
-			($prevTd ? $prevTd.text() : "null") +
-			") -> " +
-			($td ? $td.text() : "OFF")
+				($prevTd ? $prevTd.text() : "null") +
+				") -> " +
+				($td ? $td.text() : "OFF")
 		);
 
 		// Make available as event
@@ -408,15 +408,15 @@
 
 			tree.debug(
 				"nodeClick: node: " +
-				(node ? node.title : "null") +
-				", targetType: " +
-				targetType +
-				", target: " +
-				($td.length ? $td.text() : null) +
-				", node was active: " +
-				(node && node.isActive()) +
-				", last cell: " +
-				(tree.$activeTd ? tree.$activeTd.text() : null)
+					(node ? node.title : "null") +
+					", targetType: " +
+					targetType +
+					", target: " +
+					($td.length ? $td.text() : null) +
+					", node was active: " +
+					(node && node.isActive()) +
+					", last cell: " +
+					(tree.$activeTd ? tree.$activeTd.text() : null)
 			);
 
 			if (tree.$activeTd) {
@@ -547,11 +547,11 @@
 			}
 			tree.debug(
 				"nodeKeydown(" +
-				eventString +
-				"), activeTd: '" +
-				($activeTd && $activeTd.text()) +
-				"', inputType: " +
-				inputType
+					eventString +
+					"), activeTd: '" +
+					($activeTd && $activeTd.text()) +
+					"', inputType: " +
+					inputType
 			);
 
 			if (inputType && eventString !== "esc" && !forceNav) {

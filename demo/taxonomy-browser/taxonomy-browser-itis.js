@@ -321,8 +321,8 @@
 					$tdList = $(node.tr).find(">td"),
 					cnList = node.data.commonNames
 						? $.map(node.data.commonNames, function (o) {
-							return o.name;
-						})
+								return o.name;
+						  })
 						: [];
 
 				$tdList.eq(0).text(node.key);

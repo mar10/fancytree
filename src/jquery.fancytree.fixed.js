@@ -190,10 +190,10 @@
 				.on(
 					"mouseenter",
 					"." +
-					fcn.bottomRight +
-					" table tr, ." +
-					fcn.bottomLeft +
-					" table tr",
+						fcn.bottomRight +
+						" table tr, ." +
+						fcn.bottomLeft +
+						" table tr",
 					function (evt) {
 						var $tr = $(this),
 							$trOther = $tr.data(fcn.counterpart);
@@ -204,10 +204,10 @@
 				.on(
 					"mouseleave",
 					"." +
-					fcn.bottomRight +
-					" table tr, ." +
-					fcn.bottomLeft +
-					" table tr",
+						fcn.bottomRight +
+						" table tr, ." +
+						fcn.bottomLeft +
+						" table tr",
 					function (evt) {
 						var $tr = $(this),
 							$trOther = $tr.data(fcn.counterpart);

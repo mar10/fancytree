@@ -400,11 +400,11 @@
 				} else {
 					$.error(
 						"Could not override tree." +
-						attrName +
-						". Use prefix '_' to create tree." +
-						extName +
-						"._" +
-						attrName
+							attrName +
+							". Use prefix '_' to create tree." +
+							extName +
+							"._" +
+							attrName
 					);
 				}
 			} else {
@@ -1108,8 +1108,8 @@
 					state = allSelected
 						? true
 						: someSelected
-							? undefined
-							: false;
+						? undefined
+						: false;
 				} else {
 					// This is an end-node: simply report the status
 					unselState = FT.evalOption(
@@ -1928,7 +1928,7 @@
 				// setFocus/setActive will scroll later (if autoScroll is specified)
 				try {
 					node.makeVisible({ scrollIntoView: false });
-				} catch (e) { } // #272
+				} catch (e) {} // #272
 				if (activate === false) {
 					node.setFocus();
 					return _getResolvedPromise();
@@ -2108,17 +2108,17 @@
 			// and `overflow` set.
 			// (This default can be overridden by the local or global `scrollParent` option.)
 			var opts = $.extend(
-				{
-					effects:
-						effects === true
-							? { duration: 200, queue: false }
-							: effects,
-					scrollOfs: this.tree.options.scrollOfs,
-					scrollParent: this.tree.options.scrollParent,
-					topNode: null,
-				},
-				options
-			),
+					{
+						effects:
+							effects === true
+								? { duration: 200, queue: false }
+								: effects,
+						scrollOfs: this.tree.options.scrollOfs,
+						scrollParent: this.tree.options.scrollParent,
+						topNode: null,
+					},
+					options
+				),
 				$scrollParent = opts.scrollParent,
 				$container = this.tree.$container,
 				overflowY = $container.css("overflow-y");
@@ -2180,7 +2180,7 @@
 			} else {
 				_assert(
 					$scrollParent[0] !== document &&
-					$scrollParent[0] !== document.body,
+						$scrollParent[0] !== document.body,
 					"scrollParent should be a simple element or `window`, not document or body."
 				);
 
@@ -2189,8 +2189,8 @@
 					$(this.span).offset().top - containerOffsetTop + scrollTop; // relative to scroll parent
 				topNodeY = topNode
 					? $(topNode.span).offset().top -
-					containerOffsetTop +
-					scrollTop
+					  containerOffsetTop +
+					  scrollTop
 					: 0;
 				horzScrollbarHeight = Math.max(
 					0,
@@ -3682,10 +3682,10 @@
 					if (!node) {
 						this.warn(
 							"loadKeyPath: key not found: " +
-							key +
-							" (parent: " +
-							tmpParent +
-							")"
+								key +
+								" (parent: " +
+								tmpParent +
+								")"
 						);
 						opts.callback(this, key, "error");
 						break;
@@ -3933,9 +3933,9 @@
 				_assert(
 					nextIdx >= 0,
 					"Could not find " +
-					node +
-					" in parent's children: " +
-					parent
+						node +
+						" in parent's children: " +
+						parent
 				);
 
 				for (i = nextIdx; i < siblings.length; i++) {
@@ -4328,8 +4328,8 @@
 						}
 						node.warn(
 							"nodeLoadChildren waiting debugDelay " +
-							Math.round(delay) +
-							" ms ..."
+								Math.round(delay) +
+								" ms ..."
 						);
 						ajaxDfd = $.Deferred(function (ajaxDfd) {
 							setTimeout(function () {
@@ -4367,10 +4367,10 @@
 				if (node._requestId) {
 					node.warn(
 						"Recursive load request #" +
-						requestId +
-						" while #" +
-						node._requestId +
-						" is pending."
+							requestId +
+							" while #" +
+							node._requestId +
+							" is pending."
 					);
 					node._requestId = requestId;
 					// 	node.debug("Send load request #" + requestId);
@@ -4486,7 +4486,7 @@
 							if (ctx.options.enableAspx === 42) {
 								tree.warn(
 									"The default for enableAspx will change to `false` in the fututure. " +
-									"Pass `enableAspx: true` or implement postProcess to silence this warning."
+										"Pass `enableAspx: true` or implement postProcess to silence this warning."
 								);
 							}
 							data =
@@ -4581,10 +4581,10 @@
 						if (error === RECURSIVE_REQUEST_ERROR) {
 							node.warn(
 								"Ignored response for obsolete load request #" +
-								requestId +
-								" (expected #" +
-								node._requestId +
-								")"
+									requestId +
+									" (expected #" +
+									node._requestId +
+									")"
 							);
 							return;
 						} else if (error === INVALID_REQUEST_TARGET_ERROR) {
@@ -4843,10 +4843,10 @@
 							// May happen, when a top-level node was dropped over another
 							this.debug(
 								"Unlinking " +
-								node +
-								" (must be child of " +
-								node.parent +
-								")"
+									node +
+									" (must be child of " +
+									node.parent +
+									")"
 							);
 						}
 						//	            this.debug("nodeRemoveMarkup...");
@@ -5016,8 +5016,8 @@
 					if (level > 1) {
 						ares.push(
 							"<span " +
-							role +
-							" class='fancytree-expander fancytree-expander-fixed'></span>"
+								role +
+								" class='fancytree-expander fancytree-expander-fixed'></span>"
 						);
 					}
 					// .. else (i.e. for root level) skip expander/connector alltogether
@@ -5089,54 +5089,54 @@
 									: (opts.imagePath || "") + icon;
 							ares.push(
 								"<img src='" +
-								icon +
-								"' class='fancytree-icon'" +
-								iconTooltip +
-								" alt='' />"
+									icon +
+									"' class='fancytree-icon'" +
+									iconTooltip +
+									" alt='' />"
 							);
 						} else {
 							ares.push(
 								"<span " +
-								role +
-								" class='fancytree-custom-icon " +
-								icon +
-								"'" +
-								iconTooltip +
-								"></span>"
+									role +
+									" class='fancytree-custom-icon " +
+									icon +
+									"'" +
+									iconTooltip +
+									"></span>"
 							);
 						}
 					} else if (icon.text) {
 						ares.push(
 							"<span " +
-							role +
-							" class='fancytree-custom-icon " +
-							(icon.addClass || "") +
-							"'" +
-							iconTooltip +
-							">" +
-							FT.escapeHtml(icon.text) +
-							"</span>"
+								role +
+								" class='fancytree-custom-icon " +
+								(icon.addClass || "") +
+								"'" +
+								iconTooltip +
+								">" +
+								FT.escapeHtml(icon.text) +
+								"</span>"
 						);
 					} else if (icon.html) {
 						ares.push(
 							"<span " +
-							role +
-							" class='fancytree-custom-icon " +
-							(icon.addClass || "") +
-							"'" +
-							iconTooltip +
-							">" +
-							icon.html +
-							"</span>"
+								role +
+								" class='fancytree-custom-icon " +
+								(icon.addClass || "") +
+								"'" +
+								iconTooltip +
+								">" +
+								icon.html +
+								"</span>"
 						);
 					} else {
 						// standard icon: theme css will take care of this
 						ares.push(
 							"<span " +
-							role +
-							" class='fancytree-icon'" +
-							iconTooltip +
-							"></span>"
+								role +
+								" class='fancytree-icon'" +
+								iconTooltip +
+								"></span>"
 						);
 					}
 				}
@@ -5289,15 +5289,15 @@
 				} else {
 					cnList.push(
 						cn.combinedExpanderPrefix +
-						(node.expanded ? "e" : "c") +
-						(node.lazy && node.children == null ? "d" : "") +
-						(isLastSib ? "l" : "")
+							(node.expanded ? "e" : "c") +
+							(node.lazy && node.children == null ? "d" : "") +
+							(isLastSib ? "l" : "")
 					);
 				}
 				cnList.push(
 					cn.combinedIconPrefix +
-					(node.expanded ? "e" : "c") +
-					(node.folder ? "f" : "")
+						(node.expanded ? "e" : "c") +
+						(node.folder ? "f" : "")
 				);
 				// node.span.className = cnList.join(" ");
 				statusElem.className = cnList.join(" ");
@@ -5690,7 +5690,9 @@
 					if (opts.titlesTabbable) {
 						if (!isInput) {
 							// #621
-							$(node.span).find(".fancytree-title").trigger("focus");
+							$(node.span)
+								.find(".fancytree-title")
+								.trigger("focus");
 						}
 					}
 					if (opts.aria) {
@@ -5832,7 +5834,7 @@
 								node.ul.removeChild(firstChild.li);
 								firstChild.li = null; // avoid leaks (DT issue 215)
 							}
-						} catch (e) { }
+						} catch (e) {}
 						if (node.children.length === 1) {
 							node.children = [];
 						} else {
@@ -5969,7 +5971,7 @@
 			/** Widget was created (called only once, even it re-initialized).
 			 * @param {EventData} ctx
 			 */
-			treeCreate: function (ctx) { },
+			treeCreate: function (ctx) {},
 			/** Widget was destroyed.
 			 * @param {EventData} ctx
 			 */
@@ -6235,12 +6237,12 @@
 				}
 				tree.debug(
 					"set option " +
-					key +
-					"=" +
-					value +
-					" <" +
-					typeof value +
-					">"
+						key +
+						"=" +
+						value +
+						" <" +
+						typeof value +
+						">"
 				);
 				if (callDefault) {
 					if (this.widget._super) {
@@ -6265,7 +6267,7 @@
 			/** A Node was added, removed, moved, or it's visibility changed.
 			 * @param {EventData} ctx
 			 */
-			treeStructureChanged: function (ctx, type) { },
+			treeStructureChanged: function (ctx, type) {},
 		}
 	);
 
@@ -6381,8 +6383,8 @@
 				if (tree && tree.options.debugLevel >= 3) {
 					tree.warn(
 						"$().fancytree('" +
-						name +
-						"') is deprecated (see https://wwwendt.de/tech/fancytree/doc/jsdoc/Fancytree_Widget.html"
+							name +
+							"') is deprecated (see https://wwwendt.de/tech/fancytree/doc/jsdoc/Fancytree_Widget.html"
 					);
 				}
 			},
@@ -6408,8 +6410,8 @@
 					if (!extension) {
 						$.error(
 							"Could not apply extension '" +
-							extName +
-							"' (it is not registered, did you forget to include it?)"
+								extName +
+								"' (it is not registered, did you forget to include it?)"
 						);
 					}
 					// Add extension options as tree.options.EXTENSION
@@ -6431,8 +6433,8 @@
 					_assert(
 						this.tree.ext[extName] === undefined,
 						"Extension name must not exist as Fancytree.ext attribute: '" +
-						extName +
-						"'"
+							extName +
+							"'"
 					);
 					// this.tree[extName] = extension;
 					this.tree.ext[extName] = {};
@@ -6473,8 +6475,8 @@
 					opts.tabindex = opts.tabbable ? "0" : "-1";
 					this.tree.warn(
 						"'tabbable' tree option is deprecated since v2.17.0: use 'tabindex='" +
-						opts.tabindex +
-						"' instead"
+							opts.tabindex +
+							"' instead"
 					);
 				}
 				//
@@ -7164,7 +7166,7 @@
 				} else if (!IGNORE_KEYCODES[which]) {
 					s.push(
 						SPECIAL_KEYCODES[which] ||
-						String.fromCharCode(which).toLowerCase()
+							String.fromCharCode(which).toLowerCase()
 					);
 				}
 				return s.join("+");

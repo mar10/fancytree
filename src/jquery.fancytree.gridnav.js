@@ -167,7 +167,9 @@
 			if (flag) {
 				if (ctx.options.titlesTabbable) {
 					if (!triggeredByInput) {
-						$(node.span).find("span.fancytree-title").trigger("focus");
+						$(node.span)
+							.find("span.fancytree-title")
+							.trigger("focus");
 						node.setFocus();
 					}
 					// If one node is tabbable, the container no longer needs to be

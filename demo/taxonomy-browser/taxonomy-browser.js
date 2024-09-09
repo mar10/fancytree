@@ -406,8 +406,8 @@
 					$tdList = $(node.tr).find(">td"),
 					cnList = node.data.vernacularNames
 						? $.map(node.data.vernacularNames, function (o) {
-							return o.vernacularName;
-						})
+								return o.vernacularName;
+						  })
 						: [];
 
 				i = 0;
