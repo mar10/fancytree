@@ -492,7 +492,7 @@
 				$("#btnResetSearch").attr("disabled", query.length === 0);
 				$("#btnSearch").attr("disabled", query.length < 2);
 			})
-			.focus();
+			.trigger("focus");
 
 		$("#btnResetSearch").click(function (e) {
 			$("#searchResultPane").collapse("hide");

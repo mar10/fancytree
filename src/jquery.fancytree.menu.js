@@ -152,7 +152,7 @@
 					of: ctx.originalEvent,
 					collision: "fit",
 				})
-				.focus();
+				.trigger("focus");
 
 			opts.menu.open.call(tree, ctx.originalEvent, data);
 		},

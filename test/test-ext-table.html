@@ -127,7 +127,7 @@ SOURCE = [
 			var n = tree.filterNodes(match);
 			$("#btnResetSearch").attr("disabled", false);
 			$("span#matches").text("(" + n + " matches)");
-		}).focus();
+		}).trigger("focus");
 
 		$("#btnResetSearch").click(function(e){
 			$("input[name=search]").val("");

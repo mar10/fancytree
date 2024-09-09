@@ -400,13 +400,15 @@
 								"Re-enable focus that was prevented by jQuery UI draggable."
 							);
 							// node.setFocus();
-							// $(node.span).closest(":tabbable").focus();
+							// $(node.span).closest(":tabbable").trigger("focus");
 							// $(event.target).trigger("focus");
 							// $(event.target).closest(":tabbable").trigger("focus");
 						}
 						setTimeout(function () {
 							// #300
-							$(event.target).closest(":tabbable").focus();
+							$(event.target)
+								.closest(":tabbable")
+								.trigger("focus");
 						}, 10);
 					}
 				});

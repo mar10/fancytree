@@ -108,7 +108,7 @@ $(function(){
 			var node = data.node;
 
 			// Set focus to embedded input
-			$("span.fancytree-title :input", node.span).focus();
+			$("span.fancytree-title :input", node.span).trigger("focus");
 		},
 		keydown: function(event, data){
 			var KC = $.ui.keyCode;

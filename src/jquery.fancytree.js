@@ -5690,7 +5690,9 @@
 					if (opts.titlesTabbable) {
 						if (!isInput) {
 							// #621
-							$(node.span).find(".fancytree-title").focus();
+							$(node.span)
+								.find(".fancytree-title")
+								.trigger("focus");
 						}
 					}
 					if (opts.aria) {
@@ -5703,7 +5705,7 @@
 						);
 						// "ftal_" + opts.idPrefix + node.key);
 					}
-					// $(node.span).find(".fancytree-title").focus();
+					// $(node.span).find(".fancytree-title").trigger("focus");
 					this._triggerNodeEvent("focus", ctx);
 
 					// determine if we have focus on or inside tree container
@@ -5713,10 +5715,10 @@
 
 					if (!hasFancytreeFocus) {
 						// We cannot set KB focus to a node, so use the tree container
-						// #563, #570: IE scrolls on every call to .focus(), if the container
+						// #563, #570: IE scrolls on every call to .trigger("focus"), if the container
 						// is partially outside the viewport. So do it only, when absolutely
 						// necessary.
-						$(tree.$container).focus();
+						$(tree.$container).trigger("focus");
 					}
 
 					// if( opts.autoActivate ){
@@ -6164,7 +6166,7 @@
 						// Node also looses focus if widget blurs
 						this.focusNode.setFocus(false);
 					} else if (flag && (!callOpts || !callOpts.calledByNode)) {
-						$(this.$container).focus();
+						$(this.$container).trigger("focus");
 					}
 					this.$container.toggleClass("fancytree-treefocus", flag);
 					this._triggerTreeEvent(flag ? "focusTree" : "blurTree");

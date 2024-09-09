@@ -665,7 +665,7 @@
 
 		//	treeSetFocus: function(ctx, flag) {
 		////			alert("treeSetFocus" + ctx.tree.$container);
-		//		ctx.tree.$container.focus();
+		//		ctx.tree.$container.trigger("focus");
 		//		$.ui.fancytree.focusTree = ctx.tree;
 		//	}
 	});
