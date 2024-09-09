@@ -63,8 +63,8 @@
 			start: function (event, ui) {
 				// 'draggable' was renamed to 'ui-draggable' since jQueryUI 1.10
 				var draggable =
-						$(this).data("ui-draggable") ||
-						$(this).data("draggable"),
+					$(this).data("ui-draggable") ||
+					$(this).data("draggable"),
 					sourceNode = ui.helper.data("ftSourceNode") || null;
 
 				if (sourceNode) {
@@ -288,8 +288,8 @@
 									.find(".fancytree-drag-helper-img")
 									.addClass(
 										glyph.map._addClass +
-											" " +
-											glyph.map.dragHelper
+										" " +
+										glyph.map.dragHelper
 									);
 							}
 							// Allow to modify the helper, e.g. to add multi-node-drag feedback
@@ -400,13 +400,13 @@
 								"Re-enable focus that was prevented by jQuery UI draggable."
 							);
 							// node.setFocus();
-							// $(node.span).closest(":tabbable").focus();
+							// $(node.span).closest(":tabbable").trigger("focus");
 							// $(event.target).trigger("focus");
 							// $(event.target).closest(":tabbable").trigger("focus");
 						}
 						setTimeout(function () {
 							// #300
-							$(event.target).closest(":tabbable").focus();
+							$(event.target).closest(":tabbable").trigger("focus");
 						}, 10);
 					}
 				});
@@ -491,8 +491,8 @@
 				.toggleClass(
 					classDropTarget,
 					hitMode === "after" ||
-						hitMode === "before" ||
-						hitMode === "over"
+					hitMode === "before" ||
+					hitMode === "over"
 				)
 				.toggleClass(classDropAfter, hitMode === "after")
 				.toggleClass(classDropBefore, hitMode === "before")

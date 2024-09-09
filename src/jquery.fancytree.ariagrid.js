@@ -193,9 +193,9 @@
 
 		anyNode.debug(
 			"activateCell(" +
-				($prevTd ? $prevTd.text() : "null") +
-				") -> " +
-				($td ? $td.text() : "OFF")
+			($prevTd ? $prevTd.text() : "null") +
+			") -> " +
+			($td ? $td.text() : "OFF")
 		);
 
 		// Make available as event
@@ -240,10 +240,10 @@
 			$input = $td.find(":input:enabled,a");
 			this.debug("Focus input", $input);
 			if ($input.length) {
-				$input.focus();
+				$input.trigger("focus");
 				setActiveDescendant(this, $input);
 			} else {
-				$td.attr("tabindex", "-1").focus();
+				$td.attr("tabindex", "-1").trigger("focus");
 				setActiveDescendant(this, $td);
 			}
 		} else {
@@ -408,15 +408,15 @@
 
 			tree.debug(
 				"nodeClick: node: " +
-					(node ? node.title : "null") +
-					", targetType: " +
-					targetType +
-					", target: " +
-					($td.length ? $td.text() : null) +
-					", node was active: " +
-					(node && node.isActive()) +
-					", last cell: " +
-					(tree.$activeTd ? tree.$activeTd.text() : null)
+				(node ? node.title : "null") +
+				", targetType: " +
+				targetType +
+				", target: " +
+				($td.length ? $td.text() : null) +
+				", node was active: " +
+				(node && node.isActive()) +
+				", last cell: " +
+				(tree.$activeTd ? tree.$activeTd.text() : null)
 			);
 
 			if (tree.$activeTd) {
@@ -547,11 +547,11 @@
 			}
 			tree.debug(
 				"nodeKeydown(" +
-					eventString +
-					"), activeTd: '" +
-					($activeTd && $activeTd.text()) +
-					"', inputType: " +
-					inputType
+				eventString +
+				"), activeTd: '" +
+				($activeTd && $activeTd.text()) +
+				"', inputType: " +
+				inputType
 			);
 
 			if (inputType && eventString !== "esc" && !forceNav) {
@@ -610,7 +610,7 @@
 				case "esc":
 					if ($activeTd && !tree.forceNavMode) {
 						// Switch from cell-edit-mode to cell-nav-mode
-						// $target.closest( "td" ).focus();
+						// $target.closest( "td" ).trigger("focus");
 						tree.forceNavMode = true;
 						tree.debug("Enter cell-nav-mode");
 						tree.$container.toggleClass(

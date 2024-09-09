@@ -155,10 +155,10 @@
 				if (tree.columnCount && n !== tree.columnCount) {
 					tree.warn(
 						"Column count mismatch between thead (" +
-							tree.columnCount +
-							") and tbody (" +
-							n +
-							"): using tbody."
+						tree.columnCount +
+						") and tbody (" +
+						n +
+						"): using tbody."
 					);
 					tree.columnCount = n;
 				}
@@ -304,7 +304,7 @@
 						_assert(
 							!prevNode.parent,
 							"prev. row must have a tr, or be system root: " +
-								prevNode
+							prevNode
 						);
 						// tree.tbody.appendChild(newRow);
 						insertFirstChild(tree.tbody, newRow); // #675
@@ -536,7 +536,7 @@
 		/*,
 	treeSetFocus: function(ctx, flag) {
 //	        alert("treeSetFocus" + ctx.tree.$container);
-		ctx.tree.$container.focus();
+		ctx.tree.$container.trigger("focus");
 		$.ui.fancytree.focusTree = ctx.tree;
 	}*/
 	});

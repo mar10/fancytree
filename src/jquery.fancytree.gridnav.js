@@ -167,7 +167,7 @@
 			if (flag) {
 				if (ctx.options.titlesTabbable) {
 					if (!triggeredByInput) {
-						$(node.span).find("span.fancytree-title").focus();
+						$(node.span).find("span.fancytree-title").trigger("focus");
 						node.setFocus();
 					}
 					// If one node is tabbable, the container no longer needs to be
@@ -177,7 +177,7 @@
 					// Set focus to input sub input (if node was clicked, but not
 					// when TAB was pressed )
 					$outer = $(node.tr || node.span);
-					$outer.find(":input:enabled").first().focus();
+					$outer.find(":input:enabled").first().trigger("focus");
 				}
 			}
 		},
@@ -202,7 +202,7 @@
 					$td = findNeighbourTd($target, event.which);
 					if ($td && $td.length) {
 						// ctx.node.debug("ignore keydown in input", event.which, handleKeys);
-						$td.find(":input:enabled,a").focus();
+						$td.find(":input:enabled,a").trigger("focus");
 						// Prevent Fancytree default navigation
 						return false;
 					}

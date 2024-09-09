@@ -99,7 +99,7 @@
 						$('button#btnResetSearch').attr('disabled', false);
 						$('span#matches').text('(' + n + ' matches)');
 					})
-					.focus();
+					.trigger("focus");
 
 				$('fieldset input:checkbox').change(function(e) {
 					var id = $(this).attr('id'),

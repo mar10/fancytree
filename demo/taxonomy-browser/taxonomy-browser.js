@@ -406,8 +406,8 @@
 					$tdList = $(node.tr).find(">td"),
 					cnList = node.data.vernacularNames
 						? $.map(node.data.vernacularNames, function (o) {
-								return o.vernacularName;
-						  })
+							return o.vernacularName;
+						})
 						: [];
 
 				i = 0;
@@ -492,7 +492,7 @@
 				$("#btnResetSearch").attr("disabled", query.length === 0);
 				$("#btnSearch").attr("disabled", query.length < 2);
 			})
-			.focus();
+			.trigger("focus");
 
 		$("#btnResetSearch").click(function (e) {
 			$("#searchResultPane").collapse("hide");

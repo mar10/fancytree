@@ -111,7 +111,7 @@
 
 		// Focus <input> and bind keyboard handler
 		$input
-			.focus()
+			.trigger("focus")
 			.change(function (event) {
 				$input.addClass("fancytree-edit-dirty");
 			})
@@ -387,7 +387,7 @@
 				case $.ui.keyCode.ENTER:
 					if (
 						$.inArray("mac+enter", ctx.options.edit.triggerStart) >=
-							0 &&
+						0 &&
 						isMac
 					) {
 						ctx.node.editStart();

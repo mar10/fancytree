@@ -88,7 +88,7 @@
 			}
 			$("button#btnResetSearch").attr("disabled", false);
 			$("span#matches").text("(" + n + " matches)");
-		}).focus();
+		}).trigger("focus");
 
 		$("button#btnResetSearch").click(function(e){
 			$("input[name=search]").val("");
