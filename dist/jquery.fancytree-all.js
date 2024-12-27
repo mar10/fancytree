@@ -7,8 +7,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.3
- * @date 2023-02-01T20:52:50Z
+ * @version 2.38.4
+ * @date 2024-12-27T23:25:02Z
  */
 
 /** Core Fancytree module.
@@ -180,7 +180,9 @@
 
 			// #1041: Raised exceptions may not be visible in the browser
 			// console if inside promise chains, so we also print directly:
-			$.ui.fancytree.error(msg);
+			if ($.ui && $.ui.fancytree) {
+				$.ui.fancytree.error(msg);
+			}
 
 			// Throw exception:
 			$.error(msg);
@@ -5688,7 +5690,9 @@
 					if (opts.titlesTabbable) {
 						if (!isInput) {
 							// #621
-							$(node.span).find(".fancytree-title").focus();
+							$(node.span)
+								.find(".fancytree-title")
+								.trigger("focus");
 						}
 					}
 					if (opts.aria) {
@@ -5701,7 +5705,7 @@
 						);
 						// "ftal_" + opts.idPrefix + node.key);
 					}
-					// $(node.span).find(".fancytree-title").focus();
+					// $(node.span).find(".fancytree-title").trigger("focus");
 					this._triggerNodeEvent("focus", ctx);
 
 					// determine if we have focus on or inside tree container
@@ -5711,10 +5715,10 @@
 
 					if (!hasFancytreeFocus) {
 						// We cannot set KB focus to a node, so use the tree container
-						// #563, #570: IE scrolls on every call to .focus(), if the container
+						// #563, #570: IE scrolls on every call to .trigger("focus"), if the container
 						// is partially outside the viewport. So do it only, when absolutely
 						// necessary.
-						$(tree.$container).focus();
+						$(tree.$container).trigger("focus");
 					}
 
 					// if( opts.autoActivate ){
@@ -6162,7 +6166,7 @@
 						// Node also looses focus if widget blurs
 						this.focusNode.setFocus(false);
 					} else if (flag && (!callOpts || !callOpts.calledByNode)) {
-						$(this.$container).focus();
+						$(this.$container).trigger("focus");
 					}
 					this.$container.toggleClass("fancytree-treefocus", flag);
 					this._triggerTreeEvent(flag ? "focusTree" : "blurTree");
@@ -6755,7 +6759,7 @@
 		{
 			/** Version number `"MAJOR.MINOR.PATCH"`
 			 * @type {string} */
-			version: "2.38.3", // Set to semver by 'grunt release'
+			version: "2.38.4", // Set to semver by 'grunt release'
 			/** @type {string}
 			 * @description `"production" for release builds` */
 			buildType: "production", // Set to 'production' by 'grunt build'
@@ -7394,8 +7398,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.3
- * @date 2023-02-01T20:52:50Z
+ * @version 2.38.4
+ * @date 2024-12-27T23:25:02Z
  */
 
 // To keep the global namespace clean, we wrap everything in a closure.
@@ -7516,7 +7520,7 @@
 		// Every extension must be registered by a unique name.
 		name: "childcounter",
 		// Version information should be compliant with [semver](http://semver.org)
-		version: "2.38.3",
+		version: "2.38.4",
 
 		// Extension specific options and their defaults.
 		// This options will be available as `tree.options.childcounter.hideExpanded`
@@ -7626,8 +7630,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.3
- * @date 2023-02-01T20:52:50Z
+ * @version 2.38.4
+ * @date 2024-12-27T23:25:02Z
  */
 
 (function (factory) {
@@ -7980,7 +7984,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "clones",
-		version: "2.38.3",
+		version: "2.38.4",
 		// Default options for this extension.
 		options: {
 			highlightActiveClones: true, // set 'fancytree-active-clone' on active clones and all peers
@@ -8141,8 +8145,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.3
- * @date 2023-02-01T20:52:50Z
+ * @version 2.38.4
+ * @date 2024-12-27T23:25:02Z
  */
 
 (function (factory) {
@@ -8491,7 +8495,7 @@
 
 	$.ui.fancytree.registerExtension({
 		name: "dnd",
-		version: "2.38.3",
+		version: "2.38.4",
 		// Default options for this extension.
 		options: {
 			// Make tree nodes accept draggables
@@ -8532,13 +8536,15 @@
 								"Re-enable focus that was prevented by jQuery UI draggable."
 							);
 							// node.setFocus();
-							// $(node.span).closest(":tabbable").focus();
+							// $(node.span).closest(":tabbable").trigger("focus");
 							// $(event.target).trigger("focus");
 							// $(event.target).closest(":tabbable").trigger("focus");
 						}
 						setTimeout(function () {
 							// #300
-							$(event.target).closest(":tabbable").focus();
+							$(event.target)
+								.closest(":tabbable")
+								.trigger("focus");
 						}, 10);
 					}
 				});
@@ -8940,8 +8946,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.3
- * @date 2023-02-01T20:52:50Z
+ * @version 2.38.4
+ * @date 2024-12-27T23:25:02Z
  */
 
 /*
@@ -9959,7 +9965,7 @@
 
 	$.ui.fancytree.registerExtension({
 		name: "dnd5",
-		version: "2.38.3",
+		version: "2.38.4",
 		// Default options for this extension.
 		options: {
 			autoExpandMS: 1500, // Expand nodes after n milliseconds of hovering
@@ -10098,8 +10104,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.3
- * @date 2023-02-01T20:52:50Z
+ * @version 2.38.4
+ * @date 2024-12-27T23:25:02Z
  */
 
 (function (factory) {
@@ -10200,7 +10206,7 @@
 
 		// Focus <input> and bind keyboard handler
 		$input
-			.focus()
+			.trigger("focus")
 			.change(function (event) {
 				$input.addClass("fancytree-edit-dirty");
 			})
@@ -10392,7 +10398,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "edit",
-		version: "2.38.3",
+		version: "2.38.4",
 		// Default options for this extension.
 		options: {
 			adjustWidthOfs: 4, // null: don't adjust input size to content
@@ -10502,8 +10508,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.3
- * @date 2023-02-01T20:52:50Z
+ * @version 2.38.4
+ * @date 2024-12-27T23:25:02Z
  */
 
 (function (factory) {
@@ -10933,7 +10939,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "filter",
-		version: "2.38.3",
+		version: "2.38.4",
 		// Default options for this extension.
 		options: {
 			autoApply: true, // Re-apply last filter if lazy data is loaded
@@ -11052,8 +11058,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.3
- * @date 2023-02-01T20:52:50Z
+ * @version 2.38.4
+ * @date 2024-12-27T23:25:02Z
  */
 
 (function (factory) {
@@ -11255,7 +11261,7 @@
 
 	$.ui.fancytree.registerExtension({
 		name: "glyph",
-		version: "2.38.3",
+		version: "2.38.4",
 		// Default options for this extension.
 		options: {
 			preset: null, // 'awesome3', 'awesome4', 'bootstrap3', 'material'
@@ -11407,8 +11413,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.3
- * @date 2023-02-01T20:52:50Z
+ * @version 2.38.4
+ * @date 2024-12-27T23:25:02Z
  */
 
 (function (factory) {
@@ -11525,7 +11531,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "gridnav",
-		version: "2.38.3",
+		version: "2.38.4",
 		// Default options for this extension.
 		options: {
 			autofocusInput: false, // Focus first embedded input if node gets activated
@@ -11565,7 +11571,9 @@
 			if (flag) {
 				if (ctx.options.titlesTabbable) {
 					if (!triggeredByInput) {
-						$(node.span).find("span.fancytree-title").focus();
+						$(node.span)
+							.find("span.fancytree-title")
+							.trigger("focus");
 						node.setFocus();
 					}
 					// If one node is tabbable, the container no longer needs to be
@@ -11575,7 +11583,7 @@
 					// Set focus to input sub input (if node was clicked, but not
 					// when TAB was pressed )
 					$outer = $(node.tr || node.span);
-					$outer.find(":input:enabled").first().focus();
+					$outer.find(":input:enabled").first().trigger("focus");
 				}
 			}
 		},
@@ -11600,7 +11608,7 @@
 					$td = findNeighbourTd($target, event.which);
 					if ($td && $td.length) {
 						// ctx.node.debug("ignore keydown in input", event.which, handleKeys);
-						$td.find(":input:enabled,a").focus();
+						$td.find(":input:enabled,a").trigger("focus");
 						// Prevent Fancytree default navigation
 						return false;
 					}
@@ -11626,8 +11634,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.3
- * @date 2023-02-01T20:52:50Z
+ * @version 2.38.4
+ * @date 2024-12-27T23:25:02Z
  */
 
 (function (factory) {
@@ -11656,7 +11664,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "multi",
-		version: "2.38.3",
+		version: "2.38.4",
 		// Default options for this extension.
 		options: {
 			allowNoSelect: false, //
@@ -11757,8 +11765,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.3
- * @date 2023-02-01T20:52:50Z
+ * @version 2.38.4
+ * @date 2024-12-27T23:25:02Z
  */
 
 (function (factory) {
@@ -11876,7 +11884,15 @@
 					}
 				} else {
 					tree.debug("_loadLazyNodes: " + node + " already loaded.");
-					node.setExpanded(true, expandOpts);
+					try {
+						node.setExpanded(true, expandOpts);
+					} catch (e) {
+						// #1157
+						tree.warn(
+							"ext-persist: setExpanded failed for " + node,
+							e
+						);
+					}
 				}
 			} else {
 				missingKeyList.push(key);
@@ -11969,7 +11985,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "persist",
-		version: "2.38.3",
+		version: "2.38.4",
 		// Default options for this extension.
 		options: {
 			cookieDelimiter: "~",
@@ -12158,9 +12174,11 @@
 						if (node) {
 							// node.debug("persist: set focus", cookie);
 							if (tree.options.titlesTabbable) {
-								$(node.span).find(".fancytree-title").focus();
+								$(node.span)
+									.find(".fancytree-title")
+									.trigger("focus");
 							} else {
-								$(tree.$container).focus();
+								$(tree.$container).trigger("focus");
 							}
 							// node.setFocus();
 						}
@@ -12259,8 +12277,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.3
- * @date 2023-02-01T20:52:50Z
+ * @version 2.38.4
+ * @date 2024-12-27T23:25:02Z
  */
 
 (function (factory) {
@@ -12320,7 +12338,7 @@
 			// use the lowest descendant of the preceeding sibling
 			i = $.inArray(node, siblings);
 			prev = siblings[i - 1];
-			_assert(prev.tr);
+			_assert(prev.tr, "prev.tr missing: " + prev);
 			// descend to lowest child (with a <tr> tag)
 			while (prev.children && prev.children.length) {
 				last = prev.children[prev.children.length - 1];
@@ -12338,7 +12356,7 @@
 
 	$.ui.fancytree.registerExtension({
 		name: "table",
-		version: "2.38.3",
+		version: "2.38.4",
 		// Default options for this extension.
 		options: {
 			checkboxColumnIdx: null, // render the checkboxes into the this column index (default: nodeColumnIdx)
@@ -12553,7 +12571,8 @@
 					} else {
 						_assert(
 							!prevNode.parent,
-							"prev. row must have a tr, or be system root"
+							"prev. row must have a tr, or be system root: " +
+								prevNode
 						);
 						// tree.tbody.appendChild(newRow);
 						insertFirstChild(tree.tbody, newRow); // #675
@@ -12785,7 +12804,7 @@
 		/*,
 	treeSetFocus: function(ctx, flag) {
 //	        alert("treeSetFocus" + ctx.tree.$container);
-		ctx.tree.$container.focus();
+		ctx.tree.$container.trigger("focus");
 		$.ui.fancytree.focusTree = ctx.tree;
 	}*/
 	});
@@ -12806,8 +12825,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.3
- * @date 2023-02-01T20:52:50Z
+ * @version 2.38.4
+ * @date 2024-12-27T23:25:02Z
  */
 
 (function (factory) {
@@ -12830,7 +12849,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "themeroller",
-		version: "2.38.3",
+		version: "2.38.4",
 		// Default options for this extension.
 		options: {
 			activeClass: "ui-state-active", // Class added to active node
@@ -12929,8 +12948,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.3
- * @date 2023-02-01T20:52:50Z
+ * @version 2.38.4
+ * @date 2024-12-27T23:25:02Z
  */
 
 (function (factory) {
@@ -13060,7 +13079,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "wide",
-		version: "2.38.3",
+		version: "2.38.4",
 		// Default options for this extension.
 		options: {
 			iconWidth: null, // Adjust this if @fancy-icon-width != "16px"

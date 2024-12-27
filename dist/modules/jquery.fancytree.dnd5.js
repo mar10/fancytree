@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.3
- * @date 2023-02-01T20:52:50Z
+ * @version 2.38.4
+ * @date 2024-12-27T23:25:02Z
  */
 
 /*
@@ -1028,7 +1028,7 @@
 
 	$.ui.fancytree.registerExtension({
 		name: "dnd5",
-		version: "2.38.3",
+		version: "2.38.4",
 		// Default options for this extension.
 		options: {
 			autoExpandMS: 1500, // Expand nodes after n milliseconds of hovering

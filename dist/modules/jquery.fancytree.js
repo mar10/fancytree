@@ -7,8 +7,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.3
- * @date 2023-02-01T20:52:50Z
+ * @version 2.38.4
+ * @date 2024-12-27T23:25:02Z
  */
 
 /** Core Fancytree module.
@@ -180,7 +180,9 @@
 
 			// #1041: Raised exceptions may not be visible in the browser
 			// console if inside promise chains, so we also print directly:
-			$.ui.fancytree.error(msg);
+			if ($.ui && $.ui.fancytree) {
+				$.ui.fancytree.error(msg);
+			}
 
 			// Throw exception:
 			$.error(msg);
@@ -5688,7 +5690,9 @@
 					if (opts.titlesTabbable) {
 						if (!isInput) {
 							// #621
-							$(node.span).find(".fancytree-title").focus();
+							$(node.span)
+								.find(".fancytree-title")
+								.trigger("focus");
 						}
 					}
 					if (opts.aria) {
@@ -5701,7 +5705,7 @@
 						);
 						// "ftal_" + opts.idPrefix + node.key);
 					}
-					// $(node.span).find(".fancytree-title").focus();
+					// $(node.span).find(".fancytree-title").trigger("focus");
 					this._triggerNodeEvent("focus", ctx);
 
 					// determine if we have focus on or inside tree container
@@ -5711,10 +5715,10 @@
 
 					if (!hasFancytreeFocus) {
 						// We cannot set KB focus to a node, so use the tree container
-						// #563, #570: IE scrolls on every call to .focus(), if the container
+						// #563, #570: IE scrolls on every call to .trigger("focus"), if the container
 						// is partially outside the viewport. So do it only, when absolutely
 						// necessary.
-						$(tree.$container).focus();
+						$(tree.$container).trigger("focus");
 					}
 
 					// if( opts.autoActivate ){
@@ -6162,7 +6166,7 @@
 						// Node also looses focus if widget blurs
 						this.focusNode.setFocus(false);
 					} else if (flag && (!callOpts || !callOpts.calledByNode)) {
-						$(this.$container).focus();
+						$(this.$container).trigger("focus");
 					}
 					this.$container.toggleClass("fancytree-treefocus", flag);
 					this._triggerTreeEvent(flag ? "focusTree" : "blurTree");
@@ -6755,7 +6759,7 @@
 		{
 			/** Version number `"MAJOR.MINOR.PATCH"`
 			 * @type {string} */
-			version: "2.38.3", // Set to semver by 'grunt release'
+			version: "2.38.4", // Set to semver by 'grunt release'
 			/** @type {string}
 			 * @description `"production" for release builds` */
 			buildType: "production", // Set to 'production' by 'grunt build'

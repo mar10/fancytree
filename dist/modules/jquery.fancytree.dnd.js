@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.3
- * @date 2023-02-01T20:52:50Z
+ * @version 2.38.4
+ * @date 2024-12-27T23:25:02Z
  */
 
 (function (factory) {
@@ -359,7 +359,7 @@
 
 	$.ui.fancytree.registerExtension({
 		name: "dnd",
-		version: "2.38.3",
+		version: "2.38.4",
 		// Default options for this extension.
 		options: {
 			// Make tree nodes accept draggables
@@ -400,13 +400,15 @@
 								"Re-enable focus that was prevented by jQuery UI draggable."
 							);
 							// node.setFocus();
-							// $(node.span).closest(":tabbable").focus();
+							// $(node.span).closest(":tabbable").trigger("focus");
 							// $(event.target).trigger("focus");
 							// $(event.target).closest(":tabbable").trigger("focus");
 						}
 						setTimeout(function () {
 							// #300
-							$(event.target).closest(":tabbable").focus();
+							$(event.target)
+								.closest(":tabbable")
+								.trigger("focus");
 						}, 10);
 					}
 				});

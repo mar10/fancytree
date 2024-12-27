@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.3
- * @date 2023-02-01T20:52:50Z
+ * @version 2.38.4
+ * @date 2024-12-27T23:25:02Z
  */
 
 (function (factory) {
@@ -127,7 +127,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "gridnav",
-		version: "2.38.3",
+		version: "2.38.4",
 		// Default options for this extension.
 		options: {
 			autofocusInput: false, // Focus first embedded input if node gets activated
@@ -167,7 +167,9 @@
 			if (flag) {
 				if (ctx.options.titlesTabbable) {
 					if (!triggeredByInput) {
-						$(node.span).find("span.fancytree-title").focus();
+						$(node.span)
+							.find("span.fancytree-title")
+							.trigger("focus");
 						node.setFocus();
 					}
 					// If one node is tabbable, the container no longer needs to be
@@ -177,7 +179,7 @@
 					// Set focus to input sub input (if node was clicked, but not
 					// when TAB was pressed )
 					$outer = $(node.tr || node.span);
-					$outer.find(":input:enabled").first().focus();
+					$outer.find(":input:enabled").first().trigger("focus");
 				}
 			}
 		},
@@ -202,7 +204,7 @@
 					$td = findNeighbourTd($target, event.which);
 					if ($td && $td.length) {
 						// ctx.node.debug("ignore keydown in input", event.which, handleKeys);
-						$td.find(":input:enabled,a").focus();
+						$td.find(":input:enabled,a").trigger("focus");
 						// Prevent Fancytree default navigation
 						return false;
 					}

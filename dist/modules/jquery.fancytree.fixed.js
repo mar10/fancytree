@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.3
- * @date 2023-02-01T20:52:50Z
+ * @version 2.38.4
+ * @date 2024-12-27T23:25:02Z
  */
 
 // Allow to use multiple var statements inside a function
@@ -665,7 +665,7 @@
 
 		//	treeSetFocus: function(ctx, flag) {
 		////			alert("treeSetFocus" + ctx.tree.$container);
-		//		ctx.tree.$container.focus();
+		//		ctx.tree.$container.trigger("focus");
 		//		$.ui.fancytree.focusTree = ctx.tree;
 		//	}
 	});

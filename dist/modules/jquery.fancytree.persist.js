@@ -11,8 +11,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.3
- * @date 2023-02-01T20:52:50Z
+ * @version 2.38.4
+ * @date 2024-12-27T23:25:02Z
  */
 
 (function (factory) {
@@ -130,7 +130,15 @@
 					}
 				} else {
 					tree.debug("_loadLazyNodes: " + node + " already loaded.");
-					node.setExpanded(true, expandOpts);
+					try {
+						node.setExpanded(true, expandOpts);
+					} catch (e) {
+						// #1157
+						tree.warn(
+							"ext-persist: setExpanded failed for " + node,
+							e
+						);
+					}
 				}
 			} else {
 				missingKeyList.push(key);
@@ -223,7 +231,7 @@
 	 */
 	$.ui.fancytree.registerExtension({
 		name: "persist",
-		version: "2.38.3",
+		version: "2.38.4",
 		// Default options for this extension.
 		options: {
 			cookieDelimiter: "~",
@@ -412,9 +420,11 @@
 						if (node) {
 							// node.debug("persist: set focus", cookie);
 							if (tree.options.titlesTabbable) {
-								$(node.span).find(".fancytree-title").focus();
+								$(node.span)
+									.find(".fancytree-title")
+									.trigger("focus");
 							} else {
-								$(tree.$container).focus();
+								$(tree.$container).trigger("focus");
 							}
 							// node.setFocus();
 						}
