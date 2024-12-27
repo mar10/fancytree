@@ -590,7 +590,7 @@ module.exports = (grunt) ->
       # `test` also starts the connect:dev server
       "test"
       "jsdoc:build"
-      "docco:docs"
+      # "docco:docs"
       "clean:build"
       "copy:build"
       "cssmin:build"
