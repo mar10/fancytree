@@ -1,9 +1,11 @@
-# 2.38.4-0 / Unreleased
+# 2.38.5-0 / Unreleased
 
-- [Changed] [#1143](https://github.com/mar10/fancytree/issues/1143) Improve the appearance of vertical connectors of skin XP
-- [Fixed] [#1153](https://github.com/mar10/fancytree/issues/1153) jQuery .focus() is deprecated
-- [Fixed] [#1157](https://github.com/mar10/fancytree/issues/1157) Sporadic error restoring expansion
-- [Fixed] [#1158](https://github.com/mar10/fancytree/issues/1158) Add guard for error handling 
+# 2.38.4 / 2024-12-27
+
+-   [Changed] [#1143](https://github.com/mar10/fancytree/issues/1143) Improve the appearance of vertical connectors of skin XP
+-   [Fixed] [#1153](https://github.com/mar10/fancytree/issues/1153) jQuery .focus() is deprecated
+-   [Fixed] [#1157](https://github.com/mar10/fancytree/issues/1157) Sporadic error restoring expansion
+-   [Fixed] [#1158](https://github.com/mar10/fancytree/issues/1158) Add guard for error handling
 
 # 2.38.3 / 2023-02-01
 
