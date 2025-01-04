@@ -1,24 +1,26 @@
 # ![logo](doc/logo.png?raw=true) Fancytree
 
 [![GitHub version](https://badge.fury.io/gh/mar10%2Ffancytree.svg)](https://github.com/mar10/fancytree/releases/latest)
-[![Build Status](https://travis-ci.com/mar10/fancytree.svg?branch=master)](https://travis-ci.com/github/mar10/fancytree)
 [![npm](https://img.shields.io/npm/dm/jquery.fancytree.svg)](https://www.npmjs.com/package/jquery.fancytree)
 [![jsDelivr](https://data.jsdelivr.com/v1/package/npm/jquery.fancytree/badge)](https://www.jsdelivr.com/package/npm/jquery.fancytree)
-[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
-[![Released with: grunt-yabs](https://img.shields.io/badge/released%20with-grunt--yabs-yellowgreen)](https://github.com/mar10/grunt-yabs)
 [![StackOverflow: fancytree](https://img.shields.io/badge/StackOverflow-fancytree-blue.svg)](https://stackoverflow.com/questions/tagged/fancytree)
+<!-- [![Released with: grunt-yabs](https://img.shields.io/badge/released%20with-grunt--yabs-yellowgreen)](https://github.com/mar10/grunt-yabs) -->
+<!-- [![Build Status](https://travis-ci.com/mar10/fancytree.svg?branch=master)](https://travis-ci.com/github/mar10/fancytree) -->
+<!-- [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier) -->
 
-Fancytree (sequel of [DynaTree 1.x](https://code.google.com/p/dynatree/)) is a
-JavaScript tree view / tree grid plugin with support for keyboard, inline editing,
+Fancytree is a JavaScript tree view / tree grid plugin with support for keyboard, inline editing,
 filtering, checkboxes, drag'n'drop, and lazy loading.
 
-> **NOTE:**<br>
-> Fancytree is considered feature-complete. <br>
-> The code is still maintained and bugfixes will be commited.
-> However do not expect new major features.
->
-> For a modernized and more capable alternative, have a look at the designated
-> successor [Wunderbaum](https://github.com/mar10/wunderbaum).
+### NOTE
+
+Fancytree is considered feature-complete. <br>
+The code is still maintained and bugfixes will be commited.
+However do not expect new major features.
+
+For a modernized and more capable alternative, **consider upgrading** to
+[Wunderbaum](https://github.com/mar10/wunderbaum).
+
+### Demo
 
 [ ![sample](doc/teaser2.png?raw=true) ](https://wwWendt.de/tech/fancytree/demo "Live demo")
 
