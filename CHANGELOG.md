@@ -6,6 +6,7 @@
 -   [Fixed] [#1153](https://github.com/mar10/fancytree/issues/1153) jQuery .focus() is deprecated
 -   [Fixed] [#1157](https://github.com/mar10/fancytree/issues/1157) Sporadic error restoring expansion
 -   [Fixed] [#1158](https://github.com/mar10/fancytree/issues/1158) Add guard for error handling
+-   Dropped docco example
 
 # 2.38.3 / 2023-02-01
 
