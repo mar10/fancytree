@@ -11859,7 +11859,7 @@
 				checkboxSelected: { text: "check_box" },
 				checkboxUnknown: { text: "indeterminate_check_box" },
 				dragHelper: { text: "play_arrow" },
-				dropMarker: { text: "arrow-forward" },
+				dropMarker: { text: "arrow_forward" },
 				error: { text: "warning" },
 				expanderClosed: { text: "chevron_right" },
 				expanderLazy: { text: "last_page" },
