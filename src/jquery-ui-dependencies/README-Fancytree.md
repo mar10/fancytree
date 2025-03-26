@@ -40,7 +40,7 @@ The jQuery UI library (as downloaded from https://jqueryui.com/download/) does
 the same, but any module can only export one object:<br>
 we want `require("jquery.fancytree")` to return the Fancytree widget.
 
-Therefore we modify the original `jquery-ui.js` download an replace the original
+Therefore we modify the original `jquery-ui.js` download and replace the original
 UMD headers with a plain closure.
 It can then be included in jquery.fancytree-all-deps.min.js, in the same way as the other
 Fancytree extensions:
@@ -80,6 +80,6 @@ See [Patch DIFF](https://github.com/mar10/fancytree/commit/4ac9b461e8e633c938610
 
 ## Updating this Dependencies
 
-1. Download new versions from http://jqueryui.com .
+1. Download new versions from https://jqueryui.com/.
 2. Apply modifications as described above.
 3. run `grunt build` to test.
