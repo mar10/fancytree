@@ -1,7 +1,7 @@
-/*! jQuery UI - v1.13.0 - 2021-11-09
-* http://jqueryui.com
+/*! jQuery UI - v1.14.1 - 2025-03-26
+* https://jqueryui.com
 * Includes: widget.js, position.js, jquery-patch.js, keycode.js, scroll-parent.js, unique-id.js
-* Copyright jQuery Foundation and other contributors; Licensed MIT */
+* Copyright OpenJS Foundation and other contributors; Licensed MIT */
 
 /*
 	NOTE: Original jQuery UI wrapper was replaced with a simple IIFE.
@@ -11,23 +11,23 @@
 
 	$.ui = $.ui || {};
 
-	var version = $.ui.version = "1.13.2";
+	var version = $.ui.version = "1.14.1";
 
 
 	/*!
-	 * jQuery UI Widget 1.13.2
-	 * http://jqueryui.com
-	 *
-	 * Copyright jQuery Foundation and other contributors
-	 * Released under the MIT license.
-	 * http://jquery.org/license
-	 */
+	* jQuery UI Widget 1.14.1
+	* https://jqueryui.com
+	*
+	* Copyright OpenJS Foundation and other contributors
+	* Released under the MIT license.
+	* https://jquery.org/license
+	*/
 
 	//>>label: Widget
 	//>>group: Core
 	//>>description: Provides a factory for creating stateful widgets with a common API.
-	//>>docs: http://api.jqueryui.com/jQuery.widget/
-	//>>demos: http://jqueryui.com/widget/
+	//>>docs: https://api.jqueryui.com/jQuery.widget/
+	//>>demos: https://jqueryui.com/widget/
 
 
 	var widgetUuid = 0;
@@ -58,6 +58,9 @@
 
 		var namespace = name.split( "." )[ 0 ];
 		name = name.split( "." )[ 1 ];
+		if ( name === "__proto__" || name === "constructor" ) {
+			return $.error( "Invalid widget name: " + name );
+		}
 		var fullName = namespace + "-" + name;
 
 		if ( !prototype ) {
@@ -757,21 +760,21 @@
 
 
 	/*!
-	 * jQuery UI Position 1.13.2
-	 * http://jqueryui.com
-	 *
-	 * Copyright jQuery Foundation and other contributors
-	 * Released under the MIT license.
-	 * http://jquery.org/license
-	 *
-	 * http://api.jqueryui.com/position/
-	 */
+	* jQuery UI Position 1.14.1
+	* https://jqueryui.com
+	*
+	* Copyright OpenJS Foundation and other contributors
+	* Released under the MIT license.
+	* https://jquery.org/license
+	*
+	* https://api.jqueryui.com/position/
+	*/
 
 	//>>label: Position
 	//>>group: Core
 	//>>description: Positions elements relative to other elements.
-	//>>docs: http://api.jqueryui.com/position/
-	//>>demos: http://jqueryui.com/position/
+	//>>docs: https://api.jqueryui.com/position/
+	//>>demos: https://jqueryui.com/position/
 
 
 	( function() {
@@ -1254,59 +1257,26 @@
 
 
 	/*!
-	 * jQuery UI Support for jQuery core 1.8.x and newer 1.13.2
-	 * http://jqueryui.com
-	 *
-	 * Copyright jQuery Foundation and other contributors
-	 * Released under the MIT license.
-	 * http://jquery.org/license
-	 *
-	 */
+	* jQuery UI Legacy jQuery Core patches 1.14.1
+	* https://jqueryui.com
+	*
+	* Copyright OpenJS Foundation and other contributors
+	* Released under the MIT license.
+	* https://jquery.org/license
+	*
+	*/
 
-	//>>label: jQuery 1.8+ Support
+	//>>label: Legacy jQuery Core patches
 	//>>group: Core
-	//>>description: Support version 1.8.x and newer of jQuery core
+	//>>description: Backport `.even()`, `.odd()` and `$.escapeSelector` to older jQuery Core versions (deprecated)
 
-
-	// Support: jQuery 1.9.x or older
-	// $.expr[ ":" ] is deprecated.
-	if ( !$.expr.pseudos ) {
-		$.expr.pseudos = $.expr[ ":" ];
-	}
-
-	// Support: jQuery 1.11.x or older
-	// $.unique has been renamed to $.uniqueSort
-	if ( !$.uniqueSort ) {
-		$.uniqueSort = $.unique;
-	}
 
 	// Support: jQuery 2.2.x or older.
 	// This method has been defined in jQuery 3.0.0.
 	// Code from https://github.com/jquery/jquery/blob/e539bac79e666bba95bba86d690b4e609dca2286/src/selector/escapeSelector.js
 	if ( !$.escapeSelector ) {
-
-		// CSS string/identifier serialization
-		// https://drafts.csswg.org/cssom/#common-serializing-idioms
-		var rcssescape = /([\0-\x1f\x7f]|^-?\d)|^-$|[^\x80-\uFFFF\w-]/g;
-
-		var fcssescape = function( ch, asCodePoint ) {
-			if ( asCodePoint ) {
-
-				// U+0000 NULL becomes U+FFFD REPLACEMENT CHARACTER
-				if ( ch === "\0" ) {
-					return "\uFFFD";
-				}
-
-				// Control characters and (dependent upon position) numbers get escaped as code points
-				return ch.slice( 0, -1 ) + "\\" + ch.charCodeAt( ch.length - 1 ).toString( 16 ) + " ";
-			}
-
-			// Other potentially-special ASCII characters get backslash-escaped
-			return "\\" + ch;
-		};
-
-		$.escapeSelector = function( sel ) {
-			return ( sel + "" ).replace( rcssescape, fcssescape );
+		$.escapeSelector = function( id ) {
+			return CSS.escape( id + "" );
 		};
 	}
 
@@ -1329,18 +1299,18 @@
 
 	;
 	/*!
-	 * jQuery UI Keycode 1.13.2
-	 * http://jqueryui.com
-	 *
-	 * Copyright jQuery Foundation and other contributors
-	 * Released under the MIT license.
-	 * http://jquery.org/license
-	 */
+	* jQuery UI Keycode 1.14.1
+	* https://jqueryui.com
+	*
+	* Copyright OpenJS Foundation and other contributors
+	* Released under the MIT license.
+	* https://jquery.org/license
+	*/
 
 	//>>label: Keycode
 	//>>group: Core
 	//>>description: Provide keycodes as keynames
-	//>>docs: http://api.jqueryui.com/jQuery.ui.keyCode/
+	//>>docs: https://api.jqueryui.com/jQuery.ui.keyCode/
 
 
 	var keycode = $.ui.keyCode = {
@@ -1364,18 +1334,18 @@
 
 
 	/*!
-	 * jQuery UI Scroll Parent 1.13.2
-	 * http://jqueryui.com
-	 *
-	 * Copyright jQuery Foundation and other contributors
-	 * Released under the MIT license.
-	 * http://jquery.org/license
-	 */
+	* jQuery UI Scroll Parent 1.14.1
+	* https://jqueryui.com
+	*
+	* Copyright OpenJS Foundation and other contributors
+	* Released under the MIT license.
+	* https://jquery.org/license
+	*/
 
 	//>>label: scrollParent
 	//>>group: Core
 	//>>description: Get the closest ancestor element that is scrollable.
-	//>>docs: http://api.jqueryui.com/scrollParent/
+	//>>docs: https://api.jqueryui.com/scrollParent/
 
 
 	var scrollParent = $.fn.scrollParent = function( includeHidden ) {
@@ -1394,22 +1364,22 @@
 		return position === "fixed" || !scrollParent.length ?
 			$( this[ 0 ].ownerDocument || document ) :
 			scrollParent;
-	}; 
+	};
 
 
 	/*!
-	 * jQuery UI Unique ID 1.13.2
-	 * http://jqueryui.com
-	 *
-	 * Copyright jQuery Foundation and other contributors
-	 * Released under the MIT license.
-	 * http://jquery.org/license
-	 */
+	* jQuery UI Unique ID 1.14.1
+	* https://jqueryui.com
+	*
+	* Copyright OpenJS Foundation and other contributors
+	* Released under the MIT license.
+	* https://jquery.org/license
+	*/
 
 	//>>label: uniqueId
 	//>>group: Core
 	//>>description: Functions to generate and remove uniqueId's
-	//>>docs: http://api.jqueryui.com/uniqueId/
+	//>>docs: https://api.jqueryui.com/uniqueId/
 
 
 	var uniqueId = $.fn.extend( {
@@ -1433,9 +1403,6 @@
 			} );
 		}
 	} );
-
-
-
 
 // NOTE: Original jQuery UI wrapper was replaced. See README-Fancytree.md
 // }));
