@@ -1,4 +1,9 @@
-# 2.38.5-0 / Unreleased
+# 2.38.6-0 / Unreleased
+
+
+# 2.38.5 / 2025-04-05
+
+-   #1171 Update jQuery to 3.7.1 and jQuery UI to 1.14.1
 
 # 2.38.4 / 2024-12-27
 
