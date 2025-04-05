@@ -19,8 +19,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.4
- * @date 2024-12-27T23:25:02Z
+ * @version 2.38.5
+ * @date 2025-04-05T06:40:00Z
  */
 
 // To keep the global namespace clean, we wrap everything in a closure.
@@ -141,7 +141,7 @@
 		// Every extension must be registered by a unique name.
 		name: "childcounter",
 		// Version information should be compliant with [semver](http://semver.org)
-		version: "2.38.4",
+		version: "2.38.5",
 
 		// Extension specific options and their defaults.
 		// This options will be available as `tree.options.childcounter.hideExpanded`

@@ -7,8 +7,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.38.4
- * @date 2024-12-27T23:25:02Z
+ * @version 2.38.5
+ * @date 2025-04-05T06:40:00Z
  */
 
 /** Core Fancytree module.
@@ -6759,7 +6759,7 @@
 		{
 			/** Version number `"MAJOR.MINOR.PATCH"`
 			 * @type {string} */
-			version: "2.38.4", // Set to semver by 'grunt release'
+			version: "2.38.5", // Set to semver by 'grunt release'
 			/** @type {string}
 			 * @description `"production" for release builds` */
 			buildType: "production", // Set to 'production' by 'grunt build'
