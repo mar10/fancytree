@@ -2,8 +2,8 @@
 # Each line is a file pattern followed by one or more owners.
 
 # ext-grid, scrollbar extension
-/demo/sample-3rd-grid-scrollbar.html @ewya
+# /demo/sample-3rd-grid-scrollbar.html @ewya
 
 # ext-fixed
-/src/jquery.fancytree.fixed.js @Mats0
-/demo/sample-ext-fixed.html @Mats0
+# /src/jquery.fancytree.fixed.js @Mats0
+# /demo/sample-ext-fixed.html @Mats0
