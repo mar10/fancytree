@@ -1,5 +1,7 @@
 # 2.38.6-0 / Unreleased
 
+-   [Fixed] jQuery 4 compatibility: replace `$.parseJSON()` with `JSON.parse()` and the removed
+    event shorthands `.change()`, `.blur()`, `.scroll()` with `.on()` / `.trigger()`
 
 # 2.38.5 / 2025-04-05
 

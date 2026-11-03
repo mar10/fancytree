@@ -268,7 +268,7 @@
 				// In row-mode, only embedded inputs of the active row are tabbable
 				$prevTr
 					.find("td")
-					.blur() // we need to blur first, because otherwise the focus frame is not reliably removed(?)
+					.trigger("blur") // we need to blur first, because otherwise the focus frame is not reliably removed(?)
 					.removeAttr("tabindex");
 				$prevTr.find(">td :input,a").attr("tabindex", "-1");
 				this.$activeTd = null;
