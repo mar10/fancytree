@@ -112,7 +112,7 @@
 		// Focus <input> and bind keyboard handler
 		$input
 			.trigger("focus")
-			.change(function (event) {
+			.on("change", function (event) {
 				$input.addClass("fancytree-edit-dirty");
 			})
 			.on("keydown", function (event) {
@@ -126,7 +126,7 @@
 				}
 				event.stopPropagation();
 			})
-			.blur(function (event) {
+			.on("blur", function (event) {
 				return node.editEnd(true, event);
 			});
 

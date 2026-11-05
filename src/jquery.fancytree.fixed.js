@@ -234,7 +234,7 @@
 				}
 			);
 
-			$bottomRightWrapper.scroll(function () {
+			$bottomRightWrapper.on("scroll", function () {
 				var $this = $(this),
 					scrollLeft = $this.scrollLeft(),
 					scrollTop = $this.scrollTop();
