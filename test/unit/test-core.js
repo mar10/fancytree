@@ -637,6 +637,27 @@ QUnit.test("Fancytree class methods", function(assert) {
 
 });
 
+QUnit.test("Fancytree class methods - findNextNode() matches titles literally", function(assert) {
+	tools.setup(assert);
+	assert.expect(4);
+
+	$("#tree").fancytree({
+		source: TEST_DATA
+	});
+	var tree = $.ui.fancytree.getTree("#tree");
+
+	// The match argument is a title string, like `findFirst()` and `findAll()`,
+	// not a regular expression pattern (#1208)
+	assert.equal(tree.findNextNode("item1 with key").key, "2",
+		"findNextNode() - match title");
+	assert.equal(tree.findNextNode("item."), null,
+		"findNextNode() - '.' is matched literally");
+	assert.equal(tree.findNextNode("find (me"), null,
+		"findNextNode() - unmatched parenthesis does not throw");
+	assert.equal(tree.findNextNode("[Sub-item"), null,
+		"findNextNode() - '[' is matched literally");
+});
+
 
 /*******************************************************************************
  *

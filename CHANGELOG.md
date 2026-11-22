@@ -1,5 +1,8 @@
 # 2.38.6-0 / Unreleased
 
+-   [Fixed] [#1208](https://github.com/mar10/fancytree/issues/1208) `findNextNode()`
+    compares the search string literally instead of as a regular expression, so special
+    characters are no longer misinterpreted and invalid patterns no longer throw
 -   [Fixed] jQuery 4 compatibility: replace `$.parseJSON()` with `JSON.parse()` and the removed
     event shorthands `.change()`, `.blur()`, `.scroll()` with `.on()` / `.trigger()`
 
