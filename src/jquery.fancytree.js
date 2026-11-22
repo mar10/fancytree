@@ -475,9 +475,9 @@
 	}
 
 	function _makeNodeTitleStartMatcher(s) {
-		var reMatch = new RegExp("^" + s, "i");
+		s = s.toLowerCase();
 		return function (node) {
-			return reMatch.test(node.title);
+			return node.title.toLowerCase().indexOf(s) === 0;
 		};
 	}
 
@@ -3194,7 +3194,9 @@
 		/** Find the next visible node that starts with `match`, starting at `startNode`
 		 * and wrap-around at the end.
 		 *
-		 * @param {string|function} match
+		 * @param {string|function} match title string to search for (compared
+		 *     literally and case-insensitively), or a callback function that
+		 *     returns `true` if a node is matched.
 		 * @param {FancytreeNode} [startNode] defaults to first node
 		 * @returns {FancytreeNode} matching node or null
 		 */
